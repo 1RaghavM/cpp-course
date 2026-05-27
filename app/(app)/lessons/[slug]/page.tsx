@@ -1,17 +1,26 @@
 import { notFound } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
+import { unstable_noStore as noStore } from "next/cache";
+import { createServiceClient } from "@/lib/supabase/server";
 import { getOrGenerateLesson } from "@/lib/content/lesson-generation";
 import { SummaryView } from "@/components/lesson/SummaryView";
 import { ExerciseCard } from "@/components/lesson/ExerciseCard";
 import { RegenerateButton } from "./RegenerateButton";
 import type { Lesson, Exercise, Submission } from "@/lib/supabase/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface PageProps {
   params: { slug: string };
 }
 
 export default async function LessonPage({ params }: PageProps) {
-  const supabase = createServerClient();
+  // Disable all caching for this page
+  noStore();
+  
+  // Use service client for all DB operations (bypasses RLS)
+  // Auth is handled by the (app) layout which requires owner session
+  const supabase = createServiceClient();
   const { slug } = params;
 
   // ------ Fetch lesson content (cache-hit or generate) ------

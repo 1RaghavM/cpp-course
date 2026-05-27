@@ -229,28 +229,284 @@ export default function ExerciseClient({
 
   // ---- Render ---------------------------------------------------------------
 
+  // Mobile: vertical stack layout
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-4 pb-6">
+        <div className="rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-sm text-yellow-800 dark:border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-200">
+          The code editor is read-only on mobile devices. Please use a desktop
+          browser for the best experience.
+        </div>
+        <MobileFallback
+          exercise={exercise}
+          sampleTestCases={sampleTestCases}
+          code={code}
+          editorRef={editorRef}
+          setCode={setCode}
+          isMobile={isMobile}
+        />
+      </div>
+    );
+  }
+
+  // Desktop: split-pane layout (problem left, editor right)
+  // Break out of the parent container to use full viewport width
   return (
-    <div className="flex flex-col gap-6">
-      {/* Exercise header */}
-      <div>
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold">{exercise.title}</h1>
+    <div
+      className="flex h-[calc(100vh-4.5rem)] gap-0"
+      style={{
+        width: "100vw",
+        marginLeft: "calc(-50vw + 50%)",
+      }}
+    >
+      {/* ===== LEFT PANEL: Problem Description ===== */}
+      <div className="w-1/2 flex flex-col border-r border-neutral-200 dark:border-neutral-700">
+        {/* Problem header */}
+        <div className="flex items-center gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
+          <h1 className="text-lg font-bold">{exercise.title}</h1>
           <span className="rounded bg-neutral-200 px-2 py-0.5 text-xs font-medium uppercase dark:bg-neutral-800">
             {exercise.difficulty}
           </span>
         </div>
+
+        {/* Problem content (scrollable) */}
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* Exercise prompt */}
+          <div className="prose prose-neutral prose-sm max-w-none dark:prose-invert">
+            <div className="whitespace-pre-wrap text-sm leading-relaxed">
+              {exercise.promptMd}
+            </div>
+          </div>
+
+          {/* Sample test cases */}
+          {sampleTestCases.length > 0 && (
+            <div className="mt-6">
+              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-500">
+                Sample Test Cases
+              </h2>
+              <div className="space-y-2">
+                {sampleTestCases.map((tc) => (
+                  <div
+                    key={tc.label}
+                    className="rounded border border-neutral-200 p-3 text-sm dark:border-neutral-700"
+                  >
+                    <div className="font-medium">{tc.label}</div>
+                    {tc.stdin && (
+                      <div className="mt-1">
+                        <span className="text-neutral-500">Input: </span>
+                        <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
+                          {tc.stdin}
+                        </code>
+                      </div>
+                    )}
+                    <div className="mt-1">
+                      <span className="text-neutral-500">Expected Output: </span>
+                      <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
+                        {tc.expectedStdout}
+                      </code>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Exercise prompt */}
+      {/* ===== RIGHT PANEL: Code Editor + Console ===== */}
+      <div className="w-1/2 flex flex-col bg-neutral-900">
+        {/* Toolbar */}
+        <div className="flex items-center gap-2 border-b border-neutral-700 px-3 py-2">
+          {/* C++ standard selector */}
+          <select
+            value={languageStd}
+            onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
+            disabled={busy}
+            className="rounded border border-neutral-600 bg-neutral-800 px-2 py-1 text-sm text-neutral-200"
+          >
+            {STD_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+
+          <div className="flex-1" />
+
+          {/* Restore last passing */}
+          {lastPassingCode && (
+            <button
+              type="button"
+              onClick={handleRestorePassingSub}
+              disabled={busy}
+              className="text-xs text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
+            >
+              Restore passing
+            </button>
+          )}
+
+          {/* Reset button */}
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={busy}
+            className="text-xs text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
+          >
+            Reset
+          </button>
+        </div>
+
+        {/* Monaco Editor */}
+        <div className="flex-1 min-h-0">
+          <MonacoEditor
+            ref={editorRef}
+            defaultValue={exercise.starterCode}
+            onChange={setCode}
+            language="cpp"
+            readOnly={false}
+            exerciseId={exercise.id}
+          />
+        </div>
+
+        {/* Console Panel */}
+        <div className="border-t border-neutral-700">
+          {/* Console header with action buttons */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-neutral-800">
+            <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">
+              Console
+            </span>
+
+            <div className="flex-1" />
+
+            {/* Run button */}
+            <button
+              type="button"
+              onClick={() => handleSubmit("run")}
+              disabled={busy}
+              className="inline-flex items-center gap-1.5 rounded bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-200 transition hover:bg-neutral-600 disabled:opacity-50"
+            >
+              {isRunning && <Spinner />}
+              Run
+            </button>
+
+            {/* Submit button */}
+            <button
+              type="button"
+              onClick={() => handleSubmit("submit")}
+              disabled={busy}
+              className="inline-flex items-center gap-1.5 rounded bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-500 disabled:opacity-50"
+            >
+              {isSubmitting && <Spinner />}
+              Submit
+            </button>
+          </div>
+
+          {/* Console output area */}
+          <div className="h-40 overflow-y-auto bg-neutral-950 p-3 text-xs font-mono text-neutral-300">
+            {error && (
+              <div className="text-red-400 mb-2">{error}</div>
+            )}
+
+            {result && (
+              <div className="space-y-2">
+                {/* Status */}
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`inline-block rounded px-1.5 py-0.5 text-xs font-bold uppercase ${statusBadgeColor(result.status)}`}
+                  >
+                    {result.status.replace(/_/g, " ")}
+                  </span>
+                  {result.wallTimeMs > 0 && (
+                    <span className="text-neutral-500">{result.wallTimeMs}ms</span>
+                  )}
+                </div>
+
+                {/* Compile error */}
+                {result.compileOutput && (
+                  <div>
+                    <div className="text-neutral-500 mb-1">Compiler Output:</div>
+                    <pre className="whitespace-pre-wrap text-red-400">{result.compileOutput}</pre>
+                  </div>
+                )}
+
+                {/* Stdout */}
+                {result.stdout && (
+                  <div>
+                    <div className="text-neutral-500 mb-1">Output:</div>
+                    <pre className="whitespace-pre-wrap text-green-400">{result.stdout}</pre>
+                  </div>
+                )}
+
+                {/* Stderr */}
+                {result.stderr && (
+                  <div>
+                    <div className="text-neutral-500 mb-1">Stderr:</div>
+                    <pre className="whitespace-pre-wrap text-yellow-400">{result.stderr}</pre>
+                  </div>
+                )}
+
+                {/* Test results */}
+                {result.testResults && result.testResults.length > 0 && (
+                  <div className="space-y-1 mt-2">
+                    {result.testResults.map((tr) => (
+                      <div key={tr.label} className="flex items-start gap-2">
+                        <span className={tr.passed ? "text-green-400" : "text-red-400"}>
+                          {tr.passed ? "✓" : "✗"}
+                        </span>
+                        <span className="text-neutral-300">{tr.label}</span>
+                        {!tr.passed && (
+                          <span className="text-neutral-500">
+                            expected: {tr.expected}, got: {tr.actual || "(empty)"}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!error && !result && (
+              <div className="text-neutral-500">
+                Press Run to execute your code, or Submit to test against all cases.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Mobile fallback component (vertical layout)
+function MobileFallback({
+  exercise,
+  sampleTestCases,
+  code: _code,
+  editorRef,
+  setCode,
+  isMobile,
+}: {
+  exercise: ExerciseData;
+  sampleTestCases: SampleTestCase[];
+  code: string;
+  editorRef: React.RefObject<MonacoEditorHandle>;
+  setCode: (code: string) => void;
+  isMobile: boolean;
+}) {
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-bold">{exercise.title}</h1>
+        <span className="rounded bg-neutral-200 px-2 py-0.5 text-xs font-medium uppercase dark:bg-neutral-800">
+          {exercise.difficulty}
+        </span>
+      </div>
       <div className="prose prose-neutral max-w-none dark:prose-invert">
-        {/* Render markdown as plain preformatted text for now -- a proper
-            markdown renderer can be added later without changing this API. */}
         <div className="whitespace-pre-wrap text-sm leading-relaxed">
           {exercise.promptMd}
         </div>
       </div>
-
-      {/* Sample test cases */}
       {sampleTestCases.length > 0 && (
         <div>
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-500">
@@ -282,100 +538,7 @@ export default function ExerciseClient({
           </div>
         </div>
       )}
-
-      {/* Mobile warning */}
-      {isMobile && (
-        <div className="rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-sm text-yellow-800 dark:border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-200">
-          The code editor is read-only on mobile devices. Please use a desktop
-          browser for the best experience.
-        </div>
-      )}
-
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* C++ standard selector */}
-        <select
-          value={languageStd}
-          onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
-          disabled={busy}
-          className="rounded border border-neutral-300 bg-white px-2 py-1.5 text-sm dark:border-neutral-600 dark:bg-neutral-800"
-        >
-          {STD_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-
-        {/* Run button */}
-        <button
-          type="button"
-          onClick={() => handleSubmit("run")}
-          disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded bg-neutral-800 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-neutral-300"
-        >
-          {isRunning ? (
-            <Spinner />
-          ) : (
-            <span className="text-xs opacity-60">
-              {typeof navigator !== "undefined" &&
-              /Mac/.test(navigator.userAgent)
-                ? "⌘"
-                : "Ctrl"}
-              +Enter
-            </span>
-          )}
-          Run
-        </button>
-
-        {/* Submit button */}
-        <button
-          type="button"
-          onClick={() => handleSubmit("submit")}
-          disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded bg-green-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-green-600 disabled:opacity-50"
-        >
-          {isSubmitting ? (
-            <Spinner />
-          ) : (
-            <span className="text-xs opacity-60">
-              {typeof navigator !== "undefined" &&
-              /Mac/.test(navigator.userAgent)
-                ? "⌘"
-                : "Ctrl"}
-              +Shift+Enter
-            </span>
-          )}
-          Submit
-        </button>
-
-        <div className="flex-1" />
-
-        {/* Restore last passing */}
-        {lastPassingCode && (
-          <button
-            type="button"
-            onClick={handleRestorePassingSub}
-            disabled={busy}
-            className="text-sm text-neutral-500 underline hover:text-neutral-700 disabled:opacity-50 dark:hover:text-neutral-300"
-          >
-            Restore last passing
-          </button>
-        )}
-
-        {/* Reset button */}
-        <button
-          type="button"
-          onClick={handleReset}
-          disabled={busy}
-          className="text-sm text-neutral-500 underline hover:text-neutral-700 disabled:opacity-50 dark:hover:text-neutral-300"
-        >
-          Reset to starter code
-        </button>
-      </div>
-
-      {/* Monaco Editor */}
-      <div className="h-[400px] overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700">
+      <div className="h-[300px] overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700">
         <MonacoEditor
           ref={editorRef}
           defaultValue={exercise.starterCode}
@@ -385,98 +548,7 @@ export default function ExerciseClient({
           exerciseId={exercise.id}
         />
       </div>
-
-      {/* Error display */}
-      {error && (
-        <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-600 dark:bg-red-900/20 dark:text-red-200">
-          {error}
-        </div>
-      )}
-
-      {/* Output panel */}
-      {result && (
-        <div className="space-y-4">
-          {/* Status banner */}
-          <div className="flex items-center gap-3">
-            <span
-              className={`inline-block rounded px-2 py-1 text-xs font-bold uppercase ${statusBadgeColor(result.status)}`}
-            >
-              {result.status.replace(/_/g, " ")}
-            </span>
-            {result.wallTimeMs > 0 && (
-              <span className="text-xs text-neutral-500">
-                {result.wallTimeMs}ms
-              </span>
-            )}
-          </div>
-
-          {/* Compile error output */}
-          {result.compileOutput && (
-            <OutputBlock title="Compiler Output" content={result.compileOutput} isError />
-          )}
-
-          {/* Stdout */}
-          {result.stdout && (
-            <OutputBlock title="Standard Output" content={result.stdout} />
-          )}
-
-          {/* Stderr */}
-          {result.stderr && (
-            <OutputBlock title="Standard Error" content={result.stderr} isError />
-          )}
-
-          {/* Test results (submit mode) */}
-          {result.testResults && result.testResults.length > 0 && (
-            <div>
-              <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-500">
-                Test Results
-              </h3>
-              <div className="space-y-2">
-                {result.testResults.map((tr) => (
-                  <div
-                    key={tr.label}
-                    className={`rounded border p-3 text-sm ${
-                      tr.passed
-                        ? "border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-900/20"
-                        : "border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-900/20"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`font-bold ${tr.passed ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}
-                      >
-                        {tr.passed ? "PASS" : "FAIL"}
-                      </span>
-                      <span className="font-medium">{tr.label}</span>
-                    </div>
-                    {!tr.passed && (
-                      <div className="mt-2 grid grid-cols-2 gap-2">
-                        <div>
-                          <div className="mb-1 text-xs font-medium text-neutral-500">
-                            Expected
-                          </div>
-                          <pre className="whitespace-pre-wrap rounded bg-neutral-100 p-2 text-xs dark:bg-neutral-800">
-                            {tr.expected}
-                          </pre>
-                        </div>
-                        <div>
-                          <div className="mb-1 text-xs font-medium text-neutral-500">
-                            Actual
-                          </div>
-                          <pre className="whitespace-pre-wrap rounded bg-neutral-100 p-2 text-xs dark:bg-neutral-800">
-                            {tr.actual || "(empty)"}
-                          </pre>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+    </>
   );
 }
 

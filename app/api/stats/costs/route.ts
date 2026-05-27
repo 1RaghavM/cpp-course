@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRouteClient } from "@/lib/supabase/server";
+import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
 import { requireOwner } from "@/lib/auth/owner-only";
 
 export const dynamic = "force-dynamic";
@@ -26,11 +26,13 @@ interface CostStatsResponse {
 }
 
 export async function GET() {
-  const supabase = createRouteClient();
+  const authClient = createRouteClient();
 
   // Auth guard
-  const authResult = await requireOwner(supabase);
+  const authResult = await requireOwner(authClient);
   if (authResult instanceof NextResponse) return authResult;
+
+  const supabase = createServiceClient();
 
   // Current calendar month boundaries (UTC)
   const now = new Date();

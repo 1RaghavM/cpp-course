@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRouteClient } from "@/lib/supabase/server";
+import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
 import { requireOwner } from "@/lib/auth/owner-only";
 import type { Chapter, Lesson, Progress } from "@/lib/supabase/types";
 
@@ -22,11 +22,13 @@ interface RoadmapChapter {
 }
 
 export async function GET() {
-  const supabase = createRouteClient();
+  const authClient = createRouteClient();
 
   // Auth guard
-  const authResult = await requireOwner(supabase);
+  const authResult = await requireOwner(authClient);
   if (authResult instanceof NextResponse) return authResult;
+
+  const supabase = createServiceClient();
 
   // Three parallel queries: chapters, lessons, and progress.
   // Explicit type annotations work around the auth-helpers/postgrest-js

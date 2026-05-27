@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteClient } from "@/lib/supabase/server";
+import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
 import { requireOwner } from "@/lib/auth/owner-only";
 import { getOrGenerateLesson } from "@/lib/content/lesson-generation";
 
@@ -15,19 +15,22 @@ export async function GET(
 ) {
   const supabase = createRouteClient();
 
-  // Auth guard
+  // Auth guard (uses user JWT)
   const authResult = await requireOwner(supabase);
   if (authResult instanceof NextResponse) return authResult;
 
   const { slug } = params;
 
   try {
+    // Use service client for content generation (bypasses RLS for system operations)
+    const serviceClient = createServiceClient();
+
     // getOrGenerateLesson handles cache-hit/miss logic internally.
     // On first visit this may take 5-15s (LLM generation).
-    const { lesson, exercises } = await getOrGenerateLesson(supabase, slug);
+    const { lesson, exercises } = await getOrGenerateLesson(serviceClient, slug);
 
-    // Query existing conversations for this lesson
-    const { data: conversations } = (await supabase
+    // Query existing conversations for this lesson (uses service client to bypass RLS)
+    const { data: conversations } = (await serviceClient
       .from("conversations")
       .select("id, title, created_at")
       .eq("lesson_id", lesson.id)

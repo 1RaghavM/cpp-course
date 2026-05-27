@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import type { Exercise } from "@/lib/supabase/types";
 import ExerciseClient from "./ExerciseClient";
 
@@ -10,7 +10,8 @@ interface Props {
 }
 
 export default async function ExercisePage({ params }: Props) {
-  const supabase = createServerClient();
+  // Use service client to bypass RLS (auth enforced by middleware)
+  const supabase = createServiceClient();
   const { id } = params;
 
   // ---- Load exercise --------------------------------------------------------

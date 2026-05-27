@@ -1,13 +1,15 @@
 import { NextResponse } from 'next/server';
-import { createRouteClient } from '@/lib/supabase/server';
+import { createRouteClient, createServiceClient } from '@/lib/supabase/server';
 import { requireOwner } from '@/lib/auth/owner-only';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  const supabase = createRouteClient();
-  const authResult = await requireOwner(supabase);
+  const authClient = createRouteClient();
+  const authResult = await requireOwner(authClient);
   if (authResult instanceof NextResponse) return authResult;
+
+  const supabase = createServiceClient();
 
   const { searchParams } = new URL(request.url);
   const lessonId = searchParams.get('lesson_id');

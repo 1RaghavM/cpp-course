@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +27,8 @@ function formatTokens(n: number): string {
 }
 
 export default async function StatsPage() {
-  const supabase = createServerClient();
+  // Use service client to bypass RLS (auth enforced by middleware)
+  const supabase = createServiceClient();
 
   // Current calendar month boundaries (UTC)
   const now = new Date();

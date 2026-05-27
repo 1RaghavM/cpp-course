@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { RoadmapTree } from "@/components/roadmap/RoadmapTree";
 import type { Chapter, Lesson, Progress } from "@/lib/supabase/types";
 
@@ -25,7 +25,8 @@ interface RoadmapChapter {
  * server component (no round-trip through the API route).
  */
 export default async function RoadmapPage() {
-  const supabase = createServerClient();
+  // Use service client to bypass RLS (auth enforced by middleware)
+  const supabase = createServiceClient();
 
   // Three parallel queries: chapters, lessons, and progress.
   // Explicit type annotations work around the auth-helpers/postgrest-js

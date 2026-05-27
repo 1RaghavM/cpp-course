@@ -75,14 +75,37 @@ Write the lesson summary.`,
 // 6.2 Exercise generation prompt
 // ---------------------------------------------------------------------------
 
+/** Chapters that should NOT have exercises (introductory/overview content) */
+const NO_EXERCISE_CHAPTERS = ['0', 'O'];
+
+/**
+ * Check if a chapter should have exercises generated.
+ * Returns false for intro chapters and overview sections.
+ */
+export function shouldGenerateExercises(chapterNumber: string): boolean {
+  return !NO_EXERCISE_CHAPTERS.includes(chapterNumber);
+}
+
 /**
  * Build the prompt for generating exercises with Haiku 4.5.
+ * Takes chapter context to generate more relevant exercises.
  */
 export function buildExercisePrompt(
   lessonTitle: string,
   summaryMd: string,
+  chapterNumber: string,
+  chapterTitle: string,
 ): PromptPayload {
-  const systemText = `Design 2 C++ exercises for the lesson "${lessonTitle}".
+  const systemText = `Design 2 C++ exercises for the lesson "${lessonTitle}" from Chapter ${chapterNumber}: ${chapterTitle}.
+
+EXERCISE DESIGN PRINCIPLES:
+- Exercises must directly test concepts from the lesson summary
+- Difficulty should match the chapter level (early chapters = simpler exercises)
+- For basic I/O chapters: focus on cout/cin exercises
+- For control flow chapters: focus on if/loops/switch
+- For functions chapters: focus on writing and calling functions
+- For arrays/vectors: focus on data manipulation
+- For OOP chapters: focus on classes and objects
 
 Each exercise must:
 - Be original (not from LeetCode or learncpp)
@@ -91,12 +114,13 @@ Each exercise must:
 - Have deterministic output for fixed stdin
 - Include 3 test cases (1 sample visible, 2 hidden)
 - Be solvable in under 60 lines
+- Have clear, unambiguous requirements
 
 OUTPUT: a JSON array conforming to this schema for each exercise:
 {
   "title": "string",
   "prompt_md": "string (markdown problem statement)",
-  "starter_code": "string (compilable C++ starter)",
+  "starter_code": "string (compilable C++ starter with TODO comments)",
   "difficulty": "practice",
   "test_cases": [
     { "label": "string", "is_sample": true|false, "stdin": "string", "expected_stdout": "string" }
@@ -109,7 +133,7 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
     messages: [
       {
         role: 'user',
-        content: `Lesson summary:\n\n${summaryMd}`,
+        content: `Chapter: ${chapterNumber} - ${chapterTitle}\nLesson: ${lessonTitle}\n\nLesson summary:\n\n${summaryMd}`,
       },
     ],
     maxTokens: 2048,

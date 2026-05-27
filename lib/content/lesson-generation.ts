@@ -3,6 +3,7 @@ import { createCompletion } from '@/lib/anthropic/client';
 import {
   buildLessonSummaryPrompt,
   buildExercisePrompt,
+  shouldGenerateExercises,
   MODEL_HAIKU,
 } from '@/lib/anthropic/prompts';
 
@@ -278,6 +279,8 @@ async function generateAndPersist(
   const summaryMd = extractTextContent(summaryResponse);
 
   // --- Persist summary to lesson row ---
+  console.log(`[lesson-gen] Persisting summary for lesson ${lesson.id}...`);
+  
   const { data: updatedLesson, error: updateError } = await supabase
     .from('lessons')
     .update({
@@ -289,17 +292,42 @@ async function generateAndPersist(
     .select()
     .single();
 
-  if (updateError || !updatedLesson) {
-    throw new Error(
-      `Failed to persist lesson summary: ${updateError?.message ?? 'no data returned'}`,
-    );
+  if (updateError) {
+    console.error(`[lesson-gen] Update error:`, updateError);
+    throw new Error(`Failed to persist lesson summary: ${updateError.message}`);
   }
+  
+  if (!updatedLesson) {
+    console.error(`[lesson-gen] No data returned from update`);
+    throw new Error(`Failed to persist lesson summary: no data returned`);
+  }
+  
+  console.log(`[lesson-gen] Successfully persisted summary for lesson ${lesson.id}`);
+  console.log(`[lesson-gen] Updated lesson summary_md is: ${updatedLesson.summary_md ? 'SET (' + updatedLesson.summary_md.length + ' chars)' : 'NULL'}`);
+  
+  // Verification: re-read from DB to confirm the update was committed
+  const { data: verifyLesson } = await supabase
+    .from('lessons')
+    .select('summary_md')
+    .eq('id', lesson.id)
+    .single();
+  console.log(`[lesson-gen] VERIFY re-read: summary_md is: ${verifyLesson?.summary_md ? 'SET (' + verifyLesson.summary_md.length + ' chars)' : 'NULL'}`);
 
-  // --- Step 2: Generate exercises ---
+  // --- Step 2: Generate exercises (skip for intro chapters) ---
   const exercises: ExerciseWithTestCases[] = [];
 
+  if (!shouldGenerateExercises(chapterCtx.number)) {
+    console.log(`[lesson-gen] Skipping exercises for intro chapter ${chapterCtx.number}`);
+    return { lesson: updatedLesson, exercises };
+  }
+
   try {
-    const exercisePrompt = buildExercisePrompt(lessonTitle, summaryMd);
+    const exercisePrompt = buildExercisePrompt(
+      lessonTitle,
+      summaryMd,
+      chapterCtx.number,
+      chapterCtx.title,
+    );
 
     const exerciseResponse = await createCompletion(
       {
@@ -412,14 +440,18 @@ export async function getOrGenerateLesson(
     );
   }
 
+  console.log(`[lesson-gen] Fetched lesson "${slug}", summary_md is: ${lesson.summary_md ? 'SET (' + lesson.summary_md.length + ' chars)' : 'NULL'}`);
+
   // --- Step 2: Cache check ---
   if (lesson.summary_md !== null) {
     // CACHE HIT: summary exists, return from DB only. Zero LLM calls.
+    console.log(`[lesson-gen] CACHE HIT for "${slug}" - loading from DB`);
     const exercises = await loadExercisesFromDb(supabase, lesson.id);
     return { lesson, exercises };
   }
 
   // --- Step 3: Cache miss — generate via LLM and persist ---
+  console.log(`[lesson-gen] CACHE MISS for "${slug}" - generating via LLM...`);
   return generateAndPersist(supabase, lesson);
 }
 
