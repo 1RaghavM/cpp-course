@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SummaryView } from "@/components/lesson/SummaryView";
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
 import { OutputPanel } from "@/components/lesson/OutputPanel";
@@ -231,7 +232,7 @@ export default function LessonClient({
   const busy = isRunning || isSubmitting;
 
   if (isMobile) {
-    return <MobileLayout lesson={lesson} nav={nav} />;
+    return <MobileLayout lesson={lesson} nav={nav} hasExercises={exercises.length > 0} />;
   }
 
   return (
@@ -242,7 +243,14 @@ export default function LessonClient({
         marginLeft: "calc(-50vw + 50%)",
       }}
     >
-      {nav && <LessonNav nav={nav} lessonTitle={lesson.title} />}
+      {nav && (
+        <LessonNav
+          nav={nav}
+          lessonTitle={lesson.title}
+          lessonId={lesson.id}
+          hasExercises={exercises.length > 0}
+        />
+      )}
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left Panel */}
@@ -395,13 +403,22 @@ export default function LessonClient({
 function MobileLayout({
   lesson,
   nav,
+  hasExercises,
 }: {
   lesson: Props["lesson"];
   nav: Props["nav"];
+  hasExercises: boolean;
 }) {
   return (
     <div className="flex flex-col gap-4 pb-6 px-4">
-      {nav && <LessonNav nav={nav} lessonTitle={lesson.title} />}
+      {nav && (
+        <LessonNav
+          nav={nav}
+          lessonTitle={lesson.title}
+          lessonId={lesson.id}
+          hasExercises={hasExercises}
+        />
+      )}
 
       <div className="rounded-lg bg-warning/10 border border-warning/30 p-4 text-sm text-warning">
         The code editor is read-only on mobile devices. Please use a desktop browser
@@ -434,7 +451,43 @@ function MobileLayout({
   );
 }
 
-function LessonNav({ nav, lessonTitle }: { nav: NavData; lessonTitle: string }) {
+function LessonNav({
+  nav,
+  lessonTitle,
+  lessonId,
+  hasExercises,
+}: {
+  nav: NavData;
+  lessonTitle: string;
+  lessonId: string;
+  hasExercises: boolean;
+}) {
+  const router = useRouter();
+
+  const handleNextClick = useCallback(
+    async (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!nav.nextSlug) {
+        e.preventDefault();
+        return;
+      }
+      // Reading-only lessons: mark complete when advancing to the next topic.
+      if (hasExercises) return;
+
+      e.preventDefault();
+      try {
+        await fetch(`/api/progress/${lessonId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ state: "completed" }),
+        });
+      } catch (err) {
+        console.error("Failed to mark lesson complete:", err);
+      }
+      router.push(`/lessons/${nav.nextSlug}`);
+    },
+    [hasExercises, lessonId, nav.nextSlug, router],
+  );
+
   return (
     <div className="flex items-center gap-2 bg-elevated px-4 py-2 text-sm border-b border-border">
       <Link
@@ -466,7 +519,7 @@ function LessonNav({ nav, lessonTitle }: { nav: NavData; lessonTitle: string }) 
             : "text-muted cursor-not-allowed"
         }`}
         aria-disabled={!nav.nextSlug}
-        onClick={(e) => !nav.nextSlug && e.preventDefault()}
+        onClick={handleNextClick}
       >
         <ChevronRightIcon />
       </Link>
