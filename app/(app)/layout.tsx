@@ -1,6 +1,6 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireServerSession } from "@/lib/auth/require-auth";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { AppShell } from "@/components/layout/AppShell";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { supabase } = await requireServerSession();
@@ -20,10 +20,5 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const overallPercent =
     totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
 
-  return (
-    <div className="flex h-screen flex-col bg-base overflow-hidden">
-      <AppHeader progressPercent={overallPercent} />
-      <main className="home-grid-bg flex-1 min-h-0 overflow-auto">{children}</main>
-    </div>
-  );
+  return <AppShell progressPercent={overallPercent}>{children}</AppShell>;
 }
