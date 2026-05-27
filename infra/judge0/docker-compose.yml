@@ -1,0 +1,106 @@
+# Judge0 + gVisor sandboxed code execution environment
+# Security hardened for running untrusted C++ submissions
+#
+# Prerequisites:
+#   - Docker with gVisor (runsc) runtime installed
+#   - .env file with JUDGE0_TOKEN and JUDGE0_DB_PASSWORD
+#
+# Usage:
+#   docker-compose up -d
+#   curl -H "X-Auth-Token: $JUDGE0_TOKEN" http://localhost:2358/health
+
+services:
+  server:
+    image: judge0/judge0:1.13.1 # pinned — patched against CVE-2024-29021
+    restart: always
+    runtime: runsc # gVisor — syscall-level sandbox for untrusted code
+    privileged: false
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=128M,noexec
+    user: "1000:1000"
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=judge0
+      - POSTGRES_USER=judge0
+      - POSTGRES_PASSWORD=${JUDGE0_DB_PASSWORD}
+      - JUDGE0_AUTHN_HEADER=X-Auth-Token
+      - JUDGE0_AUTHN_TOKEN=${JUDGE0_TOKEN}
+      - ENABLE_NETWORK=false
+      - MAX_CPU_TIME_LIMIT=5
+      - MAX_WALL_TIME_LIMIT=10
+      - MAX_MEMORY_LIMIT=256000 # 256 MB in KB
+      - MAX_FILE_SIZE=100 # 100 KB stdout cap
+      - MAX_PROCESSES_AND_OR_THREADS=64
+      - MAX_MAX_PROCESSES_AND_OR_THREADS=64
+    ports:
+      - "2358:2358"
+    networks:
+      - judge0
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  workers:
+    image: judge0/judge0:1.13.1 # pinned — must match server version exactly
+    command: ["./scripts/workers"]
+    restart: always
+    runtime: runsc
+    privileged: false
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=128M,noexec
+    user: "1000:1000"
+    environment:
+      - REDIS_HOST=redis
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=judge0
+      - POSTGRES_USER=judge0
+      - POSTGRES_PASSWORD=${JUDGE0_DB_PASSWORD}
+      - ENABLE_NETWORK=false
+      - MAX_CPU_TIME_LIMIT=5
+      - MAX_WALL_TIME_LIMIT=10
+      - MAX_MEMORY_LIMIT=256000
+      - MAX_FILE_SIZE=100
+      - MAX_PROCESSES_AND_OR_THREADS=64
+      - MAX_MAX_PROCESSES_AND_OR_THREADS=64
+    networks:
+      - judge0
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_DB=judge0
+      - POSTGRES_USER=judge0
+      - POSTGRES_PASSWORD=${JUDGE0_DB_PASSWORD}
+    volumes:
+      - judge0-db:/var/lib/postgresql/data
+    networks:
+      - judge0
+
+  redis:
+    image: redis:7
+    restart: always
+    command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    networks:
+      - judge0
+
+volumes:
+  judge0-db:
+
+networks:
+  judge0:
+    driver: bridge

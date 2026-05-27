@@ -1,0 +1,50 @@
+# Fly.io deployment for cpproad Judge0 sandbox
+# Deploys the Judge0 code execution service on a shared-cpu-1x machine (~$5/mo)
+#
+# Deploy:
+#   fly deploy --config infra/judge0/deploy.fly.toml
+#
+# Set secrets before first deploy:
+#   fly secrets set JUDGE0_TOKEN=<token> JUDGE0_DB_PASSWORD=<password>
+
+app = "cpproad-judge0"
+primary_region = "ewr" # US East — low latency to Vercel edge
+
+[build]
+  image = "judge0/judge0:1.13.1"
+
+[env]
+  ENABLE_NETWORK = "false"
+  MAX_CPU_TIME_LIMIT = "5"
+  MAX_WALL_TIME_LIMIT = "10"
+  MAX_MEMORY_LIMIT = "256000"
+  MAX_FILE_SIZE = "100"
+  MAX_PROCESSES_AND_OR_THREADS = "64"
+  MAX_MAX_PROCESSES_AND_OR_THREADS = "64"
+  JUDGE0_AUTHN_HEADER = "X-Auth-Token"
+
+[http_service]
+  internal_port = 2358
+  force_https = true
+  auto_stop_machines = false # always-on for low latency
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[checks]
+  [checks.health]
+    type = "http"
+    port = 2358
+    path = "/health"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "15s"
+    method = "GET"
