@@ -1,9 +1,13 @@
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
-import { getOrGenerateLesson } from "@/lib/content/lesson-generation";
+import {
+  getOrGenerateLesson,
+  type ExerciseWithTestCases,
+} from "@/lib/content/lesson-generation";
+import { touchLessonProgress } from "@/lib/content/lesson-progress";
 import LessonClient from "./LessonClient";
-import type { Lesson, Exercise } from "@/lib/supabase/types";
+import type { Lesson } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,7 +37,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
 
   // ------ Fetch lesson content (cache-hit or generate) ------
   let lesson: Lesson;
-  let exercises: Array<Exercise & { testCases: unknown[] }>;
+  let exercises: ExerciseWithTestCases[];
 
   try {
     const result = await getOrGenerateLesson(supabase, slug);
@@ -47,18 +51,31 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
     throw err;
   }
 
-  // ------ Fetch chapter info and neighboring lessons for nav ------
-  const { data: chapter } = await supabase
-    .from("chapters")
-    .select("id, learncpp_title, my_title")
-    .eq("id", lesson.chapter_id)
-    .single();
+  const exerciseIds = exercises.map((ex) => ex.id);
 
-  const { data: chapterLessons } = await supabase
-    .from("lessons")
-    .select("slug, sort_order")
-    .eq("chapter_id", lesson.chapter_id)
-    .order("sort_order", { ascending: true });
+  // ------ Parallel fetches: nav + last passing submissions ------
+  const [{ data: chapter }, { data: chapterLessons }, { data: passingSubmissions }] =
+    await Promise.all([
+      supabase
+        .from("chapters")
+        .select("id, learncpp_title, my_title")
+        .eq("id", lesson.chapter_id)
+        .single(),
+      supabase
+        .from("lessons")
+        .select("slug, sort_order")
+        .eq("chapter_id", lesson.chapter_id)
+        .order("sort_order", { ascending: true }),
+      exerciseIds.length > 0
+        ? supabase
+            .from("submissions")
+            .select("exercise_id, source_code")
+            .in("exercise_id", exerciseIds)
+            .eq("mode", "submit")
+            .eq("status", "passed")
+            .order("created_at", { ascending: false })
+        : Promise.resolve({ data: [] as Array<{ exercise_id: string; source_code: string }> }),
+    ]);
 
   let navInfo: NavInfo | null = null;
   if (chapter && chapterLessons) {
@@ -75,109 +92,39 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
     };
   }
 
-  // ------ Mark progress as in_progress (fire-and-forget) ------
-  // Check current progress first to avoid unnecessary writes
-  const { data: progress } = (await supabase
-    .from("progress")
-    .select("state")
-    .eq("lesson_id", lesson.id)
-    .single()) as unknown as {
-    data: { state: string } | null;
-  };
+  // Non-blocking: progress write must not delay HTML
+  touchLessonProgress(supabase, lesson.id);
 
-  if (!progress) {
-    // No progress row yet -- insert in_progress
-    await supabase.from("progress").insert({
-      lesson_id: lesson.id,
-      state: "in_progress",
-      first_visit_at: new Date().toISOString(),
-      last_visit_at: new Date().toISOString(),
-    });
-  } else if (progress.state === "not_started") {
-    // Upgrade from not_started to in_progress
-    await supabase
-      .from("progress")
-      .update({
-        state: "in_progress",
-        first_visit_at: new Date().toISOString(),
-        last_visit_at: new Date().toISOString(),
-      })
-      .eq("lesson_id", lesson.id);
-  } else {
-    // Just update last_visit_at
-    await supabase
-      .from("progress")
-      .update({ last_visit_at: new Date().toISOString() })
-      .eq("lesson_id", lesson.id);
-  }
-
-  // ------ Fetch sample test cases for each exercise ------
-  const exerciseIds = exercises.map((ex) => ex.id);
-  const testCasesMap = new Map<
-    string,
-    Array<{ label: string; stdin: string; expected_stdout: string }>
-  >();
-
-  if (exerciseIds.length > 0) {
-    const { data: rawTestCases } = await supabase
-      .from("test_cases")
-      .select("exercise_id, label, stdin, expected_stdout, sort_order")
-      .in("exercise_id", exerciseIds)
-      .eq("is_sample", true)
-      .order("sort_order", { ascending: true });
-
-    for (const tc of rawTestCases ?? []) {
-      const exerciseId = tc.exercise_id as string;
-      if (!testCasesMap.has(exerciseId)) {
-        testCasesMap.set(exerciseId, []);
-      }
-      testCasesMap.get(exerciseId)!.push({
-        label: tc.label as string,
-        stdin: tc.stdin as string,
-        expected_stdout: tc.expected_stdout as string,
-      });
-    }
-  }
-
-  // ------ Fetch last passing submission for each exercise ------
+  // Sample test cases already loaded by getOrGenerateLesson
   const lastPassingMap = new Map<string, string>();
-
-  if (exerciseIds.length > 0) {
-    for (const exId of exerciseIds) {
-      const { data: rawSub } = await supabase
-        .from("submissions")
-        .select("source_code")
-        .eq("exercise_id", exId)
-        .eq("mode", "submit")
-        .eq("status", "passed")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (rawSub?.source_code) {
-        lastPassingMap.set(exId, rawSub.source_code as string);
-      }
+  for (const sub of passingSubmissions ?? []) {
+    if (!lastPassingMap.has(sub.exercise_id) && sub.source_code) {
+      lastPassingMap.set(sub.exercise_id, sub.source_code);
     }
   }
 
-  // ------ Build exercise data for client ------
-  const exercisesForClient = exercises.map((ex) => ({
-    id: ex.id,
-    title: ex.title,
-    promptMd: ex.prompt_md,
-    starterCode: ex.starter_code,
-    difficulty: ex.difficulty,
-    sampleTestCases: (testCasesMap.get(ex.id) ?? []).map((tc) => ({
-      label: tc.label,
-      stdin: tc.stdin,
-      expectedStdout: tc.expected_stdout,
-    })),
-    lastPassingCode: lastPassingMap.get(ex.id) ?? null,
-  }));
+  const exercisesForClient = exercises.map((ex) => {
+    const sampleTestCases = ex.testCases
+      .filter((tc) => tc.is_sample)
+      .sort((a, b) => a.sort_order - b.sort_order);
+
+    return {
+      id: ex.id,
+      title: ex.title,
+      promptMd: ex.prompt_md,
+      starterCode: ex.starter_code,
+      difficulty: ex.difficulty,
+      sampleTestCases: sampleTestCases.map((tc) => ({
+        label: tc.label,
+        stdin: tc.stdin ?? "",
+        expectedStdout: tc.expected_stdout,
+      })),
+      lastPassingCode: lastPassingMap.get(ex.id) ?? null,
+    };
+  });
 
   const title = lesson.my_title ?? lesson.learncpp_title;
 
-  // Clamp initialExerciseIndex to valid range
   const clampedIndex = Math.max(
     0,
     Math.min(initialExerciseIndex, exercisesForClient.length - 1)

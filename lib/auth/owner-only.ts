@@ -6,7 +6,9 @@ import type { AppSupabaseClient } from "@/lib/supabase/types";
  * Check whether the given email matches the single allowed owner.
  */
 export function isOwner(email: string | undefined): boolean {
-  return email === process.env.OWNER_EMAIL;
+  const allowed = process.env.OWNER_EMAIL?.trim().toLowerCase();
+  if (!allowed || !email) return false;
+  return email.trim().toLowerCase() === allowed;
 }
 
 /**
