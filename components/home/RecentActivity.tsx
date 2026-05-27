@@ -27,39 +27,41 @@ function formatRelativeTime(iso: string): string {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-const stateLabel: Record<RecentLesson["state"], string> = {
-  in_progress: "In progress",
-  completed: "Completed",
-  skipped: "Skipped",
+const stateColor: Record<RecentLesson["state"], string> = {
+  in_progress: "hsl(var(--slate))",
+  completed: "hsl(var(--success))",
+  skipped: "hsl(var(--warning))",
 };
 
 export function RecentActivity({ lessons }: RecentActivityProps) {
   if (lessons.length === 0) return null;
 
   return (
-    <section className="home-fade-in home-fade-in-delay-2">
-      <h2 className="mb-3 font-display text-lg font-semibold text-primary">Recent activity</h2>
-      <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
+    <section className="reveal reveal-d3">
+      <h2 className="font-display text-xl italic text-primary">Recently</h2>
+      <div className="mt-3 space-y-0.5">
         {lessons.map((lesson) => (
-          <li key={lesson.slug}>
-            <Link
-              href={`/lessons/${lesson.slug}`}
-              className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-hover"
-            >
-              <span className="shrink-0 font-mono text-xs tabular-nums text-muted">
-                {lesson.number}
-              </span>
-              <span className="min-w-0 flex-1 truncate text-sm text-primary">{lesson.title}</span>
-              <span className="hidden shrink-0 text-xs text-muted sm:inline">
-                {stateLabel[lesson.state]}
-              </span>
-              <span className="shrink-0 font-mono text-xs tabular-nums text-muted">
-                {formatRelativeTime(lesson.lastVisitAt)}
-              </span>
-            </Link>
-          </li>
+          <Link
+            key={lesson.slug}
+            href={`/lessons/${lesson.slug}`}
+            className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-surface"
+          >
+            <span
+              className="h-2 w-2 shrink-0 rounded-full"
+              style={{ backgroundColor: stateColor[lesson.state] }}
+            />
+            <span className="shrink-0 font-mono text-xs tabular-nums text-muted">
+              {lesson.number}
+            </span>
+            <span className="min-w-0 flex-1 truncate text-sm text-secondary transition-colors group-hover:text-primary">
+              {lesson.title}
+            </span>
+            <span className="shrink-0 font-mono text-xs tabular-nums text-muted/60">
+              {formatRelativeTime(lesson.lastVisitAt)}
+            </span>
+          </Link>
         ))}
-      </ul>
+      </div>
     </section>
   );
 }

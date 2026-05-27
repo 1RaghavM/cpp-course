@@ -15,9 +15,11 @@
     --text-muted: 0 0% 45%;
     --accent: 168 76% 42%;
     --accent-hover: 168 76% 48%;
+    --accent-fg: 0 0% 10%;
     --success: 145 63% 42%;
     --error: 0 72% 51%;
     --warning: 45 93% 47%;
+    --slate: 220 25% 52%;
   }
 
   body {
@@ -28,25 +30,23 @@
     @apply border-border;
   }
 
-  /* Dark scrollbars to match overall theme */
   * {
     scrollbar-width: thin;
-    scrollbar-color: hsl(var(--border)) hsl(var(--bg-surface));
+    scrollbar-color: hsl(var(--border)) hsl(var(--bg-base));
   }
 
   *::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   *::-webkit-scrollbar-track {
-    background: hsl(var(--bg-surface));
+    background: hsl(var(--bg-base));
   }
 
   *::-webkit-scrollbar-thumb {
     background-color: hsl(var(--border));
     border-radius: 999px;
-    border: 2px solid hsl(var(--bg-surface));
   }
 
   *::-webkit-scrollbar-thumb:hover {
@@ -55,38 +55,46 @@
 }
 
 @layer utilities {
-  .home-grid-bg {
-    background-image:
-      linear-gradient(hsl(var(--border-subtle) / 0.35) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border-subtle) / 0.35) 1px, transparent 1px);
-    background-size: 48px 48px;
-    background-position: center top;
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
   }
 
-  .home-fade-in {
-    animation: home-fade-in 0.6s ease-out both;
+  .reveal {
+    animation: reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .home-fade-in-delay-1 {
-    animation-delay: 0.08s;
+  .reveal-d1 {
+    animation-delay: 0.1s;
   }
 
-  .home-fade-in-delay-2 {
-    animation-delay: 0.16s;
+  .reveal-d2 {
+    animation-delay: 0.2s;
   }
 
-  .home-fade-in-delay-3 {
-    animation-delay: 0.24s;
+  .reveal-d3 {
+    animation-delay: 0.3s;
+  }
+
+  .reveal-d4 {
+    animation-delay: 0.4s;
   }
 }
 
-@keyframes home-fade-in {
+@keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(20px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }

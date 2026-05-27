@@ -2,7 +2,6 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { requireServerSession } from "@/lib/auth/require-auth";
 import { HeroSection } from "@/components/home/HeroSection";
 import { ContinueLearning, type ContinueLesson } from "@/components/home/ContinueLearning";
-import { FeatureStrip } from "@/components/home/FeatureStrip";
 import { PathSection } from "@/components/home/PathSection";
 import { RecentActivity, type RecentLesson } from "@/components/home/RecentActivity";
 import type { Chapter, Lesson, Progress } from "@/lib/supabase/types";
@@ -220,38 +219,42 @@ export default async function HomePage() {
   const recentLessons = buildRecentActivity(rawLessons, rawProgress);
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6">
-      <HeroSection
-        stats={{
-          totalLessons,
-          completed,
-          inProgress,
-          chaptersTotal: rawChapters.length,
-          chaptersStarted,
-          overallPercent:
-            totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0,
-        }}
-      />
-
+    <div className="mx-auto w-full max-w-5xl px-6 py-10">
       <ContinueLearning lesson={continueLesson} hasAnyProgress={hasAnyProgress} />
 
-      <RecentActivity lessons={recentLessons} />
+      <div className="mt-10">
+        <HeroSection
+          stats={{
+            totalLessons,
+            completed,
+            inProgress,
+            chaptersTotal: rawChapters.length,
+            chaptersStarted,
+            overallPercent:
+              totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0,
+          }}
+        />
+      </div>
 
-      <FeatureStrip />
+      <div className="mt-10">
+        <RecentActivity lessons={recentLessons} />
+      </div>
 
-      <PathSection chapters={roadmapChapters} />
+      <div className="mt-12">
+        <PathSection chapters={roadmapChapters} />
+      </div>
 
-      <footer className="home-fade-in home-fade-in-delay-3 border-t border-border pt-6 pb-4 text-center text-xs text-muted">
+      <footer className="reveal reveal-d4 mt-12 border-t border-border/30 pt-6 pb-4 text-center text-xs text-muted">
         Curriculum based on{" "}
         <a
           href="https://www.learncpp.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-secondary underline-offset-2 transition-colors hover:text-accent hover:underline"
+          className="text-accent underline-offset-2 transition-colors hover:text-accent-hover hover:underline"
         >
           learncpp.com
         </a>
-        . Summaries and exercises are generated once and cached in Postgres.
+        . Summaries and exercises are generated once and cached.
       </footer>
     </div>
   );

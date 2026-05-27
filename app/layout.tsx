@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Sora, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 
-const sora = Sora({
+const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
+  display: "swap",
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
   display: "swap",
 });
 
@@ -23,10 +29,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`dark ${sora.variable} ${jetbrainsMono.variable}`}
+      className={`dark ${fraunces.variable} ${plusJakarta.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-base font-sans text-primary">{children}</body>
+      <body className="grain min-h-screen bg-base font-sans text-primary">{children}</body>
     </html>
   );
 }
