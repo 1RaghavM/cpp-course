@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireServerSession } from "@/lib/auth/require-auth";
 import {
   getOrGenerateLesson,
   type ExerciseWithTestCases,
@@ -29,9 +30,8 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
   // Disable all caching for this page
   noStore();
 
-  // Use service client for all DB operations (bypasses RLS)
-  // Auth is handled by the (app) layout which requires owner session
-  const supabase = createServiceClient();
+  const { supabase, userId } = await requireServerSession();
+  const serviceClient = createServiceClient();
   const { slug } = params;
   const initialExerciseIndex = parseInt(searchParams.ex ?? "0", 10) || 0;
 
@@ -40,7 +40,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
   let exercises: ExerciseWithTestCases[];
 
   try {
-    const result = await getOrGenerateLesson(supabase, slug);
+    const result = await getOrGenerateLesson(serviceClient, slug, userId);
     lesson = result.lesson;
     exercises = result.exercises;
   } catch (err) {
@@ -56,12 +56,12 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
   // ------ Parallel fetches: nav + last passing submissions ------
   const [{ data: chapter }, { data: chapterLessons }, { data: passingSubmissions }] =
     await Promise.all([
-      supabase
+      serviceClient
         .from("chapters")
         .select("id, learncpp_title, my_title")
         .eq("id", lesson.chapter_id)
         .single(),
-      supabase
+      serviceClient
         .from("lessons")
         .select("slug, sort_order")
         .eq("chapter_id", lesson.chapter_id)
@@ -70,6 +70,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
         ? supabase
             .from("submissions")
             .select("exercise_id, source_code")
+            .eq("user_id", userId)
             .in("exercise_id", exerciseIds)
             .eq("mode", "submit")
             .eq("status", "passed")
@@ -93,7 +94,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
   }
 
   // Non-blocking: progress write must not delay HTML
-  touchLessonProgress(supabase, lesson.id);
+  touchLessonProgress(supabase, userId, lesson.id);
 
   // Sample test cases already loaded by getOrGenerateLesson
   const lastPassingMap = new Map<string, string>();

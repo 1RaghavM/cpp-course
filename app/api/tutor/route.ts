@@ -22,8 +22,10 @@ export async function POST(request: Request) {
   const authClient = createRouteClient();
   const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
+  const userId = authResult.session.user.id;
 
-  const supabase = createServiceClient();
+  const supabase = authClient;
+  const serviceClient = createServiceClient();
 
   const body = await request.json();
   const {
@@ -50,7 +52,7 @@ export async function POST(request: Request) {
     const title = content.length > 60 ? content.slice(0, 60) + '...' : content;
     const { data: conv, error } = await supabase
       .from('conversations')
-      .insert({ lesson_id, title })
+      .insert({ lesson_id, title, user_id: userId })
       .select('id')
       .single();
     if (error || !conv) {
@@ -74,14 +76,14 @@ export async function POST(request: Request) {
   const turnCount = (existingMessages ?? []).filter((m) => m.role === 'user').length;
   const tier = computeHintTier(turnCount, content);
 
-  const { data: lesson } = await supabase
+  const { data: lesson } = await serviceClient
     .from('lessons')
     .select('summary_md')
     .eq('id', lesson_id)
     .single();
 
   let exercisePrompt = '';
-  const { data: exercises } = await supabase
+  const { data: exercises } = await serviceClient
     .from('exercises')
     .select('prompt_md')
     .eq('lesson_id', lesson_id)
@@ -97,6 +99,7 @@ export async function POST(request: Request) {
       .from('submissions')
       .select('stdout, stderr, compile_output')
       .eq('id', last_submission_id)
+      .eq('user_id', userId)
       .single();
     if (sub) {
       lastOutput = [sub.compile_output, sub.stdout, sub.stderr].filter(Boolean).join('\n');
@@ -120,7 +123,8 @@ export async function POST(request: Request) {
   const stream = streamCompletion(promptPayload, {
     callType: 'tutor',
     lessonId: lesson_id,
-    supabase,
+    userId,
+    supabase: serviceClient,
   });
 
   const encoder = new TextEncoder();

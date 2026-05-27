@@ -160,6 +160,7 @@ export interface Database {
       submissions: {
         Row: {
           id: string;
+          user_id: string;
           exercise_id: string;
           mode: string;
           language_std: string;
@@ -175,6 +176,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          user_id: string;
           exercise_id: string;
           mode: string;
           language_std?: string;
@@ -190,6 +192,7 @@ export interface Database {
         };
         Update: {
           id?: string;
+          user_id?: string;
           exercise_id?: string;
           mode?: string;
           language_std?: string;
@@ -207,6 +210,7 @@ export interface Database {
       };
       progress: {
         Row: {
+          user_id: string;
           lesson_id: string;
           state: string;
           first_visit_at: string | null;
@@ -214,6 +218,7 @@ export interface Database {
           last_visit_at: string;
         };
         Insert: {
+          user_id: string;
           lesson_id: string;
           state?: string;
           first_visit_at?: string | null;
@@ -221,6 +226,7 @@ export interface Database {
           last_visit_at?: string;
         };
         Update: {
+          user_id?: string;
           lesson_id?: string;
           state?: string;
           first_visit_at?: string | null;
@@ -232,6 +238,7 @@ export interface Database {
       conversations: {
         Row: {
           id: string;
+          user_id: string;
           lesson_id: string | null;
           title: string | null;
           created_at: string;
@@ -239,6 +246,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          user_id: string;
           lesson_id?: string | null;
           title?: string | null;
           created_at?: string;
@@ -246,6 +254,7 @@ export interface Database {
         };
         Update: {
           id?: string;
+          user_id?: string;
           lesson_id?: string | null;
           title?: string | null;
           created_at?: string;
@@ -295,6 +304,7 @@ export interface Database {
       token_usage: {
         Row: {
           id: number;
+          user_id: string | null;
           call_type: string;
           model: string;
           tokens_in: number;
@@ -306,6 +316,7 @@ export interface Database {
         };
         Insert: {
           id?: number;
+          user_id?: string | null;
           call_type: string;
           model: string;
           tokens_in: number;
@@ -317,6 +328,7 @@ export interface Database {
         };
         Update: {
           id?: number;
+          user_id?: string | null;
           call_type?: string;
           model?: string;
           tokens_in?: number;

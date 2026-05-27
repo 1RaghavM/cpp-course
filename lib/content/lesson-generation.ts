@@ -244,6 +244,7 @@ async function loadExercisesFromDb(
 async function generateAndPersist(
   supabase: AppSupabaseClient,
   lesson: Lesson,
+  userId?: string,
 ): Promise<{ lesson: Lesson; exercises: ExerciseWithTestCases[] }> {
   // Load context for the prompt
   const [chapterCtx, priorTitles] = await Promise.all([
@@ -272,6 +273,7 @@ async function generateAndPersist(
     {
       callType: 'lesson_summary',
       lessonId: lesson.id,
+      userId,
       supabase,
     },
   );
@@ -339,6 +341,7 @@ async function generateAndPersist(
       {
         callType: 'exercise_gen',
         lessonId: lesson.id,
+        userId,
         supabase,
       },
     );
@@ -426,6 +429,7 @@ async function generateAndPersist(
 export async function getOrGenerateLesson(
   supabase: AppSupabaseClient,
   slug: string,
+  userId?: string,
 ): Promise<LessonContent> {
   // --- Step 1: Fetch lesson by slug ---
   const { data: lesson, error: lessonError } = await supabase
@@ -452,7 +456,7 @@ export async function getOrGenerateLesson(
 
   // --- Step 3: Cache miss — generate via LLM and persist ---
   console.log(`[lesson-gen] CACHE MISS for "${slug}" - generating via LLM...`);
-  return generateAndPersist(supabase, lesson);
+  return generateAndPersist(supabase, lesson, userId);
 }
 
 /**
@@ -470,6 +474,7 @@ export async function getOrGenerateLesson(
 export async function regenerateLesson(
   supabase: AppSupabaseClient,
   slug: string,
+  userId?: string,
 ): Promise<LessonContent> {
   // Fetch lesson to get its ID
   const { data: lesson, error: lessonError } = await supabase
@@ -530,5 +535,5 @@ export async function regenerateLesson(
   }
 
   // --- Step 4: Re-generate (getOrGenerateLesson now sees a cache miss) ---
-  return getOrGenerateLesson(supabase, slug);
+  return getOrGenerateLesson(supabase, slug, userId);
 }

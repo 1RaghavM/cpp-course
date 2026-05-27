@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireServerSession } from "@/lib/auth/require-auth";
 import { HeroSection } from "@/components/home/HeroSection";
 import { ContinueLearning, type ContinueLesson } from "@/components/home/ContinueLearning";
 import { FeatureStrip } from "@/components/home/FeatureStrip";
@@ -127,17 +128,18 @@ function buildRecentActivity(
  * server component (no round-trip through the API route).
  */
 export default async function HomePage() {
-  const supabase = createServiceClient();
+  const { supabase } = await requireServerSession();
+  const serviceClient = createServiceClient();
 
   const [chaptersResult, lessonsResult, progressResult] = await Promise.all([
-    supabase
+    serviceClient
       .from("chapters")
       .select("id, number, learncpp_title, my_title, sort_order")
       .order("sort_order", { ascending: true }) as unknown as {
       data: Pick<Chapter, "id" | "number" | "learncpp_title" | "my_title" | "sort_order">[] | null;
       error: unknown;
     },
-    supabase
+    serviceClient
       .from("lessons")
       .select(
         "id, chapter_id, number, slug, learncpp_title, my_title, sort_order",

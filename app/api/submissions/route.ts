@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
+import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 import {
   submitCode,
@@ -31,8 +31,9 @@ export async function POST(request: NextRequest) {
   // ---- Auth guard -----------------------------------------------------------
   const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
+  const userId = authResult.session.user.id;
 
-  const supabase = createServiceClient();
+  const supabase = authClient;
 
   // ---- Parse & validate request body ----------------------------------------
   let body: RequestBody;
@@ -116,6 +117,7 @@ export async function POST(request: NextRequest) {
 
     // Save submission (fire-and-forget is fine for logging)
     await supabase.from("submissions").insert({
+      user_id: userId,
       exercise_id,
       mode: "run",
       language_std,
@@ -202,6 +204,7 @@ export async function POST(request: NextRequest) {
 
   // Save submission
   await supabase.from("submissions").insert({
+    user_id: userId,
     exercise_id,
     mode: "submit",
     language_std,
@@ -219,12 +222,13 @@ export async function POST(request: NextRequest) {
   if (verdict.overallStatus === "passed") {
     await supabase.from("progress").upsert(
       {
+        user_id: userId,
         lesson_id: exercise.lesson_id,
         state: "completed",
         completed_at: new Date().toISOString(),
         last_visit_at: new Date().toISOString(),
       },
-      { onConflict: "lesson_id" },
+      { onConflict: "user_id,lesson_id" },
     );
   }
 

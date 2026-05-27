@@ -28,11 +28,9 @@ export async function GET() {
   const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
+  const userSupabase = authClient;
   const supabase = createServiceClient();
 
-  // Three parallel queries: chapters, lessons, and progress.
-  // Explicit type annotations work around the auth-helpers/postgrest-js
-  // generic mismatch that causes .select() return types to collapse to never.
   const [chaptersResult, lessonsResult, progressResult] = await Promise.all([
     supabase
       .from("chapters")
@@ -48,7 +46,7 @@ export async function GET() {
       data: Pick<Lesson, "id" | "chapter_id" | "number" | "slug" | "learncpp_title" | "my_title" | "sort_order">[] | null;
       error: unknown;
     },
-    supabase.from("progress").select("lesson_id, state") as unknown as {
+    userSupabase.from("progress").select("lesson_id, state") as unknown as {
       data: Pick<Progress, "lesson_id" | "state">[] | null;
       error: unknown;
     },

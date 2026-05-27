@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
+import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 
 export const dynamic = "force-dynamic";
@@ -22,17 +22,14 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { lesson_id: string } },
 ) {
-  const authClient = createRouteClient();
+  const supabase = createRouteClient();
 
-  // Auth guard
-  const authResult = await requireAuth(authClient);
+  const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-
-  const supabase = createServiceClient();
+  const userId = authResult.session.user.id;
 
   const { lesson_id } = params;
 
-  // Parse and validate body
   let body: unknown;
   try {
     body = await request.json();
@@ -51,7 +48,6 @@ export async function POST(
     );
   }
 
-  // Validate lesson_id exists
   const { data: lesson, error: lessonError } = await supabase
     .from("lessons")
     .select("id")
@@ -65,14 +61,13 @@ export async function POST(
     );
   }
 
-  // Fetch existing progress row (if any)
   const { data: existing } = await supabase
     .from("progress")
     .select("state, first_visit_at, completed_at")
+    .eq("user_id", userId)
     .eq("lesson_id", lesson_id)
     .single();
 
-  // Do NOT downgrade from completed to in_progress
   if (existing?.state === "completed" && state === "in_progress") {
     return new NextResponse(null, { status: 204 });
   }
@@ -80,14 +75,15 @@ export async function POST(
   const now = new Date().toISOString();
 
   if (!existing) {
-    // ------ Insert new row ------
     const insertPayload: {
+      user_id: string;
       lesson_id: string;
       state: string;
       first_visit_at: string;
       last_visit_at: string;
       completed_at?: string;
     } = {
+      user_id: userId,
       lesson_id,
       state,
       first_visit_at: now,
@@ -98,9 +94,7 @@ export async function POST(
       insertPayload.completed_at = now;
     }
 
-    const { error: insertError } = await supabase
-      .from("progress")
-      .insert(insertPayload);
+    const { error: insertError } = await supabase.from("progress").insert(insertPayload);
 
     if (insertError) {
       return NextResponse.json(
@@ -109,7 +103,6 @@ export async function POST(
       );
     }
   } else {
-    // ------ Update existing row ------
     const updatePayload: {
       state: string;
       last_visit_at: string;
@@ -120,12 +113,10 @@ export async function POST(
       last_visit_at: now,
     };
 
-    // If transitioning to in_progress and first_visit_at was never set
     if (state === "in_progress" && !existing.first_visit_at) {
       updatePayload.first_visit_at = now;
     }
 
-    // If transitioning to completed, stamp completed_at
     if (state === "completed") {
       updatePayload.completed_at = now;
     }
@@ -133,6 +124,7 @@ export async function POST(
     const { error: updateError } = await supabase
       .from("progress")
       .update(updatePayload)
+      .eq("user_id", userId)
       .eq("lesson_id", lesson_id);
 
     if (updateError) {
@@ -154,19 +146,18 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: { lesson_id: string } },
 ) {
-  const authClient = createRouteClient();
+  const supabase = createRouteClient();
 
-  // Auth guard
-  const authResult = await requireAuth(authClient);
+  const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-
-  const supabase = createServiceClient();
+  const userId = authResult.session.user.id;
 
   const { lesson_id } = params;
 
   const { data: row } = await supabase
     .from("progress")
     .select("lesson_id, state, first_visit_at, completed_at, last_visit_at")
+    .eq("user_id", userId)
     .eq("lesson_id", lesson_id)
     .single();
 

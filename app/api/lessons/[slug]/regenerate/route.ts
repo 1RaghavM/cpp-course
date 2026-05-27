@@ -18,18 +18,15 @@ export async function POST(
   // Auth guard (uses user JWT)
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
+  const userId = authResult.session.user.id;
 
   const { slug } = params;
 
   try {
-    // Use service client for content operations (bypasses RLS for system operations)
     const serviceClient = createServiceClient();
+    const { lesson, exercises } = await regenerateLesson(serviceClient, slug, userId);
 
-    // regenerateLesson clears cache and regenerates from scratch.
-    const { lesson, exercises } = await regenerateLesson(serviceClient, slug);
-
-    // Query existing conversations for this lesson
-    const { data: conversations } = (await serviceClient
+    const { data: conversations } = (await supabase
       .from("conversations")
       .select("id, title, created_at")
       .eq("lesson_id", lesson.id)

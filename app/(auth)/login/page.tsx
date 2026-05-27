@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { AuthAlert } from "@/components/auth/AuthAlert";
 
 const ERROR_MESSAGES: Record<string, string> = {
-  auth_callback_failed: "Sign-in link expired or is invalid. Request a new magic link.",
+  auth_callback_failed: "Email link expired or is invalid. Try again or sign in with your password.",
 };
 
 type LoginPageProps = {

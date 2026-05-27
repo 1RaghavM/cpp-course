@@ -18,19 +18,15 @@ export async function GET(
   // Auth guard (uses user JWT)
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
+  const userId = authResult.session.user.id;
 
   const { slug } = params;
 
   try {
-    // Use service client for content generation (bypasses RLS for system operations)
     const serviceClient = createServiceClient();
+    const { lesson, exercises } = await getOrGenerateLesson(serviceClient, slug, userId);
 
-    // getOrGenerateLesson handles cache-hit/miss logic internally.
-    // On first visit this may take 5-15s (LLM generation).
-    const { lesson, exercises } = await getOrGenerateLesson(serviceClient, slug);
-
-    // Query existing conversations for this lesson (uses service client to bypass RLS)
-    const { data: conversations } = (await serviceClient
+    const { data: conversations } = (await supabase
       .from("conversations")
       .select("id, title, created_at")
       .eq("lesson_id", lesson.id)

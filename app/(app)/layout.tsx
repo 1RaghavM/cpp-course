@@ -1,14 +1,16 @@
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireServerSession } from "@/lib/auth/require-auth";
 import { AppHeader } from "@/components/layout/AppHeader";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createServiceClient();
+  const { supabase } = await requireServerSession();
+  const serviceClient = createServiceClient();
 
   const [progressResult, lessonCountResult] = await Promise.all([
     supabase.from("progress").select("state") as unknown as {
       data: { state: string }[] | null;
     },
-    supabase.from("lessons").select("id", { count: "exact", head: true }),
+    serviceClient.from("lessons").select("id", { count: "exact", head: true }),
   ]);
 
   const totalLessons = lessonCountResult.count ?? 0;

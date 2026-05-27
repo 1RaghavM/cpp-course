@@ -63,6 +63,7 @@ export interface TokenUsageParams {
   tokensOut: number;
   cachedIn: number;
   lessonId?: string;
+  userId?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -101,6 +102,7 @@ export async function logTokenUsage(
     cached_in: params.cachedIn,
     cost_usd_micro: Number(costMicro),
     lesson_id: params.lessonId ?? null,
+    user_id: params.userId ?? null,
   });
 
   if (error) {

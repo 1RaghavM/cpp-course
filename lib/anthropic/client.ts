@@ -31,6 +31,7 @@ export interface CompletionParams {
 export interface CompletionMeta {
   callType: CallType;
   lessonId?: string;
+  userId?: string;
   supabase: AppSupabaseClient;
 }
 
@@ -80,6 +81,7 @@ export async function createCompletion(
     model: params.model,
     ...usage,
     lessonId: meta.lessonId,
+    userId: meta.userId,
   }).catch((err: unknown) => {
     console.error('Token usage logging failed:', err);
   });
@@ -118,6 +120,7 @@ export function streamCompletion(
       model: params.model,
       ...usage,
       lessonId: meta.lessonId,
+      userId: meta.userId,
     }).catch((err: unknown) => {
       console.error('Token usage logging failed (stream):', err);
     });

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
+import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +32,7 @@ export async function GET() {
   const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
-  const supabase = createServiceClient();
+  const supabase = authClient;
 
   // Current calendar month boundaries (UTC)
   const now = new Date();
