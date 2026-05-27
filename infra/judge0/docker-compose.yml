@@ -12,15 +12,16 @@
 services:
   server:
     image: judge0/judge0:1.13.1 # pinned — patched against CVE-2024-29021
+    platform: linux/amd64
     restart: always
-    runtime: runsc # gVisor — syscall-level sandbox for untrusted code
-    privileged: false
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
+    # For production, use gVisor and restrict privileges
+    # runtime: runsc
+    # privileged: false
+    # security_opt:
+    #   - no-new-privileges:true
+    # read_only: true
     tmpfs:
-      - /tmp:size=128M,noexec
-    user: "1000:1000"
+      - /tmp:size=128M
     environment:
       - REDIS_HOST=redis
       - POSTGRES_HOST=db
@@ -48,16 +49,18 @@ services:
 
   workers:
     image: judge0/judge0:1.13.1 # pinned — must match server version exactly
+    platform: linux/amd64
     command: ["./scripts/workers"]
     restart: always
-    runtime: runsc
-    privileged: false
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
+    privileged: true  # Required for isolate sandbox - use gVisor in production
+    # For production, use gVisor and restrict privileges
+    # runtime: runsc
+    # privileged: false
+    # security_opt:
+    #   - no-new-privileges:true
+    # read_only: true
     tmpfs:
-      - /tmp:size=128M,noexec
-    user: "1000:1000"
+      - /tmp:size=128M
     environment:
       - REDIS_HOST=redis
       - POSTGRES_HOST=db

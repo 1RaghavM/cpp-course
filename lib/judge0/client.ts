@@ -17,8 +17,8 @@ const LANGUAGE_ID_MAP: Record<CppStandard, number> = {
 /** Default compiler flags per standard. */
 const COMPILER_FLAGS: Record<CppStandard, string> = {
   'c++17': '-std=c++17 -Wall -Wextra',
-  'c++20': '-std=c++20 -Wall -Wextra',
-  'c++23': '-std=c++23 -Wall -Wextra',
+  'c++20': '-std=c++2a -Wall -Wextra', // c++2a for older GCC versions
+  'c++23': '-std=c++2b -Wall -Wextra', // c++2b for older GCC versions
 } as const;
 
 // ---- Public types ---------------------------------------------------------
@@ -182,14 +182,24 @@ export async function submitCode(
 
   const url = `${judge0Url}/submissions?base64_encoded=true&wait=true`;
 
+  // Detect RapidAPI vs self-hosted based on URL
+  const isRapidApi = judge0Url.includes('rapidapi.com');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (isRapidApi) {
+    headers['X-RapidAPI-Key'] = authToken;
+    headers['X-RapidAPI-Host'] = new URL(judge0Url).host;
+  } else {
+    headers['X-Auth-Token'] = authToken;
+  }
+
   let response: Response;
   try {
     response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Auth-Token': authToken,
-      },
+      headers,
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
     });

@@ -2,26 +2,34 @@ import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { getOrGenerateLesson } from "@/lib/content/lesson-generation";
-import { SummaryView } from "@/components/lesson/SummaryView";
-import { ExerciseCard } from "@/components/lesson/ExerciseCard";
-import { RegenerateButton } from "./RegenerateButton";
-import type { Lesson, Exercise, Submission } from "@/lib/supabase/types";
+import LessonClient from "./LessonClient";
+import type { Lesson, Exercise } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 interface PageProps {
   params: { slug: string };
+  searchParams: { ex?: string };
 }
 
-export default async function LessonPage({ params }: PageProps) {
+interface NavInfo {
+  chapter: { title: string };
+  currentIndex: number;
+  totalInChapter: number;
+  prevSlug: string | null;
+  nextSlug: string | null;
+}
+
+export default async function LessonPage({ params, searchParams }: PageProps) {
   // Disable all caching for this page
   noStore();
-  
+
   // Use service client for all DB operations (bypasses RLS)
   // Auth is handled by the (app) layout which requires owner session
   const supabase = createServiceClient();
   const { slug } = params;
+  const initialExerciseIndex = parseInt(searchParams.ex ?? "0", 10) || 0;
 
   // ------ Fetch lesson content (cache-hit or generate) ------
   let lesson: Lesson;
@@ -37,6 +45,34 @@ export default async function LessonPage({ params }: PageProps) {
       notFound();
     }
     throw err;
+  }
+
+  // ------ Fetch chapter info and neighboring lessons for nav ------
+  const { data: chapter } = await supabase
+    .from("chapters")
+    .select("id, learncpp_title, my_title")
+    .eq("id", lesson.chapter_id)
+    .single();
+
+  const { data: chapterLessons } = await supabase
+    .from("lessons")
+    .select("slug, sort_order")
+    .eq("chapter_id", lesson.chapter_id)
+    .order("sort_order", { ascending: true });
+
+  let navInfo: NavInfo | null = null;
+  if (chapter && chapterLessons) {
+    const currentIdx = chapterLessons.findIndex((l) => l.slug === slug);
+    navInfo = {
+      chapter: { title: chapter.my_title ?? chapter.learncpp_title },
+      currentIndex: currentIdx + 1,
+      totalInChapter: chapterLessons.length,
+      prevSlug: currentIdx > 0 ? chapterLessons[currentIdx - 1]?.slug ?? null : null,
+      nextSlug:
+        currentIdx < chapterLessons.length - 1
+          ? chapterLessons[currentIdx + 1]?.slug ?? null
+          : null,
+    };
   }
 
   // ------ Mark progress as in_progress (fire-and-forget) ------
@@ -75,99 +111,90 @@ export default async function LessonPage({ params }: PageProps) {
       .eq("lesson_id", lesson.id);
   }
 
-  // ------ Check which exercises are completed ------
+  // ------ Fetch sample test cases for each exercise ------
   const exerciseIds = exercises.map((ex) => ex.id);
-  const completedSet = new Set<string>();
+  const testCasesMap = new Map<
+    string,
+    Array<{ label: string; stdin: string; expected_stdout: string }>
+  >();
 
   if (exerciseIds.length > 0) {
-    const { data: submissions } = (await supabase
-      .from("submissions")
-      .select("exercise_id, status")
+    const { data: rawTestCases } = await supabase
+      .from("test_cases")
+      .select("exercise_id, label, stdin, expected_stdout, sort_order")
       .in("exercise_id", exerciseIds)
-      .eq("status", "pass")) as unknown as {
-      data: Pick<Submission, "exercise_id" | "status">[] | null;
-    };
+      .eq("is_sample", true)
+      .order("sort_order", { ascending: true });
 
-    for (const sub of submissions ?? []) {
-      completedSet.add(sub.exercise_id);
+    for (const tc of rawTestCases ?? []) {
+      const exerciseId = tc.exercise_id as string;
+      if (!testCasesMap.has(exerciseId)) {
+        testCasesMap.set(exerciseId, []);
+      }
+      testCasesMap.get(exerciseId)!.push({
+        label: tc.label as string,
+        stdin: tc.stdin as string,
+        expected_stdout: tc.expected_stdout as string,
+      });
     }
   }
 
+  // ------ Fetch last passing submission for each exercise ------
+  const lastPassingMap = new Map<string, string>();
+
+  if (exerciseIds.length > 0) {
+    for (const exId of exerciseIds) {
+      const { data: rawSub } = await supabase
+        .from("submissions")
+        .select("source_code")
+        .eq("exercise_id", exId)
+        .eq("mode", "submit")
+        .eq("status", "passed")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (rawSub?.source_code) {
+        lastPassingMap.set(exId, rawSub.source_code as string);
+      }
+    }
+  }
+
+  // ------ Build exercise data for client ------
+  const exercisesForClient = exercises.map((ex) => ({
+    id: ex.id,
+    title: ex.title,
+    promptMd: ex.prompt_md,
+    starterCode: ex.starter_code,
+    difficulty: ex.difficulty,
+    sampleTestCases: (testCasesMap.get(ex.id) ?? []).map((tc) => ({
+      label: tc.label,
+      stdin: tc.stdin,
+      expectedStdout: tc.expected_stdout,
+    })),
+    lastPassingCode: lastPassingMap.get(ex.id) ?? null,
+  }));
+
   const title = lesson.my_title ?? lesson.learncpp_title;
 
+  // Clamp initialExerciseIndex to valid range
+  const clampedIndex = Math.max(
+    0,
+    Math.min(initialExerciseIndex, exercisesForClient.length - 1)
+  );
+
   return (
-    <div className="pb-12">
-      {/* Header */}
-      <div className="mb-8">
-        <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-          Lesson {lesson.number}
-        </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-          {title}
-        </h1>
-      </div>
-
-      {/* Summary */}
-      {lesson.summary_md ? (
-        <section className="mb-10">
-          <SummaryView markdown={lesson.summary_md} />
-        </section>
-      ) : (
-        <section className="mb-10 rounded-lg border border-neutral-200 p-6 text-center dark:border-neutral-700">
-          <p className="text-neutral-500 dark:text-neutral-400">
-            Summary content is being generated...
-          </p>
-        </section>
-      )}
-
-      {/* Exercises */}
-      {exercises.length > 0 && (
-        <section className="mb-10">
-          <h2 className="mb-4 text-lg font-semibold">Exercises</h2>
-          <div className="space-y-3">
-            {exercises.map((ex) => (
-              <ExerciseCard
-                key={ex.id}
-                id={ex.id}
-                title={ex.title}
-                promptMd={ex.prompt_md}
-                difficulty={ex.difficulty}
-                completed={completedSet.has(ex.id)}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Further reading */}
-      <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold">Further reading</h2>
-        <a
-          href={lesson.learncpp_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-blue-600 hover:underline dark:text-blue-400"
-        >
-          Read the full lesson on learncpp.com
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="h-4 w-4"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5zm7.25-.75a.75.75 0 01.75-.75h3.5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0V6.31l-5.47 5.47a.75.75 0 01-1.06-1.06l5.47-5.47H12.25a.75.75 0 01-.75-.75z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </a>
-      </section>
-
-      {/* Regenerate button */}
-      <section className="border-t border-neutral-200 pt-6 dark:border-neutral-700">
-        <RegenerateButton slug={slug} />
-      </section>
-    </div>
+    <LessonClient
+      lesson={{
+        id: lesson.id,
+        number: lesson.number,
+        title,
+        summaryMd: lesson.summary_md,
+        learncppUrl: lesson.learncpp_url,
+      }}
+      exercises={exercisesForClient}
+      initialExerciseIndex={exercisesForClient.length > 0 ? clampedIndex : 0}
+      nav={navInfo}
+    />
   );
 }
