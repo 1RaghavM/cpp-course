@@ -32,23 +32,23 @@ const stateConfig: Record<
   { bg: string; ring: string; label: string }
 > = {
   not_started: {
-    bg: "bg-neutral-300 dark:bg-neutral-600",
-    ring: "ring-neutral-300 dark:ring-neutral-600",
+    bg: "bg-muted",
+    ring: "ring-muted",
     label: "Not started",
   },
   in_progress: {
-    bg: "bg-blue-500 dark:bg-blue-400",
-    ring: "ring-blue-500 dark:ring-blue-400",
+    bg: "bg-accent",
+    ring: "ring-accent",
     label: "In progress",
   },
   completed: {
-    bg: "bg-green-500 dark:bg-green-400",
-    ring: "ring-green-500 dark:ring-green-400",
+    bg: "bg-success",
+    ring: "ring-success",
     label: "Completed",
   },
   skipped: {
-    bg: "bg-yellow-500 dark:bg-yellow-400",
-    ring: "ring-yellow-500 dark:ring-yellow-400",
+    bg: "bg-warning",
+    ring: "ring-warning",
     label: "Skipped",
   },
 };
@@ -57,7 +57,7 @@ function StateIndicator({ state }: { state: RoadmapLesson["state"] }) {
   const cfg = stateConfig[state];
   return (
     <span
-      className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${cfg.bg} ring-2 ring-offset-1 ring-offset-[hsl(var(--background))] ${cfg.ring}`}
+      className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${cfg.bg} ring-2 ring-offset-1 ring-offset-base ${cfg.ring}`}
       title={cfg.label}
       aria-label={cfg.label}
     />
@@ -96,32 +96,32 @@ function ChapterSection({
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-neutral-200 last:border-b-0 dark:border-neutral-800">
+    <div className="border-b border-border last:border-b-0">
       {/* Chapter header */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center gap-3 px-2 py-3 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800/50 sm:px-3"
+        className="flex w-full items-center gap-3 px-3 py-3 text-left hover:bg-hover transition-colors"
       >
         <ChevronIcon open={open} />
 
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
-            <span className="shrink-0 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+            <span className="shrink-0 text-xs font-medium text-muted">
               {chapter.number}
             </span>
-            <span className="truncate font-medium">{chapter.title}</span>
+            <span className="truncate font-medium text-primary">{chapter.title}</span>
           </div>
 
           {/* Progress bar */}
           <div className="mt-1.5 flex items-center gap-2">
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-elevated">
               <div
-                className="h-full rounded-full bg-green-500 transition-all duration-300 dark:bg-green-400"
+                className="h-full rounded-full bg-success transition-all duration-300"
                 style={{ width: `${chapter.completionPercent}%` }}
               />
             </div>
-            <span className="shrink-0 text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+            <span className="shrink-0 text-xs tabular-nums text-muted">
               {chapter.completionPercent}%
             </span>
           </div>
@@ -135,13 +135,13 @@ function ChapterSection({
             <li key={lesson.id}>
               <Link
                 href={`/lessons/${lesson.slug}`}
-                className="group flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                className="group flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-hover transition-colors"
               >
                 <StateIndicator state={lesson.state} />
-                <span className="shrink-0 text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+                <span className="shrink-0 text-xs tabular-nums text-muted">
                   {lesson.number}
                 </span>
-                <span className="min-w-0 truncate text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                <span className="min-w-0 truncate text-sm text-secondary group-hover:text-accent transition-colors">
                   {lesson.title}
                 </span>
               </Link>
@@ -158,13 +158,12 @@ function ChapterSection({
 /* ------------------------------------------------------------------ */
 
 export function RoadmapTree({ chapters }: { chapters: RoadmapChapter[] }) {
-  // Find the first chapter that has an in_progress lesson to expand by default
   const firstInProgressIdx = chapters.findIndex((ch) =>
     ch.lessons.some((l) => l.state === "in_progress"),
   );
 
   return (
-    <div className="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
+    <div className="overflow-hidden rounded-lg border border-border bg-surface">
       {chapters.map((chapter, idx) => (
         <ChapterSection
           key={chapter.id}
@@ -178,7 +177,7 @@ export function RoadmapTree({ chapters }: { chapters: RoadmapChapter[] }) {
       ))}
 
       {chapters.length === 0 && (
-        <p className="px-4 py-8 text-center text-neutral-500 dark:text-neutral-400">
+        <p className="px-4 py-8 text-center text-muted">
           No chapters found. Run the seed script to populate the curriculum.
         </p>
       )}

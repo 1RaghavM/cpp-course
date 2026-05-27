@@ -9,27 +9,36 @@ interface SummaryViewProps {
   markdown: string;
 }
 
-/**
- * Renders the lesson summary markdown with syntax-highlighted C++ code blocks
- * and Tailwind prose styling.
- */
+const customOneDark = {
+  ...oneDark,
+  'pre[class*="language-"]': {
+    ...oneDark['pre[class*="language-"]'],
+    background: "hsl(0 0% 14%)",
+    borderRadius: "0.5rem",
+    border: "1px solid hsl(0 0% 22%)",
+  },
+  'code[class*="language-"]': {
+    ...oneDark['code[class*="language-"]'],
+    background: "transparent",
+  },
+};
+
 export function SummaryView({ markdown }: SummaryViewProps) {
   const components: Components = {
     code({ className, children, ...rest }) {
       const match = /language-(\w+)/.exec(className || "");
       const codeString = String(children).replace(/\n$/, "");
 
-      // If there's a language tag, render with syntax highlighting
       if (match) {
         return (
           <SyntaxHighlighter
-            style={oneDark}
+            style={customOneDark}
             language={match[1]}
             PreTag="div"
             customStyle={{
               margin: 0,
-              borderRadius: "0.375rem",
-              fontSize: "0.875rem",
+              fontSize: "0.8125rem",
+              lineHeight: "1.6",
             }}
           >
             {codeString}
@@ -37,10 +46,9 @@ export function SummaryView({ markdown }: SummaryViewProps) {
         );
       }
 
-      // Inline code
       return (
         <code
-          className="rounded bg-neutral-100 px-1.5 py-0.5 text-sm dark:bg-neutral-800"
+          className="rounded-md bg-elevated px-1.5 py-0.5 text-sm font-mono text-accent"
           {...rest}
         >
           {children}
@@ -50,7 +58,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
   };
 
   return (
-    <div className="prose prose-neutral dark:prose-invert max-w-none prose-pre:bg-transparent prose-pre:p-0">
+    <div className="prose prose-invert prose-sm max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-primary prose-p:text-secondary prose-strong:text-primary prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-li:text-secondary prose-code:before:content-none prose-code:after:content-none">
       <ReactMarkdown components={components}>{markdown}</ReactMarkdown>
     </div>
   );

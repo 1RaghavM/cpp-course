@@ -108,13 +108,13 @@ export default async function RoadmapPage() {
     )?.slug ?? null;
 
   return (
-    <div>
+    <div className="mx-auto w-full max-w-3xl px-4 py-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Roadmap</h1>
+        <h1 className="text-2xl font-bold text-primary">Roadmap</h1>
         {continueSlug && (
           <a
             href={`/lessons/${continueSlug}`}
-            className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-base hover:bg-accent-hover transition-colors"
           >
             Continue learning
           </a>

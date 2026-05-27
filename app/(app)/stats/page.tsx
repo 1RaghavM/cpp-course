@@ -155,8 +155,8 @@ export default async function StatsPage() {
   });
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Cost Stats</h1>
+    <div className="mx-auto w-full max-w-3xl px-4 py-6 space-y-8">
+      <h1 className="text-2xl font-bold text-primary">Cost Stats</h1>
 
       {/* Monthly total */}
       <div

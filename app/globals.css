@@ -4,16 +4,52 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --bg-base: 0 0% 10%;
+    --bg-surface: 0 0% 14%;
+    --bg-elevated: 0 0% 18%;
+    --bg-hover: 0 0% 22%;
+    --border: 0 0% 22%;
+    --border-subtle: 0 0% 18%;
+    --text-primary: 0 0% 95%;
+    --text-secondary: 0 0% 65%;
+    --text-muted: 0 0% 45%;
+    --accent: 168 76% 42%;
+    --accent-hover: 168 76% 48%;
+    --success: 145 63% 42%;
+    --error: 0 72% 51%;
+    --warning: 45 93% 47%;
   }
 
   body {
-    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+    @apply bg-base text-primary antialiased;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  /* Dark scrollbars to match overall theme */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) hsl(var(--bg-surface));
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: hsl(var(--bg-surface));
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 999px;
+    border: 2px solid hsl(var(--bg-surface));
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--bg-hover));
   }
 }

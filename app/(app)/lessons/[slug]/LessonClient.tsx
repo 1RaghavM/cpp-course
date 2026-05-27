@@ -4,16 +4,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { SummaryView } from "@/components/lesson/SummaryView";
+import { EditorToolbar } from "@/components/lesson/EditorToolbar";
+import { OutputPanel } from "@/components/lesson/OutputPanel";
+import { Tabs, TabList, Tab, TabPanel } from "@/components/ui/Tabs";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
   ssr: false,
 });
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 interface LessonData {
   id: string;
@@ -72,20 +71,6 @@ interface Props {
   nav: NavData | null;
 }
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-const STD_OPTIONS: { label: string; value: CppStandard }[] = [
-  { label: "C++17", value: "c++17" },
-  { label: "C++20", value: "c++20" },
-  { label: "C++23", value: "c++23" },
-];
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-
 export default function LessonClient({
   lesson,
   exercises,
@@ -105,16 +90,12 @@ export default function LessonClient({
 
   const activeExercise = exercises[activeExerciseIndex];
 
-  // ---- Mobile detection -----------------------------------------------------
-
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  // ---- Keyboard shortcuts ---------------------------------------------------
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -138,13 +119,10 @@ export default function LessonClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, languageStd, isRunning, isSubmitting, activeExercise]);
 
-  // ---- Exercise switching ---------------------------------------------------
-
   const handleExerciseSwitch = useCallback(
     (newIndex: number) => {
       if (newIndex === activeExerciseIndex || !exercises[newIndex]) return;
 
-      // Save current code to localStorage before switching
       if (activeExercise) {
         try {
           localStorage.setItem(
@@ -160,7 +138,6 @@ export default function LessonClient({
       setResult(null);
       setError(null);
 
-      // Load code for new exercise (localStorage or starter)
       const newExercise = exercises[newIndex];
       if (newExercise) {
         let savedCode: string | null = null;
@@ -174,8 +151,6 @@ export default function LessonClient({
     },
     [activeExerciseIndex, activeExercise, exercises, code]
   );
-
-  // ---- Submit handler -------------------------------------------------------
 
   const handleSubmit = useCallback(
     async (mode: "run" | "submit") => {
@@ -224,8 +199,6 @@ export default function LessonClient({
     [code, activeExercise, languageStd, isRunning, isSubmitting]
   );
 
-  // ---- Reset to starter code ------------------------------------------------
-
   const handleReset = useCallback(() => {
     if (!activeExercise) return;
     if (!window.confirm("Reset to starter code? Your changes will be lost.")) return;
@@ -233,8 +206,6 @@ export default function LessonClient({
     setResult(null);
     setError(null);
   }, [activeExercise]);
-
-  // ---- Restore last passing submission --------------------------------------
 
   const handleRestorePassingSub = useCallback(() => {
     if (!activeExercise?.lastPassingCode) return;
@@ -257,476 +228,218 @@ export default function LessonClient({
     window.location.reload();
   }, [activeExercise]);
 
-  // ---- Status helpers -------------------------------------------------------
-
   const busy = isRunning || isSubmitting;
 
-  function statusBadgeColor(status: string): string {
-    switch (status) {
-      case "passed":
-      case "accepted":
-        return "bg-green-600 text-white";
-      case "compile_error":
-        return "bg-red-600 text-white";
-      case "wrong_answer":
-      case "failed":
-        return "bg-orange-600 text-white";
-      case "tle":
-        return "bg-yellow-600 text-black";
-      case "runtime_error":
-        return "bg-red-500 text-white";
-      default:
-        return "bg-neutral-600 text-white";
-    }
-  }
-
-  // ---- Mobile layout --------------------------------------------------------
-
   if (isMobile) {
-    return (
-      <div className="flex flex-col gap-4 pb-6">
-        {/* Lesson navigation bar */}
-        {nav && <LessonNav nav={nav} lessonTitle={lesson.title} />}
-
-        <div className="rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-sm text-yellow-800 dark:border-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-200">
-          The code editor is read-only on mobile devices. Please use a desktop browser
-          for the best experience.
-        </div>
-
-        {/* Lesson header */}
-        <div>
-          <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-            Lesson {lesson.number}
-          </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight">{lesson.title}</h1>
-        </div>
-
-        {/* Summary */}
-        {lesson.summaryMd && (
-          <section>
-            <SummaryView markdown={lesson.summaryMd} />
-          </section>
-        )}
-
-        {/* Exercise tabs */}
-        {exercises.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-lg font-semibold">Challenge</h2>
-            {exercises.length > 1 && (
-              <div className="mb-3 flex gap-1 overflow-x-auto">
-                {exercises.map((ex, idx) => (
-                  <button
-                    key={ex.id}
-                    onClick={() => handleExerciseSwitch(idx)}
-                    className={`shrink-0 rounded px-3 py-1.5 text-sm font-medium transition ${
-                      idx === activeExerciseIndex
-                        ? "bg-blue-600 text-white"
-                        : "bg-neutral-200 text-neutral-700 hover:bg-neutral-300 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600"
-                    }`}
-                  >
-                    {ex.title}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {activeExercise && (
-              <>
-                <div className="prose prose-neutral prose-sm max-w-none dark:prose-invert mb-4">
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                    {activeExercise.promptMd}
-                  </div>
-                </div>
-
-                {activeExercise.sampleTestCases.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-500">
-                      Sample Test Cases
-                    </h3>
-                    <div className="space-y-2">
-                      {activeExercise.sampleTestCases.map((tc) => (
-                        <div
-                          key={tc.label}
-                          className="rounded border border-neutral-200 p-3 text-sm dark:border-neutral-700"
-                        >
-                          <div className="font-medium">{tc.label}</div>
-                          {tc.stdin && (
-                            <div className="mt-1">
-                              <span className="text-neutral-500">Input: </span>
-                              <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-                                {tc.stdin}
-                              </code>
-                            </div>
-                          )}
-                          <div className="mt-1">
-                            <span className="text-neutral-500">Expected Output: </span>
-                            <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-                              {tc.expectedStdout}
-                            </code>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="h-[300px] overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700">
-                  <MonacoEditor
-                    ref={editorRef}
-                    defaultValue={activeExercise.starterCode}
-                    onChange={setCode}
-                    language="cpp"
-                    readOnly={true}
-                    exerciseId={activeExercise.id}
-                  />
-                </div>
-              </>
-            )}
-          </section>
-        )}
-
-        {/* Further reading */}
-        <section>
-          <a
-            href={lesson.learncppUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-blue-600 hover:underline dark:text-blue-400"
-          >
-            Read the full lesson on learncpp.com
-            <ExternalLinkIcon />
-          </a>
-        </section>
-      </div>
-    );
+    return <MobileLayout lesson={lesson} nav={nav} />;
   }
-
-  // ---- Desktop: split-pane layout -------------------------------------------
 
   return (
     <div
-      className="flex flex-col h-[calc(100vh-4.5rem)]"
+      className="flex flex-col h-full bg-base"
       style={{
         width: "100vw",
         marginLeft: "calc(-50vw + 50%)",
       }}
     >
-      {/* Lesson navigation bar */}
       {nav && <LessonNav nav={nav} lessonTitle={lesson.title} />}
 
-      <div className="flex flex-1 min-h-0 gap-0">
-        {/* ===== LEFT PANEL: Lesson Content + Exercise ===== */}
-        <div className="w-1/2 flex flex-col border-r border-neutral-200 dark:border-neutral-700">
-          {/* Lesson header */}
-          <div className="flex items-center gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
-            <div>
-              <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-                Lesson {lesson.number}
-              </p>
-              <h1 className="text-lg font-bold">{lesson.title}</h1>
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Left Panel */}
+        <div className="w-1/2 flex flex-col bg-surface border-r border-border">
+          {/* Header */}
+          <div className="px-4 py-4 border-b border-border">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-accent/10 text-accent text-xs font-bold">
+                {lesson.number}
+              </span>
+              <div>
+                <h1 className="text-lg font-semibold text-primary">{lesson.title}</h1>
+                {exercises.length > 0 && activeExercise && (
+                  <p className="text-xs text-muted mt-0.5">
+                    {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          {/* Lesson summary */}
-          {lesson.summaryMd && (
-            <section className="mb-8">
-              <SummaryView markdown={lesson.summaryMd} />
-            </section>
-          )}
+          {/* Content Tabs */}
+          <Tabs defaultTab="lesson" className="flex-1 flex flex-col min-h-0">
+            <TabList>
+              <Tab value="lesson">Lesson</Tab>
+              <Tab value="resources">Resources</Tab>
+            </TabList>
 
-          {/* Challenge section */}
-          {exercises.length > 0 && (
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <h2 className="text-lg font-semibold">Challenge</h2>
-                {activeExercise && (
-                  <span className="rounded bg-neutral-200 px-2 py-0.5 text-xs font-medium uppercase dark:bg-neutral-700">
-                    {activeExercise.difficulty}
-                  </span>
-                )}
-              </div>
-
-              {/* Exercise tabs */}
-              {exercises.length > 1 && (
-                <div className="mb-4 flex gap-1 border-b border-neutral-200 dark:border-neutral-700 pb-2">
-                  {exercises.map((ex, idx) => (
-                    <button
-                      key={ex.id}
-                      onClick={() => handleExerciseSwitch(idx)}
-                      className={`rounded-t px-3 py-1.5 text-sm font-medium transition ${
-                        idx === activeExerciseIndex
-                          ? "bg-blue-600 text-white"
-                          : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"
-                      }`}
-                    >
-                      {ex.title}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {activeExercise && (
-                <>
-                  {/* Exercise prompt */}
-                  <div className="prose prose-neutral prose-sm max-w-none dark:prose-invert mb-6">
-                    <SummaryView markdown={activeExercise.promptMd} />
+            <TabPanel value="lesson" className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-6">
+                {/* Lesson summary */}
+                {lesson.summaryMd ? (
+                  <div className="prose prose-sm prose-invert max-w-none">
+                    <SummaryView markdown={lesson.summaryMd} />
                   </div>
+                ) : (
+                  <div className="flex items-center justify-center text-muted text-sm">
+                    Lesson summary is being generated...
+                  </div>
+                )}
 
-                  {/* Sample test cases */}
-                  {activeExercise.sampleTestCases.length > 0 && (
-                    <div>
-                      <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-500">
-                        Sample Test Cases
-                      </h3>
-                      <div className="space-y-2">
-                        {activeExercise.sampleTestCases.map((tc) => (
-                          <div
-                            key={tc.label}
-                            className="rounded border border-neutral-200 p-3 text-sm dark:border-neutral-700"
+                {/* Challenge prompt + samples */}
+                {exercises.length > 0 && activeExercise ? (
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <h2 className="text-lg font-semibold text-primary">Challenge</h2>
+                      <DifficultyBadge difficulty={activeExercise.difficulty} />
+                    </div>
+
+                    {/* Exercise tabs if multiple */}
+                    {exercises.length > 1 && (
+                      <div className="flex gap-2 mb-4 pb-4 border-b border-border-subtle">
+                        {exercises.map((ex, idx) => (
+                          <button
+                            key={ex.id}
+                            onClick={() => handleExerciseSwitch(idx)}
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                              idx === activeExerciseIndex
+                                ? "bg-accent text-base"
+                                : "bg-elevated text-secondary hover:text-primary hover:bg-hover"
+                            }`}
                           >
-                            <div className="font-medium">{tc.label}</div>
-                            {tc.stdin && (
-                              <div className="mt-1">
-                                <span className="text-neutral-500">Input: </span>
-                                <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-                                  {tc.stdin}
-                                </code>
-                              </div>
-                            )}
-                            <div className="mt-1">
-                              <span className="text-neutral-500">Expected Output: </span>
-                              <code className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
-                                {tc.expectedStdout}
-                              </code>
-                            </div>
-                          </div>
+                            {ex.title}
+                          </button>
                         ))}
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </section>
-          )}
+                    )}
 
-          {/* Further reading */}
-          <section className="mt-8 pt-6 border-t border-neutral-200 dark:border-neutral-700">
-            <a
-              href={lesson.learncppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-blue-600 hover:underline dark:text-blue-400"
-            >
-              Read the full lesson on learncpp.com
-              <ExternalLinkIcon />
-            </a>
-          </section>
+                    <div className="prose prose-sm prose-invert max-w-none mb-6">
+                      <SummaryView markdown={activeExercise.promptMd} />
+                    </div>
+
+                    {activeExercise.sampleTestCases.length > 0 && (
+                      <div>
+                        <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+                          Sample Test Cases
+                        </h3>
+                        <div className="space-y-2">
+                          {activeExercise.sampleTestCases.map((tc) => (
+                            <TestCaseCard key={tc.label} testCase={tc} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-muted text-sm">
+                    No exercises available for this lesson.
+                  </div>
+                )}
+              </div>
+            </TabPanel>
+
+            <TabPanel value="resources" className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-4">
+                <ResourceLink
+                  href={lesson.learncppUrl}
+                  title="Full Lesson on LearnCpp.com"
+                  description="Read the complete lesson with detailed explanations"
+                />
+              </div>
+            </TabPanel>
+          </Tabs>
         </div>
-      </div>
 
-      {/* ===== RIGHT PANEL: Code Editor + Console ===== */}
-      <div className="w-1/2 flex flex-col bg-neutral-900">
-        {activeExercise ? (
-          <>
-            {/* Toolbar */}
-            <div className="flex items-center gap-2 border-b border-neutral-700 px-3 py-2">
-              <select
-                value={languageStd}
-                onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
+        {/* Right Panel */}
+        <div className="w-1/2 flex flex-col bg-base">
+          {activeExercise ? (
+            <>
+              <EditorToolbar
+                languageStd={languageStd}
+                onLanguageChange={setLanguageStd}
                 disabled={busy}
-                className="rounded border border-neutral-600 bg-neutral-800 px-2 py-1 text-sm text-neutral-200"
-              >
-                {STD_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-
-              <div className="flex-1" />
-
-              {activeExercise.lastPassingCode && (
-                <button
-                  type="button"
-                  onClick={handleRestorePassingSub}
-                  disabled={busy}
-                  className="text-xs text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
-                >
-                  Restore passing
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={handleReset}
-                disabled={busy}
-                className="text-xs text-neutral-400 hover:text-neutral-200 disabled:opacity-50"
-              >
-                Reset
-              </button>
-            </div>
-
-            {/* Monaco Editor */}
-            <div className="flex-1 min-h-0">
-              <MonacoEditor
-                ref={editorRef}
-                defaultValue={activeExercise.starterCode}
-                onChange={setCode}
-                language="cpp"
-                readOnly={false}
-                exerciseId={activeExercise.id}
+                hasLastPassingCode={!!activeExercise.lastPassingCode}
+                onRestorePassing={handleRestorePassingSub}
+                onReset={handleReset}
               />
-            </div>
 
-            {/* Console Panel */}
-            <div className="border-t border-neutral-700">
-              <div className="flex items-center gap-2 px-3 py-2 bg-neutral-800">
-                <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">
-                  Console
-                </span>
-
-                <div className="flex-1" />
-
-                <button
-                  type="button"
-                  onClick={() => handleSubmit("run")}
-                  disabled={busy}
-                  className="inline-flex items-center gap-1.5 rounded bg-neutral-700 px-3 py-1 text-xs font-medium text-neutral-200 transition hover:bg-neutral-600 disabled:opacity-50"
-                >
-                  {isRunning && <Spinner />}
-                  Run
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleSubmit("submit")}
-                  disabled={busy}
-                  className="inline-flex items-center gap-1.5 rounded bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-500 disabled:opacity-50"
-                >
-                  {isSubmitting && <Spinner />}
-                  Submit
-                </button>
+              <div className="flex-1 min-h-0 border-b border-border">
+                <MonacoEditor
+                  ref={editorRef}
+                  defaultValue={activeExercise.starterCode}
+                  onChange={setCode}
+                  language="cpp"
+                  readOnly={false}
+                  exerciseId={activeExercise.id}
+                />
               </div>
 
-              <div className="h-64 overflow-y-auto bg-neutral-950 p-3 text-xs font-mono text-neutral-300">
-                {error && <div className="text-red-400 mb-2">{error}</div>}
-
-                {result && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`inline-block rounded px-1.5 py-0.5 text-xs font-bold uppercase ${statusBadgeColor(result.status)}`}
-                      >
-                        {result.status.replace(/_/g, " ")}
-                      </span>
-                      {result.wallTimeMs > 0 && (
-                        <span className="text-neutral-500">{result.wallTimeMs}ms</span>
-                      )}
-                    </div>
-
-                    {result.compileOutput && (
-                      <div>
-                        <div className="text-neutral-500 mb-1">Compiler Output:</div>
-                        <pre className="whitespace-pre-wrap text-red-400">
-                          {result.compileOutput}
-                        </pre>
-                      </div>
-                    )}
-
-                    {result.stdout && (
-                      <div>
-                        <div className="text-neutral-500 mb-1">Output:</div>
-                        <pre className="whitespace-pre-wrap text-green-400">
-                          {result.stdout}
-                        </pre>
-                      </div>
-                    )}
-
-                    {result.stderr && (
-                      <div>
-                        <div className="text-neutral-500 mb-1">Stderr:</div>
-                        <pre className="whitespace-pre-wrap text-yellow-400">
-                          {result.stderr}
-                        </pre>
-                      </div>
-                    )}
-
-                {result.testResults && result.testResults.length > 0 && (
-                  <div className="space-y-3 mt-3">
-                    {result.testResults.map((tr) => (
-                      <div
-                        key={tr.label}
-                        className={`rounded border p-3 ${
-                          tr.passed
-                            ? "border-green-600 bg-green-950/30"
-                            : "border-red-600 bg-red-950/30"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={tr.passed ? "text-green-400" : "text-red-400"}>
-                            {tr.passed ? "✓" : "✗"}
-                          </span>
-                          <span className="font-medium text-neutral-200">{tr.label}</span>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                          <div>
-                            <div className="text-neutral-500 mb-1">Your Output:</div>
-                            <div
-                              className={`rounded p-2 font-mono whitespace-pre-wrap ${
-                                tr.passed
-                                  ? "bg-green-900/40 border-l-2 border-green-500"
-                                  : "bg-neutral-800 border-l-2 border-red-500"
-                              }`}
-                            >
-                              {tr.actual || "(empty)"}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-neutral-500 mb-1">Expected output:</div>
-                            <div className="rounded bg-neutral-800 border-l-2 border-green-500 p-2 font-mono whitespace-pre-wrap">
-                              {tr.expected || "(empty)"}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                  </div>
-                )}
-
-                {!error && !result && (
-                  <div className="text-neutral-500">
-                    Press Run to execute your code, or Submit to test against all cases.
-                  </div>
-                )}
-              </div>
+              <OutputPanel
+                result={result}
+                error={error}
+                isRunning={isRunning}
+                isSubmitting={isSubmitting}
+                onRun={() => handleSubmit("run")}
+                onSubmit={() => handleSubmit("submit")}
+              />
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-muted">
+              No exercises available for this lesson.
             </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-neutral-500">
-            No exercises available for this lesson.
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
+function MobileLayout({
+  lesson,
+  nav,
+}: {
+  lesson: Props["lesson"];
+  nav: Props["nav"];
+}) {
+  return (
+    <div className="flex flex-col gap-4 pb-6 px-4">
+      {nav && <LessonNav nav={nav} lessonTitle={lesson.title} />}
+
+      <div className="rounded-lg bg-warning/10 border border-warning/30 p-4 text-sm text-warning">
+        The code editor is read-only on mobile devices. Please use a desktop browser
+        for the best experience.
+      </div>
+
+      <div>
+        <p className="text-xs font-medium text-muted">Lesson {lesson.number}</p>
+        <h1 className="mt-1 text-2xl font-bold text-primary">{lesson.title}</h1>
+      </div>
+
+      {lesson.summaryMd && (
+        <section className="prose prose-sm prose-invert max-w-none">
+          <SummaryView markdown={lesson.summaryMd} />
+        </section>
+      )}
+
+      <section className="mt-4">
+        <a
+          href={lesson.learncppUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-accent hover:underline"
+        >
+          Read the full lesson on learncpp.com
+          <ExternalLinkIcon />
+        </a>
+      </section>
+    </div>
+  );
+}
 
 function LessonNav({ nav, lessonTitle }: { nav: NavData; lessonTitle: string }) {
   return (
-    <div className="flex items-center gap-2 bg-neutral-800 px-4 py-2 text-sm text-neutral-200">
+    <div className="flex items-center gap-2 bg-elevated px-4 py-2 text-sm border-b border-border">
       <Link
         href="/"
-        className="p-1 hover:bg-neutral-700 rounded transition-colors"
+        className="p-1.5 hover:bg-hover rounded-md transition-colors text-secondary hover:text-primary"
         title="Back to roadmap"
       >
         <MenuIcon />
@@ -734,10 +447,10 @@ function LessonNav({ nav, lessonTitle }: { nav: NavData; lessonTitle: string }) 
 
       <Link
         href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}
-        className={`p-1 rounded transition-colors ${
+        className={`p-1.5 rounded-md transition-colors ${
           nav.prevSlug
-            ? "hover:bg-neutral-700 text-neutral-200"
-            : "text-neutral-600 cursor-not-allowed"
+            ? "hover:bg-hover text-secondary hover:text-primary"
+            : "text-muted cursor-not-allowed"
         }`}
         aria-disabled={!nav.prevSlug}
         onClick={(e) => !nav.prevSlug && e.preventDefault()}
@@ -747,10 +460,10 @@ function LessonNav({ nav, lessonTitle }: { nav: NavData; lessonTitle: string }) 
 
       <Link
         href={nav.nextSlug ? `/lessons/${nav.nextSlug}` : "#"}
-        className={`p-1 rounded transition-colors ${
+        className={`p-1.5 rounded-md transition-colors ${
           nav.nextSlug
-            ? "hover:bg-neutral-700 text-neutral-200"
-            : "text-neutral-600 cursor-not-allowed"
+            ? "hover:bg-hover text-secondary hover:text-primary"
+            : "text-muted cursor-not-allowed"
         }`}
         aria-disabled={!nav.nextSlug}
         onClick={(e) => !nav.nextSlug && e.preventDefault()}
@@ -758,17 +471,85 @@ function LessonNav({ nav, lessonTitle }: { nav: NavData; lessonTitle: string }) 
         <ChevronRightIcon />
       </Link>
 
-      <span className="font-medium">{nav.chapter.title}</span>
+      <div className="h-4 w-px bg-border mx-1" />
 
-      <span className="text-neutral-400 mx-1">&gt;</span>
+      <span className="font-medium text-primary">{nav.chapter.title}</span>
 
-      <span className="text-neutral-300">
-        {lessonTitle}{" "}
-        <span className="text-neutral-500">
-          ({nav.currentIndex} / {nav.totalInChapter})
-        </span>
+      <ChevronRightIcon className="h-3 w-3 text-muted" />
+
+      <span className="text-secondary truncate">
+        {lessonTitle}
+      </span>
+
+      <span className="text-muted text-xs ml-auto">
+        {nav.currentIndex} / {nav.totalInChapter}
       </span>
     </div>
+  );
+}
+
+function DifficultyBadge({ difficulty }: { difficulty: string }) {
+  const colors: Record<string, string> = {
+    easy: "bg-success/20 text-success",
+    medium: "bg-warning/20 text-warning",
+    hard: "bg-error/20 text-error",
+  };
+
+  return (
+    <span
+      className={`px-1.5 py-0.5 rounded text-[10px] font-medium uppercase ${
+        colors[difficulty.toLowerCase()] ?? "bg-muted/20 text-muted"
+      }`}
+    >
+      {difficulty}
+    </span>
+  );
+}
+
+function TestCaseCard({ testCase }: { testCase: SampleTestCase }) {
+  return (
+    <div className="rounded-lg bg-elevated border border-border p-3">
+      <div className="font-medium text-sm text-primary mb-2">{testCase.label}</div>
+      {testCase.stdin && (
+        <div className="mb-2">
+          <span className="text-xs text-muted">Input: </span>
+          <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-accent">
+            {testCase.stdin}
+          </code>
+        </div>
+      )}
+      <div>
+        <span className="text-xs text-muted">Expected Output: </span>
+        <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-success">
+          {testCase.expectedStdout}
+        </code>
+      </div>
+    </div>
+  );
+}
+
+function ResourceLink({
+  href,
+  title,
+  description,
+}: {
+  href: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block rounded-lg bg-elevated border border-border p-4 hover:bg-hover transition group"
+    >
+      <div className="flex items-center gap-2 text-primary font-medium group-hover:text-accent transition">
+        {title}
+        <ExternalLinkIcon className="h-4 w-4" />
+      </div>
+      <p className="text-sm text-muted mt-1">{description}</p>
+    </a>
   );
 }
 
@@ -806,13 +587,13 @@ function ChevronLeftIcon() {
   );
 }
 
-function ChevronRightIcon() {
+function ChevronRightIcon({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="h-5 w-5"
+      className={className ?? "h-5 w-5"}
     >
       <path
         fillRule="evenodd"
@@ -823,38 +604,13 @@ function ChevronRightIcon() {
   );
 }
 
-function Spinner() {
-  return (
-    <svg
-      className="h-4 w-4 animate-spin"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-      />
-    </svg>
-  );
-}
-
-function ExternalLinkIcon() {
+function ExternalLinkIcon({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
-      className="h-4 w-4"
+      className={className ?? "h-4 w-4"}
     >
       <path
         fillRule="evenodd"

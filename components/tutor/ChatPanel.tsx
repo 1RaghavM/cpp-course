@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import TierBadge from './TierBadge';
+import { useState, useRef, useEffect, useCallback } from "react";
+import TierBadge from "./TierBadge";
 
 interface ChatMessage {
   id: string;
@@ -193,7 +193,7 @@ export default function ChatPanel({ lessonId, currentCode, lastSubmissionId }: C
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full bg-blue-600 px-4 py-3 text-sm font-medium text-white shadow-lg hover:bg-blue-500"
+        className="fixed bottom-6 right-6 rounded-full bg-accent px-4 py-3 text-sm font-medium text-base shadow-lg hover:bg-accent-hover transition-colors"
       >
         Ask Tutor
       </button>
@@ -201,23 +201,23 @@ export default function ChatPanel({ lessonId, currentCode, lastSubmissionId }: C
   }
 
   return (
-    <div className="fixed bottom-0 right-0 z-50 flex h-[600px] w-full flex-col border-l border-neutral-700 bg-neutral-900 sm:w-[420px]">
+    <div className="fixed bottom-0 right-0 z-50 flex h-[600px] w-full flex-col border-l border-border bg-surface sm:w-[420px]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-neutral-700 px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-neutral-200">Tutor</span>
+          <span className="text-sm font-semibold text-primary">Tutor</span>
           <TierBadge tier={currentTier} />
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={startNewConversation}
-            className="rounded px-2 py-1 text-xs text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+            className="rounded px-2 py-1 text-xs text-secondary hover:bg-hover hover:text-primary transition-colors"
           >
             New chat
           </button>
           <button
             onClick={() => setIsOpen(false)}
-            className="rounded px-2 py-1 text-xs text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+            className="rounded px-2 py-1 text-xs text-secondary hover:bg-hover hover:text-primary transition-colors"
           >
             Close
           </button>
@@ -226,17 +226,17 @@ export default function ChatPanel({ lessonId, currentCode, lastSubmissionId }: C
 
       {/* Conversation selector */}
       {conversations.length > 0 && !conversationId && messages.length === 0 && (
-        <div className="border-b border-neutral-700 p-3">
-          <p className="mb-2 text-xs text-neutral-400">Previous conversations</p>
+        <div className="border-b border-border p-3">
+          <p className="mb-2 text-xs text-muted">Previous conversations</p>
           <div className="flex max-h-32 flex-col gap-1 overflow-y-auto">
             {conversations.map((c) => (
               <button
                 key={c.id}
                 onClick={() => loadConversation(c.id)}
-                className="rounded px-2 py-1.5 text-left text-xs text-neutral-300 hover:bg-neutral-800"
+                className="rounded px-2 py-1.5 text-left text-xs text-secondary hover:bg-hover transition-colors"
               >
-                {c.title ?? 'Untitled'}{' '}
-                <span className="text-neutral-500">({c.messageCount} msgs)</span>
+                {c.title ?? "Untitled"}{" "}
+                <span className="text-muted">({c.messageCount} msgs)</span>
               </button>
             ))}
           </div>
@@ -246,24 +246,24 @@ export default function ChatPanel({ lessonId, currentCode, lastSubmissionId }: C
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
         {messages.length === 0 && (
-          <p className="text-center text-sm text-neutral-500">
+          <p className="text-center text-sm text-muted">
             Ask a question about this lesson.
           </p>
         )}
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`mb-3 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}
+            className={`mb-3 ${msg.role === "user" ? "text-right" : "text-left"}`}
           >
             <div
               className={`inline-block max-w-[85%] rounded-lg px-3 py-2 text-sm ${
-                msg.role === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-neutral-800 text-neutral-200'
+                msg.role === "user"
+                  ? "bg-accent text-base"
+                  : "bg-elevated text-primary"
               }`}
             >
               <div className="whitespace-pre-wrap">{msg.content}</div>
-              {msg.role === 'assistant' && msg.hintTier && (
+              {msg.role === "assistant" && msg.hintTier && (
                 <div className="mt-1">
                   <TierBadge tier={msg.hintTier} />
                 </div>
@@ -271,9 +271,9 @@ export default function ChatPanel({ lessonId, currentCode, lastSubmissionId }: C
             </div>
           </div>
         ))}
-        {isStreaming && messages[messages.length - 1]?.content === '' && (
+        {isStreaming && messages[messages.length - 1]?.content === "" && (
           <div className="mb-3 text-left">
-            <div className="inline-block rounded-lg bg-neutral-800 px-3 py-2 text-sm text-neutral-400">
+            <div className="inline-block rounded-lg bg-elevated px-3 py-2 text-sm text-muted">
               Thinking...
             </div>
           </div>
@@ -282,26 +282,26 @@ export default function ChatPanel({ lessonId, currentCode, lastSubmissionId }: C
       </div>
 
       {/* Input */}
-      <div className="border-t border-neutral-700 p-3">
+      <div className="border-t border-border p-3">
         <div className="flex gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
               }
             }}
             placeholder="Ask about this lesson..."
             disabled={isStreaming}
-            className="flex-1 rounded-md border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-200 placeholder-neutral-500 focus:border-blue-500 focus:outline-none disabled:opacity-50"
+            className="flex-1 rounded-md border border-border bg-elevated px-3 py-2 text-sm text-primary placeholder-muted focus:border-accent focus:outline-none disabled:opacity-50 transition-colors"
           />
           <button
             onClick={sendMessage}
             disabled={isStreaming || !input.trim()}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-base hover:bg-accent-hover disabled:opacity-50 transition-colors"
           >
             Send
           </button>
