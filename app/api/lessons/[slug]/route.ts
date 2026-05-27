@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
-import { requireOwner } from "@/lib/auth/owner-only";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { getOrGenerateLesson } from "@/lib/content/lesson-generation";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +16,7 @@ export async function GET(
   const supabase = createRouteClient();
 
   // Auth guard (uses user JWT)
-  const authResult = await requireOwner(supabase);
+  const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
 
   const { slug } = params;

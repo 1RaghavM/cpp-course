@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { MessageParam } from '@anthropic-ai/sdk/resources/messages';
 import { createRouteClient, createServiceClient } from '@/lib/supabase/server';
-import { requireOwner } from '@/lib/auth/owner-only';
+import { requireAuth } from '@/lib/auth/require-auth';
 import { streamCompletion } from '@/lib/anthropic/client';
 import { buildTutorPrompt } from '@/lib/anthropic/prompts';
 
@@ -20,7 +20,7 @@ function computeHintTier(turnCount: number, userMessage: string): number {
 
 export async function POST(request: Request) {
   const authClient = createRouteClient();
-  const authResult = await requireOwner(authClient);
+  const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
   const supabase = createServiceClient();

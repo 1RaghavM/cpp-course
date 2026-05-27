@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { validateOwnerEmail } from "@/lib/auth/actions";
 import { authCallbackUrl } from "@/lib/auth/constants";
 import { AuthAlert } from "@/components/auth/AuthAlert";
 import { AuthField } from "@/components/auth/AuthField";
@@ -33,13 +32,6 @@ export function RegisterForm() {
     if (password.length < 6) {
       setStatus("error");
       setMessage("Password must be at least 6 characters.");
-      return;
-    }
-
-    const ownerCheck = await validateOwnerEmail(email);
-    if (!ownerCheck.ok) {
-      setStatus("error");
-      setMessage(ownerCheck.message);
       return;
     }
 

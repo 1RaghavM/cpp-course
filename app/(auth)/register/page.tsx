@@ -6,7 +6,7 @@ export default function RegisterPage() {
   return (
     <AuthShell
       title="Create account"
-      subtitle="Register with the owner email for this deployment"
+      subtitle="Create an account to start learning C++"
       footer={
         <p className="text-sm text-secondary">
           Already registered?{" "}

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createRouteClient, createServiceClient } from '@/lib/supabase/server';
-import { requireOwner } from '@/lib/auth/owner-only';
+import { requireAuth } from '@/lib/auth/require-auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   const authClient = createRouteClient();
-  const authResult = await requireOwner(authClient);
+  const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
   const supabase = createServiceClient();

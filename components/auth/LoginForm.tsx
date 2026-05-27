@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { validateOwnerEmail } from "@/lib/auth/actions";
 import { authCallbackUrl } from "@/lib/auth/constants";
 import { AuthAlert } from "@/components/auth/AuthAlert";
 import { AuthField } from "@/components/auth/AuthField";
@@ -25,13 +24,6 @@ export function LoginForm() {
     e.preventDefault();
     setStatus("loading");
     setMessage("");
-
-    const ownerCheck = await validateOwnerEmail(email);
-    if (!ownerCheck.ok) {
-      setStatus("error");
-      setMessage(ownerCheck.message);
-      return;
-    }
 
     const origin = window.location.origin;
 

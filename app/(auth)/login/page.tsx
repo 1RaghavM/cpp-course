@@ -5,7 +5,6 @@ import { AuthAlert } from "@/components/auth/AuthAlert";
 
 const ERROR_MESSAGES: Record<string, string> = {
   auth_callback_failed: "Sign-in link expired or is invalid. Request a new magic link.",
-  forbidden: "This account is not authorized for this app.",
 };
 
 type LoginPageProps = {

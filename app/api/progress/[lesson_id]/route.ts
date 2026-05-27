@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
-import { requireOwner } from "@/lib/auth/owner-only";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export async function POST(
   const authClient = createRouteClient();
 
   // Auth guard
-  const authResult = await requireOwner(authClient);
+  const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
   const supabase = createServiceClient();
@@ -157,7 +157,7 @@ export async function GET(
   const authClient = createRouteClient();
 
   // Auth guard
-  const authResult = await requireOwner(authClient);
+  const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
   const supabase = createServiceClient();

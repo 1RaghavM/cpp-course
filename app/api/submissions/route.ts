@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
-import { requireOwner } from "@/lib/auth/owner-only";
+import { requireAuth } from "@/lib/auth/require-auth";
 import {
   submitCode,
   type CppStandard,
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   const authClient = createRouteClient();
 
   // ---- Auth guard -----------------------------------------------------------
-  const authResult = await requireOwner(authClient);
+  const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
 
   const supabase = createServiceClient();
