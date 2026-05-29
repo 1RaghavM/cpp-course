@@ -1,30 +1,12 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireServerSession } from "@/lib/auth/require-auth";
-import { HeroSection } from "@/components/home/HeroSection";
-import { ContinueLearning, type ContinueLesson } from "@/components/home/ContinueLearning";
-import { PathSection } from "@/components/home/PathSection";
-import { RecentActivity, type RecentLesson } from "@/components/home/RecentActivity";
+import { HomeLayout, type HomeChapter } from "@/components/home/HomeLayout";
+import type { ContinueLesson } from "@/components/home/ContinueLearning";
 import type { Chapter, Lesson, Progress } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
 
 type LessonState = "not_started" | "in_progress" | "completed" | "skipped";
-
-interface RoadmapLesson {
-  id: string;
-  number: string;
-  slug: string;
-  title: string;
-  state: LessonState;
-}
-
-interface RoadmapChapter {
-  id: number;
-  number: string;
-  title: string;
-  completionPercent: number;
-  lessons: RoadmapLesson[];
-}
 
 interface RawLesson {
   id: string;
@@ -90,42 +72,22 @@ function findContinueLesson(
   return null;
 }
 
-function buildRecentActivity(
-  lessons: RawLesson[],
-  progressRows: RawProgress[],
-): RecentLesson[] {
-  const lessonById = new Map(lessons.map((l) => [l.id, l]));
+function findActiveChapterIndex(
+  chapters: HomeChapter[],
+): number {
+  const inProgressIdx = chapters.findIndex((ch) =>
+    ch.lessons.some((l) => l.state === "in_progress"),
+  );
+  if (inProgressIdx >= 0) return inProgressIdx;
 
-  return progressRows
-    .filter(
-      (p) =>
-        p.last_visit_at &&
-        (p.state === "in_progress" || p.state === "completed" || p.state === "skipped"),
-    )
-    .sort(
-      (a, b) =>
-        new Date(b.last_visit_at!).getTime() - new Date(a.last_visit_at!).getTime(),
-    )
-    .slice(0, 5)
-    .flatMap((p) => {
-      const lesson = lessonById.get(p.lesson_id);
-      if (!lesson) return [];
-      return [
-        {
-          slug: lesson.slug,
-          title: lesson.my_title ?? lesson.learncpp_title,
-          number: lesson.number,
-          state: p.state as RecentLesson["state"],
-          lastVisitAt: p.last_visit_at!,
-        },
-      ];
-    });
+  const notStartedIdx = chapters.findIndex((ch) =>
+    ch.lessons.some((l) => l.state === "not_started"),
+  );
+  if (notStartedIdx >= 0) return notStartedIdx;
+
+  return 0;
 }
 
-/**
- * Roadmap home page. Fetches chapter/lesson/progress data directly as a
- * server component (no round-trip through the API route).
- */
 export default async function HomePage() {
   const { supabase } = await requireServerSession();
   const serviceClient = createServiceClient();
@@ -171,7 +133,7 @@ export default async function HomePage() {
     progressMap.set(row.lesson_id, row.state);
   }
 
-  const lessonsByChapter = new Map<number, RoadmapLesson[]>();
+  const lessonsByChapter = new Map<number, HomeChapter["lessons"]>();
   for (const lesson of rawLessons) {
     if (!lessonsByChapter.has(lesson.chapter_id)) {
       lessonsByChapter.set(lesson.chapter_id, []);
@@ -185,7 +147,7 @@ export default async function HomePage() {
     });
   }
 
-  const roadmapChapters: RoadmapChapter[] = rawChapters.map((ch) => {
+  const chapters: HomeChapter[] = rawChapters.map((ch) => {
     const chapterLessons = lessonsByChapter.get(ch.id) ?? [];
     const total = chapterLessons.length;
     const done = chapterLessons.filter(
@@ -201,61 +163,16 @@ export default async function HomePage() {
     };
   });
 
-  const totalLessons = rawLessons.length;
-  let completed = 0;
-  let inProgress = 0;
-  for (const lesson of rawLessons) {
-    const state = progressMap.get(lesson.id) ?? "not_started";
-    if (state === "completed" || state === "skipped") completed += 1;
-    if (state === "in_progress") inProgress += 1;
-  }
-
-  const chaptersStarted = roadmapChapters.filter((ch) =>
-    ch.lessons.some((l) => l.state !== "not_started"),
-  ).length;
-
   const continueLesson = findContinueLesson(rawLessons, rawChapters, progressMap);
   const hasAnyProgress = rawProgress.length > 0;
-  const recentLessons = buildRecentActivity(rawLessons, rawProgress);
+  const activeChapterIndex = findActiveChapterIndex(chapters);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-10">
-      <ContinueLearning lesson={continueLesson} hasAnyProgress={hasAnyProgress} />
-
-      <div className="mt-10">
-        <HeroSection
-          stats={{
-            totalLessons,
-            completed,
-            inProgress,
-            chaptersTotal: rawChapters.length,
-            chaptersStarted,
-            overallPercent:
-              totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0,
-          }}
-        />
-      </div>
-
-      <div className="mt-10">
-        <RecentActivity lessons={recentLessons} />
-      </div>
-
-      <div className="mt-12">
-        <PathSection chapters={roadmapChapters} />
-      </div>
-
-      <footer className="reveal reveal-d4 mt-12 border-t border-border/30 pt-6 pb-4 text-center text-xs text-muted">
-        Curriculum based on{" "}
-        <a
-          href="https://www.learncpp.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-accent underline-offset-2 transition-colors hover:text-accent-hover hover:underline"
-        >
-          learncpp.com
-        </a>
-        . Summaries and exercises are generated once and cached.
-      </footer>
-    </div>
+    <HomeLayout
+      chapters={chapters}
+      continueLesson={continueLesson}
+      hasAnyProgress={hasAnyProgress}
+      activeChapterIndex={activeChapterIndex}
+    />
   );
 }
