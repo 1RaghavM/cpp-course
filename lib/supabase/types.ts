@@ -98,6 +98,7 @@ export interface Database {
           title: string;
           prompt_md: string;
           starter_code: string;
+          solution_code: string | null;
           difficulty: string;
           sort_order: number;
           generated_at: string;
@@ -109,6 +110,7 @@ export interface Database {
           title: string;
           prompt_md: string;
           starter_code: string;
+          solution_code?: string | null;
           difficulty?: string;
           sort_order: number;
           generated_at?: string;
@@ -120,6 +122,7 @@ export interface Database {
           title?: string;
           prompt_md?: string;
           starter_code?: string;
+          solution_code?: string | null;
           difficulty?: string;
           sort_order?: number;
           generated_at?: string;

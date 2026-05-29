@@ -79,6 +79,7 @@ interface ParsedExercise {
   title: string;
   prompt_md: string;
   starter_code: string;
+  solution_code: string | null;
   difficulty: string;
   test_cases: ParsedTestCase[];
 }
@@ -166,6 +167,10 @@ function parseExerciseResponse(raw: string): ParsedExercise[] {
       title: ex.title as string,
       prompt_md: ex.prompt_md as string,
       starter_code: ex.starter_code as string,
+      solution_code:
+        typeof ex.solution_code === 'string' && ex.solution_code.trim() !== ''
+          ? (ex.solution_code as string)
+          : null,
       difficulty:
         typeof ex.difficulty === 'string' ? ex.difficulty : 'practice',
       test_cases: testCases,
@@ -360,6 +365,7 @@ async function generateAndPersist(
           title: pe.title,
           prompt_md: pe.prompt_md,
           starter_code: pe.starter_code,
+          solution_code: pe.solution_code,
           difficulty: pe.difficulty,
           sort_order: i + 1,
           generated_model: MODEL_HAIKU,

@@ -36,6 +36,7 @@ interface ExerciseData {
   title: string;
   promptMd: string;
   starterCode: string;
+  solutionCode: string | null;
   difficulty: string;
   sampleTestCases: SampleTestCase[];
   lastPassingCode: string | null;
@@ -276,6 +277,7 @@ export default function LessonClient({
           <Tabs defaultTab="lesson" className="flex-1 flex flex-col min-h-0">
             <TabList>
               <Tab value="lesson">Lesson</Tab>
+              {activeExercise?.solutionCode && <Tab value="solution">Solution</Tab>}
               <Tab value="resources">Resources</Tab>
             </TabList>
 
@@ -335,6 +337,7 @@ export default function LessonClient({
                         </div>
                       </div>
                     )}
+
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full text-muted text-sm">
@@ -343,6 +346,31 @@ export default function LessonClient({
                 )}
               </div>
             </TabPanel>
+
+            {activeExercise?.solutionCode && (
+              <TabPanel value="solution" className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {exercises.length > 1 && (
+                    <div className="flex gap-2 pb-4 border-b border-border-subtle">
+                      {exercises.map((ex, idx) => (
+                        <button
+                          key={ex.id}
+                          onClick={() => handleExerciseSwitch(idx)}
+                          className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                            idx === activeExerciseIndex
+                              ? "bg-accent text-base"
+                              : "bg-elevated text-secondary hover:text-primary hover:bg-hover"
+                          }`}
+                        >
+                          {ex.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <SolutionReveal code={activeExercise.solutionCode} />
+                </div>
+              </TabPanel>
+            )}
 
             <TabPanel value="resources" className="flex-1 overflow-y-auto p-4">
               <div className="space-y-4">
@@ -537,6 +565,41 @@ function LessonNav({
       <span className="text-muted text-xs ml-auto">
         {nav.currentIndex} / {nav.totalInChapter}
       </span>
+    </div>
+  );
+}
+
+function SolutionReveal({ code }: { code: string }) {
+  const [revealed, setRevealed] = useState(false);
+
+  return (
+    <div className="mt-6">
+      <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+        Solution
+      </h3>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="w-full rounded-lg border border-border bg-elevated px-4 py-3 text-sm text-secondary hover:bg-hover hover:text-primary transition"
+        >
+          Reveal Solution
+        </button>
+      ) : (
+        <div className="rounded-lg border border-border bg-elevated overflow-hidden">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+            <span className="text-xs text-muted font-medium">C++</span>
+            <button
+              onClick={() => setRevealed(false)}
+              className="text-xs text-muted hover:text-primary transition"
+            >
+              Hide
+            </button>
+          </div>
+          <pre className="p-3 overflow-x-auto text-xs font-mono text-primary">
+            <code>{code}</code>
+          </pre>
+        </div>
+      )}
     </div>
   );
 }

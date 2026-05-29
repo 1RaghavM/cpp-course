@@ -121,6 +121,7 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
   "title": "string",
   "prompt_md": "string (markdown problem statement)",
   "starter_code": "string (compilable C++ starter with TODO comments)",
+  "solution_code": "string (complete working solution that passes all test cases)",
   "difficulty": "practice",
   "test_cases": [
     { "label": "string", "is_sample": true|false, "stdin": "string", "expected_stdout": "string" }

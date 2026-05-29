@@ -114,6 +114,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
       title: ex.title,
       promptMd: ex.prompt_md,
       starterCode: ex.starter_code,
+      solutionCode: ex.solution_code ?? null,
       difficulty: ex.difficulty,
       sampleTestCases: sampleTestCases.map((tc) => ({
         label: tc.label,
