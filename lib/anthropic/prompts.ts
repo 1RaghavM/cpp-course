@@ -8,10 +8,7 @@ import { withCache } from './cache';
 // Model constants — single source of truth
 // ---------------------------------------------------------------------------
 
-/** Haiku 4.5 — used for lesson summaries and exercise generation. */
-export const MODEL_HAIKU = 'claude-haiku-4-5';
-
-/** Sonnet 4.6 — used for tutor conversations. */
+/** Sonnet 4.6 — used for lesson summaries, exercise generation, and tutor conversations. */
 export const MODEL_SONNET = 'claude-sonnet-4-6';
 
 // ---------------------------------------------------------------------------
@@ -36,10 +33,11 @@ OUTPUT REQUIREMENTS:
 - Use modern C++20 idioms (std::format, structured bindings, ranges where natural)
 - Include exactly one short original code example, <= 15 lines
 - Plain, direct language. No "let's dive in", "it's important to note", "in conclusion", or "I hope this helps".
-- Cross-reference earlier lessons by title where useful`;
+- Cross-reference earlier lessons by title where useful
+- Never use markdown tables (no pipe syntax). For comparisons or type lists, use bullet points or short prose instead. Example: "- int8_t — 8-bit signed integer"`;
 
 /**
- * Build the prompt for generating a lesson summary with Haiku 4.5.
+ * Build the prompt for generating a lesson summary with Sonnet 4.6.
  *
  * Never includes learncpp.com page content — only title, chapter, tags.
  */
@@ -54,7 +52,7 @@ export function buildLessonSummaryPrompt(
   const tagList = tags.length > 0 ? tags.join(', ') : '(none)';
 
   return {
-    model: MODEL_HAIKU,
+    model: MODEL_SONNET,
     system: [withCache({ type: 'text', text: LESSON_SUMMARY_SYSTEM })],
     messages: [
       {
@@ -87,7 +85,7 @@ export function shouldGenerateExercises(chapterNumber: string): boolean {
 }
 
 /**
- * Build the prompt for generating exercises with Haiku 4.5.
+ * Build the prompt for generating exercises with Sonnet 4.6.
  * Takes chapter context to generate more relevant exercises.
  */
 export function buildExercisePrompt(
@@ -101,6 +99,8 @@ export function buildExercisePrompt(
 EXERCISE DESIGN PRINCIPLES:
 - Exercises must directly test concepts from the lesson summary
 - Difficulty should match the chapter level (early chapters = simpler exercises)
+- Exercise 1: guided — smaller scope, closer to the lesson example
+- Exercise 2: applied — combines the lesson concept with one prior concept from the chapter
 - For basic I/O chapters: focus on cout/cin exercises
 - For control flow chapters: focus on if/loops/switch
 - For functions chapters: focus on writing and calling functions
@@ -114,12 +114,47 @@ Each exercise must:
 - Have deterministic output for fixed stdin
 - Include 3 test cases (1 sample visible, 2 hidden)
 - Be solvable in under 60 lines
-- Have clear, unambiguous requirements
+- Never use markdown tables in prompt_md — use bullet lists or prose instead
+
+PROMPT_MD FORMAT (required — be precise, not vague):
+Every prompt_md must use these exact sections in order:
+
+## Goal
+One sentence stating the concrete program behavior. Name the function or struct to complete if applicable.
+
+## Input
+- Describe stdin line-by-line: how many lines, what each line contains, types, ranges, and separators
+- Example: "Line 1: integer N (1 ≤ N ≤ 100). Lines 2..N+1: one integer per line."
+
+## Output
+- Describe stdout line-by-line: exact labels, spacing, order, and whether to include a trailing newline
+- Example: "Print exactly one line: \`Sum: 42\` (capital S, colon, space, no extra blank lines)."
+
+## Requirements
+Numbered list of specific behaviors. Each item must be testable — no hand-waving.
+- State exact function signatures, struct fields, or compile-time checks when relevant
+- Name edge cases the hidden tests cover (e.g. "N = 1", "empty input", "maximum value")
+- Do not say "handle errors appropriately" — specify exactly what to print or return
+
+## Notes (optional)
+At most 2 bullets: allowed headers, libraries, or constraints from the lesson. Skip if nothing extra is needed.
+
+BAD prompt_md: "Write a utility that validates buffers at compile time."
+GOOD prompt_md: Goal says "Complete struct FixedBuffer so static_assert rejects N ≤ 0 and sizeof(T) > 16"; Input/Output sections specify exact stdin and the single-line error or success message.
+
+STARTER CODE:
+- Must compile as-is (with TODO stubs)
+- Include #include lines and a main() that reads stdin and calls the student's code
+- TODO comments must name exactly what to fill in
+
+TEST CASES:
+- stdin and expected_stdout must match the Input/Output sections exactly
+- Hidden tests must cover at least one edge case called out in Requirements
 
 OUTPUT: a JSON array conforming to this schema for each exercise:
 {
-  "title": "string",
-  "prompt_md": "string (markdown problem statement)",
+  "title": "string (short, specific — e.g. 'Sum N Integers from Stdin')",
+  "prompt_md": "string (markdown with Goal, Input, Output, Requirements sections)",
   "starter_code": "string (compilable C++ starter with TODO comments)",
   "solution_code": "string (complete working solution that passes all test cases)",
   "difficulty": "practice",
@@ -129,7 +164,7 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
 }`;
 
   return {
-    model: MODEL_HAIKU,
+    model: MODEL_SONNET,
     system: [withCache({ type: 'text', text: systemText })],
     messages: [
       {
@@ -137,7 +172,7 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
         content: `Chapter: ${chapterNumber} - ${chapterTitle}\nLesson: ${lessonTitle}\n\nLesson summary:\n\n${summaryMd}`,
       },
     ],
-    maxTokens: 2048,
+    maxTokens: 8192,
   };
 }
 

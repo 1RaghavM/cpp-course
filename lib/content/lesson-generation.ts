@@ -4,7 +4,7 @@ import {
   buildLessonSummaryPrompt,
   buildExercisePrompt,
   shouldGenerateExercises,
-  MODEL_HAIKU,
+  MODEL_SONNET,
 } from '@/lib/anthropic/prompts';
 
 // ---------------------------------------------------------------------------
@@ -293,7 +293,7 @@ async function generateAndPersist(
     .update({
       summary_md: summaryMd,
       summary_generated_at: new Date().toISOString(),
-      summary_model: MODEL_HAIKU,
+      summary_model: MODEL_SONNET,
     })
     .eq('id', lesson.id)
     .select()
@@ -368,7 +368,7 @@ async function generateAndPersist(
           solution_code: pe.solution_code,
           difficulty: pe.difficulty,
           sort_order: i + 1,
-          generated_model: MODEL_HAIKU,
+          generated_model: MODEL_SONNET,
         })
         .select()
         .single();
