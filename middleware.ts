@@ -3,17 +3,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { isAuthRoute } from "@/lib/auth/constants";
 
-/**
- * Next.js middleware — runs on every matched request.
- *
- * 1. Refreshes the Supabase session (handles token rotation).
- * 2. For /api/* routes: returns 401 when there is no session.
- * 3. For public auth pages (/login, /register, /forgot-password): redirects
- *    authenticated users to /.
- * 4. For /auth/callback: passes through (session established in route handler).
- * 5. For /update-password: requires an active session.
- * 6. For all other routes: redirects to /login if no session.
- */
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
@@ -28,11 +17,20 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  if (pathname === "/") {
+    if (session) {
+      const dashboardUrl = req.nextUrl.clone();
+      dashboardUrl.pathname = "/dashboard";
+      return NextResponse.redirect(dashboardUrl);
+    }
+    return res;
+  }
+
   if (isAuthRoute(pathname)) {
     if (session) {
-      const homeUrl = req.nextUrl.clone();
-      homeUrl.pathname = "/";
-      return NextResponse.redirect(homeUrl);
+      const dashboardUrl = req.nextUrl.clone();
+      dashboardUrl.pathname = "/dashboard";
+      return NextResponse.redirect(dashboardUrl);
     }
     return res;
   }
