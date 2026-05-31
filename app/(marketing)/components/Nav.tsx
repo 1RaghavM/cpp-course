@@ -46,7 +46,7 @@ export function Nav() {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
 
-    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), {
+    const observer = new IntersectionObserver((entries) => setScrolled(!(entries[0]?.isIntersecting ?? true)), {
       threshold: 0,
     });
     observer.observe(sentinel);
@@ -71,8 +71,8 @@ export function Nav() {
         const focusable = overlayRef.current.querySelectorAll<HTMLElement>("a, button");
         if (focusable.length === 0) return;
 
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
+        const first = focusable[0]!;
+        const last = focusable[focusable.length - 1]!;
 
         if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();

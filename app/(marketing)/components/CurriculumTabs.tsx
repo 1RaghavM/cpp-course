@@ -97,7 +97,7 @@ export function CurriculumTabs() {
               gap: "12px",
             }}
           >
-            {STAGES[active].topics.map((topic) => (
+            {(STAGES[active] ?? STAGES[0]).topics.map((topic) => (
               <li
                 key={topic}
                 style={{
