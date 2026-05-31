@@ -1,17 +1,19 @@
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
-import { Features } from "./components/Features";
+import { BentoGrid } from "./components/BentoGrid";
 import { CurriculumTabs } from "./components/CurriculumTabs";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
+import { GridBackground } from "./components/GridBackground";
 
 export default function HomePage() {
   return (
     <>
+      <GridBackground />
       <Nav />
       <main>
         <Hero />
-        <Features />
+        <BentoGrid />
         <CurriculumTabs />
         <FinalCTA />
       </main>

@@ -1,9 +1,9 @@
 type AuthAlertVariant = "success" | "error" | "info";
 
-const VARIANT_STYLES: Record<AuthAlertVariant, string> = {
-  success: "border-success/30 bg-success/10 text-success",
-  error: "border-error/30 bg-error/10 text-error",
-  info: "border-accent/30 bg-accent/10 text-accent",
+const VARIANT_CLASS: Record<AuthAlertVariant, string> = {
+  success: "auth-alert auth-alert-success",
+  error: "auth-alert auth-alert-error",
+  info: "auth-alert auth-alert-info",
 };
 
 export function AuthAlert({
@@ -15,7 +15,7 @@ export function AuthAlert({
 }) {
   return (
     <div
-      className={`rounded-lg border p-4 text-center text-sm ${VARIANT_STYLES[variant]}`}
+      className={VARIANT_CLASS[variant]}
       role={variant === "error" ? "alert" : "status"}
     >
       {children}

@@ -37,7 +37,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <AuthField
         id="login-email"
         label="Email"
@@ -60,20 +60,13 @@ export function LoginForm() {
         minLength={6}
       />
 
-      <p className="text-right">
-        <Link
-          href="/forgot-password"
-          className="text-xs text-muted transition-colors hover:text-accent"
-        >
+      <p style={{ textAlign: "right" }}>
+        <Link href="/forgot-password" className="auth-text-xs auth-link" style={{ fontWeight: 400 }}>
           Forgot password?
         </Link>
       </p>
 
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-base transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <button type="submit" disabled={status === "loading"} className="auth-submit">
         {status === "loading" ? "Please wait…" : "Sign in"}
       </button>
 

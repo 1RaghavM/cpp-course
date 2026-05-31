@@ -24,7 +24,7 @@ export async function CodeCard() {
   });
 
   return (
-    <div className="code-card">
+    <div className="code-card editor-card">
       <div className="code-card-header">
         <span className="code-card-tab">main.cpp</span>
       </div>

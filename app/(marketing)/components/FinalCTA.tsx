@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "./Reveal";
 
 export function FinalCTA() {
   return (
@@ -7,21 +8,23 @@ export function FinalCTA() {
         className="hp-container"
         style={{ textAlign: "center", maxWidth: "600px" }}
       >
-        <h2
-          style={{
-            fontSize: "var(--text-h2)",
-            fontWeight: 600,
-            letterSpacing: "-0.02em",
-            lineHeight: 1.1,
-            color: "var(--color-fg)",
-            marginBottom: "32px",
-          }}
-        >
-          Start with the basics. No setup required.
-        </h2>
-        <Link href="/register" className="hp-btn hp-btn-primary hp-btn-lg">
-          Start learning C++
-        </Link>
+        <Reveal>
+          <h2
+            style={{
+              fontSize: "var(--text-h2)",
+              fontWeight: 600,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              color: "var(--color-fg)",
+              marginBottom: "32px",
+            }}
+          >
+            Start with the basics. No setup required.
+          </h2>
+          <Link href="/register" className="hp-btn hp-btn-primary hp-btn-lg">
+            Start learning C++
+          </Link>
+        </Reveal>
       </div>
     </section>
   );

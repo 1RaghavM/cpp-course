@@ -4,29 +4,18 @@ import { CodeCard } from "./CodeCard";
 export function Hero() {
   return (
     <section
+      className="hero-section"
       style={{
-        position: "relative",
         paddingTop: "calc(64px + clamp(60px, 10vw, 120px))",
         paddingBottom: "var(--section-y)",
       }}
     >
-      {/* Glow */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(60% 50% at 50% 0%, var(--color-glow), transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
+      <div className="hero-glow" aria-hidden="true" />
 
       <div
         className="hp-container"
         style={{ position: "relative", maxWidth: "820px" }}
       >
-        {/* Headline */}
         <h1
           className="hp-reveal"
           style={{
@@ -42,7 +31,6 @@ export function Hero() {
           Learn C++ the way it&rsquo;s actually written.
         </h1>
 
-        {/* Sub-line */}
         <p
           className="hp-reveal hp-reveal-d1"
           style={{
@@ -59,7 +47,6 @@ export function Hero() {
           tutor when you&rsquo;re stuck.
         </p>
 
-        {/* CTAs */}
         <div
           className="hp-reveal hp-reveal-d2"
           style={{
@@ -79,7 +66,6 @@ export function Hero() {
           </Link>
         </div>
 
-        {/* Code card */}
         <div className="hp-reveal hp-reveal-d3" style={{ marginTop: "56px" }}>
           <CodeCard />
         </div>

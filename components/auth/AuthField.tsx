@@ -25,7 +25,7 @@ export function AuthField({
 }: AuthFieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-secondary">
+      <label htmlFor={id} className="auth-label">
         {label}
       </label>
       <input
@@ -38,7 +38,7 @@ export function AuthField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-border bg-elevated px-3 py-2.5 text-sm text-primary placeholder-muted outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
+        className="auth-input"
       />
     </div>
   );

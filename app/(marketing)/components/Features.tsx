@@ -1,3 +1,6 @@
+import { Reveal } from "./Reveal";
+import { SpotlightCard } from "./SpotlightCard";
+
 const FEATURES = [
   {
     title: "Pointers & memory",
@@ -29,19 +32,21 @@ export function Features() {
   return (
     <section className="hp-section hp-section-border">
       <div className="hp-container">
-        <h2
-          style={{
-            fontSize: "var(--text-h2)",
-            fontWeight: 600,
-            letterSpacing: "-0.02em",
-            lineHeight: 1.1,
-            color: "var(--color-fg)",
-            textAlign: "center",
-            marginBottom: "56px",
-          }}
-        >
-          What you&rsquo;ll actually learn
-        </h2>
+        <Reveal>
+          <h2
+            style={{
+              fontSize: "var(--text-h2)",
+              fontWeight: 600,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              color: "var(--color-fg)",
+              textAlign: "center",
+              marginBottom: "56px",
+            }}
+          >
+            What you&rsquo;ll actually learn
+          </h2>
+        </Reveal>
 
         <div
           style={{
@@ -51,39 +56,41 @@ export function Features() {
           }}
           className="features-grid"
         >
-          {FEATURES.map((feature) => (
-            <div key={feature.title} className="feature-card">
-              <h3
-                style={{
-                  fontSize: "var(--text-h3)",
-                  fontWeight: 600,
-                  lineHeight: 1.3,
-                  color: "var(--color-fg)",
-                  margin: "0 0 8px",
-                }}
-              >
-                {feature.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "var(--text-body)",
-                  lineHeight: 1.6,
-                  color: "var(--color-fg-muted)",
-                  margin: "0 0 16px",
-                }}
-              >
-                {feature.description}
-              </p>
-              <code
-                style={{
-                  fontFamily: "var(--hp-font-mono)",
-                  fontSize: "var(--text-sm)",
-                  color: "var(--color-fg-subtle)",
-                }}
-              >
-                {feature.code}
-              </code>
-            </div>
+          {FEATURES.map((feature, i) => (
+            <Reveal key={feature.title} delay={i * 0.07}>
+              <SpotlightCard>
+                <h3
+                  style={{
+                    fontSize: "var(--text-h3)",
+                    fontWeight: 600,
+                    lineHeight: 1.3,
+                    color: "var(--color-fg)",
+                    margin: "0 0 8px",
+                  }}
+                >
+                  {feature.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: "var(--text-body)",
+                    lineHeight: 1.6,
+                    color: "var(--color-fg-muted)",
+                    margin: "0 0 16px",
+                  }}
+                >
+                  {feature.description}
+                </p>
+                <code
+                  style={{
+                    fontFamily: "var(--hp-font-mono)",
+                    fontSize: "var(--text-sm)",
+                    color: "var(--color-fg-subtle)",
+                  }}
+                >
+                  {feature.code}
+                </code>
+              </SpotlightCard>
+            </Reveal>
           ))}
         </div>
       </div>

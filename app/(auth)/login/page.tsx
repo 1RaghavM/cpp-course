@@ -21,15 +21,15 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
       title="cpproad"
       subtitle="Sign in to continue learning C++"
       footer={
-        <p className="text-sm text-secondary">
+        <p className="auth-text-sm">
           No account yet?{" "}
-          <Link href="/register" className="font-medium text-accent hover:text-accent-hover">
+          <Link href="/register" className="auth-link">
             Create one
           </Link>
         </p>
       }
     >
-      <div className="space-y-4">
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {callbackError ? <AuthAlert variant="error">{callbackError}</AuthAlert> : null}
         <LoginForm />
       </div>
