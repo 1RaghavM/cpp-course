@@ -519,7 +519,7 @@ function LessonNav({
   return (
     <div className="flex items-center gap-2 bg-elevated px-4 py-2 text-sm border-b border-border">
       <Link
-        href="/"
+        href="/dashboard"
         className="p-1.5 hover:bg-hover rounded-md transition-colors text-secondary hover:text-primary"
         title="Back to roadmap"
       >

@@ -5,7 +5,7 @@ export function AppHeader({ progressPercent }: { progressPercent: number }) {
   return (
     <header className="border-b border-border/50">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-6 px-6">
-        <Link href="/" className="flex items-center gap-1">
+        <Link href="/dashboard" className="flex items-center gap-1">
           <span className="font-display text-lg italic text-accent">cpp</span>
           <span className="font-display text-lg text-primary">road</span>
         </Link>
