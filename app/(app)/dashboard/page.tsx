@@ -158,6 +158,7 @@ export default async function DashboardPage() {
       resumeVariant={resumeVariant}
       pathPercent={pathPercent}
       stageTargetSlugs={stageTargetSlugs}
+      lastVisitedLessonId={lastActiveLessonId}
       statsError={statsError}
     />
   );

@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Hero } from "@/components/dashboard/Hero";
-import { PathMap } from "@/components/dashboard/PathMap";
+import { Road } from "@/components/dashboard/Road";
 import { StatsStrip } from "@/components/dashboard/StatsStrip";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
+import { deriveStageStates } from "@/lib/path";
 import type { Module, Lesson, DashboardProgress, ResumeVariant, Stage } from "@/lib/dashboard/types";
 
 interface DashboardProps {
@@ -15,6 +16,7 @@ interface DashboardProps {
   resumeVariant: ResumeVariant;
   pathPercent: number;
   stageTargetSlugs: Record<Stage, string>;
+  lastVisitedLessonId: string | null;
   statsError?: boolean;
 }
 
@@ -25,6 +27,7 @@ export function Dashboard({
   resumeVariant,
   pathPercent,
   stageTargetSlugs,
+  lastVisitedLessonId,
   statsError,
 }: DashboardProps) {
   const router = useRouter();
@@ -36,6 +39,7 @@ export function Dashboard({
 
   const resumeModule = curriculum.find((m) => m.id === resumeTarget.moduleId)!;
   const snippet = progress.lessonProgress[resumeTarget.id]?.lastCodeSnippet;
+  const stageStates = deriveStageStates(curriculum, progress, lastVisitedLessonId);
 
   return (
     <div className="mx-auto max-w-[720px] px-6 py-8">
@@ -50,11 +54,9 @@ export function Dashboard({
         </div>
 
         <div className="reveal reveal-d1">
-          <PathMap
-            curriculum={curriculum}
-            progress={progress}
+          <Road
+            stageStates={stageStates}
             pathPercent={pathPercent}
-            resumeTargetId={resumeTarget.id}
             stageTargetSlugs={stageTargetSlugs}
           />
         </div>
