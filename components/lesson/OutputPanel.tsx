@@ -107,7 +107,7 @@ export function OutputPanel({
           type="button"
           onClick={onSubmit}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-base transition hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-medium text-black border border-white transition hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting && <Spinner />}
           Submit
