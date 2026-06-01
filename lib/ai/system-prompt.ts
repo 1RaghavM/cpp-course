@@ -39,6 +39,8 @@ export function buildSystemPrompt(params: {
   lessonTitle: string;
   editorCode: string;
   executionResult: string | null;
+  learnerBackground?: string | null;
+  learnerMotivation?: string | null;
 }): string {
   const tierInstruction = TIER_INSTRUCTIONS[params.tier] ?? TIER_INSTRUCTIONS[1];
 
@@ -47,10 +49,21 @@ export function buildSystemPrompt(params: {
       ? params.editorCode.slice(0, 8192) + "\n…[truncated]"
       : params.editorCode;
 
+  let learnerContext = "";
+  if (params.learnerBackground || params.learnerMotivation) {
+    const verbosity =
+      params.learnerBackground === "new"
+        ? "Use analogy-rich, beginner-friendly explanations."
+        : params.learnerBackground === "some_cpp"
+          ? "Be concise — they know C++ basics."
+          : "They know programming but not C++ — skip general concepts, focus on C++ specifics.";
+    learnerContext = `\n\n[LEARNER CONTEXT]\nBackground: ${params.learnerBackground ?? "unknown"}\nMotivation: ${params.learnerMotivation ?? "unknown"}\n${verbosity}`;
+  }
+
   let prompt = `${TUTOR_BASE}
 
 HINT TIER: ${params.tier}
-${tierInstruction}
+${tierInstruction}${learnerContext}
 
 [CURRENT LESSON]
 Chapter: ${params.chapterTitle}
