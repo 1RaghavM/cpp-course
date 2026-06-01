@@ -63,7 +63,7 @@ export function Dashboard({
           {statsError ? (
             <div className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1">
               {["This week", "Lessons done", "Day streak"].map((label) => (
-                <div key={label} className="rounded-lg bg-elevated p-4">
+                <div key={label} className="rounded-card border border-glass-border bg-[var(--glass-fill)] p-4">
                   <p className="text-xs text-muted">{label}</p>
                   <p className="mt-1 font-mono text-lg text-muted">&mdash;</p>
                 </div>
