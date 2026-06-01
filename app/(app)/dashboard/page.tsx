@@ -56,7 +56,10 @@ export default async function DashboardPage() {
     fetchError = true;
   }
 
-  if (statsResult.error) {
+  const isMissingStats =
+    statsResult.error?.code === "PGRST116" || (!statsResult.error && !statsResult.data);
+
+  if (statsResult.error && !isMissingStats) {
     statsError = true;
   }
 
@@ -93,7 +96,7 @@ export default async function DashboardPage() {
     last_code_snippet: string | null;
   }[];
 
-  const userStats = statsResult.data as {
+  const userStats = (isMissingStats ? null : statsResult.data) as {
     streak_days: number;
     last_active_date: string | null;
     weekly_goal: number | null;
@@ -187,7 +190,6 @@ export default async function DashboardPage() {
       pathPercent={pathPercent}
       stageTargetSlugs={stageTargetSlugs}
       lastVisitedLessonId={lastActiveLessonId}
-      statsError={statsError}
       displayName={displayName}
       currentHour={currentHour}
       activityData={activityData}
