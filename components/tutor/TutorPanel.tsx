@@ -9,6 +9,7 @@ import Composer from "./Composer";
 import QuotaIndicator from "./QuotaIndicator";
 import ExplainErrorButton from "./ExplainErrorButton";
 import TierBadge from "./TierBadge";
+import { TutorCoachmark } from "./TutorCoachmark";
 
 export default function TutorPanel() {
   const { lessonId, code, lastSubmissionId, lastSubmissionStatus } = useTutorStore();
@@ -89,7 +90,8 @@ export default function TutorPanel() {
     messages.length > 0;
 
   return (
-    <div className="flex flex-col h-full bg-surface">
+    <div className="flex flex-col h-full bg-surface" style={{ position: "relative" }}>
+      <TutorCoachmark />
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
