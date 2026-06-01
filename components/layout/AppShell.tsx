@@ -48,6 +48,7 @@ export function AppShell({ streakDays, resumeLessonSlug, userEmail, userInitial,
             placementTaken: parsed.placementTaken ?? false,
             placementScore: parsed.placementScore ?? null,
             weeklyGoal: parsed.weeklyGoal ?? null,
+            displayName: parsed.displayName ?? null,
           }),
         });
 

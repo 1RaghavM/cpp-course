@@ -43,6 +43,7 @@ export interface OnboardingState {
   placementTaken: boolean;
   placementScore: number | null;
   weeklyGoal: number | null;
+  displayName: string | null;
 }
 
 export type Action =
@@ -52,6 +53,7 @@ export type Action =
   | { type: "START_PLACEMENT" }
   | { type: "COMPLETE_PLACEMENT"; score: number }
   | { type: "SET_WEEKLY_GOAL"; value: number | null }
+  | { type: "SET_DISPLAY_NAME"; value: string }
   | { type: "GO_BACK" };
 
 export interface OnboardingPayload {
@@ -62,6 +64,7 @@ export interface OnboardingPayload {
   placementTaken: boolean;
   placementScore: number | null;
   weeklyGoal: number | null;
+  displayName: string | null;
 }
 
 export const INITIAL_STATE: OnboardingState = {
@@ -73,4 +76,5 @@ export const INITIAL_STATE: OnboardingState = {
   placementTaken: false,
   placementScore: null,
   weeklyGoal: null,
+  displayName: null,
 };

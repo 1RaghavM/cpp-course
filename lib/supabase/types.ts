@@ -391,6 +391,7 @@ export interface Database {
           streak_days: number;
           last_active_date: string | null;
           weekly_goal: number | null;
+          display_name: string | null;
           updated_at: string;
         };
         Insert: {
@@ -398,6 +399,7 @@ export interface Database {
           streak_days?: number;
           last_active_date?: string | null;
           weekly_goal?: number | null;
+          display_name?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -405,6 +407,7 @@ export interface Database {
           streak_days?: number;
           last_active_date?: string | null;
           weekly_goal?: number | null;
+          display_name?: string | null;
           updated_at?: string;
         };
         Relationships: [];
