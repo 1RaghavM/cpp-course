@@ -67,7 +67,7 @@ Logic:
 
 **POST /api/lessons/[slug]/regenerate**
 
-Admin-only endpoint (though "admin" = the single user).
+Admin-only endpoint for regenerating lesson content.
 
 Logic:
 1. Call `regenerateLesson(supabase, slug)` from T08

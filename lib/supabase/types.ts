@@ -213,6 +213,7 @@ export interface Database {
           first_visit_at: string | null;
           completed_at: string | null;
           last_visit_at: string;
+          last_code_snippet: string | null;
         };
         Insert: {
           user_id: string;
@@ -221,6 +222,7 @@ export interface Database {
           first_visit_at?: string | null;
           completed_at?: string | null;
           last_visit_at?: string;
+          last_code_snippet?: string | null;
         };
         Update: {
           user_id?: string;
@@ -229,6 +231,7 @@ export interface Database {
           first_visit_at?: string | null;
           completed_at?: string | null;
           last_visit_at?: string;
+          last_code_snippet?: string | null;
         };
         Relationships: [];
       };
@@ -346,6 +349,66 @@ export interface Database {
         };
         Relationships: [];
       };
+      onboarding: {
+        Row: {
+          user_id: string;
+          background: string;
+          motivation: string;
+          start_module: string;
+          fast_track: boolean;
+          placement_taken: boolean;
+          placement_score: number | null;
+          weekly_goal: number | null;
+          created_at: string | null;
+        };
+        Insert: {
+          user_id: string;
+          background: string;
+          motivation: string;
+          start_module: string;
+          fast_track?: boolean;
+          placement_taken?: boolean;
+          placement_score?: number | null;
+          weekly_goal?: number | null;
+          created_at?: string | null;
+        };
+        Update: {
+          user_id?: string;
+          background?: string;
+          motivation?: string;
+          start_module?: string;
+          fast_track?: boolean;
+          placement_taken?: boolean;
+          placement_score?: number | null;
+          weekly_goal?: number | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
+      };
+      user_stats: {
+        Row: {
+          user_id: string;
+          streak_days: number;
+          last_active_date: string | null;
+          weekly_goal: number | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          streak_days?: number;
+          last_active_date?: string | null;
+          weekly_goal?: number | null;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          streak_days?: number;
+          last_active_date?: string | null;
+          weekly_goal?: number | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -372,6 +435,8 @@ export type Progress = Database["public"]["Tables"]["progress"]["Row"];
 export type Conversation = Database["public"]["Tables"]["conversations"]["Row"];
 export type Message = Database["public"]["Tables"]["messages"]["Row"];
 export type TokenUsage = Database["public"]["Tables"]["token_usage"]["Row"];
+export type Onboarding = Database["public"]["Tables"]["onboarding"]["Row"];
+export type UserStats = Database["public"]["Tables"]["user_stats"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.

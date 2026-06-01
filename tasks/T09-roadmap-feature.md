@@ -15,7 +15,7 @@ Build the roadmap — the home page of the app. Shows all 34 chapters with their
 
 ```
 app/api/roadmap/route.ts                  # GET /api/roadmap
-app/(app)/layout.tsx                      # owner-only layout wrapper
+app/(app)/layout.tsx                      # authenticated layout wrapper
 app/(app)/page.tsx                        # roadmap home page
 components/roadmap/RoadmapTree.tsx        # the chapter/lesson tree component
 ```
@@ -56,7 +56,7 @@ This should be a single efficient query with joins, not N+1 queries.
 
 ### app/(app)/layout.tsx
 
-The layout for all authenticated app pages. This is where the owner-only protection applies via the middleware (T05). Contains:
+The layout for all authenticated app pages. This is where the auth protection applies via the middleware (T05). Contains:
 
 - A minimal shell/wrapper (no complex nav in v1)
 - Maybe a simple top bar with "cpproad" title and a link back to home

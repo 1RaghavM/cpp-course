@@ -13,7 +13,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient({ cookies });
 
-  // Auth is handled by middleware.ts (owner-only check)
+  // Auth is handled by middleware.ts (authentication check)
   // but verify session exists
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
@@ -29,15 +29,14 @@ export async function GET(request: Request) {
 ## Auth pattern
 
 - Auth via Supabase session cookie (set by the auth flow)
-- Single-user check enforced in `middleware.ts` via `lib/auth/owner-only.ts` — route handlers don't need to re-check the email
+- Authentication enforced in `middleware.ts` via `lib/auth/require-auth.ts` — route handlers don't need to re-check auth
 - Route handlers DO need to verify a session exists (401 if not)
 
 ## Error responses
 
 | Status | When |
 |---|---|
-| 401 | No session cookie / expired session |
-| 403 | Wrong email (handled by middleware, route handler shouldn't see this) |
+| 401 | No session cookie / expired session (handled by middleware) |
 | 400 | Bad input (missing required fields, invalid format, source code > 50KB) |
 | 500 | Unexpected error (catch and return, don't crash the function) |
 

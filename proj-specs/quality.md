@@ -1,6 +1,6 @@
 # QUALITY.md — cpproad
 
-> Quality bar for a personal project. Lower than what I'd ship at work, higher than "vibe code it". The only consumer of this code is future-me, who will hate present-me if it's a mess.
+> Quality bar for a consumer-facing product. Must be reliable and trustworthy for real users.
 
 ---
 
@@ -19,20 +19,20 @@
 
 - Migrations via Supabase CLI (`supabase/migrations/`)
 - One migration per logical change
-- Migrations must be runnable forward; don't worry about rollback (this is single-user, I can backfill manually if needed)
+- Migrations must be runnable forward; rollback scripts not required but destructive migrations need careful planning with active users
 - Add an index in the same migration as the column it indexes
 
 ### 1.3 Commits
 
 - Conventional commits (`feat:`, `fix:`, `chore:`)
-- Short, descriptive PR titles even on solo PRs (helps when scanning history later)
+- Short, descriptive PR titles (helps when scanning history later)
 - Don't squash to lose the work-in-progress trail unless commits are truly noise
 
 ---
 
 ## 2. Testing
 
-I'm not chasing 90% coverage on a personal project. Tests exist where they actually save me time.
+Not chasing 90% coverage. Tests exist where they prevent real bugs from reaching users.
 
 ### 2.1 What gets tested
 
@@ -41,7 +41,7 @@ I'm not chasing 90% coverage on a personal project. Tests exist where they actua
 | **Sandbox / Judge0 integration** | Security tests with "malicious" C++ samples | If the sandbox is leaky I want to know before I find out the hard way |
 | **Cost calculator** (`lib/anthropic/cost.ts`) | Unit tests with known input/output token counts | If I'm tracking spend, I want the numbers right |
 | **Verdict logic** (`lib/judge0/verdict.ts`) | Unit tests with sample stdout vs expected | Diff logic is fiddly; bugs here are silent |
-| **Auth middleware** | Integration test that confirms a non-owner email gets 403 | The single-user lock has to actually work |
+| **Auth middleware** | Integration test that confirms unauthenticated requests get 401 | Auth enforcement has to actually work |
 | **Lesson generation cache hit/miss** | Integration test: hit endpoint twice, verify only one LLM call | The whole cost model depends on this |
 
 ### 2.2 What I'm NOT testing
@@ -96,16 +96,15 @@ Every deploy must pass these checks. I'll run them by hand on first deploy and a
 - [ ] Judge0 API requires `X-Auth-Token` header; token stored in Vercel env vars
 - [ ] Judge0 host only reachable from my Vercel deployment (IP allow-list or private network)
 
-### 3.2 Single-user lock
+### 3.2 Authentication & user isolation
 
-The whole app is gated by a single allowed email. If this lock breaks, everyone on the internet can burn my Anthropic budget. So:
+All app routes require authentication. Per-user data must be isolated via RLS. If auth or RLS breaks, users can see each other's data or unauthenticated users can burn LLM budget. So:
 
-- [ ] `OWNER_EMAIL` env var configured in Vercel
-- [ ] Middleware in `middleware.ts` rejects every authenticated request where `session.user.email !== OWNER_EMAIL`
-- [ ] Postgres RLS policies double-enforce the same check at the DB layer
-- [ ] No public signup form exists in the UI
-- [ ] Supabase Auth is configured to *not* auto-create users on first sign-in (or, more practically, to allow auth but RLS rejects everything for non-owner emails)
-- [ ] Manual test on every deploy: hit `/api/roadmap` while signed in as a non-owner test email, confirm 403
+- [ ] Middleware in `middleware.ts` rejects every unauthenticated request to `/(app)/` and `/api/` routes
+- [ ] Postgres RLS policies enforce `user_id = auth.uid()` on all per-user tables (progress, submissions, conversations, messages)
+- [ ] Shared content (lessons, exercises, test cases) is read-only for authenticated users
+- [ ] Manual test on every deploy: hit `/api/roadmap` without a session, confirm 401
+- [ ] Manual test: verify one user cannot see another user's submissions or conversations
 
 ### 3.3 Secrets
 
@@ -212,12 +211,12 @@ I'm not running an on-call rotation. I'm running a Tuesday night. So:
 
 When I notice any of these creeping in, stop and fix:
 
-- **Adding a feature because "future users might want it"** — there are no future users
-- **Setting up monitoring/alerting for a single-user app** — `console.log` is the monitor
+- **Adding a feature without evidence users need it** — validate with real usage first
+- **Over-engineering monitoring before it's needed** — start with Vercel analytics and Supabase dashboard
 - **Generalizing code that's used in one place** — premature abstraction, just inline it
 - **Writing tests for UI components** — I see them every day, I'll catch bugs visually
 - **Building admin tooling** — I have psql access
 - **Tweaking the prompts forever instead of using the app** — the goal is learning C++, not maximizing prompt quality
-- **Adding a privacy policy** — there is no public visitor
+- **Building features nobody asked for** — talk to users first
 - **Setting up Sentry / Datadog / DataDog / Grafana** — read logs when something breaks
 - **"Just one more piece of infra"** — the answer is no

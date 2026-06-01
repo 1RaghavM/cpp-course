@@ -43,9 +43,14 @@ export function buildLessonSummaryPrompt(
   chapter: string,
   priorTitles: string[],
   tags: string[],
+  fastTrack?: boolean,
 ): PromptPayload {
   const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none)";
   const tagList = tags.length > 0 ? tags.join(", ") : "(none)";
+
+  const fastTrackNote = fastTrack
+    ? "\nFAST-TRACK MODE: The learner already knows programming in another language. Skip general programming concepts (what a variable is, what a loop does). Lead with C++ specifics: static typing, int vs auto, compilation model, & references, header files. Compress conceptual intros to one sentence max.\n"
+    : "";
 
   return {
     model: MODEL_SONNET,
@@ -57,7 +62,7 @@ export function buildLessonSummaryPrompt(
 Chapter: ${chapter}
 Where this fits: prior lessons in this chapter included [${priorList}].
 Topic tags (hints): ${tagList}
-
+${fastTrackNote}
 Write the lesson summary.`,
       },
     ],

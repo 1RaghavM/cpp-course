@@ -1,6 +1,6 @@
 # Security Verify
 
-Run this after any change to Judge0 infrastructure, auth middleware, RLS policies, or deployment configuration. Combines the sandbox security checklist and the single-user auth enforcement — both must pass before deploying.
+Run this after any change to Judge0 infrastructure, auth middleware, RLS policies, or deployment configuration. Combines the sandbox security checklist and the authentication/isolation enforcement — both must pass before deploying.
 
 ## Part 1: Judge0 Sandbox
 
@@ -50,20 +50,21 @@ int main(){ system("ps auxf"); }
 
 If any of these escapes the sandbox or hangs the host, fix before anything else.
 
-## Part 2: Single-User Auth
+## Part 2: Authentication & User Isolation
 
-- [ ] `OWNER_EMAIL` env var configured in Vercel
-- [ ] `middleware.ts` rejects every authenticated request where `session.user.email !== OWNER_EMAIL`
-- [ ] RLS policies on EVERY table enforce `auth.jwt() ->> 'email' = current_setting('app.owner_email')`
-- [ ] No public signup form exists in the UI
-- [ ] Supabase Auth does not auto-create users (or RLS blocks non-owner regardless)
+- [ ] `middleware.ts` rejects every unauthenticated request to `/(app)/` and `/api/` routes (returns 401)
+- [ ] RLS policies on per-user tables enforce `user_id = auth.uid()` (progress, submissions, conversations, messages)
+- [ ] Shared content tables (lessons, exercises, test_cases) have read-only policies for authenticated users
+- [ ] No user can access another user's submissions, conversations, or progress
 - [ ] Anthropic API key, Supabase service role key, Judge0 token — NEVER in client-side code
 - [ ] Client-side code uses only the Supabase anon key
 - [ ] `.env.local` is in `.gitignore`
 
 ### Manual deploy verification
 
-After every deploy, hit `/api/roadmap` while signed in as a non-owner test email. Confirm 403.
+After every deploy:
+1. Hit `/api/roadmap` without a session — confirm 401.
+2. Sign in as user A, create a submission. Sign in as user B — confirm user B cannot see user A's submissions.
 
 ## When to run this
 

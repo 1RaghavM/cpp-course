@@ -1,6 +1,6 @@
 # design.md — cpproad architecture
 
-> Technical design for a single-user C++ learning tool on Supabase + Vercel. Smaller surface area than the previous version. No queues, no separate API backend, no admin pipeline.
+> Technical design for a consumer-facing C++ learning platform on Supabase + Vercel. No queues, no separate API backend, no admin pipeline.
 
 ---
 
@@ -10,7 +10,7 @@
 
 ```mermaid
 flowchart TB
-    Me[Me, in a browser]
+    User[User in a browser]
 
     subgraph Vercel["Vercel (Next.js)"]
         Pages[App Router pages]
@@ -34,7 +34,7 @@ flowchart TB
         Claude[Sonnet 4.6 / Haiku 4.5]
     end
 
-    Me -->|HTTPS| Pages
+    User -->|HTTPS| Pages
     Pages -->|Supabase JS client + JWT| Auth
     Pages -->|read cached content| PG
     APIRoutes -->|on cache miss| Claude
@@ -49,7 +49,7 @@ There is no separate FastAPI/Python backend. Next.js Route Handlers running on V
 
 ```mermaid
 sequenceDiagram
-    participant U as Me
+    participant U as User
     participant W as Next.js Page
     participant API as /api/lessons/[slug]
     participant DB as Supabase Postgres
@@ -74,7 +74,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant U as Me
+    participant U as User
     participant W as Next.js
     participant API as /api/run
     participant J as Judge0 VM
@@ -97,7 +97,7 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
-    participant U as Me
+    participant U as User
     participant W as Next.js (chat panel)
     participant API as /api/tutor (SSE)
     participant DB as Supabase Postgres
@@ -123,24 +123,24 @@ sequenceDiagram
 | Layer | Pick | Why |
 |---|---|---|
 | **Frontend + API** | Next.js 14+ App Router + TypeScript | One repo, one deploy, one runtime. Route Handlers replace the previous FastAPI service. |
-| **Hosting** | Vercel | Free tier covers this. Auto preview deploys, git-driven. |
-| **DB + Auth** | Supabase (Postgres + Auth) | One service for DB, auth, RLS, storage. Free tier comfortably covers a single user. |
-| **Auth flow** | Supabase Auth, email + magic link | No password to manage. Magic link only. |
-| **Single-user lock** | Middleware checks `session.user.email === ALLOWED_EMAIL`; otherwise 403 | Cheaper than role-based authz for one person. |
-| **Editor** | `@monaco-editor/react` | Familiar VS Code feel. Bundle size doesn't matter for a single-user app. |
+| **Hosting** | Vercel | Auto preview deploys, git-driven. Scales with traffic. |
+| **DB + Auth** | Supabase (Postgres + Auth) | One service for DB, auth, RLS, storage. Per-user data isolation via RLS. |
+| **Auth flow** | Supabase Auth, email + magic link | No password to manage. Open signup. Magic link only. |
+| **Auth enforcement** | Middleware checks for valid session; otherwise 401 | All app routes require authentication. |
+| **Editor** | `@monaco-editor/react` | Familiar VS Code feel. |
 | **LLM** | Anthropic Claude — Sonnet 4.6 for tutor, Haiku 4.5 for lesson generation | Sonnet's quality is worth the spend during interrogation; Haiku is fine for bulk content generation. |
 | **Prompt caching** | Anthropic native prompt caching | Critical for cost. Cached system prompt + lesson context = 90% discount on those tokens. |
 | **Code execution** | Self-hosted Judge0 on Fly.io ($5/mo `shared-cpu-1x` machine) with gVisor runtime | Vercel functions can't run untrusted binaries. Fly.io is the cheapest place to put a Docker daemon. |
 | **Sandbox runtime** | gVisor (runsc) | Defense-in-depth on top of Judge0 in case of a CVE-2024-29021-class issue. |
-| **Observability** | Console logs + Supabase dashboard + Vercel logs | No Sentry, no Grafana. If something breaks I'll read the logs. |
+| **Observability** | Console logs + Supabase dashboard + Vercel logs | No Sentry or Grafana needed yet. Vercel + Supabase built-in dashboards are sufficient to start. |
 
 ### Things I considered and rejected
 
 - **Clerk** — Supabase Auth is in the stack already, no reason to add a second auth service.
 - **Neon** — Supabase ships Postgres; no need for both.
-- **Redis** — single user, no queue, no rate limiting. Browser local storage handles ephemeral editor state.
+- **Redis** — no queue, no rate limiting needed yet. Browser local storage handles ephemeral editor state.
 - **Separate FastAPI service** — overkill. Next.js Route Handlers can do streaming LLM calls directly.
-- **Pre-generating all 345 lessons up front** — wasteful. Most I'll never get to. Generate on demand, cache forever.
+- **Pre-generating all 345 lessons up front** — wasteful upfront cost. Generate on demand, cache forever. First user to visit a lesson triggers generation; all subsequent visitors get cached content instantly.
 
 ---
 
@@ -279,7 +279,7 @@ CREATE INDEX idx_token_usage_day ON token_usage(date_trunc('day', created_at));
 
 ### 3.3 Row-Level Security
 
-Since the app is single-user, RLS is mostly a belt-and-suspenders defense in case the env var lock fails:
+RLS enforces per-user data isolation — each user can only access their own progress, submissions, and conversations. Lesson content is shared (read-only for all authenticated users):
 
 ```sql
 -- Enable RLS
@@ -291,19 +291,26 @@ ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE progress ENABLE ROW LEVEL SECURITY;
 ALTER TABLE token_usage ENABLE ROW LEVEL SECURITY;
 
--- Allow only the configured user email
-CREATE POLICY only_me ON lessons FOR ALL TO authenticated
-    USING (auth.jwt() ->> 'email' = current_setting('app.owner_email'));
--- Repeat for each table.
+-- Lesson content is shared (read-only for all authenticated users)
+CREATE POLICY read_lessons ON lessons FOR SELECT TO authenticated USING (true);
+
+-- Per-user tables enforce user isolation
+CREATE POLICY own_submissions ON submissions FOR ALL TO authenticated
+    USING (user_id = auth.uid());
+CREATE POLICY own_progress ON progress FOR ALL TO authenticated
+    USING (user_id = auth.uid());
+CREATE POLICY own_conversations ON conversations FOR ALL TO authenticated
+    USING (user_id = auth.uid());
+-- Repeat user_id check for messages, token_usage, etc.
 ```
 
-`current_setting('app.owner_email')` is set at Postgres startup via Supabase config. No row is ever served to a request that doesn't carry my email in the JWT.
+Per-user data (progress, submissions, conversations) is scoped by `user_id = auth.uid()`. Shared content (lessons, exercises, test cases) is readable by all authenticated users.
 
 ---
 
 ## 4. API contracts (Next.js Route Handlers)
 
-All under `/app/api/*/route.ts`. Auth via Supabase session cookie. Single-user check via middleware.
+All under `/app/api/*/route.ts`. Auth via Supabase session cookie. Authentication enforced via middleware.
 
 ```
 GET  /api/roadmap
@@ -409,7 +416,7 @@ Generated with Haiku 4.5 (cheap, sufficient for explanatory prose):
 ```
 SYSTEM:
 You are an expert C++ educator writing lesson summaries for cpproad,
-a personal learning tool for a CS student who knows Python well but is
+a C++ learning platform for developers who know other languages well but are
 new to modern C++.
 
 OUTPUT REQUIREMENTS:
@@ -456,8 +463,8 @@ Generated with Sonnet 4.6 (quality matters when I'm stuck):
 
 ```
 SYSTEM:
-You are my C++ tutor on cpproad. You do not hand over solutions. You
-ask questions, sketch approaches, and only reveal code when I've earned
+You are a C++ tutor on cpproad. You do not hand over solutions. You
+ask questions, sketch approaches, and only reveal code when the learner has earned
 it through multiple attempts or explicitly asked.
 
 CURRENT HINT TIER: {tier} (1-4)
@@ -501,7 +508,7 @@ cpproad/
 │   ├── (auth)/
 │   │   └── login/page.tsx
 │   ├── (app)/
-│   │   ├── layout.tsx                 # owner-only middleware applied here
+│   │   ├── layout.tsx                 # auth middleware applied here
 │   │   ├── page.tsx                   # roadmap home
 │   │   ├── lessons/[slug]/page.tsx
 │   │   ├── exercises/[id]/page.tsx
@@ -535,7 +542,7 @@ cpproad/
 │   │   ├── client.ts
 │   │   └── verdict.ts                 # test-case evaluation
 │   ├── auth/
-│   │   └── owner-only.ts              # middleware: lock to my email
+│   │   └── require-auth.ts            # middleware: require authenticated session
 │   └── content/
 │       └── lesson-generation.ts       # the "generate or cache" function
 ├── infra/
@@ -548,7 +555,7 @@ cpproad/
 │   ├── build_curriculum.py            # the seed-script I already wrote
 │   └── seed_db.ts                     # loads curriculum_seed.json into Postgres
 ├── curriculum_seed.json               # the 345-lesson structure (committed)
-├── middleware.ts                      # routes through owner-only check
+├── middleware.ts                      # routes through auth check
 ├── docs/
 │   ├── STEERING.md
 │   ├── requirements.md
@@ -559,7 +566,7 @@ cpproad/
 └── tsconfig.json
 ```
 
-One repo, one deploy target (Vercel), with the Judge0 VM as a separate piece of infra deployed via Fly.io CLI.
+One repo, one deploy target (Vercel), with the Judge0 VM as a separate piece of infra deployed via Fly.io CLI. Scales horizontally on Vercel; Judge0 may need multiple instances as user count grows.
 
 ---
 
@@ -609,8 +616,8 @@ Auth: every request from Next.js to Judge0 carries `X-Auth-Token` matching `JUDG
 | Decision | Tradeoff | When to revisit |
 |---|---|---|
 | **Lesson generation is synchronous on first visit** | First load can take 5–15 seconds | If I find myself avoiding new lessons because they're slow, add a background pre-generation worker |
-| **No Redis, no queue** | Can't run code while waiting for a previous submission | If I want parallel runs (won't, single user), add a queue |
-| **Haiku for lesson summaries** | Slightly lower quality than Sonnet | If summaries feel weak, switch to Sonnet for generation — costs maybe 3x more, still cheap at one-time |
-| **One Judge0 instance, no auto-scale** | Single point of failure | If it crashes mid-session, restart manually. Not worth HA for one user. |
-| **Single-user lock via env var email** | If I lose access to that email, I lose the app | Add a backup admin email in env vars. Trivial to do later. |
-| **No version history on generated content** | If a regenerate produces worse content, I can't roll back | Add an `lesson_summaries_history` table with all prior versions if it becomes a problem |
+| **No Redis, no queue** | Can't run code while waiting for a previous submission | If users need parallel runs, add a queue |
+| **Haiku for lesson summaries** | Slightly lower quality than Sonnet | If summaries feel weak, switch to Sonnet for generation — costs maybe 3x more, still cheap as one-time |
+| **One Judge0 instance, no auto-scale** | Single point of failure; limited concurrent executions | Add auto-scaling or multiple instances as user count grows |
+| **Shared lesson cache across all users** | First visitor to a lesson triggers generation; others wait | Pre-generate popular lessons to avoid cold-start latency |
+| **No version history on generated content** | If a regenerate produces worse content, can't roll back | Add a `lesson_summaries_history` table with all prior versions if it becomes a problem |

@@ -117,7 +117,7 @@ export function Nav() {
             <Link href="/login" className="hp-btn hp-btn-secondary">
               Sign in
             </Link>
-            <Link href="/register" className="hp-btn hp-btn-primary">
+            <Link href="/onboarding" className="hp-btn hp-btn-primary">
               Start learning
             </Link>
           </div>
@@ -154,7 +154,7 @@ export function Nav() {
             Sign in
           </Link>
           <Link
-            href="/register"
+            href="/onboarding"
             className="hp-btn hp-btn-primary hp-btn-lg"
             onClick={closeMenu}
             style={{ width: "200px" }}

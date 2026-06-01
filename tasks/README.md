@@ -50,7 +50,7 @@ Total: 14 tasks, 5 phases, max 4 agents in parallel.
 | T02 | infra/supabase/migrations/001_schema.sql, infra/supabase/migrations/002_rls.sql, infra/supabase/migrations/003_indexes.sql, scripts/seed_db.ts |
 | T03 | infra/judge0/docker-compose.yml, infra/judge0/deploy.fly.toml |
 | T04 | lib/supabase/server.ts, lib/supabase/client.ts, lib/supabase/types.ts |
-| T05 | middleware.ts, lib/auth/owner-only.ts, app/(auth)/login/page.tsx |
+| T05 | middleware.ts, lib/auth/require-auth.ts, app/(auth)/login/page.tsx |
 | T06 | lib/anthropic/client.ts, lib/anthropic/prompts.ts, lib/anthropic/cache.ts, lib/anthropic/cost.ts |
 | T07 | lib/judge0/client.ts, lib/judge0/verdict.ts |
 | T08 | lib/content/lesson-generation.ts |

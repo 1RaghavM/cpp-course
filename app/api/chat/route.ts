@@ -110,12 +110,20 @@ export async function POST(request: Request) {
   const userContent = extractTextFromMessage(latestUserMessage);
   const tier = computeHintTier(turnCount, userContent);
 
+  const { data: onboardingData } = await supabase
+    .from("onboarding")
+    .select("background, motivation")
+    .eq("user_id", userId)
+    .single();
+
   const systemPrompt = buildSystemPrompt({
     tier,
     chapterTitle: lessonContext.chapterTitle,
     lessonTitle: lessonContext.lessonTitle,
     editorCode: body.code ?? "",
     executionResult,
+    learnerBackground: onboardingData?.background ?? null,
+    learnerMotivation: onboardingData?.motivation ?? null,
   });
 
   await supabase.from("messages").insert({

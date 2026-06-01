@@ -242,6 +242,7 @@ async function generateAndPersist(
   supabase: AppSupabaseClient,
   lesson: Lesson,
   userId?: string,
+  fastTrack?: boolean,
 ): Promise<{ lesson: Lesson; exercises: ExerciseWithTestCases[] }> {
   // Load context for the prompt
   const [chapterCtx, priorTitles] = await Promise.all([
@@ -258,6 +259,7 @@ async function generateAndPersist(
     chapterLabel,
     priorTitles,
     lesson.tags ?? [],
+    fastTrack,
   );
 
   const summaryResponse = await createCompletion(
@@ -423,6 +425,7 @@ export async function getOrGenerateLesson(
   supabase: AppSupabaseClient,
   slug: string,
   userId?: string,
+  fastTrack?: boolean,
 ): Promise<LessonContent> {
   // --- Step 1: Fetch lesson by slug ---
   const { data: lesson, error: lessonError } = await supabase
@@ -449,7 +452,7 @@ export async function getOrGenerateLesson(
 
   // --- Step 3: Cache miss — generate via LLM and persist ---
   console.log(`[lesson-gen] CACHE MISS for "${slug}" - generating via LLM...`);
-  return generateAndPersist(supabase, lesson, userId);
+  return generateAndPersist(supabase, lesson, userId, fastTrack);
 }
 
 /**

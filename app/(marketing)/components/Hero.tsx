@@ -54,7 +54,7 @@ export function Hero() {
             flexWrap: "wrap",
           }}
         >
-          <Link href="/register" className="hp-btn hp-btn-primary hp-btn-lg">
+          <Link href="/onboarding" className="hp-btn hp-btn-primary hp-btn-lg">
             Start learning C++
           </Link>
           <Link href="/login" className="hp-btn hp-btn-secondary hp-btn-lg">

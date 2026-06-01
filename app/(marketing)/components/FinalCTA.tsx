@@ -18,7 +18,7 @@ export function FinalCTA() {
           >
             Start with the basics. No setup required.
           </h2>
-          <Link href="/register" className="hp-btn hp-btn-primary hp-btn-lg">
+          <Link href="/onboarding" className="hp-btn hp-btn-primary hp-btn-lg">
             Start learning C++
           </Link>
         </Reveal>
