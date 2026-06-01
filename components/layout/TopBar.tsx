@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createBrowserClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@/lib/supabase/client";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
 
 interface TopBarProps {
@@ -29,10 +29,7 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
   }, []);
 
   async function handleSignOut() {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
+    const supabase = createBrowserClient();
     await supabase.auth.signOut();
     router.push("/login");
   }

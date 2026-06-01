@@ -1,4 +1,3 @@
-import type { ModuleId } from "@/lib/onboarding/types";
 import type { ModuleDefinition, Module, Lesson, Stage } from "@/lib/dashboard/types";
 
 export const CURRICULUM: ModuleDefinition[] = [
