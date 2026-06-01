@@ -140,6 +140,27 @@ export default async function DashboardPage() {
   const currentHour = new Date().getUTCHours();
   const displayName = statsError ? null : (userStats?.display_name ?? null);
 
+  const sixteenWeeksAgo = new Date();
+  sixteenWeeksAgo.setDate(sixteenWeeksAgo.getDate() - 16 * 7);
+  const cutoffDate = sixteenWeeksAgo.toISOString().slice(0, 10);
+
+  const activityResult = await supabase
+    .from("progress")
+    .select("last_visit_at, completed_at")
+    .or(`last_visit_at.gte.${cutoffDate}T00:00:00Z,completed_at.gte.${cutoffDate}T00:00:00Z`);
+
+  const activityData: Record<string, number> = {};
+  for (const row of activityResult.data ?? []) {
+    const visitDate = (row as { last_visit_at: string | null }).last_visit_at?.slice(0, 10);
+    const completeDate = (row as { completed_at: string | null }).completed_at?.slice(0, 10);
+    if (visitDate && visitDate >= cutoffDate) {
+      activityData[visitDate] = (activityData[visitDate] ?? 0) + 1;
+    }
+    if (completeDate && completeDate >= cutoffDate && completeDate !== visitDate) {
+      activityData[completeDate] = (activityData[completeDate] ?? 0) + 1;
+    }
+  }
+
   const allLessons = flattenLessons(curriculum);
   const stageTargetSlugs = {} as Record<Stage, string>;
   for (const stage of STAGES) {
@@ -166,6 +187,7 @@ export default async function DashboardPage() {
       statsError={statsError}
       displayName={displayName}
       currentHour={currentHour}
+      activityData={activityData}
     />
   );
 }

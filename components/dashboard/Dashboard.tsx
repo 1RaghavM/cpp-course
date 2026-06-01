@@ -7,6 +7,7 @@ import { Greeting } from "@/components/dashboard/Greeting";
 import { Hero } from "@/components/dashboard/Hero";
 import { Road } from "@/components/dashboard/Road";
 import { StatsStrip } from "@/components/dashboard/StatsStrip";
+import { ActivityHeatmap } from "@/components/dashboard/ActivityHeatmap";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
 import { deriveStageStates } from "@/lib/path";
 import type { Module, Lesson, DashboardProgress, ResumeVariant, Stage } from "@/lib/dashboard/types";
@@ -22,6 +23,7 @@ interface DashboardProps {
   statsError?: boolean;
   displayName: string | null;
   currentHour: number;
+  activityData: Record<string, number>;
 }
 
 export function Dashboard({
@@ -35,6 +37,7 @@ export function Dashboard({
   statsError,
   displayName,
   currentHour,
+  activityData,
 }: DashboardProps) {
   const router = useRouter();
   const reducedMotion = useReducedMotion();
@@ -108,6 +111,10 @@ export function Dashboard({
               streakDays={progress.streakDays}
             />
           )}
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <ActivityHeatmap activityData={activityData} />
         </motion.div>
       </motion.div>
     </div>
