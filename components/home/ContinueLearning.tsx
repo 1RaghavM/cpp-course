@@ -44,7 +44,7 @@ export function ContinueLearning({ lesson, hasAnyProgress }: ContinueLearningPro
       </div>
       <Link
         href={`/lessons/${lesson.slug}`}
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-accent-fg transition-colors hover:bg-accent-hover"
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-white px-4 py-1.5 text-xs font-semibold text-black border border-white transition-colors hover:bg-white/90"
       >
         {isResume ? "Continue" : hasAnyProgress ? "Next" : "Start"}
         <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
