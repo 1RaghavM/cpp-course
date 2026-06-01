@@ -48,7 +48,7 @@ export default function OnboardingPage() {
         .then((data) => {
           if (data) {
             setPayoffData({
-              firstName: null,
+              firstName: data.firstName ?? null,
               startModule: data.startModule,
               motivation: data.motivation,
             });

@@ -83,6 +83,9 @@ export async function GET() {
     return NextResponse.json({ error: "No onboarding data found" }, { status: 404 });
   }
 
+  const fullName =
+    (authResult.session.user.user_metadata?.full_name as string | undefined) ?? null;
+
   return NextResponse.json({
     background: data.background,
     motivation: data.motivation,
@@ -91,5 +94,6 @@ export async function GET() {
     placementTaken: data.placement_taken,
     placementScore: data.placement_score,
     weeklyGoal: data.weekly_goal,
+    firstName: fullName,
   });
 }
