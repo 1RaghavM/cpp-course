@@ -10,9 +10,20 @@ import { OutputPanel } from "@/components/lesson/OutputPanel";
 import { Tabs, TabList, Tab, TabPanel } from "@/components/ui/Tabs";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
+import { useTutorStore } from "@/lib/store/tutor-store";
+import ResizableDivider from "@/components/tutor/ResizableDivider";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
   ssr: false,
+});
+
+const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-full text-[var(--color-fg-muted)] text-sm">
+      Loading tutor...
+    </div>
+  ),
 });
 
 interface LessonData {
@@ -89,8 +100,16 @@ export default function LessonClient({
   const [result, setResult] = useState<SubmissionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [splitPercent, setSplitPercent] = useState(50);
+  const setStoreCode = useTutorStore((s) => s.setCode);
+  const setStoreLessonId = useTutorStore((s) => s.setLessonId);
+  const setStoreSubmission = useTutorStore((s) => s.setSubmissionResult);
 
   const activeExercise = exercises[activeExerciseIndex];
+
+  useEffect(() => {
+    setStoreLessonId(lesson.id);
+  }, [lesson.id, setStoreLessonId]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -191,6 +210,7 @@ export default function LessonClient({
         }
 
         setResult(data as SubmissionResponse);
+        setStoreSubmission('', (data as SubmissionResponse).status);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
@@ -198,7 +218,7 @@ export default function LessonClient({
         setIsSubmitting(false);
       }
     },
-    [code, activeExercise, languageStd, isRunning, isSubmitting]
+    [code, activeExercise, languageStd, isRunning, isSubmitting, setStoreSubmission]
   );
 
   const handleReset = useCallback(() => {
@@ -253,9 +273,12 @@ export default function LessonClient({
         />
       )}
 
-      <div className="flex flex-1 min-h-0 overflow-hidden">
+      <div className="flex flex-1 min-h-0 overflow-hidden" data-resizable-container>
         {/* Left Panel */}
-        <div className="w-1/2 flex flex-col bg-surface border-r border-border">
+        <div
+          className="flex flex-col bg-surface border-r border-border"
+          style={{ width: `${splitPercent}%` }}
+        >
           {/* Header */}
           <div className="px-4 py-4 border-b border-border">
             <div className="flex items-center gap-3">
@@ -384,38 +407,51 @@ export default function LessonClient({
           </Tabs>
         </div>
 
+        <ResizableDivider onResize={setSplitPercent} />
+
         {/* Right Panel */}
-        <div className="w-1/2 flex flex-col bg-base">
+        <div className="flex flex-1 min-w-0 bg-base" style={{ width: `${100 - splitPercent}%` }}>
           {activeExercise ? (
             <>
-              <EditorToolbar
-                languageStd={languageStd}
-                onLanguageChange={setLanguageStd}
-                disabled={busy}
-                hasLastPassingCode={!!activeExercise.lastPassingCode}
-                onRestorePassing={handleRestorePassingSub}
-                onReset={handleReset}
-              />
+              {/* Editor column */}
+              <div className="flex-1 flex flex-col min-w-0">
+                <EditorToolbar
+                  languageStd={languageStd}
+                  onLanguageChange={setLanguageStd}
+                  disabled={busy}
+                  hasLastPassingCode={!!activeExercise.lastPassingCode}
+                  onRestorePassing={handleRestorePassingSub}
+                  onReset={handleReset}
+                />
 
-              <div className="flex-1 min-h-0 border-b border-border">
-                <MonacoEditor
-                  ref={editorRef}
-                  defaultValue={activeExercise.starterCode}
-                  onChange={setCode}
-                  language="cpp"
-                  readOnly={false}
-                  exerciseId={activeExercise.id}
+                <div className="flex-1 min-h-0 border-b border-border">
+                  <MonacoEditor
+                    ref={editorRef}
+                    defaultValue={activeExercise.starterCode}
+                    onChange={(val) => {
+                      setCode(val);
+                      setStoreCode(val);
+                    }}
+                    language="cpp"
+                    readOnly={false}
+                    exerciseId={activeExercise.id}
+                  />
+                </div>
+
+                <OutputPanel
+                  result={result}
+                  error={error}
+                  isRunning={isRunning}
+                  isSubmitting={isSubmitting}
+                  onRun={() => handleSubmit("run")}
+                  onSubmit={() => handleSubmit("submit")}
                 />
               </div>
 
-              <OutputPanel
-                result={result}
-                error={error}
-                isRunning={isRunning}
-                isSubmitting={isSubmitting}
-                onRun={() => handleSubmit("run")}
-                onSubmit={() => handleSubmit("submit")}
-              />
+              {/* Tutor panel */}
+              <div className="w-[360px] flex-shrink-0 border-l border-[var(--color-border)]">
+                <TutorPanel />
+              </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center text-muted">
