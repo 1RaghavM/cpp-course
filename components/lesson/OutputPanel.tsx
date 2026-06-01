@@ -129,7 +129,9 @@ export function OutputPanel({
               <span
                 className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-wide ${statusBadgeColor(result.status)}`}
               >
-                {result.status.replace(/_/g, " ")}
+                {!result.testResults?.length && result.status === "accepted"
+                  ? "compiled successfully"
+                  : result.status.replace(/_/g, " ")}
               </span>
               {result.wallTimeMs > 0 && (
                 <span className="text-xs text-muted">{result.wallTimeMs}ms</span>
@@ -143,10 +145,17 @@ export function OutputPanel({
               </OutputSection>
             )}
 
-            {/* Program output (for run mode) */}
-            {result.stdout && !result.testResults?.length && (
-              <OutputSection title="Your Output" variant="success">
-                <pre className="whitespace-pre-wrap">{result.stdout}</pre>
+            {/* Program output (for run mode — always show when no test results) */}
+            {!result.testResults?.length && (
+              <OutputSection
+                title="Output"
+                variant={result.stdout ? "success" : "neutral"}
+              >
+                <pre className="whitespace-pre-wrap">
+                  {result.stdout || (
+                    <span className="text-muted italic">(no output)</span>
+                  )}
+                </pre>
               </OutputSection>
             )}
 
