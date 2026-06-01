@@ -31,4 +31,3 @@ export function GridBackground() {
 
   return <div className="page-grid" ref={ref} aria-hidden="true" />;
 }
-

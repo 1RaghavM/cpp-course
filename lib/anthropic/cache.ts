@@ -1,4 +1,4 @@
-import type { TextBlockParam } from '@anthropic-ai/sdk/resources/messages';
+import type { TextBlockParam } from "@anthropic-ai/sdk/resources/messages";
 
 /**
  * Adds `cache_control: { type: 'ephemeral' }` to a text content block so
@@ -6,7 +6,7 @@ import type { TextBlockParam } from '@anthropic-ai/sdk/resources/messages';
  * same cached prefix pay only 10% of the normal input-token rate.
  */
 export function withCache(block: TextBlockParam): TextBlockParam {
-  return { ...block, cache_control: { type: 'ephemeral' } };
+  return { ...block, cache_control: { type: "ephemeral" } };
 }
 
 /**
@@ -18,12 +18,10 @@ export function buildCachedSystemBlocks(
   systemInstruction: string,
   contextBlock?: string,
 ): TextBlockParam[] {
-  const blocks: TextBlockParam[] = [
-    withCache({ type: 'text', text: systemInstruction }),
-  ];
+  const blocks: TextBlockParam[] = [withCache({ type: "text", text: systemInstruction })];
 
   if (contextBlock) {
-    blocks.push(withCache({ type: 'text', text: contextBlock }));
+    blocks.push(withCache({ type: "text", text: contextBlock }));
   }
 
   return blocks;

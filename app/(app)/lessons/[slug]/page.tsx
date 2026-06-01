@@ -2,10 +2,7 @@ import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireServerSession } from "@/lib/auth/require-auth";
-import {
-  getOrGenerateLesson,
-  type ExerciseWithTestCases,
-} from "@/lib/content/lesson-generation";
+import { getOrGenerateLesson, type ExerciseWithTestCases } from "@/lib/content/lesson-generation";
 import { touchLessonProgress } from "@/lib/content/lesson-progress";
 import LessonClient from "./LessonClient";
 import type { Lesson } from "@/lib/supabase/types";
@@ -85,10 +82,10 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
       chapter: { title: chapter.my_title ?? chapter.learncpp_title },
       currentIndex: currentIdx + 1,
       totalInChapter: chapterLessons.length,
-      prevSlug: currentIdx > 0 ? chapterLessons[currentIdx - 1]?.slug ?? null : null,
+      prevSlug: currentIdx > 0 ? (chapterLessons[currentIdx - 1]?.slug ?? null) : null,
       nextSlug:
         currentIdx < chapterLessons.length - 1
-          ? chapterLessons[currentIdx + 1]?.slug ?? null
+          ? (chapterLessons[currentIdx + 1]?.slug ?? null)
           : null,
     };
   }
@@ -127,10 +124,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
 
   const title = lesson.my_title ?? lesson.learncpp_title;
 
-  const clampedIndex = Math.max(
-    0,
-    Math.min(initialExerciseIndex, exercisesForClient.length - 1)
-  );
+  const clampedIndex = Math.max(0, Math.min(initialExerciseIndex, exercisesForClient.length - 1));
 
   return (
     <LessonClient

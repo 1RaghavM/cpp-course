@@ -212,7 +212,9 @@ async function fetchUncachedLessons(
       .order("sort_order", { ascending: true });
 
     if (lessonError) {
-      throw new Error(`Failed to load lessons for chapter ${chapterNumber}: ${lessonError.message}`);
+      throw new Error(
+        `Failed to load lessons for chapter ${chapterNumber}: ${lessonError.message}`,
+      );
     }
 
     const uncached = (lessons ?? []).filter((l) => l.summary_md === null) as LessonRow[];
@@ -296,7 +298,9 @@ async function prefetchLesson(
     } catch (err) {
       if (attempt < MAX_RETRIES) {
         const waitSec = 30 * 2 ** attempt;
-        console.log(`  ${label}: ${err instanceof Error ? err.message : err}, retry in ${waitSec}s…`);
+        console.log(
+          `  ${label}: ${err instanceof Error ? err.message : err}, retry in ${waitSec}s…`,
+        );
         await sleep(waitSec * 1000);
         continue;
       }

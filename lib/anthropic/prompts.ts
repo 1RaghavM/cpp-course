@@ -1,15 +1,12 @@
-import type {
-  MessageParam,
-  TextBlockParam,
-} from '@anthropic-ai/sdk/resources/messages';
-import { withCache } from './cache';
+import type { MessageParam, TextBlockParam } from "@anthropic-ai/sdk/resources/messages";
+import { withCache } from "./cache";
 
 // ---------------------------------------------------------------------------
 // Model constants — single source of truth
 // ---------------------------------------------------------------------------
 
 /** Sonnet 4.6 — used for lesson summaries, exercise generation, and tutor conversations. */
-export const MODEL_SONNET = 'claude-sonnet-4-6';
+export const MODEL_SONNET = "claude-sonnet-4-6";
 
 // ---------------------------------------------------------------------------
 // Shared types returned by prompt builders
@@ -47,16 +44,15 @@ export function buildLessonSummaryPrompt(
   priorTitles: string[],
   tags: string[],
 ): PromptPayload {
-  const priorList =
-    priorTitles.length > 0 ? priorTitles.join(', ') : '(none)';
-  const tagList = tags.length > 0 ? tags.join(', ') : '(none)';
+  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none)";
+  const tagList = tags.length > 0 ? tags.join(", ") : "(none)";
 
   return {
     model: MODEL_SONNET,
-    system: [withCache({ type: 'text', text: LESSON_SUMMARY_SYSTEM })],
+    system: [withCache({ type: "text", text: LESSON_SUMMARY_SYSTEM })],
     messages: [
       {
-        role: 'user',
+        role: "user",
         content: `Lesson: ${lesson}
 Chapter: ${chapter}
 Where this fits: prior lessons in this chapter included [${priorList}].
@@ -74,7 +70,7 @@ Write the lesson summary.`,
 // ---------------------------------------------------------------------------
 
 /** Chapters that should NOT have exercises (introductory/overview content) */
-const NO_EXERCISE_CHAPTERS = ['0', 'O'];
+const NO_EXERCISE_CHAPTERS = ["0", "O"];
 
 /**
  * Check if a chapter should have exercises generated.
@@ -165,10 +161,10 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
 
   return {
     model: MODEL_SONNET,
-    system: [withCache({ type: 'text', text: systemText })],
+    system: [withCache({ type: "text", text: systemText })],
     messages: [
       {
-        role: 'user',
+        role: "user",
         content: `Chapter: ${chapterNumber} - ${chapterTitle}\nLesson: ${lessonTitle}\n\nLesson summary:\n\n${summaryMd}`,
       },
     ],
@@ -193,15 +189,15 @@ CONSTRAINTS:
 function buildTierDescription(tier: number): string {
   switch (tier) {
     case 1:
-      return 'T1: Ask one diagnostic question. No solution hints.';
+      return "T1: Ask one diagnostic question. No solution hints.";
     case 2:
-      return 'T2: Name the missing concept. Point at the relevant lesson section. No code.';
+      return "T2: Name the missing concept. Point at the relevant lesson section. No code.";
     case 3:
-      return 'T3: Sketch the approach in plain English or pseudocode. No working C++.';
+      return "T3: Sketch the approach in plain English or pseudocode. No working C++.";
     case 4:
-      return 'T4: Show a working snippet with line-by-line explanation.';
+      return "T4: Show a working snippet with line-by-line explanation.";
     default:
-      return 'T1: Ask one diagnostic question. No solution hints.';
+      return "T1: Ask one diagnostic question. No solution hints.";
   }
 }
 
@@ -224,7 +220,7 @@ export function buildTutorPrompt(
 
   // The static system instruction is cached across all tutor calls.
   const systemInstructionBlock: TextBlockParam = withCache({
-    type: 'text',
+    type: "text",
     text: `${TUTOR_SYSTEM_BASE}
 
 CURRENT HINT TIER: ${tier} (1-4)
@@ -238,7 +234,7 @@ Active tier: ${tierDesc}`,
 
   // Lesson + exercise context is cached separately (shared within one conversation).
   const contextBlock: TextBlockParam = withCache({
-    type: 'text',
+    type: "text",
     text: `LESSON CONTEXT:
 ${lessonContext}
 
@@ -248,21 +244,17 @@ ${exercise}`,
 
   // Current code and output change every turn, so no cache_control.
   const codeContextBlock: TextBlockParam = {
-    type: 'text',
+    type: "text",
     text: `MY CURRENT CODE:
 \`\`\`cpp
 ${userCode}
 \`\`\`
 
 LAST EXECUTION OUTPUT:
-${lastOutput || '(no output yet)'}`,
+${lastOutput || "(no output yet)"}`,
   };
 
-  const system: TextBlockParam[] = [
-    systemInstructionBlock,
-    contextBlock,
-    codeContextBlock,
-  ];
+  const system: TextBlockParam[] = [systemInstructionBlock, contextBlock, codeContextBlock];
 
   return {
     model: MODEL_SONNET,

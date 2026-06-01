@@ -52,9 +52,7 @@ function toSlug(lessonNumber: string): string {
  * Hashing ensures re-runs produce the same IDs so upserts work correctly.
  */
 function deterministicUUID(lessonNumber: string): string {
-  const hash = createHash("sha256")
-    .update(`cpproad-lesson:${lessonNumber}`)
-    .digest("hex");
+  const hash = createHash("sha256").update(`cpproad-lesson:${lessonNumber}`).digest("hex");
   // Format as UUID v4 shape (with version nibble set to 4, variant bits set)
   const uuid = [
     hash.slice(0, 8),
@@ -129,10 +127,7 @@ async function main(): Promise<void> {
       .upsert(batch, { onConflict: "id" });
 
     if (lessonError) {
-      console.error(
-        `Failed to upsert lessons (batch ${i / BATCH_SIZE + 1}):`,
-        lessonError.message,
-      );
+      console.error(`Failed to upsert lessons (batch ${i / BATCH_SIZE + 1}):`, lessonError.message);
       process.exit(1);
     }
   }

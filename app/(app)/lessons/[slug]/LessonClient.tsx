@@ -95,10 +95,23 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
   const [result, setResult] = useState<SubmissionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [splitPercent, setSplitPercent] = useState(50);
+  const [divider1, setDivider1] = useState(50);
+  const [divider2, setDivider2] = useState(70);
   const setStoreCode = useTutorStore((s) => s.setCode);
   const setStoreLessonId = useTutorStore((s) => s.setLessonId);
   const setStoreSubmission = useTutorStore((s) => s.setSubmissionResult);
+  const tutorOpen = useTutorStore((s) => s.tutorOpen);
+  const toggleTutor = useTutorStore((s) => s.toggleTutor);
+
+  const handleToggleTutor = useCallback(() => {
+    if (!tutorOpen) {
+      setDivider1((prev) => Math.min(prev, 35));
+      setDivider2(70);
+    } else {
+      setDivider1(50);
+    }
+    toggleTutor();
+  }, [tutorOpen, toggleTutor]);
 
   const activeExercise = exercises[activeExerciseIndex];
 
@@ -258,14 +271,16 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
           lessonTitle={lesson.title}
           lessonId={lesson.id}
           hasExercises={exercises.length > 0}
+          tutorOpen={tutorOpen}
+          onToggleTutor={handleToggleTutor}
         />
       )}
 
       <div className="flex flex-1 min-h-0 overflow-hidden" data-resizable-container>
-        {/* Left Panel */}
+        {/* Lesson Panel */}
         <div
           className="flex flex-col bg-surface border-r border-border"
-          style={{ width: `${splitPercent}%` }}
+          style={{ width: `${divider1}%` }}
         >
           {/* Header */}
           <div className="px-4 py-4 border-b border-border">
@@ -394,51 +409,50 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
           </Tabs>
         </div>
 
-        <ResizableDivider onResize={setSplitPercent} />
+        <ResizableDivider
+          onResize={setDivider1}
+          min={20}
+          max={tutorOpen ? divider2 - 15 : 80}
+        />
 
-        {/* Right Panel */}
-        <div className="flex flex-1 min-w-0 bg-base" style={{ width: `${100 - splitPercent}%` }}>
+        {/* IDE Panel */}
+        <div
+          className="flex flex-col min-w-0 bg-base"
+          style={{ width: `${(tutorOpen ? divider2 : 100) - divider1}%` }}
+        >
           {activeExercise ? (
             <>
-              {/* Editor column */}
-              <div className="flex-1 flex flex-col min-w-0">
-                <EditorToolbar
-                  languageStd={languageStd}
-                  onLanguageChange={setLanguageStd}
-                  disabled={busy}
-                  hasLastPassingCode={!!activeExercise.lastPassingCode}
-                  onRestorePassing={handleRestorePassingSub}
-                  onReset={handleReset}
-                />
+              <EditorToolbar
+                languageStd={languageStd}
+                onLanguageChange={setLanguageStd}
+                disabled={busy}
+                hasLastPassingCode={!!activeExercise.lastPassingCode}
+                onRestorePassing={handleRestorePassingSub}
+                onReset={handleReset}
+              />
 
-                <div className="flex-1 min-h-0 border-b border-border">
-                  <MonacoEditor
-                    ref={editorRef}
-                    defaultValue={activeExercise.starterCode}
-                    onChange={(val) => {
-                      setCode(val);
-                      setStoreCode(val);
-                    }}
-                    language="cpp"
-                    readOnly={false}
-                    exerciseId={activeExercise.id}
-                  />
-                </div>
-
-                <OutputPanel
-                  result={result}
-                  error={error}
-                  isRunning={isRunning}
-                  isSubmitting={isSubmitting}
-                  onRun={() => handleSubmit("run")}
-                  onSubmit={() => handleSubmit("submit")}
+              <div className="flex-1 min-h-0 border-b border-border">
+                <MonacoEditor
+                  ref={editorRef}
+                  defaultValue={activeExercise.starterCode}
+                  onChange={(val) => {
+                    setCode(val);
+                    setStoreCode(val);
+                  }}
+                  language="cpp"
+                  readOnly={false}
+                  exerciseId={activeExercise.id}
                 />
               </div>
 
-              {/* Tutor panel */}
-              <div className="w-[360px] flex-shrink-0 border-l border-[var(--color-border)]">
-                <TutorPanel />
-              </div>
+              <OutputPanel
+                result={result}
+                error={error}
+                isRunning={isRunning}
+                isSubmitting={isSubmitting}
+                onRun={() => handleSubmit("run")}
+                onSubmit={() => handleSubmit("submit")}
+              />
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center text-muted">
@@ -446,6 +460,23 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
             </div>
           )}
         </div>
+
+        {/* Tutor Panel (toggled) */}
+        {tutorOpen && (
+          <>
+            <ResizableDivider
+              onResize={setDivider2}
+              min={divider1 + 15}
+              max={85}
+            />
+            <div
+              className="flex flex-col min-w-0 border-l border-[var(--color-border)]"
+              style={{ width: `${100 - divider2}%` }}
+            >
+              <TutorPanel />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -507,11 +538,15 @@ function LessonNav({
   lessonTitle,
   lessonId,
   hasExercises,
+  tutorOpen,
+  onToggleTutor,
 }: {
   nav: NavData;
   lessonTitle: string;
   lessonId: string;
   hasExercises: boolean;
+  tutorOpen?: boolean;
+  onToggleTutor?: () => void;
 }) {
   const router = useRouter();
 
@@ -586,6 +621,24 @@ function LessonNav({
       <span className="text-muted text-xs ml-auto">
         {nav.currentIndex} / {nav.totalInChapter}
       </span>
+
+      {onToggleTutor && (
+        <>
+          <div className="h-4 w-px bg-border mx-1" />
+          <button
+            onClick={onToggleTutor}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
+              tutorOpen
+                ? "bg-accent/15 text-accent"
+                : "text-secondary hover:text-primary hover:bg-hover"
+            }`}
+            title={tutorOpen ? "Hide tutor" : "Show tutor"}
+          >
+            <TutorIcon />
+            Tutor
+          </button>
+        </>
+      )}
     </div>
   );
 }
@@ -733,6 +786,23 @@ function ChevronRightIcon({ className }: { className?: string }) {
       <path
         fillRule="evenodd"
         d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+function TutorIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className="h-4 w-4"
+    >
+      <path
+        fillRule="evenodd"
+        d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 3.925 1 5.261v2.978c0 1.336.993 2.506 2.43 2.737.236.038.474.072.713.1l2.315 2.316a.75.75 0 001.06 0L9.83 11.08c.055 0 .113.002.17.002s.115-.001.17-.002l2.312 2.312a.75.75 0 001.06 0l2.315-2.316c.24-.028.477-.062.714-.1C18.007 10.745 19 9.575 19 8.239V5.261c0-1.336-.993-2.506-2.43-2.737A48.726 48.726 0 0010 2zm0 7a1 1 0 100-2 1 1 0 000 2zm-4-1a1 1 0 11-2 0 1 1 0 012 0zm9 1a1 1 0 100-2 1 1 0 000 2z"
         clipRule="evenodd"
       />
     </svg>

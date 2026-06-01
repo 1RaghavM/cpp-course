@@ -1,371 +1,820 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>cpproad — Learn C++ the way it's actually written</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<style>
-  /* ===== Tokens (from colors_and_type.css / design.md) ===== */
-  :root {
-    --color-bg: #0a0a0a;
-    --color-surface: #0f1115;
-    --color-surface-2: #161b22;
-    --color-elevated: #1c2128;
-    --color-border: #23262d;
-    --color-border-strong: #30363d;
-    --color-fg: #ededed;
-    --color-fg-muted: #8b949e;
-    --color-fg-subtle: #6e7681;
-    --color-accent: #2f81f7;
-    --color-link: #58a6ff;
-    --color-glow: rgba(47, 129, 247, 0.18);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cpproad — Learn C++ the way it's actually written</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== Tokens (from colors_and_type.css / design.md) ===== */
+      :root {
+        --color-bg: #0a0a0a;
+        --color-surface: #0f1115;
+        --color-surface-2: #161b22;
+        --color-elevated: #1c2128;
+        --color-border: #23262d;
+        --color-border-strong: #30363d;
+        --color-fg: #ededed;
+        --color-fg-muted: #8b949e;
+        --color-fg-subtle: #6e7681;
+        --color-accent: #2f81f7;
+        --color-link: #58a6ff;
+        --color-glow: rgba(47, 129, 247, 0.18);
 
-    --code-plain: #e6edf3;
-    --code-comment: #8b949e;
-    --code-keyword: #ff7b72;
-    --code-string: #a5d6ff;
-    --code-func: #d2a8ff;
-    --code-number: #79c0ff;
+        --code-plain: #e6edf3;
+        --code-comment: #8b949e;
+        --code-keyword: #ff7b72;
+        --code-string: #a5d6ff;
+        --code-func: #d2a8ff;
+        --code-number: #79c0ff;
 
-    --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-    --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+        --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    --text-hero: clamp(2.75rem, 6vw, 4.5rem);
-    --text-h2: clamp(1.75rem, 3vw, 2.25rem);
-    --text-h3: 1.25rem;
-    --text-body: 1.0625rem;
-    --text-sm: 0.875rem;
-    --text-eyebrow: 0.8125rem;
+        --text-hero: clamp(2.75rem, 6vw, 4.5rem);
+        --text-h2: clamp(1.75rem, 3vw, 2.25rem);
+        --text-h3: 1.25rem;
+        --text-body: 1.0625rem;
+        --text-sm: 0.875rem;
+        --text-eyebrow: 0.8125rem;
 
-    --container-max: 1100px;
-    --container-pad: 24px;
-    --section-y: clamp(80px, 12vw, 160px);
-    --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --hairline: 1px solid var(--color-border);
-  }
-  @media (max-width: 640px) { :root { --container-pad: 16px; } }
+        --container-max: 1100px;
+        --container-pad: 24px;
+        --section-y: clamp(80px, 12vw, 160px);
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --hairline: 1px solid var(--color-border);
+      }
+      @media (max-width: 640px) {
+        :root {
+          --container-pad: 16px;
+        }
+      }
 
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    background-color: var(--color-bg);
-    color: var(--color-fg);
-    font-family: var(--font-sans);
-    font-size: var(--text-body);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background-color: var(--color-bg);
+        color: var(--color-fg);
+        font-family: var(--font-sans);
+        font-size: var(--text-body);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
 
-  .container {
-    max-width: var(--container-max);
-    margin: 0 auto;
-    padding-left: var(--container-pad);
-    padding-right: var(--container-pad);
-  }
-  .section { padding-top: var(--section-y); padding-bottom: var(--section-y); }
-  .section-border { border-top: var(--hairline); }
+      .container {
+        max-width: var(--container-max);
+        margin: 0 auto;
+        padding-left: var(--container-pad);
+        padding-right: var(--container-pad);
+      }
+      .section {
+        padding-top: var(--section-y);
+        padding-bottom: var(--section-y);
+      }
+      .section-border {
+        border-top: var(--hairline);
+      }
 
-  /* ===== Buttons ===== */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    height: 40px; padding: 0 20px; border-radius: var(--radius-md);
-    font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 500;
-    line-height: 1; text-decoration: none; cursor: pointer; white-space: nowrap;
-    transition: background-color 150ms ease, border-color 150ms ease;
-  }
-  .btn-lg { height: 44px; padding: 0 22px; }
-  .btn-primary { background: #fff; color: #000; border: 1px solid #fff; }
-  .btn-primary:hover { background: rgba(255,255,255,0.92); border-color: rgba(255,255,255,0.92); }
-  .btn-secondary { background: transparent; color: var(--color-fg); border: 1px solid var(--color-border-strong); }
-  .btn-secondary:hover { border-color: var(--color-fg-subtle); background: var(--color-surface-2); }
+      /* ===== Buttons ===== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        padding: 0 20px;
+        border-radius: var(--radius-md);
+        font-family: var(--font-sans);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        line-height: 1;
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+          background-color 150ms ease,
+          border-color 150ms ease;
+      }
+      .btn-lg {
+        height: 44px;
+        padding: 0 22px;
+      }
+      .btn-primary {
+        background: #fff;
+        color: #000;
+        border: 1px solid #fff;
+      }
+      .btn-primary:hover {
+        background: rgba(255, 255, 255, 0.92);
+        border-color: rgba(255, 255, 255, 0.92);
+      }
+      .btn-secondary {
+        background: transparent;
+        color: var(--color-fg);
+        border: 1px solid var(--color-border-strong);
+      }
+      .btn-secondary:hover {
+        border-color: var(--color-fg-subtle);
+        background: var(--color-surface-2);
+      }
 
-  a:focus-visible, button:focus-visible, .btn:focus-visible {
-    outline: 2px solid var(--color-accent); outline-offset: 2px;
-  }
+      a:focus-visible,
+      button:focus-visible,
+      .btn:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+      }
 
-  /* ===== Nav ===== */
-  .nav-header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: 64px;
-    border-bottom: 1px solid transparent;
-    transition: background-color 200ms ease, border-color 200ms ease;
-  }
-  .nav-header[data-scrolled] {
-    background: rgba(10,10,10,0.8);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    border-bottom-color: var(--color-border);
-  }
-  .nav-inner {
-    max-width: 1280px; margin: 0 auto; height: 100%;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 var(--container-pad);
-  }
-  .nav-wordmark {
-    font-family: var(--font-mono); font-size: 1.125rem; font-weight: 600;
-    color: var(--color-fg); text-decoration: none; letter-spacing: -0.01em;
-  }
-  .nav-actions { display: flex; align-items: center; gap: 12px; }
-  .nav-mobile-trigger {
-    display: none; background: none; border: none; color: var(--color-fg);
-    padding: 8px; cursor: pointer;
-  }
-  @media (max-width: 767px) {
-    .nav-actions { display: none; }
-    .nav-mobile-trigger { display: inline-flex; align-items: center; justify-content: center; }
-  }
-  .nav-overlay {
-    position: fixed; inset: 0; z-index: 100; background: var(--color-bg);
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    gap: 16px; padding: 24px;
-  }
-  .nav-overlay[data-open] { display: flex; }
-  .nav-overlay-close {
-    position: absolute; top: 16px; right: var(--container-pad);
-    background: none; border: none; color: var(--color-fg); padding: 8px; cursor: pointer;
-  }
+      /* ===== Nav ===== */
+      .nav-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        height: 64px;
+        border-bottom: 1px solid transparent;
+        transition:
+          background-color 200ms ease,
+          border-color 200ms ease;
+      }
+      .nav-header[data-scrolled] {
+        background: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-bottom-color: var(--color-border);
+      }
+      .nav-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--container-pad);
+      }
+      .nav-wordmark {
+        font-family: var(--font-mono);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-fg);
+        text-decoration: none;
+        letter-spacing: -0.01em;
+      }
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .nav-mobile-trigger {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--color-fg);
+        padding: 8px;
+        cursor: pointer;
+      }
+      @media (max-width: 767px) {
+        .nav-actions {
+          display: none;
+        }
+        .nav-mobile-trigger {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+      .nav-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: var(--color-bg);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 24px;
+      }
+      .nav-overlay[data-open] {
+        display: flex;
+      }
+      .nav-overlay-close {
+        position: absolute;
+        top: 16px;
+        right: var(--container-pad);
+        background: none;
+        border: none;
+        color: var(--color-fg);
+        padding: 8px;
+        cursor: pointer;
+      }
 
-  /* ===== Hero ===== */
-  .hero { position: relative; padding-top: calc(64px + clamp(60px, 10vw, 120px)); padding-bottom: var(--section-y); }
-  .hero-glow {
-    position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(60% 50% at 50% 0%, var(--color-glow), transparent 70%);
-  }
-  .hero-inner { position: relative; max-width: 820px; }
-  .hero h1 {
-    font-size: var(--text-hero); font-weight: 700; letter-spacing: -0.03em;
-    line-height: 1.05; color: var(--color-fg); text-align: center; margin: 0;
-    text-wrap: balance;
-  }
-  .hero .sub {
-    font-size: var(--text-body); line-height: 1.6; color: var(--color-fg-muted);
-    text-align: center; max-width: 580px; margin: 24px auto 0; text-wrap: pretty;
-  }
-  .hero-ctas {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    margin-top: 40px; flex-wrap: wrap;
-  }
+      /* ===== Hero ===== */
+      .hero {
+        position: relative;
+        padding-top: calc(64px + clamp(60px, 10vw, 120px));
+        padding-bottom: var(--section-y);
+      }
+      .hero-glow {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(60% 50% at 50% 0%, var(--color-glow), transparent 70%);
+      }
+      .hero-inner {
+        position: relative;
+        max-width: 820px;
+      }
+      .hero h1 {
+        font-size: var(--text-hero);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        color: var(--color-fg);
+        text-align: center;
+        margin: 0;
+        text-wrap: balance;
+      }
+      .hero .sub {
+        font-size: var(--text-body);
+        line-height: 1.6;
+        color: var(--color-fg-muted);
+        text-align: center;
+        max-width: 580px;
+        margin: 24px auto 0;
+        text-wrap: pretty;
+      }
+      .hero-ctas {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
 
-  /* ===== Code card ===== */
-  .code-card {
-    border: var(--hairline); border-radius: var(--radius-lg); overflow: hidden;
-    background: var(--color-surface); margin-top: 56px;
-  }
-  .code-card-header { display: flex; align-items: center; padding: 12px 20px; border-bottom: var(--hairline); }
-  .code-card-tab { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-fg-muted); }
-  .code-card-body { padding: 20px 24px; overflow-x: auto; }
-  .code-card-body pre { margin: 0; font-family: var(--font-mono); font-size: 0.9375rem; line-height: 1.6; color: var(--code-plain); }
-  .tok-key { color: var(--code-keyword); }
-  .tok-str { color: var(--code-string); }
-  .tok-fn  { color: var(--code-func); }
-  .tok-num { color: var(--code-number); }
-  .tok-com { color: var(--code-comment); }
+      /* ===== Code card ===== */
+      .code-card {
+        border: var(--hairline);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: var(--color-surface);
+        margin-top: 56px;
+      }
+      .code-card-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        border-bottom: var(--hairline);
+      }
+      .code-card-tab {
+        font-family: var(--font-mono);
+        font-size: var(--text-sm);
+        color: var(--color-fg-muted);
+      }
+      .code-card-body {
+        padding: 20px 24px;
+        overflow-x: auto;
+      }
+      .code-card-body pre {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--code-plain);
+      }
+      .tok-key {
+        color: var(--code-keyword);
+      }
+      .tok-str {
+        color: var(--code-string);
+      }
+      .tok-fn {
+        color: var(--code-func);
+      }
+      .tok-num {
+        color: var(--code-number);
+      }
+      .tok-com {
+        color: var(--code-comment);
+      }
 
-  /* ===== Section heading ===== */
-  .sec-head { text-align: center; max-width: 680px; margin: 0 auto 56px; }
-  .sec-head h2 {
-    font-size: var(--text-h2); font-weight: 600; letter-spacing: -0.02em;
-    line-height: 1.1; color: var(--color-fg); margin: 0; text-wrap: balance;
-  }
-  .sec-head p { font-size: var(--text-body); color: var(--color-fg-muted); margin: 16px 0 0; text-wrap: pretty; }
+      /* ===== Section heading ===== */
+      .sec-head {
+        text-align: center;
+        max-width: 680px;
+        margin: 0 auto 56px;
+      }
+      .sec-head h2 {
+        font-size: var(--text-h2);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        color: var(--color-fg);
+        margin: 0;
+        text-wrap: balance;
+      }
+      .sec-head p {
+        font-size: var(--text-body);
+        color: var(--color-fg-muted);
+        margin: 16px 0 0;
+        text-wrap: pretty;
+      }
 
-  /* ===== Bento grid (7 cells, shared 1px hairlines) ===== */
-  .bento {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(150px, auto);
-    gap: 1px;
-    background: var(--color-border);
-    border: var(--hairline);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-  }
-  .cell {
-    position: relative;
-    background: var(--color-bg);
-    padding: 28px;
-    overflow: hidden;
-    transition: background-color 150ms ease;
-  }
-  .cell::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0;
-    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), rgba(47,129,247,0.10), transparent 70%);
-    transition: opacity 200ms ease;
-  }
-  .cell:hover { background: var(--color-surface); }
-  .cell:hover::before { opacity: 1; }
+      /* ===== Bento grid (7 cells, shared 1px hairlines) ===== */
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: minmax(150px, auto);
+        gap: 1px;
+        background: var(--color-border);
+        border: var(--hairline);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+      .cell {
+        position: relative;
+        background: var(--color-bg);
+        padding: 28px;
+        overflow: hidden;
+        transition: background-color 150ms ease;
+      }
+      .cell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        background: radial-gradient(
+          280px circle at var(--mx, 50%) var(--my, 50%),
+          rgba(47, 129, 247, 0.1),
+          transparent 70%
+        );
+        transition: opacity 200ms ease;
+      }
+      .cell:hover {
+        background: var(--color-surface);
+      }
+      .cell:hover::before {
+        opacity: 1;
+      }
 
-  .cell-ai     { grid-column: span 2; grid-row: span 2; }
-  .cell-editor { grid-column: span 2; }
-  .cell-topic  { grid-column: span 1; }
-  .cell-wide   { grid-column: span 2; }
+      .cell-ai {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .cell-editor {
+        grid-column: span 2;
+      }
+      .cell-topic {
+        grid-column: span 1;
+      }
+      .cell-wide {
+        grid-column: span 2;
+      }
 
-  .cell-eyebrow {
-    font-family: var(--font-mono); font-size: var(--text-eyebrow);
-    color: var(--color-fg-subtle); letter-spacing: 0.02em; margin: 0 0 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .cell h3 { font-size: var(--text-h3); font-weight: 600; color: var(--color-fg); margin: 0 0 8px; line-height: 1.3; }
-  .cell p { font-size: var(--text-sm); line-height: 1.55; color: var(--color-fg-muted); margin: 0; }
-  .cell .mono-frag {
-    display: inline-block; margin-top: 16px; font-family: var(--font-mono);
-    font-size: var(--text-sm); color: var(--code-plain);
-    background: var(--color-surface-2); border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm); padding: 4px 9px;
-  }
+      .cell-eyebrow {
+        font-family: var(--font-mono);
+        font-size: var(--text-eyebrow);
+        color: var(--color-fg-subtle);
+        letter-spacing: 0.02em;
+        margin: 0 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .cell h3 {
+        font-size: var(--text-h3);
+        font-weight: 600;
+        color: var(--color-fg);
+        margin: 0 0 8px;
+        line-height: 1.3;
+      }
+      .cell p {
+        font-size: var(--text-sm);
+        line-height: 1.55;
+        color: var(--color-fg-muted);
+        margin: 0;
+      }
+      .cell .mono-frag {
+        display: inline-block;
+        margin-top: 16px;
+        font-family: var(--font-mono);
+        font-size: var(--text-sm);
+        color: var(--code-plain);
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        padding: 4px 9px;
+      }
 
-  /* AI tutor cell internals */
-  .tutor-thread { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
-  .tutor-msg {
-    max-width: 86%; padding: 9px 12px; border-radius: 10px; font-size: var(--text-sm);
-    line-height: 1.45;
-  }
-  .tutor-msg.user { align-self: flex-end; background: var(--color-accent); color: #fff; }
-  .tutor-msg.bot { align-self: flex-start; background: var(--color-surface-2); color: var(--color-fg); border: 1px solid var(--color-border); }
-  .tier-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
-  .tier {
-    font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500;
-    padding: 3px 8px; border-radius: var(--radius-sm); border: 1px solid;
-  }
-  .tier-1 { color: var(--color-accent); border-color: rgba(47,129,247,0.35); background: rgba(47,129,247,0.10); }
-  .tier-2, .tier-3 { color: #d29922; border-color: rgba(210,153,34,0.30); background: rgba(210,153,34,0.08); }
-  .tier-4 { color: #3fb950; border-color: rgba(63,185,80,0.30); background: rgba(63,185,80,0.08); }
+      /* AI tutor cell internals */
+      .tutor-thread {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .tutor-msg {
+        max-width: 86%;
+        padding: 9px 12px;
+        border-radius: 10px;
+        font-size: var(--text-sm);
+        line-height: 1.45;
+      }
+      .tutor-msg.user {
+        align-self: flex-end;
+        background: var(--color-accent);
+        color: #fff;
+      }
+      .tutor-msg.bot {
+        align-self: flex-start;
+        background: var(--color-surface-2);
+        color: var(--color-fg);
+        border: 1px solid var(--color-border);
+      }
+      .tier-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 16px;
+      }
+      .tier {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        font-weight: 500;
+        padding: 3px 8px;
+        border-radius: var(--radius-sm);
+        border: 1px solid;
+      }
+      .tier-1 {
+        color: var(--color-accent);
+        border-color: rgba(47, 129, 247, 0.35);
+        background: rgba(47, 129, 247, 0.1);
+      }
+      .tier-2,
+      .tier-3 {
+        color: #d29922;
+        border-color: rgba(210, 153, 34, 0.3);
+        background: rgba(210, 153, 34, 0.08);
+      }
+      .tier-4 {
+        color: #3fb950;
+        border-color: rgba(63, 185, 80, 0.3);
+        background: rgba(63, 185, 80, 0.08);
+      }
 
-  /* Sandboxed editor cell internals */
-  .editor-mini { margin-top: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-surface); }
-  .editor-mini-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--color-border); }
-  .std-pill { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-fg-muted); border: 1px solid var(--color-border); border-radius: 999px; padding: 2px 8px; }
-  .std-pill[data-active] { color: var(--color-fg); border-color: var(--color-border-strong); background: var(--color-surface-2); }
-  .editor-mini-actions { margin-left: auto; display: flex; gap: 6px; }
-  .mini-run { font-size: 0.6875rem; font-weight: 500; padding: 3px 10px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); color: var(--color-fg); background: var(--color-surface-2); }
-  .mini-submit { font-size: 0.6875rem; font-weight: 600; padding: 3px 10px; border-radius: var(--radius-sm); background: #fff; color: #000; border: 1px solid #fff; }
-  .editor-mini-body { padding: 12px 14px; font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.55; }
+      /* Sandboxed editor cell internals */
+      .editor-mini {
+        margin-top: 16px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: var(--color-surface);
+      }
+      .editor-mini-bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .std-pill {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        color: var(--color-fg-muted);
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        padding: 2px 8px;
+      }
+      .std-pill[data-active] {
+        color: var(--color-fg);
+        border-color: var(--color-border-strong);
+        background: var(--color-surface-2);
+      }
+      .editor-mini-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 6px;
+      }
+      .mini-run {
+        font-size: 0.6875rem;
+        font-weight: 500;
+        padding: 3px 10px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--color-border);
+        color: var(--color-fg);
+        background: var(--color-surface-2);
+      }
+      .mini-submit {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: var(--radius-sm);
+        background: #fff;
+        color: #000;
+        border: 1px solid #fff;
+      }
+      .editor-mini-body {
+        padding: 12px 14px;
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        line-height: 1.55;
+      }
 
-  /* No-setup cell */
-  .nosetup-row { display: flex; align-items: center; gap: 18px; }
-  .nosetup-row .icon { color: var(--color-accent); flex-shrink: 0; }
+      /* No-setup cell */
+      .nosetup-row {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .nosetup-row .icon {
+        color: var(--color-accent);
+        flex-shrink: 0;
+      }
 
-  /* ===== Curriculum (numbered stepped path) ===== */
-  .curr { max-width: 760px; margin: 0 auto; }
-  .step {
-    position: relative; display: grid; grid-template-columns: 56px 1fr; gap: 8px;
-    padding-bottom: 40px;
-  }
-  .step:last-child { padding-bottom: 0; }
-  .step-rail { position: relative; display: flex; flex-direction: column; align-items: center; }
-  .step-num {
-    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-    border: 1px solid var(--color-border-strong); background: var(--color-surface);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 600; color: var(--color-fg);
-    z-index: 1;
-  }
-  .step:not(:last-child) .step-line {
-    position: absolute; top: 40px; bottom: -40px; width: 1px; background: var(--color-border);
-  }
-  .step-body { padding-top: 7px; }
-  .step-stage { font-size: var(--text-eyebrow); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-fg-subtle); margin: 0 0 4px; }
-  .step-body h3 { font-size: 1.375rem; font-weight: 600; color: var(--color-fg); margin: 0 0 14px; letter-spacing: -0.01em; }
-  .topic-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .topic-tag {
-    font-size: var(--text-sm); color: var(--color-fg-muted);
-    border: 1px solid var(--color-border); border-radius: 999px;
-    padding: 5px 12px; background: var(--color-surface);
-  }
+      /* ===== Curriculum (numbered stepped path) ===== */
+      .curr {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .step {
+        position: relative;
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 8px;
+        padding-bottom: 40px;
+      }
+      .step:last-child {
+        padding-bottom: 0;
+      }
+      .step-rail {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .step-num {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        border: 1px solid var(--color-border-strong);
+        background: var(--color-surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--color-fg);
+        z-index: 1;
+      }
+      .step:not(:last-child) .step-line {
+        position: absolute;
+        top: 40px;
+        bottom: -40px;
+        width: 1px;
+        background: var(--color-border);
+      }
+      .step-body {
+        padding-top: 7px;
+      }
+      .step-stage {
+        font-size: var(--text-eyebrow);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-fg-subtle);
+        margin: 0 0 4px;
+      }
+      .step-body h3 {
+        font-size: 1.375rem;
+        font-weight: 600;
+        color: var(--color-fg);
+        margin: 0 0 14px;
+        letter-spacing: -0.01em;
+      }
+      .topic-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .topic-tag {
+        font-size: var(--text-sm);
+        color: var(--color-fg-muted);
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        padding: 5px 12px;
+        background: var(--color-surface);
+      }
 
-  /* ===== Final CTA ===== */
-  .final-cta { position: relative; text-align: center; }
-  .final-cta .glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(55% 60% at 50% 100%, var(--color-glow), transparent 70%); }
-  .final-cta .inner { position: relative; max-width: 600px; margin: 0 auto; }
-  .final-cta h2 { font-size: var(--text-h2); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; color: var(--color-fg); margin: 0 0 32px; text-wrap: balance; }
+      /* ===== Final CTA ===== */
+      .final-cta {
+        position: relative;
+        text-align: center;
+      }
+      .final-cta .glow {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(55% 60% at 50% 100%, var(--color-glow), transparent 70%);
+      }
+      .final-cta .inner {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .final-cta h2 {
+        font-size: var(--text-h2);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        color: var(--color-fg);
+        margin: 0 0 32px;
+        text-wrap: balance;
+      }
 
-  /* ===== Footer ===== */
-  footer { border-top: var(--hairline); }
-  .footer-inner {
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
-    gap: 12px; padding: 20px var(--container-pad); max-width: var(--container-max); margin: 0 auto;
-    font-size: var(--text-sm); color: var(--color-fg-subtle);
-  }
-  .footer-inner a { color: var(--color-fg-subtle); text-decoration: none; }
-  .footer-inner a:hover { color: var(--color-fg); }
-  .footer-mark { font-family: var(--font-mono); font-weight: 600; color: var(--color-fg-muted); }
-  .footer-links { display: flex; align-items: center; gap: 16px; }
+      /* ===== Footer ===== */
+      footer {
+        border-top: var(--hairline);
+      }
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 20px var(--container-pad);
+        max-width: var(--container-max);
+        margin: 0 auto;
+        font-size: var(--text-sm);
+        color: var(--color-fg-subtle);
+      }
+      .footer-inner a {
+        color: var(--color-fg-subtle);
+        text-decoration: none;
+      }
+      .footer-inner a:hover {
+        color: var(--color-fg);
+      }
+      .footer-mark {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        color: var(--color-fg-muted);
+      }
+      .footer-links {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
 
-  /* ===== Reveal on scroll (visible by default; gentle lift for real browsers) ===== */
-  .reveal { opacity: 1; }
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal:not([data-shown]) { will-change: opacity, transform; }
-  }
+      /* ===== Reveal on scroll (visible by default; gentle lift for real browsers) ===== */
+      .reveal {
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        .reveal:not([data-shown]) {
+          will-change: opacity, transform;
+        }
+      }
 
-  /* ===== Page-load stagger (hero) — visible by default ===== */
-  .load { opacity: 1; }
+      /* ===== Page-load stagger (hero) — visible by default ===== */
+      .load {
+        opacity: 1;
+      }
 
-  /* ===== Responsive bento ===== */
-  @media (max-width: 880px) {
-    .bento { grid-template-columns: repeat(2, 1fr); }
-    .cell-ai { grid-column: span 2; grid-row: span 1; }
-    .cell-editor, .cell-wide { grid-column: span 2; }
-    .cell-topic { grid-column: span 1; }
-  }
-  @media (max-width: 560px) {
-    .bento { grid-template-columns: 1fr; }
-    .cell-ai, .cell-editor, .cell-topic, .cell-wide { grid-column: span 1; }
-    .step { grid-template-columns: 44px 1fr; }
-  }
+      /* ===== Responsive bento ===== */
+      @media (max-width: 880px) {
+        .bento {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .cell-ai {
+          grid-column: span 2;
+          grid-row: span 1;
+        }
+        .cell-editor,
+        .cell-wide {
+          grid-column: span 2;
+        }
+        .cell-topic {
+          grid-column: span 1;
+        }
+      }
+      @media (max-width: 560px) {
+        .bento {
+          grid-template-columns: 1fr;
+        }
+        .cell-ai,
+        .cell-editor,
+        .cell-topic,
+        .cell-wide {
+          grid-column: span 1;
+        }
+        .step {
+          grid-template-columns: 44px 1fr;
+        }
+      }
 
-  @media (prefers-reduced-motion: reduce) {
-    .load, .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-    html { scroll-behavior: auto; }
-  }
-</style>
-</head>
-<body>
+      @media (prefers-reduced-motion: reduce) {
+        .load,
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===================== NAV ===================== -->
+    <header class="nav-header" id="nav" data-screen-label="Nav">
+      <nav class="nav-inner">
+        <a href="#" class="nav-wordmark">cpproad</a>
+        <div class="nav-actions">
+          <a href="#" class="btn btn-secondary">Sign in</a>
+          <a href="#" class="btn btn-primary">Start learning</a>
+        </div>
+        <button
+          class="nav-mobile-trigger"
+          id="menuOpen"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          >
+            <path d="M3 6h14M3 10h14M3 14h14" />
+          </svg>
+        </button>
+      </nav>
+    </header>
 
-<!-- ===================== NAV ===================== -->
-<header class="nav-header" id="nav" data-screen-label="Nav">
-  <nav class="nav-inner">
-    <a href="#" class="nav-wordmark">cpproad</a>
-    <div class="nav-actions">
-      <a href="#" class="btn btn-secondary">Sign in</a>
-      <a href="#" class="btn btn-primary">Start learning</a>
+    <div
+      class="nav-overlay"
+      id="overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation menu"
+    >
+      <button class="nav-overlay-close" id="menuClose" aria-label="Close menu">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        >
+          <path d="M5 5l10 10M15 5L5 15" />
+        </svg>
+      </button>
+      <a href="#" class="btn btn-secondary btn-lg" style="width: 200px">Sign in</a>
+      <a href="#" class="btn btn-primary btn-lg" style="width: 200px">Start learning</a>
     </div>
-    <button class="nav-mobile-trigger" id="menuOpen" aria-label="Open menu" aria-expanded="false">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14" /></svg>
-    </button>
-  </nav>
-</header>
 
-<div class="nav-overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Navigation menu">
-  <button class="nav-overlay-close" id="menuClose" aria-label="Close menu">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15" /></svg>
-  </button>
-  <a href="#" class="btn btn-secondary btn-lg" style="width:200px">Sign in</a>
-  <a href="#" class="btn btn-primary btn-lg" style="width:200px">Start learning</a>
-</div>
-
-<!-- ===================== HERO (kept) ===================== -->
-<section class="hero" data-screen-label="Hero">
-  <div class="hero-glow" aria-hidden="true"></div>
-  <div class="container hero-inner">
-    <h1 class="load">Learn C++ the way it&rsquo;s actually written.</h1>
-    <p class="sub load load-d1">
-      A structured, hands-on path through modern C++ — from first program to
-      templates. Write real code in a sandboxed editor, get help from an AI
-      tutor when you&rsquo;re stuck.
-    </p>
-    <div class="hero-ctas load load-d2">
-      <a href="#" class="btn btn-primary btn-lg">Start learning C++</a>
-      <a href="#" class="btn btn-secondary btn-lg">Sign in</a>
-    </div>
-    <div class="load load-d3">
-      <div class="code-card">
-        <div class="code-card-header"><span class="code-card-tab">main.cpp</span></div>
-        <div class="code-card-body"><pre><code><span class="tok-key">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
+    <!-- ===================== HERO (kept) ===================== -->
+    <section class="hero" data-screen-label="Hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <h1 class="load">Learn C++ the way it&rsquo;s actually written.</h1>
+        <p class="sub load load-d1">
+          A structured, hands-on path through modern C++ — from first program to templates. Write
+          real code in a sandboxed editor, get help from an AI tutor when you&rsquo;re stuck.
+        </p>
+        <div class="hero-ctas load load-d2">
+          <a href="#" class="btn btn-primary btn-lg">Start learning C++</a>
+          <a href="#" class="btn btn-secondary btn-lg">Sign in</a>
+        </div>
+        <div class="load load-d3">
+          <div class="code-card">
+            <div class="code-card-header"><span class="code-card-tab">main.cpp</span></div>
+            <div class="code-card-body">
+              <pre><code><span class="tok-key">#include</span> <span class="tok-str">&lt;iostream&gt;</span>
 <span class="tok-key">#include</span> <span class="tok-str">&lt;vector&gt;</span>
 <span class="tok-key">#include</span> <span class="tok-str">&lt;string&gt;</span>
 
@@ -380,244 +829,333 @@
     }
 
     <span class="tok-key">return</span> <span class="tok-num">0</span>;
-}</code></pre></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== BENTO CAPABILITIES ===================== -->
-<section class="section section-border" data-screen-label="Capabilities">
-  <div class="container">
-    <div class="sec-head reveal">
-      <h2>Learn by writing real C++</h2>
-      <p>A sandboxed editor, an AI tutor that won&rsquo;t just hand you the answer, and a focused path through the language — no setup required.</p>
-    </div>
-
-    <div class="bento reveal">
-      <!-- AI tutor (big) -->
-      <div class="cell cell-ai">
-        <p class="cell-eyebrow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          AI tutor
-        </p>
-        <h3>Hints that build understanding, not dependence</h3>
-        <p>Stuck on an exercise? The tutor escalates through four tiers — guiding questions first, a full worked solution only as a last resort.</p>
-        <div class="tutor-thread">
-          <div class="tutor-msg user">Why does my vector lose its elements?</div>
-          <div class="tutor-msg bot">What happens to a local <code style="font-family:var(--font-mono)">std::vector</code> when the function returns? Trace its lifetime.</div>
-        </div>
-        <div class="tier-row">
-          <span class="tier tier-1">T1 · Guiding</span>
-          <span class="tier tier-2">T2 · Concept</span>
-          <span class="tier tier-3">T3 · Approach</span>
-          <span class="tier tier-4">T4 · Solution</span>
-        </div>
-      </div>
-
-      <!-- Sandboxed editor (wide) -->
-      <div class="cell cell-editor">
-        <p class="cell-eyebrow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          Sandboxed editor
-        </p>
-        <h3>Compile and run real C++ in the browser</h3>
-        <p>A full editor with run, submit, and test cases. Switch the language standard and see compiler output instantly.</p>
-        <div class="editor-mini">
-          <div class="editor-mini-bar">
-            <span class="std-pill">C++17</span>
-            <span class="std-pill" data-active>C++20</span>
-            <span class="std-pill">C++23</span>
-            <span class="editor-mini-actions">
-              <span class="mini-run">Run</span>
-              <span class="mini-submit">Submit</span>
-            </span>
-          </div>
-          <div class="editor-mini-body"><span class="tok-key">auto</span> sum = std::<span class="tok-fn">accumulate</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-num">0</span>);</div>
-        </div>
-      </div>
-
-      <!-- Topic: Pointers -->
-      <div class="cell cell-topic">
-        <h3>Pointers &amp; memory</h3>
-        <p>Pointers stop being scary once you can see what they point at.</p>
-        <span class="mono-frag">int* ptr = &amp;x;</span>
-      </div>
-
-      <!-- Topic: STL -->
-      <div class="cell cell-topic">
-        <h3>The STL in practice</h3>
-        <p>Vectors, maps, algorithms — learn the standard library by using it.</p>
-        <span class="mono-frag">std::vector&lt;int&gt;</span>
-      </div>
-
-      <!-- Topic: Templates -->
-      <div class="cell cell-topic">
-        <h3>Templates &amp; generics</h3>
-        <p>Write code that works with any type, without the mystery.</p>
-        <span class="mono-frag">template&lt;typename T&gt;</span>
-      </div>
-
-      <!-- Topic: Compile -->
-      <div class="cell cell-topic">
-        <h3>Compile, link, debug</h3>
-        <p>Understand what happens between &lsquo;Save&rsquo; and &lsquo;Run&rsquo;.</p>
-        <span class="mono-frag">g++ -std=c++17</span>
-      </div>
-
-      <!-- No setup (wide) -->
-      <div class="cell cell-wide">
-        <div class="nosetup-row">
-          <span class="icon">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          </span>
-          <div>
-            <h3 style="margin-bottom:6px">No setup. Nothing to install.</h3>
-            <p>No toolchain, no compiler flags to fight on day one. Open a browser and write your first program in seconds.</p>
+}</code></pre>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ===================== CURRICULUM PATH (stepped) ===================== -->
-<section class="section section-border" data-screen-label="Curriculum">
-  <div class="container">
-    <div class="sec-head reveal">
-      <h2>A clear path from basics to proficiency</h2>
-      <p>Four sequenced stages. Each builds on the last — no jumping into templates before you understand memory.</p>
-    </div>
+    <!-- ===================== BENTO CAPABILITIES ===================== -->
+    <section class="section section-border" data-screen-label="Capabilities">
+      <div class="container">
+        <div class="sec-head reveal">
+          <h2>Learn by writing real C++</h2>
+          <p>
+            A sandboxed editor, an AI tutor that won&rsquo;t just hand you the answer, and a focused
+            path through the language — no setup required.
+          </p>
+        </div>
 
-    <div class="curr">
-      <div class="step reveal">
-        <div class="step-rail"><div class="step-num">01</div><div class="step-line"></div></div>
-        <div class="step-body">
-          <p class="step-stage">Stage one</p>
-          <h3>Basics</h3>
-          <div class="topic-tags">
-            <span class="topic-tag">Variables &amp; types</span>
-            <span class="topic-tag">Control flow</span>
-            <span class="topic-tag">Functions</span>
-            <span class="topic-tag">Arrays &amp; strings</span>
-            <span class="topic-tag">I/O streams</span>
-            <span class="topic-tag">Operators &amp; expressions</span>
+        <div class="bento reveal">
+          <!-- AI tutor (big) -->
+          <div class="cell cell-ai">
+            <p class="cell-eyebrow">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              AI tutor
+            </p>
+            <h3>Hints that build understanding, not dependence</h3>
+            <p>
+              Stuck on an exercise? The tutor escalates through four tiers — guiding questions
+              first, a full worked solution only as a last resort.
+            </p>
+            <div class="tutor-thread">
+              <div class="tutor-msg user">Why does my vector lose its elements?</div>
+              <div class="tutor-msg bot">
+                What happens to a local
+                <code style="font-family: var(--font-mono)">std::vector</code> when the function
+                returns? Trace its lifetime.
+              </div>
+            </div>
+            <div class="tier-row">
+              <span class="tier tier-1">T1 · Guiding</span>
+              <span class="tier tier-2">T2 · Concept</span>
+              <span class="tier tier-3">T3 · Approach</span>
+              <span class="tier tier-4">T4 · Solution</span>
+            </div>
+          </div>
+
+          <!-- Sandboxed editor (wide) -->
+          <div class="cell cell-editor">
+            <p class="cell-eyebrow">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
+              Sandboxed editor
+            </p>
+            <h3>Compile and run real C++ in the browser</h3>
+            <p>
+              A full editor with run, submit, and test cases. Switch the language standard and see
+              compiler output instantly.
+            </p>
+            <div class="editor-mini">
+              <div class="editor-mini-bar">
+                <span class="std-pill">C++17</span>
+                <span class="std-pill" data-active>C++20</span>
+                <span class="std-pill">C++23</span>
+                <span class="editor-mini-actions">
+                  <span class="mini-run">Run</span>
+                  <span class="mini-submit">Submit</span>
+                </span>
+              </div>
+              <div class="editor-mini-body">
+                <span class="tok-key">auto</span> sum = std::<span class="tok-fn">accumulate</span
+                >(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(),
+                <span class="tok-num">0</span>);
+              </div>
+            </div>
+          </div>
+
+          <!-- Topic: Pointers -->
+          <div class="cell cell-topic">
+            <h3>Pointers &amp; memory</h3>
+            <p>Pointers stop being scary once you can see what they point at.</p>
+            <span class="mono-frag">int* ptr = &amp;x;</span>
+          </div>
+
+          <!-- Topic: STL -->
+          <div class="cell cell-topic">
+            <h3>The STL in practice</h3>
+            <p>Vectors, maps, algorithms — learn the standard library by using it.</p>
+            <span class="mono-frag">std::vector&lt;int&gt;</span>
+          </div>
+
+          <!-- Topic: Templates -->
+          <div class="cell cell-topic">
+            <h3>Templates &amp; generics</h3>
+            <p>Write code that works with any type, without the mystery.</p>
+            <span class="mono-frag">template&lt;typename T&gt;</span>
+          </div>
+
+          <!-- Topic: Compile -->
+          <div class="cell cell-topic">
+            <h3>Compile, link, debug</h3>
+            <p>Understand what happens between &lsquo;Save&rsquo; and &lsquo;Run&rsquo;.</p>
+            <span class="mono-frag">g++ -std=c++17</span>
+          </div>
+
+          <!-- No setup (wide) -->
+          <div class="cell cell-wide">
+            <div class="nosetup-row">
+              <span class="icon">
+                <svg
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+              </span>
+              <div>
+                <h3 style="margin-bottom: 6px">No setup. Nothing to install.</h3>
+                <p>
+                  No toolchain, no compiler flags to fight on day one. Open a browser and write your
+                  first program in seconds.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="step reveal">
-        <div class="step-rail"><div class="step-num">02</div><div class="step-line"></div></div>
-        <div class="step-body">
-          <p class="step-stage">Stage two</p>
-          <h3>Memory &amp; OOP</h3>
-          <div class="topic-tags">
-            <span class="topic-tag">Pointers &amp; references</span>
-            <span class="topic-tag">Dynamic allocation</span>
-            <span class="topic-tag">Classes &amp; objects</span>
-            <span class="topic-tag">Inheritance</span>
-            <span class="topic-tag">Operator overloading</span>
-            <span class="topic-tag">Scope &amp; namespaces</span>
+    <!-- ===================== CURRICULUM PATH (stepped) ===================== -->
+    <section class="section section-border" data-screen-label="Curriculum">
+      <div class="container">
+        <div class="sec-head reveal">
+          <h2>A clear path from basics to proficiency</h2>
+          <p>
+            Four sequenced stages. Each builds on the last — no jumping into templates before you
+            understand memory.
+          </p>
+        </div>
+
+        <div class="curr">
+          <div class="step reveal">
+            <div class="step-rail">
+              <div class="step-num">01</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <p class="step-stage">Stage one</p>
+              <h3>Basics</h3>
+              <div class="topic-tags">
+                <span class="topic-tag">Variables &amp; types</span>
+                <span class="topic-tag">Control flow</span>
+                <span class="topic-tag">Functions</span>
+                <span class="topic-tag">Arrays &amp; strings</span>
+                <span class="topic-tag">I/O streams</span>
+                <span class="topic-tag">Operators &amp; expressions</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="step reveal">
+            <div class="step-rail">
+              <div class="step-num">02</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <p class="step-stage">Stage two</p>
+              <h3>Memory &amp; OOP</h3>
+              <div class="topic-tags">
+                <span class="topic-tag">Pointers &amp; references</span>
+                <span class="topic-tag">Dynamic allocation</span>
+                <span class="topic-tag">Classes &amp; objects</span>
+                <span class="topic-tag">Inheritance</span>
+                <span class="topic-tag">Operator overloading</span>
+                <span class="topic-tag">Scope &amp; namespaces</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="step reveal">
+            <div class="step-rail">
+              <div class="step-num">03</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <p class="step-stage">Stage three</p>
+              <h3>STL &amp; Templates</h3>
+              <div class="topic-tags">
+                <span class="topic-tag">std::vector &amp; std::array</span>
+                <span class="topic-tag">Iterators</span>
+                <span class="topic-tag">Algorithms</span>
+                <span class="topic-tag">Function &amp; class templates</span>
+                <span class="topic-tag">Smart pointers</span>
+                <span class="topic-tag">Containers &amp; adaptors</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="step reveal">
+            <div class="step-rail"><div class="step-num">04</div></div>
+            <div class="step-body">
+              <p class="step-stage">Stage four</p>
+              <h3>Advanced</h3>
+              <div class="topic-tags">
+                <span class="topic-tag">Move semantics</span>
+                <span class="topic-tag">Exceptions</span>
+                <span class="topic-tag">Lambda expressions</span>
+                <span class="topic-tag">The preprocessor</span>
+                <span class="topic-tag">Build systems &amp; linking</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="step reveal">
-        <div class="step-rail"><div class="step-num">03</div><div class="step-line"></div></div>
-        <div class="step-body">
-          <p class="step-stage">Stage three</p>
-          <h3>STL &amp; Templates</h3>
-          <div class="topic-tags">
-            <span class="topic-tag">std::vector &amp; std::array</span>
-            <span class="topic-tag">Iterators</span>
-            <span class="topic-tag">Algorithms</span>
-            <span class="topic-tag">Function &amp; class templates</span>
-            <span class="topic-tag">Smart pointers</span>
-            <span class="topic-tag">Containers &amp; adaptors</span>
-          </div>
+    <!-- ===================== FINAL CTA ===================== -->
+    <section class="section section-border final-cta" data-screen-label="Final CTA">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="container inner reveal">
+        <h2>Start with the basics. No setup required.</h2>
+        <a href="#" class="btn btn-primary btn-lg">Start learning C++</a>
+      </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer data-screen-label="Footer">
+      <div class="footer-inner">
+        <span class="footer-mark">cpproad</span>
+        <div class="footer-links">
+          <a href="#">Sign in</a>
+          <span>&copy; 2026</span>
         </div>
       </div>
+    </footer>
 
-      <div class="step reveal">
-        <div class="step-rail"><div class="step-num">04</div></div>
-        <div class="step-body">
-          <p class="step-stage">Stage four</p>
-          <h3>Advanced</h3>
-          <div class="topic-tags">
-            <span class="topic-tag">Move semantics</span>
-            <span class="topic-tag">Exceptions</span>
-            <span class="topic-tag">Lambda expressions</span>
-            <span class="topic-tag">The preprocessor</span>
-            <span class="topic-tag">Build systems &amp; linking</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    <script>
+      // Nav scroll state
+      var nav = document.getElementById("nav");
+      function onScroll() {
+        if (window.scrollY > 8) nav.setAttribute("data-scrolled", "");
+        else nav.removeAttribute("data-scrolled");
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
 
-<!-- ===================== FINAL CTA ===================== -->
-<section class="section section-border final-cta" data-screen-label="Final CTA">
-  <div class="glow" aria-hidden="true"></div>
-  <div class="container inner reveal">
-    <h2>Start with the basics. No setup required.</h2>
-    <a href="#" class="btn btn-primary btn-lg">Start learning C++</a>
-  </div>
-</section>
+      // Hero load-in (static end-state, robust if transitions don't run)
+      requestAnimationFrame(function () {
+        document.querySelectorAll(".load").forEach(function (el) {
+          el.setAttribute("data-shown", "");
+        });
+      });
 
-<!-- ===================== FOOTER ===================== -->
-<footer data-screen-label="Footer">
-  <div class="footer-inner">
-    <span class="footer-mark">cpproad</span>
-    <div class="footer-links">
-      <a href="#">Sign in</a>
-      <span>&copy; 2026</span>
-    </div>
-  </div>
-</footer>
+      // Mobile menu
+      var overlay = document.getElementById("overlay");
+      var openBtn = document.getElementById("menuOpen");
+      var closeBtn = document.getElementById("menuClose");
+      function openMenu() {
+        overlay.setAttribute("data-open", "");
+        openBtn.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMenu() {
+        overlay.removeAttribute("data-open");
+        openBtn.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      }
+      openBtn.addEventListener("click", openMenu);
+      closeBtn.addEventListener("click", closeMenu);
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closeMenu();
+      });
+      overlay.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", closeMenu);
+      });
 
-<script>
-  // Nav scroll state
-  var nav = document.getElementById('nav');
-  function onScroll() {
-    if (window.scrollY > 8) nav.setAttribute('data-scrolled', '');
-    else nav.removeAttribute('data-scrolled');
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+      // Scroll reveal
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.setAttribute("data-shown", "");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+      );
+      document.querySelectorAll(".reveal").forEach(function (el) {
+        io.observe(el);
+      });
 
-  // Hero load-in (static end-state, robust if transitions don't run)
-  requestAnimationFrame(function () {
-    document.querySelectorAll('.load').forEach(function (el) { el.setAttribute('data-shown', ''); });
-  });
-
-  // Mobile menu
-  var overlay = document.getElementById('overlay');
-  var openBtn = document.getElementById('menuOpen');
-  var closeBtn = document.getElementById('menuClose');
-  function openMenu() { overlay.setAttribute('data-open', ''); openBtn.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; }
-  function closeMenu() { overlay.removeAttribute('data-open'); openBtn.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
-  openBtn.addEventListener('click', openMenu);
-  closeBtn.addEventListener('click', closeMenu);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
-  overlay.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', closeMenu); });
-
-  // Scroll reveal
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) { entry.target.setAttribute('data-shown', ''); io.unobserve(entry.target); }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
-
-  // Bento spotlight
-  document.querySelectorAll('.cell').forEach(function (cell) {
-    cell.addEventListener('pointermove', function (e) {
-      var r = cell.getBoundingClientRect();
-      cell.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      cell.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    });
-  });
-</script>
-</body>
+      // Bento spotlight
+      document.querySelectorAll(".cell").forEach(function (cell) {
+        cell.addEventListener("pointermove", function (e) {
+          var r = cell.getBoundingClientRect();
+          cell.style.setProperty("--mx", e.clientX - r.left + "px");
+          cell.style.setProperty("--my", e.clientY - r.top + "px");
+        });
+      });
+    </script>
+  </body>
 </html>

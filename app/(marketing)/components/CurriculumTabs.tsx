@@ -92,13 +92,20 @@ const STAGES = [
 
 function lineClass(cls?: string) {
   switch (cls) {
-    case "kw-inc": return "ct-kw";
-    case "kw": return "ct-kw";
-    case "fn": return "ct-fn";
-    case "str": return "ct-str";
-    case "num": return "ct-num";
-    case "cmt": return "ct-cmt";
-    default: return "";
+    case "kw-inc":
+      return "ct-kw";
+    case "kw":
+      return "ct-kw";
+    case "fn":
+      return "ct-fn";
+    case "str":
+      return "ct-str";
+    case "num":
+      return "ct-num";
+    case "cmt":
+      return "ct-cmt";
+    default:
+      return "";
   }
 }
 

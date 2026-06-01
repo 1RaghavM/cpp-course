@@ -14,10 +14,7 @@ export function AuthAlert({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={VARIANT_CLASS[variant]}
-      role={variant === "error" ? "alert" : "status"}
-    >
+    <div className={VARIANT_CLASS[variant]} role={variant === "error" ? "alert" : "status"}>
       {children}
     </div>
   );

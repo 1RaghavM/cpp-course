@@ -35,9 +35,7 @@ export function RegenerateButton({ slug }: RegenerateButtonProps) {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: string }).error ?? "Regeneration failed",
-        );
+        throw new Error((body as { error?: string }).error ?? "Regeneration failed");
       }
 
       // Refresh the page to show regenerated content
@@ -58,9 +56,7 @@ export function RegenerateButton({ slug }: RegenerateButtonProps) {
       >
         {loading ? "Regenerating..." : "Regenerate this lesson"}
       </button>
-      {error && (
-        <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }

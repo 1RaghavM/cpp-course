@@ -1,12 +1,8 @@
-import Anthropic from '@anthropic-ai/sdk';
-import type {
-  Message,
-  MessageParam,
-  TextBlockParam,
-} from '@anthropic-ai/sdk/resources/messages';
-import type { MessageStream } from '@anthropic-ai/sdk/lib/MessageStream';
-import type { AppSupabaseClient } from '@/lib/supabase/types';
-import { logTokenUsage, type CallType } from './cost';
+import Anthropic from "@anthropic-ai/sdk";
+import type { Message, MessageParam, TextBlockParam } from "@anthropic-ai/sdk/resources/messages";
+import type { MessageStream } from "@anthropic-ai/sdk/lib/MessageStream";
+import type { AppSupabaseClient } from "@/lib/supabase/types";
+import { logTokenUsage, type CallType } from "./cost";
 
 // ---------------------------------------------------------------------------
 // Singleton SDK client
@@ -83,7 +79,7 @@ export async function createCompletion(
     lessonId: meta.lessonId,
     userId: meta.userId,
   }).catch((err: unknown) => {
-    console.error('Token usage logging failed:', err);
+    console.error("Token usage logging failed:", err);
   });
 
   return response;
@@ -100,10 +96,7 @@ export async function createCompletion(
  * Token usage is logged automatically after the stream completes (from the
  * `finalMessage` event).
  */
-export function streamCompletion(
-  params: CompletionParams,
-  meta: CompletionMeta,
-): MessageStream {
+export function streamCompletion(params: CompletionParams, meta: CompletionMeta): MessageStream {
   const stream = anthropic.messages.stream({
     model: params.model,
     max_tokens: params.maxTokens,
@@ -113,7 +106,7 @@ export function streamCompletion(
   });
 
   // Log usage once the stream is fully consumed.
-  stream.on('finalMessage', (message: Message) => {
+  stream.on("finalMessage", (message: Message) => {
     const usage = extractUsage(message);
     logTokenUsage(meta.supabase, {
       callType: meta.callType,
@@ -122,7 +115,7 @@ export function streamCompletion(
       lessonId: meta.lessonId,
       userId: meta.userId,
     }).catch((err: unknown) => {
-      console.error('Token usage logging failed (stream):', err);
+      console.error("Token usage logging failed (stream):", err);
     });
   });
 

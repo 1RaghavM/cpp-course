@@ -6,7 +6,9 @@ export function AppHeader({ progressPercent }: { progressPercent: number }) {
     <header className="border-b border-border/50">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-6 px-6">
         <Link href="/dashboard" className="flex items-center gap-0">
-          <span className="font-mono text-lg font-semibold tracking-tight text-primary">cpproad</span>
+          <span className="font-mono text-lg font-semibold tracking-tight text-primary">
+            cpproad
+          </span>
         </Link>
 
         <div className="ml-auto flex items-center gap-4">

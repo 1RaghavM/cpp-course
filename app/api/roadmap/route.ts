@@ -43,7 +43,12 @@ export async function GET() {
       .from("lessons")
       .select("id, chapter_id, number, slug, learncpp_title, my_title, sort_order")
       .order("sort_order", { ascending: true }) as unknown as {
-      data: Pick<Lesson, "id" | "chapter_id" | "number" | "slug" | "learncpp_title" | "my_title" | "sort_order">[] | null;
+      data:
+        | Pick<
+            Lesson,
+            "id" | "chapter_id" | "number" | "slug" | "learncpp_title" | "my_title" | "sort_order"
+          >[]
+        | null;
       error: unknown;
     },
     userSupabase.from("progress").select("lesson_id, state") as unknown as {
@@ -53,16 +58,10 @@ export async function GET() {
   ]);
 
   if (chaptersResult.error) {
-    return NextResponse.json(
-      { error: "Failed to fetch chapters" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch chapters" }, { status: 500 });
   }
   if (lessonsResult.error) {
-    return NextResponse.json(
-      { error: "Failed to fetch lessons" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch lessons" }, { status: 500 });
   }
 
   // Build a progress lookup: lesson_id -> state

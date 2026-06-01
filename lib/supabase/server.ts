@@ -1,7 +1,10 @@
-import { createRouteHandlerClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
-import type { Database } from './types';
+import {
+  createRouteHandlerClient,
+  createServerComponentClient,
+} from "@supabase/auth-helpers-nextjs";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import type { Database } from "./types";
 
 /**
  * Typed Supabase client alias for function signatures.
@@ -34,13 +37,13 @@ export function createServiceClient(): TypedSupabaseClient {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceKey) {
-    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
   }
 
   return createClient<Database>(url, serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {
-      fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
+      fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
     },
   });
 }

@@ -52,7 +52,7 @@ services:
     platform: linux/amd64
     command: ["./scripts/workers"]
     restart: always
-    privileged: true  # Required for isolate sandbox - use gVisor in production
+    privileged: true # Required for isolate sandbox - use gVisor in production
     # For production, use gVisor and restrict privileges
     # runtime: runsc
     # privileged: false

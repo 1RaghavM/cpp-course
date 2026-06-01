@@ -35,8 +35,7 @@
 
   /* Typography */
   --hp-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --hp-font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
-    monospace;
+  --hp-font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --text-hero: clamp(2.75rem, 6vw, 4.5rem);
   --text-h2: clamp(1.75rem, 3vw, 2.25rem);
   --text-h3: 1.25rem;
@@ -75,8 +74,16 @@
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right,  color-mix(in oklch, var(--color-border) 40%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-border) 40%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklch, var(--color-border) 40%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--color-border) 40%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 56px 56px;
   opacity: 0.35;
   transition: opacity 0.3s ease;
@@ -101,21 +108,33 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right,  color-mix(in oklch, var(--color-border) 80%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-border) 80%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklch, var(--color-border) 80%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--color-border) 80%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(
     200px circle at var(--gx, -999px) var(--gy, -999px),
-    #000 0%, transparent 70%
+    #000 0%,
+    transparent 70%
   );
   mask-image: radial-gradient(
     200px circle at var(--gx, -999px) var(--gy, -999px),
-    #000 0%, transparent 70%
+    #000 0%,
+    transparent 70%
   );
   transform: scale(1);
   transform-origin: var(--gx, 50%) var(--gy, 50%);
   opacity: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
   pointer-events: none;
 }
 
@@ -163,7 +182,9 @@
   font-weight: 500;
   line-height: 1;
   text-decoration: none;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
   cursor: pointer;
 }
 
@@ -211,7 +232,10 @@
   right: 0;
   z-index: 50;
   height: 64px;
-  transition: background-color 250ms ease, border-color 250ms ease, backdrop-filter 250ms ease;
+  transition:
+    background-color 250ms ease,
+    border-color 250ms ease,
+    backdrop-filter 250ms ease;
   border-bottom: 1px solid transparent;
 }
 
@@ -339,7 +363,9 @@
   border: var(--hairline);
   border-radius: var(--radius-md);
   padding: 28px;
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
 }
 
 .feature-card:hover {
@@ -366,7 +392,9 @@
   font-weight: 500;
   color: var(--color-fg-muted);
   cursor: pointer;
-  transition: color 150ms ease, border-color 150ms ease;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
 }
 
 .tab-button:hover {
@@ -448,11 +476,21 @@
   min-width: 0;
 }
 
-.curriculum-editor-code .ct-kw  { color: var(--code-keyword); }
-.curriculum-editor-code .ct-fn  { color: var(--code-func); }
-.curriculum-editor-code .ct-str { color: var(--code-string); }
-.curriculum-editor-code .ct-num { color: var(--code-number); }
-.curriculum-editor-code .ct-cmt { color: var(--code-comment); }
+.curriculum-editor-code .ct-kw {
+  color: var(--code-keyword);
+}
+.curriculum-editor-code .ct-fn {
+  color: var(--code-func);
+}
+.curriculum-editor-code .ct-str {
+  color: var(--code-string);
+}
+.curriculum-editor-code .ct-num {
+  color: var(--code-number);
+}
+.curriculum-editor-code .ct-cmt {
+  color: var(--code-comment);
+}
 
 /* --- Bento grid --- */
 
@@ -505,13 +543,27 @@
   animation: hp-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.bento-stagger-0 { animation-delay: 0ms; }
-.bento-stagger-1 { animation-delay: 60ms; }
-.bento-stagger-2 { animation-delay: 120ms; }
-.bento-stagger-3 { animation-delay: 180ms; }
-.bento-stagger-4 { animation-delay: 240ms; }
-.bento-stagger-5 { animation-delay: 300ms; }
-.bento-stagger-6 { animation-delay: 360ms; }
+.bento-stagger-0 {
+  animation-delay: 0ms;
+}
+.bento-stagger-1 {
+  animation-delay: 60ms;
+}
+.bento-stagger-2 {
+  animation-delay: 120ms;
+}
+.bento-stagger-3 {
+  animation-delay: 180ms;
+}
+.bento-stagger-4 {
+  animation-delay: 240ms;
+}
+.bento-stagger-5 {
+  animation-delay: 300ms;
+}
+.bento-stagger-6 {
+  animation-delay: 360ms;
+}
 
 .bento-cell:hover {
   background-color: var(--color-surface);
@@ -523,7 +575,7 @@
   pointer-events: none;
   background: radial-gradient(
     280px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(47, 129, 247, 0.10),
+    rgba(47, 129, 247, 0.1),
     transparent 70%
   );
   opacity: 0;
@@ -646,18 +698,19 @@
 .bento-tier-1 {
   color: var(--color-accent);
   border-color: rgba(47, 129, 247, 0.35);
-  background: rgba(47, 129, 247, 0.10);
+  background: rgba(47, 129, 247, 0.1);
 }
 
-.bento-tier-2, .bento-tier-3 {
+.bento-tier-2,
+.bento-tier-3 {
   color: #d29922;
-  border-color: rgba(210, 153, 34, 0.30);
+  border-color: rgba(210, 153, 34, 0.3);
   background: rgba(210, 153, 34, 0.08);
 }
 
 .bento-tier-4 {
   color: #3fb950;
-  border-color: rgba(63, 185, 80, 0.30);
+  border-color: rgba(63, 185, 80, 0.3);
   background: rgba(63, 185, 80, 0.08);
 }
 
@@ -728,9 +781,15 @@
   color: var(--code-plain);
 }
 
-.bento-editor-body .ce-kw { color: var(--code-keyword); }
-.bento-editor-body .ce-fn { color: var(--code-func); }
-.bento-editor-body .ce-num { color: var(--code-number); }
+.bento-editor-body .ce-kw {
+  color: var(--code-keyword);
+}
+.bento-editor-body .ce-fn {
+  color: var(--code-func);
+}
+.bento-editor-body .ce-num {
+  color: var(--code-number);
+}
 
 /* Bento: no-setup cell */
 
@@ -766,8 +825,7 @@
   .bento {
     grid-template-columns: 1fr;
     grid-auto-rows: auto;
-    grid-template-areas:
-      "tutor" "editor" "setup" "pointers" "stl" "templates" "toolchain";
+    grid-template-areas: "tutor" "editor" "setup" "pointers" "stl" "templates" "toolchain";
   }
 
   .bento-cell {
@@ -783,11 +841,21 @@
   animation: hp-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.hp-reveal-d1 { animation-delay: 60ms; }
-.hp-reveal-d2 { animation-delay: 120ms; }
-.hp-reveal-d3 { animation-delay: 180ms; }
-.hp-reveal-d4 { animation-delay: 240ms; }
-.hp-reveal-d5 { animation-delay: 300ms; }
+.hp-reveal-d1 {
+  animation-delay: 60ms;
+}
+.hp-reveal-d2 {
+  animation-delay: 120ms;
+}
+.hp-reveal-d3 {
+  animation-delay: 180ms;
+}
+.hp-reveal-d4 {
+  animation-delay: 240ms;
+}
+.hp-reveal-d5 {
+  animation-delay: 300ms;
+}
 
 @keyframes hp-fade-up {
   to {
@@ -803,7 +871,9 @@
     animation: none;
   }
 
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
@@ -822,18 +892,21 @@
   inset: -20% 0 auto 0;
   height: 70%;
   pointer-events: none;
-  background: radial-gradient(
-    50% 50% at 50% 0%,
-    var(--color-glow),
-    transparent 70%
-  );
+  background: radial-gradient(50% 50% at 50% 0%, var(--color-glow), transparent 70%);
   animation: heroGlow 8s ease-in-out infinite;
   will-change: opacity, transform;
 }
 
 @keyframes heroGlow {
-  0%, 100% { opacity: 0.7; transform: translateY(0) scale(1); }
-  50%      { opacity: 1;   transform: translateY(-2%) scale(1.06); }
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2%) scale(1.06);
+  }
 }
 
 .hero-grid {
@@ -841,11 +914,19 @@
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right,  color-mix(in oklch, var(--color-border) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-border) 60%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklch, var(--color-border) 60%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--color-border) 60%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(70% 60% at 50% 35%, #000 30%, transparent 75%);
-          mask-image: radial-gradient(70% 60% at 50% 35%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(70% 60% at 50% 35%, #000 30%, transparent 75%);
 }
 
 /* --- Card spotlight --- */
@@ -856,7 +937,10 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 28px;
-  transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .spotlight-card::before {
@@ -864,8 +948,11 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in oklch, var(--color-accent) 16%, transparent), transparent 60%);
+  background: radial-gradient(
+    180px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklch, var(--color-accent) 16%, transparent),
+    transparent 60%
+  );
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -884,7 +971,7 @@
 /* --- Editor animated border --- */
 
 @property --angle {
-  syntax: '<angle>';
+  syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
@@ -901,26 +988,37 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(from var(--angle),
+  background: conic-gradient(
+    from var(--angle),
     transparent 0deg,
     color-mix(in oklch, var(--color-accent) 70%, transparent) 60deg,
-    transparent 140deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    transparent 140deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
-          mask-composite: exclude;
+  mask-composite: exclude;
   animation: editorSpin 6s linear infinite;
   pointer-events: none;
 }
 
 @keyframes editorSpin {
-  to { --angle: 360deg; }
+  to {
+    --angle: 360deg;
+  }
 }
 
 /* --- Button micro-interactions --- */
 
 .hp-btn-primary {
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.08s ease;
 }
 
 .hp-btn-primary:active {
@@ -960,11 +1058,19 @@
   pointer-events: none;
   z-index: 0;
   background-image:
-    linear-gradient(to right,  color-mix(in oklch, var(--color-border) 40%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--color-border) 40%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklch, var(--color-border) 40%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklch, var(--color-border) 40%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(60% 60% at 50% 50%, #000 10%, transparent 70%);
-          mask-image: radial-gradient(60% 60% at 50% 50%, #000 10%, transparent 70%);
+  mask-image: radial-gradient(60% 60% at 50% 50%, #000 10%, transparent 70%);
 }
 
 .auth-card {
@@ -1046,7 +1152,9 @@
   font-size: var(--text-sm);
   color: var(--color-fg);
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .auth-input::placeholder {
@@ -1078,7 +1186,9 @@
   font-size: var(--text-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.08s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.08s ease;
 }
 
 .auth-submit:hover {
@@ -1114,7 +1224,9 @@
   text-decoration: none;
   text-align: center;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .auth-secondary-btn:hover {

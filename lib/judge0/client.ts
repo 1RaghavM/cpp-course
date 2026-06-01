@@ -9,21 +9,21 @@ const HTTP_TIMEOUT_MS = 10_000; // 10 seconds
 
 /** Maps our app-level C++ standard names to Judge0 language IDs. */
 const LANGUAGE_ID_MAP: Record<CppStandard, number> = {
-  'c++17': 54, // C++ (GCC 9.2.0)  — C++17
-  'c++20': 76, // C++ (GCC 11.1.0) — C++20
-  'c++23': 76, // best available; same compiler, we add -std=c++23 flag
+  "c++17": 54, // C++ (GCC 9.2.0)  — C++17
+  "c++20": 76, // C++ (GCC 11.1.0) — C++20
+  "c++23": 76, // best available; same compiler, we add -std=c++23 flag
 } as const;
 
 /** Default compiler flags per standard. */
 const COMPILER_FLAGS: Record<CppStandard, string> = {
-  'c++17': '-std=c++17 -Wall -Wextra',
-  'c++20': '-std=c++2a -Wall -Wextra', // c++2a for older GCC versions
-  'c++23': '-std=c++2b -Wall -Wextra', // c++2b for older GCC versions
+  "c++17": "-std=c++17 -Wall -Wextra",
+  "c++20": "-std=c++2a -Wall -Wextra", // c++2a for older GCC versions
+  "c++23": "-std=c++2b -Wall -Wextra", // c++2b for older GCC versions
 } as const;
 
 // ---- Public types ---------------------------------------------------------
 
-export type CppStandard = 'c++17' | 'c++20' | 'c++23';
+export type CppStandard = "c++17" | "c++20" | "c++23";
 
 export interface SubmissionParams {
   sourceCode: string;
@@ -36,13 +36,13 @@ export interface SubmissionParams {
 }
 
 export type JudgeStatus =
-  | 'accepted'
-  | 'wrong_answer'
-  | 'tle'
-  | 'compile_error'
-  | 'runtime_error'
-  | 'mle'
-  | 'error';
+  | "accepted"
+  | "wrong_answer"
+  | "tle"
+  | "compile_error"
+  | "runtime_error"
+  | "mle"
+  | "error";
 
 export interface SubmissionResult {
   stdout: string | null;
@@ -59,9 +59,7 @@ export interface Judge0Error {
   error: string;
 }
 
-export type SubmitCodeResult =
-  | { ok: true; data: SubmissionResult }
-  | Judge0Error;
+export type SubmitCodeResult = { ok: true; data: SubmissionResult } | Judge0Error;
 
 // ---- Judge0 response shape (partial) -------------------------------------
 
@@ -82,12 +80,12 @@ interface Judge0Response {
 // ---- Helpers --------------------------------------------------------------
 
 function base64Encode(value: string): string {
-  return Buffer.from(value, 'utf-8').toString('base64');
+  return Buffer.from(value, "utf-8").toString("base64");
 }
 
 function base64Decode(value: string | null): string | null {
   if (value === null || value === undefined) return null;
-  return Buffer.from(value, 'base64').toString('utf-8');
+  return Buffer.from(value, "base64").toString("utf-8");
 }
 
 /**
@@ -109,16 +107,16 @@ function base64Decode(value: string | null): string | null {
  *   14 — Exec Format Error (treated as MLE / system error)
  */
 function mapStatus(statusId: number): JudgeStatus {
-  if (statusId === 3) return 'accepted';
-  if (statusId === 4) return 'wrong_answer';
-  if (statusId === 5) return 'tle';
-  if (statusId === 6) return 'compile_error';
-  if (statusId >= 7 && statusId <= 12) return 'runtime_error';
-  if (statusId === 13) return 'error';
-  if (statusId >= 14) return 'mle';
+  if (statusId === 3) return "accepted";
+  if (statusId === 4) return "wrong_answer";
+  if (statusId === 5) return "tle";
+  if (statusId === 6) return "compile_error";
+  if (statusId >= 7 && statusId <= 12) return "runtime_error";
+  if (statusId === 13) return "error";
+  if (statusId >= 14) return "mle";
   // Status 1 (In Queue) or 2 (Processing) should not appear when using
   // wait=true, but handle gracefully.
-  return 'error';
+  return "error";
 }
 
 function getEnvOrThrow(name: string): string {
@@ -137,20 +135,18 @@ function getEnvOrThrow(name: string): string {
  * Uses `wait=true` for synchronous execution (no polling) which is acceptable
  * for a single-user learning platform.
  */
-export async function submitCode(
-  params: SubmissionParams,
-): Promise<SubmitCodeResult> {
+export async function submitCode(params: SubmissionParams): Promise<SubmitCodeResult> {
   const {
     sourceCode,
     stdin,
-    languageStd = 'c++20',
+    languageStd = "c++20",
     cpuTimeLimit = 5,
     memoryLimit = 256_000,
   } = params;
 
   // ---- Pre-flight checks --------------------------------------------------
 
-  const sourceBytes = Buffer.byteLength(sourceCode, 'utf-8');
+  const sourceBytes = Buffer.byteLength(sourceCode, "utf-8");
   if (sourceBytes > MAX_SOURCE_SIZE_BYTES) {
     return {
       ok: false,
@@ -177,37 +173,37 @@ export async function submitCode(
 
   // ---- Send request -------------------------------------------------------
 
-  const judge0Url = getEnvOrThrow('JUDGE0_URL');
-  const authToken = getEnvOrThrow('JUDGE0_AUTH_TOKEN');
+  const judge0Url = getEnvOrThrow("JUDGE0_URL");
+  const authToken = getEnvOrThrow("JUDGE0_AUTH_TOKEN");
 
   const url = `${judge0Url}/submissions?base64_encoded=true&wait=true`;
 
   // Detect RapidAPI vs self-hosted based on URL
-  const isRapidApi = judge0Url.includes('rapidapi.com');
+  const isRapidApi = judge0Url.includes("rapidapi.com");
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   if (isRapidApi) {
-    headers['X-RapidAPI-Key'] = authToken;
-    headers['X-RapidAPI-Host'] = new URL(judge0Url).host;
+    headers["X-RapidAPI-Key"] = authToken;
+    headers["X-RapidAPI-Host"] = new URL(judge0Url).host;
   } else {
-    headers['X-Auth-Token'] = authToken;
+    headers["X-Auth-Token"] = authToken;
   }
 
   let response: Response;
   try {
     response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
     });
   } catch (err: unknown) {
-    if (err instanceof DOMException && err.name === 'TimeoutError') {
+    if (err instanceof DOMException && err.name === "TimeoutError") {
       return {
         ok: false,
-        error: 'Judge0 request timed out after 10 seconds.',
+        error: "Judge0 request timed out after 10 seconds.",
       };
     }
     if (err instanceof TypeError) {
@@ -224,7 +220,7 @@ export async function submitCode(
   }
 
   if (!response.ok) {
-    const text = await response.text().catch(() => '(no body)');
+    const text = await response.text().catch(() => "(no body)");
     return {
       ok: false,
       error: `Judge0 returned HTTP ${response.status}: ${text}`,

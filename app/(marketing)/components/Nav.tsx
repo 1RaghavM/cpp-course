@@ -46,9 +46,12 @@ export function Nav() {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
 
-    const observer = new IntersectionObserver((entries) => setScrolled(!(entries[0]?.isIntersecting ?? true)), {
-      threshold: 0,
-    });
+    const observer = new IntersectionObserver(
+      (entries) => setScrolled(!(entries[0]?.isIntersecting ?? true)),
+      {
+        threshold: 0,
+      },
+    );
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);

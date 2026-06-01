@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import { createRouteClient } from '@/lib/supabase/server';
-import { requireAuth } from '@/lib/auth/require-auth';
+import { NextResponse } from "next/server";
+import { createRouteClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/auth/require-auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   const supabase = createRouteClient();
@@ -10,23 +10,23 @@ export async function GET(_request: Request, { params }: { params: { id: string 
   if (authResult instanceof NextResponse) return authResult;
 
   const { data: conversation, error: convError } = await supabase
-    .from('conversations')
-    .select('id, lesson_id, title')
-    .eq('id', params.id)
+    .from("conversations")
+    .select("id, lesson_id, title")
+    .eq("id", params.id)
     .single();
 
   if (convError || !conversation) {
-    return NextResponse.json({ error: 'Conversation not found' }, { status: 404 });
+    return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
   }
 
   const { data: messages, error: msgError } = await supabase
-    .from('messages')
-    .select('id, role, content, hint_tier, created_at')
-    .eq('conversation_id', params.id)
-    .order('created_at', { ascending: true });
+    .from("messages")
+    .select("id, role, content, hint_tier, created_at")
+    .eq("conversation_id", params.id)
+    .order("created_at", { ascending: true });
 
   if (msgError) {
-    return NextResponse.json({ error: 'Failed to load messages' }, { status: 500 });
+    return NextResponse.json({ error: "Failed to load messages" }, { status: 500 });
   }
 
   return NextResponse.json({

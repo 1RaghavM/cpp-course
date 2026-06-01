@@ -1,12 +1,12 @@
-import type { AppSupabaseClient } from '@/lib/supabase/types';
+import type { AppSupabaseClient } from "@/lib/supabase/types";
 
 // ---------------------------------------------------------------------------
 // Pricing (per million tokens, USD)
 // ---------------------------------------------------------------------------
 
 const PRICING: Record<string, { input: number; output: number }> = {
-  'claude-sonnet-4-6': { input: 3.0, output: 15.0 },
-  'claude-haiku-4-5': { input: 1.0, output: 5.0 },
+  "claude-sonnet-4-6": { input: 3.0, output: 15.0 },
+  "claude-haiku-4-5": { input: 1.0, output: 5.0 },
 };
 
 /** Cached input tokens are billed at 10 % of the base input rate. */
@@ -43,9 +43,7 @@ export function computeCostMicro(
 
   const inputMicro = BigInt(Math.round(tokensIn * pricing.input));
   const outputMicro = BigInt(Math.round(tokensOut * pricing.output));
-  const cachedMicro = BigInt(
-    Math.round(cachedIn * pricing.input * CACHE_DISCOUNT),
-  );
+  const cachedMicro = BigInt(Math.round(cachedIn * pricing.input * CACHE_DISCOUNT));
 
   return inputMicro + outputMicro + cachedMicro;
 }
@@ -54,7 +52,7 @@ export function computeCostMicro(
 // Types
 // ---------------------------------------------------------------------------
 
-export type CallType = 'lesson_summary' | 'exercise_gen' | 'tutor' | 'other';
+export type CallType = "lesson_summary" | "exercise_gen" | "tutor" | "other";
 
 export interface TokenUsageParams {
   callType: CallType;
@@ -89,12 +87,10 @@ export async function logTokenUsage(
   );
 
   if (costMicro > EXPENSIVE_CALL_THRESHOLD) {
-    console.warn(
-      `Expensive LLM call: $${Number(costMicro) / 1000000} (${params.callType})`,
-    );
+    console.warn(`Expensive LLM call: $${Number(costMicro) / 1000000} (${params.callType})`);
   }
 
-  const { error } = await supabase.from('token_usage').insert({
+  const { error } = await supabase.from("token_usage").insert({
     call_type: params.callType,
     model: params.model,
     tokens_in: params.tokensIn,
@@ -106,6 +102,6 @@ export async function logTokenUsage(
   });
 
   if (error) {
-    console.error('Failed to log token usage:', error);
+    console.error("Failed to log token usage:", error);
   }
 }

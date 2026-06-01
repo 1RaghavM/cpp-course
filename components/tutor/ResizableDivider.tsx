@@ -4,9 +4,11 @@ import { useCallback, useRef } from "react";
 
 interface Props {
   onResize: (leftPercent: number) => void;
+  min?: number;
+  max?: number;
 }
 
-export default function ResizableDivider({ onResize }: Props) {
+export default function ResizableDivider({ onResize, min = 20, max = 80 }: Props) {
   const isDragging = useRef(false);
 
   const handleMouseDown = useCallback(
@@ -17,7 +19,7 @@ export default function ResizableDivider({ onResize }: Props) {
       const handleMouseMove = (moveEvent: MouseEvent) => {
         if (!isDragging.current) return;
         const percent = (moveEvent.clientX / window.innerWidth) * 100;
-        const clamped = Math.max(25, Math.min(75, percent));
+        const clamped = Math.max(min, Math.min(max, percent));
         onResize(clamped);
       };
 
@@ -34,7 +36,7 @@ export default function ResizableDivider({ onResize }: Props) {
       document.body.style.cursor = "col-resize";
       document.body.style.userSelect = "none";
     },
-    [onResize],
+    [onResize, min, max],
   );
 
   return (

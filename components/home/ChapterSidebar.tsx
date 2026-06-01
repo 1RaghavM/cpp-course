@@ -34,12 +34,7 @@ export function ChapterSidebar({
 
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
-          onClick={onClose}
-        />
-      )}
+      {open && <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={onClose} />}
 
       <aside
         className={`
@@ -50,15 +45,19 @@ export function ChapterSidebar({
         `}
       >
         <div className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
-          <span className="text-xs font-medium uppercase tracking-wider text-muted">
-            Chapters
-          </span>
+          <span className="text-xs font-medium uppercase tracking-wider text-muted">Chapters</span>
           <button
             type="button"
             onClick={onClose}
             className="rounded p-1 text-muted transition-colors hover:bg-hover hover:text-primary"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>

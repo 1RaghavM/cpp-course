@@ -61,7 +61,11 @@ export function LoginForm() {
       />
 
       <p style={{ textAlign: "right" }}>
-        <Link href="/forgot-password" className="auth-text-xs auth-link" style={{ fontWeight: 400 }}>
+        <Link
+          href="/forgot-password"
+          className="auth-text-xs auth-link"
+          style={{ fontWeight: 400 }}
+        >
           Forgot password?
         </Link>
       </p>

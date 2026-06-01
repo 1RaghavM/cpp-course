@@ -12,10 +12,7 @@ export function Hero() {
     >
       <div className="hero-glow" aria-hidden="true" />
 
-      <div
-        className="hp-container"
-        style={{ position: "relative", maxWidth: "820px" }}
-      >
+      <div className="hp-container" style={{ position: "relative", maxWidth: "820px" }}>
         <h1
           className="hp-reveal"
           style={{
@@ -42,9 +39,8 @@ export function Hero() {
             margin: "24px auto 0",
           }}
         >
-          A structured, hands-on path through modern C++. From first program to
-          templates. Write real code in a sandboxed editor, get help from an AI
-          tutor when you&rsquo;re stuck.
+          A structured, hands-on path through modern C++. From first program to templates. Write
+          real code in a sandboxed editor, get help from an AI tutor when you&rsquo;re stuck.
         </p>
 
         <div

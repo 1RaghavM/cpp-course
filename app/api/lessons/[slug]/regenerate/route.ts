@@ -9,10 +9,7 @@ export const dynamic = "force-dynamic";
 // POST /api/lessons/[slug]/regenerate
 // ---------------------------------------------------------------------------
 
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: { slug: string } },
-) {
+export async function POST(_request: NextRequest, { params }: { params: { slug: string } }) {
   const supabase = createRouteClient();
 
   // Auth guard (uses user JWT)
@@ -56,8 +53,7 @@ export async function POST(
       })),
     });
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to regenerate lesson";
+    const message = err instanceof Error ? err.message : "Failed to regenerate lesson";
 
     const status = message.includes("not found") ? 404 : 500;
     return NextResponse.json({ error: message }, { status });

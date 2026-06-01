@@ -72,9 +72,7 @@ function findContinueLesson(
   return null;
 }
 
-function findActiveChapterIndex(
-  chapters: HomeChapter[],
-): number {
+function findActiveChapterIndex(chapters: HomeChapter[]): number {
   const inProgressIdx = chapters.findIndex((ch) =>
     ch.lessons.some((l) => l.state === "in_progress"),
   );
@@ -102,19 +100,17 @@ export default async function HomePage() {
     },
     serviceClient
       .from("lessons")
-      .select(
-        "id, chapter_id, number, slug, learncpp_title, my_title, sort_order",
-      )
+      .select("id, chapter_id, number, slug, learncpp_title, my_title, sort_order")
       .order("sort_order", { ascending: true }) as unknown as {
-      data: Pick<
-        Lesson,
-        "id" | "chapter_id" | "number" | "slug" | "learncpp_title" | "my_title" | "sort_order"
-      >[] | null;
+      data:
+        | Pick<
+            Lesson,
+            "id" | "chapter_id" | "number" | "slug" | "learncpp_title" | "my_title" | "sort_order"
+          >[]
+        | null;
       error: unknown;
     },
-    supabase
-      .from("progress")
-      .select("lesson_id, state, last_visit_at") as unknown as {
+    supabase.from("progress").select("lesson_id, state, last_visit_at") as unknown as {
       data: Pick<Progress, "lesson_id" | "state" | "last_visit_at">[] | null;
       error: unknown;
     },

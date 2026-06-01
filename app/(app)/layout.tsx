@@ -15,10 +15,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const totalLessons = lessonCountResult.count ?? 0;
   const completed =
-    progressResult.data?.filter((p) => p.state === "completed" || p.state === "skipped")
-      .length ?? 0;
-  const overallPercent =
-    totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
+    progressResult.data?.filter((p) => p.state === "completed" || p.state === "skipped").length ??
+    0;
+  const overallPercent = totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
 
   return <AppShell progressPercent={overallPercent}>{children}</AppShell>;
 }

@@ -4,10 +4,7 @@ import { Reveal } from "./Reveal";
 export function FinalCTA() {
   return (
     <section className="hp-section hp-section-border">
-      <div
-        className="hp-container"
-        style={{ textAlign: "center", maxWidth: "600px" }}
-      >
+      <div className="hp-container" style={{ textAlign: "center", maxWidth: "600px" }}>
         <Reveal>
           <h2
             style={{

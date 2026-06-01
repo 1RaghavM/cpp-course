@@ -15,14 +15,9 @@ export function Footer() {
             color: "var(--color-fg-subtle)",
           }}
         >
-          <span style={{ fontFamily: "var(--hp-font-mono)", fontWeight: 600 }}>
-            cpproad
-          </span>
+          <span style={{ fontFamily: "var(--hp-font-mono)", fontWeight: 600 }}>cpproad</span>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Link
-              href="/login"
-              style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}
-            >
+            <Link href="/login" style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}>
               Sign in
             </Link>
             <span>&copy; {new Date().getFullYear()}</span>

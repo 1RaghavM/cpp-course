@@ -2,13 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 
-export function Reveal({
-  children,
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-}) {
+export function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const reduce = useReducedMotion();
   if (reduce) return <>{children}</>;
   return (

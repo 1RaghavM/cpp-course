@@ -80,18 +80,12 @@ export function Tab({ value, children, className = "" }: TabProps) {
         px-4 py-3
         text-sm font-medium
         transition-colors
-        ${
-          isActive
-            ? "text-primary"
-            : "text-secondary hover:text-primary"
-        }
+        ${isActive ? "text-primary" : "text-secondary hover:text-primary"}
         ${className}
       `}
     >
       {children}
-      {isActive && (
-        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />
-      )}
+      {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />}
     </button>
   );
 }

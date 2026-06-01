@@ -40,19 +40,13 @@ export async function POST(request: NextRequest) {
   try {
     body = (await request.json()) as RequestBody;
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   const { exercise_id, source_code, mode, language_std = "c++20" } = body;
 
   if (!exercise_id || typeof exercise_id !== "string") {
-    return NextResponse.json(
-      { error: "exercise_id is required" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "exercise_id is required" }, { status: 400 });
   }
 
   if (!source_code || typeof source_code !== "string") {
@@ -63,10 +57,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (Buffer.byteLength(source_code, "utf-8") > MAX_SOURCE_SIZE) {
-    return NextResponse.json(
-      { error: "Source code exceeds the 50 KB limit" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Source code exceeds the 50 KB limit" }, { status: 400 });
   }
 
   if (mode !== "run" && mode !== "submit") {
@@ -76,11 +67,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (
-    language_std !== "c++17" &&
-    language_std !== "c++20" &&
-    language_std !== "c++23"
-  ) {
+  if (language_std !== "c++17" && language_std !== "c++20" && language_std !== "c++23") {
     return NextResponse.json(
       { error: `language_std must be one of: ${VALID_STANDARDS.join(", ")}` },
       { status: 400 },
@@ -95,10 +82,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (exerciseError || !exercise) {
-    return NextResponse.json(
-      { error: "Exercise not found" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "Exercise not found" }, { status: 404 });
   }
 
   // ---- Mode: run ------------------------------------------------------------
@@ -150,15 +134,11 @@ export async function POST(request: NextRequest) {
     .order("sort_order", { ascending: true });
 
   if (tcError || !dbTestCases || dbTestCases.length === 0) {
-    return NextResponse.json(
-      { error: "No test cases found for this exercise" },
-      { status: 404 },
-    );
+    return NextResponse.json({ error: "No test cases found for this exercise" }, { status: 404 });
   }
 
   // Run each test case against Judge0
-  const judgeResults: Array<{ stdout: string | null; status: JudgeStatus }> =
-    [];
+  const judgeResults: Array<{ stdout: string | null; status: JudgeStatus }> = [];
   let totalWallTimeMs = 0;
   let lastCompileOutput: string | null = null;
   let lastStderr: string | null = null;
@@ -234,9 +214,7 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({
     status: verdict.overallStatus,
-    stdout: compileErrorOccurred
-      ? null
-      : (judgeResults[judgeResults.length - 1]?.stdout ?? null),
+    stdout: compileErrorOccurred ? null : (judgeResults[judgeResults.length - 1]?.stdout ?? null),
     stderr: lastStderr,
     compileOutput: lastCompileOutput,
     exitCode: null,

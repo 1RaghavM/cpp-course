@@ -4,26 +4,22 @@ import { SpotlightCard } from "./SpotlightCard";
 const FEATURES = [
   {
     title: "Pointers & memory",
-    description:
-      "Pointers stop being scary once you can see what they point at.",
+    description: "Pointers stop being scary once you can see what they point at.",
     code: "int* ptr = &x;",
   },
   {
     title: "The STL in practice",
-    description:
-      "Vectors, maps, algorithms — learn the standard library by using it.",
+    description: "Vectors, maps, algorithms — learn the standard library by using it.",
     code: "std::vector<int>",
   },
   {
     title: "Templates & generics",
-    description:
-      "Write code that works with any type, without the mystery.",
+    description: "Write code that works with any type, without the mystery.",
     code: "template<typename T>",
   },
   {
     title: "Compile, link, debug",
-    description:
-      "Understand what happens between 'Save' and 'Run'.",
+    description: "Understand what happens between 'Save' and 'Run'.",
     code: "g++ -std=c++17",
   },
 ] as const;

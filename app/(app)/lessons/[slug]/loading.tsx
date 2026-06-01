@@ -14,9 +14,7 @@ export default function LessonLoading() {
       {/* Generation notice */}
       <div className="mb-10 rounded-lg border border-blue-200 bg-blue-50 p-6 text-center dark:border-blue-800 dark:bg-blue-950/30">
         <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-300 border-t-blue-600" />
-        <p className="font-medium text-blue-800 dark:text-blue-300">
-          Generating lesson content...
-        </p>
+        <p className="font-medium text-blue-800 dark:text-blue-300">Generating lesson content...</p>
         <p className="mt-1 text-sm text-blue-600 dark:text-blue-400">
           This may take a few seconds on first visit.
         </p>

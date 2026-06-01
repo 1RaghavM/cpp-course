@@ -56,14 +56,7 @@ function Spinner() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -87,9 +80,7 @@ export function OutputPanel({
     <div className="flex flex-col border-t border-border">
       {/* Header with actions */}
       <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
-        <span className="text-xs font-medium text-secondary uppercase tracking-wider">
-          Console
-        </span>
+        <span className="text-xs font-medium text-secondary uppercase tracking-wider">Console</span>
 
         <div className="flex-1" />
 
@@ -147,14 +138,9 @@ export function OutputPanel({
 
             {/* Program output (for run mode — always show when no test results) */}
             {!result.testResults?.length && (
-              <OutputSection
-                title="Output"
-                variant={result.stdout ? "success" : "neutral"}
-              >
+              <OutputSection title="Output" variant={result.stdout ? "success" : "neutral"}>
                 <pre className="whitespace-pre-wrap">
-                  {result.stdout || (
-                    <span className="text-muted italic">(no output)</span>
-                  )}
+                  {result.stdout || <span className="text-muted italic">(no output)</span>}
                 </pre>
               </OutputSection>
             )}
@@ -237,11 +223,7 @@ function TestResultCard({ result }: TestResultCardProps) {
       {/* Test header */}
       <div className="flex items-center gap-2 mb-3">
         <span className={passed ? "text-success" : "text-error"}>
-          {passed ? (
-            <CheckIcon className="h-4 w-4" />
-          ) : (
-            <XIcon className="h-4 w-4" />
-          )}
+          {passed ? <CheckIcon className="h-4 w-4" /> : <XIcon className="h-4 w-4" />}
         </span>
         <span className="font-medium text-sm text-primary">{result.label}</span>
       </div>
@@ -252,9 +234,7 @@ function TestResultCard({ result }: TestResultCardProps) {
           <div className="text-xs font-medium text-secondary mb-2">Your Output</div>
           <div
             className={`rounded-md p-3 font-mono text-xs whitespace-pre-wrap border-l-2 ${
-              passed
-                ? "bg-success/10 border-success"
-                : "bg-surface border-error"
+              passed ? "bg-success/10 border-success" : "bg-surface border-error"
             }`}
           >
             {result.actual || <span className="text-muted italic">(empty)</span>}

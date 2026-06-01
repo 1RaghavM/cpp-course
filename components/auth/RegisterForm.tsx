@@ -55,9 +55,7 @@ export function RegisterForm() {
     }
 
     setStatus("success");
-    setMessage(
-      "Account created. Check your email to confirm your address, then sign in.",
-    );
+    setMessage("Account created. Check your email to confirm your address, then sign in.");
   }
 
   if (status === "success") {

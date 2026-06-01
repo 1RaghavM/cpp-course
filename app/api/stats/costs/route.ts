@@ -36,9 +36,7 @@ export async function GET() {
 
   // Current calendar month boundaries (UTC)
   const now = new Date();
-  const monthStart = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
-  ).toISOString();
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
 
   // 30 days ago for daily spend
   const thirtyDaysAgo = new Date(
@@ -60,16 +58,10 @@ export async function GET() {
   ]);
 
   if (monthResult.error) {
-    return NextResponse.json(
-      { error: "Failed to fetch monthly usage" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch monthly usage" }, { status: 500 });
   }
   if (dailyResult.error) {
-    return NextResponse.json(
-      { error: "Failed to fetch daily usage" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch daily usage" }, { status: 500 });
   }
 
   const monthRows = monthResult.data ?? [];
@@ -121,24 +113,21 @@ export async function GET() {
     }
   }
 
-  const byCallType: ByCallType[] = Array.from(callTypeMap.entries()).map(
-    ([callType, agg]) => ({
-      callType,
-      totalCalls: agg.totalCalls,
-      totalTokensIn: agg.totalTokensIn,
-      totalTokensOut: agg.totalTokensOut,
-      totalCachedIn: agg.totalCachedIn,
-      totalCostUsd: agg.totalCostMicro / 1_000_000,
-    }),
-  );
+  const byCallType: ByCallType[] = Array.from(callTypeMap.entries()).map(([callType, agg]) => ({
+    callType,
+    totalCalls: agg.totalCalls,
+    totalTokensIn: agg.totalTokensIn,
+    totalTokensOut: agg.totalTokensOut,
+    totalCachedIn: agg.totalCachedIn,
+    totalCostUsd: agg.totalCostMicro / 1_000_000,
+  }));
 
   // Sort by cost descending
   byCallType.sort((a, b) => b.totalCostUsd - a.totalCostUsd);
 
   // ---------- Cache hit rate ----------
   const totalInputTokens = totalTokensInAll + totalCachedInAll;
-  const cacheHitRate =
-    totalInputTokens > 0 ? totalCachedInAll / totalInputTokens : 0;
+  const cacheHitRate = totalInputTokens > 0 ? totalCachedInAll / totalInputTokens : 0;
 
   // ---------- Daily spend (last 30 days) ----------
   const dailyMap = new Map<string, number>();
@@ -152,9 +141,7 @@ export async function GET() {
   // Fill in missing days with zero
   const dailySpend: DailySpend[] = [];
   for (let i = 30; i >= 0; i--) {
-    const d = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i),
-    );
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i));
     const dateStr = d.toISOString().slice(0, 10);
     dailySpend.push({
       date: dateStr,

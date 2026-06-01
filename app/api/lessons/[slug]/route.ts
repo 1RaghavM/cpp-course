@@ -9,10 +9,7 @@ export const dynamic = "force-dynamic";
 // GET /api/lessons/[slug]
 // ---------------------------------------------------------------------------
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: { slug: string } },
-) {
+export async function GET(_request: NextRequest, { params }: { params: { slug: string } }) {
   const supabase = createRouteClient();
 
   // Auth guard (uses user JWT)
@@ -56,8 +53,7 @@ export async function GET(
       })),
     });
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to load lesson";
+    const message = err instanceof Error ? err.message : "Failed to load lesson";
 
     // Distinguish between "lesson not found" and internal errors
     const status = message.includes("not found") ? 404 : 500;

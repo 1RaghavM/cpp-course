@@ -2,23 +2,9 @@
 
 import { Reveal } from "./Reveal";
 
-const CELL_ORDER = [
-  "tutor",
-  "editor",
-  "pointers",
-  "stl",
-  "templates",
-  "toolchain",
-  "setup",
-];
+const CELL_ORDER = ["tutor", "editor", "pointers", "stl", "templates", "toolchain", "setup"];
 
-function BentoCell({
-  area,
-  children,
-}: {
-  area: string;
-  children: React.ReactNode;
-}) {
+function BentoCell({ area, children }: { area: string; children: React.ReactNode }) {
   const staggerClass = `bento-stagger-${CELL_ORDER.indexOf(area)}`;
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -28,11 +14,7 @@ function BentoCell({
   };
 
   return (
-    <div
-      className={`bento-cell ${staggerClass}`}
-      style={{ gridArea: area }}
-      onMouseMove={onMove}
-    >
+    <div className={`bento-cell ${staggerClass}`} style={{ gridArea: area }} onMouseMove={onMove}>
       <div className="bento-cell-spotlight" aria-hidden="true" />
       {children}
     </div>
@@ -99,10 +81,9 @@ function MiniChat() {
           My code prints a weird number instead of 42. What&rsquo;s wrong?
         </div>
         <div className="bento-chat-msg bento-chat-tutor">
-          Look at what you&rsquo;re passing to <code>cout</code>. You&rsquo;re
-          printing <code>ptr</code> itself, that&rsquo;s the <em>address</em>{" "}
-          where <code>x</code> lives. How would you get the value <em>at</em>{" "}
-          that address?
+          Look at what you&rsquo;re passing to <code>cout</code>. You&rsquo;re printing{" "}
+          <code>ptr</code> itself, that&rsquo;s the <em>address</em> where <code>x</code> lives. How
+          would you get the value <em>at</em> that address?
         </div>
         <div className="bento-chat-msg bento-chat-user">
           Dereference it? So <code>*ptr</code>?
@@ -156,9 +137,8 @@ export function BentoGrid() {
           <div className="bento-sec-head">
             <h2>Learn by writing real C++</h2>
             <p>
-              A sandboxed editor, an AI tutor that won&rsquo;t just hand you the
-              answer, and a focused path through the language. No setup
-              required.
+              A sandboxed editor, an AI tutor that won&rsquo;t just hand you the answer, and a
+              focused path through the language. No setup required.
             </p>
           </div>
         </Reveal>
@@ -170,13 +150,10 @@ export function BentoGrid() {
                 <IconChat />
                 AI tutor
               </p>
-              <h3 className="bento-title">
-                Hints that build understanding, not dependence
-              </h3>
+              <h3 className="bento-title">Hints that build understanding, not dependence</h3>
               <p className="bento-desc">
-                Stuck on an exercise? The tutor escalates through four tiers:
-                guiding questions first, a full worked solution only as a last
-                resort.
+                Stuck on an exercise? The tutor escalates through four tiers: guiding questions
+                first, a full worked solution only as a last resort.
               </p>
               <MiniChat />
             </BentoCell>
@@ -186,12 +163,10 @@ export function BentoGrid() {
                 <IconCode />
                 Sandboxed editor
               </p>
-              <h3 className="bento-title">
-                Compile and run real C++ in the browser
-              </h3>
+              <h3 className="bento-title">Compile and run real C++ in the browser</h3>
               <p className="bento-desc">
-                A full editor with run, submit, and test cases. Switch the
-                language standard and see compiler output instantly.
+                A full editor with run, submit, and test cases. Switch the language standard and see
+                compiler output instantly.
               </p>
               <MiniEditor />
             </BentoCell>
@@ -207,8 +182,7 @@ export function BentoGrid() {
             <BentoCell area="stl">
               <h3 className="bento-title">The STL in practice</h3>
               <p className="bento-desc">
-                Vectors, maps, algorithms. Learn the standard library by using
-                it.
+                Vectors, maps, algorithms. Learn the standard library by using it.
               </p>
               <CodeChip>std::vector&lt;int&gt;</CodeChip>
             </BentoCell>
@@ -224,8 +198,7 @@ export function BentoGrid() {
             <BentoCell area="toolchain">
               <h3 className="bento-title">Compile, link, debug</h3>
               <p className="bento-desc">
-                Understand what happens between &lsquo;Save&rsquo; and
-                &lsquo;Run&rsquo;.
+                Understand what happens between &lsquo;Save&rsquo; and &lsquo;Run&rsquo;.
               </p>
               <CodeChip>g++ -std=c++17</CodeChip>
             </BentoCell>
@@ -240,8 +213,8 @@ export function BentoGrid() {
                     No setup. Nothing to install.
                   </h3>
                   <p className="bento-desc">
-                    No toolchain, no compiler flags to fight on day one. Open a
-                    browser and write your first program in seconds.
+                    No toolchain, no compiler flags to fight on day one. Open a browser and write
+                    your first program in seconds.
                   </p>
                 </div>
               </div>

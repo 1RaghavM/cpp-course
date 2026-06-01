@@ -8,20 +8,14 @@ const VALID_STATES = ["in_progress", "completed", "skipped"] as const;
 type InputState = (typeof VALID_STATES)[number];
 
 function isValidState(value: unknown): value is InputState {
-  return (
-    typeof value === "string" &&
-    VALID_STATES.includes(value as InputState)
-  );
+  return typeof value === "string" && VALID_STATES.includes(value as InputState);
 }
 
 // ---------------------------------------------------------------------------
 // POST /api/progress/[lesson_id]
 // ---------------------------------------------------------------------------
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { lesson_id: string } },
-) {
+export async function POST(request: NextRequest, { params }: { params: { lesson_id: string } }) {
   const supabase = createRouteClient();
 
   const authResult = await requireAuth(supabase);
@@ -34,10 +28,7 @@ export async function POST(
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON body" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   const state = (body as Record<string, unknown>)?.state;
@@ -55,10 +46,7 @@ export async function POST(
     .single();
 
   if (lessonError || !lesson) {
-    return NextResponse.json(
-      { error: "Lesson not found" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "Lesson not found" }, { status: 400 });
   }
 
   const { data: existing } = await supabase
@@ -97,10 +85,7 @@ export async function POST(
     const { error: insertError } = await supabase.from("progress").insert(insertPayload);
 
     if (insertError) {
-      return NextResponse.json(
-        { error: "Failed to insert progress" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Failed to insert progress" }, { status: 500 });
     }
   } else {
     const updatePayload: {
@@ -128,10 +113,7 @@ export async function POST(
       .eq("lesson_id", lesson_id);
 
     if (updateError) {
-      return NextResponse.json(
-        { error: "Failed to update progress" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: "Failed to update progress" }, { status: 500 });
     }
   }
 
@@ -142,10 +124,7 @@ export async function POST(
 // GET /api/progress/[lesson_id]
 // ---------------------------------------------------------------------------
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: { lesson_id: string } },
-) {
+export async function GET(_request: NextRequest, { params }: { params: { lesson_id: string } }) {
   const supabase = createRouteClient();
 
   const authResult = await requireAuth(supabase);

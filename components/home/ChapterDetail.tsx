@@ -49,7 +49,9 @@ export function ChapterDetail({ chapter }: ChapterDetailProps) {
           <span className="font-mono tabular-nums">{totalLessons}</span>
           {" lessons"}
           <span className="mx-2 opacity-30">&middot;</span>
-          <span className="font-mono tabular-nums text-secondary">{chapter.completionPercent}%</span>
+          <span className="font-mono tabular-nums text-secondary">
+            {chapter.completionPercent}%
+          </span>
         </p>
         <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-elevated">
           <div

@@ -2,7 +2,7 @@
 // Verdict evaluation — compare submission outputs against expected test cases
 // ---------------------------------------------------------------------------
 
-import type { JudgeStatus } from './client';
+import type { JudgeStatus } from "./client";
 
 // ---- Public types ---------------------------------------------------------
 
@@ -21,7 +21,7 @@ export interface TestCaseResult {
   status: JudgeStatus;
 }
 
-export type OverallStatus = 'passed' | JudgeStatus;
+export type OverallStatus = "passed" | JudgeStatus;
 
 export interface VerdictResult {
   overallStatus: OverallStatus;
@@ -37,7 +37,7 @@ export interface VerdictResult {
  * - Trims leading and trailing whitespace (including trailing newlines)
  */
 function normalise(value: string | null | undefined): string {
-  if (value === null || value === undefined) return '';
+  if (value === null || value === undefined) return "";
   return value.trim();
 }
 
@@ -64,19 +64,18 @@ export function evaluateTestCases(
   for (let i = 0; i < testCases.length; i++) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- bounded by testCases.length
     const tc = testCases[i]!;
-    const result: { stdout: string | null; status: JudgeStatus } | undefined =
-      results[i];
+    const result: { stdout: string | null; status: JudgeStatus } | undefined = results[i];
 
     // If this test case has no corresponding result (partial execution)
     if (!result) {
       allPassed = false;
-      firstFailingStatus ??= 'error';
+      firstFailingStatus ??= "error";
       testResults.push({
         label: tc.label,
         passed: false,
         expected: normalise(tc.expectedStdout),
-        actual: '',
-        status: 'error',
+        actual: "",
+        status: "error",
       });
       continue;
     }
@@ -85,7 +84,7 @@ export function evaluateTestCases(
     const actual = normalise(result.stdout);
 
     // If the execution itself failed (non-accepted), mark as failed
-    if (result.status !== 'accepted') {
+    if (result.status !== "accepted") {
       allPassed = false;
       firstFailingStatus ??= result.status;
       testResults.push({
@@ -102,7 +101,7 @@ export function evaluateTestCases(
     const passed = expected === actual;
     if (!passed) {
       allPassed = false;
-      firstFailingStatus ??= 'wrong_answer';
+      firstFailingStatus ??= "wrong_answer";
     }
 
     testResults.push({
@@ -110,13 +109,13 @@ export function evaluateTestCases(
       passed,
       expected,
       actual,
-      status: passed ? 'accepted' : 'wrong_answer',
+      status: passed ? "accepted" : "wrong_answer",
     });
   }
 
   const overallStatus: OverallStatus = allPassed
-    ? 'passed'
-    : firstFailingStatus ?? 'wrong_answer';
+    ? "passed"
+    : (firstFailingStatus ?? "wrong_answer");
 
   return { overallStatus, testResults };
 }

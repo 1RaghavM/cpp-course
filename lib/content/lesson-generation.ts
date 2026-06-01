@@ -1,11 +1,11 @@
-import type { Lesson, Exercise, TestCase, AppSupabaseClient } from '@/lib/supabase/types';
-import { createCompletion } from '@/lib/anthropic/client';
+import type { Lesson, Exercise, TestCase, AppSupabaseClient } from "@/lib/supabase/types";
+import { createCompletion } from "@/lib/anthropic/client";
 import {
   buildLessonSummaryPrompt,
   buildExercisePrompt,
   shouldGenerateExercises,
   MODEL_SONNET,
-} from '@/lib/anthropic/prompts';
+} from "@/lib/anthropic/prompts";
 
 // ---------------------------------------------------------------------------
 // Return types
@@ -35,14 +35,14 @@ async function getPriorLessonTitles(
   sortOrder: number,
 ): Promise<string[]> {
   const { data, error } = await supabase
-    .from('lessons')
-    .select('learncpp_title')
-    .eq('chapter_id', chapterId)
-    .lt('sort_order', sortOrder)
-    .order('sort_order', { ascending: true });
+    .from("lessons")
+    .select("learncpp_title")
+    .eq("chapter_id", chapterId)
+    .lt("sort_order", sortOrder)
+    .order("sort_order", { ascending: true });
 
   if (error) {
-    console.error('Failed to fetch prior lesson titles:', error);
+    console.error("Failed to fetch prior lesson titles:", error);
     return [];
   }
 
@@ -57,14 +57,14 @@ async function getChapterContext(
   chapterId: number,
 ): Promise<{ title: string; number: string }> {
   const { data, error } = await supabase
-    .from('chapters')
-    .select('learncpp_title, number')
-    .eq('id', chapterId)
+    .from("chapters")
+    .select("learncpp_title, number")
+    .eq("id", chapterId)
     .single();
 
   if (error || !data) {
     throw new Error(
-      `Failed to fetch chapter context for chapter_id=${chapterId}: ${error?.message ?? 'no data'}`,
+      `Failed to fetch chapter context for chapter_id=${chapterId}: ${error?.message ?? "no data"}`,
     );
   }
 
@@ -119,13 +119,11 @@ function parseExerciseResponse(raw: string): ParsedExercise[] {
   }
 
   if (!Array.isArray(parsed)) {
-    throw new Error(
-      `Exercise response is not an array. Got: ${typeof parsed}`,
-    );
+    throw new Error(`Exercise response is not an array. Got: ${typeof parsed}`);
   }
 
   if (parsed.length < 1) {
-    throw new Error('Exercise response contains zero exercises');
+    throw new Error("Exercise response contains zero exercises");
   }
 
   const exercises: ParsedExercise[] = [];
@@ -133,33 +131,30 @@ function parseExerciseResponse(raw: string): ParsedExercise[] {
   for (let i = 0; i < parsed.length; i++) {
     const ex = parsed[i] as Record<string, unknown>;
 
-    if (typeof ex.title !== 'string' || ex.title.trim() === '') {
+    if (typeof ex.title !== "string" || ex.title.trim() === "") {
       throw new Error(`Exercise ${i}: missing or empty title`);
     }
-    if (typeof ex.prompt_md !== 'string' || ex.prompt_md.trim() === '') {
+    if (typeof ex.prompt_md !== "string" || ex.prompt_md.trim() === "") {
       throw new Error(`Exercise ${i}: missing or empty prompt_md`);
     }
-    if (typeof ex.starter_code !== 'string' || ex.starter_code.trim() === '') {
+    if (typeof ex.starter_code !== "string" || ex.starter_code.trim() === "") {
       throw new Error(`Exercise ${i}: missing or empty starter_code`);
     }
     if (!Array.isArray(ex.test_cases)) {
       throw new Error(`Exercise ${i}: test_cases is not an array`);
     }
     if (ex.test_cases.length < 3) {
-      throw new Error(
-        `Exercise ${i}: needs at least 3 test cases, got ${ex.test_cases.length}`,
-      );
+      throw new Error(`Exercise ${i}: needs at least 3 test cases, got ${ex.test_cases.length}`);
     }
 
     const testCases: ParsedTestCase[] = [];
     for (let j = 0; j < ex.test_cases.length; j++) {
       const tc = ex.test_cases[j] as Record<string, unknown>;
       testCases.push({
-        label: typeof tc.label === 'string' ? tc.label : `Test ${j + 1}`,
-        is_sample: typeof tc.is_sample === 'boolean' ? tc.is_sample : j === 0,
-        stdin: typeof tc.stdin === 'string' ? tc.stdin : '',
-        expected_stdout:
-          typeof tc.expected_stdout === 'string' ? tc.expected_stdout : '',
+        label: typeof tc.label === "string" ? tc.label : `Test ${j + 1}`,
+        is_sample: typeof tc.is_sample === "boolean" ? tc.is_sample : j === 0,
+        stdin: typeof tc.stdin === "string" ? tc.stdin : "",
+        expected_stdout: typeof tc.expected_stdout === "string" ? tc.expected_stdout : "",
       });
     }
 
@@ -168,11 +163,10 @@ function parseExerciseResponse(raw: string): ParsedExercise[] {
       prompt_md: ex.prompt_md as string,
       starter_code: ex.starter_code as string,
       solution_code:
-        typeof ex.solution_code === 'string' && ex.solution_code.trim() !== ''
+        typeof ex.solution_code === "string" && ex.solution_code.trim() !== ""
           ? (ex.solution_code as string)
           : null,
-      difficulty:
-        typeof ex.difficulty === 'string' ? ex.difficulty : 'practice',
+      difficulty: typeof ex.difficulty === "string" ? ex.difficulty : "practice",
       test_cases: testCases,
     });
   }
@@ -183,15 +177,13 @@ function parseExerciseResponse(raw: string): ParsedExercise[] {
 /**
  * Extract the text content from an Anthropic Message response.
  */
-function extractTextContent(
-  response: Awaited<ReturnType<typeof createCompletion>>,
-): string {
+function extractTextContent(response: Awaited<ReturnType<typeof createCompletion>>): string {
   for (const block of response.content) {
-    if (block.type === 'text') {
+    if (block.type === "text") {
       return block.text;
     }
   }
-  throw new Error('LLM response contained no text blocks');
+  throw new Error("LLM response contained no text blocks");
 }
 
 // ---------------------------------------------------------------------------
@@ -203,10 +195,10 @@ async function loadExercisesFromDb(
   lessonId: string,
 ): Promise<ExerciseWithTestCases[]> {
   const { data: exercises, error: exError } = await supabase
-    .from('exercises')
-    .select('*')
-    .eq('lesson_id', lessonId)
-    .order('sort_order', { ascending: true });
+    .from("exercises")
+    .select("*")
+    .eq("lesson_id", lessonId)
+    .order("sort_order", { ascending: true });
 
   if (exError) {
     throw new Error(`Failed to load exercises: ${exError.message}`);
@@ -219,10 +211,10 @@ async function loadExercisesFromDb(
   const exerciseIds = exercises.map((ex) => ex.id);
 
   const { data: testCases, error: tcError } = await supabase
-    .from('test_cases')
-    .select('*')
-    .in('exercise_id', exerciseIds)
-    .order('sort_order', { ascending: true });
+    .from("test_cases")
+    .select("*")
+    .in("exercise_id", exerciseIds)
+    .order("sort_order", { ascending: true });
 
   if (tcError) {
     throw new Error(`Failed to load test cases: ${tcError.message}`);
@@ -276,7 +268,7 @@ async function generateAndPersist(
       maxTokens: summaryPrompt.maxTokens,
     },
     {
-      callType: 'lesson_summary',
+      callType: "lesson_summary",
       lessonId: lesson.id,
       userId,
       supabase,
@@ -287,15 +279,15 @@ async function generateAndPersist(
 
   // --- Persist summary to lesson row ---
   console.log(`[lesson-gen] Persisting summary for lesson ${lesson.id}...`);
-  
+
   const { data: updatedLesson, error: updateError } = await supabase
-    .from('lessons')
+    .from("lessons")
     .update({
       summary_md: summaryMd,
       summary_generated_at: new Date().toISOString(),
       summary_model: MODEL_SONNET,
     })
-    .eq('id', lesson.id)
+    .eq("id", lesson.id)
     .select()
     .single();
 
@@ -303,22 +295,26 @@ async function generateAndPersist(
     console.error(`[lesson-gen] Update error:`, updateError);
     throw new Error(`Failed to persist lesson summary: ${updateError.message}`);
   }
-  
+
   if (!updatedLesson) {
     console.error(`[lesson-gen] No data returned from update`);
     throw new Error(`Failed to persist lesson summary: no data returned`);
   }
-  
+
   console.log(`[lesson-gen] Successfully persisted summary for lesson ${lesson.id}`);
-  console.log(`[lesson-gen] Updated lesson summary_md is: ${updatedLesson.summary_md ? 'SET (' + updatedLesson.summary_md.length + ' chars)' : 'NULL'}`);
-  
+  console.log(
+    `[lesson-gen] Updated lesson summary_md is: ${updatedLesson.summary_md ? "SET (" + updatedLesson.summary_md.length + " chars)" : "NULL"}`,
+  );
+
   // Verification: re-read from DB to confirm the update was committed
   const { data: verifyLesson } = await supabase
-    .from('lessons')
-    .select('summary_md')
-    .eq('id', lesson.id)
+    .from("lessons")
+    .select("summary_md")
+    .eq("id", lesson.id)
     .single();
-  console.log(`[lesson-gen] VERIFY re-read: summary_md is: ${verifyLesson?.summary_md ? 'SET (' + verifyLesson.summary_md.length + ' chars)' : 'NULL'}`);
+  console.log(
+    `[lesson-gen] VERIFY re-read: summary_md is: ${verifyLesson?.summary_md ? "SET (" + verifyLesson.summary_md.length + " chars)" : "NULL"}`,
+  );
 
   // --- Step 2: Generate exercises (skip for intro chapters) ---
   const exercises: ExerciseWithTestCases[] = [];
@@ -344,7 +340,7 @@ async function generateAndPersist(
         maxTokens: exercisePrompt.maxTokens,
       },
       {
-        callType: 'exercise_gen',
+        callType: "exercise_gen",
         lessonId: lesson.id,
         userId,
         supabase,
@@ -359,7 +355,7 @@ async function generateAndPersist(
       const pe = parsedExercises[i]!;
 
       const { data: insertedExercise, error: exInsertError } = await supabase
-        .from('exercises')
+        .from("exercises")
         .insert({
           lesson_id: lesson.id,
           title: pe.title,
@@ -374,10 +370,7 @@ async function generateAndPersist(
         .single();
 
       if (exInsertError || !insertedExercise) {
-        console.error(
-          `Failed to insert exercise ${i}:`,
-          exInsertError?.message,
-        );
+        console.error(`Failed to insert exercise ${i}:`, exInsertError?.message);
         continue;
       }
 
@@ -392,15 +385,12 @@ async function generateAndPersist(
       }));
 
       const { data: insertedTestCases, error: tcInsertError } = await supabase
-        .from('test_cases')
+        .from("test_cases")
         .insert(testCaseRows)
         .select();
 
       if (tcInsertError) {
-        console.error(
-          `Failed to insert test cases for exercise ${i}:`,
-          tcInsertError.message,
-        );
+        console.error(`Failed to insert test cases for exercise ${i}:`, tcInsertError.message);
       }
 
       exercises.push({
@@ -412,10 +402,7 @@ async function generateAndPersist(
     // Exercise generation failed, but summary is already saved.
     // Next visit will have the summary (cache hit) but empty exercises.
     // This is acceptable degradation per the spec.
-    console.error(
-      'Exercise generation failed (summary already persisted):',
-      err,
-    );
+    console.error("Exercise generation failed (summary already persisted):", err);
   }
 
   return { lesson: updatedLesson, exercises };
@@ -439,18 +426,18 @@ export async function getOrGenerateLesson(
 ): Promise<LessonContent> {
   // --- Step 1: Fetch lesson by slug ---
   const { data: lesson, error: lessonError } = await supabase
-    .from('lessons')
-    .select('*')
-    .eq('slug', slug)
+    .from("lessons")
+    .select("*")
+    .eq("slug", slug)
     .single();
 
   if (lessonError || !lesson) {
-    throw new Error(
-      `Lesson not found for slug "${slug}": ${lessonError?.message ?? 'no data'}`,
-    );
+    throw new Error(`Lesson not found for slug "${slug}": ${lessonError?.message ?? "no data"}`);
   }
 
-  console.log(`[lesson-gen] Fetched lesson "${slug}", summary_md is: ${lesson.summary_md ? 'SET (' + lesson.summary_md.length + ' chars)' : 'NULL'}`);
+  console.log(
+    `[lesson-gen] Fetched lesson "${slug}", summary_md is: ${lesson.summary_md ? "SET (" + lesson.summary_md.length + " chars)" : "NULL"}`,
+  );
 
   // --- Step 2: Cache check ---
   if (lesson.summary_md !== null) {
@@ -484,60 +471,56 @@ export async function regenerateLesson(
 ): Promise<LessonContent> {
   // Fetch lesson to get its ID
   const { data: lesson, error: lessonError } = await supabase
-    .from('lessons')
-    .select('*')
-    .eq('slug', slug)
+    .from("lessons")
+    .select("*")
+    .eq("slug", slug)
     .single();
 
   if (lessonError || !lesson) {
-    throw new Error(
-      `Lesson not found for slug "${slug}": ${lessonError?.message ?? 'no data'}`,
-    );
+    throw new Error(`Lesson not found for slug "${slug}": ${lessonError?.message ?? "no data"}`);
   }
 
   // --- Step 1: Delete test_cases for all exercises of this lesson ---
   const { data: exercises } = await supabase
-    .from('exercises')
-    .select('id')
-    .eq('lesson_id', lesson.id);
+    .from("exercises")
+    .select("id")
+    .eq("lesson_id", lesson.id);
 
   if (exercises && exercises.length > 0) {
     const exerciseIds = exercises.map((ex) => ex.id);
 
     const { error: tcDeleteError } = await supabase
-      .from('test_cases')
+      .from("test_cases")
       .delete()
-      .in('exercise_id', exerciseIds);
+      .in("exercise_id", exerciseIds);
 
     if (tcDeleteError) {
-      console.error('Failed to delete test cases during regeneration:', tcDeleteError.message);
+      console.error("Failed to delete test cases during regeneration:", tcDeleteError.message);
     }
   }
 
   // --- Step 2: Delete exercises ---
   const { error: exDeleteError } = await supabase
-    .from('exercises')
+    .from("exercises")
     .delete()
-    .eq('lesson_id', lesson.id);
+    .eq("lesson_id", lesson.id);
 
   if (exDeleteError) {
-    console.error('Failed to delete exercises during regeneration:', exDeleteError.message);
+    console.error("Failed to delete exercises during regeneration:", exDeleteError.message);
   }
 
   // --- Step 3: Clear summary on lesson row ---
   const { error: updateError } = await supabase
-    .from('lessons')
+    .from("lessons")
     .update({
       summary_md: null,
       summary_generated_at: null,
       summary_model: null,
     })
-    .eq('id', lesson.id);
+    .eq("id", lesson.id);
 
   if (updateError) {
-    throw new Error(
-      `Failed to clear lesson summary during regeneration: ${updateError.message}`,
-    );
+    throw new Error(`Failed to clear lesson summary during regeneration: ${updateError.message}`);
   }
 
   // --- Step 4: Re-generate (getOrGenerateLesson now sees a cache miss) ---

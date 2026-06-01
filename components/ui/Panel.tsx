@@ -61,12 +61,6 @@ interface PanelContentProps {
   noPadding?: boolean;
 }
 
-export function PanelContent({
-  children,
-  className = "",
-  noPadding = false,
-}: PanelContentProps) {
-  return (
-    <div className={`${noPadding ? "" : "p-4"} ${className}`}>{children}</div>
-  );
+export function PanelContent({ children, className = "", noPadding = false }: PanelContentProps) {
+  return <div className={`${noPadding ? "" : "p-4"} ${className}`}>{children}</div>;
 }
