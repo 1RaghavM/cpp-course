@@ -17,17 +17,6 @@ interface ChapterSidebarProps {
   onClose: () => void;
 }
 
-const chapterHues = [10, 220, 38, 155, 280, 190, 350, 45, 120, 260];
-
-function getChapterColors(index: number) {
-  const hue = chapterHues[index % chapterHues.length]!;
-  return {
-    badge: `hsl(${hue} 30% 20%)`,
-    badgeText: `hsl(${hue} 40% 68%)`,
-    bar: `hsl(${hue} 35% 42%)`,
-  };
-}
-
 export function ChapterSidebar({
   chapters,
   selectedIndex,
@@ -54,13 +43,13 @@ export function ChapterSidebar({
 
       <aside
         className={`
-          fixed inset-y-14 left-0 z-40 flex w-[280px] flex-col border-r border-border/50 bg-base
+          fixed inset-y-14 left-0 z-40 flex w-[280px] flex-col border-r border-border bg-base
           transition-transform duration-200
           lg:relative lg:inset-y-0 lg:z-0
           ${open ? "translate-x-0" : "-translate-x-full lg:-translate-x-full"}
         `}
       >
-        <div className="flex h-10 shrink-0 items-center justify-between border-b border-border/30 px-3">
+        <div className="flex h-10 shrink-0 items-center justify-between border-b border-border px-3">
           <span className="text-xs font-medium uppercase tracking-wider text-muted">
             Chapters
           </span>
@@ -77,7 +66,6 @@ export function ChapterSidebar({
 
         <div className="flex-1 overflow-y-auto py-1">
           {chapters.map((chapter, idx) => {
-            const colors = getChapterColors(idx);
             const isSelected = idx === selectedIndex;
 
             return (
@@ -95,10 +83,7 @@ export function ChapterSidebar({
                 `}
               >
                 <div className="flex items-center gap-2">
-                  <span
-                    className="inline-flex h-5 min-w-[2rem] shrink-0 items-center justify-center rounded px-1.5 font-mono text-[10px] font-medium"
-                    style={{ backgroundColor: colors.badge, color: colors.badgeText }}
-                  >
+                  <span className="inline-flex h-5 min-w-[2rem] shrink-0 items-center justify-center rounded px-1.5 font-mono text-[10px] font-medium bg-accent/10 text-accent-hover">
                     {chapter.number}
                   </span>
                   <span className="min-w-0 flex-1 truncate text-xs text-secondary">
@@ -110,11 +95,8 @@ export function ChapterSidebar({
                 </div>
                 <div className="h-0.5 w-full overflow-hidden rounded-full bg-elevated">
                   <div
-                    className="h-full rounded-full transition-all duration-300"
-                    style={{
-                      width: `${chapter.completionPercent}%`,
-                      backgroundColor: colors.bar,
-                    }}
+                    className="h-full rounded-full bg-accent transition-all duration-300"
+                    style={{ width: `${chapter.completionPercent}%` }}
                   />
                 </div>
               </button>
