@@ -246,6 +246,7 @@ export interface Database {
           title: string | null;
           created_at: string;
           updated_at: string;
+          status: string;
         };
         Insert: {
           id?: string;
@@ -254,6 +255,7 @@ export interface Database {
           title?: string | null;
           created_at?: string;
           updated_at?: string;
+          status?: string;
         };
         Update: {
           id?: string;
@@ -262,6 +264,7 @@ export interface Database {
           title?: string | null;
           created_at?: string;
           updated_at?: string;
+          status?: string;
         };
         Relationships: [];
       };
@@ -276,6 +279,7 @@ export interface Database {
           tokens_out: number | null;
           cached_tokens_in: number | null;
           model: string | null;
+          feedback: string | null;
           created_at: string;
         };
         Insert: {
@@ -288,6 +292,7 @@ export interface Database {
           tokens_out?: number | null;
           cached_tokens_in?: number | null;
           model?: string | null;
+          feedback?: string | null;
           created_at?: string;
         };
         Update: {
@@ -300,6 +305,7 @@ export interface Database {
           tokens_out?: number | null;
           cached_tokens_in?: number | null;
           model?: string | null;
+          feedback?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -315,6 +321,7 @@ export interface Database {
           cached_in: number;
           cost_usd_micro: number;
           lesson_id: string | null;
+          conversation_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -327,6 +334,7 @@ export interface Database {
           cached_in?: number;
           cost_usd_micro: number;
           lesson_id?: string | null;
+          conversation_id?: string | null;
           created_at?: string;
         };
         Update: {
@@ -339,6 +347,7 @@ export interface Database {
           cached_in?: number;
           cost_usd_micro?: number;
           lesson_id?: string | null;
+          conversation_id?: string | null;
           created_at?: string;
         };
         Relationships: [];
