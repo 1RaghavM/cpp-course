@@ -2,14 +2,17 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { TopBar } from "@/components/layout/TopBar";
 
-type AppShellProps = {
-  progressPercent: number;
+interface AppShellProps {
+  streakDays: number;
+  resumeLessonSlug: string | null;
+  userEmail: string;
+  userInitial: string;
   children: React.ReactNode;
-};
+}
 
-export function AppShell({ progressPercent, children }: AppShellProps) {
+export function AppShell({ streakDays, resumeLessonSlug, userEmail, userInitial, children }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const hideHeader = pathname.startsWith("/lessons/");
@@ -62,7 +65,14 @@ export function AppShell({ progressPercent, children }: AppShellProps) {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {hideHeader ? null : <AppHeader progressPercent={progressPercent} />}
+      {hideHeader ? null : (
+        <TopBar
+          streakDays={streakDays}
+          resumeLessonSlug={resumeLessonSlug}
+          userEmail={userEmail}
+          userInitial={userInitial}
+        />
+      )}
       <main
         className={
           hideHeader
