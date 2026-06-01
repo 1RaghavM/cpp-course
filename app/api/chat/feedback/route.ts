@@ -9,8 +9,24 @@ export async function POST(request: Request) {
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
 
-  const body = await request.json();
-  const { messageId, value } = body as { messageId?: string; value?: string };
+  const rawBody = await request.text();
+  if (rawBody.length > 1024) {
+    return NextResponse.json(
+      { error: { code: "BAD_REQUEST", message: "Request too large" } },
+      { status: 400 },
+    );
+  }
+
+  let body: { messageId?: string; value?: string };
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return NextResponse.json(
+      { error: { code: "BAD_REQUEST", message: "Invalid JSON" } },
+      { status: 400 },
+    );
+  }
+  const { messageId, value } = body;
 
   if (!messageId || !value || !["up", "down"].includes(value)) {
     return NextResponse.json(

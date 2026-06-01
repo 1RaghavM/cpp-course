@@ -10,8 +10,24 @@ export async function POST(request: Request) {
   if (authResult instanceof NextResponse) return authResult;
   const userId = authResult.session.user.id;
 
-  const body = await request.json();
-  const { lessonId } = body as { lessonId?: string };
+  const rawBody = await request.text();
+  if (rawBody.length > 1024) {
+    return NextResponse.json(
+      { error: { code: "BAD_REQUEST", message: "Request too large" } },
+      { status: 400 },
+    );
+  }
+
+  let body: { lessonId?: string };
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return NextResponse.json(
+      { error: { code: "BAD_REQUEST", message: "Invalid JSON" } },
+      { status: 400 },
+    );
+  }
+  const { lessonId } = body;
 
   if (!lessonId) {
     return NextResponse.json(
