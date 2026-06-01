@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
+import { Greeting } from "@/components/dashboard/Greeting";
 import { Hero } from "@/components/dashboard/Hero";
 import { Road } from "@/components/dashboard/Road";
 import { StatsStrip } from "@/components/dashboard/StatsStrip";
@@ -19,6 +20,8 @@ interface DashboardProps {
   stageTargetSlugs: Record<Stage, string>;
   lastVisitedLessonId: string | null;
   statsError?: boolean;
+  displayName: string | null;
+  currentHour: number;
 }
 
 export function Dashboard({
@@ -30,6 +33,8 @@ export function Dashboard({
   stageTargetSlugs,
   lastVisitedLessonId,
   statsError,
+  displayName,
+  currentHour,
 }: DashboardProps) {
   const router = useRouter();
   const reducedMotion = useReducedMotion();
@@ -64,6 +69,10 @@ export function Dashboard({
   return (
     <div className="mx-auto max-w-[720px] px-6 py-8">
       <motion.div className="space-y-8" variants={containerVariants} initial="hidden" animate="visible">
+        <motion.div variants={itemVariants}>
+          <Greeting displayName={displayName} hour={currentHour} />
+        </motion.div>
+
         <motion.div variants={itemVariants}>
           <Hero
             lesson={resumeTarget}

@@ -48,7 +48,7 @@ export default async function DashboardPage() {
       .select("lesson_id, state, last_visit_at, completed_at, last_code_snippet"),
     supabase
       .from("user_stats")
-      .select("streak_days, last_active_date, weekly_goal")
+      .select("streak_days, last_active_date, weekly_goal, display_name")
       .single(),
   ]);
 
@@ -97,6 +97,7 @@ export default async function DashboardPage() {
     streak_days: number;
     last_active_date: string | null;
     weekly_goal: number | null;
+    display_name: string | null;
   } | null;
 
   const curriculum = buildCurriculum(dbLessons);
@@ -136,6 +137,9 @@ export default async function DashboardPage() {
   const resumeVariant = computeResumeVariant(curriculum, dashboardProgress);
   const pathPercent = computePathPercent(curriculum, dashboardProgress);
 
+  const currentHour = new Date().getUTCHours();
+  const displayName = statsError ? null : (userStats?.display_name ?? null);
+
   const allLessons = flattenLessons(curriculum);
   const stageTargetSlugs = {} as Record<Stage, string>;
   for (const stage of STAGES) {
@@ -160,6 +164,8 @@ export default async function DashboardPage() {
       stageTargetSlugs={stageTargetSlugs}
       lastVisitedLessonId={lastActiveLessonId}
       statsError={statsError}
+      displayName={displayName}
+      currentHour={currentHour}
     />
   );
 }
