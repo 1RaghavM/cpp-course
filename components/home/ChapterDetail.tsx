@@ -21,26 +21,14 @@ interface ChapterDetailProps {
   chapterIndex: number;
 }
 
-const chapterHues = [10, 220, 38, 155, 280, 190, 350, 45, 120, 260];
-
-function getChapterColors(index: number) {
-  const hue = chapterHues[index % chapterHues.length]!;
-  return {
-    badge: `hsl(${hue} 30% 20%)`,
-    badgeText: `hsl(${hue} 40% 68%)`,
-    bar: `hsl(${hue} 35% 42%)`,
-  };
-}
-
-const stateIndicator: Record<DetailLesson["state"], { label: string; color: string }> = {
-  completed: { label: "●", color: "hsl(var(--success))" },
-  in_progress: { label: "◐", color: "hsl(var(--accent))" },
-  not_started: { label: "○", color: "hsl(var(--text-muted))" },
-  skipped: { label: "–", color: "hsl(var(--warning))" },
+const stateIndicator: Record<DetailLesson["state"], { label: string; className: string }> = {
+  completed: { label: "●", className: "text-success" },
+  in_progress: { label: "◐", className: "text-accent" },
+  not_started: { label: "○", className: "text-muted" },
+  skipped: { label: "–", className: "text-warning" },
 };
 
-export function ChapterDetail({ chapter, chapterIndex }: ChapterDetailProps) {
-  const colors = getChapterColors(chapterIndex);
+export function ChapterDetail({ chapter }: ChapterDetailProps) {
   const totalLessons = chapter.lessons.length;
   const completedCount = chapter.lessons.filter(
     (l) => l.state === "completed" || l.state === "skipped",
@@ -50,29 +38,23 @@ export function ChapterDetail({ chapter, chapterIndex }: ChapterDetailProps) {
     <div className="reveal">
       <div className="mb-6">
         <div className="flex items-center gap-3">
-          <span
-            className="inline-flex h-7 min-w-[2.5rem] items-center justify-center rounded-md px-2 font-mono text-xs font-medium"
-            style={{ backgroundColor: colors.badge, color: colors.badgeText }}
-          >
+          <span className="inline-flex h-7 min-w-[2.5rem] items-center justify-center rounded-md px-2 font-mono text-xs font-medium bg-accent/10 text-accent-hover">
             {chapter.number}
           </span>
-          <h2 className="font-display text-xl text-primary">{chapter.title}</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-primary">{chapter.title}</h2>
         </div>
         <p className="mt-2 text-xs text-muted">
           <span className="font-mono tabular-nums text-secondary">{completedCount}</span>
           {" of "}
           <span className="font-mono tabular-nums">{totalLessons}</span>
           {" lessons"}
-          <span className="mx-2 opacity-30">·</span>
+          <span className="mx-2 opacity-30">&middot;</span>
           <span className="font-mono tabular-nums text-secondary">{chapter.completionPercent}%</span>
         </p>
         <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-elevated">
           <div
-            className="h-full rounded-full transition-all duration-300"
-            style={{
-              width: `${chapter.completionPercent}%`,
-              backgroundColor: colors.bar,
-            }}
+            className="h-full rounded-full bg-accent transition-all duration-300"
+            style={{ width: `${chapter.completionPercent}%` }}
           />
         </div>
       </div>
@@ -90,10 +72,7 @@ export function ChapterDetail({ chapter, chapterIndex }: ChapterDetailProps) {
                 isActive ? "bg-accent/[0.06]" : ""
               }`}
             >
-              <span
-                className="shrink-0 text-sm leading-none"
-                style={{ color: indicator.color }}
-              >
+              <span className={`shrink-0 text-sm leading-none ${indicator.className}`}>
                 {indicator.label}
               </span>
               <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted">
