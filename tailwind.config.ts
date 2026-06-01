@@ -21,6 +21,16 @@ const config: Config = {
         error: "var(--error)",
         warning: "var(--warning)",
         steel: "var(--slate)",
+        "glass-fill": "var(--glass-fill)",
+        "glass-fill-hi": "var(--glass-fill-hi)",
+        "glass-border": "var(--glass-border)",
+        brand: "var(--brand)",
+        "brand-bright": "var(--brand-bright)",
+        "accent-cyan": "var(--accent-cyan)",
+        "node-locked": "var(--node-locked)",
+        "node-active": "var(--node-active)",
+        "node-complete": "var(--node-complete)",
+        streak: "var(--streak)",
       },
       backgroundColor: {
         base: "var(--bg-base)",
@@ -36,6 +46,17 @@ const config: Config = {
       borderColor: {
         DEFAULT: "var(--border)",
         subtle: "var(--border-subtle)",
+      },
+      borderRadius: {
+        card: "var(--radius-card)",
+      },
+      transitionDuration: {
+        fast: "var(--dur-fast)",
+        med: "var(--dur-med)",
+        slow: "var(--dur-slow)",
+      },
+      transitionTimingFunction: {
+        smooth: "var(--ease)",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
