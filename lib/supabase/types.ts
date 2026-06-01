@@ -346,6 +346,42 @@ export interface Database {
         };
         Relationships: [];
       };
+      onboarding: {
+        Row: {
+          user_id: string;
+          background: string;
+          motivation: string;
+          start_module: string;
+          fast_track: boolean;
+          placement_taken: boolean;
+          placement_score: number | null;
+          weekly_goal: number | null;
+          created_at: string | null;
+        };
+        Insert: {
+          user_id: string;
+          background: string;
+          motivation: string;
+          start_module: string;
+          fast_track?: boolean;
+          placement_taken?: boolean;
+          placement_score?: number | null;
+          weekly_goal?: number | null;
+          created_at?: string | null;
+        };
+        Update: {
+          user_id?: string;
+          background?: string;
+          motivation?: string;
+          start_module?: string;
+          fast_track?: boolean;
+          placement_taken?: boolean;
+          placement_score?: number | null;
+          weekly_goal?: number | null;
+          created_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -372,6 +408,7 @@ export type Progress = Database["public"]["Tables"]["progress"]["Row"];
 export type Conversation = Database["public"]["Tables"]["conversations"]["Row"];
 export type Message = Database["public"]["Tables"]["messages"]["Row"];
 export type TokenUsage = Database["public"]["Tables"]["token_usage"]["Row"];
+export type Onboarding = Database["public"]["Tables"]["onboarding"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.
