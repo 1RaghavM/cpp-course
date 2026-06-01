@@ -64,6 +64,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to save onboarding data" }, { status: 500 });
   }
 
+  await supabase.from("user_stats").upsert(
+    {
+      user_id: userId,
+      weekly_goal: body.weeklyGoal,
+      streak_days: 0,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" },
+  );
+
   return NextResponse.json({ ok: true, startModule: body.startModule });
 }
 
