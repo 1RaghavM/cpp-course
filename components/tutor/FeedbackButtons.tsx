@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface Props {
   messageId: string;
@@ -10,12 +10,12 @@ interface Props {
 export default function FeedbackButtons({ messageId, initialFeedback }: Props) {
   const [feedback, setFeedback] = useState<string | null>(initialFeedback);
 
-  const send = async (value: 'up' | 'down') => {
+  const send = async (value: "up" | "down") => {
     const next = feedback === value ? null : value;
     setFeedback(next);
-    await fetch('/api/chat/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/chat/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messageId, value: next ?? value }),
     });
   };
@@ -23,11 +23,11 @@ export default function FeedbackButtons({ messageId, initialFeedback }: Props) {
   return (
     <div className="flex items-center gap-1 mt-1">
       <button
-        onClick={() => send('up')}
+        onClick={() => send("up")}
         className={`p-1 rounded text-xs transition-colors ${
-          feedback === 'up'
-            ? 'text-[var(--color-accent)]'
-            : 'text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)]'
+          feedback === "up"
+            ? "text-[var(--color-accent)]"
+            : "text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)]"
         }`}
         aria-label="Helpful"
       >
@@ -45,11 +45,11 @@ export default function FeedbackButtons({ messageId, initialFeedback }: Props) {
         </svg>
       </button>
       <button
-        onClick={() => send('down')}
+        onClick={() => send("down")}
         className={`p-1 rounded text-xs transition-colors ${
-          feedback === 'down'
-            ? 'text-[var(--color-accent)]'
-            : 'text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)]'
+          feedback === "down"
+            ? "text-[var(--color-accent)]"
+            : "text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)]"
         }`}
         aria-label="Not helpful"
       >

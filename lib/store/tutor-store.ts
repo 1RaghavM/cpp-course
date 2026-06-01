@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface TutorStore {
   lessonId: string;
@@ -13,12 +13,11 @@ interface TutorStore {
 }
 
 export const useTutorStore = create<TutorStore>((set) => ({
-  lessonId: '',
-  code: '',
+  lessonId: "",
+  code: "",
   lastSubmissionId: null,
   lastSubmissionStatus: null,
   setLessonId: (id) => set({ lessonId: id }),
   setCode: (code) => set({ code }),
-  setSubmissionResult: (id, status) =>
-    set({ lastSubmissionId: id, lastSubmissionStatus: status }),
+  setSubmissionResult: (id, status) => set({ lastSubmissionId: id, lastSubmissionStatus: status }),
 }));

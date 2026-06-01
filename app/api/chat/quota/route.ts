@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
-import { createRouteClient } from '@/lib/supabase/server';
-import { requireAuth } from '@/lib/auth/require-auth';
-import { TUTOR_CONFIG } from '@/lib/ai/config';
+import { NextResponse } from "next/server";
+import { createRouteClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/auth/require-auth";
+import { TUTOR_CONFIG } from "@/lib/ai/config";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const supabase = createRouteClient();
@@ -17,15 +17,15 @@ export async function GET() {
 
   const [dailyRes, monthRes] = await Promise.all([
     supabase
-      .from('messages')
-      .select('id', { count: 'exact', head: true })
-      .eq('role', 'user')
-      .gte('created_at', startOfDay.toISOString()),
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "user")
+      .gte("created_at", startOfDay.toISOString()),
     supabase
-      .from('token_usage')
-      .select('cost_usd_micro')
-      .eq('call_type', 'tutor')
-      .gte('created_at', startOfMonth.toISOString()),
+      .from("token_usage")
+      .select("cost_usd_micro")
+      .eq("call_type", "tutor")
+      .gte("created_at", startOfMonth.toISOString()),
   ]);
 
   const monthSpendMicro = (monthRes.data ?? []).reduce(

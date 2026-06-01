@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface QuotaData {
   usedToday: number;
@@ -11,7 +11,7 @@ export default function QuotaIndicator() {
   const [quota, setQuota] = useState<QuotaData | null>(null);
 
   useEffect(() => {
-    fetch('/api/chat/quota')
+    fetch("/api/chat/quota")
       .then((r) => r.json())
       .then((data) => setQuota({ usedToday: data.usedToday, dailyCap: data.dailyCap }))
       .catch(() => {});
@@ -27,7 +27,7 @@ export default function QuotaIndicator() {
   return (
     <span
       className={`text-xs font-medium px-2 py-0.5 rounded-md ${
-        atCap ? 'bg-red-500/10 text-red-400' : 'bg-yellow-500/10 text-yellow-400'
+        atCap ? "bg-red-500/10 text-red-400" : "bg-yellow-500/10 text-yellow-400"
       }`}
     >
       {quota.usedToday}/{quota.dailyCap} today

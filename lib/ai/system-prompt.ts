@@ -16,13 +16,13 @@ PEDAGOGY:
 - Redirect non-C++ requests back to the lesson.`;
 
 const TIER_INSTRUCTIONS: Record<number, string> = {
-  1: 'T1: Ask one diagnostic question to help the learner find the issue. No solution hints.',
-  2: 'T2: Name the missing concept and point at the relevant lesson section. No code.',
-  3: 'T3: Sketch the approach in plain English or pseudocode. No working C++.',
-  4: 'T4: Show a working snippet with line-by-line explanation.',
+  1: "T1: Ask one diagnostic question to help the learner find the issue. No solution hints.",
+  2: "T2: Name the missing concept and point at the relevant lesson section. No code.",
+  3: "T3: Sketch the approach in plain English or pseudocode. No working C++.",
+  4: "T4: Show a working snippet with line-by-line explanation.",
 };
 
-const T4_TRIGGERS = ['show me', 'give me the answer', 'just tell me', 'i give up'];
+const T4_TRIGGERS = ["show me", "give me the answer", "just tell me", "i give up"];
 
 export function computeHintTier(turnCount: number, latestUserMessage: string): number {
   const lower = latestUserMessage.toLowerCase();
@@ -44,7 +44,7 @@ export function buildSystemPrompt(params: {
 
   const codeTruncated =
     params.editorCode.length > 8192
-      ? params.editorCode.slice(0, 8192) + '\n…[truncated]'
+      ? params.editorCode.slice(0, 8192) + "\n…[truncated]"
       : params.editorCode;
 
   let prompt = `${TUTOR_BASE}
@@ -64,7 +64,7 @@ ${codeTruncated}
   if (params.executionResult) {
     const resultTruncated =
       params.executionResult.length > 4096
-        ? params.executionResult.slice(0, 4096) + '\n…[truncated]'
+        ? params.executionResult.slice(0, 4096) + "\n…[truncated]"
         : params.executionResult;
     prompt += `\n\n[LAST EXECUTION]\n${resultTruncated}`;
   }

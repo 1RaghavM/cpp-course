@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
-import type { UIMessage, TextUIPart } from 'ai';
-import MarkdownMessage from './MarkdownMessage';
-import FeedbackButtons from './FeedbackButtons';
+import { useRef, useEffect } from "react";
+import type { UIMessage, TextUIPart } from "ai";
+import MarkdownMessage from "./MarkdownMessage";
+import FeedbackButtons from "./FeedbackButtons";
 
 interface Props {
   messages: UIMessage[];
@@ -14,7 +14,7 @@ export default function MessageList({ messages, isStreaming }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   if (messages.length === 0) {
@@ -29,13 +29,13 @@ export default function MessageList({ messages, isStreaming }: Props) {
     <div className="flex-1 overflow-y-auto px-4 py-3">
       {messages.map((msg) => {
         const textContent = msg.parts
-          .filter((p): p is TextUIPart => p.type === 'text')
+          .filter((p): p is TextUIPart => p.type === "text")
           .map((p) => p.text)
-          .join('');
+          .join("");
 
         return (
-          <div key={msg.id} className={`mb-4 ${msg.role === 'user' ? 'flex justify-end' : ''}`}>
-            {msg.role === 'user' ? (
+          <div key={msg.id} className={`mb-4 ${msg.role === "user" ? "flex justify-end" : ""}`}>
+            {msg.role === "user" ? (
               <div className="max-w-[85%] rounded-lg bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-fg)]">
                 <div className="whitespace-pre-wrap">{textContent}</div>
               </div>

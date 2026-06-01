@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
-import { useCallback, useMemo, useState } from 'react';
-import { useTutorStore } from '@/lib/store/tutor-store';
-import MessageList from './MessageList';
-import Composer from './Composer';
-import QuotaIndicator from './QuotaIndicator';
-import ExplainErrorButton from './ExplainErrorButton';
-import TierBadge from './TierBadge';
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { useCallback, useMemo, useState } from "react";
+import { useTutorStore } from "@/lib/store/tutor-store";
+import MessageList from "./MessageList";
+import Composer from "./Composer";
+import QuotaIndicator from "./QuotaIndicator";
+import ExplainErrorButton from "./ExplainErrorButton";
+import TierBadge from "./TierBadge";
 
 export default function TutorPanel() {
   const { lessonId, code, lastSubmissionId, lastSubmissionStatus } = useTutorStore();
   const [currentTier, setCurrentTier] = useState(1);
   const [quotaExhausted, setQuotaExhausted] = useState(false);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
   const bodyRef = useMemo(
     () => ({ lessonId, code, lastSubmissionToken: lastSubmissionId }),
@@ -24,7 +24,7 @@ export default function TutorPanel() {
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
-        api: '/api/chat',
+        api: "/api/chat",
         body: bodyRef,
       }),
     [bodyRef],
@@ -35,10 +35,7 @@ export default function TutorPanel() {
     onError(err) {
       try {
         const parsed = JSON.parse(err.message) as { error?: { code?: string } };
-        if (
-          parsed?.error?.code === 'RATE_LIMITED' ||
-          parsed?.error?.code === 'BUDGET_EXCEEDED'
-        ) {
+        if (parsed?.error?.code === "RATE_LIMITED" || parsed?.error?.code === "BUDGET_EXCEEDED") {
           setQuotaExhausted(true);
         }
       } catch {
@@ -47,39 +44,36 @@ export default function TutorPanel() {
     },
   });
 
-  const isStreaming = status === 'streaming';
-  const userTurnCount = messages.filter((m) => m.role === 'user').length;
+  const isStreaming = status === "streaming";
+  const userTurnCount = messages.filter((m) => m.role === "user").length;
   const displayTier = Math.min(
     4,
-    Math.max(
-      1,
-      userTurnCount >= 7 ? 4 : userTurnCount >= 5 ? 3 : userTurnCount >= 3 ? 2 : 1,
-    ),
+    Math.max(1, userTurnCount >= 7 ? 4 : userTurnCount >= 5 ? 3 : userTurnCount >= 3 ? 2 : 1),
   );
 
   const handleSend = useCallback(() => {
     if (!input.trim() || isStreaming) return;
     setCurrentTier(displayTier);
     void sendMessage({ text: input });
-    setInput('');
+    setInput("");
   }, [input, isStreaming, sendMessage, displayTier]);
 
   const handleExplainError = useCallback(() => {
     void sendMessage({
-      text: 'Can you explain the error I got from my last code run? What went wrong and how should I fix it?',
+      text: "Can you explain the error I got from my last code run? What went wrong and how should I fix it?",
     });
   }, [sendMessage]);
 
   const handleReset = useCallback(async () => {
     if (
       !window.confirm(
-        'Start a new conversation for this lesson? The current conversation will be archived.',
+        "Start a new conversation for this lesson? The current conversation will be archived.",
       )
     )
       return;
-    await fetch('/api/chat/reset', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    await fetch("/api/chat/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lessonId }),
     });
     setMessages([]);
@@ -89,7 +83,7 @@ export default function TutorPanel() {
 
   const showExplainError =
     lastSubmissionStatus !== null &&
-    lastSubmissionStatus !== 'accepted' &&
+    lastSubmissionStatus !== "accepted" &&
     !isStreaming &&
     messages.length > 0;
 

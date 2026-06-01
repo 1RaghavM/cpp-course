@@ -1,4 +1,4 @@
-import { TUTOR_CONFIG } from '@/lib/ai/config';
+import { TUTOR_CONFIG } from "@/lib/ai/config";
 
 export interface GuardInput {
   minuteCount: number;
@@ -9,7 +9,7 @@ export interface GuardInput {
 
 export interface GuardResult {
   allowed: boolean;
-  code?: 'RATE_LIMITED' | 'BUDGET_EXCEEDED' | 'CONVERSATION_LIMIT';
+  code?: "RATE_LIMITED" | "BUDGET_EXCEEDED" | "CONVERSATION_LIMIT";
   message?: string;
 }
 
@@ -17,7 +17,7 @@ export function checkRateAndBudget(input: GuardInput): GuardResult {
   if (input.minuteCount >= TUTOR_CONFIG.perMinMsgCap) {
     return {
       allowed: false,
-      code: 'RATE_LIMITED',
+      code: "RATE_LIMITED",
       message: `Slow down — max ${TUTOR_CONFIG.perMinMsgCap} messages per minute. Try again shortly.`,
     };
   }
@@ -25,7 +25,7 @@ export function checkRateAndBudget(input: GuardInput): GuardResult {
   if (input.dailyCount >= TUTOR_CONFIG.dailyMsgCap) {
     return {
       allowed: false,
-      code: 'RATE_LIMITED',
+      code: "RATE_LIMITED",
       message: `You've used all ${TUTOR_CONFIG.dailyMsgCap} messages for today. Come back tomorrow!`,
     };
   }
@@ -33,16 +33,16 @@ export function checkRateAndBudget(input: GuardInput): GuardResult {
   if (input.conversationSpendMicro >= TUTOR_CONFIG.maxConvoCostMicro) {
     return {
       allowed: false,
-      code: 'CONVERSATION_LIMIT',
-      message: 'This conversation has reached its cost limit. Start a new one to continue.',
+      code: "CONVERSATION_LIMIT",
+      message: "This conversation has reached its cost limit. Start a new one to continue.",
     };
   }
 
   if (input.monthSpendMicro >= TUTOR_CONFIG.monthlyHardCapMicro) {
     return {
       allowed: false,
-      code: 'BUDGET_EXCEEDED',
-      message: 'The tutor has reached its monthly budget. Your editor and lessons still work.',
+      code: "BUDGET_EXCEEDED",
+      message: "The tutor has reached its monthly budget. Your editor and lessons still work.",
     };
   }
 

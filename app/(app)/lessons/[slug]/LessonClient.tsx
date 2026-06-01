@@ -84,12 +84,7 @@ interface Props {
   nav: NavData | null;
 }
 
-export default function LessonClient({
-  lesson,
-  exercises,
-  initialExerciseIndex = 0,
-  nav,
-}: Props) {
+export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav }: Props) {
   const editorRef = useRef<MonacoEditorHandle>(null);
 
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
@@ -148,7 +143,7 @@ export default function LessonClient({
         try {
           localStorage.setItem(
             `cpproad:editor:${activeExercise.id}`,
-            editorRef.current?.getValue() ?? code
+            editorRef.current?.getValue() ?? code,
           );
         } catch {
           // localStorage unavailable
@@ -170,7 +165,7 @@ export default function LessonClient({
         setCode(savedCode ?? newExercise.starterCode);
       }
     },
-    [activeExerciseIndex, activeExercise, exercises, code]
+    [activeExerciseIndex, activeExercise, exercises, code],
   );
 
   const handleSubmit = useCallback(
@@ -210,7 +205,7 @@ export default function LessonClient({
         }
 
         setResult(data as SubmissionResponse);
-        setStoreSubmission('', (data as SubmissionResponse).status);
+        setStoreSubmission("", (data as SubmissionResponse).status);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
@@ -218,7 +213,7 @@ export default function LessonClient({
         setIsSubmitting(false);
       }
     },
-    [code, activeExercise, languageStd, isRunning, isSubmitting, setStoreSubmission]
+    [code, activeExercise, languageStd, isRunning, isSubmitting, setStoreSubmission],
   );
 
   const handleReset = useCallback(() => {
@@ -231,19 +226,12 @@ export default function LessonClient({
 
   const handleRestorePassingSub = useCallback(() => {
     if (!activeExercise?.lastPassingCode) return;
-    if (
-      !window.confirm(
-        "Restore your last passing submission? Current changes will be lost."
-      )
-    )
+    if (!window.confirm("Restore your last passing submission? Current changes will be lost."))
       return;
 
     setCode(activeExercise.lastPassingCode);
     try {
-      localStorage.setItem(
-        `cpproad:editor:${activeExercise.id}`,
-        activeExercise.lastPassingCode
-      );
+      localStorage.setItem(`cpproad:editor:${activeExercise.id}`, activeExercise.lastPassingCode);
     } catch {
       // localStorage unavailable
     }
@@ -360,7 +348,6 @@ export default function LessonClient({
                         </div>
                       </div>
                     )}
-
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full text-muted text-sm">
@@ -485,8 +472,8 @@ function MobileLayout({
       )}
 
       <div className="rounded-lg bg-warning/10 border border-warning/30 p-4 text-sm text-warning">
-        The code editor is read-only on mobile devices. Please use a desktop browser
-        for the best experience.
+        The code editor is read-only on mobile devices. Please use a desktop browser for the best
+        experience.
       </div>
 
       <div>
@@ -594,9 +581,7 @@ function LessonNav({
 
       <ChevronRightIcon className="h-3 w-3 text-muted" />
 
-      <span className="text-secondary truncate">
-        {lessonTitle}
-      </span>
+      <span className="text-secondary truncate">{lessonTitle}</span>
 
       <span className="text-muted text-xs ml-auto">
         {nav.currentIndex} / {nav.totalInChapter}
@@ -610,9 +595,7 @@ function SolutionReveal({ code }: { code: string }) {
 
   return (
     <div className="mt-6">
-      <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
-        Solution
-      </h3>
+      <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Solution</h3>
       {!revealed ? (
         <button
           onClick={() => setRevealed(true)}

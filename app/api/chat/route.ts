@@ -1,21 +1,21 @@
-import { streamText, type UIMessage } from 'ai';
-import { NextResponse } from 'next/server';
-import { createRouteClient, createServiceClient } from '@/lib/supabase/server';
-import { requireAuth } from '@/lib/auth/require-auth';
-import { tutorModel } from '@/lib/ai/model';
-import { buildSystemPrompt, computeHintTier } from '@/lib/ai/system-prompt';
+import { streamText, type UIMessage } from "ai";
+import { NextResponse } from "next/server";
+import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/auth/require-auth";
+import { tutorModel } from "@/lib/ai/model";
+import { buildSystemPrompt, computeHintTier } from "@/lib/ai/system-prompt";
 import {
   loadLessonContext,
   buildExecutionResult,
   resolveOrCreateConversation,
   loadConversationHistory,
   getGuardCounts,
-} from '@/lib/ai/context';
-import { checkRateAndBudget } from '@/lib/rate/guard';
-import { computeTutorCostMicro } from '@/lib/ai/pricing';
-import { TUTOR_CONFIG } from '@/lib/ai/config';
+} from "@/lib/ai/context";
+import { checkRateAndBudget } from "@/lib/rate/guard";
+import { computeTutorCostMicro } from "@/lib/ai/pricing";
+import { TUTOR_CONFIG } from "@/lib/ai/config";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   const rawBody = await request.text();
   if (rawBody.length > TUTOR_CONFIG.maxInputBytes) {
     return NextResponse.json(
-      { error: { code: 'BAD_REQUEST', message: 'Request too large' } },
+      { error: { code: "BAD_REQUEST", message: "Request too large" } },
       { status: 400 },
     );
   }
@@ -42,22 +42,22 @@ export async function POST(request: Request) {
     body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json(
-      { error: { code: 'BAD_REQUEST', message: 'Invalid JSON' } },
+      { error: { code: "BAD_REQUEST", message: "Invalid JSON" } },
       { status: 400 },
     );
   }
 
   if (!body.lessonId || !body.messages || body.messages.length === 0) {
     return NextResponse.json(
-      { error: { code: 'BAD_REQUEST', message: 'lessonId and messages are required' } },
+      { error: { code: "BAD_REQUEST", message: "lessonId and messages are required" } },
       { status: 400 },
     );
   }
 
-  const latestUserMessage = body.messages.filter((m) => m.role === 'user').pop();
+  const latestUserMessage = body.messages.filter((m) => m.role === "user").pop();
   if (!latestUserMessage) {
     return NextResponse.json(
-      { error: { code: 'BAD_REQUEST', message: 'No user message found' } },
+      { error: { code: "BAD_REQUEST", message: "No user message found" } },
       { status: 400 },
     );
   }
@@ -65,15 +65,15 @@ export async function POST(request: Request) {
   const serviceClient = createServiceClient();
 
   const extractTextFromMessage = (msg: UIMessage): string => {
-    const textPart = msg.parts.find((p): p is { type: 'text'; text: string } => p.type === 'text');
-    return textPart?.text ?? '';
+    const textPart = msg.parts.find((p): p is { type: "text"; text: string } => p.type === "text");
+    return textPart?.text ?? "";
   };
 
   const conversationId = await resolveOrCreateConversation(
     supabase,
     userId,
     body.lessonId,
-    extractTextFromMessage(latestUserMessage) || 'New conversation',
+    extractTextFromMessage(latestUserMessage) || "New conversation",
   );
 
   const guardCounts = await getGuardCounts(supabase, userId, conversationId);
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
   const lessonContext = await loadLessonContext(serviceClient, body.lessonId);
   if (!lessonContext) {
     return NextResponse.json(
-      { error: { code: 'BAD_REQUEST', message: 'Lesson not found' } },
+      { error: { code: "BAD_REQUEST", message: "Lesson not found" } },
       { status: 400 },
     );
   }
@@ -97,16 +97,16 @@ export async function POST(request: Request) {
   let executionResult: string | null = null;
   if (body.lastSubmissionToken) {
     const { data: sub } = await supabase
-      .from('submissions')
-      .select('status, compile_output, stderr, stdout')
-      .eq('id', body.lastSubmissionToken)
-      .eq('user_id', userId)
+      .from("submissions")
+      .select("status, compile_output, stderr, stdout")
+      .eq("id", body.lastSubmissionToken)
+      .eq("user_id", userId)
       .single();
     executionResult = buildExecutionResult(sub);
   }
 
   const history = await loadConversationHistory(supabase, conversationId);
-  const turnCount = history.filter((m) => m.role === 'user').length;
+  const turnCount = history.filter((m) => m.role === "user").length;
   const userContent = extractTextFromMessage(latestUserMessage);
   const tier = computeHintTier(turnCount, userContent);
 
@@ -114,42 +114,42 @@ export async function POST(request: Request) {
     tier,
     chapterTitle: lessonContext.chapterTitle,
     lessonTitle: lessonContext.lessonTitle,
-    editorCode: body.code ?? '',
+    editorCode: body.code ?? "",
     executionResult,
   });
 
-  await supabase.from('messages').insert({
+  await supabase.from("messages").insert({
     conversation_id: conversationId,
-    role: 'user',
+    role: "user",
     content: userContent,
   });
 
   const result = streamText({
     model: tutorModel(),
     system: systemPrompt,
-    messages: history.concat({ role: 'user', content: userContent }),
+    messages: history.concat({ role: "user", content: userContent }),
     maxOutputTokens: TUTOR_CONFIG.maxOutputTokens,
     abortSignal: AbortSignal.timeout(30_000),
     async onFinish({ text, usage }) {
       const tokensIn = usage.inputTokens ?? 0;
       const tokensOut = usage.outputTokens ?? 0;
 
-      await supabase.from('messages').insert({
+      await supabase.from("messages").insert({
         conversation_id: conversationId,
-        role: 'assistant',
+        role: "assistant",
         content: text,
         hint_tier: tier,
         tokens_in: tokensIn,
         tokens_out: tokensOut,
-        model: 'gemini-2.5-flash',
+        model: "gemini-2.5-flash",
       });
 
-      const costMicro = computeTutorCostMicro('gemini-2.5-flash', tokensIn, tokensOut);
+      const costMicro = computeTutorCostMicro("gemini-2.5-flash", tokensIn, tokensOut);
 
-      await serviceClient.from('token_usage').insert({
+      await serviceClient.from("token_usage").insert({
         user_id: userId,
-        call_type: 'tutor',
-        model: 'gemini-2.5-flash',
+        call_type: "tutor",
+        model: "gemini-2.5-flash",
         tokens_in: tokensIn,
         tokens_out: tokensOut,
         cached_in: 0,

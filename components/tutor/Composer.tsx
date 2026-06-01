@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 interface Props {
   input: string;
@@ -23,13 +23,13 @@ export default function Composer({
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
     }
   }, [input]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (!isStreaming && !disabled && input.trim()) onSubmit();
     }
@@ -43,7 +43,7 @@ export default function Composer({
           value={input}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={disabled ? 'Daily limit reached' : 'Ask about this lesson...'}
+          placeholder={disabled ? "Daily limit reached" : "Ask about this lesson..."}
           disabled={isStreaming || disabled}
           rows={1}
           className="flex-1 resize-none rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-fg)] placeholder-[var(--color-fg-subtle)] focus:border-[var(--color-accent)] focus:outline-none disabled:opacity-50 transition-colors"

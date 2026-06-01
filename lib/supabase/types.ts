@@ -5,13 +5,7 @@
  * Regenerate with: npx supabase gen types typescript --local > lib/supabase/types.ts
  */
 
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export interface Database {
   public: {
@@ -369,18 +363,18 @@ export interface Database {
 // Convenience aliases (Row types)
 // ---------------------------------------------------------------------------
 
-export type Chapter = Database['public']['Tables']['chapters']['Row'];
-export type Lesson = Database['public']['Tables']['lessons']['Row'];
-export type Exercise = Database['public']['Tables']['exercises']['Row'];
-export type TestCase = Database['public']['Tables']['test_cases']['Row'];
-export type Submission = Database['public']['Tables']['submissions']['Row'];
-export type Progress = Database['public']['Tables']['progress']['Row'];
-export type Conversation = Database['public']['Tables']['conversations']['Row'];
-export type Message = Database['public']['Tables']['messages']['Row'];
-export type TokenUsage = Database['public']['Tables']['token_usage']['Row'];
+export type Chapter = Database["public"]["Tables"]["chapters"]["Row"];
+export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
+export type Exercise = Database["public"]["Tables"]["exercises"]["Row"];
+export type TestCase = Database["public"]["Tables"]["test_cases"]["Row"];
+export type Submission = Database["public"]["Tables"]["submissions"]["Row"];
+export type Progress = Database["public"]["Tables"]["progress"]["Row"];
+export type Conversation = Database["public"]["Tables"]["conversations"]["Row"];
+export type Message = Database["public"]["Tables"]["messages"]["Row"];
+export type TokenUsage = Database["public"]["Tables"]["token_usage"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.
 // ---------------------------------------------------------------------------
 
-export type AppSupabaseClient = import('@supabase/supabase-js').SupabaseClient<Database>;
+export type AppSupabaseClient = import("@supabase/supabase-js").SupabaseClient<Database>;
