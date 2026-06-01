@@ -114,6 +114,13 @@ export async function POST(request: NextRequest) {
       wall_time_ms: data.wallTimeMs,
     });
 
+    await supabase
+      .from("progress")
+      .update({ last_code_snippet: source_code, last_visit_at: new Date().toISOString() })
+      .eq("user_id", userId)
+      .eq("lesson_id", exercise.lesson_id)
+      .then(() => {});
+
     return NextResponse.json({
       status: data.status,
       stdout: data.stdout,
@@ -197,6 +204,13 @@ export async function POST(request: NextRequest) {
     wall_time_ms: totalWallTimeMs,
     test_results: verdict.testResults as unknown as Json,
   });
+
+  await supabase
+    .from("progress")
+    .update({ last_code_snippet: source_code, last_visit_at: new Date().toISOString() })
+    .eq("user_id", userId)
+    .eq("lesson_id", exercise.lesson_id)
+    .then(() => {});
 
   // Auto-mark lesson completed if all tests pass
   if (verdict.overallStatus === "passed") {
