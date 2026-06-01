@@ -1,4 +1,4 @@
-import type { OnboardingState } from "./types";
+import type { OnboardingState, OnboardingPayload } from "./types";
 
 const STORAGE_KEY = "cpproad_onboarding";
 
@@ -41,15 +41,7 @@ export function hasOnboardingData(): boolean {
   }
 }
 
-export function getOnboardingPayload(): {
-  background: string;
-  motivation: string;
-  startModule: string;
-  fastTrack: boolean;
-  placementTaken: boolean;
-  placementScore: number | null;
-  weeklyGoal: number | null;
-} | null {
+export function getOnboardingPayload(): OnboardingPayload | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;

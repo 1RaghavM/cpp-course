@@ -1,4 +1,4 @@
-type EventName =
+export type EventName =
   | "onboarding_started"
   | "onboarding_q_answered"
   | "placement_started"
