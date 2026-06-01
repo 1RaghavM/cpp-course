@@ -47,13 +47,13 @@ export function onboardingReducer(state: OnboardingState, action: Action): Onboa
       return { ...state, step: "placement" };
 
     case "COMPLETE_PLACEMENT": {
-      const module = placeFromScore(action.score);
+      const placed = placeFromScore(action.score);
       return {
         ...state,
         step: "weekly-goal",
         placementTaken: true,
         placementScore: action.score,
-        startModule: module,
+        startModule: placed,
       };
     }
 

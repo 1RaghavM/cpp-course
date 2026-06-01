@@ -36,8 +36,8 @@ export function PlacementQuiz({ dispatch, onBack }: Props) {
       setQuestionIndex(questionIndex + 1);
     } else {
       const score = scoreAnswers(newAnswers);
-      const module = placeFromScore(score);
-      setResult({ score, module });
+      const startModule = placeFromScore(score);
+      setResult({ score, module: startModule });
       trackEvent("placement_completed", { score });
     }
   }

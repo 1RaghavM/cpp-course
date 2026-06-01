@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, useEffect, useCallback, useState } from "react";
+import { Suspense, useReducer, useEffect, useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { onboardingReducer } from "@/lib/onboarding/reducer";
 import { INITIAL_STATE } from "@/lib/onboarding/types";
@@ -14,7 +14,7 @@ import { StepPayoff } from "@/components/onboarding/StepPayoff";
 import { PlacementQuiz } from "@/components/onboarding/PlacementQuiz";
 import type { Action } from "@/lib/onboarding/types";
 
-export default function OnboardingPage() {
+function OnboardingFlow() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isPayoff = searchParams.get("step") === "payoff";
@@ -118,4 +118,18 @@ export default function OnboardingPage() {
     default:
       return <StepBackground dispatch={dispatch} />;
   }
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="ob-step">
+          <p className="ob-subtext">Loading...</p>
+        </div>
+      }
+    >
+      <OnboardingFlow />
+    </Suspense>
+  );
 }
