@@ -15,32 +15,37 @@ function TrackSVG({ percent, vertical }: { percent: number; vertical: boolean })
     const height = 100;
     return (
       <svg
-        className="absolute left-1/2 top-0 -z-10 h-full -translate-x-1/2"
-        width="4"
-        height="100%"
+        className="absolute left-1/2 top-0 -z-[1] h-full -translate-x-1/2"
+        width="6"
+        viewBox="0 0 6 100"
         preserveAspectRatio="none"
         aria-hidden="true"
       >
         <line
-          x1="2"
+          x1="3"
           y1="0"
-          x2="2"
+          x2="3"
           y2={height}
           stroke="var(--node-locked)"
-          strokeWidth="4"
+          strokeWidth="6"
           vectorEffect="non-scaling-stroke"
         />
         <line
-          x1="2"
+          x1="3"
           y1="0"
-          x2="2"
+          x2="3"
           y2={height}
           stroke="url(#road-gradient-v)"
-          strokeWidth="4"
+          strokeWidth="6"
           strokeDasharray={`${height}`}
-          strokeDashoffset={`${height - (height * percent) / 100}`}
+          className="road-fill-animate"
+          style={{
+            "--track-length": `${height}`,
+            "--track-offset": `${height - (height * percent) / 100}`,
+            strokeDashoffset: `${height - (height * percent) / 100}`,
+            animation: `road-fill var(--dur-slow) var(--ease) forwards`,
+          } as React.CSSProperties}
           vectorEffect="non-scaling-stroke"
-          className="transition-all duration-slow ease-smooth"
         />
         <defs>
           <linearGradient id="road-gradient-v" x1="0" y1="0" x2="0" y2="1">
@@ -55,32 +60,37 @@ function TrackSVG({ percent, vertical }: { percent: number; vertical: boolean })
   const width = 100;
   return (
     <svg
-      className="absolute left-0 top-1/2 -z-10 w-full -translate-y-1/2"
-      height="4"
-      width="100%"
+      className="absolute left-0 top-1/2 -z-[1] w-full -translate-y-1/2"
+      height="6"
+      viewBox="0 0 100 6"
       preserveAspectRatio="none"
       aria-hidden="true"
     >
       <line
         x1="0"
-        y1="2"
+        y1="3"
         x2={width}
-        y2="2"
+        y2="3"
         stroke="var(--node-locked)"
-        strokeWidth="4"
+        strokeWidth="6"
         vectorEffect="non-scaling-stroke"
       />
       <line
         x1="0"
-        y1="2"
+        y1="3"
         x2={width}
-        y2="2"
+        y2="3"
         stroke="url(#road-gradient-h)"
-        strokeWidth="4"
+        strokeWidth="6"
         strokeDasharray={`${width}`}
-        strokeDashoffset={`${width - (width * percent) / 100}`}
+        className="road-fill-animate"
+        style={{
+          "--track-length": `${width}`,
+          "--track-offset": `${width - (width * percent) / 100}`,
+          strokeDashoffset: `${width - (width * percent) / 100}`,
+          animation: `road-fill var(--dur-slow) var(--ease) forwards`,
+        } as React.CSSProperties}
         vectorEffect="non-scaling-stroke"
-        className="transition-all duration-slow ease-smooth"
       />
       <defs>
         <linearGradient id="road-gradient-h" x1="0" y1="0" x2="1" y2="0">

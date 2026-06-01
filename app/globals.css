@@ -107,6 +107,15 @@
   }
 }
 
+@keyframes road-fill {
+  from {
+    stroke-dashoffset: var(--track-length);
+  }
+  to {
+    stroke-dashoffset: var(--track-offset);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .orb-animate {
     animation: none !important;
@@ -115,6 +124,9 @@
     animation: none !important;
   }
   .flame-flicker {
+    animation: none !important;
+  }
+  .road-fill-animate {
     animation: none !important;
   }
 }
