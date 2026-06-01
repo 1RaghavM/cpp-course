@@ -72,7 +72,10 @@ export async function resolveOrCreateConversation(
     .select("id")
     .single();
 
-  if (error || !conv) throw new Error("Failed to create conversation");
+  if (error || !conv) {
+    console.error("Failed to create conversation:", error);
+    throw new Error(`Failed to create conversation: ${error?.message ?? "no data returned"}`);
+  }
   return conv.id;
 }
 

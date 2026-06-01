@@ -27,7 +27,7 @@ export default function QuotaIndicator({ refreshKey = 0 }: { refreshKey?: number
   return (
     <span
       className={`text-xs font-medium px-2 py-0.5 rounded-md ${
-        atCap ? "bg-red-500/10 text-red-400" : "bg-yellow-500/10 text-yellow-400"
+        atCap ? "bg-error/10 text-error" : "bg-warning/10 text-warning"
       }`}
     >
       {quota.usedToday}/{quota.dailyCap} today

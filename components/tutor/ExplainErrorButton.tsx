@@ -11,7 +11,7 @@ export default function ExplainErrorButton({ visible, onExplain }: Props) {
   return (
     <button
       onClick={onExplain}
-      className="mx-4 mb-2 rounded-full border border-[var(--color-border-strong)] bg-transparent px-3 py-1.5 text-xs font-medium text-[var(--color-fg)] hover:bg-[var(--color-surface-2)] transition-colors"
+      className="mx-4 mb-2 rounded-full border border-border-subtle bg-transparent px-3 py-1.5 text-xs font-medium text-primary hover:bg-elevated transition-colors"
     >
       Explain this error
     </button>

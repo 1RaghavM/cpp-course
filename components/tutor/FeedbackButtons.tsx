@@ -26,8 +26,8 @@ export default function FeedbackButtons({ messageId, initialFeedback }: Props) {
         onClick={() => send("up")}
         className={`p-1 rounded text-xs transition-colors ${
           feedback === "up"
-            ? "text-[var(--color-accent)]"
-            : "text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)]"
+            ? "text-accent"
+            : "text-muted hover:text-secondary"
         }`}
         aria-label="Helpful"
       >
@@ -48,8 +48,8 @@ export default function FeedbackButtons({ messageId, initialFeedback }: Props) {
         onClick={() => send("down")}
         className={`p-1 rounded text-xs transition-colors ${
           feedback === "down"
-            ? "text-[var(--color-accent)]"
-            : "text-[var(--color-fg-subtle)] hover:text-[var(--color-fg-muted)]"
+            ? "text-accent"
+            : "text-muted hover:text-secondary"
         }`}
         aria-label="Not helpful"
       >

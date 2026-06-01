@@ -20,7 +20,7 @@ export default function MessageList({ messages, isStreaming }: Props) {
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center px-4">
-        <p className="text-sm text-[var(--color-fg-muted)]">Ask a question about this lesson.</p>
+        <p className="text-sm text-muted">Ask a question about this lesson.</p>
       </div>
     );
   }
@@ -36,7 +36,7 @@ export default function MessageList({ messages, isStreaming }: Props) {
         return (
           <div key={msg.id} className={`mb-4 ${msg.role === "user" ? "flex justify-end" : ""}`}>
             {msg.role === "user" ? (
-              <div className="max-w-[85%] rounded-lg bg-[var(--color-surface-2)] px-3 py-2 text-sm text-[var(--color-fg)]">
+              <div className="max-w-[85%] rounded-lg bg-elevated px-3 py-2 text-sm text-primary">
                 <div className="whitespace-pre-wrap">{textContent}</div>
               </div>
             ) : (
@@ -44,7 +44,7 @@ export default function MessageList({ messages, isStreaming }: Props) {
                 {textContent ? (
                   <MarkdownMessage content={textContent} />
                 ) : isStreaming ? (
-                  <div className="text-sm text-[var(--color-fg-muted)]">Thinking...</div>
+                  <div className="text-sm text-muted">Thinking...</div>
                 ) : null}
                 {textContent && !isStreaming && (
                   <FeedbackButtons messageId={msg.id} initialFeedback={null} />

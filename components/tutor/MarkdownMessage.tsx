@@ -10,7 +10,7 @@ interface Props {
 
 export default function MarkdownMessage({ content }: Props) {
   return (
-    <div className="prose prose-sm prose-invert max-w-none text-[var(--color-fg)]">
+    <div className="prose prose-sm prose-invert max-w-none text-primary">
       <ReactMarkdown
         components={{
           code({ className, children, ...props }) {
@@ -23,9 +23,9 @@ export default function MarkdownMessage({ content }: Props) {
                   language={match[1]}
                   PreTag="div"
                   customStyle={{
-                    background: "var(--color-surface)",
+                    background: "var(--bg-surface)",
                     borderRadius: "8px",
-                    border: "1px solid var(--color-border)",
+                    border: "1px solid var(--border)",
                     fontSize: "0.8125rem",
                   }}
                 >
@@ -35,7 +35,7 @@ export default function MarkdownMessage({ content }: Props) {
             }
             return (
               <code
-                className="rounded bg-[var(--color-surface)] px-1.5 py-0.5 text-xs font-mono"
+                className="rounded bg-surface px-1.5 py-0.5 text-xs font-mono"
                 {...props}
               >
                 {children}

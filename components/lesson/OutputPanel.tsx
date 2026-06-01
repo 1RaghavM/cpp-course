@@ -77,7 +77,7 @@ export function OutputPanel({
   const busy = isRunning || isSubmitting;
 
   return (
-    <div className="flex flex-col border-t border-border">
+    <div className="flex flex-col h-full">
       {/* Header with actions */}
       <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
         <span className="text-xs font-medium text-secondary uppercase tracking-wider">Console</span>
@@ -106,7 +106,7 @@ export function OutputPanel({
       </div>
 
       {/* Output content */}
-      <div className="flex-1 min-h-[200px] max-h-[300px] overflow-y-auto bg-base p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-base p-4">
         {error && (
           <div className="rounded-md bg-error/10 border border-error/30 p-3 text-sm text-error mb-3">
             {error}

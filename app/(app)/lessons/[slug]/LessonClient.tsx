@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import ResizableDivider from "@/components/tutor/ResizableDivider";
+import VerticalDivider from "@/components/lesson/VerticalDivider";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
   ssr: false,
@@ -20,7 +21,7 @@ const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
 const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-full text-[var(--color-fg-muted)] text-sm">
+    <div className="flex items-center justify-center h-full text-muted text-sm">
       Loading tutor...
     </div>
   ),
@@ -86,6 +87,7 @@ interface Props {
 
 export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav }: Props) {
   const editorRef = useRef<MonacoEditorHandle>(null);
+  const ideContainerRef = useRef<HTMLDivElement>(null);
 
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
   const [code, setCode] = useState(exercises[activeExerciseIndex]?.starterCode ?? "");
@@ -97,6 +99,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
   const [isMobile, setIsMobile] = useState(false);
   const [divider1, setDivider1] = useState(50);
   const [divider2, setDivider2] = useState(70);
+  const [editorPercent, setEditorPercent] = useState(70);
   const setStoreCode = useTutorStore((s) => s.setCode);
   const setStoreLessonId = useTutorStore((s) => s.setLessonId);
   const setStoreSubmission = useTutorStore((s) => s.setSubmissionResult);
@@ -417,6 +420,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
 
         {/* IDE Panel */}
         <div
+          ref={ideContainerRef}
           className="flex flex-col min-w-0 bg-base"
           style={{ width: `${(tutorOpen ? divider2 : 100) - divider1}%` }}
         >
@@ -431,7 +435,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                 onReset={handleReset}
               />
 
-              <div className="flex-1 min-h-0 border-b border-border">
+              <div className="min-h-0" style={{ height: `${editorPercent}%` }}>
                 <MonacoEditor
                   ref={editorRef}
                   defaultValue={activeExercise.starterCode}
@@ -445,14 +449,23 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                 />
               </div>
 
-              <OutputPanel
-                result={result}
-                error={error}
-                isRunning={isRunning}
-                isSubmitting={isSubmitting}
-                onRun={() => handleSubmit("run")}
-                onSubmit={() => handleSubmit("submit")}
+              <VerticalDivider
+                onResize={setEditorPercent}
+                containerRef={ideContainerRef as RefObject<HTMLElement>}
+                min={25}
+                max={85}
               />
+
+              <div className="min-h-0 overflow-hidden" style={{ flex: 1 }}>
+                <OutputPanel
+                  result={result}
+                  error={error}
+                  isRunning={isRunning}
+                  isSubmitting={isSubmitting}
+                  onRun={() => handleSubmit("run")}
+                  onSubmit={() => handleSubmit("submit")}
+                />
+              </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center text-muted">
@@ -470,7 +483,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
               max={85}
             />
             <div
-              className="flex flex-col min-w-0 border-l border-[var(--color-border)]"
+              className="flex flex-col min-w-0 border-l border-border"
               style={{ width: `${100 - divider2}%` }}
             >
               <TutorPanel />

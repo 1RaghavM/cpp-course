@@ -36,7 +36,7 @@ export default function Composer({
   };
 
   return (
-    <div className="border-t border-[var(--color-border)] p-3">
+    <div className="border-t border-border p-3">
       <div className="flex items-end gap-2">
         <textarea
           ref={textareaRef}
@@ -46,12 +46,12 @@ export default function Composer({
           placeholder={disabled ? "Daily limit reached" : "Ask about this lesson..."}
           disabled={isStreaming || disabled}
           rows={1}
-          className="flex-1 resize-none rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-fg)] placeholder-[var(--color-fg-subtle)] focus:border-[var(--color-accent)] focus:outline-none disabled:opacity-50 transition-colors"
+          className="flex-1 resize-none rounded-md border border-border bg-base px-3 py-2 text-sm text-primary placeholder-muted focus:border-accent focus:outline-none disabled:opacity-50 transition-colors"
         />
         {isStreaming ? (
           <button
             onClick={onStop}
-            className="rounded-md border border-[var(--color-border-strong)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--color-fg)] hover:bg-[var(--color-surface-2)] transition-colors"
+            className="rounded-md border border-border-subtle bg-transparent px-4 py-2 text-sm font-medium text-primary hover:bg-elevated transition-colors"
           >
             Stop
           </button>
@@ -59,7 +59,7 @@ export default function Composer({
           <button
             onClick={onSubmit}
             disabled={disabled || !input.trim()}
-            className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-white/90 disabled:opacity-50 transition-colors"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg hover:bg-accent-hover disabled:opacity-50 transition-colors"
           >
             Send
           </button>

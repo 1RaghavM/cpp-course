@@ -89,17 +89,17 @@ export default function TutorPanel() {
     messages.length > 0;
 
   return (
-    <div className="flex flex-col h-full bg-[var(--color-surface)]">
+    <div className="flex flex-col h-full bg-surface">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-[var(--color-fg)]">Tutor</span>
+          <span className="text-sm font-semibold text-primary">Tutor</span>
           <TierBadge tier={currentTier} />
           <QuotaIndicator refreshKey={messages.length} />
         </div>
         <button
           onClick={() => void handleReset()}
-          className="rounded-md border border-[var(--color-border-strong)] bg-transparent px-2 py-1 text-xs font-medium text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] hover:bg-[var(--color-surface-2)] transition-colors"
+          className="rounded-md border border-border-subtle bg-transparent px-2 py-1 text-xs font-medium text-muted hover:text-primary hover:bg-elevated transition-colors"
         >
           New chat
         </button>
@@ -110,13 +110,13 @@ export default function TutorPanel() {
 
       {/* Error display */}
       {error && !quotaExhausted && (
-        <div className="mx-4 mb-2 rounded-md bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-400">
+        <div className="mx-4 mb-2 rounded-md bg-error/10 border border-error/20 px-3 py-2 text-xs text-error">
           The tutor is briefly unavailable. Your editor and lessons still work.
         </div>
       )}
 
       {quotaExhausted && (
-        <div className="mx-4 mb-2 rounded-md bg-yellow-500/10 border border-yellow-500/20 px-3 py-2 text-xs text-yellow-400">
+        <div className="mx-4 mb-2 rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-xs text-warning">
           You&apos;ve reached today&apos;s message limit. Come back tomorrow!
         </div>
       )}
