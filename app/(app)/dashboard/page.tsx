@@ -65,7 +65,7 @@ export default async function DashboardPage() {
 
   if (fetchError) {
     return (
-      <div className="mx-auto max-w-[720px] px-6 py-8">
+      <div className="mx-auto w-full max-w-[800px] px-6 py-8">
         <div className="rounded-lg border border-border bg-surface p-6 text-center">
           <p className="text-sm text-secondary">Couldn&apos;t load your progress.</p>
           <a

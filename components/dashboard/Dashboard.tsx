@@ -77,7 +77,7 @@ export function Dashboard({
   const stageStates = deriveStageStates(curriculum, progress, lastVisitedLessonId);
 
   return (
-    <div className="mx-auto max-w-[720px] px-6 py-8">
+    <div className="mx-auto w-full max-w-[800px] px-6 py-8">
       <motion.div
         className="space-y-8"
         variants={containerVariants}
