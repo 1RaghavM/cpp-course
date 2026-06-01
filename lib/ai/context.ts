@@ -85,15 +85,13 @@ export async function loadConversationHistory(
     .from("messages")
     .select("role, content")
     .eq("conversation_id", conversationId)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
-  const all = (messages ?? []).map((m) => ({
+  return (messages ?? []).reverse().map((m) => ({
     role: m.role as "user" | "assistant",
     content: m.content,
   }));
-
-  if (all.length <= limit) return all;
-  return all.slice(all.length - limit);
 }
 
 export async function getGuardCounts(
@@ -113,6 +111,7 @@ export async function getGuardCounts(
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
   const [minuteRes, dailyRes, monthRes, convoRes] = await Promise.all([
+    // RLS scopes messages to the authenticated user via conversations
     supabase
       .from("messages")
       .select("id", { count: "exact", head: true })
@@ -126,6 +125,7 @@ export async function getGuardCounts(
     supabase
       .from("token_usage")
       .select("cost_usd_micro")
+      .eq("user_id", userId)
       .eq("call_type", "tutor")
       .gte("created_at", startOfMonth.toISOString()),
     conversationId

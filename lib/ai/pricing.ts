@@ -11,7 +11,7 @@ export function computeTutorCostMicro(
 ): bigint {
   const p = PRICING[model];
   if (!p) throw new Error(`Unknown model for pricing: ${model}`);
-  const inputMicro = BigInt(Math.round(promptTokens * p.input));
-  const outputMicro = BigInt(Math.round(completionTokens * p.output));
+  const inputMicro = BigInt(Math.round((promptTokens / 1_000_000) * p.input * 1_000_000));
+  const outputMicro = BigInt(Math.round((completionTokens / 1_000_000) * p.output * 1_000_000));
   return inputMicro + outputMicro;
 }

@@ -7,7 +7,7 @@ interface QuotaData {
   dailyCap: number;
 }
 
-export default function QuotaIndicator() {
+export default function QuotaIndicator({ refreshKey = 0 }: { refreshKey?: number }) {
   const [quota, setQuota] = useState<QuotaData | null>(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function QuotaIndicator() {
       .then((r) => r.json())
       .then((data) => setQuota({ usedToday: data.usedToday, dailyCap: data.dailyCap }))
       .catch(() => {});
-  }, []);
+  }, [refreshKey]);
 
   if (!quota) return null;
 

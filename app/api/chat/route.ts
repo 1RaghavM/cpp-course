@@ -133,30 +133,37 @@ export async function POST(request: Request) {
     async onFinish({ text, usage }) {
       const tokensIn = usage.inputTokens ?? 0;
       const tokensOut = usage.outputTokens ?? 0;
-
-      await supabase.from("messages").insert({
-        conversation_id: conversationId,
-        role: "assistant",
-        content: text,
-        hint_tier: tier,
-        tokens_in: tokensIn,
-        tokens_out: tokensOut,
-        model: "gemini-2.5-flash",
-      });
-
       const costMicro = computeTutorCostMicro("gemini-2.5-flash", tokensIn, tokensOut);
 
-      await serviceClient.from("token_usage").insert({
-        user_id: userId,
-        call_type: "tutor",
-        model: "gemini-2.5-flash",
-        tokens_in: tokensIn,
-        tokens_out: tokensOut,
-        cached_in: 0,
-        cost_usd_micro: Number(costMicro),
-        lesson_id: body.lessonId,
-        conversation_id: conversationId,
-      });
+      try {
+        await supabase.from("messages").insert({
+          conversation_id: conversationId,
+          role: "assistant",
+          content: text,
+          hint_tier: tier,
+          tokens_in: tokensIn,
+          tokens_out: tokensOut,
+          model: "gemini-2.5-flash",
+        });
+      } catch (e) {
+        console.error("Failed to persist assistant message", e);
+      }
+
+      try {
+        await serviceClient.from("token_usage").insert({
+          user_id: userId,
+          call_type: "tutor",
+          model: "gemini-2.5-flash",
+          tokens_in: tokensIn,
+          tokens_out: tokensOut,
+          cached_in: 0,
+          cost_usd_micro: Number(costMicro),
+          lesson_id: body.lessonId,
+          conversation_id: conversationId,
+        });
+      } catch (e) {
+        console.error("Failed to persist token usage", e);
+      }
     },
   });
 

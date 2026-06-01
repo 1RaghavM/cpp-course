@@ -71,11 +71,12 @@ export default function TutorPanel() {
       )
     )
       return;
-    await fetch("/api/chat/reset", {
+    const res = await fetch("/api/chat/reset", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lessonId }),
     });
+    if (!res.ok) return;
     setMessages([]);
     setCurrentTier(1);
     setQuotaExhausted(false);
@@ -94,7 +95,7 @@ export default function TutorPanel() {
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-[var(--color-fg)]">Tutor</span>
           <TierBadge tier={currentTier} />
-          <QuotaIndicator />
+          <QuotaIndicator refreshKey={messages.length} />
         </div>
         <button
           onClick={() => void handleReset()}

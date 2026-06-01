@@ -11,12 +11,12 @@ export default function FeedbackButtons({ messageId, initialFeedback }: Props) {
   const [feedback, setFeedback] = useState<string | null>(initialFeedback);
 
   const send = async (value: "up" | "down") => {
-    const next = feedback === value ? null : value;
-    setFeedback(next);
+    if (feedback === value) return;
+    setFeedback(value);
     await fetch("/api/chat/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messageId, value: next ?? value }),
+      body: JSON.stringify({ messageId, value }),
     });
   };
 
