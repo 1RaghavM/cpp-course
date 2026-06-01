@@ -98,7 +98,7 @@ On load, show the chapter containing the user's current or next lesson (first in
 ### Removed (no longer used on homepage)
 
 - `components/home/HeroSection.tsx` — progress info now in sidebar per-chapter
-- `components/home/RecentActivity.tsx` — not needed for single-user tool
+- `components/home/RecentActivity.tsx` — not needed for current design
 - `components/home/FeatureStrip.tsx` — already unused on current homepage
 - `components/home/PathSection.tsx` — replaced by sidebar
 - `components/roadmap/RoadmapTree.tsx` — replaced by sidebar + chapter detail

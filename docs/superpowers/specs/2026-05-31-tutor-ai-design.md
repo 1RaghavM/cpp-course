@@ -368,7 +368,7 @@ All server-only. Defaults baked into `lib/ai/config.ts` so the app runs without 
 - `lib/anthropic/` — client, prompts, cache helpers, cost logging
 - `lib/content/` — lesson generation, exercise generation
 - `lib/judge0/` — submission client, verdict logic
-- `lib/auth/` — require-auth, owner-only middleware
+- `lib/auth/` — require-auth middleware
 - `app/api/lessons/`, `app/api/submissions/`, `app/api/progress/` — all existing routes
 - `components/editor/MonacoEditor.tsx` — editor component
 - `components/lesson/OutputPanel.tsx` — output display

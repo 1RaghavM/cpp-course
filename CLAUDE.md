@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-**cpproad** — a single-user C++ learning tool built around the learncpp.com curriculum (345 lessons, 34 chapters). LLM-generated lesson summaries and exercises are cached in Postgres on first visit; revisits never call the LLM. An AI tutor (streaming, 4-tier hint policy) helps when stuck. Code runs in a sandboxed Judge0 instance.
+**cpproad** — a consumer-facing C++ learning platform built around the learncpp.com curriculum (345 lessons, 34 chapters). LLM-generated lesson summaries and exercises are cached in Postgres on first visit; revisits never call the LLM. An AI tutor (streaming, 4-tier hint policy) helps when stuck. Code runs in a sandboxed Judge0 instance.
 
-One user (the owner), one repo, one deploy. No multi-user features, no public signup, no monetization.
+Open to any user who signs up. One repo, one deploy.
 
 ## Architecture
 
 - **Next.js 14+ App Router** (TypeScript, strict mode) on Vercel — both frontend and API (Route Handlers under `app/api/`)
-- **Supabase** — Postgres + Auth (magic link, single email allow-list via `OWNER_EMAIL` env var) + RLS on every table
+- **Supabase** — Postgres + Auth (magic link, open signup) + RLS on every table (per-user isolation)
 - **Anthropic Claude** — Haiku 4.5 for lesson/exercise generation, Sonnet 4.6 for tutor conversations
 - **Judge0 + gVisor** on Fly.io — sandboxed C++ compilation and execution, the only piece outside Vercel
 
@@ -35,7 +35,7 @@ If caching breaks, costs blow up. Guard this invariant in every code path that t
 ```
 app/
   (auth)/login/          # magic link login
-  (app)/                 # owner-only layout
+  (app)/                 # authenticated layout
     page.tsx             # roadmap home
     lessons/[slug]/      # lesson page
     exercises/[id]/      # exercise page
@@ -54,7 +54,7 @@ lib/
   supabase/              # server.ts + client.ts
   anthropic/             # client, prompts, cache helpers, cost logging
   judge0/                # client + verdict (test-case diffing)
-  auth/owner-only.ts     # middleware: reject non-owner emails
+  auth/require-auth.ts   # middleware: require authenticated session
   content/lesson-generation.ts  # generate-or-cache orchestration
 infra/
   judge0/                # docker-compose.yml (gVisor, no-network, non-root)
@@ -107,4 +107,4 @@ Run these with `/project:<name>` to enforce project invariants:
 
 ## Testing strategy
 
-Tests exist only where they prevent silent bugs: sandbox security (malicious C++ samples), cost calculator (unit tests), verdict logic (unit tests), auth middleware (integration: non-owner gets 403), lesson cache (integration: two hits, one LLM call). No tests for UI components, most API routes, or LLM output quality.
+Tests exist only where they prevent silent bugs: sandbox security (malicious C++ samples), cost calculator (unit tests), verdict logic (unit tests), auth middleware (integration: unauthenticated gets 401), lesson cache (integration: two hits, one LLM call). No tests for UI components, most API routes, or LLM output quality.

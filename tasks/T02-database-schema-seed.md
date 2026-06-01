@@ -99,4 +99,4 @@ Run with: `npx tsx scripts/seed_db.ts`
 - [ ] RLS is enabled on all tables except chapters
 - [ ] `npx tsx scripts/seed_db.ts` loads 34 chapters and 345 lessons
 - [ ] Re-running the seed script doesn't create duplicates
-- [ ] A query from a non-owner JWT returns 0 rows (RLS works)
+- [ ] A query for per-user data returns only the requesting user's rows (RLS works)

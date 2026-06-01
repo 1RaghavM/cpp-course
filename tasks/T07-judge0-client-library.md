@@ -47,7 +47,7 @@ Logic:
    - Base64-encode the source code
    - Set language ID for C++ (check Judge0 docs: typically 54 for C++17, 76 for C++20)
    - Include `X-Auth-Token` header from `JUDGE0_AUTH_TOKEN` env var
-   - Use `wait=true` for synchronous execution (no polling — single user, acceptable latency)
+   - Use `wait=true` for synchronous execution (no polling — acceptable latency for individual submissions)
    - Enforce source code size limit: reject if > 50KB before sending
    - Map compiler flags based on `languageStd`: `-std=c++20 -Wall -Wextra` by default
 

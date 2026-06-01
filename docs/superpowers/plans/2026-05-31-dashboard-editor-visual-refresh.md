@@ -203,7 +203,7 @@ import "@/app/globals.css";
 
 export const metadata: Metadata = {
   title: "cpproad",
-  description: "A single-user C++ learning tool",
+  description: "A C++ learning platform",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

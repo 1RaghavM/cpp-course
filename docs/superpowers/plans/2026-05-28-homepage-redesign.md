@@ -20,7 +20,7 @@
 | Rewrite | `components/home/ContinueLearning.tsx` | Compact single-row continue/resume strip |
 | Rewrite | `app/(app)/page.tsx` | Simplified — data fetch + render `<HomeLayout>` |
 | Delete | `components/home/HeroSection.tsx` | Replaced by per-chapter progress in sidebar + detail |
-| Delete | `components/home/RecentActivity.tsx` | Cut — not needed for single-user tool |
+| Delete | `components/home/RecentActivity.tsx` | Cut — not needed for current design |
 | Delete | `components/home/FeatureStrip.tsx` | Already unused on homepage |
 | Delete | `components/home/PathSection.tsx` | Replaced by sidebar |
 | Delete | `components/roadmap/RoadmapTree.tsx` | Replaced by sidebar + detail |

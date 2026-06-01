@@ -1,6 +1,6 @@
 # requirements.md — cpproad
 
-> Requirements for a single-user personal learning tool. Every requirement is testable. The doc is shorter than the previous version on purpose — the multi-user scaffolding is gone.
+> Requirements for a consumer-facing C++ learning platform. Every requirement is testable.
 
 **Priority legend:**
 - **P0** — Won't ship without it.
@@ -55,7 +55,7 @@
 
 | ID | Req | Priority |
 |---|---|---|
-| **FR-060** | The system shall provide a chat panel on every lesson page where I can ask the tutor questions about the current lesson. | P0 |
+| **FR-060** | The system shall provide a chat panel on every lesson page where the user can ask the tutor questions about the current lesson. | P0 |
 | **FR-061** | The system shall include the lesson summary, current exercise prompt, my current editor code, and last execution output in tutor prompts automatically. | P0 |
 | **FR-062** | The system shall stream tutor responses token-by-token via SSE. | P0 |
 | **FR-063** | The system shall implement a 4-tier hint policy: T1 ask a guiding question, T2 name the missing concept, T3 sketch the approach in pseudocode, T4 (only on explicit "show me") reveal a working snippet. | P0 |
@@ -75,14 +75,14 @@
 | **FR-083** | The system shall display a per-chapter completion percentage on the roadmap. | P1 |
 | **FR-084** | The system shall display total stats (lessons completed, exercises solved, days streak) on a simple stats page. | P1 |
 
-### 1.6 Auth & Single-User Lock
+### 1.6 Auth & User Management
 
 | ID | Req | Priority |
 |---|---|---|
-| **FR-100** | The system shall use Supabase Auth (email + magic link) for sign-in. | P0 |
-| **FR-101** | The system shall lock all non-public routes to a single allow-listed email address (mine), enforced server-side. | P0 |
-| **FR-102** | A request from any other email shall return 403, regardless of auth state. | P0 |
-| **FR-103** | The system shall NOT expose a public signup form. | P0 |
+| **FR-100** | The system shall use Supabase Auth (email + magic link) for sign-in and sign-up. | P0 |
+| **FR-101** | The system shall require authentication on all non-public routes, enforced server-side. | P0 |
+| **FR-102** | Unauthenticated requests to protected routes shall return 401. | P0 |
+| **FR-103** | The system shall support open signup — any user can create an account. | P0 |
 
 ### 1.7 Cost & Telemetry
 
@@ -146,32 +146,26 @@
 
 ## 3. Explicit Exclusions
 
-To prevent scope creep:
+To prevent scope creep in v1:
 
-- **EX-01:** No multi-user features. Ever.
-- **EX-02:** No payments, no monetization.
-- **EX-03:** No public marketing page or landing site. Root URL is the dashboard (after login).
-- **EX-04:** No privacy policy, ToS, cookie banner, or GDPR export. Single-user app handling my own data.
-- **EX-05:** No accessibility WCAG audit. (I'll still write semantic HTML out of habit.)
-- **EX-06:** No native mobile apps.
-- **EX-07:** No real-time collaboration, comments, or sharing.
-- **EX-08:** No certificates or credentials.
-- **EX-09:** No multi-file C++ projects in v1. Single `main.cpp` per exercise.
-- **EX-10:** No language servers, full IntelliSense, or in-browser debugger.
-- **EX-11:** No automated content moderation. I'm the only one writing prompts.
-- **EX-12:** No re-scraping schedule. The seed script runs once. Manual re-run if learncpp adds chapters.
+- **EX-01:** No real-time collaboration, comments, or sharing between users.
+- **EX-02:** No certificates or credentials.
+- **EX-03:** No multi-file C++ projects in v1. Single `main.cpp` per exercise.
+- **EX-04:** No language servers, full IntelliSense, or in-browser debugger.
+- **EX-05:** No native mobile apps.
+- **EX-06:** No re-scraping schedule. The seed script runs once. Manual re-run if learncpp adds chapters.
 
 ---
 
 ## 4. Done Criteria for v1
 
-The app is "v1 done" when I can:
+The app is "v1 done" when a user can:
 
-1. Sign in with my email
+1. Sign up and sign in via magic link
 2. See the roadmap with all 345 lessons from the seed
 3. Click into any lesson and have it generated on first visit, cached on second
 4. Write code in Monaco, hit Run, see output from Judge0
 5. Hit Submit, see test case verdicts
 6. Open the tutor panel, ask a question, get a streaming response that respects T1–T4 hint policy
-7. Revisit a previous lesson and see all my prior tutor conversations and submissions
-8. See my monthly LLM spend stays under budget
+7. Revisit a previous lesson and see all their prior tutor conversations and submissions
+8. Each user's progress, submissions, and conversations are isolated via RLS

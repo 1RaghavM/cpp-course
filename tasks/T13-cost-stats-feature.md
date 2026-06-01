@@ -62,7 +62,7 @@ Display:
 - **Cache hit rate** — percentage display, should be close to 100% after the first pass through lessons
 - **Daily spend chart** — simple bar chart or list of the last 30 days' spend (no charting library — use Tailwind-styled divs as bars, or a simple table)
 
-Keep it simple. This is a personal dashboard, not a BI tool.
+Keep it simple. This is an admin cost dashboard, not a BI tool.
 
 ## Skills to reference
 
