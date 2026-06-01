@@ -13,9 +13,9 @@ const customOneDark = {
   ...oneDark,
   'pre[class*="language-"]': {
     ...oneDark['pre[class*="language-"]'],
-    background: "hsl(0 0% 14%)",
+    background: "#0f1115",
     borderRadius: "0.5rem",
-    border: "1px solid hsl(0 0% 22%)",
+    border: "1px solid #23262d",
   },
   'code[class*="language-"]': {
     ...oneDark['code[class*="language-"]'],
