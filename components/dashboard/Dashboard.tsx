@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ResumeCard } from "@/components/dashboard/ResumeCard";
+import { Hero } from "@/components/dashboard/Hero";
 import { PathMap } from "@/components/dashboard/PathMap";
 import { StatsStrip } from "@/components/dashboard/StatsStrip";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
@@ -41,7 +41,7 @@ export function Dashboard({
     <div className="mx-auto max-w-[720px] px-6 py-8">
       <div className="space-y-8">
         <div className="reveal">
-          <ResumeCard
+          <Hero
             lesson={resumeTarget}
             module={resumeModule}
             variant={resumeVariant}
