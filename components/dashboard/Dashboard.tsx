@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion, useReducedMotion } from "motion/react";
 import { Hero } from "@/components/dashboard/Hero";
 import { Road } from "@/components/dashboard/Road";
 import { StatsStrip } from "@/components/dashboard/StatsStrip";
@@ -31,6 +32,25 @@ export function Dashboard({
   statsError,
 }: DashboardProps) {
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: 0.07 },
+    },
+  };
+
+  const itemVariants = reducedMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0, y: 12 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+        },
+      };
 
   useEffect(() => {
     router.prefetch(`/lessons/${resumeTarget.slug}`);
@@ -43,25 +63,25 @@ export function Dashboard({
 
   return (
     <div className="mx-auto max-w-[720px] px-6 py-8">
-      <div className="space-y-8">
-        <div className="reveal">
+      <motion.div className="space-y-8" variants={containerVariants} initial="hidden" animate="visible">
+        <motion.div variants={itemVariants}>
           <Hero
             lesson={resumeTarget}
             module={resumeModule}
             variant={resumeVariant}
             snippet={snippet}
           />
-        </div>
+        </motion.div>
 
-        <div className="reveal reveal-d1">
+        <motion.div variants={itemVariants}>
           <Road
             stageStates={stageStates}
             pathPercent={pathPercent}
             stageTargetSlugs={stageTargetSlugs}
           />
-        </div>
+        </motion.div>
 
-        <div className="reveal reveal-d2">
+        <motion.div variants={itemVariants}>
           {statsError ? (
             <div className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1">
               {["This week", "Lessons done", "Day streak"].map((label) => (
@@ -79,8 +99,8 @@ export function Dashboard({
               streakDays={progress.streakDays}
             />
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

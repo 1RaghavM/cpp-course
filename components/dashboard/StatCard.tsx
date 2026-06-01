@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { useMotionValue, useSpring, useReducedMotion } from "motion/react";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 interface StatCardProps {
@@ -7,16 +11,47 @@ interface StatCardProps {
   zeroText?: string;
 }
 
+function CountUp({ target }: { target: number }) {
+  const reducedMotion = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionVal = useMotionValue(0);
+  const springVal = useSpring(motionVal, { duration: 560, bounce: 0 });
+
+  useEffect(() => {
+    if (reducedMotion) {
+      if (ref.current) ref.current.textContent = String(target);
+      return;
+    }
+    motionVal.set(target);
+    const unsubscribe = springVal.on("change", (v) => {
+      if (ref.current) ref.current.textContent = String(Math.round(v));
+    });
+    return unsubscribe;
+  }, [target, motionVal, springVal, reducedMotion]);
+
+  return <span ref={ref}>{reducedMotion ? target : 0}</span>;
+}
+
 export function StatCard({ label, value, suffix, zeroText }: StatCardProps) {
   const isZero = value === 0 || value === "0";
-  const displayValue = isZero && zeroText ? zeroText : value;
 
   return (
     <GlassCard className="p-4">
       <p className="text-xs text-muted">{label}</p>
       <p className="mt-1 font-mono text-lg tabular-nums text-primary">
-        {displayValue}
-        {!isZero && suffix && <span className="text-sm text-muted"> {suffix}</span>}
+        {isZero && zeroText ? (
+          zeroText
+        ) : typeof value === "number" ? (
+          <>
+            <CountUp target={value} />
+            {suffix && <span className="text-sm text-muted"> {suffix}</span>}
+          </>
+        ) : (
+          <>
+            {value}
+            {suffix && <span className="text-sm text-muted"> {suffix}</span>}
+          </>
+        )}
       </p>
     </GlassCard>
   );

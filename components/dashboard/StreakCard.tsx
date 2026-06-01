@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { useMotionValue, useSpring, useReducedMotion } from "motion/react";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 interface StreakCardProps {
@@ -18,6 +22,27 @@ function FlameIcon({ active }: { active: boolean }) {
   );
 }
 
+function CountUp({ target }: { target: number }) {
+  const reducedMotion = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionVal = useMotionValue(0);
+  const springVal = useSpring(motionVal, { duration: 560, bounce: 0 });
+
+  useEffect(() => {
+    if (reducedMotion) {
+      if (ref.current) ref.current.textContent = String(target);
+      return;
+    }
+    motionVal.set(target);
+    const unsubscribe = springVal.on("change", (v) => {
+      if (ref.current) ref.current.textContent = String(Math.round(v));
+    });
+    return unsubscribe;
+  }, [target, motionVal, springVal, reducedMotion]);
+
+  return <span ref={ref}>{reducedMotion ? target : 0}</span>;
+}
+
 export function StreakCard({ streakDays }: StreakCardProps) {
   const isZero = streakDays === 0;
 
@@ -27,7 +52,7 @@ export function StreakCard({ streakDays }: StreakCardProps) {
       <div className="mt-1 flex items-center gap-2">
         <FlameIcon active={!isZero} />
         <p className="font-mono text-lg tabular-nums text-primary">
-          {isZero ? "Start today" : streakDays}
+          {isZero ? "Start today" : <CountUp target={streakDays} />}
         </p>
       </div>
     </GlassCard>
