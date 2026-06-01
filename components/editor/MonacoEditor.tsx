@@ -10,33 +10,18 @@ import {
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export interface MonacoEditorProps {
-  /** Starter / default code shown when there is no localStorage save. */
   defaultValue: string;
-  /** Called on every content change (debounced internally for localStorage). */
   onChange: (value: string) => void;
-  /** Monaco language id. Default "cpp". */
   language?: string;
-  /** Make the editor read-only (e.g. on mobile). */
   readOnly?: boolean;
-  /** localStorage key suffix. Should be the exercise id. */
   exerciseId: string;
 }
 
 export interface MonacoEditorHandle {
-  /** Return the current editor content. */
   getValue: () => string;
-  /** Reset the editor to the original starter code. */
   resetToDefault: () => void;
 }
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 
 function storageKey(exerciseId: string): string {
   return `cpproad:editor:${exerciseId}`;
@@ -56,13 +41,9 @@ function saveToStorage(exerciseId: string, value: string): void {
   try {
     localStorage.setItem(storageKey(exerciseId), value);
   } catch {
-    // localStorage full or unavailable — silently ignore
+    // localStorage full or unavailable
   }
 }
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
   function MonacoEditor(
@@ -72,10 +53,7 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Determine initial value: localStorage takes precedence over starter code
     const initialValue = loadFromStorage(exerciseId) ?? defaultValue;
-
-    // ---- Ref API ------------------------------------------------------------
 
     useImperativeHandle(ref, () => ({
       getValue() {
@@ -87,8 +65,6 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
         onChange(defaultValue);
       },
     }));
-
-    // ---- Auto-save to localStorage (debounced 500ms) -------------------------
 
     const handleChange = useCallback(
       (value: string | undefined) => {
@@ -103,20 +79,74 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
       [exerciseId, onChange],
     );
 
-    // Clean up debounce timer on unmount
     useEffect(() => {
       return () => {
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
       };
     }, []);
 
-    // ---- Editor mount callback -----------------------------------------------
-
-    const handleMount: OnMount = useCallback((monacoEditor) => {
+    const handleMount: OnMount = useCallback((monacoEditor, monaco) => {
       editorRef.current = monacoEditor;
-    }, []);
 
-    // ---- Render --------------------------------------------------------------
+      monaco.editor.defineTheme("cpproad-dark", {
+        base: "vs-dark",
+        inherit: false,
+        rules: [
+          { token: "", foreground: "e6edf3" },
+          { token: "comment", foreground: "8b949e", fontStyle: "italic" },
+          { token: "keyword", foreground: "ff7b72" },
+          { token: "keyword.control", foreground: "ff7b72" },
+          { token: "keyword.operator", foreground: "ff7b72" },
+          { token: "storage.type", foreground: "ff7b72" },
+          { token: "type", foreground: "ff7b72" },
+          { token: "string", foreground: "a5d6ff" },
+          { token: "string.escape", foreground: "79c0ff" },
+          { token: "number", foreground: "79c0ff" },
+          { token: "constant", foreground: "79c0ff" },
+          { token: "entity.name.function", foreground: "d2a8ff" },
+          { token: "support.function", foreground: "d2a8ff" },
+          { token: "identifier", foreground: "e6edf3" },
+          { token: "variable", foreground: "ffa657" },
+          { token: "tag", foreground: "7ee787" },
+          { token: "attribute.name", foreground: "79c0ff" },
+          { token: "delimiter", foreground: "e6edf3" },
+          { token: "delimiter.bracket", foreground: "e6edf3" },
+          { token: "operator", foreground: "ff7b72" },
+          { token: "namespace", foreground: "ffa657" },
+          { token: "annotation", foreground: "d2a8ff" },
+          { token: "predefined", foreground: "79c0ff" },
+          { token: "invalid", foreground: "f85149" },
+        ],
+        colors: {
+          "editor.background": "#0f1115",
+          "editor.foreground": "#e6edf3",
+          "editor.lineHighlightBackground": "#161b22",
+          "editor.selectionBackground": "#2f81f733",
+          "editor.inactiveSelectionBackground": "#2f81f722",
+          "editorLineNumber.foreground": "#6e7681",
+          "editorLineNumber.activeForeground": "#8b949e",
+          "editorCursor.foreground": "#58a6ff",
+          "editor.selectionHighlightBackground": "#2f81f722",
+          "editorIndentGuide.background": "#23262d",
+          "editorIndentGuide.activeBackground": "#30363d",
+          "editorBracketMatch.background": "#2f81f733",
+          "editorBracketMatch.border": "#2f81f7",
+          "editorWidget.background": "#161b22",
+          "editorWidget.border": "#30363d",
+          "editorSuggestWidget.background": "#161b22",
+          "editorSuggestWidget.border": "#30363d",
+          "editorSuggestWidget.selectedBackground": "#1c2128",
+          "input.background": "#0f1115",
+          "input.border": "#30363d",
+          "input.foreground": "#e6edf3",
+          "scrollbarSlider.background": "#23262d80",
+          "scrollbarSlider.hoverBackground": "#30363d80",
+          "scrollbarSlider.activeBackground": "#8b949e40",
+        },
+      });
+
+      monaco.editor.setTheme("cpproad-dark");
+    }, []);
 
     return (
       <Editor
@@ -141,7 +171,7 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(
           bracketPairColorization: { enabled: true },
         }}
         loading={
-          <div className="flex h-full items-center justify-center text-neutral-500">
+          <div className="flex h-full items-center justify-center text-muted">
             Loading editor...
           </div>
         }
