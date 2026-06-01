@@ -4,6 +4,41 @@ import { requireAuth } from "@/lib/auth/require-auth";
 
 export const dynamic = "force-dynamic";
 
+async function updateStreak(supabase: ReturnType<typeof createRouteClient>, userId: string): Promise<void> {
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data: stats } = await supabase
+    .from("user_stats")
+    .select("streak_days, last_active_date")
+    .eq("user_id", userId)
+    .single();
+
+  if (!stats) {
+    await supabase.from("user_stats").insert({
+      user_id: userId,
+      streak_days: 1,
+      last_active_date: today,
+      updated_at: new Date().toISOString(),
+    });
+    return;
+  }
+
+  if (stats.last_active_date === today) return;
+
+  const lastDate = stats.last_active_date ? new Date(stats.last_active_date + "T00:00:00Z") : null;
+  const todayDate = new Date(today + "T00:00:00Z");
+  const isYesterday = lastDate && Math.round((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)) === 1;
+
+  await supabase
+    .from("user_stats")
+    .update({
+      streak_days: isYesterday ? stats.streak_days + 1 : 1,
+      last_active_date: today,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", userId);
+}
+
 const VALID_STATES = ["in_progress", "completed", "skipped"] as const;
 type InputState = (typeof VALID_STATES)[number];
 
@@ -116,6 +151,10 @@ export async function POST(request: NextRequest, { params }: { params: { lesson_
       return NextResponse.json({ error: "Failed to update progress" }, { status: 500 });
     }
   }
+
+  await updateStreak(supabase, userId).catch((err: unknown) => {
+    console.error("Failed to update streak:", err);
+  });
 
   return new NextResponse(null, { status: 204 });
 }
