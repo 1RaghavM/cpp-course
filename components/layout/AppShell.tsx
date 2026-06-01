@@ -12,7 +12,13 @@ interface AppShellProps {
   children: React.ReactNode;
 }
 
-export function AppShell({ streakDays, resumeLessonSlug, userEmail, userInitial, children }: AppShellProps) {
+export function AppShell({
+  streakDays,
+  resumeLessonSlug,
+  userEmail,
+  userInitial,
+  children,
+}: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const hideHeader = pathname.startsWith("/lessons/");

@@ -45,16 +45,12 @@ export function Hero({ lesson, module, variant, snippet }: HeroProps) {
 
   return (
     <GlassCard as="section" className="p-6 sm:p-8">
-      <p className="text-xs font-medium uppercase tracking-widest text-muted">
-        {config.label}
-      </p>
+      <p className="text-xs font-medium uppercase tracking-widest text-muted">{config.label}</p>
 
       {config.showTitle && (
         <div className="mt-3">
           <p className="text-sm text-secondary">{module.title}</p>
-          <h2 className="mt-0.5 text-xl font-semibold text-primary sm:text-2xl">
-            {lesson.title}
-          </h2>
+          <h2 className="mt-0.5 text-xl font-semibold text-primary sm:text-2xl">{lesson.title}</h2>
         </div>
       )}
 
@@ -79,10 +75,11 @@ export function Hero({ lesson, module, variant, snippet }: HeroProps) {
         <Link
           href={`/lessons/${lesson.slug}`}
           onClick={() =>
-            trackDashboardEvent(
-              variant === "complete" ? "review_clicked" : "resume_clicked",
-              { lessonId: lesson.id, moduleId: module.id, variant },
-            )
+            trackDashboardEvent(variant === "complete" ? "review_clicked" : "resume_clicked", {
+              lessonId: lesson.id,
+              moduleId: module.id,
+              variant,
+            })
           }
           className="group inline-flex items-center gap-2 rounded-lg bg-brand-bright px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent-cyan)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
           aria-label={`${config.buttonText}: ${lesson.title}`}

@@ -127,7 +127,10 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
         className={`flex h-12 w-12 items-center justify-center rounded-full ${style.bg} ${style.ring} transition-all duration-fast ease-smooth`}
         style={
           state.status === "active"
-            ? { animation: "node-pulse 2.4s ease-in-out infinite", boxShadow: "0 0 20px var(--glow-blue)" }
+            ? {
+                animation: "node-pulse 2.4s ease-in-out infinite",
+                boxShadow: "0 0 20px var(--glow-blue)",
+              }
             : undefined
         }
       >

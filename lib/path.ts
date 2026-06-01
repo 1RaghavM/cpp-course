@@ -18,9 +18,7 @@ export function deriveStageStates(
   }
 
   const stageStats = STAGES.map((stage) => {
-    const stageLessons = curriculum
-      .filter((m) => m.stage === stage.id)
-      .flatMap((m) => m.lessons);
+    const stageLessons = curriculum.filter((m) => m.stage === stage.id).flatMap((m) => m.lessons);
     const total = stageLessons.length;
     const completed = stageLessons.filter((l) => {
       const status = progress.lessonProgress[l.id]?.status;

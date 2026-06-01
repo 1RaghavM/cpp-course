@@ -10,7 +10,13 @@ import { StatsStrip } from "@/components/dashboard/StatsStrip";
 import { ActivityHeatmap } from "@/components/dashboard/ActivityHeatmap";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
 import { deriveStageStates } from "@/lib/path";
-import type { Module, Lesson, DashboardProgress, ResumeVariant, Stage } from "@/lib/dashboard/types";
+import type {
+  Module,
+  Lesson,
+  DashboardProgress,
+  ResumeVariant,
+  Stage,
+} from "@/lib/dashboard/types";
 
 interface DashboardProps {
   curriculum: Module[];
@@ -56,7 +62,10 @@ export function Dashboard({
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+          transition: {
+            duration: 0.32,
+            ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+          },
         },
       };
 
@@ -71,7 +80,12 @@ export function Dashboard({
 
   return (
     <div className="mx-auto max-w-[720px] px-6 py-8">
-      <motion.div className="space-y-8" variants={containerVariants} initial="hidden" animate="visible">
+      <motion.div
+        className="space-y-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <motion.div variants={itemVariants}>
           <Greeting displayName={displayName} hour={currentHour} />
         </motion.div>
@@ -97,7 +111,10 @@ export function Dashboard({
           {statsError ? (
             <div className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1">
               {["This week", "Lessons done", "Day streak"].map((label) => (
-                <div key={label} className="rounded-card border border-glass-border bg-[var(--glass-fill)] p-4">
+                <div
+                  key={label}
+                  className="rounded-card border border-glass-border bg-[var(--glass-fill)] p-4"
+                >
                   <p className="text-xs text-muted">{label}</p>
                   <p className="mt-1 font-mono text-lg text-muted">&mdash;</p>
                 </div>

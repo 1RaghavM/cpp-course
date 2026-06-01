@@ -102,7 +102,10 @@ export default async function DashboardPage() {
 
   const curriculum = buildCurriculum(dbLessons);
 
-  const lessonProgress: Record<string, { status: LessonStatus; lastCodeSnippet?: string; lastVisitAt: string }> = {};
+  const lessonProgress: Record<
+    string,
+    { status: LessonStatus; lastCodeSnippet?: string; lastVisitAt: string }
+  > = {};
   for (const row of progressRows) {
     lessonProgress[row.lesson_id] = {
       status: row.state as LessonStatus,

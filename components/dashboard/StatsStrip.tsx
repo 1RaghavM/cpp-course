@@ -20,9 +20,7 @@ export function StatsStrip({
       : String(lessonsCompletedThisWeek);
 
   const weeklyZero =
-    weeklyGoal != null
-      ? `0 / ${weeklyGoal} — first one's the hardest`
-      : "0 so far";
+    weeklyGoal != null ? `0 / ${weeklyGoal} — first one's the hardest` : "0 so far";
 
   return (
     <div className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1">
@@ -31,11 +29,7 @@ export function StatsStrip({
         value={weeklyValue}
         zeroText={lessonsCompletedThisWeek === 0 ? weeklyZero : undefined}
       />
-      <StatCard
-        label="Lessons done"
-        value={totalLessonsCompleted}
-        zeroText="Day 1"
-      />
+      <StatCard label="Lessons done" value={totalLessonsCompleted} zeroText="Day 1" />
       <StreakCard streakDays={streakDays} />
     </div>
   );

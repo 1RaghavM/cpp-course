@@ -22,13 +22,19 @@ function TrackSVG({ percent, vertical }: { percent: number; vertical: boolean })
         aria-hidden="true"
       >
         <line
-          x1="2" y1="0" x2="2" y2={height}
+          x1="2"
+          y1="0"
+          x2="2"
+          y2={height}
           stroke="var(--node-locked)"
           strokeWidth="4"
           vectorEffect="non-scaling-stroke"
         />
         <line
-          x1="2" y1="0" x2="2" y2={height}
+          x1="2"
+          y1="0"
+          x2="2"
+          y2={height}
           stroke="url(#road-gradient-v)"
           strokeWidth="4"
           strokeDasharray={`${height}`}
@@ -56,13 +62,19 @@ function TrackSVG({ percent, vertical }: { percent: number; vertical: boolean })
       aria-hidden="true"
     >
       <line
-        x1="0" y1="2" x2={width} y2="2"
+        x1="0"
+        y1="2"
+        x2={width}
+        y2="2"
         stroke="var(--node-locked)"
         strokeWidth="4"
         vectorEffect="non-scaling-stroke"
       />
       <line
-        x1="0" y1="2" x2={width} y2="2"
+        x1="0"
+        y1="2"
+        x2={width}
+        y2="2"
         stroke="url(#road-gradient-h)"
         strokeWidth="4"
         strokeDasharray={`${width}`}

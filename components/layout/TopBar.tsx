@@ -45,13 +45,18 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
     <header className="border-b border-border/50">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-6 px-6">
         <Link href="/dashboard" className="flex items-center gap-0">
-          <span className="font-mono text-lg font-semibold tracking-tight text-primary">cpproad</span>
+          <span className="font-mono text-lg font-semibold tracking-tight text-primary">
+            cpproad
+          </span>
           <span className="ml-1.5 text-xs text-muted">&middot; C++ path</span>
         </Link>
 
         <div className="ml-auto flex items-center gap-3">
           {streakDays > 0 && (
-            <div className="flex items-center gap-1.5 rounded-full bg-elevated px-2.5 py-1" aria-label={`${streakDays} day streak`}>
+            <div
+              className="flex items-center gap-1.5 rounded-full bg-elevated px-2.5 py-1"
+              aria-label={`${streakDays} day streak`}
+            >
               <svg className="h-3.5 w-3.5 text-warning" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 23c-3.866 0-7-3.134-7-7 0-2.692 1.475-5.598 3.434-8.12a.75.75 0 011.232.028C11.01 9.817 12 11.7 12 11.7s2.25-3.6 3.75-5.4a.75.75 0 011.248.06C18.664 9.1 19 12.05 19 16c0 3.866-3.134 7-7 7z" />
               </svg>
@@ -65,6 +70,7 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
               onClick={() => trackDashboardEvent("tutor_opened", { from: "dashboard" })}
               className="rounded-md px-2.5 py-1.5 text-xs font-medium text-secondary transition-colors hover:bg-hover hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label="Open AI tutor"
+              title="AI tutor — get hints when you're stuck"
             >
               Tutor
             </Link>

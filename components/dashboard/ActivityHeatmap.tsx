@@ -88,9 +88,7 @@ export function ActivityHeatmap({ activityData }: ActivityHeatmapProps) {
         </div>
       </div>
 
-      {!hasActivity && (
-        <p className="mt-3 text-xs text-muted">Your activity will show up here.</p>
-      )}
+      {!hasActivity && <p className="mt-3 text-xs text-muted">Your activity will show up here.</p>}
     </GlassCard>
   );
 }
