@@ -32,7 +32,7 @@ function makeCurriculum(): Module[] {
 
 function emptyProgress(): DashboardProgress {
   return {
-    lessonProgress: new Map(),
+    lessonProgress: {},
     streakDays: 0,
     lastActiveDate: null,
     weeklyGoal: null,
@@ -51,16 +51,16 @@ describe("computeResumeTarget", () => {
 
   it("returns in-progress lesson matching lastActiveLessonId", () => {
     const progress = emptyProgress();
-    progress.lessonProgress.set("cf-1", { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" });
-    progress.lessonProgress.set("lesson-0", { status: "in_progress", lastVisitAt: "2026-01-01T00:00:00Z" });
+    progress.lessonProgress["cf-1"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
+    progress.lessonProgress["lesson-0"] = { status: "in_progress", lastVisitAt: "2026-01-01T00:00:00Z" };
     const result = computeResumeTarget(curriculum, progress, "cf-1");
     expect(result.id).toBe("cf-1");
   });
 
   it("returns first non-completed lesson when no in-progress", () => {
     const progress = emptyProgress();
-    progress.lessonProgress.set("lesson-0", { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" });
-    progress.lessonProgress.set("lesson-1", { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" });
+    progress.lessonProgress["lesson-0"] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
+    progress.lessonProgress["lesson-1"] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     progress.totalLessonsCompleted = 2;
     const result = computeResumeTarget(curriculum, progress, null);
     expect(result.id).toBe("lesson-2");
@@ -70,7 +70,7 @@ describe("computeResumeTarget", () => {
     const progress = emptyProgress();
     const allLessons = curriculum.flatMap((m) => m.lessons);
     for (const l of allLessons) {
-      progress.lessonProgress.set(l.id, { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" });
+      progress.lessonProgress[l.id] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     }
     progress.totalLessonsCompleted = allLessons.length;
     const result = computeResumeTarget(curriculum, progress, null);
@@ -79,7 +79,7 @@ describe("computeResumeTarget", () => {
 
   it("skips lastActiveLessonId if that lesson is completed", () => {
     const progress = emptyProgress();
-    progress.lessonProgress.set("lesson-0", { status: "completed", lastVisitAt: "2026-01-02T00:00:00Z" });
+    progress.lessonProgress["lesson-0"] = { status: "completed", lastVisitAt: "2026-01-02T00:00:00Z" };
     const result = computeResumeTarget(curriculum, progress, "lesson-0");
     expect(result.id).toBe("lesson-1");
   });
@@ -94,7 +94,7 @@ describe("computeResumeVariant", () => {
 
   it("returns 'resume' when partially completed", () => {
     const progress = emptyProgress();
-    progress.lessonProgress.set("lesson-0", { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" });
+    progress.lessonProgress["lesson-0"] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     progress.totalLessonsCompleted = 1;
     expect(computeResumeVariant(curriculum, progress)).toBe("resume");
   });
@@ -103,7 +103,7 @@ describe("computeResumeVariant", () => {
     const progress = emptyProgress();
     const allLessons = curriculum.flatMap((m) => m.lessons);
     for (const l of allLessons) {
-      progress.lessonProgress.set(l.id, { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" });
+      progress.lessonProgress[l.id] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     }
     progress.totalLessonsCompleted = allLessons.length;
     expect(computeResumeVariant(curriculum, progress)).toBe("complete");
@@ -146,11 +146,11 @@ describe("computeStageProgress", () => {
 
   it("returns done when all lessons in stage are completed", () => {
     const progress = emptyProgress();
-    progress.lessonProgress.set("lesson-0", { status: "completed", lastVisitAt: "" });
-    progress.lessonProgress.set("lesson-1", { status: "completed", lastVisitAt: "" });
-    progress.lessonProgress.set("lesson-2", { status: "completed", lastVisitAt: "" });
-    progress.lessonProgress.set("cf-0", { status: "completed", lastVisitAt: "" });
-    progress.lessonProgress.set("cf-1", { status: "completed", lastVisitAt: "" });
+    progress.lessonProgress["lesson-0"] = { status: "completed", lastVisitAt: "" };
+    progress.lessonProgress["lesson-1"] = { status: "completed", lastVisitAt: "" };
+    progress.lessonProgress["lesson-2"] = { status: "completed", lastVisitAt: "" };
+    progress.lessonProgress["cf-0"] = { status: "completed", lastVisitAt: "" };
+    progress.lessonProgress["cf-1"] = { status: "completed", lastVisitAt: "" };
     const result = computeStageProgress(curriculum, progress, "basics", "ptr-0");
     expect(result.status).toBe("done");
     expect(result.completed).toBe(5);
@@ -178,7 +178,7 @@ describe("isPathComplete", () => {
     const progress = emptyProgress();
     const allLessons = curriculum.flatMap((m) => m.lessons);
     for (const l of allLessons) {
-      progress.lessonProgress.set(l.id, { status: "completed", lastVisitAt: "" });
+      progress.lessonProgress[l.id] = { status: "completed", lastVisitAt: "" };
     }
     progress.totalLessonsCompleted = allLessons.length;
     expect(isPathComplete(curriculum, progress)).toBe(true);

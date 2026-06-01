@@ -35,7 +35,7 @@ export function Dashboard({
   }, [router, resumeTarget.slug, resumeVariant]);
 
   const resumeModule = curriculum.find((m) => m.id === resumeTarget.moduleId)!;
-  const snippet = progress.lessonProgress.get(resumeTarget.id)?.lastCodeSnippet;
+  const snippet = progress.lessonProgress[resumeTarget.id]?.lastCodeSnippet;
 
   return (
     <div className="mx-auto max-w-[720px] px-6 py-8">

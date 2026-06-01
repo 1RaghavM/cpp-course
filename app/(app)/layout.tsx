@@ -37,12 +37,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   } | null;
 
   const curriculum = buildCurriculum(dbLessons);
-  const lessonProgress = new Map<string, { status: LessonStatus; lastVisitAt: string }>();
+  const lessonProgress: Record<string, { status: LessonStatus; lastVisitAt: string }> = {};
   for (const row of progressRows) {
-    lessonProgress.set(row.lesson_id, {
+    lessonProgress[row.lesson_id] = {
       status: row.state as LessonStatus,
       lastVisitAt: row.last_visit_at ?? "",
-    });
+    };
   }
 
   let lastActiveLessonId: string | null = null;
@@ -59,7 +59,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   ).length;
 
   const minimalProgress: DashboardProgress = {
-    lessonProgress: lessonProgress as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    lessonProgress,
     streakDays: userStats?.streak_days ?? 0,
     lastActiveDate: userStats?.last_active_date ?? null,
     weeklyGoal: null,

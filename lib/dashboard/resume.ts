@@ -17,13 +17,13 @@ export function computeResumeTarget(
 
   if (lastActiveLessonId) {
     const last = ordered.find((l) => l.id === lastActiveLessonId);
-    if (last && progress.lessonProgress.get(last.id)?.status === "in_progress") {
+    if (last && progress.lessonProgress[last.id]?.status === "in_progress") {
       return last;
     }
   }
 
   const next = ordered.find((l) => {
-    const status = progress.lessonProgress.get(l.id)?.status;
+    const status = progress.lessonProgress[l.id]?.status;
     return status !== "completed" && status !== "skipped";
   });
 
@@ -55,7 +55,7 @@ export function computeStageProgress(
   const stageLessons = stageModules.flatMap((m) => m.lessons);
   const total = stageLessons.length;
   const completed = stageLessons.filter((l) => {
-    const status = progress.lessonProgress.get(l.id)?.status;
+    const status = progress.lessonProgress[l.id]?.status;
     return status === "completed" || status === "skipped";
   }).length;
 
@@ -70,7 +70,7 @@ export function computeStageProgress(
 export function isPathComplete(curriculum: Module[], progress: DashboardProgress): boolean {
   const allLessons = curriculum.flatMap((m) => m.lessons);
   return allLessons.every((l) => {
-    const status = progress.lessonProgress.get(l.id)?.status;
+    const status = progress.lessonProgress[l.id]?.status;
     return status === "completed" || status === "skipped";
   });
 }

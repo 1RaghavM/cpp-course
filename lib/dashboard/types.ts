@@ -31,7 +31,7 @@ export interface LessonProgressEntry {
 }
 
 export interface DashboardProgress {
-  lessonProgress: Map<string, LessonProgressEntry>;
+  lessonProgress: Record<string, LessonProgressEntry>;
   streakDays: number;
   lastActiveDate: string | null;
   weeklyGoal: number | null;

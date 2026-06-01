@@ -38,7 +38,7 @@ export default async function DashboardPage() {
   let fetchError = false;
   let statsError = false;
 
-  const [lessonsResult, progressResult, statsResult, onboardingResult] = await Promise.all([
+  const [lessonsResult, progressResult, statsResult] = await Promise.all([
     serviceClient
       .from("lessons")
       .select("id, chapter_id, slug, learncpp_title, my_title, sort_order")
@@ -49,10 +49,6 @@ export default async function DashboardPage() {
     supabase
       .from("user_stats")
       .select("streak_days, last_active_date, weekly_goal")
-      .single(),
-    supabase
-      .from("onboarding")
-      .select("start_module")
       .single(),
   ]);
 
@@ -105,13 +101,13 @@ export default async function DashboardPage() {
 
   const curriculum = buildCurriculum(dbLessons);
 
-  const lessonProgress = new Map<string, { status: LessonStatus; lastCodeSnippet?: string; lastVisitAt: string }>();
+  const lessonProgress: Record<string, { status: LessonStatus; lastCodeSnippet?: string; lastVisitAt: string }> = {};
   for (const row of progressRows) {
-    lessonProgress.set(row.lesson_id, {
+    lessonProgress[row.lesson_id] = {
       status: row.state as LessonStatus,
       lastCodeSnippet: row.last_code_snippet ?? undefined,
       lastVisitAt: row.last_visit_at ?? "",
-    });
+    };
   }
 
   const totalLessonsCompleted = progressRows.filter(
@@ -148,14 +144,11 @@ export default async function DashboardPage() {
       return mod?.stage === stage.id;
     });
     const firstIncomplete = stageLessons.find((l) => {
-      const status = lessonProgress.get(l.id)?.status;
+      const status = lessonProgress[l.id]?.status;
       return status !== "completed" && status !== "skipped";
     });
     stageTargetSlugs[stage.id] = firstIncomplete?.slug ?? stageLessons[0]?.slug ?? "";
   }
-
-  // suppress unused variable warning - onboardingResult is fetched but not used directly
-  void onboardingResult;
 
   return (
     <Dashboard
