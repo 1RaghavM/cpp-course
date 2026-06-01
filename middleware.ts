@@ -35,6 +35,10 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  if (pathname.startsWith("/onboarding")) {
+    return res;
+  }
+
   if (pathname === "/update-password") {
     if (!session) {
       const loginUrl = req.nextUrl.clone();
