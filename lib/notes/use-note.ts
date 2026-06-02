@@ -40,8 +40,9 @@ export function useNote(lessonId: string): UseNoteReturn {
         .maybeSingle();
 
       if (cancelled) return;
-      setContentState(data?.content ?? "");
-      contentRef.current = data?.content ?? "";
+      const noteContent = (data as { content: string } | null)?.content ?? "";
+      setContentState(noteContent);
+      contentRef.current = noteContent;
       setIsLoading(false);
       setSaveStatus("idle");
     }
