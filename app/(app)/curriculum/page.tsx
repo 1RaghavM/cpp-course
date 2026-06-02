@@ -39,11 +39,11 @@ export default async function CurriculumPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-var(--header-height))] flex-col">
-      <div className="flex items-center justify-between border-b px-4 py-3 lg:px-6">
+    <div className="flex h-[calc(100dvh-3.5rem)] flex-col">
+      <div className="flex shrink-0 items-center justify-between border-b px-4 py-3 lg:px-6">
         <h1 className="text-lg font-semibold">Curriculum Map</h1>
       </div>
-      <div className="flex-1">
+      <div className="min-h-0 flex-1">
         <CurriculumMap curriculum={curriculum} lessonProgress={lessonProgress} />
       </div>
     </div>
