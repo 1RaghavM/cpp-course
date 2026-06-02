@@ -44,14 +44,14 @@ export default async function ExercisesPage() {
 
   const tableData = exercises.map((ex, idx) => {
     const chapterId = ex.lessons?.chapter_id
-    const module = chapterId != null ? (chapterToModule.get(chapterId) ?? "") : ""
+    const moduleName = chapterId != null ? (chapterToModule.get(chapterId) ?? "") : ""
     const status = completedIds.has(ex.id) ? "Done" : "Not Completed"
 
     return {
       id: idx + 1,
       exerciseId: ex.id,
       header: ex.title,
-      module,
+      module: moduleName,
       difficulty: ex.difficulty,
       status,
     }
