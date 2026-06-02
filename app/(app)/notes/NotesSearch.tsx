@@ -30,11 +30,10 @@ interface ChapterGroup {
 }
 
 interface NotesSearchProps {
-  notes: NoteRow[];
   chapters: ChapterGroup[];
 }
 
-export function NotesSearch({ notes, chapters }: NotesSearchProps) {
+export function NotesSearch({ chapters }: NotesSearchProps) {
   const [query, setQuery] = useState("");
 
   const lowerQuery = query.toLowerCase().trim();

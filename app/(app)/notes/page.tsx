@@ -1,5 +1,4 @@
 import { requireServerSession } from "@/lib/auth/require-auth";
-import { NoteCard } from "@/components/notes/NoteCard";
 import { NotesSearch } from "./NotesSearch";
 
 interface NoteRow {
@@ -97,7 +96,7 @@ export default async function NotesOverviewPage() {
         </p>
       </div>
 
-      <NotesSearch notes={notes} chapters={chapters} />
+      <NotesSearch chapters={chapters} />
     </div>
   );
 }
