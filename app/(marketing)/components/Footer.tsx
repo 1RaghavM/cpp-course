@@ -15,7 +15,7 @@ export function Footer() {
             color: "var(--color-fg-subtle)",
           }}
         >
-          <span style={{ fontFamily: "var(--hp-font-mono)", fontWeight: 600 }}>cpproad</span>
+          <img src="/fulllogo-Photoroom.png" alt="cpproad" style={{ height: "32px", width: "auto" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Link href="/login" style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}>
               Sign in

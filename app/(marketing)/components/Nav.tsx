@@ -35,7 +35,7 @@ function CloseIcon() {
   );
 }
 
-export function Nav() {
+export function Nav({ hideActions = false }: { hideActions?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -110,31 +110,35 @@ export function Nav() {
       <header className="nav-header" data-scrolled={scrolled || undefined}>
         <nav className="nav-inner">
           <Link href="/" className="nav-wordmark">
-            cpproad
+            <img src="/fulllogo-Photoroom.png" alt="cpproad" style={{ height: "48px", width: "auto" }} />
           </Link>
 
-          <div className="nav-actions">
-            <Link href="/login" className="hp-btn hp-btn-secondary">
-              Sign in
-            </Link>
-            <Link href="/onboarding" className="hp-btn hp-btn-primary">
-              Start learning
-            </Link>
-          </div>
+          {!hideActions && (
+            <>
+              <div className="nav-actions">
+                <Link href="/login" className="hp-btn hp-btn-secondary">
+                  Sign in
+                </Link>
+                <Link href="/onboarding" className="hp-btn hp-btn-primary">
+                  Start learning
+                </Link>
+              </div>
 
-          <button
-            ref={triggerRef}
-            className="nav-mobile-trigger"
-            onClick={() => setMenuOpen(true)}
-            aria-expanded={menuOpen}
-            aria-label="Open menu"
-          >
-            <MenuIcon />
-          </button>
+              <button
+                ref={triggerRef}
+                className="nav-mobile-trigger"
+                onClick={() => setMenuOpen(true)}
+                aria-expanded={menuOpen}
+                aria-label="Open menu"
+              >
+                <MenuIcon />
+              </button>
+            </>
+          )}
         </nav>
       </header>
 
-      {menuOpen && (
+      {!hideActions && menuOpen && (
         <div
           ref={overlayRef}
           className="nav-overlay"

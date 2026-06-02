@@ -188,26 +188,42 @@ Judge0 fetch: `GET {JUDGE0_API_URL}/submissions/{token}?base64_encoded=true&fiel
 
 ---
 
-## 5. Frontend component architecture
+## 5. Frontend component architecture — shadcn/ui
+
+All tutor UI components use **shadcn/ui** primitives from `@/components/ui/*`.
 
 ```mermaid
 flowchart TD
     LP["LessonPage (server component)"] --> ER["EditorRegion (client)"]
-    LP --> TPW["TutorPanel (client)"]
+    LP --> TPW["TutorPanel (shadcn Sheet/Drawer)"]
     ER -. "shared store: code, sectionId, lastSubmissionToken" .-> TPW
     TPW --> UC["useChat() @ai-sdk/react"]
-    TPW --> MSG["MessageList"]
+    TPW --> MSG["MessageList (shadcn ScrollArea)"]
     MSG --> MD["MarkdownMessage (C++ highlight)"]
-    MSG --> FB["FeedbackButtons"]
-    TPW --> INP["Composer (input + send + stop)"]
-    TPW --> QER["QuotaIndicator"]
-    TPW --> EXP["ExplainErrorButton (shows when Judge0 status != Accepted)"]
+    MSG --> FB["FeedbackButtons (shadcn Button ghost)"]
+    TPW --> INP["Composer (shadcn Input + Button)"]
+    TPW --> QER["QuotaIndicator (shadcn Progress + Badge)"]
+    TPW --> EXP["ExplainErrorButton (shadcn Button outline)"]
 ```
+
+**shadcn component mapping:**
+
+| Component | shadcn primitive | Notes |
+|---|---|---|
+| `TutorPanel` | **`Sheet`** (desktop) / **`Drawer`** (mobile) | Collapsible right-side panel. `SheetContent side="right"` for desktop; `Drawer` for mobile breakpoint. |
+| `MessageList` | **`ScrollArea`** | Smooth scrollable container for chat history with auto-scroll-to-bottom. |
+| `MarkdownMessage` | **`Card`** (subtle variant) | Each message bubble wrapped in a `Card` with role-based styling. |
+| `FeedbackButtons` | **`Button`** `variant="ghost" size="icon"` | Thumbs up/down per assistant message (FR-UI-6). |
+| `Composer` | **`Input`** + **`Button`** | `Input` for the message field, `Button` for send/stop. Use `Button variant="default"` for send, `variant="destructive"` for stop-generation (FR-UI-3). |
+| `QuotaIndicator` | **`Progress`** + **`Badge`** | `Progress` bar showing daily usage. `Badge variant="destructive"` when ≥ 80% (FR-UI-5). |
+| `ExplainErrorButton` | **`Button`** `variant="outline"` | Pre-fills "Explain this error" when Judge0 status ≠ Accepted (FR-UI-4). |
+| `TierBadge` | **`Badge`** | Hint tier indicator (T1–T4) with tier-appropriate variant coloring. |
+| Error states | **`Sonner`** (`toast.error()`) | Transient error feedback for API failures (NFR-REL-1/3). |
 
 - **State sharing.** Editor and tutor share a lightweight client store (Zustand/Context) holding `code`, `sectionId`, `lastSubmissionToken`. `useChat`'s `sendMessage` attaches these as `body` fields so each turn carries fresh context (FR-CTX-2/3).
 - **Streaming render.** `useChat` from `@ai-sdk/react`; render `message.parts` of type `text` incrementally; Markdown + C++ syntax highlighting (FR-UI-2).
-- **Panel, not page.** Collapsible right-side drawer beside the editor (FR-UI-1); editor stays interactive if the panel errors (FR-UI-7).
-- **Affordances.** "Explain this error" pre-fills a message when the latest Judge0 status ≠ Accepted (FR-UI-4); thumbs up/down per message (FR-UI-6); quota indicator at ≥ 80% usage (FR-UI-5); stop-generation button during stream (FR-UI-3).
+- **Panel, not page.** shadcn **`Sheet`** (desktop) or **`Drawer`** (mobile) as a collapsible right-side panel beside the editor (FR-UI-1); editor stays interactive if the panel errors (FR-UI-7). Use `SheetContent` with `side="right"` and custom width.
+- **Affordances.** "Explain this error" pre-fills a message when the latest Judge0 status ≠ Accepted (FR-UI-4); thumbs up/down per message via shadcn `Button variant="ghost"` (FR-UI-6); quota indicator using shadcn `Progress` at ≥ 80% usage (FR-UI-5); stop-generation `Button variant="destructive"` during stream (FR-UI-3).
 
 ---
 
@@ -302,13 +318,13 @@ app/
   (lesson)/lessons/[sectionId]/page.tsx   # mounts EditorRegion + TutorPanel
 components/
   tutor/
-    TutorPanel.tsx             # useChat host, drawer
-    MessageList.tsx
-    MarkdownMessage.tsx        # markdown + cpp highlight
-    Composer.tsx               # input + send + stop
-    FeedbackButtons.tsx
-    QuotaIndicator.tsx
-    ExplainErrorButton.tsx
+    TutorPanel.tsx             # useChat host; composes shadcn Sheet (desktop) / Drawer (mobile)
+    MessageList.tsx            # uses shadcn ScrollArea for smooth chat scrolling
+    MarkdownMessage.tsx        # markdown + cpp highlight; wrapped in shadcn Card
+    Composer.tsx               # uses shadcn Input + Button (send/stop)
+    FeedbackButtons.tsx        # uses shadcn Button variant="ghost" size="icon"
+    QuotaIndicator.tsx         # uses shadcn Progress + Badge
+    ExplainErrorButton.tsx     # uses shadcn Button variant="outline"
 lib/
   ai/
     model.ts                   # provider/model factory (swap point)

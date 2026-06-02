@@ -8,9 +8,9 @@ export default function RegisterPage() {
       title="Create account"
       subtitle="Create an account to start learning C++"
       footer={
-        <p className="auth-text-sm">
+        <p className="text-sm text-muted-foreground">
           Already registered?{" "}
-          <Link href="/login" className="auth-link">
+          <Link href="/login" className="text-primary hover:underline">
             Sign in
           </Link>
         </p>

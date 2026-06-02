@@ -47,9 +47,10 @@ app/
     progress/[lesson_id]/
     stats/costs/
 components/
+  ui/                    # shadcn/ui primitives (accordion, badge, button, card, chart, dialog, drawer, progress, sheet, skeleton, tabs, tooltip, etc.)
   editor/MonacoEditor    # Monaco with C++ highlighting
-  tutor/ChatPanel        # streaming chat, tier badges
-  roadmap/RoadmapTree    # chapter/lesson tree with completion state
+  tutor/ChatPanel        # streaming chat, tier badges (uses Sheet, ScrollArea, Badge, Button)
+  roadmap/RoadmapTree    # chapter/lesson tree with completion state (uses Card, Progress, Badge, Tooltip)
 lib/
   supabase/              # server.ts + client.ts
   anthropic/             # client, prompts, cache helpers, cost logging
@@ -84,12 +85,53 @@ npx tsx scripts/seed_db.ts
 fly deploy --config infra/judge0/deploy.fly.toml
 ```
 
+## UI component library — shadcn/ui
+
+All UI primitives come from [shadcn/ui](https://ui.shadcn.com) (`@shadcn` registry). Components live in `components/ui/` and are installed via `npx shadcn@latest add <name>`. Never hand-roll a primitive that shadcn already provides.
+
+**Installed components** (update this list when adding new ones):
+
+| Component | Primary usage |
+|---|---|
+| `accordion` | FAQ section (single-open default), notes overview chapter groups |
+| `avatar` | User avatar in nav / TopBar |
+| `badge` | Tutor tier badges, streak chip, status labels |
+| `breadcrumb` | Lesson / module navigation breadcrumbs |
+| `button` | All CTAs — resume, start, run, submit, onboarding actions |
+| `card` | Hero card, stat cards, stage cards, feature cards, bento cells |
+| `chart` | Stats visualization, activity heatmap (wraps Recharts) |
+| `checkbox` | Placement check options, settings toggles |
+| `collapsible` | Sidebar sections, expandable content |
+| `dialog` | Confirmation modals (e.g. account creation prompt) |
+| `drawer` | Tutor panel on mobile viewports |
+| `dropdown-menu` | User menu, settings dropdown |
+| `input` | Tutor chat composer, search fields |
+| `label` | Form field labels in onboarding / settings |
+| `progress` | Stage progress bars, path percent, weekly goal indicator |
+| `radio-group` | Onboarding single-select screens (background, motivation, goal) |
+| `scroll-area` | Chat message list, long lesson content, notes preview |
+| `select` | Language standard picker, settings selects |
+| `separator` | Section dividers (replaces manual hairline `<hr>`) |
+| `sheet` | Tutor panel as side sheet on desktop |
+| `sidebar` | App-wide sidebar navigation |
+| `skeleton` | Loading states — dashboard, lessons, tutor |
+| `sonner` | Toast notifications (streak, completion, errors) |
+| `table` | Cost stats table, test results, submission history |
+| `tabs` | Curriculum section tabs, editor file tabs |
+| `textarea` | Notes editor writing surface (floating notepad + dedicated view) |
+| `toggle` | Theme toggle, feature switches, notes toolbar formatting buttons |
+| `toggle-group` | Weekly goal selection, view mode switcher, notes edit/preview toggle |
+| `tooltip` | Locked stage explanations, stat details, heatmap cell hover, notes toolbar labels |
+
+**Adding a new component:** `npx shadcn@latest add <name>`. Customize via the component file in `components/ui/`, not by wrapping. Extend variants in the component's `cva` call when needed.
+
 ## Code conventions
 
 - **Strict TypeScript:** `strict: true`, `noUncheckedIndexedAccess: true`. No `any` without an eslint-disable comment explaining why.
 - **Prettier:** default config + `printWidth: 100`
 - **Imports:** absolute via `@/*` alias; relative only within the same directory
 - **Components:** server components by default; `'use client'` only when explicitly needed
+- **UI primitives:** always use shadcn/ui components from `@/components/ui/*` before building custom ones
 - **Commits:** conventional commits (`feat:`, `fix:`, `chore:`)
 - **Migrations:** one per logical change, forward-only (no rollback scripts), index in same migration as its column
 

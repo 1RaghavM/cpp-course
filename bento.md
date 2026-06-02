@@ -12,7 +12,7 @@ Bento is for **parallel** propositions of similar weight. The curriculum is **se
 
 ## The look: shared-border "table", not floating cards
 
-The clean Vercel effect comes from cells that share hairlines, not cards with big gaps. Make the grid background the border color and let a 1px gap reveal it; each cell paints its own surface on top. One outer hairline wraps the whole block.
+The clean Vercel effect comes from cells that share hairlines, not cards with big gaps. Each cell uses a shadcn **`Card`** component with the shared-border trick applied at the grid level. Make the grid background the border color and let a 1px gap reveal it; each cell paints its own surface on top. One outer hairline wraps the whole block.
 
 ```css
 .bento {
@@ -29,13 +29,20 @@ The clean Vercel effect comes from cells that share hairlines, not cards with bi
     "tutor     tutor     pointers   stl"
     "templates toolchain setup      setup";
 }
-.bento-cell {
-  background: var(--color-surface);            /* sits above the border bg */
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+```
+
+Each `.bento-cell` is a shadcn `Card` with custom className to remove its default border/radius (the grid handles that) and apply the cell surface styling:
+
+```tsx
+<Card className="rounded-none border-0 bg-[var(--color-surface)] p-7 flex flex-col gap-3">
+  <CardHeader className="p-0">
+    <CardTitle className="text-h3">{headline}</CardTitle>
+    <CardDescription className="text-sm text-fg-muted">{supporting line}</CardDescription>
+  </CardHeader>
+  <CardContent className="p-0">
+    {/* mono code chip via Badge variant="outline" with mono font */}
+  </CardContent>
+</Card>
 ```
 
 That's the whole trick. No drop shadows, no gaps full of dead space — adjacent, separated, calm.
@@ -57,9 +64,9 @@ Sizes follow the 40/20/rest rule: one hero cell, one wide secondary, the rest sm
 Keep size variations to **3** (2×2, 2×1, 1×1). More than that reads as chaos. 7 cells is in the 6–9 sweet spot.
 
 ### Cell content rules
-- Each cell = a short headline (`--text-h3`, `--color-fg`) + one supporting line (`--text-sm`, `--color-fg-muted`) + at most one small visual (a mono code chip, or the mini editor/chat for the two large cells).
+- Each cell uses shadcn `Card` → `CardHeader` (`CardTitle` for headline, `CardDescription` for supporting line) + `CardContent` for the visual element.
 - The two large cells (`tutor`, `editor`) carry a real visual; the four small topic cells carry just a mono code chip; the `setup` cell is mostly text. That mix is what creates the rhythm.
-- Mono chips use `--font-mono`, `--code-bg`, `--color-border` hairline, `--radius-sm`, inline-block, small padding. Reuse the syntax colors from `design.md`.
+- Mono chips use shadcn **`Badge`** `variant="outline"` with `font-mono` class: `<Badge variant="outline" className="font-mono text-xs">int* ptr = &x;</Badge>`. Reuse the syntax colors from `design.md`.
 - Headlines are real and specific. No "Powerful." / "Flexible." / "Fast." one-word cells.
 
 ## Responsive reflow (redefine areas, don't rewrite markup)

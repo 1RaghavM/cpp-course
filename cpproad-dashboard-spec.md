@@ -146,15 +146,17 @@ Aesthetic matches the marketing site: clean, flat, monospace for code, generous 
 
 ## 6. Components
 
+All components use **shadcn/ui** primitives. Import from `@/components/ui/*`.
+
 ### TopBar
-Slim row: `cpproad` wordmark + "· C++ path" · right side: streak chip (`flame` icon + number), Tutor button, avatar (initial in a circle).
+Slim row: `cpproad` wordmark + "· C++ path" · right side: streak chip (shadcn **`Badge`** variant="secondary" with `flame` icon + number), Tutor **`Button`** variant="ghost", **`Avatar`** (initial in a circle, from shadcn `Avatar` + `AvatarFallback`).
 - Tutor button opens the AI tutor. From the dashboard it routes to the resume lesson with the tutor panel open (`/learn/[lessonId]?tutor=open`).
 - Streak chip is display-only here (detail lives in StatsStrip).
 
 ### ResumeCard (hero)
 Props: `{ lesson: Lesson; module: Module; snippet?: string; variant: 'resume' | 'start' | 'complete' }`.
 
-Layout: small uppercase-free label, then module name (secondary), lesson title (20px/500), a monospace code preview, and the action column.
+Built on shadcn **`Card`** (`CardHeader` + `CardContent` + `CardFooter`). Layout: small uppercase-free label, then module name (secondary), lesson title (20px/500), a monospace code preview, and the action column.
 
 | variant | When | Label | Title shown | Primary button | Secondary button |
 |---|---|---|---|---|---|
@@ -167,21 +169,23 @@ Code preview:
 - `start` / `complete`: show a short, friendly stock snippet.
 - Truncate to ~3 lines, monospace, muted, on a tinted background. Never scroll.
 
-Primary button is the only solid/inverted button on the page (e.g. `background: text-primary; color: background-primary` so it inverts correctly in dark mode). Keep `aria-label` descriptive: "Resume: Dereferencing pointers".
+Primary button uses shadcn **`Button`** `variant="default"` — the only solid/inverted button on the page (e.g. `background: text-primary; color: background-primary` so it inverts correctly in dark mode). Secondary actions use `Button variant="outline"`. Keep `aria-label` descriptive: "Resume: Dereferencing pointers".
 
 ### PathMap
 Renders the four stages in fixed order: Basics → Memory & OOP → STL & Templates → Advanced. Header row: "Your path" + path percent.
 
 ### StageCard
 Props: `{ stage: Stage; title: string; completed: number; total: number; status: 'done'|'active'|'locked' }`.
-- `done`: check icon, success-colored fill bar at 100%, "N / N done".
-- `active`: 2px info-colored border (the only 2px border on the page besides none), play icon, partial fill bar, "N / M · you're here".
-- `locked`: lock icon, muted title, empty bar, "0 / M".
+
+Built on shadcn **`Card`** with a shadcn **`Progress`** bar for the fill indicator and **`Tooltip`** for locked state explanations.
+- `done`: check icon, success-colored `Progress value={100}`, "N / N done".
+- `active`: 2px info-colored border (the only 2px border on the page besides none), play icon, partial `Progress`, "N / M · you're here". Use shadcn **`Badge`** variant="outline" for the "you're here" tag.
+- `locked`: lock icon, muted title, empty `Progress value={0}`, "0 / M". Wrap in **`Tooltip`** explaining why it's locked.
 - Whole card is a button. Click → navigate to that stage's first non-completed lesson (or its first lesson if none started). `locked` stages are still clickable — cpproad does not gate content; locking is visual signaling only. Confirm this with the product owner; if hard-gating is wanted later, add an `enabled` flag rather than disabling clicks here.
 
 ### StatsStrip
-Three `StatCard`s, secondary emphasis (filled secondary background, no border, smaller than the hero):
-1. "This week" → `lessonsCompletedThisWeek / weeklyGoal`. If `weeklyGoal` is null, label reads just the count with no "/ goal".
+Three `StatCard`s built on shadcn **`Card`** (variant="secondary" or custom muted variant), secondary emphasis (filled secondary background, no border, smaller than the hero):
+1. "This week" → `lessonsCompletedThisWeek / weeklyGoal`. If `weeklyGoal` is null, label reads just the count with no "/ goal". Use shadcn **`Progress`** for the weekly goal visual.
 2. "Lessons done" → `totalLessonsCompleted`.
 3. "Day streak" → `streakDays`.
 
@@ -193,11 +197,11 @@ All numbers `Math.round`ed / integers. No progress rings, no confetti. This stri
 
 | State | Trigger | Behavior |
 |---|---|---|
-| Loading | data fetching | Skeleton: greyed hero + 4 stage placeholders + 3 stat placeholders. No spinner-only screens. |
+| Loading | data fetching | Use shadcn **`Skeleton`** components: greyed hero + 4 stage placeholders + 3 stat placeholders. No spinner-only screens. |
 | First-time | `totalLessonsCompleted === 0` | ResumeCard `variant='start'`; stats show 0; Basics stage `active`, rest locked. |
 | Returning (default) | in-progress or partial | ResumeCard `variant='resume'`. |
 | Path complete | `isPathComplete` | ResumeCard `variant='complete'`; all stages `done`; optionally surface review slot (§10). |
-| Error | fetch fails | Inline retry card in place of hero: "Couldn't load your progress." + Retry. Never a blank dashboard. |
+| Error | fetch fails | Inline retry shadcn **`Card`** in place of hero: "Couldn't load your progress." + **`Button`** "Retry". Use shadcn **`Sonner`** (`toast.error()`) for transient error feedback. Never a blank dashboard. |
 
 Streak edge cases (compute server-side, pass down):
 - `lastActiveDate === today` → streak unchanged.

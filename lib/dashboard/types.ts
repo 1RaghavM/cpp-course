@@ -52,3 +52,10 @@ export interface ModuleDefinition {
   order: number;
   chapterIds: number[];
 }
+
+export type StageState = {
+  stageId: Stage;
+  status: "completed" | "active" | "locked" | "unlocked";
+  completed: number;
+  total: number;
+};

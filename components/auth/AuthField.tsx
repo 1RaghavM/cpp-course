@@ -1,3 +1,6 @@
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 type AuthFieldProps = {
   id: string;
   label: string;
@@ -24,11 +27,9 @@ export function AuthField({
   minLength,
 }: AuthFieldProps) {
   return (
-    <div>
-      <label htmlFor={id} className="auth-label">
-        {label}
-      </label>
-      <input
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Input
         id={id}
         type={type}
         required={required}
@@ -38,7 +39,6 @@ export function AuthField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="auth-input"
       />
     </div>
   );

@@ -19,18 +19,18 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <AuthShell
-      title="cpproad"
+      title="Sign in"
       subtitle="Sign in to continue learning C++"
       footer={
-        <p className="auth-text-sm">
+        <p className="text-sm text-muted-foreground">
           No account yet?{" "}
-          <Link href="/register" className="auth-link">
+          <Link href="/onboarding" className="text-primary hover:underline">
             Create one
           </Link>
         </p>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div className="grid gap-4">
         {callbackError ? <AuthAlert variant="error">{callbackError}</AuthAlert> : null}
         <LoginForm />
       </div>

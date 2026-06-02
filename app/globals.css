@@ -1,100 +1,267 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-@layer base {
-  :root {
-    --bg-base: #0a0a0a;
-    --bg-surface: #0f1115;
-    --bg-elevated: #161b22;
-    --bg-hover: #1c2128;
-    --border: #23262d;
-    --border-subtle: #30363d;
-    --text-primary: #ededed;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --accent: #2f81f7;
-    --accent-hover: #58a6ff;
-    --accent-fg: #ffffff;
-    --success: #3fb950;
-    --error: #f85149;
-    --warning: #d29922;
-    --slate: #8b949e;
-  }
+@config "../tailwind.config.ts";
 
-  body {
-    @apply bg-base text-primary antialiased;
-  }
+@custom-variant dark (&:is(.dark *));
 
-  * {
-    @apply border-border;
-  }
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) var(--bg-base);
-  }
+  /* legacy color tokens for existing components */
+  --color-base: var(--bg-base);
+  --color-surface: var(--bg-surface);
+  --color-elevated: var(--bg-elevated);
+  --color-hover: var(--bg-hover);
+  --color-surface-2: var(--surface-2);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-success: #3fb950;
+  --color-error: #f85149;
+  --color-warning: #d29922;
+  --color-steel: #8b949e;
+  --color-brand: #00599c;
+  --color-brand-bright: #2b8fe6;
+  --color-accent-cyan: #38bdf8;
+  --color-streak: #ff8a3d;
 
-  *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+  /* fonts */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  *::-webkit-scrollbar-track {
-    background: var(--bg-base);
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: var(--border);
-    border-radius: 999px;
-  }
-
-  *::-webkit-scrollbar-thumb:hover {
-    background-color: var(--bg-hover);
-  }
+  /* radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-heatmap-zero: var(--heatmap-zero);
 }
 
-@layer utilities {
-  .grain::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px 256px;
-  }
+:root {
+  /* shadcn light defaults */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 
-  .reveal {
-    animation: reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .reveal-d1 {
-    animation-delay: 0.1s;
-  }
-
-  .reveal-d2 {
-    animation-delay: 0.2s;
-  }
-
-  .reveal-d3 {
-    animation-delay: 0.3s;
-  }
-
-  .reveal-d4 {
-    animation-delay: 0.4s;
-  }
+  /* design.md raw values */
+  --bg-base: #0a0a0a;
+  --bg-surface: #0f1115;
+  --bg-elevated: #161b22;
+  --bg-hover: #1c2128;
+  --surface-2: #161b22;
+  --border-strong: #30363d;
+  --fg: #ededed;
+  --fg-muted: #8b949e;
+  --fg-subtle: #6e7681;
+  --accent-hover: #58a6ff;
+  --accent-fg: #ffffff;
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --border-subtle: #30363d;
+  --text-primary: #ededed;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --glass-fill: rgba(255, 255, 255, 0.04);
+  --glass-fill-hi: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-blur: 16px;
+  --node-locked: #1a2029;
+  --node-active: #2b8fe6;
+  --node-complete: #00599c;
+  --glow-blue: rgba(43, 143, 230, 0.45);
+  --glow-cyan: rgba(56, 189, 248, 0.3);
+  --radius-card: 18px;
+  --radius-node: 50%;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms;
+  --dur-med: 320ms;
+  --dur-slow: 560ms;
+  --stagger: 70ms;
+  --heatmap-zero: rgb(221, 221, 221);
 }
 
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+/* design.md dark theme — mapped to shadcn variables */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #0f1115;
+  --card-foreground: #ededed;
+  --popover: #0f1115;
+  --popover-foreground: #ededed;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #161b22;
+  --secondary-foreground: #ededed;
+  --muted: #161b22;
+  --muted-foreground: #8b949e;
+  --accent: #161b22;
+  --accent-foreground: #ededed;
+  --destructive: #f85149;
+  --border: #23262d;
+  --input: #23262d;
+  --ring: #2f81f7;
+  --chart-1: #2f81f7;
+  --chart-2: #8b949e;
+  --chart-3: #6e7681;
+  --chart-4: #30363d;
+  --chart-5: #23262d;
+  --sidebar: #0f1115;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #2f81f7;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #161b22;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #23262d;
+  --sidebar-ring: #2f81f7;
+  --heatmap-zero: rgb(51, 51, 51);
+}
+
+body {
+  @apply antialiased bg-background text-foreground;
+}
+
+* {
+  @apply border-border;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #23262d #0a0a0a;
+}
+
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: #0a0a0a; }
+*::-webkit-scrollbar-thumb { background-color: #23262d; border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background-color: #1c2128; }
+
+/* grain overlay */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* dashboard entrance animation */
+@keyframes kpi-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kpi-animate { animation: kpi-enter 300ms ease-out both; }
+.kpi-animate:nth-child(1) { animation-delay: 0ms; }
+.kpi-animate:nth-child(2) { animation-delay: 60ms; }
+.kpi-animate:nth-child(3) { animation-delay: 120ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kpi-animate { animation: none !important; }
+}
+
+/* existing animations */
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0); opacity: 0.6; }
+  50% { transform: translate(30px, -20px); opacity: 1; }
+}
+@keyframes node-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.1) translateY(-1px); opacity: 1; }
+}
+@keyframes road-fill {
+  from { stroke-dashoffset: var(--track-length); }
+  to { stroke-dashoffset: var(--track-offset); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb-animate { animation: none !important; }
+  .node-pulse { animation: none !important; }
+  .flame-flicker { animation: none !important; }
+  .road-fill-animate { animation: none !important; }
+}
+
+/* React Flow theme integration */
+.react-flow__controls button {
+  background-color: var(--card);
+  border-color: var(--border);
+  color: var(--foreground);
+}
+.react-flow__controls button:hover {
+  background-color: var(--accent);
+}
+.react-flow__attribution {
+  background: transparent !important;
+}
+.react-flow__attribution a {
+  color: var(--muted-foreground) !important;
 }

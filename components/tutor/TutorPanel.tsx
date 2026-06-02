@@ -3,7 +3,11 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useMemo, useState } from "react";
+import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { useTutorStore } from "@/lib/store/tutor-store";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, AlertTriangle } from "lucide-react";
 import MessageList from "./MessageList";
 import Composer from "./Composer";
 import QuotaIndicator from "./QuotaIndicator";
@@ -12,14 +16,17 @@ import TierBadge from "./TierBadge";
 import { TutorCoachmark } from "./TutorCoachmark";
 
 export default function TutorPanel() {
-  const { lessonId, code, lastSubmissionId, lastSubmissionStatus } = useTutorStore();
+  const { lessonId, context, code, lastSubmissionId, lastSubmissionStatus } = useTutorStore();
+  const isPlayground = context === "playground";
   const [currentTier, setCurrentTier] = useState(1);
   const [quotaExhausted, setQuotaExhausted] = useState(false);
-  const [input, setInput] = useState("");
 
   const bodyRef = useMemo(
-    () => ({ lessonId, code, lastSubmissionToken: lastSubmissionId }),
-    [lessonId, code, lastSubmissionId],
+    () =>
+      isPlayground
+        ? { context: "playground" as const, code }
+        : { lessonId, code, lastSubmissionToken: lastSubmissionId },
+    [isPlayground, lessonId, code, lastSubmissionId],
   );
 
   const transport = useMemo(
@@ -52,12 +59,14 @@ export default function TutorPanel() {
     Math.max(1, userTurnCount >= 7 ? 4 : userTurnCount >= 5 ? 3 : userTurnCount >= 3 ? 2 : 1),
   );
 
-  const handleSend = useCallback(() => {
-    if (!input.trim() || isStreaming) return;
-    setCurrentTier(displayTier);
-    void sendMessage({ text: input });
-    setInput("");
-  }, [input, isStreaming, sendMessage, displayTier]);
+  const handleSend = useCallback(
+    (message: PromptInputMessage) => {
+      if (!message.text.trim() || isStreaming) return;
+      setCurrentTier(displayTier);
+      void sendMessage({ text: message.text });
+    },
+    [isStreaming, sendMessage, displayTier],
+  );
 
   const handleExplainError = useCallback(() => {
     void sendMessage({
@@ -66,22 +75,42 @@ export default function TutorPanel() {
   }, [sendMessage]);
 
   const handleReset = useCallback(async () => {
-    if (
-      !window.confirm(
-        "Start a new conversation for this lesson? The current conversation will be archived.",
-      )
-    )
-      return;
+    const msg = isPlayground
+      ? "Start a new playground conversation? The current one will be archived."
+      : "Start a new conversation for this lesson? The current conversation will be archived.";
+    if (!window.confirm(msg)) return;
     const res = await fetch("/api/chat/reset", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lessonId }),
+      body: JSON.stringify(isPlayground ? { context: "playground" } : { lessonId }),
     });
     if (!res.ok) return;
     setMessages([]);
     setCurrentTier(1);
     setQuotaExhausted(false);
-  }, [lessonId, setMessages]);
+  }, [isPlayground, lessonId, setMessages]);
+
+  const LESSON_SUGGESTIONS = [
+    "Summarize this lesson for me",
+    "What are the key concepts here?",
+    "Give me a practice problem",
+  ];
+
+  const PLAYGROUND_SUGGESTIONS = [
+    "Explain what my code does",
+    "How can I improve this code?",
+    "Help me fix a bug",
+  ];
+
+  const suggestions = isPlayground ? PLAYGROUND_SUGGESTIONS : LESSON_SUGGESTIONS;
+
+  const handleSuggestionClick = useCallback(
+    (suggestion: string) => {
+      if (isStreaming) return;
+      void sendMessage({ text: suggestion });
+    },
+    [isStreaming, sendMessage],
+  );
 
   const showExplainError =
     lastSubmissionStatus !== null &&
@@ -96,31 +125,39 @@ export default function TutorPanel() {
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-primary">Tutor</span>
-          <TierBadge tier={currentTier} />
+          {!isPlayground && <TierBadge tier={currentTier} />}
           <QuotaIndicator refreshKey={messages.length} />
         </div>
-        <button
-          onClick={() => void handleReset()}
-          className="rounded-md border border-border-subtle bg-transparent px-2 py-1 text-xs font-medium text-muted hover:text-primary hover:bg-elevated transition-colors"
-        >
+        <Button variant="outline" size="xs" onClick={() => void handleReset()}>
           New chat
-        </button>
+        </Button>
       </div>
 
       {/* Messages */}
-      <MessageList messages={messages} isStreaming={isStreaming} />
+      <MessageList
+        messages={messages}
+        status={status}
+        suggestions={suggestions}
+        onSuggestionClick={handleSuggestionClick}
+      />
 
       {/* Error display */}
       {error && !quotaExhausted && (
-        <div className="mx-4 mb-2 rounded-md bg-error/10 border border-error/20 px-3 py-2 text-xs text-error">
-          The tutor is briefly unavailable. Your editor and lessons still work.
-        </div>
+        <Alert className="mx-4 mb-2 bg-error/10 border-error/20 text-error">
+          <AlertCircle className="size-4" />
+          <AlertDescription>
+            The tutor is briefly unavailable. Your editor and lessons still work.
+          </AlertDescription>
+        </Alert>
       )}
 
       {quotaExhausted && (
-        <div className="mx-4 mb-2 rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-xs text-warning">
-          You&apos;ve reached today&apos;s message limit. Come back tomorrow!
-        </div>
+        <Alert className="mx-4 mb-2 bg-warning/10 border-warning/20 text-warning">
+          <AlertTriangle className="size-4" />
+          <AlertDescription>
+            You&apos;ve reached today&apos;s message limit. Come back tomorrow!
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* Explain error shortcut */}
@@ -128,11 +165,9 @@ export default function TutorPanel() {
 
       {/* Input */}
       <Composer
-        input={input}
-        onInputChange={setInput}
         onSubmit={handleSend}
         onStop={stop}
-        isStreaming={isStreaming}
+        status={status}
         disabled={quotaExhausted}
       />
     </div>

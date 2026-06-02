@@ -3,7 +3,9 @@ export type DashboardEvent =
   | "resume_clicked"
   | "stage_clicked"
   | "tutor_opened"
-  | "review_clicked";
+  | "review_clicked"
+  | "locked_stage_clicked"
+  | "locked_stage_continued";
 
 export function trackDashboardEvent(name: DashboardEvent, props?: Record<string, unknown>): void {
   if (process.env.NODE_ENV === "development") {

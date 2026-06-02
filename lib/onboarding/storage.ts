@@ -55,6 +55,7 @@ export function getOnboardingPayload(): OnboardingPayload | null {
       placementTaken: s.placementTaken,
       placementScore: s.placementScore,
       weeklyGoal: s.weeklyGoal,
+      displayName: s.displayName ?? null,
     };
   } catch {
     return null;

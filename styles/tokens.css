@@ -1,0 +1,32 @@
+:root {
+  /* glass */
+  --glass-fill: rgba(255, 255, 255, 0.04);
+  --glass-fill-hi: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-blur: 16px;
+
+  /* brand */
+  --brand: #00599c;
+  --brand-bright: #2b8fe6;
+  --accent-cyan: #38bdf8;
+  --glow-blue: rgba(43, 143, 230, 0.45);
+  --glow-cyan: rgba(56, 189, 248, 0.3);
+
+  /* node states */
+  --node-locked: #1a2029;
+  --node-active: var(--brand-bright);
+  --node-complete: var(--brand);
+
+  /* streak */
+  --streak: #ff8a3d;
+
+  /* shape + motion */
+  --radius-card: 18px;
+  --radius-node: 50%;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms;
+  --dur-med: 320ms;
+  --dur-slow: 560ms;
+  --stagger: 70ms;
+}

@@ -12,10 +12,16 @@ interface AppShellProps {
   children: React.ReactNode;
 }
 
-export function AppShell({ streakDays, resumeLessonSlug, userEmail, userInitial, children }: AppShellProps) {
+export function AppShell({
+  streakDays,
+  resumeLessonSlug,
+  userEmail,
+  userInitial,
+  children,
+}: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const hideHeader = pathname.startsWith("/lessons/");
+  const hideHeader = pathname.startsWith("/lessons/") || pathname.startsWith("/playground");
 
   useEffect(() => {
     async function syncOnboarding() {
@@ -48,6 +54,7 @@ export function AppShell({ streakDays, resumeLessonSlug, userEmail, userInitial,
             placementTaken: parsed.placementTaken ?? false,
             placementScore: parsed.placementScore ?? null,
             weeklyGoal: parsed.weeklyGoal ?? null,
+            displayName: parsed.displayName ?? null,
           }),
         });
 

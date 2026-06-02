@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 const STORAGE_KEY = "cpproad_coachmark_shown";
 
@@ -24,37 +26,19 @@ export function TutorCoachmark() {
 
   return (
     <div
-      style={{
-        position: "absolute",
-        bottom: "calc(100% + 8px)",
-        right: 0,
-        background: "var(--color-surface-2, #161b22)",
-        border: "1px solid var(--color-border-strong, #30363d)",
-        borderRadius: "8px",
-        padding: "10px 14px",
-        fontSize: "0.8125rem",
-        color: "var(--color-fg, #ededed)",
-        whiteSpace: "nowrap",
-        zIndex: 10,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-      }}
+      className="absolute bottom-[calc(100%+8px)] right-0 z-10 rounded-md bg-popover border border-border px-3.5 py-2.5 text-sm text-popover-foreground shadow-md whitespace-nowrap"
       role="status"
     >
       Stuck? Ask me &mdash; I can see your code.
-      <button
+      <Button
+        variant="ghost"
+        size="icon-xs"
         onClick={() => setVisible(false)}
-        style={{
-          background: "none",
-          border: "none",
-          color: "var(--color-fg-muted, #8b949e)",
-          marginLeft: 8,
-          cursor: "pointer",
-          fontSize: "0.75rem",
-        }}
+        className="ml-2 text-muted-foreground"
         aria-label="Dismiss"
       >
-        &times;
-      </button>
+        <X className="size-3" />
+      </Button>
     </div>
   );
 }

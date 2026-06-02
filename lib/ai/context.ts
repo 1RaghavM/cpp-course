@@ -79,6 +79,45 @@ export async function resolveOrCreateConversation(
   return conv.id;
 }
 
+export async function resolveOrCreatePlaygroundConversation(
+  supabase: TypedSupabaseClient,
+  userId: string,
+  firstMessageContent: string,
+): Promise<string> {
+  const { data: existing } = await supabase
+    .from("conversations")
+    .select("id")
+    .eq("user_id", userId)
+    .is("lesson_id", null)
+    .eq("context", "playground")
+    .eq("status", "active")
+    .single();
+
+  if (existing) return existing.id;
+
+  const title =
+    firstMessageContent.length > 60
+      ? firstMessageContent.slice(0, 60) + "..."
+      : firstMessageContent;
+
+  const { data: conv, error } = await supabase
+    .from("conversations")
+    .insert({
+      lesson_id: null,
+      title,
+      user_id: userId,
+      status: "active",
+      context: "playground",
+    })
+    .select("id")
+    .single();
+
+  if (error || !conv) {
+    throw new Error(`Failed to create playground conversation: ${error?.message ?? "no data returned"}`);
+  }
+  return conv.id;
+}
+
 export async function loadConversationHistory(
   supabase: TypedSupabaseClient,
   conversationId: string,

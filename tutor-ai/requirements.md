@@ -60,13 +60,13 @@ Stack assumptions: Next.js App Router on Vercel, Supabase Auth + Postgres (RLS),
 
 ### 2.5 UI / UX
 
-- **FR-UI-1 (P0)** — The system shall present the tutor as a dockable side panel / collapsible drawer adjacent to the editor, not a separate page.
-- **FR-UI-2 (P0)** — The system shall render streamed assistant text incrementally and render Markdown, including syntax-highlighted C++ code blocks.
-- **FR-UI-3 (P0)** — The system shall show a clear "tutor is thinking" state before the first token and a stop-generation control during streaming.
-- **FR-UI-4 (P1)** — The system shall show a one-tap "Explain this error" action when a failed Judge0 result is present, pre-filling a message.
-- **FR-UI-5 (P1)** — The system shall display remaining daily message quota when the user is within 20% of the cap.
-- **FR-UI-6 (P1)** — The system shall expose thumbs-up/down controls on each assistant message.
-- **FR-UI-7 (P0)** — The system shall keep the editor and course usable when the tutor panel errors or is rate-limited.
+- **FR-UI-1 (P0)** — The system shall present the tutor as a dockable side panel using shadcn **`Sheet`** (desktop, `side="right"`) or **`Drawer`** (mobile) adjacent to the editor, not a separate page.
+- **FR-UI-2 (P0)** — The system shall render streamed assistant text incrementally in a shadcn **`ScrollArea`** and render Markdown, including syntax-highlighted C++ code blocks.
+- **FR-UI-3 (P0)** — The system shall show a clear "tutor is thinking" state (shadcn **`Skeleton`** lines) before the first token and a stop-generation control (shadcn `Button variant="destructive"`) during streaming.
+- **FR-UI-4 (P1)** — The system shall show a one-tap "Explain this error" action (shadcn `Button variant="outline"`) when a failed Judge0 result is present, pre-filling a message.
+- **FR-UI-5 (P1)** — The system shall display remaining daily message quota (shadcn **`Progress`** bar + **`Badge`**) when the user is within 20% of the cap.
+- **FR-UI-6 (P1)** — The system shall expose thumbs-up/down controls (shadcn `Button variant="ghost" size="icon"`) on each assistant message.
+- **FR-UI-7 (P0)** — The system shall keep the editor and course usable when the tutor panel errors or is rate-limited. Use shadcn **`Sonner`** (`toast.error()`) for transient error feedback.
 
 ### 2.6 Auth and access
 

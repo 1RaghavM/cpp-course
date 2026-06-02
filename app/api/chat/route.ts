@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { tutorModel } from "@/lib/ai/model";
-import { buildSystemPrompt, computeHintTier } from "@/lib/ai/system-prompt";
+import { buildSystemPrompt, buildPlaygroundSystemPrompt, computeHintTier } from "@/lib/ai/system-prompt";
 import {
   loadLessonContext,
   buildExecutionResult,
   resolveOrCreateConversation,
+  resolveOrCreatePlaygroundConversation,
   loadConversationHistory,
   getGuardCounts,
 } from "@/lib/ai/context";
@@ -34,7 +35,8 @@ export async function POST(request: Request) {
 
   let body: {
     messages: UIMessage[];
-    lessonId: string;
+    lessonId?: string;
+    context?: "playground";
     code: string;
     lastSubmissionToken?: string;
   };
@@ -47,9 +49,18 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!body.lessonId || !body.messages || body.messages.length === 0) {
+  const isPlayground = body.context === "playground";
+
+  if (!isPlayground && !body.lessonId) {
     return NextResponse.json(
-      { error: { code: "BAD_REQUEST", message: "lessonId and messages are required" } },
+      { error: { code: "BAD_REQUEST", message: "lessonId or context is required" } },
+      { status: 400 },
+    );
+  }
+
+  if (!body.messages || body.messages.length === 0) {
+    return NextResponse.json(
+      { error: { code: "BAD_REQUEST", message: "messages are required" } },
       { status: 400 },
     );
   }
@@ -62,53 +73,35 @@ export async function POST(request: Request) {
     );
   }
 
-  const serviceClient = createServiceClient();
-
   const extractTextFromMessage = (msg: UIMessage): string => {
     const textPart = msg.parts.find((p): p is { type: "text"; text: string } => p.type === "text");
     return textPart?.text ?? "";
   };
 
-  const conversationId = await resolveOrCreateConversation(
-    supabase,
-    userId,
-    body.lessonId,
-    extractTextFromMessage(latestUserMessage) || "New conversation",
-  );
+  const conversationId = isPlayground
+    ? await resolveOrCreatePlaygroundConversation(
+        supabase,
+        userId,
+        extractTextFromMessage(latestUserMessage) || "Playground chat",
+      )
+    : await resolveOrCreateConversation(
+        supabase,
+        userId,
+        body.lessonId!,
+        extractTextFromMessage(latestUserMessage) || "New conversation",
+      );
 
   const guardCounts = await getGuardCounts(supabase, userId, conversationId);
   const guardResult = checkRateAndBudget(guardCounts);
   if (!guardResult.allowed) {
-    // All guard codes (RATE_LIMITED, BUDGET_EXCEEDED, CONVERSATION_LIMIT) map to 429
     return NextResponse.json(
       { error: { code: guardResult.code, message: guardResult.message } },
       { status: 429 },
     );
   }
 
-  const lessonContext = await loadLessonContext(serviceClient, body.lessonId);
-  if (!lessonContext) {
-    return NextResponse.json(
-      { error: { code: "BAD_REQUEST", message: "Lesson not found" } },
-      { status: 400 },
-    );
-  }
-
-  let executionResult: string | null = null;
-  if (body.lastSubmissionToken) {
-    const { data: sub } = await supabase
-      .from("submissions")
-      .select("status, compile_output, stderr, stdout")
-      .eq("id", body.lastSubmissionToken)
-      .eq("user_id", userId)
-      .single();
-    executionResult = buildExecutionResult(sub);
-  }
-
   const history = await loadConversationHistory(supabase, conversationId);
-  const turnCount = history.filter((m) => m.role === "user").length;
   const userContent = extractTextFromMessage(latestUserMessage);
-  const tier = computeHintTier(turnCount, userContent);
 
   const { data: onboardingData } = await supabase
     .from("onboarding")
@@ -116,15 +109,49 @@ export async function POST(request: Request) {
     .eq("user_id", userId)
     .single();
 
-  const systemPrompt = buildSystemPrompt({
-    tier,
-    chapterTitle: lessonContext.chapterTitle,
-    lessonTitle: lessonContext.lessonTitle,
-    editorCode: body.code ?? "",
-    executionResult,
-    learnerBackground: onboardingData?.background ?? null,
-    learnerMotivation: onboardingData?.motivation ?? null,
-  });
+  let systemPrompt: string;
+  let tier: number | null = null;
+
+  if (isPlayground) {
+    systemPrompt = buildPlaygroundSystemPrompt({
+      editorCode: body.code ?? "",
+      learnerBackground: onboardingData?.background ?? null,
+      learnerMotivation: onboardingData?.motivation ?? null,
+    });
+  } else {
+    const serviceClient = createServiceClient();
+    const lessonContext = await loadLessonContext(serviceClient, body.lessonId!);
+    if (!lessonContext) {
+      return NextResponse.json(
+        { error: { code: "BAD_REQUEST", message: "Lesson not found" } },
+        { status: 400 },
+      );
+    }
+
+    let executionResult: string | null = null;
+    if (body.lastSubmissionToken) {
+      const { data: sub } = await supabase
+        .from("submissions")
+        .select("status, compile_output, stderr, stdout")
+        .eq("id", body.lastSubmissionToken)
+        .eq("user_id", userId)
+        .single();
+      executionResult = buildExecutionResult(sub);
+    }
+
+    const turnCount = history.filter((m) => m.role === "user").length;
+    tier = computeHintTier(turnCount, userContent);
+
+    systemPrompt = buildSystemPrompt({
+      tier,
+      chapterTitle: lessonContext.chapterTitle,
+      lessonTitle: lessonContext.lessonTitle,
+      editorCode: body.code ?? "",
+      executionResult,
+      learnerBackground: onboardingData?.background ?? null,
+      learnerMotivation: onboardingData?.motivation ?? null,
+    });
+  }
 
   await supabase.from("messages").insert({
     conversation_id: conversationId,
@@ -158,6 +185,7 @@ export async function POST(request: Request) {
       }
 
       try {
+        const serviceClient = createServiceClient();
         await serviceClient.from("token_usage").insert({
           user_id: userId,
           call_type: "tutor",
@@ -166,7 +194,7 @@ export async function POST(request: Request) {
           tokens_out: tokensOut,
           cached_in: 0,
           cost_usd_micro: Number(costMicro),
-          lesson_id: body.lessonId,
+          lesson_id: isPlayground ? null : (body.lessonId ?? null),
           conversation_id: conversationId,
         });
       } catch (e) {

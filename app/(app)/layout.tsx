@@ -1,6 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireServerSession } from "@/lib/auth/require-auth";
 import { AppShell } from "@/components/layout/AppShell";
+import { Background } from "@/components/Background";
 import { buildCurriculum } from "@/lib/dashboard/curriculum";
 import { computeResumeTarget, computeStreakDays } from "@/lib/dashboard/resume";
 import type { LessonStatus, DashboardProgress } from "@/lib/dashboard/types";
@@ -80,13 +81,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const userInitial = (userEmail[0] ?? "?").toUpperCase();
 
   return (
-    <AppShell
-      streakDays={streakDays}
-      resumeLessonSlug={resumeTarget.slug}
-      userEmail={userEmail}
-      userInitial={userInitial}
-    >
-      {children}
-    </AppShell>
+    <>
+      <Background />
+      <AppShell
+        streakDays={streakDays}
+        resumeLessonSlug={resumeTarget.slug}
+        userEmail={userEmail}
+        userInitial={userInitial}
+      >
+        {children}
+      </AppShell>
+    </>
   );
 }

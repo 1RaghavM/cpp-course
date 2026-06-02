@@ -1,5 +1,7 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+
 const TIERS: Record<number, { label: string; color: string; description: string }> = {
   1: {
     label: "T1 · Guiding",
@@ -27,11 +29,8 @@ export default function TierBadge({ tier }: { tier: number }) {
   const t = TIERS[tier] ?? TIERS[1]!;
 
   return (
-    <span
-      className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${t.color}`}
-      title={t.description}
-    >
+    <Badge variant="outline" className={t.color} title={t.description}>
       {t.label}
-    </span>
+    </Badge>
   );
 }

@@ -25,6 +25,7 @@ function isValidPayload(body: unknown): body is OnboardingPayload {
   if (typeof b.placementTaken !== "boolean") return false;
   if (b.placementScore !== null && typeof b.placementScore !== "number") return false;
   if (b.weeklyGoal !== null && typeof b.weeklyGoal !== "number") return false;
+  if (b.displayName !== null && typeof b.displayName !== "string") return false;
   return true;
 }
 
@@ -68,6 +69,7 @@ export async function POST(request: NextRequest) {
     {
       user_id: userId,
       weekly_goal: body.weeklyGoal,
+      display_name: body.displayName ?? null,
       streak_days: 0,
       updated_at: new Date().toISOString(),
     },

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import type { Action, Background } from "@/lib/onboarding/types";
 import { OptionCard } from "./OptionCard";
 import { ProgressBar } from "./ProgressBar";
@@ -24,9 +25,28 @@ export function StepBackground({ dispatch }: Props) {
   return (
     <div className="ob-step">
       <ProgressBar current={1} total={3} />
-      <h1 className="ob-heading">First, where are you starting from?</h1>
-      <p className="ob-subtext">This sets your starting point. You can change it anytime.</p>
-      <div className="ob-options-stack">
+      <motion.h1
+        className="ob-heading"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.35, ease: "easeOut" }}
+      >
+        First, where are you starting from?
+      </motion.h1>
+      <motion.p
+        className="ob-subtext"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.35, ease: "easeOut" }}
+      >
+        This sets your starting point. You can change it anytime.
+      </motion.p>
+      <motion.div
+        className="ob-options-stack"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.35, ease: "easeOut" }}
+      >
         {OPTIONS.map((opt) => (
           <OptionCard
             key={opt.value}
@@ -35,7 +55,7 @@ export function StepBackground({ dispatch }: Props) {
             onSelect={() => dispatch({ type: "SET_BACKGROUND", value: opt.value })}
           />
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

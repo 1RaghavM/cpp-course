@@ -38,10 +38,13 @@
 }
 ```
 
-**Buttons (the recognizable Vercel/GitHub move):**
-- **Primary CTA = solid `#ffffff` fill, `#000` text.** This is the Vercel signature. Hover: drop to ~92% white. Not a gradient, not a pill, not the accent blue.
-- **Secondary CTA = transparent fill, `1px solid var(--color-border-strong)`, `--color-fg` text.** Hover: border → `--color-fg-subtle`, bg → `--color-surface-2`.
-- Radius `8px`, height `40px` (`44px` for the hero CTAs), horizontal padding `16–20px`, font-weight `500`.
+**Buttons (via shadcn `Button` component — the recognizable Vercel/GitHub move):**
+
+Configure these as variants in `components/ui/button.tsx`:
+- **Primary CTA (`variant="default"`) = solid `#ffffff` fill, `#000` text.** This is the Vercel signature. Hover: drop to ~92% white. Not a gradient, not a pill, not the accent blue.
+- **Secondary CTA (`variant="outline"`) = transparent fill, `1px solid var(--color-border-strong)`, `--color-fg` text.** Hover: border → `--color-fg-subtle`, bg → `--color-surface-2`.
+- Radius `8px`, height `40px` (`44px` for the hero CTAs via `size="lg"`), horizontal padding `16–20px`, font-weight `500`.
+- Additional variants available: `variant="ghost"` (no border, subtle hover), `variant="link"` (underline style), `variant="destructive"` (red for dangerous actions).
 
 ## Syntax highlighting (for the C++ hero — GitHub dark)
 
@@ -106,12 +109,18 @@ Pick **at most one** background treatment per section, very subtle:
 - **Final CTA:** the same glow, or a single `--color-border` top hairline + slightly lighter `--color-surface` band.
 - Everywhere else: flat `--color-bg`. Resist the urge to decorate.
 
-## Component visual specs
+## Component visual specs — shadcn/ui mappings
 
-- **Nav (sticky, ~64px):** transparent over hero; on scroll, `--color-bg` at ~80% opacity + `backdrop-filter: blur(8px)` + bottom `--hairline`. Wordmark left (mono or display), primary+secondary CTA right.
-- **Code "editor" card (hero centerpiece):** `--color-surface` body, `--hairline`, `--radius-lg`. Top bar: either a single filename tab `main.cpp` (left-aligned, `--text-sm`, `--color-fg-muted`) **or** three muted dots — pick one, not both. Real syntax-highlighted C++ inside, `--font-mono`, comfortable padding (20–24px), line-height 1.6. No line numbers unless they're real.
-- **Feature / topic card:** `--color-surface`, `--hairline`, `--radius-md`, 24–32px padding. Hover: border → `--color-border-strong`, bg → `--color-surface-2`, 150ms ease. A small monospace topic label or a 2–3 line code fragment beats a generic icon.
-- **Tabs (curriculum):** underline-style tabs in `--color-fg-muted`, active tab `--color-fg` with a 2px `--color-accent` underline. Panel below swaps a topic list / small code sample.
+All components use **shadcn/ui** primitives from `@/components/ui/*`. Customize via className and token overrides, not by rebuilding from scratch.
+
+- **Nav (sticky, ~64px):** transparent over hero; on scroll, `--color-bg` at ~80% opacity + `backdrop-filter: blur(8px)` + bottom `--hairline`. Wordmark left (mono or display). Right side: shadcn **`Button`** `variant="outline"` (secondary CTA) + **`Button`** `variant="default"` (primary CTA, solid white fill). Use shadcn **`NavigationMenu`** if adding dropdown sections later.
+- **Code "editor" card (hero centerpiece):** shadcn **`Card`** with `--color-surface` body, `--hairline`, `--radius-lg`. Top bar: either a single filename tab `main.cpp` (left-aligned, `--text-sm`, `--color-fg-muted`) **or** three muted dots — pick one, not both. Real syntax-highlighted C++ inside, `--font-mono`, comfortable padding (20–24px), line-height 1.6. No line numbers unless they're real.
+- **Feature / topic card:** shadcn **`Card`** with `--color-surface`, `--hairline`, `--radius-md`, 24–32px padding. Hover: border → `--color-border-strong`, bg → `--color-surface-2`, 150ms ease. A small monospace topic label (shadcn **`Badge`** variant="outline" with mono font) or a 2–3 line code fragment beats a generic icon.
+- **Tabs (curriculum):** shadcn **`Tabs`** component with underline-style variant. `TabsList` in `--color-fg-muted`, active `TabsTrigger` in `--color-fg` with a 2px `--color-accent` underline. `TabsContent` below swaps a topic list / small code sample.
+- **FAQ section:** shadcn **`Accordion`** — see `cpproad-faq-design-doc.md` §4.
+- **Buttons:** all CTAs use shadcn **`Button`**. Primary = `variant="default"` (solid `#ffffff` fill, `#000` text — the Vercel signature). Secondary = `variant="outline"`. Ghost = `variant="ghost"`. Link = `variant="link"`.
+- **Separators:** shadcn **`Separator`** replaces manual `--hairline` `<hr>` elements between sections.
+- **Tooltips:** shadcn **`Tooltip`** for any hover info (curriculum topic previews, feature explanations).
 
 ## Motion
 

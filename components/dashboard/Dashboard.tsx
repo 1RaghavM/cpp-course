@@ -2,11 +2,21 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ResumeCard } from "@/components/dashboard/ResumeCard";
-import { PathMap } from "@/components/dashboard/PathMap";
+import { motion, useReducedMotion } from "motion/react";
+import { Greeting } from "@/components/dashboard/Greeting";
+import { Hero } from "@/components/dashboard/Hero";
+import { Road } from "@/components/dashboard/Road";
 import { StatsStrip } from "@/components/dashboard/StatsStrip";
+import { ActivityHeatmap } from "@/components/dashboard/ActivityHeatmap";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
-import type { Module, Lesson, DashboardProgress, ResumeVariant, Stage } from "@/lib/dashboard/types";
+import { deriveStageStates } from "@/lib/path";
+import type {
+  Module,
+  Lesson,
+  DashboardProgress,
+  ResumeVariant,
+  Stage,
+} from "@/lib/dashboard/types";
 
 interface DashboardProps {
   curriculum: Module[];
@@ -15,7 +25,10 @@ interface DashboardProps {
   resumeVariant: ResumeVariant;
   pathPercent: number;
   stageTargetSlugs: Record<Stage, string>;
-  statsError?: boolean;
+  lastVisitedLessonId: string | null;
+  displayName: string | null;
+  currentHour: number;
+  activityData: Record<string, number>;
 }
 
 export function Dashboard({
@@ -25,9 +38,34 @@ export function Dashboard({
   resumeVariant,
   pathPercent,
   stageTargetSlugs,
-  statsError,
+  lastVisitedLessonId,
+  displayName,
+  currentHour,
+  activityData,
 }: DashboardProps) {
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: 0.07 },
+    },
+  };
+
+  const itemVariants = reducedMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0, y: 12 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            duration: 0.32,
+            ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+          },
+        },
+      };
 
   useEffect(() => {
     router.prefetch(`/lessons/${resumeTarget.slug}`);
@@ -36,49 +74,50 @@ export function Dashboard({
 
   const resumeModule = curriculum.find((m) => m.id === resumeTarget.moduleId)!;
   const snippet = progress.lessonProgress[resumeTarget.id]?.lastCodeSnippet;
+  const stageStates = deriveStageStates(curriculum, progress, lastVisitedLessonId);
 
   return (
-    <div className="mx-auto max-w-[720px] px-6 py-8">
-      <div className="space-y-8">
-        <div className="reveal">
-          <ResumeCard
+    <div className="mx-auto w-full max-w-[800px] px-6 py-8">
+      <motion.div
+        className="space-y-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={itemVariants}>
+          <Greeting displayName={displayName} hour={currentHour} />
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <Hero
             lesson={resumeTarget}
             module={resumeModule}
             variant={resumeVariant}
             snippet={snippet}
           />
-        </div>
+        </motion.div>
 
-        <div className="reveal reveal-d1">
-          <PathMap
-            curriculum={curriculum}
-            progress={progress}
+        <motion.div variants={itemVariants}>
+          <Road
+            stageStates={stageStates}
             pathPercent={pathPercent}
-            resumeTargetId={resumeTarget.id}
             stageTargetSlugs={stageTargetSlugs}
           />
-        </div>
+        </motion.div>
 
-        <div className="reveal reveal-d2">
-          {statsError ? (
-            <div className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1">
-              {["This week", "Lessons done", "Day streak"].map((label) => (
-                <div key={label} className="rounded-lg bg-elevated p-4">
-                  <p className="text-xs text-muted">{label}</p>
-                  <p className="mt-1 font-mono text-lg text-muted">&mdash;</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <StatsStrip
-              lessonsCompletedThisWeek={progress.lessonsCompletedThisWeek}
-              weeklyGoal={progress.weeklyGoal}
-              totalLessonsCompleted={progress.totalLessonsCompleted}
-              streakDays={progress.streakDays}
-            />
-          )}
-        </div>
-      </div>
+        <motion.div variants={itemVariants}>
+          <StatsStrip
+            lessonsCompletedThisWeek={progress.lessonsCompletedThisWeek}
+            weeklyGoal={progress.weeklyGoal}
+            totalLessonsCompleted={progress.totalLessonsCompleted}
+            streakDays={progress.streakDays}
+          />
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <ActivityHeatmap activityData={activityData} />
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
