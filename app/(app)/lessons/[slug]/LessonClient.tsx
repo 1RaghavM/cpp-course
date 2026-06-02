@@ -102,9 +102,10 @@ interface Props {
   exercises: ExerciseData[];
   initialExerciseIndex?: number;
   nav: NavData | null;
+  exerciseOnly?: boolean;
 }
 
-export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav }: Props) {
+export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav, exerciseOnly = false }: Props) {
   const editorRef = useRef<MonacoEditorHandle>(null);
 
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
@@ -294,13 +295,14 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
       {nav && (
         <LessonNav
           nav={nav}
-          lessonTitle={lesson.title}
+          lessonTitle={exerciseOnly && activeExercise ? activeExercise.title : lesson.title}
           lessonId={lesson.id}
           hasExercises={exercises.length > 0}
           tutorOpen={tutorOpen}
           onToggleTutor={toggleTutor}
           notepadOpen={notepadOpen}
           onToggleNotepad={() => setNotepadOpen((prev) => !prev)}
+          exerciseOnly={exerciseOnly}
         />
       )}
 
@@ -311,12 +313,16 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
             {/* Header */}
             <div className="px-4 py-4 border-b border-border">
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
-                  {lesson.number}
-                </span>
+                {!exerciseOnly && (
+                  <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
+                    {lesson.number}
+                  </span>
+                )}
                 <div>
-                  <h1 className="text-lg font-semibold text-primary">{lesson.title}</h1>
-                  {exercises.length > 0 && activeExercise && (
+                  <h1 className="text-lg font-semibold text-primary">
+                    {exerciseOnly && activeExercise ? activeExercise.title : lesson.title}
+                  </h1>
+                  {!exerciseOnly && exercises.length > 0 && activeExercise && (
                     <p className="text-xs text-muted mt-0.5">
                       {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
                     </p>
@@ -326,12 +332,51 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
             </div>
 
             {/* Content Tabs */}
-            <Tabs defaultValue="lesson" className="flex-1 flex flex-col min-h-0">
-              <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
-                <TabsTrigger value="lesson" className="px-1 py-2.5 text-sm">Lesson</TabsTrigger>
-                {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
-                <TabsTrigger value="resources" className="px-1 py-2.5 text-sm">Resources</TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue={exerciseOnly ? "challenge" : "lesson"} className="flex-1 flex flex-col min-h-0">
+              {exerciseOnly ? (
+                <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
+                  <TabsTrigger value="challenge" className="px-1 py-2.5 text-sm">Challenge</TabsTrigger>
+                  {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
+                </TabsList>
+              ) : (
+                <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
+                  <TabsTrigger value="lesson" className="px-1 py-2.5 text-sm">Lesson</TabsTrigger>
+                  {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
+                  <TabsTrigger value="resources" className="px-1 py-2.5 text-sm">Resources</TabsTrigger>
+                </TabsList>
+              )}
+
+              {exerciseOnly && (
+                <TabsContent value="challenge" className="flex-1 overflow-y-auto p-4">
+                  {activeExercise ? (
+                    <div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <h2 className="text-lg font-semibold text-primary">Challenge</h2>
+                        <DifficultyBadge difficulty={activeExercise.difficulty} />
+                      </div>
+                      <div className="prose prose-base prose-invert max-w-none mb-6">
+                        <SummaryView markdown={activeExercise.promptMd} />
+                      </div>
+                      {activeExercise.sampleTestCases.length > 0 && (
+                        <div>
+                          <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+                            Sample Test Cases
+                          </h3>
+                          <div className="space-y-2">
+                            {activeExercise.sampleTestCases.map((tc) => (
+                              <TestCaseCard key={tc.label} testCase={tc} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted text-sm">
+                      No exercise found.
+                    </div>
+                  )}
+                </TabsContent>
+              )}
 
               <TabsContent value="lesson" className="flex-1 overflow-y-auto p-4">
                 <div className="space-y-6">
@@ -607,6 +652,7 @@ function LessonNav({
   onToggleTutor,
   notepadOpen,
   onToggleNotepad,
+  exerciseOnly,
 }: {
   nav: NavData;
   lessonTitle: string;
@@ -616,6 +662,7 @@ function LessonNav({
   onToggleTutor?: () => void;
   notepadOpen?: boolean;
   onToggleNotepad?: () => void;
+  exerciseOnly?: boolean;
 }) {
   const router = useRouter();
 
@@ -646,38 +693,42 @@ function LessonNav({
   return (
     <div className="flex items-center gap-2 bg-elevated px-4 py-2 text-sm border-b border-border">
       <Link
-        href="/dashboard"
+        href={exerciseOnly ? "/dashboard/exercises" : "/dashboard"}
         className="p-1.5 hover:bg-hover rounded-md transition-colors text-secondary hover:text-primary"
-        title="Back to roadmap"
+        title={exerciseOnly ? "Back to exercises" : "Back to roadmap"}
       >
         <MenuIcon />
       </Link>
 
-      <Link
-        href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}
-        className={`p-1.5 rounded-md transition-colors ${
-          nav.prevSlug
-            ? "hover:bg-hover text-secondary hover:text-primary"
-            : "text-muted cursor-not-allowed"
-        }`}
-        aria-disabled={!nav.prevSlug}
-        onClick={(e) => !nav.prevSlug && e.preventDefault()}
-      >
-        <ChevronLeftIcon />
-      </Link>
+      {!exerciseOnly && (
+        <>
+          <Link
+            href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}
+            className={`p-1.5 rounded-md transition-colors ${
+              nav.prevSlug
+                ? "hover:bg-hover text-secondary hover:text-primary"
+                : "text-muted cursor-not-allowed"
+            }`}
+            aria-disabled={!nav.prevSlug}
+            onClick={(e) => !nav.prevSlug && e.preventDefault()}
+          >
+            <ChevronLeftIcon />
+          </Link>
 
-      <Link
-        href={nav.nextSlug ? `/lessons/${nav.nextSlug}` : "#"}
-        className={`p-1.5 rounded-md transition-colors ${
-          nav.nextSlug
-            ? "hover:bg-hover text-secondary hover:text-primary"
-            : "text-muted cursor-not-allowed"
-        }`}
-        aria-disabled={!nav.nextSlug}
-        onClick={handleNextClick}
-      >
-        <ChevronRightIcon />
-      </Link>
+          <Link
+            href={nav.nextSlug ? `/lessons/${nav.nextSlug}` : "#"}
+            className={`p-1.5 rounded-md transition-colors ${
+              nav.nextSlug
+                ? "hover:bg-hover text-secondary hover:text-primary"
+                : "text-muted cursor-not-allowed"
+            }`}
+            aria-disabled={!nav.nextSlug}
+            onClick={handleNextClick}
+          >
+            <ChevronRightIcon />
+          </Link>
+        </>
+      )}
 
       <div className="h-4 w-px bg-border mx-1" />
 
