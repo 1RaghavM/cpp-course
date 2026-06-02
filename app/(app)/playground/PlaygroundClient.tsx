@@ -1,13 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
 import { useTutorStore } from "@/lib/store/tutor-store";
-import VerticalDivider from "@/components/lesson/VerticalDivider";
-import ResizableDivider from "@/components/tutor/ResizableDivider";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), { ssr: false });
 const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
@@ -68,7 +71,6 @@ function saveLocal(key: string, value: string): void {
 
 export default function PlaygroundClient({ savedState }: Props) {
   const editorRef = useRef<MonacoEditorHandle>(null);
-  const ideContainerRef = useRef<HTMLDivElement>(null);
 
   const localCode = loadLocal("cpproad:playground:code");
   const localStdin = loadLocal("cpproad:playground:stdin");
@@ -86,11 +88,8 @@ export default function PlaygroundClient({ savedState }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [stdinCollapsed, setStdinCollapsed] = useState(false);
-  const [editorPercent, setEditorPercent] = useState(65);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileTab, setMobileTab] = useState<"code" | "input" | "output" | "tutor">("code");
-
-  const [dividerLeft, setDividerLeft] = useState(60);
 
   const setStoreCode = useTutorStore((s) => s.setCode);
   const setStoreContext = useTutorStore((s) => s.setContext);
@@ -99,7 +98,9 @@ export default function PlaygroundClient({ savedState }: Props) {
 
   useEffect(() => {
     setStoreContext("playground");
+    if (!tutorOpen) toggleTutor();
     return () => setStoreContext("lesson");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setStoreContext]);
 
   useEffect(() => {
@@ -187,13 +188,8 @@ export default function PlaygroundClient({ savedState }: Props) {
   );
 
   const handleToggleTutor = useCallback(() => {
-    if (!tutorOpen) {
-      setDividerLeft((prev) => Math.min(prev, 45));
-    } else {
-      setDividerLeft(60);
-    }
     toggleTutor();
-  }, [tutorOpen, toggleTutor]);
+  }, [toggleTutor]);
 
   // Keyboard shortcut: Cmd/Ctrl+Enter to run
   useEffect(() => {
@@ -209,7 +205,7 @@ export default function PlaygroundClient({ savedState }: Props) {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-screen bg-base">
+      <div className="flex flex-col h-full bg-base">
         {/* Header */}
         <div className="flex items-center gap-2 bg-elevated px-3 py-2 border-b border-border">
           <Link
@@ -239,7 +235,7 @@ export default function PlaygroundClient({ savedState }: Props) {
                 <button
                   onClick={() => void handleRun()}
                   disabled={isRunning}
-                  className="rounded-md bg-accent px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                  className="rounded-md bg-brand-bright px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
                 >
                   {isRunning ? "Running..." : "Run"}
                 </button>
@@ -267,7 +263,7 @@ export default function PlaygroundClient({ savedState }: Props) {
                 value={stdin}
                 onChange={(e) => setStdin(e.target.value)}
                 placeholder="Enter input for your program..."
-                className="flex-1 resize-none rounded-md border border-border bg-surface p-3 font-mono text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-accent"
+                className="flex-1 resize-none rounded-md border border-border bg-surface p-3 font-mono text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-brand-bright"
               />
             </div>
           )}
@@ -290,7 +286,7 @@ export default function PlaygroundClient({ savedState }: Props) {
               key={tab}
               onClick={() => setMobileTab(tab)}
               className={`flex-1 py-2.5 text-xs font-medium capitalize transition-colors ${
-                mobileTab === tab ? "text-accent border-t-2 border-accent" : "text-muted"
+                mobileTab === tab ? "text-brand-bright border-t-2 border-brand-bright" : "text-muted"
               }`}
             >
               {tab}
@@ -302,7 +298,7 @@ export default function PlaygroundClient({ savedState }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-base">
+    <div className="flex flex-col h-full bg-base">
       {/* Collapsible header */}
       {!headerCollapsed && (
         <div className="flex items-center gap-2 bg-elevated px-4 py-2 border-b border-border">
@@ -321,7 +317,7 @@ export default function PlaygroundClient({ savedState }: Props) {
             onClick={handleToggleTutor}
             className={`rounded-md px-2 py-1 text-xs font-medium transition-colors ${
               tutorOpen
-                ? "bg-accent/15 text-accent hover:bg-accent/25"
+                ? "bg-brand-bright/15 text-brand-bright hover:bg-brand-bright/25"
                 : "text-secondary hover:text-primary hover:bg-hover"
             }`}
           >
@@ -333,7 +329,7 @@ export default function PlaygroundClient({ savedState }: Props) {
           <select
             value={languageStd}
             onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
-            className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent"
+            className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-brand-bright"
           >
             {STD_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -359,117 +355,111 @@ export default function PlaygroundClient({ savedState }: Props) {
       )}
 
       {/* Main content */}
-      <div className="flex flex-1 min-h-0 overflow-hidden">
+      <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="flex-1 min-h-0">
         {/* Editor panel */}
-        <div
-          ref={ideContainerRef}
-          className="flex flex-col min-w-0 bg-base"
-          style={{ width: `${dividerLeft}%` }}
-        >
-          {/* Toolbar */}
-          <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
-            <button
-              onClick={() => void handleRun()}
-              disabled={isRunning}
-              className="rounded-md bg-accent px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
-            >
-              {isRunning && <Spinner />}
-              {isRunning ? "Running..." : "Run"}
-            </button>
-            <button
-              onClick={handleReset}
-              disabled={isRunning}
-              className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary hover:bg-hover transition-colors disabled:opacity-50"
-            >
-              Reset
-            </button>
-            <div className="flex-1" />
-            <span className="text-xs text-muted">
-              {isRunning ? "Compiling..." : "Ctrl+Enter to run"}
-            </span>
-          </div>
-
-          {/* Editor */}
-          <div className="min-h-0" style={{ height: `${editorPercent}%` }}>
-            <MonacoEditor
-              ref={editorRef}
-              defaultValue={initialCode}
-              onChange={handleCodeChange}
-              language="cpp"
-            />
-          </div>
-
-          <VerticalDivider
-            onResize={setEditorPercent}
-            containerRef={ideContainerRef as RefObject<HTMLElement>}
-            min={25}
-            max={85}
-          />
-
-          {/* Bottom: stdin + output */}
-          <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-            {/* Stdin */}
-            {!stdinCollapsed && (
-              <div className="border-b border-border" style={{ height: "30%" }}>
-                <div className="flex items-center justify-between px-3 py-1.5 bg-elevated border-b border-border">
-                  <span className="text-xs font-medium text-secondary uppercase tracking-wider">
-                    Input
-                  </span>
-                  <button
-                    onClick={() => setStdinCollapsed(true)}
-                    className="text-xs text-muted hover:text-primary transition-colors"
-                  >
-                    Hide
-                  </button>
-                </div>
-                <textarea
-                  value={stdin}
-                  onChange={(e) => setStdin(e.target.value)}
-                  placeholder="stdin..."
-                  className="w-full h-[calc(100%-28px)] resize-none bg-base p-3 font-mono text-xs text-primary placeholder:text-muted focus:outline-none"
-                />
-              </div>
-            )}
-            {stdinCollapsed && (
+        <ResizablePanel defaultSize={tutorOpen ? "75" : "100"} minSize="30">
+          <div className="flex flex-col h-full min-w-0 bg-base">
+            {/* Toolbar */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
               <button
-                onClick={() => setStdinCollapsed(false)}
-                className="flex items-center gap-1.5 px-3 py-1 bg-elevated border-b border-border text-xs text-muted hover:text-primary transition-colors"
+                onClick={() => void handleRun()}
+                disabled={isRunning}
+                className="rounded-md bg-brand-bright px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-bright/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
-                <ChevronDownIcon /> Input
+                {isRunning && <Spinner />}
+                {isRunning ? "Running..." : "Run"}
               </button>
-            )}
-
-            {/* Output */}
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              <div className="px-3 py-1.5 bg-elevated border-b border-border">
-                <span className="text-xs font-medium text-secondary uppercase tracking-wider">
-                  Output
-                </span>
-              </div>
-              <div className="p-3">
-                <PlaygroundOutput result={result} error={error} isRunning={isRunning} />
-              </div>
+              <button
+                onClick={handleReset}
+                disabled={isRunning}
+                className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary hover:bg-hover transition-colors disabled:opacity-50"
+              >
+                Reset
+              </button>
+              <div className="flex-1" />
+              <span className="text-xs text-muted">
+                {isRunning ? "Compiling..." : "Ctrl+Enter to run"}
+              </span>
             </div>
+
+            <ResizablePanelGroup orientation="vertical">
+              {/* Editor */}
+              <ResizablePanel defaultSize="65" minSize="25" maxSize="85">
+                <div className="h-full min-h-0">
+                  <MonacoEditor
+                    ref={editorRef}
+                    defaultValue={initialCode}
+                    onChange={handleCodeChange}
+                    language="cpp"
+                  />
+                </div>
+              </ResizablePanel>
+
+              <ResizableHandle withHandle />
+
+              {/* Bottom: stdin + output */}
+              <ResizablePanel defaultSize="35" minSize="15">
+                <div className="flex flex-col h-full overflow-hidden">
+                  {/* Stdin */}
+                  {!stdinCollapsed && (
+                    <div className="border-b border-border" style={{ height: "30%" }}>
+                      <div className="flex items-center justify-between px-3 py-1.5 bg-elevated border-b border-border">
+                        <span className="text-xs font-medium text-secondary uppercase tracking-wider">
+                          Input
+                        </span>
+                        <button
+                          onClick={() => setStdinCollapsed(true)}
+                          className="text-xs text-muted hover:text-primary transition-colors"
+                        >
+                          Hide
+                        </button>
+                      </div>
+                      <textarea
+                        value={stdin}
+                        onChange={(e) => setStdin(e.target.value)}
+                        placeholder="stdin..."
+                        className="w-full h-[calc(100%-28px)] resize-none bg-base p-3 font-mono text-xs text-primary placeholder:text-muted focus:outline-none"
+                      />
+                    </div>
+                  )}
+                  {stdinCollapsed && (
+                    <button
+                      onClick={() => setStdinCollapsed(false)}
+                      className="flex items-center gap-1.5 px-3 py-1 bg-elevated border-b border-border text-xs text-muted hover:text-primary transition-colors"
+                    >
+                      <ChevronDownIcon /> Input
+                    </button>
+                  )}
+
+                  {/* Output */}
+                  <div className="flex-1 min-h-0 overflow-y-auto">
+                    <div className="px-3 py-1.5 bg-elevated border-b border-border">
+                      <span className="text-xs font-medium text-secondary uppercase tracking-wider">
+                        Output
+                      </span>
+                    </div>
+                    <div className="p-3">
+                      <PlaygroundOutput result={result} error={error} isRunning={isRunning} />
+                    </div>
+                  </div>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </div>
-        </div>
+        </ResizablePanel>
 
         {/* Tutor panel (toggled) */}
         {tutorOpen && (
           <>
-            <ResizableDivider
-              onResize={setDividerLeft}
-              min={30}
-              max={80}
-            />
-            <div
-              className="flex flex-col min-w-0 border-l border-border"
-              style={{ width: `${100 - dividerLeft}%` }}
-            >
-              <TutorPanel />
-            </div>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize="25" minSize="15" maxSize="50">
+              <div className="flex flex-col h-full min-w-0 border-l border-border">
+                <TutorPanel />
+              </div>
+            </ResizablePanel>
           </>
         )}
-      </div>
+      </ResizablePanelGroup>
     </div>
   );
 }
