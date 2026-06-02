@@ -53,8 +53,7 @@ function deriveModuleStatus(
 
 // ─── Edge helpers ─────────────────────────────────────────────────────────────
 
-function edgeStyle(status: ModuleStatus, targetStatus: ModuleStatus) {
-  const isActiveEdge = status === "completed" || status === "active";
+function edgeStyle(_status: ModuleStatus, targetStatus: ModuleStatus) {
   const isLockedEdge = targetStatus === "locked";
 
   return {

@@ -24,7 +24,6 @@ import {
   Settings2Icon,
   CircleHelpIcon,
   SearchIcon,
-  BookMarkedIcon,
   NotebookPenIcon,
   TerminalSquareIcon,
   MapIcon,
