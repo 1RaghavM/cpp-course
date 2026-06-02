@@ -1,16 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { NodeToolbar, Position } from "@xyflow/react";
 import { CheckCircle2, Circle, Loader2, Lock } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-export interface LessonPopoverProps {
-  lessons: { id: string; title: string; slug: string; status: string }[];
-  moduleTitle: string;
-  nodeId: string;
-  isVisible: boolean;
-}
+import { Progress } from "@/components/ui/progress";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import type { ModuleNodeData } from "./curriculum-utils";
 
 function StatusIcon({ status }: { status: string }) {
   switch (status) {
@@ -33,27 +34,44 @@ function StatusIcon({ status }: { status: string }) {
   }
 }
 
-export function LessonPopover({ lessons, moduleTitle, nodeId, isVisible }: LessonPopoverProps) {
+interface ModuleSidebarProps {
+  data: ModuleNodeData | null;
+  open: boolean;
+  onClose: () => void;
+}
+
+export function ModuleSidebar({ data, open, onClose }: ModuleSidebarProps) {
+  if (!data) return null;
+
+  const percent = data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0;
+
   return (
-    <NodeToolbar nodeId={nodeId} isVisible={isVisible} position={Position.Right} offset={12} className="z-50">
-      <div className="w-64 rounded-xl border bg-card p-3 shadow-lg">
-        <p className="mb-2 text-xs font-semibold text-card-foreground">{moduleTitle}</p>
-        <ScrollArea className="max-h-56">
-          <ul className="flex flex-col gap-0.5">
-            {lessons.map((lesson) => (
+    <Sheet open={open} onOpenChange={(val) => !val && onClose()}>
+      <SheetContent side="right">
+        <SheetHeader>
+          <SheetTitle>{data.title}</SheetTitle>
+          <SheetDescription>
+            {data.completed}/{data.total} lessons completed ({percent}%)
+          </SheetDescription>
+          <Progress value={percent} className="mt-1" />
+        </SheetHeader>
+        <ScrollArea className="flex-1 px-4">
+          <ul className="flex flex-col gap-0.5 pb-4">
+            {data.lessons.map((lesson) => (
               <li key={lesson.id}>
                 <Link
                   href={`/lessons/${lesson.slug}`}
-                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-accent"
+                  className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-colors hover:bg-accent"
+                  onClick={onClose}
                 >
                   <StatusIcon status={lesson.status} />
-                  <span className="truncate text-card-foreground">{lesson.title}</span>
+                  <span className="text-card-foreground">{lesson.title}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </ScrollArea>
-      </div>
-    </NodeToolbar>
+      </SheetContent>
+    </Sheet>
   );
 }

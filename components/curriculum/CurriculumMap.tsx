@@ -7,20 +7,14 @@ import "@xyflow/react/dist/style.css";
 import type { Module } from "@/lib/dashboard/types";
 import { buildFlowData, type ModuleNodeData } from "./curriculum-utils";
 import { ModuleNode } from "./ModuleNode";
-import { LessonPopover } from "./LessonPopover";
-
-// ─── Node types (defined outside component for stable identity) ───────────────
+import { ModuleSidebar } from "./LessonPopover";
 
 const nodeTypes = { moduleNode: ModuleNode };
-
-// ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface CurriculumMapProps {
   curriculum: Module[];
   lessonProgress: Record<string, string>;
 }
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export function CurriculumMap({ curriculum, lessonProgress }: CurriculumMapProps) {
   const { nodes, edges } = useMemo(
@@ -39,7 +33,7 @@ export function CurriculumMap({ curriculum, lessonProgress }: CurriculumMapProps
     [],
   );
 
-  const onPaneClick = useCallback(() => {
+  const handleSidebarClose = useCallback(() => {
     setSelectedNodeId(null);
   }, []);
 
@@ -53,7 +47,6 @@ export function CurriculumMap({ curriculum, lessonProgress }: CurriculumMapProps
         edges={edges}
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
-        onPaneClick={onPaneClick}
         fitView
         fitViewOptions={{ padding: 0.3 }}
         nodesDraggable={false}
@@ -67,15 +60,12 @@ export function CurriculumMap({ curriculum, lessonProgress }: CurriculumMapProps
       >
         <Background gap={20} size={1} className="!bg-background" />
         <Controls showInteractive={false} className="!bg-card !border-border !shadow-md" />
-        {selectedData && selectedNodeId && (
-          <LessonPopover
-            lessons={selectedData.lessons}
-            moduleTitle={selectedData.title}
-            nodeId={selectedNodeId}
-            isVisible={true}
-          />
-        )}
       </ReactFlow>
+      <ModuleSidebar
+        data={selectedData}
+        open={selectedNodeId !== null}
+        onClose={handleSidebarClose}
+      />
     </div>
   );
 }
