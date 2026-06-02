@@ -20,6 +20,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -35,6 +44,8 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  SearchIcon,
+  ChevronDownIcon,
 } from "lucide-react"
 
 export const exerciseSchema = z.object({
@@ -164,11 +175,30 @@ const columns: ColumnDef<ExerciseRow>[] = [
   },
 ]
 
-function ModuleTable({ group }: { group: ExerciseModuleGroup }) {
+type StatusFilter = "all" | "completed" | "not-completed"
+
+function ModuleTable({
+  group,
+  statusFilter,
+}: {
+  group: ExerciseModuleGroup
+  statusFilter: StatusFilter
+}) {
   const [data, setData] = React.useState(() => group.exercises)
 
+  const filtered = React.useMemo(() => {
+    switch (statusFilter) {
+      case "completed":
+        return data.filter((d) => d.status === "Done")
+      case "not-completed":
+        return data.filter((d) => d.status !== "Done")
+      default:
+        return data
+    }
+  }, [statusFilter, data])
+
   const table = useReactTable({
-    data,
+    data: filtered,
     columns,
     getRowId: (row) => row.id.toString(),
     getCoreRowModel: getCoreRowModel(),
@@ -182,6 +212,8 @@ function ModuleTable({ group }: { group: ExerciseModuleGroup }) {
       },
     },
   })
+
+  if (filtered.length === 0) return null
 
   const completedCount = data.filter((d) => d.status === "Done").length
 
@@ -283,6 +315,32 @@ function ModuleTable({ group }: { group: ExerciseModuleGroup }) {
 }
 
 export function ExercisesDataTable({ groups }: { groups: ExerciseModuleGroup[] }) {
+  const [search, setSearch] = React.useState("")
+  const [statusFilter, setStatusFilter] = React.useState<StatusFilter>("all")
+
+  const filteredGroups = React.useMemo(() => {
+    if (!search) return groups
+
+    const query = search.toLowerCase()
+    return groups
+      .map((group) => {
+        const moduleMatch = group.module.toLowerCase().includes(query)
+        if (moduleMatch) return group
+
+        const matchingExercises = group.exercises.filter((ex) =>
+          ex.header.toLowerCase().includes(query)
+        )
+        if (matchingExercises.length === 0) return null
+
+        return { ...group, exercises: matchingExercises }
+      })
+      .filter((g): g is ExerciseModuleGroup => g !== null)
+  }, [groups, search])
+
+  const allExercises = groups.flatMap((g) => g.exercises)
+  const totalCount = allExercises.length
+  const completedCount = allExercises.filter((e) => e.status === "Done").length
+
   if (groups.length === 0) {
     return (
       <div className="flex h-24 items-center justify-center text-muted-foreground">
@@ -292,10 +350,57 @@ export function ExercisesDataTable({ groups }: { groups: ExerciseModuleGroup[] }
   }
 
   return (
-    <div className="space-y-8">
-      {groups.map((group) => (
-        <ModuleTable key={group.module} group={group} />
-      ))}
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-foreground">Exercises</h1>
+          <p className="text-sm text-muted-foreground">
+            {completedCount} of {totalCount} completed
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <SearchIcon className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search exercises or topics..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-64 pl-8"
+            />
+          </div>
+          <Select
+            value={statusFilter}
+            onValueChange={(v) => setStatusFilter(v as StatusFilter)}
+            items={[
+              { label: "All", value: "all" },
+              { label: "Completed", value: "completed" },
+              { label: "Not Completed", value: "not-completed" },
+            ]}
+          >
+            <SelectTrigger className="w-40" size="sm">
+              <SelectValue placeholder="Filter status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="not-completed">Not Completed</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      {filteredGroups.length === 0 ? (
+        <div className="flex h-24 items-center justify-center text-muted-foreground">
+          No exercises match your search.
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {filteredGroups.map((group) => (
+            <ModuleTable key={group.module} group={group} statusFilter={statusFilter} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
