@@ -42,7 +42,7 @@ const data = {
     },
     {
       title: "Exercises",
-      url: "/exercises",
+      url: "/dashboard/exercises",
       icon: <CodeIcon />,
     },
     {
