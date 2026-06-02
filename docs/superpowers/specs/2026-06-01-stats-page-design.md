@@ -12,7 +12,7 @@ Uses `requireAuth()` — returns 401 if unauthenticated. All queries are scoped 
 
 ### Parallel Queries
 
-Six Supabase queries run via `Promise.all`:
+Seven Supabase queries run via `Promise.all`:
 
 1. **progress** — all rows for this user → lessons completed/in_progress/skipped, visit timestamps, activity data
 2. **lessons + chapters** — total counts per chapter (public tables, no user filter)
@@ -68,7 +68,7 @@ interface StatsResponse {
 - **successRate**: `passedSubmissions / totalSubmissions` (0 if no submissions)
 - **totalTimeMinutes**: sum of `(last_visit_at - first_visit_at)` across all progress rows, capped at 120 min per lesson to avoid overnight-tab inflation
 - **weeklySubmissions**: group `submissions` by ISO week (`YYYY-Www`) for the last 8 weeks, count passed vs failed (mode = 'submit' only)
-- **activityData**: same 16-week window as the dashboard heatmap, counting progress row updates per day
+- **activityData**: derived server-side from `progress.last_visit_at` timestamps, same 16-week window as the dashboard heatmap, counting distinct lesson visits per day
 - **lessonsCompletedThisWeek**: count of progress rows where `completed_at` falls within the current ISO week
 
 ## Frontend
