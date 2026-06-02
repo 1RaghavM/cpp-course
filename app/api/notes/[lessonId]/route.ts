@@ -44,6 +44,7 @@ export async function PATCH(
   );
 
   if (error) {
+    console.error("notes upsert error:", error);
     return NextResponse.json({ error: "Failed to save note" }, { status: 500 });
   }
 

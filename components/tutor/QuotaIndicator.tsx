@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface QuotaData {
   usedToday: number;
@@ -25,12 +26,11 @@ export default function QuotaIndicator({ refreshKey = 0 }: { refreshKey?: number
   const atCap = quota.usedToday >= quota.dailyCap;
 
   return (
-    <span
-      className={`text-xs font-medium px-2 py-0.5 rounded-md ${
-        atCap ? "bg-error/10 text-error" : "bg-warning/10 text-warning"
-      }`}
+    <Badge
+      variant={atCap ? "destructive" : "secondary"}
+      className={atCap ? "bg-error/10 text-error" : "bg-warning/10 text-warning"}
     >
       {quota.usedToday}/{quota.dailyCap} today
-    </span>
+    </Badge>
   );
 }

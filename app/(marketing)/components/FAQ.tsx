@@ -6,15 +6,15 @@ import { Reveal } from "./Reveal";
 const faqItems = [
   {
     q: "Do I need to install a compiler or set anything up?",
-    a: "No. cpproad runs in your browser. There's a built-in editor where you write and run real C++ without installing a compiler, IDE, or anything else — you hit Run and see the output right there. The point is to get you writing code in your first few minutes instead of losing a weekend to setup.",
+    a: "No. cpproad runs in your browser. There's a built-in editor where you write and run real C++ without installing a compiler, IDE, or anything else. You hit Run and see the output right there. The point is to get you writing code in your first few minutes instead of losing a weekend to setup.",
   },
   {
     q: "I've never written a line of code. Is C++ too hard to start with?",
-    a: "C++ has a reputation for being unforgiving, and that's fair — but cpproad is built for starting from zero. It begins with the absolute basics and only introduces the intimidating stuff (pointers, memory, templates) once the foundation is there. You won't get dropped in the deep end, and when something doesn't click, the AI tutor is right there to explain it another way.",
+    a: "C++ has a reputation for being unforgiving, and that's fair, but cpproad is built for starting from zero. It begins with the absolute basics and only introduces the intimidating stuff (pointers, memory, templates) once the foundation is there. You won't get dropped in the deep end, and when something doesn't click, the AI tutor is right there to explain it another way.",
   },
   {
     q: "What's the AI tutor, and how is it different from just asking ChatGPT?",
-    a: "The tutor lives inside the lesson and the editor, so it already knows what you're working on and what you've covered. Instead of pasting code into a separate chat and re-explaining everything, you ask in place and it helps with that exact problem. It's there to unstick you and explain concepts — not to hand you the answer so you skip the learning.",
+    a: "The tutor lives inside the lesson and the editor, so it already knows what you're working on and what you've covered. Instead of pasting code into a separate chat and re-explaining everything, you ask in place and it helps with that exact problem. It's there to unstick you and explain concepts, not to hand you the answer so you skip the learning.",
   },
   {
     q: "Do I actually write code, or is it just videos and quizzes?",
@@ -22,15 +22,15 @@ const faqItems = [
   },
   {
     q: "How is this different from free stuff like YouTube or learncpp.com?",
-    a: "Those are great references, but they leave you to figure out the order, the setup, and whether you actually understood anything. cpproad is one structured path — write code, run it, get unstuck by the tutor, move on — all in one place with nothing to assemble yourself. You're paying for the path and the practice loop, not for the existence of C++ information.",
+    a: "Those are great references, but they leave you to figure out the order, the setup, and whether you actually understood anything. cpproad is one structured path: write code, run it, get unstuck by the tutor, move on. All in one place with nothing to assemble yourself. You're paying for the path and the practice loop, not for the existence of C++ information.",
   },
   {
     q: "What does the roadmap actually cover?",
-    a: "It takes you from the very basics — your first program, variables, control flow — through functions and the core language, and up into more advanced territory like templates. Each section builds on the last so there are no gaps, and by the end you're comfortable with the parts of C++ that real code actually uses.",
+    a: "It takes you from the very basics (your first program, variables, control flow) through functions and the core language, and up into more advanced territory like templates. Each section builds on the last so there are no gaps, and by the end you're comfortable with the parts of C++ that real code actually uses.",
   },
   {
     q: "How soon can I write a real program?",
-    a: "You write and run real code from the first lesson, so basically right away. Getting comfortable across the whole path is self-paced and depends on the time you put in, but there's no \"watch 10 hours before you touch code\" phase — you're building from day one.",
+    a: "You write and run real code from the first lesson, so basically right away. Getting comfortable across the whole path is self-paced and depends on the time you put in, but there's no \"watch 10 hours before you touch code\" phase. You're building from day one.",
   },
   {
     q: "What if I get stuck and there's no one to ask?",

@@ -523,12 +523,41 @@ cpproad/
 │   └── globals.css
 ├── components/
 │   ├── editor/MonacoEditor.tsx
-│   ├── tutor/ChatPanel.tsx
-│   ├── tutor/TierBadge.tsx
-│   ├── roadmap/RoadmapTree.tsx
+│   ├── tutor/
+│   │   ├── ChatPanel.tsx               # uses Sheet, ScrollArea, Input, Button
+│   │   ├── TierBadge.tsx               # uses Badge
+│   │   ├── MessageList.tsx             # uses ScrollArea
+│   │   ├── Composer.tsx                # uses Input, Button
+│   │   ├── FeedbackButtons.tsx         # uses Button variant="ghost"
+│   │   └── QuotaIndicator.tsx          # uses Progress, Badge
+│   ├── roadmap/RoadmapTree.tsx         # uses Card, Progress, Badge, Tooltip
 │   ├── lesson/SummaryView.tsx
-│   ├── lesson/ExerciseCard.tsx
-│   └── ui/                            # shadcn primitives
+│   ├── lesson/ExerciseCard.tsx         # uses Card, Button, Badge
+│   └── ui/                            # shadcn/ui primitives
+│       ├── accordion.tsx               # FAQ section
+│       ├── avatar.tsx                  # user avatar
+│       ├── badge.tsx                   # status labels, tiers, streaks
+│       ├── button.tsx                  # all CTAs (default/outline/ghost/link)
+│       ├── card.tsx                    # all card containers
+│       ├── chart.tsx                   # Recharts wrapper for stats
+│       ├── dialog.tsx                  # confirmation modals
+│       ├── drawer.tsx                  # tutor panel (mobile)
+│       ├── dropdown-menu.tsx           # user menu, settings
+│       ├── input.tsx                   # chat composer, forms
+│       ├── label.tsx                   # form labels
+│       ├── progress.tsx                # progress bars
+│       ├── scroll-area.tsx             # chat scrolling, long content
+│       ├── select.tsx                  # language picker
+│       ├── separator.tsx               # section dividers
+│       ├── sheet.tsx                   # tutor panel (desktop)
+│       ├── sidebar.tsx                 # app navigation
+│       ├── skeleton.tsx                # loading states
+│       ├── sonner.tsx                  # toast notifications
+│       ├── table.tsx                   # stats, test results
+│       ├── tabs.tsx                    # curriculum tabs
+│       ├── toggle-group.tsx            # goal selection
+│       ├── toggle.tsx                  # feature switches
+│       └── tooltip.tsx                 # hover info, locked states
 ├── lib/
 │   ├── supabase/
 │   │   ├── server.ts                  # server client

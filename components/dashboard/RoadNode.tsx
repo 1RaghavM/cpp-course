@@ -1,7 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { CheckIcon, PlayIcon, LockIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import type { StageState } from "@/lib/dashboard/types";
 import { getPrereqHint } from "@/lib/path";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
@@ -12,85 +19,30 @@ interface RoadNodeProps {
   targetLessonSlug: string;
 }
 
-function CheckIcon() {
-  return (
-    <svg
-      className="h-4 w-4 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2.5}
-      aria-hidden="true"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg
-      className="h-4 w-4 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2.5}
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z"
-      />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg
-      className="h-4 w-4 text-muted"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-      />
-    </svg>
-  );
-}
-
 const nodeStyles: Record<StageState["status"], { ring: string; bg: string; label: string }> = {
   completed: {
     ring: "ring-2 ring-node-complete",
     bg: "bg-node-complete",
-    label: "text-primary",
+    label: "text-foreground",
   },
   active: {
     ring: "ring-2 ring-node-active",
     bg: "bg-node-active",
-    label: "text-primary font-semibold",
+    label: "text-foreground font-semibold",
   },
   unlocked: {
-    ring: "ring-1 ring-glass-border",
-    bg: "bg-[var(--bg-elevated)]",
-    label: "text-secondary",
+    ring: "ring-1 ring-border",
+    bg: "bg-muted",
+    label: "text-muted-foreground",
   },
   locked: {
-    ring: "ring-1 ring-glass-border",
-    bg: "bg-node-locked",
-    label: "text-muted",
+    ring: "ring-1 ring-border",
+    bg: "bg-muted/50",
+    label: "text-muted-foreground",
   },
 };
 
 export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
-  const [showHint, setShowHint] = useState(false);
-  const popoverRef = useRef<HTMLLIElement>(null);
   const isLocked = state.status === "locked";
   const style = nodeStyles[state.status];
   const hint = getPrereqHint(state.stageId);
@@ -103,28 +55,10 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
           ? "locked"
           : "available";
 
-  useEffect(() => {
-    if (!showHint) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
-        setShowHint(false);
-      }
-    }
-    function handleEscape(e: KeyboardEvent) {
-      if (e.key === "Escape") setShowHint(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [showHint]);
-
   const nodeContent = (
     <>
       <div
-        className={`flex h-12 w-12 items-center justify-center rounded-full ${style.bg} ${style.ring} transition-all duration-fast ease-smooth`}
+        className={`flex h-12 w-12 items-center justify-center rounded-full ${style.bg} ${style.ring} transition-all`}
         style={
           state.status === "active"
             ? {
@@ -134,20 +68,20 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
             : undefined
         }
       >
-        {state.status === "completed" && <CheckIcon />}
-        {state.status === "active" && <PlayIcon />}
-        {state.status === "locked" && <LockIcon />}
+        {state.status === "completed" && <CheckIcon className="size-4 text-white" />}
+        {state.status === "active" && <PlayIcon className="size-4 text-white" />}
+        {state.status === "locked" && <LockIcon className="size-4 text-muted-foreground" />}
         {state.status === "unlocked" && (
-          <span className="font-mono text-xs text-secondary">{state.completed}</span>
+          <span className="font-mono text-xs text-muted-foreground">{state.completed}</span>
         )}
       </div>
       <div className="mt-2 text-center">
         <p className={`text-sm ${style.label}`}>{title}</p>
-        <p className="font-mono text-xs tabular-nums text-muted">
+        <p className="font-mono text-xs tabular-nums text-muted-foreground">
           {state.completed} / {state.total}
         </p>
         {state.status === "active" && (
-          <p className="mt-0.5 text-xs text-accent-cyan">you&apos;re here</p>
+          <p className="mt-0.5 text-xs text-primary">you&apos;re here</p>
         )}
       </div>
     </>
@@ -155,38 +89,32 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
 
   if (isLocked && hint) {
     return (
-      <li className="relative flex flex-col items-center" ref={popoverRef}>
-        <button
-          type="button"
-          onClick={() => {
-            setShowHint(true);
-            trackDashboardEvent("locked_stage_clicked", { stage: state.stageId });
-          }}
-          className="flex flex-col items-center opacity-60 transition-opacity duration-fast hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)]"
-          aria-label={`${title}, ${state.completed} of ${state.total} lessons, ${statusLabel}`}
-        >
-          {nodeContent}
-        </button>
-
-        {showHint && (
-          <div
-            className="absolute top-full z-10 mt-3 w-64 rounded-card border border-glass-border bg-[var(--bg-surface)] p-4 shadow-lg"
-            role="dialog"
-            aria-label="Prerequisites"
+      <li className="relative flex flex-col items-center">
+        <Popover>
+          <PopoverTrigger
+            className="flex flex-col items-center opacity-60 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={() => trackDashboardEvent("locked_stage_clicked", { stage: state.stageId })}
+            aria-label={`${title}, ${state.completed} of ${state.total} lessons, ${statusLabel}`}
           >
-            <p className="text-sm text-secondary">{hint}</p>
-            <Link
-              href={`/lessons/${targetLessonSlug}`}
-              className="mt-3 inline-block rounded-lg bg-brand-bright px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[var(--accent-cyan)]"
-              onClick={() => {
-                setShowHint(false);
-                trackDashboardEvent("locked_stage_continued", { stage: state.stageId });
-              }}
+            {nodeContent}
+          </PopoverTrigger>
+          <PopoverContent side="bottom" sideOffset={12}>
+            <PopoverDescription>{hint}</PopoverDescription>
+            <Button
+              size="sm"
+              render={
+                <Link
+                  href={`/lessons/${targetLessonSlug}`}
+                  onClick={() =>
+                    trackDashboardEvent("locked_stage_continued", { stage: state.stageId })
+                  }
+                />
+              }
             >
               Continue anyway
-            </Link>
-          </div>
-        )}
+            </Button>
+          </PopoverContent>
+        </Popover>
       </li>
     );
   }
@@ -196,7 +124,7 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
       <Link
         href={`/lessons/${targetLessonSlug}`}
         onClick={() => trackDashboardEvent("stage_clicked", { stage: state.stageId })}
-        className={`flex flex-col items-center transition-transform duration-fast ease-smooth hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-base)] ${isLocked ? "opacity-60" : ""}`}
+        className={`flex flex-col items-center transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isLocked ? "opacity-60" : ""}`}
         aria-label={`${title}, ${state.completed} of ${state.total} lessons, ${statusLabel}`}
       >
         {nodeContent}

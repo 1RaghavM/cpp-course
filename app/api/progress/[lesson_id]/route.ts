@@ -91,9 +91,6 @@ export async function POST(request: NextRequest, { params }: { params: { lesson_
     .eq("lesson_id", lesson_id)
     .single();
 
-  if (existing?.state === "completed" && state === "in_progress") {
-    return new NextResponse(null, { status: 204 });
-  }
 
   const now = new Date().toISOString();
 
@@ -127,7 +124,7 @@ export async function POST(request: NextRequest, { params }: { params: { lesson_
       state: string;
       last_visit_at: string;
       first_visit_at?: string;
-      completed_at?: string;
+      completed_at?: string | null;
     } = {
       state,
       last_visit_at: now,
@@ -139,6 +136,8 @@ export async function POST(request: NextRequest, { params }: { params: { lesson_
 
     if (state === "completed") {
       updatePayload.completed_at = now;
+    } else if (state === "in_progress") {
+      updatePayload.completed_at = null;
     }
 
     const { error: updateError } = await supabase

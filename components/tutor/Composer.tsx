@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   input: string;
@@ -38,7 +40,7 @@ export default function Composer({
   return (
     <div className="border-t border-border p-3">
       <div className="flex items-end gap-2">
-        <textarea
+        <Textarea
           ref={textareaRef}
           value={input}
           onChange={(e) => onInputChange(e.target.value)}
@@ -46,23 +48,16 @@ export default function Composer({
           placeholder={disabled ? "Daily limit reached" : "Ask about this lesson..."}
           disabled={isStreaming || disabled}
           rows={1}
-          className="flex-1 resize-none rounded-md border border-border bg-base px-3 py-2 text-sm text-primary placeholder-muted focus:border-accent focus:outline-none disabled:opacity-50 transition-colors"
+          className="flex-1 resize-none min-h-0 field-sizing-normal text-sm"
         />
         {isStreaming ? (
-          <button
-            onClick={onStop}
-            className="rounded-md border border-border-subtle bg-transparent px-4 py-2 text-sm font-medium text-primary hover:bg-elevated transition-colors"
-          >
+          <Button variant="outline" onClick={onStop}>
             Stop
-          </button>
+          </Button>
         ) : (
-          <button
-            onClick={onSubmit}
-            disabled={disabled || !input.trim()}
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-fg hover:bg-accent-hover disabled:opacity-50 transition-colors"
-          >
+          <Button onClick={onSubmit} disabled={disabled || !input.trim()}>
             Send
-          </button>
+          </Button>
         )}
       </div>
     </div>

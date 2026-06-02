@@ -11,6 +11,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
+import { Button } from "@/components/ui/button";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), { ssr: false });
 const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
@@ -324,18 +325,6 @@ export default function PlaygroundClient({ savedState }: Props) {
             Tutor
           </button>
 
-          <div className="h-4 w-px bg-border mx-1" />
-
-          <select
-            value={languageStd}
-            onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
-            className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-brand-bright"
-          >
-            {STD_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-
           <button
             onClick={() => setHeaderCollapsed(true)}
             className="p-1 rounded-md text-muted hover:text-primary hover:bg-hover transition-colors"
@@ -359,23 +348,21 @@ export default function PlaygroundClient({ savedState }: Props) {
         {/* Editor panel */}
         <ResizablePanel defaultSize={tutorOpen ? "75" : "100"} minSize="30">
           <div className="flex flex-col h-full min-w-0 bg-base">
-            {/* Toolbar */}
-            <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
-              <button
-                onClick={() => void handleRun()}
-                disabled={isRunning}
-                className="rounded-md bg-brand-bright px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-bright/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
-              >
-                {isRunning && <Spinner />}
-                {isRunning ? "Running..." : "Run"}
-              </button>
-              <button
-                onClick={handleReset}
-                disabled={isRunning}
-                className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary hover:bg-hover transition-colors disabled:opacity-50"
-              >
-                Reset
-              </button>
+            {/* Editor toolbar — matches lesson EditorToolbar */}
+            <div className="flex items-center gap-3 px-4 py-2 bg-elevated border-b border-border">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted">Language:</span>
+                <select
+                  value={languageStd}
+                  onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
+                  disabled={isRunning}
+                  className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {STD_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
               <div className="flex-1" />
               <span className="text-xs text-muted">
                 {isRunning ? "Compiling..." : "Ctrl+Enter to run"}
@@ -384,7 +371,7 @@ export default function PlaygroundClient({ savedState }: Props) {
 
             <ResizablePanelGroup orientation="vertical">
               {/* Editor */}
-              <ResizablePanel defaultSize="65" minSize="25" maxSize="85">
+              <ResizablePanel defaultSize="70" minSize="25" maxSize="85">
                 <div className="h-full min-h-0">
                   <MonacoEditor
                     ref={editorRef}
@@ -397,9 +384,32 @@ export default function PlaygroundClient({ savedState }: Props) {
 
               <ResizableHandle withHandle />
 
-              {/* Bottom: stdin + output */}
-              <ResizablePanel defaultSize="35" minSize="15">
+              {/* Console — matches lesson OutputPanel layout */}
+              <ResizablePanel defaultSize="30" minSize="15">
                 <div className="flex flex-col h-full overflow-hidden">
+                  {/* Console header with actions */}
+                  <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
+                    <span className="text-xs font-medium text-secondary uppercase tracking-wider">Console</span>
+                    <div className="flex-1" />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => void handleRun()}
+                      disabled={isRunning}
+                    >
+                      {isRunning && <Spinner />}
+                      Run
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleReset}
+                      disabled={isRunning}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+
                   {/* Stdin */}
                   {!stdinCollapsed && (
                     <div className="border-b border-border" style={{ height: "30%" }}>
@@ -432,15 +442,8 @@ export default function PlaygroundClient({ savedState }: Props) {
                   )}
 
                   {/* Output */}
-                  <div className="flex-1 min-h-0 overflow-y-auto">
-                    <div className="px-3 py-1.5 bg-elevated border-b border-border">
-                      <span className="text-xs font-medium text-secondary uppercase tracking-wider">
-                        Output
-                      </span>
-                    </div>
-                    <div className="p-3">
-                      <PlaygroundOutput result={result} error={error} isRunning={isRunning} />
-                    </div>
+                  <div className="flex-1 min-h-0 overflow-y-auto p-4">
+                    <PlaygroundOutput result={result} error={error} isRunning={isRunning} />
                   </div>
                 </div>
               </ResizablePanel>

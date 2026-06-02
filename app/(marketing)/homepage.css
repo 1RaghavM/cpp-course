@@ -356,6 +356,33 @@
   font-family: inherit;
 }
 
+/* --- Typing animation --- */
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--color-fg);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: cursor-blink 1060ms steps(2) infinite;
+}
+
+@keyframes cursor-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.code-card-body {
+  min-height: 340px;
+  transition: opacity 300ms ease-in;
+}
+
+.code-card-fading .code-card-body {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}
+
 /* --- Feature cards --- */
 
 .feature-card {
@@ -831,6 +858,20 @@
   .bento-cell {
     padding: 22px;
   }
+}
+
+/* --- FAQ accordion --- */
+
+[data-page="homepage"] [data-slot="accordion-trigger"] {
+  color: var(--color-fg);
+}
+
+[data-page="homepage"] [data-slot="accordion-content"] {
+  color: var(--color-fg-muted);
+}
+
+[data-page="homepage"] [data-slot="accordion-trigger-icon"] {
+  color: var(--color-fg-subtle);
 }
 
 /* --- Reveal animation --- */

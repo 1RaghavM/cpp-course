@@ -1,18 +1,25 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SummaryView } from "@/components/lesson/SummaryView";
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
 import { OutputPanel } from "@/components/lesson/OutputPanel";
-import { Tabs, TabList, Tab, TabPanel } from "@/components/ui/Tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Progress, ProgressLabel } from "@/components/ui/progress";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
 import { useTutorStore } from "@/lib/store/tutor-store";
-import ResizableDivider from "@/components/tutor/ResizableDivider";
-import VerticalDivider from "@/components/lesson/VerticalDivider";
+import { ReportBugButton } from "@/components/lesson/ReportBugButton";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
   ssr: false,
@@ -26,6 +33,8 @@ const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
     </div>
   ),
 });
+
+import { FloatingNotepad } from "@/components/notes/FloatingNotepad";
 
 interface LessonData {
   id: string;
@@ -87,7 +96,6 @@ interface Props {
 
 export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav }: Props) {
   const editorRef = useRef<MonacoEditorHandle>(null);
-  const ideContainerRef = useRef<HTMLDivElement>(null);
 
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
   const [code, setCode] = useState(exercises[activeExerciseIndex]?.starterCode ?? "");
@@ -97,24 +105,12 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
   const [result, setResult] = useState<SubmissionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [divider1, setDivider1] = useState(50);
-  const [divider2, setDivider2] = useState(70);
-  const [editorPercent, setEditorPercent] = useState(70);
   const setStoreCode = useTutorStore((s) => s.setCode);
   const setStoreLessonId = useTutorStore((s) => s.setLessonId);
   const setStoreSubmission = useTutorStore((s) => s.setSubmissionResult);
   const tutorOpen = useTutorStore((s) => s.tutorOpen);
   const toggleTutor = useTutorStore((s) => s.toggleTutor);
-
-  const handleToggleTutor = useCallback(() => {
-    if (!tutorOpen) {
-      setDivider1((prev) => Math.min(prev, 35));
-      setDivider2(70);
-    } else {
-      setDivider1(50);
-    }
-    toggleTutor();
-  }, [tutorOpen, toggleTutor]);
+  const [notepadOpen, setNotepadOpen] = useState(false);
 
   const activeExercise = exercises[activeExerciseIndex];
 
@@ -275,222 +271,217 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
           lessonId={lesson.id}
           hasExercises={exercises.length > 0}
           tutorOpen={tutorOpen}
-          onToggleTutor={handleToggleTutor}
+          onToggleTutor={toggleTutor}
+          notepadOpen={notepadOpen}
+          onToggleNotepad={() => setNotepadOpen((prev) => !prev)}
         />
       )}
 
-      <div className="flex flex-1 min-h-0 overflow-hidden" data-resizable-container>
+      <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="flex-1 min-h-0">
         {/* Lesson Panel */}
-        <div
-          className="flex flex-col bg-surface border-r border-border"
-          style={{ width: `${divider1}%` }}
-        >
-          {/* Header */}
-          <div className="px-4 py-4 border-b border-border">
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-accent/10 text-accent text-xs font-bold">
-                {lesson.number}
-              </span>
-              <div>
-                <h1 className="text-lg font-semibold text-primary">{lesson.title}</h1>
-                {exercises.length > 0 && activeExercise && (
-                  <p className="text-xs text-muted mt-0.5">
-                    {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
-                  </p>
-                )}
+        <ResizablePanel defaultSize={tutorOpen ? "40" : "50"} minSize="20" maxSize="80">
+          <div className="flex flex-col h-full bg-surface border-r border-border">
+            {/* Header */}
+            <div className="px-4 py-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
+                  {lesson.number}
+                </span>
+                <div>
+                  <h1 className="text-lg font-semibold text-primary">{lesson.title}</h1>
+                  {exercises.length > 0 && activeExercise && (
+                    <p className="text-xs text-muted mt-0.5">
+                      {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Content Tabs */}
-          <Tabs defaultTab="lesson" className="flex-1 flex flex-col min-h-0">
-            <TabList>
-              <Tab value="lesson">Lesson</Tab>
-              {activeExercise?.solutionCode && <Tab value="solution">Solution</Tab>}
-              <Tab value="resources">Resources</Tab>
-            </TabList>
+            {/* Content Tabs */}
+            <Tabs defaultValue="lesson" className="flex-1 flex flex-col min-h-0">
+              <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
+                <TabsTrigger value="lesson" className="px-1 py-2.5 text-sm">Lesson</TabsTrigger>
+                {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
+                <TabsTrigger value="resources" className="px-1 py-2.5 text-sm">Resources</TabsTrigger>
+              </TabsList>
 
-            <TabPanel value="lesson" className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-6">
-                {/* Lesson summary */}
-                {lesson.summaryMd ? (
-                  <div className="prose prose-sm prose-invert max-w-none">
-                    <SummaryView markdown={lesson.summaryMd} />
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center text-muted text-sm">
-                    Lesson summary is being generated...
-                  </div>
-                )}
-
-                {/* Challenge prompt + samples */}
-                {exercises.length > 0 && activeExercise ? (
-                  <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <h2 className="text-lg font-semibold text-primary">Challenge</h2>
-                      <DifficultyBadge difficulty={activeExercise.difficulty} />
+              <TabsContent value="lesson" className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-6">
+                  {/* Lesson summary */}
+                  {lesson.summaryMd ? (
+                    <div className="prose prose-base prose-invert max-w-none">
+                      <SummaryView markdown={lesson.summaryMd} />
                     </div>
+                  ) : (
+                    <GeneratingContent />
+                  )}
 
-                    {/* Exercise tabs if multiple */}
+                  {/* Challenge prompt + samples */}
+                  {exercises.length > 0 && activeExercise ? (
+                    <div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <h2 className="text-lg font-semibold text-primary">Challenge</h2>
+                        <DifficultyBadge difficulty={activeExercise.difficulty} />
+                      </div>
+
+                      {/* Exercise tabs if multiple */}
+                      {exercises.length > 1 && (
+                        <div className="flex gap-2 mb-4 pb-4 border-b border-border-subtle">
+                          {exercises.map((ex, idx) => (
+                            <Button
+                              key={ex.id}
+                              variant={idx === activeExerciseIndex ? "default" : "ghost"}
+                              size="xs"
+                              onClick={() => handleExerciseSwitch(idx)}
+                              className={
+                                idx === activeExerciseIndex
+                                  ? "bg-accent text-base hover:bg-accent/90"
+                                  : "bg-elevated text-secondary"
+                              }
+                            >
+                              {ex.title}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="prose prose-base prose-invert max-w-none mb-6">
+                        <SummaryView markdown={activeExercise.promptMd} />
+                      </div>
+
+                      {activeExercise.sampleTestCases.length > 0 && (
+                        <div>
+                          <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+                            Sample Test Cases
+                          </h3>
+                          <div className="space-y-2">
+                            {activeExercise.sampleTestCases.map((tc) => (
+                              <TestCaseCard key={tc.label} testCase={tc} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted text-sm">
+                      No exercises available for this lesson.
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              {activeExercise?.solutionCode && (
+                <TabsContent value="solution" className="flex-1 overflow-y-auto p-4">
+                  <div className="space-y-4">
                     {exercises.length > 1 && (
-                      <div className="flex gap-2 mb-4 pb-4 border-b border-border-subtle">
+                      <div className="flex gap-2 pb-4 border-b border-border-subtle">
                         {exercises.map((ex, idx) => (
-                          <button
+                          <Button
                             key={ex.id}
+                            variant={idx === activeExerciseIndex ? "default" : "ghost"}
+                            size="xs"
                             onClick={() => handleExerciseSwitch(idx)}
-                            className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
+                            className={
                               idx === activeExerciseIndex
-                                ? "bg-accent text-base"
-                                : "bg-elevated text-secondary hover:text-primary hover:bg-hover"
-                            }`}
+                                ? "bg-accent text-base hover:bg-accent/90"
+                                : "bg-elevated text-secondary"
+                            }
                           >
                             {ex.title}
-                          </button>
+                          </Button>
                         ))}
                       </div>
                     )}
-
-                    <div className="prose prose-sm prose-invert max-w-none mb-6">
-                      <SummaryView markdown={activeExercise.promptMd} />
-                    </div>
-
-                    {activeExercise.sampleTestCases.length > 0 && (
-                      <div>
-                        <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
-                          Sample Test Cases
-                        </h3>
-                        <div className="space-y-2">
-                          {activeExercise.sampleTestCases.map((tc) => (
-                            <TestCaseCard key={tc.label} testCase={tc} />
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <SolutionReveal code={activeExercise.solutionCode} />
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-muted text-sm">
-                    No exercises available for this lesson.
-                  </div>
-                )}
-              </div>
-            </TabPanel>
+                </TabsContent>
+              )}
 
-            {activeExercise?.solutionCode && (
-              <TabPanel value="solution" className="flex-1 overflow-y-auto p-4">
+              <TabsContent value="resources" className="flex-1 overflow-y-auto p-4">
                 <div className="space-y-4">
-                  {exercises.length > 1 && (
-                    <div className="flex gap-2 pb-4 border-b border-border-subtle">
-                      {exercises.map((ex, idx) => (
-                        <button
-                          key={ex.id}
-                          onClick={() => handleExerciseSwitch(idx)}
-                          className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${
-                            idx === activeExerciseIndex
-                              ? "bg-accent text-base"
-                              : "bg-elevated text-secondary hover:text-primary hover:bg-hover"
-                          }`}
-                        >
-                          {ex.title}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <SolutionReveal code={activeExercise.solutionCode} />
+                  <ResourceLink
+                    href={lesson.learncppUrl}
+                    title="Full Lesson on LearnCpp.com"
+                    description="Read the complete lesson with detailed explanations"
+                  />
                 </div>
-              </TabPanel>
-            )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        </ResizablePanel>
 
-            <TabPanel value="resources" className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-4">
-                <ResourceLink
-                  href={lesson.learncppUrl}
-                  title="Full Lesson on LearnCpp.com"
-                  description="Read the complete lesson with detailed explanations"
-                />
-              </div>
-            </TabPanel>
-          </Tabs>
-        </div>
-
-        <ResizableDivider
-          onResize={setDivider1}
-          min={20}
-          max={tutorOpen ? divider2 - 15 : 80}
-        />
+        <ResizableHandle withHandle />
 
         {/* IDE Panel */}
-        <div
-          ref={ideContainerRef}
-          className="flex flex-col min-w-0 bg-base"
-          style={{ width: `${(tutorOpen ? divider2 : 100) - divider1}%` }}
-        >
-          {activeExercise ? (
-            <>
-              <EditorToolbar
-                languageStd={languageStd}
-                onLanguageChange={setLanguageStd}
-                disabled={busy}
-                hasLastPassingCode={!!activeExercise.lastPassingCode}
-                onRestorePassing={handleRestorePassingSub}
-                onReset={handleReset}
-              />
+        <ResizablePanel defaultSize={tutorOpen ? "30" : "50"} minSize="20">
+          <div className="flex flex-col h-full min-w-0 bg-base">
+            {activeExercise ? (
+              <ResizablePanelGroup orientation="vertical">
+                <ResizablePanel defaultSize="70" minSize="25" maxSize="85">
+                  <div className="flex flex-col h-full">
+                    <EditorToolbar
+                      languageStd={languageStd}
+                      onLanguageChange={setLanguageStd}
+                      disabled={busy}
+                      hasLastPassingCode={!!activeExercise.lastPassingCode}
+                      onRestorePassing={handleRestorePassingSub}
+                      onReset={handleReset}
+                    />
+                    <div className="flex-1 min-h-0">
+                      <MonacoEditor
+                        ref={editorRef}
+                        defaultValue={activeExercise.starterCode}
+                        onChange={(val) => {
+                          setCode(val);
+                          setStoreCode(val);
+                        }}
+                        language="cpp"
+                        readOnly={false}
+                        exerciseId={activeExercise.id}
+                      />
+                    </div>
+                  </div>
+                </ResizablePanel>
 
-              <div className="min-h-0" style={{ height: `${editorPercent}%` }}>
-                <MonacoEditor
-                  ref={editorRef}
-                  defaultValue={activeExercise.starterCode}
-                  onChange={(val) => {
-                    setCode(val);
-                    setStoreCode(val);
-                  }}
-                  language="cpp"
-                  readOnly={false}
-                  exerciseId={activeExercise.id}
-                />
+                <ResizableHandle withHandle />
+
+                <ResizablePanel defaultSize="30" minSize="15">
+                  <div className="h-full overflow-hidden">
+                    <OutputPanel
+                      result={result}
+                      error={error}
+                      isRunning={isRunning}
+                      isSubmitting={isSubmitting}
+                      onRun={() => handleSubmit("run")}
+                      onSubmit={() => handleSubmit("submit")}
+                    />
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            ) : (
+              <div className="flex-1 flex items-center justify-center text-muted">
+                No exercises available for this lesson.
               </div>
-
-              <VerticalDivider
-                onResize={setEditorPercent}
-                containerRef={ideContainerRef as RefObject<HTMLElement>}
-                min={25}
-                max={85}
-              />
-
-              <div className="min-h-0 overflow-hidden" style={{ flex: 1 }}>
-                <OutputPanel
-                  result={result}
-                  error={error}
-                  isRunning={isRunning}
-                  isSubmitting={isSubmitting}
-                  onRun={() => handleSubmit("run")}
-                  onSubmit={() => handleSubmit("submit")}
-                />
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center text-muted">
-              No exercises available for this lesson.
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </ResizablePanel>
 
         {/* Tutor Panel (toggled) */}
         {tutorOpen && (
           <>
-            <ResizableDivider
-              onResize={setDivider2}
-              min={divider1 + 15}
-              max={85}
-            />
-            <div
-              className="flex flex-col min-w-0 border-l border-border"
-              style={{ width: `${100 - divider2}%` }}
-            >
-              <TutorPanel />
-            </div>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize="30" minSize="15" maxSize="45">
+              <div className="flex flex-col h-full min-w-0 border-l border-border">
+                <TutorPanel />
+              </div>
+            </ResizablePanel>
           </>
         )}
-      </div>
+      </ResizablePanelGroup>
+      {notepadOpen && !isMobile && (
+        <FloatingNotepad lessonId={lesson.id} onClose={() => setNotepadOpen(false)} />
+      )}
     </div>
   );
 }
@@ -526,7 +517,7 @@ function MobileLayout({
       </div>
 
       {lesson.summaryMd && (
-        <section className="prose prose-sm prose-invert max-w-none">
+        <section className="prose prose-base prose-invert max-w-none">
           <SummaryView markdown={lesson.summaryMd} />
         </section>
       )}
@@ -553,6 +544,8 @@ function LessonNav({
   hasExercises,
   tutorOpen,
   onToggleTutor,
+  notepadOpen,
+  onToggleNotepad,
 }: {
   nav: NavData;
   lessonTitle: string;
@@ -560,6 +553,8 @@ function LessonNav({
   hasExercises: boolean;
   tutorOpen?: boolean;
   onToggleTutor?: () => void;
+  notepadOpen?: boolean;
+  onToggleNotepad?: () => void;
 }) {
   const router = useRouter();
 
@@ -635,21 +630,41 @@ function LessonNav({
         {nav.currentIndex} / {nav.totalInChapter}
       </span>
 
-      {onToggleTutor && (
+      {onToggleNotepad && (
         <>
           <div className="h-4 w-px bg-border mx-1" />
           <button
-            onClick={onToggleTutor}
+            onClick={onToggleNotepad}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              tutorOpen
+              notepadOpen
                 ? "bg-accent/15 text-accent"
                 : "text-secondary hover:text-primary hover:bg-hover"
             }`}
+            title={notepadOpen ? "Hide notes" : "Show notes"}
+          >
+            <NotesIcon />
+            Notes
+          </button>
+        </>
+      )}
+      {onToggleTutor && (
+        <>
+          <div className="h-4 w-px bg-border mx-1" />
+          <ReportBugButton lessonId={lessonId} />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleTutor}
+            className={
+              tutorOpen
+                ? "bg-accent/15 text-accent hover:bg-accent/25"
+                : "text-secondary"
+            }
             title={tutorOpen ? "Hide tutor" : "Show tutor"}
           >
             <TutorIcon />
             Tutor
-          </button>
+          </Button>
         </>
       )}
     </div>
@@ -663,22 +678,24 @@ function SolutionReveal({ code }: { code: string }) {
     <div className="mt-6">
       <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Solution</h3>
       {!revealed ? (
-        <button
+        <Button
+          variant="outline"
           onClick={() => setRevealed(true)}
-          className="w-full rounded-lg border border-border bg-elevated px-4 py-3 text-sm text-secondary hover:bg-hover hover:text-primary transition"
+          className="w-full"
         >
           Reveal Solution
-        </button>
+        </Button>
       ) : (
         <div className="rounded-lg border border-border bg-elevated overflow-hidden">
           <div className="flex items-center justify-between px-3 py-2 border-b border-border">
             <span className="text-xs text-muted font-medium">C++</span>
-            <button
+            <Button
+              variant="ghost"
+              size="xs"
               onClick={() => setRevealed(false)}
-              className="text-xs text-muted hover:text-primary transition"
             >
               Hide
-            </button>
+            </Button>
           </div>
           <pre className="p-3 overflow-x-auto text-xs font-mono text-primary">
             <code>{code}</code>
@@ -819,6 +836,77 @@ function TutorIcon() {
         clipRule="evenodd"
       />
     </svg>
+  );
+}
+
+function NotesIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className="h-4 w-4"
+    >
+      <path
+        fillRule="evenodd"
+        d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm2.25 8.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zm0 3a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+function GeneratingContent() {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setValue((prev) => (prev >= 90 ? 90 : prev + Math.random() * 12));
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center py-16">
+      <div className="w-64 space-y-3">
+        <Progress value={value}>
+          <ProgressLabel className="text-sm text-muted">
+            Generating lesson content…
+          </ProgressLabel>
+        </Progress>
+      </div>
+    </div>
+  );
+}
+
+class NotepadErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="fixed bottom-6 right-6 z-[9000] max-w-sm rounded-lg bg-error/10 border border-error/30 p-4 shadow-lg">
+          <p className="text-sm font-medium text-error">Notes failed to load</p>
+          <p className="mt-1 text-xs text-error/70 break-all">{this.state.error.message}</p>
+        </div>
+      );
+    }
+    return this.state.error ? null : this.props.children;
+  }
+}
+
+function NotepadWrapper({ lessonId, onClose }: { lessonId: string; onClose: () => void }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(
+    <NotepadErrorBoundary>
+      <FloatingNotepad lessonId={lessonId} onClose={onClose} />
+    </NotepadErrorBoundary>,
+    document.body,
   );
 }
 

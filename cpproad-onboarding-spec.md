@@ -80,11 +80,11 @@ Landing (sandbox, no account)
 No new screen to build; instrument what's already there. The `main.cpp` block on the landing page becomes editable with a **Run** button.
 
 - On first **Run**: set `ranSandbox = true`, show compiled output inline.
-- After output renders, surface a soft CTA below the editor.
+- After output renders, surface a soft CTA below the editor using shadcn **`Button`** `variant="default"`.
 
 > **Copy (post-run CTA):**
 > Nice — that compiled and ran. Want a path from here to templates?
-> **[ Start learning ]**
+> **[ Start learning ]** ← shadcn `Button`
 
 Clicking **Start learning** enters the flow at S1. (Existing "Start learning" / register links also enter at S1.)
 
@@ -103,7 +103,7 @@ The most important question. Sets the starting module and how verbose lessons + 
 | I know another language (Python, JS, Java…) | `other_lang` | `background='other_lang'` |
 | I've written some C or C++ | `some_cpp` | `background='some_cpp'` |
 
-Single-select, advance on tap. Progress: `1 / 3`.
+Single-select via shadcn **`RadioGroup`** + **`RadioGroupItem`**, advance on tap. Progress: `1 / 3` — use shadcn **`Progress`** component (`value={33}`).
 
 ---
 
@@ -123,7 +123,7 @@ Does **not** change the starting module. Flavors lesson examples, framing, and r
 | Competitive programming | `competitive` |
 | Just curious | `curious` |
 
-Single-select, advance on tap. Progress: `2 / 3`.
+Single-select via shadcn **`RadioGroup`**, advance on tap. Progress: `2 / 3` (`Progress value={66}`).
 
 ---
 
@@ -215,7 +215,7 @@ A soft commitment. Skippable in one tap — many self-taught C++ learners are in
 | Serious — 5+ lessons/week | 5 |
 | No goal for now | `null` |
 
-A visible **Skip** also sets `null`. Progress: not counted (post-questionnaire).
+A visible **Skip** (shadcn `Button variant="ghost"`) also sets `null`. Use shadcn **`ToggleGroup`** `type="single"` for the goal options (renders as a row of selectable items). Progress: not counted (post-questionnaire).
 
 ---
 
@@ -238,7 +238,7 @@ Confirm and route straight into `startModule`. Copy must reference their actual 
 - `school` → "Examples will track what most courses cover, in order."
 - `curious` → "We'll keep it concrete — real code, real output, every step."
 
-Clicking **Open first lesson** loads the lesson at `startModule`. **No account required yet.**
+Clicking **Open first lesson** (shadcn `Button variant="default"`, full width) loads the lesson at `startModule`. **No account required yet.**
 
 ---
 
@@ -248,8 +248,11 @@ Trigger **after** `completedFirstLesson === true`, not before. Framed as saving 
 
 > **Heading:** Save your progress?
 > **Subtext:** Create a free account to keep your place, your path, and your code.
-> **[ Continue with Google ]  [ Sign up with email ]**
-> Small print: Already have an account? **[ Sign in ]**
+> **[ Continue with Google ]** ← shadcn `Button variant="outline"` with Google icon
+> **[ Sign up with email ]** ← shadcn `Button variant="default"`
+> Small print: Already have an account? **[ Sign in ]** ← shadcn `Button variant="link"`
+
+Render this in a shadcn **`Card`** with `CardHeader` + `CardContent` + `CardFooter`. Use shadcn **`Input`** + **`Label`** for the email field. Reference shadcn block `login-05` (email-only login) for the magic-link form layout.
 
 On account creation, flush `OnboardingState` from `localStorage` to the user record.
 
@@ -347,6 +350,7 @@ Activation metric to watch: **% of `landing_run_clicked` → `first_lesson_compl
 - **Routing:** one route `/onboarding` with internal step state (`useReducer` over `OnboardingState`), or nested routes `/onboarding/[step]` if you want back/forward + shareable URLs. The reducer approach is simpler for a 3–5 screen flow.
 - **No account during flow:** gate the lesson view to allow an anonymous session backed by `localStorage`; only require auth at the account screen.
 - **Persistence:** write `OnboardingState` to `localStorage` on every step so a refresh resumes. On `account_created`, POST the state to your API and clear local.
-- **Progress indicator:** `1/3 · 2/3 · 3/3` for the three questions; placement and goal screens render outside the counter.
-- **Back navigation:** keep answered values so returning to a step shows the prior selection (mirror the rest of the app's nav, per Codecademy's pattern).
-- **A11y / mobile:** single-column, tap-to-advance, large hit targets. The editor likely wants desktop, so if a learner lands the flow on mobile, let them finish the questionnaire but suggest desktop for the sandbox.
+- **Progress indicator:** shadcn **`Progress`** component with `value` at `33 · 66 · 100` for the three questions; placement and goal screens render outside the counter.
+- **Back navigation:** keep answered values so returning to a step shows the prior selection (shadcn `Button variant="ghost"` with back arrow). Mirror the rest of the app's nav, per Codecademy's pattern.
+- **A11y / mobile:** single-column, tap-to-advance, large hit targets. All interactive elements use shadcn primitives (built-in focus rings, keyboard nav, ARIA). The editor likely wants desktop, so if a learner lands the flow on mobile, let them finish the questionnaire but suggest desktop for the sandbox.
+- **shadcn components used in this flow:** `Button`, `RadioGroup`, `Card`, `Progress`, `Input`, `Label`, `ToggleGroup`, `Separator`.

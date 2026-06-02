@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 type OptionCardProps = {
   label: string;
   description?: string;
@@ -9,7 +11,7 @@ type OptionCardProps = {
 
 export function OptionCard({ label, description, selected, onSelect }: OptionCardProps) {
   return (
-    <button
+    <motion.button
       type="button"
       className="ob-option-card"
       data-selected={selected || undefined}
@@ -20,9 +22,12 @@ export function OptionCard({ label, description, selected, onSelect }: OptionCar
           onSelect();
         }
       }}
+      whileHover={{ scale: 1.02, y: -2 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <span className="ob-option-label">{label}</span>
       {description ? <span className="ob-option-desc">{description}</span> : null}
-    </button>
+    </motion.button>
   );
 }

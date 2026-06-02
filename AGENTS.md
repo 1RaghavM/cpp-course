@@ -47,9 +47,10 @@ app/
     progress/[lesson_id]/
     stats/costs/
 components/
+  ui/                    # shadcn/ui primitives (accordion, badge, button, card, chart, dialog, drawer, progress, sheet, skeleton, tabs, tooltip, etc.)
   editor/MonacoEditor    # Monaco with C++ highlighting
-  tutor/ChatPanel        # streaming chat, tier badges
-  roadmap/RoadmapTree    # chapter/lesson tree with completion state
+  tutor/ChatPanel        # streaming chat, tier badges (uses Sheet, ScrollArea, Badge, Button)
+  roadmap/RoadmapTree    # chapter/lesson tree with completion state (uses Card, Progress, Badge, Tooltip)
 lib/
   supabase/              # server.ts + client.ts
   anthropic/             # client, prompts, cache helpers, cost logging
@@ -84,12 +85,21 @@ npx tsx scripts/seed_db.ts
 fly deploy --config infra/judge0/deploy.fly.toml
 ```
 
+## UI component library — shadcn/ui
+
+All UI primitives come from [shadcn/ui](https://ui.shadcn.com) (`@shadcn` registry). Components live in `components/ui/` and are installed via `npx shadcn@latest add <name>`. Never hand-roll a primitive that shadcn already provides.
+
+**Installed components:** accordion, avatar, badge, breadcrumb, button, card, chart, checkbox, collapsible, dialog, drawer, dropdown-menu, input, label, progress, radio-group, scroll-area, select, separator, sheet, sidebar, skeleton, sonner, table, tabs, toggle, toggle-group, tooltip.
+
+**Adding a new component:** `npx shadcn@latest add <name>`. Customize via the component file in `components/ui/`, not by wrapping.
+
 ## Code conventions
 
 - **Strict TypeScript:** `strict: true`, `noUncheckedIndexedAccess: true`. No `any` without an eslint-disable comment explaining why.
 - **Prettier:** default config + `printWidth: 100`
 - **Imports:** absolute via `@/*` alias; relative only within the same directory
 - **Components:** server components by default; `'use client'` only when explicitly needed
+- **UI primitives:** always use shadcn/ui components from `@/components/ui/*` before building custom ones
 - **Commits:** conventional commits (`feat:`, `fix:`, `chore:`)
 - **Migrations:** one per logical change, forward-only (no rollback scripts), index in same migration as its column
 

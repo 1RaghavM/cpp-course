@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { X, Minus, GripVertical, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MarkdownEditor } from "@/components/notes/MarkdownEditor";
 import { SaveStatus } from "@/components/notes/SaveStatus";
 import { useNote } from "@/lib/notes/use-note";
@@ -91,29 +90,20 @@ export function FloatingNotepad({ lessonId, onClose }: FloatingNotepadProps) {
 
   if (position.minimized) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <button
-                onClick={toggleMinimized}
-                className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-accent/90"
-              >
-                <Maximize2 className="h-4 w-4" />
-                Notes
-              </button>
-            }
-          />
-          <TooltipContent>Expand notepad</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <button
+        onClick={toggleMinimized}
+        className="fixed bottom-6 right-6 z-[9000] flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white shadow-lg transition hover:bg-accent/90"
+      >
+        <Maximize2 className="h-4 w-4" />
+        Notes
+      </button>
     );
   }
 
   return (
     <div
       ref={panelRef}
-      className="fixed z-40 flex flex-col rounded-lg border border-border bg-surface shadow-2xl"
+      className="fixed z-[9000] flex flex-col rounded-lg border border-border bg-surface shadow-2xl"
       style={{
         left: position.x,
         top: position.y,

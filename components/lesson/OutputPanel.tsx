@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
 interface TestResult {
   label: string;
@@ -84,25 +85,24 @@ export function OutputPanel({
 
         <div className="flex-1" />
 
-        <button
-          type="button"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onRun}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-md bg-surface px-3 py-1.5 text-xs font-medium text-primary border border-border transition hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isRunning && <Spinner />}
           Run
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
+          size="sm"
           onClick={onSubmit}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-xs font-medium text-black border border-white transition hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting && <Spinner />}
           Submit
-        </button>
+        </Button>
       </div>
 
       {/* Output content */}

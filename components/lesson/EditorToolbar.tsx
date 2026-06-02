@@ -1,6 +1,7 @@
 "use client";
 
 import type { CppStandard } from "@/lib/judge0/client";
+import { Button } from "@/components/ui/button";
 
 const STD_OPTIONS: { label: string; value: CppStandard }[] = [
   { label: "C++17", value: "c++17" },
@@ -50,26 +51,26 @@ export function EditorToolbar({
       {/* Action buttons */}
       <div className="flex items-center gap-2">
         {hasLastPassingCode && onRestorePassing && (
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onRestorePassing}
             disabled={disabled}
-            className="inline-flex items-center gap-1.5 text-xs text-secondary hover:text-primary transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <HistoryIcon className="h-3.5 w-3.5" />
             Restore passing
-          </button>
+          </Button>
         )}
 
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onReset}
           disabled={disabled}
-          className="inline-flex items-center gap-1.5 text-xs text-secondary hover:text-primary transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ResetIcon className="h-3.5 w-3.5" />
           Reset
-        </button>
+        </Button>
       </div>
     </div>
   );

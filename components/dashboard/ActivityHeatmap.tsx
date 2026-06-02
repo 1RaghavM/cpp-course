@@ -1,17 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ActivityHeatmapProps {
   activityData: Record<string, number>;
 }
 
 function getIntensityClass(count: number): string {
-  if (count === 0) return "bg-[var(--bg-elevated)]";
-  if (count === 1) return "bg-brand-bright/20";
-  if (count <= 3) return "bg-brand-bright/45";
-  return "bg-brand-bright/75";
+  if (count === 0) return "bg-muted";
+  if (count === 1) return "bg-primary/20";
+  if (count <= 3) return "bg-primary/45";
+  return "bg-primary/75";
 }
 
 function buildGrid(activityData: Record<string, number>): { date: string; count: number }[][] {
@@ -81,95 +86,84 @@ function deriveMonthLabels(
 }
 
 export function ActivityHeatmap({ activityData }: ActivityHeatmapProps) {
-  const [tooltip, setTooltip] = useState<{ date: string; count: number } | null>(null);
   const weeks = buildGrid(activityData);
   const monthLabels = deriveMonthLabels(weeks);
   const hasActivity = Object.values(activityData).some((v) => v > 0);
 
   return (
-    <GlassCard className="p-4 sm:p-5">
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-primary">Activity</h3>
-        {tooltip && (
-          <span className="text-xs text-secondary">
-            {tooltip.date}: {tooltip.count} {tooltip.count === 1 ? "action" : "actions"}
-          </span>
-        )}
-      </div>
+    <Card size="sm">
+      <CardHeader>
+        <CardTitle className="text-sm">Activity</CardTitle>
+      </CardHeader>
 
-      <div className="overflow-x-auto">
-        {/* Month labels row */}
-        <div className="mb-1 flex" style={{ paddingLeft: "28px" }}>
-          <div className="flex gap-[3px]">
-            {weeks.map((_, wi) => {
-              const monthLabel = monthLabels.find((m) => m.weekIndex === wi);
-              return (
-                <div key={wi} className="w-3 text-center">
-                  {monthLabel ? (
-                    <span className="text-[10px] leading-none text-muted">
-                      {monthLabel.label}
-                    </span>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <div className="mb-1 flex" style={{ paddingLeft: "28px" }}>
+            <div className="flex gap-[3px]">
+              {weeks.map((_, wi) => {
+                const monthLabel = monthLabels.find((m) => m.weekIndex === wi);
+                return (
+                  <div key={wi} className="w-3 text-center">
+                    {monthLabel ? (
+                      <span className="text-[10px] leading-none text-muted-foreground">
+                        {monthLabel.label}
+                      </span>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <div className="flex flex-col gap-[3px]" style={{ width: "20px" }}>
+              {[0, 1, 2, 3, 4, 5, 6].map((row) => (
+                <div key={row} className="flex h-3 items-center">
+                  {row === 0 ? (
+                    <span className="text-[10px] leading-none text-muted-foreground">Mo</span>
+                  ) : row === 2 ? (
+                    <span className="text-[10px] leading-none text-muted-foreground">We</span>
+                  ) : row === 4 ? (
+                    <span className="text-[10px] leading-none text-muted-foreground">Fr</span>
                   ) : null}
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              ))}
+            </div>
 
-        {/* Grid with weekday labels */}
-        <div className="flex gap-2">
-          {/* Weekday labels */}
-          <div className="flex flex-col gap-[3px]" style={{ width: "20px" }}>
-            {[0, 1, 2, 3, 4, 5, 6].map((row) => (
-              <div key={row} className="flex h-3 items-center">
-                {row === 0 ? (
-                  <span className="text-[10px] leading-none text-muted">Mo</span>
-                ) : row === 2 ? (
-                  <span className="text-[10px] leading-none text-muted">We</span>
-                ) : row === 4 ? (
-                  <span className="text-[10px] leading-none text-muted">Fr</span>
-                ) : null}
-              </div>
-            ))}
-          </div>
-
-          {/* Heatmap cells */}
-          <div className="flex gap-[3px]">
-            {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col gap-[3px]">
-                {week.map((day) => (
-                  <button
-                    key={day.date}
-                    type="button"
-                    className={`h-3 w-3 rounded-sm ${getIntensityClass(day.count)} transition-colors duration-fast`}
-                    onMouseEnter={() => setTooltip(day)}
-                    onFocus={() => setTooltip(day)}
-                    onMouseLeave={() => setTooltip(null)}
-                    onBlur={() => setTooltip(null)}
-                    aria-label={`${day.date}: ${day.count} actions`}
-                  />
+            <TooltipProvider>
+              <div className="flex gap-[3px]">
+                {weeks.map((week, wi) => (
+                  <div key={wi} className="flex flex-col gap-[3px]">
+                    {week.map((day) => (
+                      <Tooltip key={day.date}>
+                        <TooltipTrigger
+                          className={`h-3 w-3 rounded-sm ${getIntensityClass(day.count)} transition-colors`}
+                          aria-label={`${day.date}: ${day.count} actions`}
+                        />
+                        <TooltipContent side="top">
+                          {day.date}: {day.count} {day.count === 1 ? "action" : "actions"}
+                        </TooltipContent>
+                      </Tooltip>
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
+            </TooltipProvider>
           </div>
         </div>
-      </div>
 
-      {/* Intensity legend */}
-      <div className="mt-3 flex items-center justify-end gap-1.5">
-        <span className="text-[10px] text-muted">Less</span>
-        {[
-          "bg-[var(--bg-elevated)]",
-          "bg-brand-bright/20",
-          "bg-brand-bright/45",
-          "bg-brand-bright/75",
-        ].map((cls) => (
-          <div key={cls} className={`h-2.5 w-2.5 rounded-sm ${cls}`} />
-        ))}
-        <span className="text-[10px] text-muted">More</span>
-      </div>
+        <div className="mt-3 flex items-center justify-end gap-1.5">
+          <span className="text-[10px] text-muted-foreground">Less</span>
+          {["bg-muted", "bg-primary/20", "bg-primary/45", "bg-primary/75"].map((cls) => (
+            <div key={cls} className={`h-2.5 w-2.5 rounded-sm ${cls}`} />
+          ))}
+          <span className="text-[10px] text-muted-foreground">More</span>
+        </div>
 
-      {!hasActivity && <p className="mt-3 text-xs text-muted">Your activity will show up here.</p>}
-    </GlassCard>
+        {!hasActivity && (
+          <p className="mt-3 text-xs text-muted-foreground">Your activity will show up here.</p>
+        )}
+      </CardContent>
+    </Card>
   );
 }

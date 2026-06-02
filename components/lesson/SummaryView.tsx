@@ -37,7 +37,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
             PreTag="div"
             customStyle={{
               margin: 0,
-              fontSize: "0.8125rem",
+              fontSize: "0.9rem",
               lineHeight: "1.6",
             }}
           >
@@ -48,7 +48,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
 
       return (
         <code
-          className="rounded-md bg-elevated px-1.5 py-0.5 text-sm font-mono text-accent"
+          className="rounded-md bg-elevated px-1.5 py-0.5 text-sm font-mono text-brand-bright"
           {...rest}
         >
           {children}
@@ -58,7 +58,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
   };
 
   return (
-    <div className="prose prose-invert prose-sm max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-primary prose-p:text-secondary prose-strong:text-primary prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-li:text-secondary prose-code:before:content-none prose-code:after:content-none">
+    <div className="prose prose-invert prose-base max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-primary prose-p:text-secondary prose-strong:text-primary prose-a:text-brand-bright prose-a:no-underline hover:prose-a:underline prose-li:text-secondary prose-code:before:content-none prose-code:after:content-none">
       <ReactMarkdown components={components}>{markdown}</ReactMarkdown>
     </div>
   );

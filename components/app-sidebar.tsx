@@ -17,7 +17,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {
-  LayoutDashboardIcon,
   BookOpenIcon,
   CodeIcon,
   BarChart3Icon,
@@ -36,11 +35,6 @@ const data = {
     avatar: "",
   },
   navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: <LayoutDashboardIcon />,
-    },
     {
       title: "Lessons",
       url: "/lessons",
@@ -65,7 +59,7 @@ const data = {
     },
     {
       name: "Notes",
-      url: "/dashboard",
+      url: "/notes",
       icon: <NotebookPenIcon />,
     },
     {

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface RegenerateButtonProps {
   slug: string;
@@ -49,13 +50,14 @@ export function RegenerateButton({ slug }: RegenerateButtonProps) {
 
   return (
     <div>
-      <button
+      <Button
+        variant="outline"
+        size="sm"
         onClick={handleRegenerate}
         disabled={loading}
-        className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
       >
         {loading ? "Regenerating..." : "Regenerate this lesson"}
-      </button>
+      </Button>
       {error && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );

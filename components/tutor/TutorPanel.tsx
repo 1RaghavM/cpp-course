@@ -4,6 +4,9 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useMemo, useState } from "react";
 import { useTutorStore } from "@/lib/store/tutor-store";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, AlertTriangle } from "lucide-react";
 import MessageList from "./MessageList";
 import Composer from "./Composer";
 import QuotaIndicator from "./QuotaIndicator";
@@ -101,12 +104,9 @@ export default function TutorPanel() {
           {!isPlayground && <TierBadge tier={currentTier} />}
           <QuotaIndicator refreshKey={messages.length} />
         </div>
-        <button
-          onClick={() => void handleReset()}
-          className="rounded-md border border-border-subtle bg-transparent px-2 py-1 text-xs font-medium text-muted hover:text-primary hover:bg-elevated transition-colors"
-        >
+        <Button variant="outline" size="xs" onClick={() => void handleReset()}>
           New chat
-        </button>
+        </Button>
       </div>
 
       {/* Messages */}
@@ -114,15 +114,21 @@ export default function TutorPanel() {
 
       {/* Error display */}
       {error && !quotaExhausted && (
-        <div className="mx-4 mb-2 rounded-md bg-error/10 border border-error/20 px-3 py-2 text-xs text-error">
-          The tutor is briefly unavailable. Your editor and lessons still work.
-        </div>
+        <Alert className="mx-4 mb-2 bg-error/10 border-error/20 text-error">
+          <AlertCircle className="size-4" />
+          <AlertDescription>
+            The tutor is briefly unavailable. Your editor and lessons still work.
+          </AlertDescription>
+        </Alert>
       )}
 
       {quotaExhausted && (
-        <div className="mx-4 mb-2 rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-xs text-warning">
-          You&apos;ve reached today&apos;s message limit. Come back tomorrow!
-        </div>
+        <Alert className="mx-4 mb-2 bg-warning/10 border-warning/20 text-warning">
+          <AlertTriangle className="size-4" />
+          <AlertDescription>
+            You&apos;ve reached today&apos;s message limit. Come back tomorrow!
+          </AlertDescription>
+        </Alert>
       )}
 
       {/* Explain error shortcut */}
