@@ -33,20 +33,12 @@ export async function fetchStats(
   const sixteenWeeksAgo = new Date(now);
   sixteenWeeksAgo.setUTCDate(sixteenWeeksAgo.getUTCDate() - 112);
 
-  // Fetch conversation IDs first (needed for messages count)
-  const { data: convRows } = await supabase
-    .from("conversations")
-    .select("id")
-    .eq("user_id", userId);
-  const conversationIds = (convRows ?? []).map((c) => c.id);
-
   const [
     progressResult,
     lessonsResult,
     chaptersResult,
     submissionsResult,
     conversationsResult,
-    messagesResult,
     notesResult,
     userStatsResult,
   ] = await Promise.all([
@@ -62,15 +54,8 @@ export async function fetchStats(
     supabase.from("submissions").select("mode, status, created_at").eq("user_id", userId),
     supabase
       .from("conversations")
-      .select("id", { count: "exact", head: true })
+      .select("id", { count: "exact" })
       .eq("user_id", userId),
-    conversationIds.length > 0
-      ? supabase
-          .from("messages")
-          .select("id", { count: "exact", head: true })
-          .eq("role", "user")
-          .in("conversation_id", conversationIds)
-      : Promise.resolve({ count: 0, data: null, error: null }),
     supabase
       .from("notes")
       .select("lesson_id", { count: "exact", head: true })
@@ -82,6 +67,15 @@ export async function fetchStats(
       .eq("user_id", userId)
       .single(),
   ]);
+
+  const conversationIds = (conversationsResult.data ?? []).map((c) => c.id);
+  const messagesResult =
+    conversationIds.length > 0
+      ? await supabase
+          .from("messages")
+          .select("id", { count: "exact", head: true })
+          .in("conversation_id", conversationIds)
+      : { count: 0, data: null, error: null };
 
   const progressRows = (progressResult.data ?? []) as {
     lesson_id: string;
@@ -214,7 +208,7 @@ export async function fetchStats(
   }
 
   // --- Engagement ---
-  const tutorConversations = conversationsResult.count ?? 0;
+  const tutorConversations = conversationsResult.count ?? conversationIds.length;
   const tutorMessages = messagesResult.count ?? 0;
   const notesWritten = notesResult.count ?? 0;
 

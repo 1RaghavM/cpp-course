@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, BookOpen, StickyNote } from "lucide-react";
+import { MessageSquare, Send, StickyNote } from "lucide-react";
 
 interface EngagementStripProps {
   tutorConversations: number;
@@ -28,7 +28,7 @@ export function EngagementStrip({ tutorConversations, tutorMessages, notesWritte
       <CardContent>
         <div className="grid grid-cols-3 gap-4">
           <MiniStat icon={<MessageSquare className="h-5 w-5" />} label="Conversations" value={tutorConversations} />
-          <MiniStat icon={<BookOpen className="h-5 w-5" />} label="Messages Sent" value={tutorMessages} />
+          <MiniStat icon={<Send className="h-5 w-5" />} label="Messages Sent" value={tutorMessages} />
           <MiniStat icon={<StickyNote className="h-5 w-5" />} label="Notes Written" value={notesWritten} />
         </div>
       </CardContent>

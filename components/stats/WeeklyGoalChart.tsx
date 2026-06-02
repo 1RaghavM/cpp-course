@@ -45,7 +45,7 @@ export function WeeklyGoalChart({ activityData, weeklyGoal }: WeeklyGoalChartPro
   return (
     <Card size="sm">
       <CardHeader>
-        <CardTitle className="text-sm">Weekly Activity Trend</CardTitle>
+        <CardTitle className="text-sm">Weekly Goal Trend</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[200px] w-full">
