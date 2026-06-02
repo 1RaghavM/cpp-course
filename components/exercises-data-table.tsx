@@ -38,6 +38,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
+import {
   CircleCheckIcon,
   EllipsisVerticalIcon,
   ChevronLeftIcon,
@@ -45,7 +52,7 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   SearchIcon,
-  ChevronDownIcon,
+  CircleOffIcon,
 } from "lucide-react"
 
 export const exerciseSchema = z.object({
@@ -341,6 +348,18 @@ export function ExercisesDataTable({ groups }: { groups: ExerciseModuleGroup[] }
   const totalCount = allExercises.length
   const completedCount = allExercises.filter((e) => e.status === "Done").length
 
+  const filteredExercises = filteredGroups.flatMap((g) => g.exercises)
+  const hasVisibleExercises = React.useMemo(() => {
+    switch (statusFilter) {
+      case "completed":
+        return filteredExercises.some((e) => e.status === "Done")
+      case "not-completed":
+        return filteredExercises.some((e) => e.status !== "Done")
+      default:
+        return filteredExercises.length > 0
+    }
+  }, [statusFilter, filteredExercises])
+
   if (groups.length === 0) {
     return (
       <div className="flex h-24 items-center justify-center text-muted-foreground">
@@ -391,15 +410,41 @@ export function ExercisesDataTable({ groups }: { groups: ExerciseModuleGroup[] }
         </div>
       </div>
       {filteredGroups.length === 0 ? (
-        <div className="flex h-24 items-center justify-center text-muted-foreground">
-          No exercises match your search.
-        </div>
-      ) : (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchIcon />
+            </EmptyMedia>
+            <EmptyTitle>No exercises found</EmptyTitle>
+            <EmptyDescription>
+              No exercises match your search. Try a different query.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      ) : hasVisibleExercises ? (
         <div className="space-y-8">
           {filteredGroups.map((group) => (
             <ModuleTable key={group.module} group={group} statusFilter={statusFilter} />
           ))}
         </div>
+      ) : (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <CircleOffIcon />
+            </EmptyMedia>
+            <EmptyTitle>
+              {statusFilter === "completed"
+                ? "No completed exercises"
+                : "No incomplete exercises"}
+            </EmptyTitle>
+            <EmptyDescription>
+              {statusFilter === "completed"
+                ? "You haven't completed any exercises yet. Start solving some challenges!"
+                : "You've completed all available exercises. Nice work!"}
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       )}
     </div>
   )
