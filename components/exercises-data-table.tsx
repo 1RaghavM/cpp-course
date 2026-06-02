@@ -189,7 +189,7 @@ function ModuleTable({ group }: { group: ExerciseModuleGroup }) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-base font-semibold">{group.module}</h2>
+          <h2 className="text-base font-semibold text-foreground">{group.module}</h2>
           <span className="text-sm text-muted-foreground">
             {completedCount}/{data.length} completed
           </span>
