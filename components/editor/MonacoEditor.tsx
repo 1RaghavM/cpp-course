@@ -9,7 +9,7 @@ export interface MonacoEditorProps {
   onChange: (value: string) => void;
   language?: string;
   readOnly?: boolean;
-  exerciseId: string;
+  exerciseId?: string;
 }
 
 export interface MonacoEditorHandle {
@@ -17,11 +17,11 @@ export interface MonacoEditorHandle {
   resetToDefault: () => void;
 }
 
-function storageKey(exerciseId: string): string {
-  return `cpproad:editor:${exerciseId}`;
+function storageKey(exerciseId: string | undefined): string {
+  return `cpproad:editor:${exerciseId ?? "playground"}`;
 }
 
-function loadFromStorage(exerciseId: string): string | null {
+function loadFromStorage(exerciseId: string | undefined): string | null {
   if (typeof window === "undefined") return null;
   try {
     return localStorage.getItem(storageKey(exerciseId));
@@ -30,7 +30,7 @@ function loadFromStorage(exerciseId: string): string | null {
   }
 }
 
-function saveToStorage(exerciseId: string, value: string): void {
+function saveToStorage(exerciseId: string | undefined, value: string): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(storageKey(exerciseId), value);
