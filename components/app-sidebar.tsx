@@ -27,6 +27,7 @@ import {
   BookMarkedIcon,
   NotebookPenIcon,
   TerminalSquareIcon,
+  MapIcon,
 } from "lucide-react"
 
 const data = {
@@ -60,8 +61,8 @@ const data = {
   documents: [
     {
       name: "Curriculum",
-      url: "/lessons",
-      icon: <BookMarkedIcon />,
+      url: "/curriculum",
+      icon: <MapIcon />,
     },
     {
       name: "Notes",
