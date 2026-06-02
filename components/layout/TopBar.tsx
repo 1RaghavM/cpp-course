@@ -73,6 +73,14 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
             </Link>
           )}
 
+          <Link
+            href="/notes"
+            className="rounded-md px-2.5 py-1.5 text-xs font-medium text-secondary transition-colors hover:bg-hover hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            aria-label="View notes"
+          >
+            Notes
+          </Link>
+
           <div className="relative" ref={menuRef}>
             <button
               type="button"
