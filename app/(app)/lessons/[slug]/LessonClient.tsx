@@ -310,26 +310,24 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
         {/* Lesson Panel */}
         <ResizablePanel defaultSize={tutorOpen ? "40" : "50"} minSize="20" maxSize="80">
           <div className="flex flex-col h-full bg-surface border-r border-border">
-            {/* Header */}
-            <div className="px-4 py-4 border-b border-border">
-              <div className="flex items-center gap-3">
-                {!exerciseOnly && (
+            {/* Header — hidden in exerciseOnly mode */}
+            {!exerciseOnly && (
+              <div className="px-4 py-4 border-b border-border">
+                <div className="flex items-center gap-3">
                   <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
                     {lesson.number}
                   </span>
-                )}
-                <div>
-                  <h1 className="text-lg font-semibold text-primary">
-                    {exerciseOnly && activeExercise ? activeExercise.title : lesson.title}
-                  </h1>
-                  {!exerciseOnly && exercises.length > 0 && activeExercise && (
-                    <p className="text-xs text-muted mt-0.5">
-                      {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
-                    </p>
-                  )}
+                  <div>
+                    <h1 className="text-lg font-semibold text-primary">{lesson.title}</h1>
+                    {exercises.length > 0 && activeExercise && (
+                      <p className="text-xs text-muted mt-0.5">
+                        {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Content Tabs */}
             <Tabs defaultValue={exerciseOnly ? "challenge" : "lesson"} className="flex-1 flex flex-col min-h-0">
