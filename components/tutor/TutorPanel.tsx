@@ -12,14 +12,18 @@ import TierBadge from "./TierBadge";
 import { TutorCoachmark } from "./TutorCoachmark";
 
 export default function TutorPanel() {
-  const { lessonId, code, lastSubmissionId, lastSubmissionStatus } = useTutorStore();
+  const { lessonId, context, code, lastSubmissionId, lastSubmissionStatus } = useTutorStore();
+  const isPlayground = context === "playground";
   const [currentTier, setCurrentTier] = useState(1);
   const [quotaExhausted, setQuotaExhausted] = useState(false);
   const [input, setInput] = useState("");
 
   const bodyRef = useMemo(
-    () => ({ lessonId, code, lastSubmissionToken: lastSubmissionId }),
-    [lessonId, code, lastSubmissionId],
+    () =>
+      isPlayground
+        ? { context: "playground" as const, code }
+        : { lessonId, code, lastSubmissionToken: lastSubmissionId },
+    [isPlayground, lessonId, code, lastSubmissionId],
   );
 
   const transport = useMemo(
@@ -66,22 +70,20 @@ export default function TutorPanel() {
   }, [sendMessage]);
 
   const handleReset = useCallback(async () => {
-    if (
-      !window.confirm(
-        "Start a new conversation for this lesson? The current conversation will be archived.",
-      )
-    )
-      return;
+    const msg = isPlayground
+      ? "Start a new playground conversation? The current one will be archived."
+      : "Start a new conversation for this lesson? The current conversation will be archived.";
+    if (!window.confirm(msg)) return;
     const res = await fetch("/api/chat/reset", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lessonId }),
+      body: JSON.stringify(isPlayground ? { context: "playground" } : { lessonId }),
     });
     if (!res.ok) return;
     setMessages([]);
     setCurrentTier(1);
     setQuotaExhausted(false);
-  }, [lessonId, setMessages]);
+  }, [isPlayground, lessonId, setMessages]);
 
   const showExplainError =
     lastSubmissionStatus !== null &&
@@ -96,7 +98,7 @@ export default function TutorPanel() {
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-primary">Tutor</span>
-          <TierBadge tier={currentTier} />
+          {!isPlayground && <TierBadge tier={currentTier} />}
           <QuotaIndicator refreshKey={messages.length} />
         </div>
         <button
