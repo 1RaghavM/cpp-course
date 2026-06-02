@@ -139,7 +139,7 @@ export function useTypingAnimation() {
           case "pause1": {
             phase = "deleting";
             idx = 0;
-            tick();
+            schedule(tick, 0);
             break;
           }
 
@@ -147,7 +147,7 @@ export function useTypingAnimation() {
             if (idx >= EDIT_SEARCH.length) {
               phase = "typing_edit";
               idx = 0;
-              tick();
+              schedule(tick, 0);
               return;
             }
             idx++;
