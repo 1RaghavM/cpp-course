@@ -44,11 +44,8 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
   return (
     <header className="border-b border-border/50">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-6 px-6">
-        <Link href="/dashboard" className="flex items-center gap-0">
-          <span className="font-mono text-lg font-semibold tracking-tight text-primary">
-            cpproad
-          </span>
-          <span className="ml-1.5 text-xs text-muted">&middot; C++ path</span>
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <img src="/fulllogo-Photoroom.png" alt="cpproad" className="h-10 w-auto" />
         </Link>
 
         <div className="ml-auto flex items-center gap-3">
@@ -90,6 +87,13 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
               <div className="absolute right-0 top-full mt-2 w-56 rounded-lg border border-border bg-surface py-2 shadow-lg">
                 <p className="truncate px-3 py-1.5 text-xs text-muted">{userEmail}</p>
                 <hr className="my-1 border-border" />
+                <Link
+                  href="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className="block w-full px-3 py-1.5 text-left text-xs text-secondary transition-colors hover:bg-hover hover:text-primary"
+                >
+                  Profile
+                </Link>
                 <button
                   type="button"
                   onClick={handleSignOut}
