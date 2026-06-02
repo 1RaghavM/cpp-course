@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useCallback, useMemo, useState } from "react";
+import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -19,7 +20,6 @@ export default function TutorPanel() {
   const isPlayground = context === "playground";
   const [currentTier, setCurrentTier] = useState(1);
   const [quotaExhausted, setQuotaExhausted] = useState(false);
-  const [input, setInput] = useState("");
 
   const bodyRef = useMemo(
     () =>
@@ -59,12 +59,14 @@ export default function TutorPanel() {
     Math.max(1, userTurnCount >= 7 ? 4 : userTurnCount >= 5 ? 3 : userTurnCount >= 3 ? 2 : 1),
   );
 
-  const handleSend = useCallback(() => {
-    if (!input.trim() || isStreaming) return;
-    setCurrentTier(displayTier);
-    void sendMessage({ text: input });
-    setInput("");
-  }, [input, isStreaming, sendMessage, displayTier]);
+  const handleSend = useCallback(
+    (message: PromptInputMessage) => {
+      if (!message.text.trim() || isStreaming) return;
+      setCurrentTier(displayTier);
+      void sendMessage({ text: message.text });
+    },
+    [isStreaming, sendMessage, displayTier],
+  );
 
   const handleExplainError = useCallback(() => {
     void sendMessage({
@@ -88,6 +90,28 @@ export default function TutorPanel() {
     setQuotaExhausted(false);
   }, [isPlayground, lessonId, setMessages]);
 
+  const LESSON_SUGGESTIONS = [
+    "Summarize this lesson for me",
+    "What are the key concepts here?",
+    "Give me a practice problem",
+  ];
+
+  const PLAYGROUND_SUGGESTIONS = [
+    "Explain what my code does",
+    "How can I improve this code?",
+    "Help me fix a bug",
+  ];
+
+  const suggestions = isPlayground ? PLAYGROUND_SUGGESTIONS : LESSON_SUGGESTIONS;
+
+  const handleSuggestionClick = useCallback(
+    (suggestion: string) => {
+      if (isStreaming) return;
+      void sendMessage({ text: suggestion });
+    },
+    [isStreaming, sendMessage],
+  );
+
   const showExplainError =
     lastSubmissionStatus !== null &&
     lastSubmissionStatus !== "accepted" &&
@@ -110,7 +134,12 @@ export default function TutorPanel() {
       </div>
 
       {/* Messages */}
-      <MessageList messages={messages} isStreaming={isStreaming} />
+      <MessageList
+        messages={messages}
+        status={status}
+        suggestions={suggestions}
+        onSuggestionClick={handleSuggestionClick}
+      />
 
       {/* Error display */}
       {error && !quotaExhausted && (
@@ -136,11 +165,9 @@ export default function TutorPanel() {
 
       {/* Input */}
       <Composer
-        input={input}
-        onInputChange={setInput}
         onSubmit={handleSend}
         onStop={stop}
-        isStreaming={isStreaming}
+        status={status}
         disabled={quotaExhausted}
       />
     </div>

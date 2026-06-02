@@ -12,6 +12,16 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), { ssr: false });
 const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
@@ -96,10 +106,12 @@ export default function PlaygroundClient({ savedState }: Props) {
   const setStoreContext = useTutorStore((s) => s.setContext);
   const tutorOpen = useTutorStore((s) => s.tutorOpen);
   const toggleTutor = useTutorStore((s) => s.toggleTutor);
+  const setTutorOpen = useTutorStore((s) => s.setTutorOpen);
 
   useEffect(() => {
     setStoreContext("playground");
-    if (!tutorOpen) toggleTutor();
+    setStoreCode(initialCode);
+    setTutorOpen(true);
     return () => setStoreContext("lesson");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setStoreContext]);
@@ -172,12 +184,18 @@ export default function PlaygroundClient({ savedState }: Props) {
     }
   }, [code, stdin, languageStd, isRunning, isMobile]);
 
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+
   const handleReset = useCallback(() => {
-    if (!window.confirm("Reset to default code? Your changes will be lost.")) return;
+    setResetDialogOpen(true);
+  }, []);
+
+  const confirmReset = useCallback(() => {
     editorRef.current?.resetToDefault();
     setStdin("");
     setResult(null);
     setError(null);
+    setResetDialogOpen(false);
   }, []);
 
   const handleCodeChange = useCallback(
@@ -203,6 +221,25 @@ export default function PlaygroundClient({ savedState }: Props) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleRun]);
+
+  const resetDialog = (
+    <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Reset to default code?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Your current changes will be lost. This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={confirmReset}>
+            Reset
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 
   if (isMobile) {
     return (
@@ -294,6 +331,7 @@ export default function PlaygroundClient({ savedState }: Props) {
             </button>
           ))}
         </div>
+        {resetDialog}
       </div>
     );
   }
@@ -463,6 +501,7 @@ export default function PlaygroundClient({ savedState }: Props) {
           </>
         )}
       </ResizablePanelGroup>
+      {resetDialog}
     </div>
   );
 }

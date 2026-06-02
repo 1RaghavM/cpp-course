@@ -1,13 +1,16 @@
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SiteHeader } from "@/components/site-header"
+import { PageTransition } from "@/components/dashboard/PageTransition"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { requireServerSession } from "@/lib/auth/require-auth"
 import { createServiceClient } from "@/lib/supabase/server"
-import { buildCurriculum, flattenLessons } from "@/lib/dashboard/curriculum"
-import { computeStreakDays, computeWeeklyCompleted } from "@/lib/dashboard/resume"
+import { buildCurriculum } from "@/lib/dashboard/curriculum"
+import { computeResumeTarget, computeStreakDays, computeWeeklyCompleted } from "@/lib/dashboard/resume"
+import type { LessonStatus, DashboardProgress } from "@/lib/dashboard/types"
 
 export const dynamic = "force-dynamic"
 
-export default async function Page() {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { supabase } = await requireServerSession()
   const serviceClient = createServiceClient()
   const today = new Date().toISOString().slice(0, 10)
@@ -52,18 +55,9 @@ export default async function Page() {
   } | null
 
   const curriculum = buildCurriculum(dbLessons)
-  const allLessons = flattenLessons(curriculum)
-
-  const lessonProgress: Record<string, string> = {}
-  for (const row of progressRows) {
-    lessonProgress[row.lesson_id] = row.state
-  }
 
   const totalCompleted = progressRows.filter(
     (r) => r.state === "completed" || r.state === "skipped"
-  ).length
-  const inProgressCount = progressRows.filter(
-    (r) => r.state === "in_progress"
   ).length
 
   const weeklyRecords = progressRows
@@ -81,37 +75,48 @@ export default async function Page() {
   const lessonsCompletedThisWeek = computeWeeklyCompleted(weeklyRecords, today)
   const weeklyGoal = statsError ? null : (userStats?.weekly_goal ?? null)
 
-  const tableData = allLessons.map((lesson, idx) => {
-    const state = lessonProgress[lesson.id]
-    const mod = curriculum.find((m) => m.id === lesson.moduleId)
-    const status =
-      state === "completed" || state === "skipped"
-        ? "Done"
-        : state === "in_progress"
-          ? "In Progress"
-          : "Not Started"
-
-    return {
-      id: idx + 1,
-      header: lesson.title,
-      type: mod?.title ?? "",
-      status,
-      slug: lesson.slug,
-      lessonId: lesson.id,
+  let lastActiveLessonId: string | null = null
+  let latestTime = ""
+  for (const row of progressRows) {
+    if (row.state === "in_progress" && row.last_visit_at && row.last_visit_at > latestTime) {
+      latestTime = row.last_visit_at
+      lastActiveLessonId = row.lesson_id
     }
-  })
+  }
+
+  const resumeProgress: DashboardProgress = {
+    lessonProgress: Object.fromEntries(
+      progressRows.map((r) => [
+        r.lesson_id,
+        { status: r.state as LessonStatus, lastVisitAt: r.last_visit_at ?? "" },
+      ])
+    ),
+    streakDays,
+    lastActiveDate: userStats?.last_active_date ?? null,
+    weeklyGoal,
+    totalLessonsCompleted: totalCompleted,
+    lessonsCompletedThisWeek,
+  }
+  const resumeTarget = computeResumeTarget(curriculum, resumeProgress, lastActiveLessonId)
 
   return (
-    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <SectionCards
-        totalLessons={allLessons.length}
-        totalCompleted={totalCompleted}
-        inProgressCount={inProgressCount}
-        streakDays={streakDays}
-        lessonsCompletedThisWeek={lessonsCompletedThisWeek}
-        weeklyGoal={weeklyGoal}
-      />
-      <DataTable data={tableData} />
-    </div>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" resumeLessonSlug={resumeTarget.slug} />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <PageTransition>{children}</PageTransition>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

@@ -18,6 +18,16 @@ import {
 } from "@/components/ui/resizable";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
 
@@ -114,8 +124,13 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
 
   const activeExercise = exercises[activeExerciseIndex];
 
+  const setTutorOpen = useTutorStore((s) => s.setTutorOpen);
+
   useEffect(() => {
     setStoreLessonId(lesson.id);
+    setStoreCode(exercises[activeExerciseIndex]?.starterCode ?? "");
+    setTutorOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id, setStoreLessonId]);
 
   useEffect(() => {
@@ -174,10 +189,12 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
         } catch {
           // localStorage unavailable
         }
-        setCode(savedCode ?? newExercise.starterCode);
+        const newCode = savedCode ?? newExercise.starterCode;
+        setCode(newCode);
+        setStoreCode(newCode);
       }
     },
-    [activeExerciseIndex, activeExercise, exercises, code],
+    [activeExerciseIndex, activeExercise, exercises, code, setStoreCode],
   );
 
   const handleSubmit = useCallback(
@@ -228,25 +245,35 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
     [code, activeExercise, languageStd, isRunning, isSubmitting, setStoreSubmission],
   );
 
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [restoreDialogOpen, setRestoreDialogOpen] = useState(false);
+
   const handleReset = useCallback(() => {
     if (!activeExercise) return;
-    if (!window.confirm("Reset to starter code? Your changes will be lost.")) return;
+    setResetDialogOpen(true);
+  }, [activeExercise]);
+
+  const confirmReset = useCallback(() => {
     editorRef.current?.resetToDefault();
     setResult(null);
     setError(null);
-  }, [activeExercise]);
+    setResetDialogOpen(false);
+  }, []);
 
   const handleRestorePassingSub = useCallback(() => {
     if (!activeExercise?.lastPassingCode) return;
-    if (!window.confirm("Restore your last passing submission? Current changes will be lost."))
-      return;
+    setRestoreDialogOpen(true);
+  }, [activeExercise]);
 
+  const confirmRestore = useCallback(() => {
+    if (!activeExercise?.lastPassingCode) return;
     setCode(activeExercise.lastPassingCode);
     try {
       localStorage.setItem(`cpproad:editor:${activeExercise.id}`, activeExercise.lastPassingCode);
     } catch {
       // localStorage unavailable
     }
+    setRestoreDialogOpen(false);
     window.location.reload();
   }, [activeExercise]);
 
@@ -482,6 +509,40 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
       {notepadOpen && !isMobile && (
         <FloatingNotepad lessonId={lesson.id} onClose={() => setNotepadOpen(false)} />
       )}
+
+      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Reset to starter code?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your current changes will be lost. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={confirmReset}>
+              Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={restoreDialogOpen} onOpenChange={setRestoreDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Restore last passing submission?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your current changes will be replaced with your last passing code. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRestore}>
+              Restore
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -637,7 +698,7 @@ function LessonNav({
             onClick={onToggleNotepad}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               notepadOpen
-                ? "bg-accent/15 text-accent"
+                ? "bg-brand-bright/15 text-brand-bright"
                 : "text-secondary hover:text-primary hover:bg-hover"
             }`}
             title={notepadOpen ? "Hide notes" : "Show notes"}
@@ -657,7 +718,7 @@ function LessonNav({
             onClick={onToggleTutor}
             className={
               tutorOpen
-                ? "bg-accent/15 text-accent hover:bg-accent/25"
+                ? "bg-brand-bright/15 text-brand-bright hover:bg-brand-bright/25"
                 : "text-secondary"
             }
             title={tutorOpen ? "Hide tutor" : "Show tutor"}

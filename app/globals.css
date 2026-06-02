@@ -69,6 +69,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-heatmap-zero: var(--heatmap-zero);
 }
 
 :root {
@@ -140,6 +141,7 @@
   --dur-med: 320ms;
   --dur-slow: 560ms;
   --stagger: 70ms;
+  --heatmap-zero: rgb(221, 221, 221);
 }
 
 /* design.md dark theme — mapped to shadcn variables */
@@ -175,6 +177,7 @@
   --sidebar-accent-foreground: #ededed;
   --sidebar-border: #23262d;
   --sidebar-ring: #2f81f7;
+  --heatmap-zero: rgb(51, 51, 51);
 }
 
 body {

@@ -95,7 +95,7 @@ export function NavUser({
               </div>
               <Separator className="my-1" />
               <Link
-                href="/profile"
+                href="/dashboard/profile"
                 onClick={() => setMenuOpen(false)}
                 className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
               >

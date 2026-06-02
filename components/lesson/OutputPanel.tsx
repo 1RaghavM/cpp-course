@@ -1,7 +1,22 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  TestResults,
+  TestResultsHeader,
+  TestResultsSummary as TestResultsSummaryBar,
+  TestResultsDuration,
+  TestResultsProgress,
+  TestResultsContent,
+  TestSuite,
+  TestSuiteName,
+  TestSuiteContent,
+  Test,
+  TestError,
+  TestErrorMessage,
+  TestErrorStack,
+} from "@/components/ai-elements/test-results";
 
 interface TestResult {
   label: string;
@@ -46,6 +61,27 @@ function statusBadgeColor(status: string): string {
       return "bg-error/20 text-error";
     default:
       return "bg-muted/20 text-muted";
+  }
+}
+
+function toTestStatus(tr: TestResult): "passed" | "failed" {
+  return tr.passed ? "passed" : "failed";
+}
+
+function statusLabel(status: string): string {
+  switch (status) {
+    case "wrong_answer":
+      return "Wrong Answer";
+    case "compile_error":
+      return "Compile Error";
+    case "runtime_error":
+      return "Runtime Error";
+    case "tle":
+      return "Time Limit Exceeded";
+    case "error":
+      return "Execution Error";
+    default:
+      return status.replace(/_/g, " ");
   }
 }
 
@@ -154,11 +190,10 @@ export function OutputPanel({
 
             {/* Test results (for submit mode) */}
             {result.testResults && result.testResults.length > 0 && (
-              <div className="space-y-3">
-                {result.testResults.map((tr) => (
-                  <TestResultCard key={tr.label} result={tr} />
-                ))}
-              </div>
+              <SubmissionTestResults
+                testResults={result.testResults}
+                wallTimeMs={result.wallTimeMs}
+              />
             )}
           </div>
         )}
@@ -207,76 +242,59 @@ function OutputSection({ title, variant, children }: OutputSectionProps) {
   );
 }
 
-interface TestResultCardProps {
-  result: TestResult;
-}
+function SubmissionTestResults({
+  testResults,
+  wallTimeMs,
+}: {
+  testResults: TestResult[];
+  wallTimeMs: number;
+}) {
+  const summary = useMemo(() => {
+    const passed = testResults.filter((t) => t.passed).length;
+    const failed = testResults.length - passed;
+    return {
+      passed,
+      failed,
+      skipped: 0,
+      total: testResults.length,
+      duration: wallTimeMs > 0 ? wallTimeMs : undefined,
+    };
+  }, [testResults, wallTimeMs]);
 
-function TestResultCard({ result }: TestResultCardProps) {
-  const passed = result.passed;
+  const suiteStatus = summary.failed > 0 ? "failed" : "passed";
 
   return (
-    <div
-      className={`rounded-lg border p-4 ${
-        passed ? "border-success/30 bg-success/5" : "border-error/30 bg-error/5"
-      }`}
-    >
-      {/* Test header */}
-      <div className="flex items-center gap-2 mb-3">
-        <span className={passed ? "text-success" : "text-error"}>
-          {passed ? <CheckIcon className="h-4 w-4" /> : <XIcon className="h-4 w-4" />}
-        </span>
-        <span className="font-medium text-sm text-primary">{result.label}</span>
-      </div>
-
-      {/* Output comparison */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <div className="text-xs font-medium text-secondary mb-2">Your Output</div>
-          <div
-            className={`rounded-md p-3 font-mono text-xs whitespace-pre-wrap border-l-2 ${
-              passed ? "bg-success/10 border-success" : "bg-surface border-error"
-            }`}
-          >
-            {result.actual || <span className="text-muted italic">(empty)</span>}
-          </div>
-        </div>
-        <div>
-          <div className="text-xs font-medium text-secondary mb-2">Expected Output</div>
-          <div className="rounded-md bg-surface border-l-2 border-success p-3 font-mono text-xs whitespace-pre-wrap">
-            {result.expected || <span className="text-muted italic">(empty)</span>}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      className={className}
-    >
-      <path
-        fillRule="evenodd"
-        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
-
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      className={className}
-    >
-      <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-    </svg>
+    <TestResults summary={summary}>
+      <TestResultsHeader>
+        <TestResultsSummaryBar />
+        <TestResultsDuration />
+      </TestResultsHeader>
+      <TestResultsProgress className="px-4 pt-3" />
+      <TestResultsContent>
+        <TestSuite name="Challenge Tests" status={suiteStatus} defaultOpen>
+          <TestSuiteName />
+          <TestSuiteContent>
+            {testResults.map((tr) => (
+              <div key={tr.label}>
+                <Test name={tr.label} status={toTestStatus(tr)} />
+                {!tr.passed && (
+                  <div className="px-4 pb-3">
+                    <TestError>
+                      <TestErrorMessage>
+                        {statusLabel(tr.status)}
+                      </TestErrorMessage>
+                      <TestErrorStack>
+{`Expected: ${tr.expected || "(empty)"}
+  Actual: ${tr.actual || "(empty)"}`}
+                      </TestErrorStack>
+                    </TestError>
+                  </div>
+                )}
+              </div>
+            ))}
+          </TestSuiteContent>
+        </TestSuite>
+      </TestResultsContent>
+    </TestResults>
   );
 }

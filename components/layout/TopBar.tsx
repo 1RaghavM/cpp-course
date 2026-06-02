@@ -96,7 +96,7 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
                 <p className="truncate px-3 py-1.5 text-xs text-muted">{userEmail}</p>
                 <hr className="my-1 border-border" />
                 <Link
-                  href="/profile"
+                  href="/dashboard/profile"
                   onClick={() => setMenuOpen(false)}
                   className="block w-full px-3 py-1.5 text-left text-xs text-secondary transition-colors hover:bg-hover hover:text-primary"
                 >

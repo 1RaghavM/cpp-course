@@ -37,7 +37,7 @@ const data = {
   navMain: [
     {
       title: "Lessons",
-      url: "/lessons",
+      url: "/dashboard",
       icon: <BookOpenIcon />,
     },
     {
@@ -47,19 +47,19 @@ const data = {
     },
     {
       title: "Stats",
-      url: "/stats",
+      url: "/dashboard/stats",
       icon: <BarChart3Icon />,
     },
   ],
   documents: [
     {
       name: "Curriculum",
-      url: "/curriculum",
+      url: "/dashboard/curriculum",
       icon: <MapIcon />,
     },
     {
       name: "Notes",
-      url: "/notes",
+      url: "/dashboard/notes",
       icon: <NotebookPenIcon />,
     },
     {
@@ -87,7 +87,10 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  resumeLessonSlug,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { resumeLessonSlug?: string | null }) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -103,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain} resumeLessonSlug={resumeLessonSlug ?? null} />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

@@ -14,6 +14,7 @@ interface TutorStore {
   setCode: (code: string) => void;
   setSubmissionResult: (id: string, status: string) => void;
   toggleTutor: () => void;
+  setTutorOpen: (open: boolean) => void;
 }
 
 export const useTutorStore = create<TutorStore>((set) => ({
@@ -28,4 +29,5 @@ export const useTutorStore = create<TutorStore>((set) => ({
   setCode: (code) => set({ code }),
   setSubmissionResult: (id, status) => set({ lastSubmissionId: id, lastSubmissionStatus: status }),
   toggleTutor: () => set((s) => ({ tutorOpen: !s.tutorOpen })),
+  setTutorOpen: (open) => set({ tutorOpen: open }),
 }));
