@@ -92,9 +92,7 @@ export function ProfilePage({
   const reducedMotion = useReducedMotion();
 
   const [displayName, setDisplayName] = useState(initialDisplayName ?? "");
-  const [weeklyGoal, setWeeklyGoal] = useState<string>(
-    initialWeeklyGoal?.toString() ?? "",
-  );
+  const [weeklyGoal, setWeeklyGoal] = useState<string>(initialWeeklyGoal?.toString() ?? "");
   const [savingName, setSavingName] = useState(false);
   const [savingGoal, setSavingGoal] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -164,11 +162,15 @@ export function ProfilePage({
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+          transition: {
+            duration: 0.32,
+            ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+          },
         },
       };
 
-  const completionPercent = totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
+  const completionPercent =
+    totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0;
   const weeklyPercent =
     initialWeeklyGoal && initialWeeklyGoal > 0
       ? Math.min(100, Math.round((lessonsCompletedThisWeek / initialWeeklyGoal) * 100))
@@ -187,9 +189,7 @@ export function ProfilePage({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/dashboard">Dashboard</Link>
-                </BreadcrumbLink>
+                <BreadcrumbLink render={<Link href="/dashboard" />}>Dashboard</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
@@ -247,7 +247,7 @@ export function ProfilePage({
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="weekly-goal">Weekly goal</Label>
-                <Select value={weeklyGoal} onValueChange={setWeeklyGoal}>
+                <Select value={weeklyGoal} onValueChange={(val) => setWeeklyGoal(val ?? "")}>
                   <SelectTrigger id="weekly-goal" className="w-full sm:w-[240px]">
                     <SelectValue placeholder="Select a goal" />
                   </SelectTrigger>
@@ -301,10 +301,16 @@ export function ProfilePage({
                 <div className="space-y-1">
                   <Label className="text-muted-foreground">Streak</Label>
                   <div className="flex items-center gap-1.5">
-                    <svg className="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                    <svg
+                      className="h-4 w-4 text-orange-500"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
                       <path d="M12 23c-3.866 0-7-3.134-7-7 0-2.692 1.475-5.598 3.434-8.12a.75.75 0 011.232.028C11.01 9.817 12 11.7 12 11.7s2.25-3.6 3.75-5.4a.75.75 0 011.248.06C18.664 9.1 19 12.05 19 16c0 3.866-3.134 7-7 7z" />
                     </svg>
-                    <span className="text-2xl font-bold tabular-nums text-primary">{streakDays}</span>
+                    <span className="text-2xl font-bold tabular-nums text-primary">
+                      {streakDays}
+                    </span>
                     <span className="text-sm text-muted-foreground">days</span>
                   </div>
                 </div>
@@ -313,7 +319,10 @@ export function ProfilePage({
                   <Label className="text-muted-foreground">Total completed</Label>
                   <p className="text-2xl font-bold tabular-nums text-primary">
                     {totalCompleted}
-                    <span className="text-sm font-normal text-muted-foreground"> / {totalLessons}</span>
+                    <span className="text-sm font-normal text-muted-foreground">
+                      {" "}
+                      / {totalLessons}
+                    </span>
                   </p>
                   <Progress value={completionPercent} className="h-2" />
                 </div>
@@ -342,8 +351,8 @@ export function ProfilePage({
               <CardDescription>Change your account password</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild>
-                <Link href="/update-password">Change password</Link>
+              <Button variant="outline" render={<Link href="/update-password" />}>
+                Change password
               </Button>
             </CardContent>
             <Separator className="mx-6" />
@@ -355,10 +364,8 @@ export function ProfilePage({
             </CardHeader>
             <CardContent>
               <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" disabled={deleting}>
-                    {deleting ? "Deleting..." : "Delete account"}
-                  </Button>
+                <AlertDialogTrigger render={<Button variant="destructive" disabled={deleting} />}>
+                  {deleting ? "Deleting..." : "Delete account"}
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

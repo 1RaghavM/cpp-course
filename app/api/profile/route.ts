@@ -48,14 +48,15 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Invalid profile update" }, { status: 400 });
   }
 
-  const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  const updates: {
+    updated_at: string;
+    display_name?: string | null;
+    weekly_goal?: number | null;
+  } = { updated_at: new Date().toISOString() };
   if ("displayName" in body) updates.display_name = body.displayName?.trim() || null;
   if ("weeklyGoal" in body) updates.weekly_goal = body.weeklyGoal;
 
-  const { error } = await supabase
-    .from("user_stats")
-    .update(updates)
-    .eq("user_id", userId);
+  const { error } = await supabase.from("user_stats").update(updates).eq("user_id", userId);
 
   if (error) {
     console.error("Failed to update profile:", error);

@@ -19,10 +19,7 @@ export async function DELETE() {
 
   if (convos && convos.length > 0) {
     const convoIds = convos.map((c) => c.id);
-    const { error } = await serviceClient
-      .from("messages")
-      .delete()
-      .in("conversation_id", convoIds);
+    const { error } = await serviceClient.from("messages").delete().in("conversation_id", convoIds);
 
     if (error) {
       console.error("Failed to delete messages:", error);
