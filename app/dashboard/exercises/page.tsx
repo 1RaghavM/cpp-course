@@ -1,4 +1,4 @@
-import { ExercisesDataTable } from "@/components/exercises-data-table"
+import { ExercisesDataTable, type ExerciseModuleGroup } from "@/components/exercises-data-table"
 import { requireServerSession } from "@/lib/auth/require-auth"
 import { createServiceClient } from "@/lib/supabase/server"
 import { CURRICULUM } from "@/lib/dashboard/curriculum"
@@ -36,30 +36,43 @@ export default async function ExercisesPage() {
   const completedIds = new Set<string>(submissions.map((s) => s.exercise_id))
 
   const chapterToModule = new Map<number, string>()
+  const moduleOrder = new Map<string, number>()
   for (const mod of CURRICULUM) {
+    moduleOrder.set(mod.title, mod.order)
     for (const chId of mod.chapterIds) {
       chapterToModule.set(chId, mod.title)
     }
   }
 
-  const tableData = exercises.map((ex, idx) => {
-    const chapterId = ex.lessons?.chapter_id
-    const moduleName = chapterId != null ? (chapterToModule.get(chapterId) ?? "") : ""
-    const status = completedIds.has(ex.id) ? "Done" : "Not Completed"
+  const grouped = new Map<string, ExerciseModuleGroup>()
+  let counter = 0
 
-    return {
-      id: idx + 1,
-      exerciseId: ex.id,
-      header: ex.title,
-      module: moduleName,
-      difficulty: ex.difficulty,
-      status,
+  for (const ex of exercises) {
+    const chapterId = ex.lessons?.chapter_id
+    const moduleName = chapterId != null ? (chapterToModule.get(chapterId) ?? "Other") : "Other"
+
+    if (!grouped.has(moduleName)) {
+      grouped.set(moduleName, { module: moduleName, exercises: [] })
     }
-  })
+
+    counter++
+    grouped.get(moduleName)!.exercises.push({
+      id: counter,
+      exerciseId: ex.id,
+      lessonId: ex.lesson_id,
+      header: ex.title,
+      difficulty: ex.difficulty,
+      status: completedIds.has(ex.id) ? "Done" : "Not Completed",
+    })
+  }
+
+  const groups = [...grouped.values()].sort(
+    (a, b) => (moduleOrder.get(a.module) ?? 99) - (moduleOrder.get(b.module) ?? 99)
+  )
 
   return (
-    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <ExercisesDataTable data={tableData} />
+    <div className="flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6">
+      <ExercisesDataTable groups={groups} />
     </div>
   )
 }
