@@ -94,21 +94,33 @@ export default async function ExercisePage({ params }: Props) {
   const exerciseIndex = exercises.findIndex((ex) => ex.id === id);
   const targetIndex = exerciseIndex >= 0 ? exerciseIndex : 0;
 
-  const { data: chapter } = await serviceClient
-    .from("chapters")
-    .select("id, learncpp_title, my_title")
-    .eq("id", lessonRow.chapter_id)
-    .single();
+  const [{ data: chapter }, { data: chapterLessons }] = await Promise.all([
+    serviceClient
+      .from("chapters")
+      .select("id, learncpp_title, my_title")
+      .eq("id", lessonRow.chapter_id)
+      .single(),
+    serviceClient
+      .from("lessons")
+      .select("slug, sort_order")
+      .eq("chapter_id", lessonRow.chapter_id)
+      .order("sort_order", { ascending: true }),
+  ]);
 
-  const navInfo = chapter
-    ? {
-        chapter: { title: chapter.my_title ?? chapter.learncpp_title },
-        currentIndex: 0,
-        totalInChapter: 0,
-        prevSlug: null,
-        nextSlug: null,
-      }
-    : null;
+  let navInfo = null;
+  if (chapter && chapterLessons) {
+    const currentIdx = chapterLessons.findIndex((l) => l.slug === lessonRow.slug);
+    navInfo = {
+      chapter: { title: chapter.my_title ?? chapter.learncpp_title },
+      currentIndex: currentIdx + 1,
+      totalInChapter: chapterLessons.length,
+      prevSlug: currentIdx > 0 ? (chapterLessons[currentIdx - 1]?.slug ?? null) : null,
+      nextSlug:
+        currentIdx < chapterLessons.length - 1
+          ? (chapterLessons[currentIdx + 1]?.slug ?? null)
+          : null,
+    };
+  }
 
   const title = lesson.my_title ?? lesson.learncpp_title;
 

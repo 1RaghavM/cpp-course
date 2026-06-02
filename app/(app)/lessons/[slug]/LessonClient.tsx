@@ -698,35 +698,31 @@ function LessonNav({
         <MenuIcon />
       </Link>
 
-      {!exerciseOnly && (
-        <>
-          <Link
-            href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}
-            className={`p-1.5 rounded-md transition-colors ${
-              nav.prevSlug
-                ? "hover:bg-hover text-secondary hover:text-primary"
-                : "text-muted cursor-not-allowed"
-            }`}
-            aria-disabled={!nav.prevSlug}
-            onClick={(e) => !nav.prevSlug && e.preventDefault()}
-          >
-            <ChevronLeftIcon />
-          </Link>
+      <Link
+        href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}
+        className={`p-1.5 rounded-md transition-colors ${
+          nav.prevSlug
+            ? "hover:bg-hover text-secondary hover:text-primary"
+            : "text-muted cursor-not-allowed"
+        }`}
+        aria-disabled={!nav.prevSlug}
+        onClick={(e) => !nav.prevSlug && e.preventDefault()}
+      >
+        <ChevronLeftIcon />
+      </Link>
 
-          <Link
-            href={nav.nextSlug ? `/lessons/${nav.nextSlug}` : "#"}
-            className={`p-1.5 rounded-md transition-colors ${
-              nav.nextSlug
-                ? "hover:bg-hover text-secondary hover:text-primary"
-                : "text-muted cursor-not-allowed"
-            }`}
-            aria-disabled={!nav.nextSlug}
-            onClick={handleNextClick}
-          >
-            <ChevronRightIcon />
-          </Link>
-        </>
-      )}
+      <Link
+        href={nav.nextSlug ? `/lessons/${nav.nextSlug}` : "#"}
+        className={`p-1.5 rounded-md transition-colors ${
+          nav.nextSlug
+            ? "hover:bg-hover text-secondary hover:text-primary"
+            : "text-muted cursor-not-allowed"
+        }`}
+        aria-disabled={!nav.nextSlug}
+        onClick={handleNextClick}
+      >
+        <ChevronRightIcon />
+      </Link>
 
       <div className="h-4 w-px bg-border mx-1" />
 
