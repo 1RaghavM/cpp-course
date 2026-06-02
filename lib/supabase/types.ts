@@ -244,6 +244,7 @@ export interface Database {
           created_at: string;
           updated_at: string;
           status: string;
+          context: string | null;
         };
         Insert: {
           id?: string;
@@ -253,6 +254,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
           status?: string;
+          context?: string | null;
         };
         Update: {
           id?: string;
@@ -262,6 +264,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
           status?: string;
+          context?: string | null;
         };
         Relationships: [];
       };
@@ -436,6 +439,30 @@ export interface Database {
         };
         Relationships: [];
       };
+      playground_state: {
+        Row: {
+          user_id: string;
+          source_code: string;
+          stdin: string;
+          language_std: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          source_code: string;
+          stdin?: string;
+          language_std?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          source_code?: string;
+          stdin?: string;
+          language_std?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -465,6 +492,7 @@ export type TokenUsage = Database["public"]["Tables"]["token_usage"]["Row"];
 export type Onboarding = Database["public"]["Tables"]["onboarding"]["Row"];
 export type UserStats = Database["public"]["Tables"]["user_stats"]["Row"];
 export type Note = Database["public"]["Tables"]["notes"]["Row"];
+export type PlaygroundState = Database["public"]["Tables"]["playground_state"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.
