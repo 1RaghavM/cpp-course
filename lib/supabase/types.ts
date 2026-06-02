@@ -412,6 +412,30 @@ export interface Database {
         };
         Relationships: [];
       };
+      notes: {
+        Row: {
+          user_id: string;
+          lesson_id: string;
+          content: string;
+          updated_at: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          lesson_id: string;
+          content?: string;
+          updated_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          lesson_id?: string;
+          content?: string;
+          updated_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -440,6 +464,7 @@ export type Message = Database["public"]["Tables"]["messages"]["Row"];
 export type TokenUsage = Database["public"]["Tables"]["token_usage"]["Row"];
 export type Onboarding = Database["public"]["Tables"]["onboarding"]["Row"];
 export type UserStats = Database["public"]["Tables"]["user_stats"]["Row"];
+export type Note = Database["public"]["Tables"]["notes"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.
