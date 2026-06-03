@@ -98,7 +98,7 @@ export function ResumeHeroCard({
           </>
         )}
         <div>
-          <Button render={<Link href={`/dashboard/lessons/${resumeLesson.slug}`} />} size="lg">
+          <Button render={<Link href={`/lessons/${resumeLesson.slug}`} />} size="lg">
             {config.buttonLabel}
             <ArrowRightIcon data-icon="inline-end" />
           </Button>

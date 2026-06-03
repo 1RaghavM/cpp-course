@@ -7,7 +7,7 @@ import type { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/";
+  const next = requestUrl.searchParams.get("next") ?? "/dashboard";
   const errorParam = requestUrl.searchParams.get("error");
 
   const redirectTo = (path: string) => NextResponse.redirect(new URL(path, requestUrl.origin));

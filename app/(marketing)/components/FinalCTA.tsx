@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 
-export function FinalCTA() {
+export function FinalCTA({ isSignedIn = false }: { isSignedIn?: boolean } = {}) {
   return (
     <section className="hp-section hp-section-border">
       <div className="hp-container" style={{ textAlign: "center", maxWidth: "600px" }}>
@@ -16,11 +16,17 @@ export function FinalCTA() {
               marginBottom: "32px",
             }}
           >
-            Start with the basics. No setup required.
+            {isSignedIn ? "Continue where you left off." : "Start with the basics. No setup required."}
           </h2>
-          <Link href="/onboarding" className="hp-btn hp-btn-primary hp-btn-lg">
-            Start learning C++
-          </Link>
+          {isSignedIn ? (
+            <Link href="/dashboard" className="hp-btn hp-btn-primary hp-btn-lg">
+              Go to Dashboard
+            </Link>
+          ) : (
+            <Link href="/onboarding" className="hp-btn hp-btn-primary hp-btn-lg">
+              Start learning C++
+            </Link>
+          )}
         </Reveal>
       </div>
     </section>

@@ -53,7 +53,7 @@ export function RegisterForm() {
     }
 
     if (data.session) {
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
       return;
     }

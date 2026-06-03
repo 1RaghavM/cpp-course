@@ -96,6 +96,7 @@ export function ProfilePage({
   const [savingName, setSavingName] = useState(false);
   const [savingGoal, setSavingGoal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [resettingProgress, setResettingProgress] = useState(false);
 
   const nameIsDirty = displayName !== (initialDisplayName ?? "");
   const goalIsDirty = weeklyGoal !== (initialWeeklyGoal?.toString() ?? "");
@@ -133,6 +134,20 @@ export function ProfilePage({
       toast.error("Failed to update weekly goal");
     } finally {
       setSavingGoal(false);
+    }
+  }
+
+  async function handleResetProgress() {
+    setResettingProgress(true);
+    try {
+      const res = await fetch("/api/progress/reset", { method: "POST" });
+      if (!res.ok) throw new Error();
+      toast.success("All progress has been reset");
+      router.refresh();
+    } catch {
+      toast.error("Failed to reset progress");
+    } finally {
+      setResettingProgress(false);
     }
   }
 
@@ -354,6 +369,42 @@ export function ProfilePage({
               <Button variant="outline" render={<Link href="/update-password" />}>
                 Change password
               </Button>
+            </CardContent>
+            <Separator className="mx-6" />
+            <CardHeader>
+              <CardTitle className="text-destructive">Reset progress</CardTitle>
+              <CardDescription>
+                Reset all lesson progress and streak back to zero. Your account, notes, and
+                preferences will be kept.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AlertDialog>
+                <AlertDialogTrigger
+                  render={<Button variant="destructive" disabled={resettingProgress} />}
+                >
+                  {resettingProgress ? "Resetting..." : "Reset all progress"}
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Reset all progress?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently erase all lesson completions, your current streak, and
+                      all visit history. Your account, notes, and preferences will not be affected.
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleResetProgress}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Reset my progress
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
             <Separator className="mx-6" />
             <CardHeader>

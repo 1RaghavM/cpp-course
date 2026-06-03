@@ -36,7 +36,10 @@ function CloseIcon() {
   );
 }
 
-export function Nav({ hideActions = false }: { hideActions?: boolean } = {}) {
+export function Nav({
+  hideActions = false,
+  isSignedIn = false,
+}: { hideActions?: boolean; isSignedIn?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -117,29 +120,39 @@ export function Nav({ hideActions = false }: { hideActions?: boolean } = {}) {
           {!hideActions && (
             <>
               <div className="nav-actions">
-                <Link href="/login" className="hp-btn hp-btn-secondary">
-                  Sign in
-                </Link>
-                <Link href="/onboarding" className="hp-btn hp-btn-primary">
-                  Start learning
-                </Link>
+                {isSignedIn ? (
+                  <Link href="/dashboard" className="hp-btn hp-btn-primary">
+                    Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <Link href="/login" className="hp-btn hp-btn-secondary">
+                      Sign in
+                    </Link>
+                    <Link href="/onboarding" className="hp-btn hp-btn-primary">
+                      Start learning
+                    </Link>
+                  </>
+                )}
               </div>
 
-              <button
-                ref={triggerRef}
-                className="nav-mobile-trigger"
-                onClick={() => setMenuOpen(true)}
-                aria-expanded={menuOpen}
-                aria-label="Open menu"
-              >
-                <MenuIcon />
-              </button>
+              {!isSignedIn && (
+                <button
+                  ref={triggerRef}
+                  className="nav-mobile-trigger"
+                  onClick={() => setMenuOpen(true)}
+                  aria-expanded={menuOpen}
+                  aria-label="Open menu"
+                >
+                  <MenuIcon />
+                </button>
+              )}
             </>
           )}
         </nav>
       </header>
 
-      {!hideActions && menuOpen && (
+      {!hideActions && !isSignedIn && menuOpen && (
         <div
           ref={overlayRef}
           className="nav-overlay"
