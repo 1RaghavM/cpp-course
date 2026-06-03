@@ -1,6 +1,8 @@
 "use client"
 
 import { useMemo } from "react"
+import Link from "next/link"
+import { ArrowRightIcon } from "lucide-react"
 import {
   Label,
   PolarGrid,
@@ -10,6 +12,7 @@ import {
 } from "recharts"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -161,12 +164,22 @@ export function CurriculumProgressCard({
                           ? Math.round((ms.completed / ms.total) * 100)
                           : 0
                       return (
-                        <Progress key={ms.module.id} value={pct}>
-                          <ProgressLabel className="text-foreground">{ms.module.title}</ProgressLabel>
-                          <ProgressValue className="text-foreground/60">
-                            {() => `${ms.completed} / ${ms.total}`}
-                          </ProgressValue>
-                        </Progress>
+                        <div key={ms.module.id} className="flex items-center gap-2">
+                          <Progress value={pct} className="flex-1">
+                            <ProgressLabel className="text-foreground">{ms.module.title}</ProgressLabel>
+                            <ProgressValue className="text-foreground/60">
+                              {() => `${ms.completed} / ${ms.total}`}
+                            </ProgressValue>
+                          </Progress>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 shrink-0 text-foreground"
+                            render={<Link href={`/dashboard/lessons?chapter=${ms.module.id}`} />}
+                          >
+                            <ArrowRightIcon className="size-4" />
+                          </Button>
+                        </div>
                       )
                     })}
                   </div>

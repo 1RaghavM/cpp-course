@@ -39,7 +39,7 @@ const components: Components = {
 
     return (
       <code
-        className="rounded-md bg-elevated px-1.5 py-0.5 text-sm font-mono text-accent"
+        className="rounded-md bg-elevated px-1.5 py-0.5 text-sm font-mono text-sidebar-primary"
         {...rest}
       >
         {children}
@@ -56,7 +56,7 @@ interface MarkdownPreviewProps {
 export function MarkdownPreview({ content, className }: MarkdownPreviewProps) {
   return (
     <div
-      className={`prose prose-invert prose-sm max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-li:text-muted-foreground prose-code:before:content-none prose-code:after:content-none ${className ?? ""}`}
+      className={`prose prose-invert prose-sm max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-sidebar-primary prose-a:no-underline hover:prose-a:underline prose-li:text-muted-foreground prose-code:before:content-none prose-code:after:content-none ${className ?? ""}`}
     >
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {content}

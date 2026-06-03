@@ -1,19 +1,22 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { createBrowserClient } from "@/lib/supabase/client";
-import {
-  EllipsisVerticalIcon,
-  CircleUserRoundIcon,
-  BarChart3Icon,
-  BellIcon,
-  LogOutIcon,
-} from "lucide-react";
+import { EllipsisVerticalIcon, LogOutIcon } from "lucide-react";
 
 export function NavUser({
   user,
@@ -26,6 +29,7 @@ export function NavUser({
 }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,33 +98,13 @@ export function NavUser({
                 </div>
               </div>
               <Separator className="my-1" />
-              <Link
-                href="/dashboard/profile"
-                onClick={() => setMenuOpen(false)}
-                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                <CircleUserRoundIcon className="size-4" />
-                Account
-              </Link>
               <button
                 type="button"
-                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                <BarChart3Icon className="size-4" />
-                Progress
-              </button>
-              <button
-                type="button"
-                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                <BellIcon className="size-4" />
-                Notifications
-              </button>
-              <Separator className="my-1" />
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setConfirmOpen(true);
+                }}
+                className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
               >
                 <LogOutIcon className="size-4" />
                 Log out
@@ -129,6 +113,25 @@ export function NavUser({
           )}
         </div>
       </SidebarMenuItem>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Log out of your account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You&apos;ll need to sign in again to access your lessons, notes, and progress.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleSignOut}
+              className="bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20"
+            >
+              Log out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarMenu>
   );
 }

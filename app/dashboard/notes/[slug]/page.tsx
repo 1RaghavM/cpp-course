@@ -12,20 +12,23 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { NoteEditor } from "./NoteEditor";
+import { NoteEditor } from "@/app/(app)/notes/[slug]/NoteEditor";
+
+export const dynamic = "force-dynamic";
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-export default async function DedicatedNotePage({ params }: Props) {
+export default async function DashboardNotePage({ params }: Props) {
+  const { slug } = await params;
   const { supabase } = await requireServerSession();
   const serviceClient = createServiceClient();
 
   const { data: lesson } = await serviceClient
     .from("lessons")
     .select("id, slug, learncpp_title, my_title, number, chapters!inner(learncpp_title)")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .single();
 
   if (!lesson) notFound();
@@ -39,14 +42,14 @@ export default async function DedicatedNotePage({ params }: Props) {
     .eq("lesson_id", lesson.id)
     .maybeSingle();
 
-  void note; // fetched for SSR awareness; NoteEditor hydrates client-side via useNote
+  void note;
 
   return (
     <div className="mx-auto max-w-[800px] px-6 py-8">
       <Breadcrumb className="mb-4">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/notes">Notes</BreadcrumbLink>
+            <BreadcrumbLink href="/dashboard/notes">Notes</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
