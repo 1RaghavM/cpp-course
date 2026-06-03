@@ -67,10 +67,10 @@ export default async function DashboardPage() {
     return (
       <div className="mx-auto w-full max-w-[800px] px-6 py-8">
         <div className="rounded-lg border border-border bg-surface p-6 text-center">
-          <p className="text-sm text-secondary">Couldn&apos;t load your progress.</p>
+          <p className="text-sm text-muted-foreground">Couldn&apos;t load your progress.</p>
           <a
             href="/dashboard"
-            className="mt-3 inline-block rounded-md bg-elevated px-4 py-2 text-xs font-medium text-primary transition-colors hover:bg-hover"
+            className="mt-3 inline-block rounded-md bg-elevated px-4 py-2 text-xs font-medium text-foreground transition-colors hover:bg-hover"
           >
             Retry
           </a>

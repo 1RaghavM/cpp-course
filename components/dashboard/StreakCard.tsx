@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useMotionValue, useSpring, useReducedMotion } from "motion/react";
+import { motion, useMotionValue, useSpring, useReducedMotion } from "motion/react";
 import { FlameIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -31,23 +31,30 @@ function CountUp({ target }: { target: number }) {
 }
 
 export function StreakCard({ streakDays }: StreakCardProps) {
+  const reducedMotion = useReducedMotion();
   const isZero = streakDays === 0;
 
   return (
-    <Card size="sm">
-      <CardContent>
-        <p className="text-xs text-muted-foreground">Day streak</p>
-        <div className="mt-1 flex items-center gap-2">
-          <FlameIcon
-            className={`size-5 text-orange-500 ${isZero ? "opacity-40" : ""}`}
-            style={!isZero ? { animation: "flame-flicker 3s ease-in-out infinite" } : undefined}
-            aria-hidden="true"
-          />
-          <p className="font-mono text-lg tabular-nums">
-            {isZero ? "Start today" : <CountUp target={streakDays} />}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <motion.div
+      whileHover={reducedMotion ? undefined : { y: -2 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      className="transition-shadow duration-200 hover:shadow-md rounded-xl"
+    >
+      <Card size="sm">
+        <CardContent>
+          <p className="text-xs text-muted-foreground">Day streak</p>
+          <div className="mt-1 flex items-center gap-2">
+            <FlameIcon
+              className={`size-5 text-orange-500 ${isZero ? "opacity-40" : ""}`}
+              style={!isZero ? { animation: "flame-flicker 3s ease-in-out infinite" } : undefined}
+              aria-hidden="true"
+            />
+            <p className="font-mono text-lg tabular-nums">
+              {isZero ? "Start today" : <CountUp target={streakDays} />}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

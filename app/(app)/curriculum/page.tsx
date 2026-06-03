@@ -1,7 +1,7 @@
 import { requireServerSession } from "@/lib/auth/require-auth";
 import { createServiceClient } from "@/lib/supabase/server";
 import { buildCurriculum } from "@/lib/dashboard/curriculum";
-import { CurriculumMap } from "@/components/curriculum/CurriculumMap";
+import { CurriculumMapDynamic as CurriculumMap } from "@/components/curriculum/CurriculumMapDynamic";
 
 export const dynamic = "force-dynamic";
 

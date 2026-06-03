@@ -1,8 +1,7 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
 
 interface Props {
   content: string;
@@ -10,7 +9,7 @@ interface Props {
 
 export default function MarkdownMessage({ content }: Props) {
   return (
-    <div className="prose prose-sm prose-invert max-w-none text-primary">
+    <div className="prose prose-sm prose-invert max-w-none text-foreground">
       <ReactMarkdown
         components={{
           code({ className, children, ...props }) {

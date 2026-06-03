@@ -15,7 +15,7 @@ export function NoteEditor({ lessonId }: NoteEditorProps) {
 
   if (isLoading) {
     return (
-      <div className="flex h-[500px] items-center justify-center rounded-lg border border-border bg-surface text-sm text-muted">
+      <div className="flex h-[500px] items-center justify-center rounded-lg border border-border bg-surface text-sm text-muted-foreground">
         Loading note…
       </div>
     );
@@ -24,7 +24,7 @@ export function NoteEditor({ lessonId }: NoteEditorProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-surface">
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
-        <span className="text-sm font-medium text-primary">Note</span>
+        <span className="text-sm font-medium text-foreground">Note</span>
         <SaveStatus status={saveStatus} />
       </div>
       <MarkdownEditor

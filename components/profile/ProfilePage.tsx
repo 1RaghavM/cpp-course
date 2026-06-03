@@ -197,7 +197,7 @@ export function ProfilePage({
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-primary">Profile</h1>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground">Profile</h1>
         </motion.div>
 
         {/* Section 1: Identity */}
@@ -213,7 +213,7 @@ export function ProfilePage({
                   <AvatarFallback>{userInitial}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-primary">{displayName || "No name set"}</p>
+                  <p className="text-sm font-medium text-foreground">{displayName || "No name set"}</p>
                   <p className="text-sm text-muted-foreground">{email}</p>
                 </div>
               </div>
@@ -308,7 +308,7 @@ export function ProfilePage({
                     >
                       <path d="M12 23c-3.866 0-7-3.134-7-7 0-2.692 1.475-5.598 3.434-8.12a.75.75 0 011.232.028C11.01 9.817 12 11.7 12 11.7s2.25-3.6 3.75-5.4a.75.75 0 011.248.06C18.664 9.1 19 12.05 19 16c0 3.866-3.134 7-7 7z" />
                     </svg>
-                    <span className="text-2xl font-bold tabular-nums text-primary">
+                    <span className="text-2xl font-bold tabular-nums text-foreground">
                       {streakDays}
                     </span>
                     <span className="text-sm text-muted-foreground">days</span>
@@ -317,7 +317,7 @@ export function ProfilePage({
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">Total completed</Label>
-                  <p className="text-2xl font-bold tabular-nums text-primary">
+                  <p className="text-2xl font-bold tabular-nums text-foreground">
                     {totalCompleted}
                     <span className="text-sm font-normal text-muted-foreground">
                       {" "}
@@ -329,7 +329,7 @@ export function ProfilePage({
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">This week</Label>
-                  <p className="text-2xl font-bold tabular-nums text-primary">
+                  <p className="text-2xl font-bold tabular-nums text-foreground">
                     {lessonsCompletedThisWeek}
                     <span className="text-sm font-normal text-muted-foreground">
                       {" / "}

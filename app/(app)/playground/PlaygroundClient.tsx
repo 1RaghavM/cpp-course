@@ -27,7 +27,7 @@ const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
 const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-full text-muted text-sm">Loading tutor...</div>
+    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Loading tutor...</div>
   ),
 });
 
@@ -248,16 +248,16 @@ export default function PlaygroundClient({ savedState }: Props) {
         <div className="flex items-center gap-2 bg-elevated px-3 py-2 border-b border-border">
           <Link
             href="/dashboard"
-            className="p-1.5 hover:bg-hover rounded-md transition-colors text-secondary hover:text-primary"
+            className="p-1.5 hover:bg-hover rounded-md transition-colors text-muted-foreground hover:text-primary"
           >
             <ArrowLeftIcon />
           </Link>
-          <span className="text-sm font-semibold text-primary">Playground</span>
+          <span className="text-sm font-semibold text-foreground">Playground</span>
           <div className="flex-1" />
           <select
             value={languageStd}
             onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
-            className="rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium text-primary"
+            className="rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium text-foreground"
           >
             {STD_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -279,7 +279,7 @@ export default function PlaygroundClient({ savedState }: Props) {
                 </button>
                 <button
                   onClick={handleReset}
-                  className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary"
+                  className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-primary"
                 >
                   Reset
                 </button>
@@ -296,12 +296,12 @@ export default function PlaygroundClient({ savedState }: Props) {
           )}
           {mobileTab === "input" && (
             <div className="h-full flex flex-col p-3">
-              <label className="text-xs font-medium text-secondary mb-2">Standard Input (stdin)</label>
+              <label className="text-xs font-medium text-muted-foreground mb-2">Standard Input (stdin)</label>
               <textarea
                 value={stdin}
                 onChange={(e) => setStdin(e.target.value)}
                 placeholder="Enter input for your program..."
-                className="flex-1 resize-none rounded-md border border-border bg-surface p-3 font-mono text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-brand-bright"
+                className="flex-1 resize-none rounded-md border border-border bg-surface p-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand-bright"
               />
             </div>
           )}
@@ -324,7 +324,7 @@ export default function PlaygroundClient({ savedState }: Props) {
               key={tab}
               onClick={() => setMobileTab(tab)}
               className={`flex-1 py-2.5 text-xs font-medium capitalize transition-colors ${
-                mobileTab === tab ? "text-brand-bright border-t-2 border-brand-bright" : "text-muted"
+                mobileTab === tab ? "text-brand-bright border-t-2 border-brand-bright" : "text-muted-foreground"
               }`}
             >
               {tab}
@@ -343,13 +343,13 @@ export default function PlaygroundClient({ savedState }: Props) {
         <div className="flex items-center gap-2 bg-elevated px-4 py-2 border-b border-border">
           <Link
             href="/dashboard"
-            className="p-1.5 hover:bg-hover rounded-md transition-colors text-secondary hover:text-primary"
+            className="p-1.5 hover:bg-hover rounded-md transition-colors text-muted-foreground hover:text-primary"
             title="Back to dashboard"
           >
             <ArrowLeftIcon />
           </Link>
           <div className="h-4 w-px bg-border mx-1" />
-          <span className="text-sm font-semibold text-primary">Playground</span>
+          <span className="text-sm font-semibold text-foreground">Playground</span>
           <div className="flex-1" />
 
           <button
@@ -357,7 +357,7 @@ export default function PlaygroundClient({ savedState }: Props) {
             className={`rounded-md px-2 py-1 text-xs font-medium transition-colors ${
               tutorOpen
                 ? "bg-brand-bright/15 text-brand-bright hover:bg-brand-bright/25"
-                : "text-secondary hover:text-primary hover:bg-hover"
+                : "text-muted-foreground hover:text-primary hover:bg-hover"
             }`}
           >
             Tutor
@@ -365,7 +365,7 @@ export default function PlaygroundClient({ savedState }: Props) {
 
           <button
             onClick={() => setHeaderCollapsed(true)}
-            className="p-1 rounded-md text-muted hover:text-primary hover:bg-hover transition-colors"
+            className="p-1 rounded-md text-muted-foreground hover:text-primary hover:bg-hover transition-colors"
             title="Collapse header"
           >
             <ChevronUpIcon />
@@ -389,12 +389,12 @@ export default function PlaygroundClient({ savedState }: Props) {
             {/* Editor toolbar — matches lesson EditorToolbar */}
             <div className="flex items-center gap-3 px-4 py-2 bg-elevated border-b border-border">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted">Language:</span>
+                <span className="text-xs text-muted-foreground">Language:</span>
                 <select
                   value={languageStd}
                   onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
                   disabled={isRunning}
-                  className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-foreground transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {STD_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>{o.label}</option>
@@ -402,7 +402,7 @@ export default function PlaygroundClient({ savedState }: Props) {
                 </select>
               </div>
               <div className="flex-1" />
-              <span className="text-xs text-muted">
+              <span className="text-xs text-muted-foreground">
                 {isRunning ? "Compiling..." : "Ctrl+Enter to run"}
               </span>
             </div>
@@ -427,7 +427,7 @@ export default function PlaygroundClient({ savedState }: Props) {
                 <div className="flex flex-col h-full overflow-hidden">
                   {/* Console header with actions */}
                   <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
-                    <span className="text-xs font-medium text-secondary uppercase tracking-wider">Console</span>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Console</span>
                     <div className="flex-1" />
                     <Button
                       variant="outline"
@@ -452,12 +452,12 @@ export default function PlaygroundClient({ savedState }: Props) {
                   {!stdinCollapsed && (
                     <div className="border-b border-border" style={{ height: "30%" }}>
                       <div className="flex items-center justify-between px-3 py-1.5 bg-elevated border-b border-border">
-                        <span className="text-xs font-medium text-secondary uppercase tracking-wider">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Input
                         </span>
                         <button
                           onClick={() => setStdinCollapsed(true)}
-                          className="text-xs text-muted hover:text-primary transition-colors"
+                          className="text-xs text-muted-foreground hover:text-primary transition-colors"
                         >
                           Hide
                         </button>
@@ -466,14 +466,14 @@ export default function PlaygroundClient({ savedState }: Props) {
                         value={stdin}
                         onChange={(e) => setStdin(e.target.value)}
                         placeholder="stdin..."
-                        className="w-full h-[calc(100%-28px)] resize-none bg-base p-3 font-mono text-xs text-primary placeholder:text-muted focus:outline-none"
+                        className="w-full h-[calc(100%-28px)] resize-none bg-base p-3 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
                       />
                     </div>
                   )}
                   {stdinCollapsed && (
                     <button
                       onClick={() => setStdinCollapsed(false)}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-elevated border-b border-border text-xs text-muted hover:text-primary transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1 bg-elevated border-b border-border text-xs text-muted-foreground hover:text-primary transition-colors"
                     >
                       <ChevronDownIcon /> Input
                     </button>
@@ -517,7 +517,7 @@ function PlaygroundOutput({
 }) {
   if (isRunning) {
     return (
-      <div className="flex items-center gap-2 text-muted text-sm">
+      <div className="flex items-center gap-2 text-muted-foreground text-sm">
         <Spinner /> Compiling and running...
       </div>
     );
@@ -533,7 +533,7 @@ function PlaygroundOutput({
 
   if (!result) {
     return (
-      <div className="text-muted text-sm">
+      <div className="text-muted-foreground text-sm">
         Press <kbd className="rounded border border-border bg-elevated px-1.5 py-0.5 text-xs font-mono">Ctrl+Enter</kbd> to run your code
       </div>
     );
@@ -556,13 +556,13 @@ function PlaygroundOutput({
           {result.status === "accepted" ? "success" : result.status.replace(/_/g, " ")}
         </span>
         {result.wallTimeMs > 0 && (
-          <span className="text-xs text-muted">{result.wallTimeMs}ms</span>
+          <span className="text-xs text-muted-foreground">{result.wallTimeMs}ms</span>
         )}
       </div>
 
       {result.compileOutput && (
         <div>
-          <div className="text-xs font-medium text-secondary mb-1">Compiler Output</div>
+          <div className="text-xs font-medium text-muted-foreground mb-1">Compiler Output</div>
           <pre className="rounded-md border border-error/30 bg-error/5 p-3 font-mono text-xs text-error whitespace-pre-wrap">
             {result.compileOutput}
           </pre>
@@ -571,16 +571,16 @@ function PlaygroundOutput({
 
       {result.stdout !== null && (
         <div>
-          <div className="text-xs font-medium text-secondary mb-1">Output</div>
-          <pre className="rounded-md border border-border bg-surface p-3 font-mono text-xs text-primary whitespace-pre-wrap">
-            {result.stdout || <span className="text-muted italic">(no output)</span>}
+          <div className="text-xs font-medium text-muted-foreground mb-1">Output</div>
+          <pre className="rounded-md border border-border bg-surface p-3 font-mono text-xs text-foreground whitespace-pre-wrap">
+            {result.stdout || <span className="text-muted-foreground italic">(no output)</span>}
           </pre>
         </div>
       )}
 
       {result.stderr && (
         <div>
-          <div className="text-xs font-medium text-secondary mb-1">Stderr</div>
+          <div className="text-xs font-medium text-muted-foreground mb-1">Stderr</div>
           <pre className="rounded-md border border-warning/30 bg-warning/5 p-3 font-mono text-xs text-warning whitespace-pre-wrap">
             {result.stderr}
           </pre>

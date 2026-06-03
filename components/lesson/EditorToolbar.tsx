@@ -30,12 +30,12 @@ export function EditorToolbar({
     <div className="flex items-center gap-3 px-4 py-2 bg-elevated border-b border-border">
       {/* Language selector */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-muted">Language:</span>
+        <span className="text-xs text-muted-foreground">Language:</span>
         <select
           value={languageStd}
           onChange={(e) => onLanguageChange(e.target.value as CppStandard)}
           disabled={disabled}
-          className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-medium text-foreground transition hover:bg-hover focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {STD_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>

@@ -14,7 +14,7 @@ export function Greeting({ displayName, hour }: GreetingProps) {
   const name = displayName?.trim();
 
   return (
-    <h1 className="text-lg font-semibold text-primary sm:text-xl">
+    <h1 className="text-lg font-semibold text-foreground sm:text-xl">
       {name ? `${timeGreeting}, ${name}` : "Welcome back"}
     </h1>
   );

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   let body: unknown;
   try {
@@ -83,7 +83,7 @@ export async function GET() {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { data, error } = await supabase
     .from("onboarding")
@@ -95,7 +95,7 @@ export async function GET() {
     return NextResponse.json({ error: "No onboarding data found" }, { status: 404 });
   }
 
-  const fullName = (authResult.session.user.user_metadata?.full_name as string | undefined) ?? null;
+  const fullName = (authResult.user.user_metadata?.full_name as string | undefined) ?? null;
 
   return NextResponse.json({
     background: data.background,

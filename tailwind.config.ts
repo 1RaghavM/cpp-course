@@ -85,11 +85,6 @@ const config: Config = {
         elevated: "var(--bg-elevated)",
         hover: "var(--bg-hover)",
       },
-      textColor: {
-        primary: "var(--text-primary)",
-        secondary: "var(--text-secondary)",
-        muted: "var(--text-muted)",
-      },
       borderColor: {
         DEFAULT: "var(--border)",
         subtle: "var(--border-subtle)",

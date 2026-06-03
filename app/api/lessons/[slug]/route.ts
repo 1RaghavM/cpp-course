@@ -15,7 +15,7 @@ export async function GET(_request: NextRequest, { params }: { params: { slug: s
   // Auth guard (uses user JWT)
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { slug } = params;
 

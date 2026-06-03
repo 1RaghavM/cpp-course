@@ -133,11 +133,15 @@ export function ActivityHeatmap({ activityData }: ActivityHeatmapProps) {
             <TooltipProvider>
               <div className="flex gap-[3px]">
                 {weeks.map((week, wi) => (
-                  <div key={wi} className="flex flex-col gap-[3px]">
+                  <div
+                    key={wi}
+                    className="flex flex-col gap-[3px] motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300 motion-safe:fill-mode-both"
+                    style={{ animationDelay: `${wi * 28}ms` } as React.CSSProperties}
+                  >
                     {week.map((day) => (
                       <Tooltip key={day.date}>
                         <TooltipTrigger
-                          className={`h-3 w-3 rounded-sm ${getIntensityClass(day.count)} transition-colors`}
+                          className={`h-3 w-3 rounded-sm ${getIntensityClass(day.count)} transition-colors duration-200 ease-[var(--ease)]`}
                           aria-label={`${day.date}: ${day.count} actions`}
                         />
                         <TooltipContent side="top">

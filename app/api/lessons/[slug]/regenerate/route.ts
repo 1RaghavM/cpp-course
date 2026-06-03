@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient, createServiceClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { regenerateLesson } from "@/lib/content/lesson-generation";
+import { getGuardCounts } from "@/lib/ai/context";
+import { checkRateAndBudget } from "@/lib/rate/guard";
 
 export const dynamic = "force-dynamic";
+
+const DAILY_REGENERATE_LIMIT = 3;
 
 // ---------------------------------------------------------------------------
 // POST /api/lessons/[slug]/regenerate
@@ -15,9 +19,35 @@ export async function POST(_request: NextRequest, { params }: { params: { slug: 
   // Auth guard (uses user JWT)
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { slug } = params;
+
+  // ---- Monthly hard-cap check (shared with tutor budget) -------------------
+  const guardCounts = await getGuardCounts(supabase, userId, null);
+  const guardResult = checkRateAndBudget(guardCounts);
+  if (!guardResult.allowed && guardResult.code === "BUDGET_EXCEEDED") {
+    return NextResponse.json(
+      { error: guardResult.message ?? "Monthly budget exceeded" },
+      { status: 429 },
+    );
+  }
+
+  // ---- Per-user daily regenerate cap ---------------------------------------
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { count: dailyRegenCount } = await supabase
+    .from("token_usage")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .in("call_type", ["lesson_summary", "exercise_gen"])
+    .gte("created_at", since);
+
+  if ((dailyRegenCount ?? 0) >= DAILY_REGENERATE_LIMIT) {
+    return NextResponse.json(
+      { error: `Daily regenerate limit reached (${DAILY_REGENERATE_LIMIT}/day)` },
+      { status: 429 },
+    );
+  }
 
   try {
     const serviceClient = createServiceClient();

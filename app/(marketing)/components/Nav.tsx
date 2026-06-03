@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 function MenuIcon() {
@@ -110,7 +111,7 @@ export function Nav({ hideActions = false }: { hideActions?: boolean } = {}) {
       <header className="nav-header" data-scrolled={scrolled || undefined}>
         <nav className="nav-inner">
           <Link href="/" className="nav-wordmark">
-            <img src="/fulllogo-Photoroom.png" alt="cpproad" style={{ height: "48px", width: "auto" }} />
+            <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={192} height={48} priority style={{ height: "48px", width: "auto" }} />
           </Link>
 
           {!hideActions && (

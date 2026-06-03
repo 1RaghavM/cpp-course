@@ -7,7 +7,7 @@ import { computeResumeTarget, computeStreakDays } from "@/lib/dashboard/resume";
 import type { LessonStatus, DashboardProgress } from "@/lib/dashboard/types";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const { supabase, session } = await requireServerSession();
+  const { supabase, user } = await requireServerSession();
   const serviceClient = createServiceClient();
 
   const [lessonsResult, progressResult, statsResult] = await Promise.all([
@@ -77,7 +77,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const resumeTarget = computeResumeTarget(curriculum, minimalProgress, lastActiveLessonId);
 
-  const userEmail = session.user.email ?? "";
+  const userEmail = user.email ?? "";
   const userInitial = (userEmail[0] ?? "?").toUpperCase();
 
   return (

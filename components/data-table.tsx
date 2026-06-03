@@ -98,7 +98,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center motion-safe:transition-transform motion-safe:active:scale-95">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -133,9 +133,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status
+      const badgeAnim =
+        "motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200 motion-safe:fill-mode-both"
       if (status === "Done") {
         return (
-          <Badge variant="secondary" className="bg-green-500/15 text-green-600 dark:bg-green-500/20 dark:text-green-400">
+          <Badge
+            variant="secondary"
+            className={`bg-green-500/15 text-green-600 dark:bg-green-500/20 dark:text-green-400 ${badgeAnim}`}
+          >
             <CircleCheckIcon className="size-3" />
             Done
           </Badge>
@@ -143,14 +148,17 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       }
       if (status === "In Progress") {
         return (
-          <Badge variant="secondary" className="bg-blue-500/15 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
+          <Badge
+            variant="secondary"
+            className={`bg-blue-500/15 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 ${badgeAnim}`}
+          >
             <LoaderIcon className="size-3" />
             In Progress
           </Badge>
         )
       }
       return (
-        <Badge variant="outline" className="text-muted-foreground">
+        <Badge variant="outline" className={`text-muted-foreground ${badgeAnim}`}>
           Not Started
         </Badge>
       )
@@ -206,19 +214,28 @@ function ActionsCell({
     </DropdownMenu>
   )
 }
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({
+  row,
+  index,
+}: {
+  row: Row<z.infer<typeof schema>>
+  index: number
+}) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   })
+  // Cap stagger so later pages don't wait too long. CSS animations fire once per mount.
+  const animationDelay = `${Math.min(index, 12) * 30}ms`
   return (
     <TableRow
       data-state={row.getIsSelected() && "selected"}
       data-dragging={isDragging}
       ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      className="relative z-0 transition-colors duration-150 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-1 motion-safe:fill-mode-both motion-safe:duration-300 motion-safe:ease-out"
       style={{
         transform: CSS.Transform.toString(transform),
         transition: transition,
+        animationDelay,
       }}
     >
       {row.getVisibleCells().map((cell) => (
@@ -445,8 +462,8 @@ export function DataTable({
                     items={dataIds}
                     strategy={verticalListSortingStrategy}
                   >
-                    {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
+                    {table.getRowModel().rows.map((row, index) => (
+                      <DraggableRow key={row.id} row={row} index={index} />
                     ))}
                   </SortableContext>
                 ) : (

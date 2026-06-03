@@ -7,9 +7,6 @@ import { touchLessonProgress } from "@/lib/content/lesson-progress";
 import LessonClient from "./LessonClient";
 import type { Lesson } from "@/lib/supabase/types";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 interface PageProps {
   params: { slug: string };
   searchParams: { ex?: string };

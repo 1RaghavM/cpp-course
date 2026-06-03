@@ -4,6 +4,7 @@ import * as React from "react"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
+import { LayoutGroup, motion } from "motion/react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -453,12 +454,52 @@ function SidebarGroupContent({
 }
 
 function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
+  // Give each menu its own LayoutGroup id so any <SidebarActivePill /> inside
+  // animates between items in this menu only — not across other menus.
+  const groupId = React.useId()
   return (
-    <ul
-      data-slot="sidebar-menu"
-      data-sidebar="menu"
-      className={cn("flex w-full min-w-0 flex-col gap-1", className)}
-      {...props}
+    <LayoutGroup id={groupId}>
+      <ul
+        data-slot="sidebar-menu"
+        data-sidebar="menu"
+        className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+        {...props}
+      />
+    </LayoutGroup>
+  )
+}
+
+/**
+ * Opt-in sliding active indicator for sidebar menu items.
+ *
+ * Render inside the active <SidebarMenuItem /> (typically as a sibling of
+ * <SidebarMenuButton />). When the active item changes, motion's shared
+ * layout animation slides the pill smoothly between items in the same
+ * <SidebarMenu />.
+ *
+ * Usage:
+ *   <SidebarMenuItem>
+ *     {isActive && <SidebarActivePill />}
+ *     <SidebarMenuButton isActive={isActive} ... />
+ *   </SidebarMenuItem>
+ */
+function SidebarActivePill({
+  className,
+  layoutId = "sidebar-active-pill",
+}: {
+  className?: string
+  layoutId?: string
+}) {
+  return (
+    <motion.div
+      layoutId={layoutId}
+      data-slot="sidebar-active-pill"
+      aria-hidden="true"
+      className={cn(
+        "pointer-events-none absolute inset-0 z-0 rounded-md bg-sidebar-accent",
+        className
+      )}
+      transition={{ type: "spring", stiffness: 380, damping: 32 }}
     />
   )
 }
@@ -475,7 +516,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
+  "peer/menu-button group/menu-button relative flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding,background-color,color] duration-150 ease-out group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-sidebar-accent-foreground motion-safe:hover:translate-x-0.5 focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate",
   {
     variants: {
       variant: {
@@ -697,6 +738,7 @@ function SidebarMenuSubButton({
 
 export {
   Sidebar,
+  SidebarActivePill,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,

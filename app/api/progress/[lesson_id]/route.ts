@@ -55,7 +55,7 @@ export async function POST(request: NextRequest, { params }: { params: { lesson_
 
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { lesson_id } = params;
 
@@ -167,7 +167,7 @@ export async function GET(_request: NextRequest, { params }: { params: { lesson_
 
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { lesson_id } = params;
 

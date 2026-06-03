@@ -2,28 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { submitCode, type CppStandard } from "@/lib/judge0/client";
+import { checkPlaygroundRateLimit } from "@/lib/rate/playground-limiter";
 
 export const dynamic = "force-dynamic";
 
 const MAX_SOURCE_SIZE = 50 * 1024;
 const VALID_STANDARDS: CppStandard[] = ["c++17", "c++20", "c++23"];
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 10;
-
-const recentRuns = new Map<string, number[]>();
-
-function isRateLimited(userId: string): boolean {
-  const now = Date.now();
-  const timestamps = recentRuns.get(userId) ?? [];
-  const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-  if (recent.length >= RATE_LIMIT_MAX) {
-    recentRuns.set(userId, recent);
-    return true;
-  }
-  recent.push(now);
-  recentRuns.set(userId, recent);
-  return false;
-}
 
 interface RequestBody {
   source_code: string;
@@ -35,11 +19,12 @@ export async function POST(request: NextRequest) {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
-  if (isRateLimited(userId)) {
+  const rateCheck = await checkPlaygroundRateLimit(supabase, userId);
+  if (!rateCheck.allowed) {
     return NextResponse.json(
-      { error: "Rate limit exceeded. Max 10 runs per minute." },
+      { error: `Rate limit exceeded. ${rateCheck.reason ?? ""}`.trim() },
       { status: 429 },
     );
   }

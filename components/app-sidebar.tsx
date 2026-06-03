@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import Link from "next/link"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -42,7 +43,7 @@ const data = {
     },
     {
       title: "Exercises",
-      url: "/exercises",
+      url: "/dashboard/exercises",
       icon: <CodeIcon />,
     },
     {
@@ -100,7 +101,7 @@ export function AppSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
               render={<Link href="/dashboard" />}
             >
-              <img src="/fulllogo-Photoroom.png" alt="cpproad" className="h-10 w-auto" />
+              <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={160} height={40} className="h-10 w-auto" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

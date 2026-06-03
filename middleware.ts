@@ -8,8 +8,8 @@ export async function middleware(req: NextRequest) {
   const supabase = createMiddlewareClient({ req, res });
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { pathname } = req.nextUrl;
 
@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname === "/") {
-    if (session) {
+    if (user) {
       const dashboardUrl = req.nextUrl.clone();
       dashboardUrl.pathname = "/dashboard";
       return NextResponse.redirect(dashboardUrl);
@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (isAuthRoute(pathname)) {
-    if (session) {
+    if (user) {
       const dashboardUrl = req.nextUrl.clone();
       dashboardUrl.pathname = "/dashboard";
       return NextResponse.redirect(dashboardUrl);
@@ -40,7 +40,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname === "/update-password") {
-    if (!session) {
+    if (!user) {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = "/login";
       return NextResponse.redirect(loginUrl);
@@ -49,13 +49,13 @@ export async function middleware(req: NextRequest) {
   }
 
   if (pathname.startsWith("/api/")) {
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     return res;
   }
 
-  if (!session) {
+  if (!user) {
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/login";
     return NextResponse.redirect(loginUrl);

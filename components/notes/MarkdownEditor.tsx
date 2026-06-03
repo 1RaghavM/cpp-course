@@ -161,7 +161,7 @@ export function MarkdownEditor({
                     disabled={mode === "preview"}
                     onClick={() => handleFormat(action)}
                     className={cn(
-                      "inline-flex h-7 w-7 items-center justify-center rounded-md text-sm transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50",
+                      "inline-flex h-7 w-7 items-center justify-center rounded-md text-sm transition-colors hover:bg-muted hover:text-primary disabled:pointer-events-none disabled:opacity-50",
                       activeFormats.has(action) && "bg-muted text-foreground",
                     )}
                   >
@@ -215,7 +215,7 @@ export function MarkdownEditor({
           {content ? (
             <MarkdownPreview content={content} />
           ) : (
-            <p className="text-sm text-muted">Nothing to preview</p>
+            <p className="text-sm text-muted-foreground">Nothing to preview</p>
           )}
         </ScrollArea>
       )}

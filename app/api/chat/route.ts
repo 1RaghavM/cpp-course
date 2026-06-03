@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const rawBody = await request.text();
   if (rawBody.length > TUTOR_CONFIG.maxInputBytes) {

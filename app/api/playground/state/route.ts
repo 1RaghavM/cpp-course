@@ -12,7 +12,7 @@ export async function GET() {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { data, error } = await supabase
     .from("playground_state")
@@ -31,7 +31,7 @@ export async function PUT(request: NextRequest) {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   let body: { source_code: string; stdin?: string; language_std?: string };
   try {

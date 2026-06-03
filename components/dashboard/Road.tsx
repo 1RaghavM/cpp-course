@@ -106,15 +106,15 @@ export function Road({ stageStates, pathPercent, stageTargetSlugs }: RoadProps) 
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-primary">Your path</h3>
-        <span className="font-mono text-xs tabular-nums text-muted">{pathPercent}%</span>
+        <h3 className="text-sm font-medium text-foreground">Your path</h3>
+        <span className="font-mono text-xs tabular-nums text-muted-foreground">{pathPercent}%</span>
       </div>
 
       {/* Mobile: vertical */}
       <div className="relative md:hidden">
         <TrackSVG percent={pathPercent} vertical />
         <ol className="relative flex flex-col items-center gap-10 py-4">
-          {STAGES.map((stage) => {
+          {STAGES.map((stage, i) => {
             const state = stageStates.find((s) => s.stageId === stage.id);
             if (!state) return null;
             return (
@@ -123,6 +123,7 @@ export function Road({ stageStates, pathPercent, stageTargetSlugs }: RoadProps) 
                 state={state}
                 title={stage.title}
                 targetLessonSlug={stageTargetSlugs[stage.id]}
+                index={i}
               />
             );
           })}
@@ -133,7 +134,7 @@ export function Road({ stageStates, pathPercent, stageTargetSlugs }: RoadProps) 
       <div className="relative hidden md:block">
         <TrackSVG percent={pathPercent} vertical={false} />
         <ol className="relative flex items-start justify-between py-4">
-          {STAGES.map((stage) => {
+          {STAGES.map((stage, i) => {
             const state = stageStates.find((s) => s.stageId === stage.id);
             if (!state) return null;
             return (
@@ -142,6 +143,7 @@ export function Road({ stageStates, pathPercent, stageTargetSlugs }: RoadProps) 
                 state={state}
                 title={stage.title}
                 targetLessonSlug={stageTargetSlugs[stage.id]}
+                index={i}
               />
             );
           })}

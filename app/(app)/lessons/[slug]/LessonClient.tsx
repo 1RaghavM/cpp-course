@@ -3,9 +3,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SummaryView } from "@/components/lesson/SummaryView";
+const SummaryView = dynamic(
+  () => import("@/components/lesson/SummaryView").then((mod) => mod.SummaryView),
+  { loading: () => <div className="animate-pulse h-64 rounded-lg bg-muted" /> }
+);
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
 import { OutputPanel } from "@/components/lesson/OutputPanel";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -38,13 +42,16 @@ const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
 const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-full text-muted text-sm">
+    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
       Loading tutor...
     </div>
   ),
 });
 
-import { FloatingNotepad } from "@/components/notes/FloatingNotepad";
+const FloatingNotepad = dynamic(
+  () => import("@/components/notes/FloatingNotepad").then((mod) => mod.FloatingNotepad),
+  { ssr: false }
+);
 
 interface LessonData {
   id: string;
@@ -102,9 +109,10 @@ interface Props {
   exercises: ExerciseData[];
   initialExerciseIndex?: number;
   nav: NavData | null;
+  exerciseOnly?: boolean;
 }
 
-export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav }: Props) {
+export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav, exerciseOnly = false }: Props) {
   const editorRef = useRef<MonacoEditorHandle>(null);
 
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
@@ -294,13 +302,14 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
       {nav && (
         <LessonNav
           nav={nav}
-          lessonTitle={lesson.title}
+          lessonTitle={exerciseOnly && activeExercise ? activeExercise.title : lesson.title}
           lessonId={lesson.id}
           hasExercises={exercises.length > 0}
           tutorOpen={tutorOpen}
           onToggleTutor={toggleTutor}
           notepadOpen={notepadOpen}
           onToggleNotepad={() => setNotepadOpen((prev) => !prev)}
+          exerciseOnly={exerciseOnly}
         />
       )}
 
@@ -308,30 +317,71 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
         {/* Lesson Panel */}
         <ResizablePanel defaultSize={tutorOpen ? "40" : "50"} minSize="20" maxSize="80">
           <div className="flex flex-col h-full bg-surface border-r border-border">
-            {/* Header */}
-            <div className="px-4 py-4 border-b border-border">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
-                  {lesson.number}
-                </span>
-                <div>
-                  <h1 className="text-lg font-semibold text-primary">{lesson.title}</h1>
-                  {exercises.length > 0 && activeExercise && (
-                    <p className="text-xs text-muted mt-0.5">
-                      {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
-                    </p>
-                  )}
+            {/* Header — hidden in exerciseOnly mode */}
+            {!exerciseOnly && (
+              <div className="px-4 py-4 border-b border-border">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
+                    {lesson.number}
+                  </span>
+                  <div>
+                    <h1 className="text-lg font-semibold text-foreground">{lesson.title}</h1>
+                    {exercises.length > 0 && activeExercise && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Content Tabs */}
-            <Tabs defaultValue="lesson" className="flex-1 flex flex-col min-h-0">
-              <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
-                <TabsTrigger value="lesson" className="px-1 py-2.5 text-sm">Lesson</TabsTrigger>
-                {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
-                <TabsTrigger value="resources" className="px-1 py-2.5 text-sm">Resources</TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue={exerciseOnly ? "challenge" : "lesson"} className="flex-1 flex flex-col min-h-0">
+              {exerciseOnly ? (
+                <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
+                  <TabsTrigger value="challenge" className="px-1 py-2.5 text-sm">Challenge</TabsTrigger>
+                  {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
+                </TabsList>
+              ) : (
+                <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
+                  <TabsTrigger value="lesson" className="px-1 py-2.5 text-sm">Lesson</TabsTrigger>
+                  {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
+                  <TabsTrigger value="resources" className="px-1 py-2.5 text-sm">Resources</TabsTrigger>
+                </TabsList>
+              )}
+
+              {exerciseOnly && (
+                <TabsContent value="challenge" className="flex-1 overflow-y-auto p-4">
+                  {activeExercise ? (
+                    <div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <h2 className="text-lg font-semibold text-foreground">Challenge</h2>
+                        <DifficultyBadge difficulty={activeExercise.difficulty} />
+                      </div>
+                      <div className="prose prose-base prose-invert max-w-none mb-6">
+                        <SummaryView markdown={activeExercise.promptMd} />
+                      </div>
+                      {activeExercise.sampleTestCases.length > 0 && (
+                        <div>
+                          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                            Sample Test Cases
+                          </h3>
+                          <div className="space-y-2">
+                            {activeExercise.sampleTestCases.map((tc) => (
+                              <TestCaseCard key={tc.label} testCase={tc} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                      No exercise found.
+                    </div>
+                  )}
+                </TabsContent>
+              )}
 
               <TabsContent value="lesson" className="flex-1 overflow-y-auto p-4">
                 <div className="space-y-6">
@@ -348,7 +398,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                   {exercises.length > 0 && activeExercise ? (
                     <div>
                       <div className="flex items-center gap-3 mb-4">
-                        <h2 className="text-lg font-semibold text-primary">Challenge</h2>
+                        <h2 className="text-lg font-semibold text-foreground">Challenge</h2>
                         <DifficultyBadge difficulty={activeExercise.difficulty} />
                       </div>
 
@@ -364,7 +414,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                               className={
                                 idx === activeExerciseIndex
                                   ? "bg-accent text-base hover:bg-accent/90"
-                                  : "bg-elevated text-secondary"
+                                  : "bg-elevated text-muted-foreground"
                               }
                             >
                               {ex.title}
@@ -379,7 +429,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
 
                       {activeExercise.sampleTestCases.length > 0 && (
                         <div>
-                          <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+                          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                             Sample Test Cases
                           </h3>
                           <div className="space-y-2">
@@ -391,7 +441,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                       )}
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-full text-muted text-sm">
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
                       No exercises available for this lesson.
                     </div>
                   )}
@@ -412,7 +462,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                             className={
                               idx === activeExerciseIndex
                                 ? "bg-accent text-base hover:bg-accent/90"
-                                : "bg-elevated text-secondary"
+                                : "bg-elevated text-muted-foreground"
                             }
                           >
                             {ex.title}
@@ -487,7 +537,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                 </ResizablePanel>
               </ResizablePanelGroup>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-muted">
+              <div className="flex-1 flex items-center justify-center text-muted-foreground">
                 No exercises available for this lesson.
               </div>
             )}
@@ -573,8 +623,8 @@ function MobileLayout({
       </div>
 
       <div>
-        <p className="text-xs font-medium text-muted">Lesson {lesson.number}</p>
-        <h1 className="mt-1 text-2xl font-bold text-primary">{lesson.title}</h1>
+        <p className="text-xs font-medium text-muted-foreground">Lesson {lesson.number}</p>
+        <h1 className="mt-1 text-2xl font-bold text-foreground">{lesson.title}</h1>
       </div>
 
       {lesson.summaryMd && (
@@ -607,6 +657,7 @@ function LessonNav({
   onToggleTutor,
   notepadOpen,
   onToggleNotepad,
+  exerciseOnly,
 }: {
   nav: NavData;
   lessonTitle: string;
@@ -616,6 +667,7 @@ function LessonNav({
   onToggleTutor?: () => void;
   notepadOpen?: boolean;
   onToggleNotepad?: () => void;
+  exerciseOnly?: boolean;
 }) {
   const router = useRouter();
 
@@ -645,10 +697,13 @@ function LessonNav({
 
   return (
     <div className="flex items-center gap-2 bg-elevated px-4 py-2 text-sm border-b border-border">
+      <Link href="/dashboard" className="shrink-0">
+        <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={112} height={28} className="h-7 w-auto" />
+      </Link>
       <Link
-        href="/dashboard"
-        className="p-1.5 hover:bg-hover rounded-md transition-colors text-secondary hover:text-primary"
-        title="Back to roadmap"
+        href={exerciseOnly ? "/dashboard/exercises" : "/dashboard"}
+        className="p-1.5 hover:bg-hover rounded-md transition-colors text-muted-foreground hover:text-primary"
+        title={exerciseOnly ? "Back to exercises" : "Back to roadmap"}
       >
         <MenuIcon />
       </Link>
@@ -657,8 +712,8 @@ function LessonNav({
         href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}
         className={`p-1.5 rounded-md transition-colors ${
           nav.prevSlug
-            ? "hover:bg-hover text-secondary hover:text-primary"
-            : "text-muted cursor-not-allowed"
+            ? "hover:bg-hover text-muted-foreground hover:text-primary"
+            : "text-muted-foreground cursor-not-allowed"
         }`}
         aria-disabled={!nav.prevSlug}
         onClick={(e) => !nav.prevSlug && e.preventDefault()}
@@ -670,8 +725,8 @@ function LessonNav({
         href={nav.nextSlug ? `/lessons/${nav.nextSlug}` : "#"}
         className={`p-1.5 rounded-md transition-colors ${
           nav.nextSlug
-            ? "hover:bg-hover text-secondary hover:text-primary"
-            : "text-muted cursor-not-allowed"
+            ? "hover:bg-hover text-muted-foreground hover:text-primary"
+            : "text-muted-foreground cursor-not-allowed"
         }`}
         aria-disabled={!nav.nextSlug}
         onClick={handleNextClick}
@@ -681,13 +736,13 @@ function LessonNav({
 
       <div className="h-4 w-px bg-border mx-1" />
 
-      <span className="font-medium text-primary">{nav.chapter.title}</span>
+      <span className="font-medium text-foreground">{nav.chapter.title}</span>
 
-      <ChevronRightIcon className="h-3 w-3 text-muted" />
+      <ChevronRightIcon className="h-3 w-3 text-muted-foreground" />
 
-      <span className="text-secondary truncate">{lessonTitle}</span>
+      <span className="text-muted-foreground truncate">{lessonTitle}</span>
 
-      <span className="text-muted text-xs ml-auto">
+      <span className="text-muted-foreground text-xs ml-auto">
         {nav.currentIndex} / {nav.totalInChapter}
       </span>
 
@@ -699,7 +754,7 @@ function LessonNav({
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
               notepadOpen
                 ? "bg-brand-bright/15 text-brand-bright"
-                : "text-secondary hover:text-primary hover:bg-hover"
+                : "text-muted-foreground hover:text-primary hover:bg-hover"
             }`}
             title={notepadOpen ? "Hide notes" : "Show notes"}
           >
@@ -719,7 +774,7 @@ function LessonNav({
             className={
               tutorOpen
                 ? "bg-brand-bright/15 text-brand-bright hover:bg-brand-bright/25"
-                : "text-secondary"
+                : "text-muted-foreground"
             }
             title={tutorOpen ? "Hide tutor" : "Show tutor"}
           >
@@ -737,7 +792,7 @@ function SolutionReveal({ code }: { code: string }) {
 
   return (
     <div className="mt-6">
-      <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Solution</h3>
+      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Solution</h3>
       {!revealed ? (
         <Button
           variant="outline"
@@ -749,7 +804,7 @@ function SolutionReveal({ code }: { code: string }) {
       ) : (
         <div className="rounded-lg border border-border bg-elevated overflow-hidden">
           <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-            <span className="text-xs text-muted font-medium">C++</span>
+            <span className="text-xs text-muted-foreground font-medium">C++</span>
             <Button
               variant="ghost"
               size="xs"
@@ -758,7 +813,7 @@ function SolutionReveal({ code }: { code: string }) {
               Hide
             </Button>
           </div>
-          <pre className="p-3 overflow-x-auto text-xs font-mono text-primary">
+          <pre className="p-3 overflow-x-auto text-xs font-mono text-foreground">
             <code>{code}</code>
           </pre>
         </div>
@@ -777,7 +832,7 @@ function DifficultyBadge({ difficulty }: { difficulty: string }) {
   return (
     <span
       className={`px-1.5 py-0.5 rounded text-[10px] font-medium uppercase ${
-        colors[difficulty.toLowerCase()] ?? "bg-muted/20 text-muted"
+        colors[difficulty.toLowerCase()] ?? "bg-muted/20 text-muted-foreground"
       }`}
     >
       {difficulty}
@@ -788,17 +843,17 @@ function DifficultyBadge({ difficulty }: { difficulty: string }) {
 function TestCaseCard({ testCase }: { testCase: SampleTestCase }) {
   return (
     <div className="rounded-lg bg-elevated border border-border p-3">
-      <div className="font-medium text-sm text-primary mb-2">{testCase.label}</div>
+      <div className="font-medium text-sm text-foreground mb-2">{testCase.label}</div>
       {testCase.stdin && (
         <div className="mb-2">
-          <span className="text-xs text-muted">Input: </span>
+          <span className="text-xs text-muted-foreground">Input: </span>
           <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-accent">
             {testCase.stdin}
           </code>
         </div>
       )}
       <div>
-        <span className="text-xs text-muted">Expected Output: </span>
+        <span className="text-xs text-muted-foreground">Expected Output: </span>
         <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-success">
           {testCase.expectedStdout}
         </code>
@@ -823,11 +878,11 @@ function ResourceLink({
       rel="noopener noreferrer"
       className="block rounded-lg bg-elevated border border-border p-4 hover:bg-hover transition group"
     >
-      <div className="flex items-center gap-2 text-primary font-medium group-hover:text-accent transition">
+      <div className="flex items-center gap-2 text-foreground font-medium group-hover:text-accent transition">
         {title}
         <ExternalLinkIcon className="h-4 w-4" />
       </div>
-      <p className="text-sm text-muted mt-1">{description}</p>
+      <p className="text-sm text-muted-foreground mt-1">{description}</p>
     </a>
   );
 }
@@ -931,7 +986,7 @@ function GeneratingContent() {
     <div className="flex items-center justify-center py-16">
       <div className="w-64 space-y-3">
         <Progress value={value}>
-          <ProgressLabel className="text-sm text-muted">
+          <ProgressLabel className="text-sm text-muted-foreground">
             Generating lesson content…
           </ProgressLabel>
         </Progress>

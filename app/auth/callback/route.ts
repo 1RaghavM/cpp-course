@@ -3,13 +3,20 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-/** Exchanges email-confirmation / password-reset codes for a session. */
+/** Exchanges email-confirmation, password-reset, or OAuth codes for a session. */
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const next = requestUrl.searchParams.get("next") ?? "/";
+  const errorParam = requestUrl.searchParams.get("error");
 
   const redirectTo = (path: string) => NextResponse.redirect(new URL(path, requestUrl.origin));
+
+  if (errorParam) {
+    const loginUrl = new URL("/login", requestUrl.origin);
+    loginUrl.searchParams.set("error", "oauth_failed");
+    return NextResponse.redirect(loginUrl);
+  }
 
   if (!code) {
     return redirectTo("/login");

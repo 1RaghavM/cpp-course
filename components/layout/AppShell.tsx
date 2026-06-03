@@ -21,7 +21,7 @@ export function AppShell({
 }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const hideHeader = pathname.startsWith("/lessons/") || pathname.startsWith("/playground");
+  const hideHeader = pathname.startsWith("/lessons/") || pathname.startsWith("/playground") || pathname.startsWith("/exercises/");
 
   useEffect(() => {
     async function syncOnboarding() {
