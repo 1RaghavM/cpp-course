@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Labeled Printer",
+    "prompt_md": "## Goal\n\nWrite two void functions that print labeled values, demonstrating that void functions perform side effects (printing) instead of returning data.\n\n## Input\n\nTwo integers on one line separated by a space: `width` and `height`.\n\n## Output\n\n```\nWidth: <width>\nHeight: <height>\nArea: <area>\n```\n\n## Requirements\n\n1. Define `void printLabeled(int value)` -- this is a **void** function. It does not exist in the starter code; you will create the helper described below instead.\n2. Define `void printRectangleStats(int width, int height)` that prints all three lines shown above. The area is `width * height`.\n3. `printRectangleStats` must not return a value -- it prints directly.\n4. In `main`, read the two integers and call `printRectangleStats`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define void printRectangleStats(int width, int height)\n// It should print:\n//   Width: <width>\n//   Height: <height>\n//   Area: <width * height>\n\n\nint main() {\n    int width {}, height {};\n    std::cin >> width >> height;\n\n    // TODO: Call printRectangleStats\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printRectangleStats(int width, int height) {\n    std::cout << \"Width: \" << width << '\\n';\n    std::cout << \"Height: \" << height << '\\n';\n    std::cout << \"Area: \" << width * height << '\\n';\n}\n\nint main() {\n    int width {}, height {};\n    std::cin >> width >> height;\n\n    printRectangleStats(width, height);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 and 7",
+        "is_sample": true,
+        "stdin": "4 7",
+        "expected_stdout": "Width: 4\nHeight: 7\nArea: 28\n"
+      },
+      {
+        "label": "Hidden: 1 and 1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Width: 1\nHeight: 1\nArea: 1\n"
+      },
+      {
+        "label": "Hidden: 10 and 3",
+        "is_sample": false,
+        "stdin": "10 3",
+        "expected_stdout": "Width: 10\nHeight: 3\nArea: 30\n"
+      }
+    ]
+  },
+  {
+    "title": "Multi-Line Report",
+    "prompt_md": "## Goal\n\nPractice combining void functions (which print) with value-returning functions (which compute). This reinforces the difference introduced in lessons 2.2 and 2.3.\n\n## Input\n\nThree integers on one line separated by spaces: `a`, `b`, and `c`.\n\n## Output\n\n```\nSum: <a + b + c>\nProduct: <a * b * c>\nAverage (int): <(a + b + c) / 3>\n```\n\nNote: the average uses integer division (truncation toward zero).\n\n## Requirements\n\n1. Define `int computeSum(int a, int b, int c)` that returns `a + b + c`.\n2. Define `int computeProduct(int a, int b, int c)` that returns `a * b * c`.\n3. Define `void printReport(int sum, int product, int average)` that prints all three lines in the format shown above.\n4. In `main`, read the three integers, call the compute functions, calculate the integer average as `sum / 3`, and pass all results to `printReport`.\n5. The compute functions must not print. The print function must not compute.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define int computeSum(int a, int b, int c)\n\n// TODO: Define int computeProduct(int a, int b, int c)\n\n// TODO: Define void printReport(int sum, int product, int average)\n// Print:\n//   Sum: <sum>\n//   Product: <product>\n//   Average (int): <average>\n\nint main() {\n    int a {}, b {}, c {};\n    std::cin >> a >> b >> c;\n\n    // TODO: Call computeSum, computeProduct, compute the average,\n    //       then call printReport\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint computeSum(int a, int b, int c) {\n    return a + b + c;\n}\n\nint computeProduct(int a, int b, int c) {\n    return a * b * c;\n}\n\nvoid printReport(int sum, int product, int average) {\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << \"Product: \" << product << '\\n';\n    std::cout << \"Average (int): \" << average << '\\n';\n}\n\nint main() {\n    int a {}, b {}, c {};\n    std::cin >> a >> b >> c;\n\n    int sum { computeSum(a, b, c) };\n    int product { computeProduct(a, b, c) };\n    int average { sum / 3 };\n    printReport(sum, product, average);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 4 5",
+        "is_sample": true,
+        "stdin": "3 4 5",
+        "expected_stdout": "Sum: 12\nProduct: 60\nAverage (int): 4\n"
+      },
+      {
+        "label": "Hidden: 10 20 30",
+        "is_sample": false,
+        "stdin": "10 20 30",
+        "expected_stdout": "Sum: 60\nProduct: 6000\nAverage (int): 20\n"
+      },
+      {
+        "label": "Hidden: 1 2 3 (average truncates)",
+        "is_sample": false,
+        "stdin": "1 2 3",
+        "expected_stdout": "Sum: 6\nProduct: 6\nAverage (int): 2\n"
+      }
+    ]
+  }
+]

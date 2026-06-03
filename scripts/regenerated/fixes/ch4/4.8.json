@@ -1,0 +1,48 @@
+{
+  "number": "4.8",
+  "title": "Floating point numbers",
+  "sort_order": 57,
+  "summary_md": "## Floating Point Numbers\n\nFloating point types represent real numbers — values with a fractional component, or very large/small values that integers can't hold. C++ provides three floating point types:\n\n- `float` — typically 32-bit, ~6-7 significant digits of precision\n- `double` — typically 64-bit, ~15-16 significant digits of precision\n- `long double` — at least 64-bit, precision varies by platform\n\nPrefer `double` in most code. `float` sacrifices too much precision to be generally useful, and `long double` brings portability headaches.\n\n### Literals and suffixes\n\nBy default, floating point literals are `double`. Append `f` or `F` to force `float`, and `L` to force `long double`:\n\n```cpp\ndouble d  = 3.14;     // double\nfloat  f  = 3.14f;    // float\n```\n\nScientific notation works exactly as covered in *Introduction to Scientific Notation* — `6.02e23` and `1.5e-4` are valid literals.\n\n### Precision and rounding\n\nFloating point numbers are stored in binary using the IEEE 754 standard. Most decimal fractions (like `0.1`) have no exact binary representation, so small rounding errors accumulate. This is why comparing floats with `==` is unreliable — instead, check whether the difference falls within a small epsilon.\n\n```cpp\n#include <format>\n#include <print>\n#include <cmath>\n\nint main()\n{\n    double a = 0.1 + 0.2;\n    double b = 0.3;\n    double epsilon = 1e-9;\n\n    bool nearly_equal = std::abs(a - b) < epsilon;\n    std::println(\"{}\", std::format(\"0.1+0.2 == 0.3? {}\", nearly_equal));\n}\n```\n\n### Special values\n\nIEEE 754 defines three non-finite values you may encounter:\n\n- `+inf` / `-inf` — produced by overflow or division of a nonzero float by zero\n- `NaN` (not a number) — produced by invalid operations like `0.0 / 0.0`\n\nUse `std::isinf` and `std::isnan` from `<cmath>` to test for these; arithmetic comparisons involving `NaN` always return false, which can cause silent bugs.\n\n### Relation to fixed-width integers\n\nAs seen in *Fixed-Width Integers and size_t*, integer types guarantee exact bit widths and exact arithmetic. Floating point trades exactness for range — a `double` can represent values from roughly 10^-308 to 10^308, far beyond any 64-bit integer, but at the cost of precision. Understanding that tradeoff is the central skill when choosing between integer and floating point types.",
+  "exercises": [
+    {
+      "title": "Scientific Notation Converter",
+      "prompt_md": "## Scientific Notation Converter\n\nWrite a program that reads a single `double` value from standard input and prints it in three different ways:\n\n1. In default notation (let the stream decide the format)\n2. In fixed-point notation with **6** decimal places\n3. In scientific notation with **6** decimal places\n\nUse `std::fixed`, `std::scientific`, and `std::setprecision` from `<iomanip>` together with `std::cout`.\n\n### Input\n\nA single floating-point number (may be given in scientific notation, e.g. `6.02e23`).\n\n### Output\n\nExactly three lines in the format shown below. Use `std::defaultfloat` to reset the stream format before the first line.\n\n### Example\n\n**Input:**\n```\n6.02e23\n```\n\n**Output:**\n```\nDefault: 6.02e+23\nFixed: 602000000000000004857907200.000000\nScientific: 6.020000e+23\n```\n\n### Notes\n\n- The `Default:` line uses the stream's default floating-point format (no `std::fixed` or `std::scientific` applied, no explicit `setprecision`).\n- The `Fixed:` and `Scientific:` lines both use `std::setprecision(6)`.\n- Your output must match exactly, including spacing and capitalisation.\n- Do **not** use `std::format` or `std::print` — use `std::cout` with stream manipulators only.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    double value{};\n    std::cin >> value;\n\n    // TODO: Print value in default notation on a line prefixed \"Default: \"\n\n    // TODO: Print value in fixed-point notation with 6 decimal places\n    //       on a line prefixed \"Fixed: \"\n\n    // TODO: Print value in scientific notation with 6 decimal places\n    //       on a line prefixed \"Scientific: \"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    double value{};\n    std::cin >> value;\n\n    std::cout << std::defaultfloat;\n    std::cout << \"Default: \" << value << '\\n';\n\n    std::cout << std::fixed << std::setprecision(6);\n    std::cout << \"Fixed: \" << value << '\\n';\n\n    std::cout << std::scientific << std::setprecision(6);\n    std::cout << \"Scientific: \" << value << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Whole number",
+          "stdin": "42.0",
+          "expected_stdout": "Default: 42\nFixed: 42.000000\nScientific: 4.200000e+01\n",
+          "is_sample": false
+        },
+        {
+          "label": "Large value in scientific notation",
+          "stdin": "6.02e23",
+          "expected_stdout": "Default: 6.02e+23\nFixed: 602000000000000004857907200.000000\nScientific: 6.020000e+23\n",
+          "is_sample": true
+        },
+        {
+          "label": "Small decimal value",
+          "stdin": "0.00015",
+          "expected_stdout": "Default: 0.00015\nFixed: 0.000150\nScientific: 1.500000e-04\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Floating-Point Precision Explorer",
+      "prompt_md": "## Floating-Point Precision Explorer\n\nFloating-point arithmetic is not exact. Most decimal fractions cannot be represented precisely in binary, so expressions that \"should\" equal a target often differ by a tiny amount.\n\nWrite a program that demonstrates this using two specific expressions, without any loops.\n\nYour program should:\n\n1. Compute `double sum1 = 0.1 + 0.2;`\n2. Compute `double sum2 = 1.0 / 3.0 * 3.0;`\n3. For each, report whether it is **exactly equal** to the expected value (`0.3` and `1.0`, respectively) using `==`.\n4. For each, report whether it is **nearly equal** to the expected value using an epsilon of `1e-9`.\n\n### Output\nPrint exactly six lines:\n```\n0.1 + 0.2 = <value with 17 decimal places>\nExact equal to 0.3: <true|false>\nNearly equal to 0.3: <true|false>\n1.0/3.0*3.0 = <value with 17 decimal places>\nExact equal to 1.0: <true|false>\nNearly equal to 1.0: <true|false>\n```\n\nUse `std::boolalpha` for the boolean values. Use `std::fixed` with `std::setprecision(17)` for the double values.\n\n### Example Output\n```\n0.1 + 0.2 = 0.30000000000000004\nExact equal to 0.3: false\nNearly equal to 0.3: true\n1.0/3.0*3.0 = 1.00000000000000000\nExact equal to 1.0: true\nNearly equal to 1.0: true\n```\n\n### Notes\n- No input is read.\n- Include `<cmath>` for `std::abs`.\n- The epsilon comparison is: `std::abs(a - b) < 1e-9`.\n- The exact results depend on IEEE 754 double precision, which is standard on all modern platforms.\n",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\nint main()\n{\n    // TODO: Compute sum1 = 0.1 + 0.2\n    double sum1{};\n\n    // TODO: Compute sum2 = 1.0 / 3.0 * 3.0\n    double sum2{};\n\n    double epsilon = 1e-9;\n\n    // TODO: Print sum1 with 17 decimal places\n    // TODO: Print whether sum1 == 0.3 (exact) using boolalpha\n    // TODO: Print whether sum1 is nearly equal to 0.3 (within epsilon)\n\n    // TODO: Print sum2 with 17 decimal places\n    // TODO: Print whether sum2 == 1.0 (exact) using boolalpha\n    // TODO: Print whether sum2 is nearly equal to 1.0 (within epsilon)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\nint main()\n{\n    double sum1 = 0.1 + 0.2;\n    double sum2 = 1.0 / 3.0 * 3.0;\n\n    double epsilon = 1e-9;\n\n    std::cout << std::fixed << std::setprecision(17);\n    std::cout << \"0.1 + 0.2 = \" << sum1 << '\\n';\n\n    std::cout << std::boolalpha;\n    std::cout << \"Exact equal to 0.3: \" << (sum1 == 0.3) << '\\n';\n    std::cout << \"Nearly equal to 0.3: \" << (std::abs(sum1 - 0.3) < epsilon) << '\\n';\n\n    std::cout << std::fixed << std::setprecision(17);\n    std::cout << \"1.0/3.0*3.0 = \" << sum2 << '\\n';\n\n    std::cout << \"Exact equal to 1.0: \" << (sum2 == 1.0) << '\\n';\n    std::cout << \"Nearly equal to 1.0: \" << (std::abs(sum2 - 1.0) < epsilon) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Default: IEEE 754 double precision",
+          "stdin": "",
+          "expected_stdout": "0.1 + 0.2 = 0.30000000000000004\nExact equal to 0.3: false\nNearly equal to 0.3: true\n1.0/3.0*3.0 = 1.00000000000000000\nExact equal to 1.0: true\nNearly equal to 1.0: true\n",
+          "is_sample": true
+        }
+      ]
+    }
+  ]
+}

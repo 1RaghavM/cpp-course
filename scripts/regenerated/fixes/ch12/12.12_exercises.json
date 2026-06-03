@@ -1,0 +1,59 @@
+{
+  "lesson": "12.12",
+  "title": "Return by reference and return by address",
+  "why": "Exercise 1: all 3 test cases had expected_stdout missing the trailing newline -- solution prints '\\n' after each label but tests omitted it, causing guaranteed test failures. Exercise 2: used std::vector<int> (Ch 16/17 material), had same trailing newline bug, and was the 4th linear search in the chapter. Ex1 is fixed (trailing newlines). Ex2 is replaced entirely with a return-by-address exercise that uses a static lookup table and int arr[20] instead of vector.",
+  "exercises": [
+    {
+      "title": "Safe Reference Returns from a Static Cache",
+      "prompt_md": "## Goal\n\nPractice returning references safely by using a static local variable as a backing store.\n\n## Background\n\nA common safe pattern for return-by-reference is returning a reference to a `static` local variable. Because static locals persist for the entire program lifetime, the reference remains valid after the function returns.\n\n## Task\n\nWrite a function `getLabel(int n)` that returns a `const std::string&`.\n\n- If `n` is positive, the label is `\"positive\"`.\n- If `n` is negative, the label is `\"negative\"`.\n- If `n` is zero, the label is `\"zero\"`.\n\nUse static local `std::string` variables as the backing store — do **not** construct a new string on each call.\n\nIn `main`, read integers from stdin (one per line) until EOF and print the corresponding label for each.\n\n## Input\n\nA series of integers, one per line.\n\n## Output\n\nFor each integer, print its label on its own line.\n\n## Requirements\n\n- `getLabel` must return `const std::string&`.\n- Use static local variables inside `getLabel`; do not use global variables.\n- No dynamic allocation for the label strings on each call.\n",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement getLabel(int n) -> const std::string&\n// Use three static local std::string variables for the three labels.\n// Return a const reference to the appropriate one.\n\nint main() {\n    int n{};\n    while (std::cin >> n) {\n        // TODO: call getLabel and print the result\n    }\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nconst std::string& getLabel(int n) {\n    static const std::string pos{ \"positive\" };\n    static const std::string neg{ \"negative\" };\n    static const std::string zer{ \"zero\" };\n    if (n > 0) return pos;\n    if (n < 0) return neg;\n    return zer;\n}\n\nint main() {\n    int n{};\n    while (std::cin >> n) {\n        std::cout << getLabel(n) << '\\n';\n    }\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "mixed positive, negative, zero",
+          "stdin": "5\n-3\n0",
+          "expected_stdout": "positive\nnegative\nzero\n",
+          "is_sample": true
+        },
+        {
+          "label": "all positive",
+          "stdin": "1\n100\n42",
+          "expected_stdout": "positive\npositive\npositive\n",
+          "is_sample": false
+        },
+        {
+          "label": "alternating sign with zero",
+          "stdin": "-1\n0\n1\n0\n-99",
+          "expected_stdout": "negative\nzero\npositive\nzero\nnegative\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Return Grade Label by Address",
+      "prompt_md": "## Goal\n\nCombine return by address with the null-sentinel pattern: write a function that maps a numeric score to a grade label, returning a pointer to a static string. Return `nullptr` for invalid scores.\n\n## Task\n\nWrite a function:\n\n```cpp\nconst std::string* getGrade(int score);\n```\n\n- If `score` is 90-100, return a pointer to a static string `\"A\"`.\n- If `score` is 80-89, return a pointer to `\"B\"`.\n- If `score` is 70-79, return a pointer to `\"C\"`.\n- If `score` is 60-69, return a pointer to `\"D\"`.\n- If `score` is 0-59, return a pointer to `\"F\"`.\n- If `score` is outside 0-100, return `nullptr` (invalid score).\n\nUse `static const std::string` local variables inside the function so the returned pointers remain valid.\n\nIn `main`:\n\n1. Read `q` (number of queries).\n2. For each query, read a score.\n   - If the returned pointer is non-null, print `Score <score>: <grade>`.\n   - If null, print `Score <score>: invalid`.\n\n## Input\n\n```\n<q>\n<score1>\n<score2>\n...\n```\n\n## Output\n\nOne line per query as described above.\n\n## Requirements\n\n- `getGrade` must return `const std::string*`.\n- Use static local variables — do not construct new strings on each call.\n- Null-check the returned pointer before dereferencing.\n- No `std::vector` or dynamic containers.\n",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement getGrade(int score) -> const std::string*\n// Return a pointer to a static local string for valid scores,\n// or nullptr for out-of-range scores.\nconst std::string* getGrade(int score) {\n    // TODO\n    return nullptr;\n}\n\nint main() {\n    int q{};\n    std::cin >> q;\n\n    while (q-- > 0) {\n        int score{};\n        std::cin >> score;\n        // TODO: call getGrade, null-check, and print the result\n    }\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nconst std::string* getGrade(int score) {\n    static const std::string a{ \"A\" };\n    static const std::string b{ \"B\" };\n    static const std::string c{ \"C\" };\n    static const std::string d{ \"D\" };\n    static const std::string f{ \"F\" };\n\n    if (score < 0 || score > 100) return nullptr;\n    if (score >= 90) return &a;\n    if (score >= 80) return &b;\n    if (score >= 70) return &c;\n    if (score >= 60) return &d;\n    return &f;\n}\n\nint main() {\n    int q{};\n    std::cin >> q;\n\n    while (q-- > 0) {\n        int score{};\n        std::cin >> score;\n        const std::string* grade { getGrade(score) };\n        if (grade)\n            std::cout << \"Score \" << score << \": \" << *grade << '\\n';\n        else\n            std::cout << \"Score \" << score << \": invalid\\n\";\n    }\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: mixed grades and invalid",
+          "stdin": "4\n95\n82\n55\n-1",
+          "expected_stdout": "Score 95: A\nScore 82: B\nScore 55: F\nScore -1: invalid\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: boundary values",
+          "stdin": "5\n100\n90\n89\n60\n0",
+          "expected_stdout": "Score 100: A\nScore 90: A\nScore 89: B\nScore 60: D\nScore 0: F\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: all invalid",
+          "stdin": "3\n-10\n101\n200",
+          "expected_stdout": "Score -10: invalid\nScore 101: invalid\nScore 200: invalid\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

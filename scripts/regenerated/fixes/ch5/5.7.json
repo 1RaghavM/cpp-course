@@ -1,0 +1,36 @@
+{
+  "lesson": "5.7",
+  "title": "Introduction to std::string",
+  "fixes_applied": [
+    "CRIT-3: Ex2 -- removed for loop requirement. Redesigned to use an if/else chain (available from 4.10) that handles levels 1-5 by appending the correct number of '!' characters without any loop. Since level is constrained to 1-5, we use explicit if/else if blocks."
+  ],
+  "exercises": [
+    {
+      "index": 1,
+      "title": "Const and Mutable Greeting Builder",
+      "prompt_md": "## Goal\nRead a name and a numeric excitement level from stdin, then build a greeting that is punctuated according to the level, printing the greeting and its length.\n\n## Input\n- Line 1: a name (non-empty, no spaces, at most 20 characters)\n- Line 2: an integer `level` (1 <= level <= 5) representing excitement\n\n## Output\nPrint exactly two lines:\n1. `Greeting: <text>` -- where `<text>` is the word `Hello` followed by a comma and a space, then the name, then `level` exclamation marks (e.g., level 3 -> `Hello, Ada!!!`)\n2. `Length: <N>` -- the number of characters in `<text>` (i.e., everything after `Greeting: `), using `size()`\n\nNo extra blank lines.\n\n## Requirements\n1. Declare a `const std::string` called `base` initialized to `\"Hello, \"` (using the `\"...\"s` literal suffix and `using namespace std::string_literals`).\n2. Build a mutable `std::string` called `greeting` by copying `base` and then appending the name with `+=`.\n3. Append exclamation marks to `greeting` based on the `level` value. Since `level` is between 1 and 5, use an `if`/`else if` chain:\n   - If `level` is 1, append `\"!\"`\n   - If `level` is 2, append `\"!!\"`\n   - If `level` is 3, append `\"!!!\"`\n   - If `level` is 4, append `\"!!!!\"`\n   - If `level` is 5, append `\"!!!!!\"`\n4. Do **not** assign to or modify `base` after its declaration -- it is `const`.\n5. Print `greeting` and `greeting.size()` with the exact labels `Greeting: ` (capital G, colon, one space) and `Length: ` (capital L, colon, one space).\n6. Hidden tests cover: level 1 (single exclamation mark), level 5 (maximum), and a single-character name.",
+      "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    using namespace std::string_literals;\n\n    std::string name {};\n    int level {};\n    std::cin >> name >> level;\n\n    // TODO: declare a const std::string called 'base' using the\n    // \"...\"s suffix, initialized to \"Hello, \"\n\n    // TODO: declare a mutable std::string called 'greeting'\n    // initialized as a copy of base, then use += to append 'name'\n\n    // TODO: use an if/else if chain to append the right number\n    // of '!' characters based on level (1 through 5)\n    // level 1 -> \"!\", level 2 -> \"!!\", etc.\n\n    // TODO: print the two output lines using greeting and\n    // greeting.size()\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    using namespace std::string_literals;\n\n    std::string name {};\n    int level {};\n    std::cin >> name >> level;\n\n    const std::string base { \"Hello, \"s };\n\n    std::string greeting { base };\n    greeting += name;\n\n    if (level == 1)\n        greeting += \"!\";\n    else if (level == 2)\n        greeting += \"!!\";\n    else if (level == 3)\n        greeting += \"!!!\";\n    else if (level == 4)\n        greeting += \"!!!!\";\n    else if (level == 5)\n        greeting += \"!!!!!\";\n\n    std::cout << \"Greeting: \" << greeting << \"\\n\";\n    std::cout << \"Length: \" << greeting.size() << \"\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- typical name, medium excitement",
+          "stdin": "Ada\n3\n",
+          "expected_stdout": "Greeting: Hello, Ada!!!\nLength: 13\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden -- level 1 and single-character name",
+          "stdin": "Z\n1\n",
+          "expected_stdout": "Greeting: Hello, Z!\nLength: 9\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- level 5 and longer name",
+          "stdin": "Maximilian\n5\n",
+          "expected_stdout": "Greeting: Hello, Maximilian!!!!!\nLength: 22\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

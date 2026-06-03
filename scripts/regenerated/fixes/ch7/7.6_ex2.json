@@ -1,0 +1,31 @@
+{
+  "lesson": "7.6",
+  "exercise_index": 1,
+  "what_changed": "Replaced for loop with fixed 5 calls to increment functions from main. Demonstrates static file-scope counters and anonymous namespace functions without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "File-Scope Counter with Internal Linkage and Block Scope",
+    "prompt_md": "## Goal\nComplete a program that tracks how many times each of two categories of words -- \"internal\" and \"external\" -- appears among exactly 5 inputs, using a **file-scope counter variable with internal linkage** for each category.\n\n## Input\n- Lines 1-5: one word per line. Each word is either exactly `internal` or exactly `external` (lowercase, no other values).\n\n## Output\nPrint exactly two lines in this order:\n```\ninternal count: <X>\nexternal count: <Y>\n```\nwhere `<X>` and `<Y>` are non-negative integers. No trailing spaces.\n\n## Requirements\n1. Declare two `static` integer variables at file scope -- `s_internalCount` and `s_externalCount` -- both initialised to `0`. These must have internal linkage via the `static` keyword (not an anonymous namespace).\n2. Implement two void functions also at file scope -- `incrementInternal()` and `incrementExternal()` -- each placed inside an **anonymous namespace**, giving them internal linkage. Each function increments the corresponding `static` counter.\n3. `main()` reads 5 words, calling the appropriate increment function for each word using if/else.\n4. After processing, `main()` prints the two output lines shown above.\n5. Hidden tests cover: all words being `internal`, all words being `external`, and a mix.\n\n## Notes\n- You may use `std::string` and `std::cin >> word` for reading.\n- The `static` counters must be at file scope (not inside `main`).",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: declare two static int variables at file scope with internal linkage:\n//   s_internalCount and s_externalCount, both initialised to 0.\n\n// TODO: inside an anonymous namespace, define:\n//   void incrementInternal()  -- increments s_internalCount\n//   void incrementExternal()  -- increments s_externalCount\n\nvoid classifyWord(const std::string& word) {\n    // TODO: call incrementInternal() or incrementExternal() based on word\n}\n\nint main() {\n    std::string w1, w2, w3, w4, w5;\n    std::cin >> w1 >> w2 >> w3 >> w4 >> w5;\n\n    classifyWord(w1);\n    classifyWord(w2);\n    classifyWord(w3);\n    classifyWord(w4);\n    classifyWord(w5);\n\n    // TODO: print the two output lines\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstatic int s_internalCount = 0;\nstatic int s_externalCount = 0;\n\nnamespace {\n    void incrementInternal() {\n        ++s_internalCount;\n    }\n\n    void incrementExternal() {\n        ++s_externalCount;\n    }\n}\n\nvoid classifyWord(const std::string& word) {\n    if (word == \"internal\") {\n        incrementInternal();\n    } else {\n        incrementExternal();\n    }\n}\n\nint main() {\n    std::string w1, w2, w3, w4, w5;\n    std::cin >> w1 >> w2 >> w3 >> w4 >> w5;\n\n    classifyWord(w1);\n    classifyWord(w2);\n    classifyWord(w3);\n    classifyWord(w4);\n    classifyWord(w5);\n\n    std::cout << \"internal count: \" << s_internalCount << '\\n';\n    std::cout << \"external count: \" << s_externalCount << '\\n';\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "mixed input",
+        "stdin": "internal\nexternal\ninternal\ninternal\nexternal\n",
+        "expected_stdout": "internal count: 3\nexternal count: 2\n",
+        "is_sample": true
+      },
+      {
+        "label": "hidden: all internal",
+        "stdin": "internal\ninternal\ninternal\ninternal\ninternal\n",
+        "expected_stdout": "internal count: 5\nexternal count: 0\n",
+        "is_sample": false
+      },
+      {
+        "label": "hidden: all external",
+        "stdin": "external\nexternal\nexternal\nexternal\nexternal\n",
+        "expected_stdout": "internal count: 0\nexternal count: 5\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

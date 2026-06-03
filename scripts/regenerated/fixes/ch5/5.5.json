@@ -1,0 +1,36 @@
+{
+  "lesson": "5.5",
+  "title": "Constant expressions",
+  "fixes_applied": [
+    "CRIT-1: Ex1 -- fixed expected output, static_assert values, and all test cases. PI_SCALED * 5 * 5 = 314 * 25 = 7850 (not 785). 2 * PI_SCALED * 5 = 3140 (not 314). Updated prompt, solution, and all test cases to use correct values."
+  ],
+  "exercises": [
+    {
+      "index": 0,
+      "title": "Compile-Time Circle Constants",
+      "prompt_md": "## Goal\nComplete the program so that all geometric constants for a circle with a given compile-time radius are computed at compile time using `constexpr` and `consteval`.\n\n## Input\n- No stdin. The radius is fixed at compile time as `constexpr int RADIUS = 5;`.\n\n## Output\nPrint exactly 3 lines in this order:\n```\nRadius: 5\nArea numerator: 7850\nCircumference numerator: 3140\n```\n- \"Area numerator\" is `PI_SCALED * RADIUS * RADIUS` where `PI_SCALED = 314` represents pi * 100 (integer approximation). So `314 * 5 * 5 = 7850`.\n- \"Circumference numerator\" is `2 * PI_SCALED * RADIUS`. So `2 * 314 * 5 = 3140`.\n- No trailing blank lines. Exact labels and spacing as shown.\n\n## Requirements\n1. Declare `constexpr int PI_SCALED = 314;` and `constexpr int RADIUS = 5;` at namespace scope.\n2. Write a `consteval` function `int scaled_area(int r)` that returns `PI_SCALED * r * r`.\n3. Write a `consteval` function `int scaled_circumference(int r)` that returns `2 * PI_SCALED * r`.\n4. In `main`, declare `constexpr int area_num = scaled_area(RADIUS);` and `constexpr int circ_num = scaled_circumference(RADIUS);` -- both must be `constexpr`.\n5. Print the three output lines using `std::cout`.\n6. The program must compile cleanly; a `static_assert(area_num == 7850);` and `static_assert(circ_num == 3140);` will be inserted by the judge to verify compile-time evaluation.\n\n## Notes\n- You may use `<iostream>` and `<format>` only.\n- `consteval` functions defined before `main` is sufficient; no class or struct is needed.",
+      "starter_code": "#include <iostream>\n\n// TODO: declare constexpr int PI_SCALED = 314;\n// TODO: declare constexpr int RADIUS = 5;\n\n// TODO: write consteval function scaled_area(int r)\n//       returns PI_SCALED * r * r\n\n// TODO: write consteval function scaled_circumference(int r)\n//       returns 2 * PI_SCALED * r\n\nint main() {\n    // TODO: declare constexpr int area_num using scaled_area(RADIUS)\n    // TODO: declare constexpr int circ_num using scaled_circumference(RADIUS)\n\n    // TODO: print the three output lines\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nconstexpr int PI_SCALED = 314;\nconstexpr int RADIUS = 5;\n\nconsteval int scaled_area(int r) {\n    return PI_SCALED * r * r;\n}\n\nconsteval int scaled_circumference(int r) {\n    return 2 * PI_SCALED * r;\n}\n\nint main() {\n    constexpr int area_num = scaled_area(RADIUS);\n    constexpr int circ_num = scaled_circumference(RADIUS);\n\n    static_assert(area_num == 7850);\n    static_assert(circ_num == 3140);\n\n    std::cout << \"Radius: \" << RADIUS << \"\\n\";\n    std::cout << \"Area numerator: \" << area_num << \"\\n\";\n    std::cout << \"Circumference numerator: \" << circ_num << \"\\n\";\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample -- radius 5",
+          "stdin": "",
+          "expected_stdout": "Radius: 5\nArea numerator: 7850\nCircumference numerator: 3140\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden -- static_assert area_num == 7850",
+          "stdin": "",
+          "expected_stdout": "Radius: 5\nArea numerator: 7850\nCircumference numerator: 3140\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden -- static_assert circ_num == 3140",
+          "stdin": "",
+          "expected_stdout": "Radius: 5\nArea numerator: 7850\nCircumference numerator: 3140\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

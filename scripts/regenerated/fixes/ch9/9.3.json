@@ -1,0 +1,92 @@
+{
+  "lesson": {
+    "number": "9.3",
+    "title": "Common semantic errors in C++",
+    "sort_order": 119,
+    "summary_md": "## Common Semantic Errors in C++\n\nSemantic errors are bugs where the code compiles and runs but produces wrong results. Unlike syntax errors, the compiler won't catch them — you need tests (covered in *Introduction to testing your code*) and careful reasoning about intent.\n\n### Off-by-one errors\n\nThe classic culprit. Iterating `i <= count` instead of `i < count` processes one element too many. This is especially dangerous with fixed-size arrays where going one past the end is undefined behavior.\n\n### Signed/unsigned mismatch\n\nComparing a signed `int` to an unsigned `std::size_t` can silently wrap when the signed value is negative. Prefer matching types or casting explicitly when mixing signed and unsigned arithmetic.\n\n### Uninitialized variables\n\nA variable declared but not initialized holds whatever bytes were already in memory. Always initialize at the point of declaration: `int count = 0;` not `int count;` followed by later assignment.\n\n### Integer overflow and truncation\n\nAssigning a `long long` result to an `int` silently truncates. Arithmetic on two `int` values overflows silently even if the result is stored in a `long long` — the overflow happens before the assignment. Cast at least one operand first.\n\n### Operator precedence surprises\n\n`result = a & b == 0` is parsed as `result = a & (b == 0)` because `==` binds tighter than `&`. Add explicit parentheses whenever mixing bitwise, comparison, and logical operators.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int scores[] = {90, 85, 72, 95, 60};\n    int count = 5;\n\n    // Semantic error: sums only part of the array due to wrong loop bound\n    // for (int i = 1; i <= count; ++i) // UB on last step, starts at wrong index\n\n    int total = 0;\n    for (int i = 0; i < count; ++i)\n        total += scores[i];\n\n    std::cout << \"Total: \" << total << \", Average: \"\n              << static_cast<double>(total) / count << '\\n';\n}\n```\n\n### Using code coverage to find them\n\nAs discussed in *Code coverage*, a line being executed isn't proof it's correct — 100% branch coverage still won't catch a wrong formula. Pair coverage metrics with assertions and unit tests that check boundary values, not just happy paths.",
+    "exercises": [
+      {
+        "title": "Diagnose and Fix a Running Total with Semantic Bugs",
+        "prompt_md": "## Goal\nComplete the function `int computeSum(int nums[], int count)` so it correctly sums all elements of the array and returns the result without any semantic errors.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100), the number of integers.\n- Lines 2..N+1: one integer per line, each in the range [-1000, 1000].\n\n## Output\nPrint exactly two lines:\n- Line 1: `Sum: X` where X is the sum of all N integers.\n- Line 2: `Average: Y` where Y is the average formatted to exactly one decimal place (e.g. `Average: 3.5`).\n\nNo extra blank lines.\n\n## Requirements\n1. `computeSum` must use an index-based loop with a signed `int` loop variable and the `count` parameter as the bound.\n2. The loop bound must be strictly less than the count (no off-by-one: do not use `<=`).\n3. The accumulator variable must be initialized to `0` at the point of declaration.\n4. The average must be computed by casting `computeSum`'s return value to `double` before dividing — do not perform integer division.\n5. Dividing by N must use `static_cast<double>` on at least one operand.\n6. Use `std::cout` with `std::fixed` and `std::setprecision(1)` to format the average to one decimal place.\n7. Hidden tests cover N = 1 (single element), all negative values, and a mix of positive and negative values that sum to zero.\n\n## Notes\n- Allowed headers: `<iostream>`, `<iomanip>`.",
+        "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: implement this function\n// - use an index-based loop with int i and count as the bound\n// - initialize the accumulator at declaration\n// - use strictly-less-than (<) for the loop condition\nint computeSum(int nums[], int count)\n{\n    // TODO: declare and initialize accumulator here\n    // TODO: write the loop (use i < count, not i <= count)\n    // TODO: return the result\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int nums[100]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> nums[i];\n\n    int total = computeSum(nums, n);\n\n    // TODO: print \"Sum: X\" on one line\n    // TODO: print \"Average: Y\" on the next line, Y formatted to 1 decimal place\n    //       cast total to double before dividing by n to avoid integer division\n\n    return 0;\n}\n",
+        "solution_code": "#include <iostream>\n#include <iomanip>\n\nint computeSum(int nums[], int count)\n{\n    int accumulator = 0;\n    for (int i = 0; i < count; ++i)\n        accumulator += nums[i];\n    return accumulator;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int nums[100]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> nums[i];\n\n    int total = computeSum(nums, n);\n\n    std::cout << \"Sum: \" << total << '\\n';\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Average: \" << static_cast<double>(total) / n << '\\n';\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "sample — five mixed values",
+            "stdin": "5\n90\n85\n72\n95\n60\n",
+            "expected_stdout": "Sum: 402\nAverage: 80.4\n",
+            "is_sample": true
+          },
+          {
+            "label": "hidden — single element",
+            "stdin": "1\n7\n",
+            "expected_stdout": "Sum: 7\nAverage: 7.0\n",
+            "is_sample": false
+          },
+          {
+            "label": "hidden — values that sum to zero",
+            "stdin": "4\n-10\n-5\n5\n10\n",
+            "expected_stdout": "Sum: 0\nAverage: 0.0\n",
+            "is_sample": false
+          }
+        ]
+      },
+      {
+        "title": "Flag Out-of-Range Scores Using Bitwise Check Without Precedence Bugs",
+        "prompt_md": "## Goal\nComplete the function `void reportScores(int scores[], int count)` that processes a list of exam scores, prints each score with a status tag, and then prints summary statistics — all without semantic errors.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50), the number of scores.\n- Lines 2..N+1: one integer per line representing a score, each in the range [0, 200].\n\n## Output\nFor each score (in order), print one line:\n`Score X: PASS` if the score is in [60, 100] (inclusive on both ends), otherwise `Score X: FAIL`.\n\nAfter all per-score lines, print two more lines:\n- `Total: T` where T is the sum of all scores.\n- `Pass count: P` where P is the number of PASS scores.\n\nNo extra blank lines.\n\n## Requirements\n1. Use a signed `int` loop variable with `count` as the bound — no signed/unsigned comparison warnings.\n2. The PASS/FAIL decision must use this exact bitwise expression to determine whether a score is out of range, with explicit parentheses to prevent precedence bugs: `bool outOfRange = ((score < 60) | (score > 100)) != 0;` — use `outOfRange` (or its negation) to choose the tag. Note: in production code you would use `||` instead of `|`, but this exercise deliberately uses bitwise OR to practise recognizing the precedence issue.\n3. The sum accumulator must be initialized to `0` at its declaration (uninitialized variable error prevention).\n4. The pass counter must be initialized to `0` at its declaration.\n5. `Total` must be computed as the sum of all scores regardless of PASS/FAIL status.\n6. Hidden tests cover N = 1 with a boundary score of exactly 60, N = 1 with a score of exactly 100, and a list where every score fails.\n\n## Notes\n- Allowed headers: `<iostream>`.",
+        "starter_code": "#include <iostream>\n\n// TODO: implement this function\n// Requirements:\n// - use int loop variable with count as the bound\n// - initialize sum and passCount at declaration\n// - use the bitwise out-of-range check with explicit parentheses:\n//     bool outOfRange = ((score < 60) | (score > 100)) != 0;\n// - print \"Score X: PASS\" or \"Score X: FAIL\" for each element\n// - after the loop print \"Total: T\" then \"Pass count: P\"\nvoid reportScores(int scores[], int count)\n{\n    // TODO: initialize sum and passCount\n    // TODO: loop with signed index\n    // TODO: bitwise out-of-range check (with explicit parentheses)\n    // TODO: print per-score line\n    // TODO: update sum and passCount\n    // TODO: print Total and Pass count\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int scores[50]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> scores[i];\n\n    reportScores(scores, n);\n\n    return 0;\n}\n",
+        "solution_code": "#include <iostream>\n\nvoid reportScores(int scores[], int count)\n{\n    int sum = 0;\n    int passCount = 0;\n\n    for (int i = 0; i < count; ++i)\n    {\n        int score = scores[i];\n        // Explicit parentheses prevent operator-precedence surprises.\n        // In production code, use || instead of |. This exercise uses\n        // bitwise OR deliberately to practise the precedence issue.\n        bool outOfRange = ((score < 60) | (score > 100)) != 0;\n\n        if (!outOfRange)\n        {\n            std::cout << \"Score \" << score << \": PASS\\n\";\n            ++passCount;\n        }\n        else\n        {\n            std::cout << \"Score \" << score << \": FAIL\\n\";\n        }\n\n        sum += score;\n    }\n\n    std::cout << \"Total: \" << sum << '\\n';\n    std::cout << \"Pass count: \" << passCount << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int scores[50]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> scores[i];\n\n    reportScores(scores, n);\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "sample — mixed scores",
+            "stdin": "5\n90\n55\n100\n30\n75\n",
+            "expected_stdout": "Score 90: PASS\nScore 55: FAIL\nScore 100: PASS\nScore 30: FAIL\nScore 75: PASS\nTotal: 350\nPass count: 3\n",
+            "is_sample": true
+          },
+          {
+            "label": "hidden — boundary score of exactly 60",
+            "stdin": "1\n60\n",
+            "expected_stdout": "Score 60: PASS\nTotal: 60\nPass count: 1\n",
+            "is_sample": false
+          },
+          {
+            "label": "hidden — all scores fail",
+            "stdin": "3\n150\n0\n101\n",
+            "expected_stdout": "Score 150: FAIL\nScore 0: FAIL\nScore 101: FAIL\nTotal: 251\nPass count: 0\n",
+            "is_sample": false
+          }
+        ]
+      }
+    ]
+  },
+  "fixes_applied": [
+    {
+      "id": "C1",
+      "description": "Replaced std::vector<int> with C-style arrays (int nums[] / int scores[]) in both exercises to remove forward reference to Ch 16/17"
+    },
+    {
+      "id": "C1",
+      "description": "Removed const reference parameters (const std::vector<int>&) which are Ch 12 material; replaced with plain array parameters (int nums[], int count)"
+    },
+    {
+      "id": "C1",
+      "description": "Replaced std::println / <print> (C++23) with std::cout in both exercises"
+    },
+    {
+      "id": "C1",
+      "description": "Exercise 9.3.1: replaced <print> and <vector> includes with <iomanip>; use std::fixed/std::setprecision(1) for formatted output"
+    },
+    {
+      "id": "C1",
+      "description": "Exercise 9.3.2: reduced includes to just <iostream>; all output uses std::cout with string concatenation"
+    },
+    {
+      "id": "summary",
+      "description": "Rewrote summary code example to use C-style array and std::cout instead of std::vector and std::println; removed mentions of std::ssize() and C++20 ranges"
+    },
+    {
+      "id": "m6",
+      "description": "Added explicit note in exercise 9.3.2 prompt that bitwise OR is used deliberately for the exercise and || is preferred in production"
+    }
+  ]
+}

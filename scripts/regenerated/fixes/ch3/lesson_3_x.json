@@ -1,0 +1,60 @@
+{
+  "number": "3.x",
+  "title": "Chapter 3 summary and quiz",
+  "sort_order": 49,
+  "summary_md": "# Chapter 3 Summary: Debugging C++ Programs\n\nDebugging is the systematic process of finding and removing errors from code. This chapter covered two broad error categories: **syntax errors** (caught by the compiler) and **semantic errors** (code compiles but behaves incorrectly). Semantic errors are harder to find because the compiler cannot help you.\n\n## Core Debugging Strategy\n\nA repeatable process beats random guessing:\n1. Reproduce the problem reliably\n2. Locate the source of the bug\n3. Understand why it happens\n4. Fix it\n5. Retest to confirm the fix and check for regressions\n\n## Tactical Approaches\n\nBefore reaching for the debugger, simple tactics work well: add temporary `std::cerr` statements to trace program flow and variable values, then remove them when done. `std::cerr` works like `std::cout` but writes to the standard error stream, which keeps debug output separate from normal program output.\n\nA cleaner alternative is a preprocessor-based debug toggle so output can be enabled or disabled without editing multiple sites:\n\n```cpp\n#include <iostream>\n\n// Toggle debug output: comment out the #define to disable\n#define DEBUG_ENABLED\n\nint divide(int a, int b)\n{\n#ifdef DEBUG_ENABLED\n    std::cerr << \"divide(\" << a << \", \" << b << \")\" << '\\n';\n#endif\n    return a / b;   // semantic bug if b == 0 -- debugger catches this fast\n}\n\nint main()\n{\n    std::cout << divide(10, 2) << '\\n';\n}\n```\n\n## The Integrated Debugger\n\nThe debugger is the most powerful tool covered here. Key capabilities:\n\n| Feature | What it gives you |\n|---|---|\n| **Step into / over / out** | Execute code one statement at a time |\n| **Breakpoints** | Pause at a specific line without manual stepping |\n| **Watch window** | Monitor variable values as they change |\n| **Call stack** | See the chain of active function calls leading to the current point |\n\nWatching variables alongside the call stack lets you trace exactly how a bad value propagated through your program.\n\n## Finding Problems Early\n\nPrevention beats cure. Enable compiler warnings (`-Wall -Wextra`), treat warnings as errors (`-Werror`), and use `static_assert` for compile-time checks. These catch many bugs before the program ever runs.\n\nSetting a breakpoint inside `divide` and watching `b` in the watch window immediately surfaces a zero-divisor before undefined behavior strikes.\n\n## Quick Self-Check\n\n- What is the difference between a syntax and a semantic error?\n- Name three pieces of information the call stack gives you.\n- Why should debug output go to `std::cerr` rather than `std::cout`?",
+  "exercises": [
+    {
+      "title": "Trace the Bug: Semantic Error Detective",
+      "prompt_md": "## Trace the Bug: Semantic Error Detective\n\nA debugging session is only as good as the information you can collect. In this exercise you will **add debug logging** using `std::cerr`, then fix a deliberate semantic error.\n\nYou are given a program that is supposed to compute the **average** of three integers entered by the user. Unfortunately it contains a semantic error (it compiles fine but produces wrong results).\n\nYour tasks:\n\n1. Read three integers from `std::cin`.\n2. Print each variable to `std::cerr` immediately after it is read, in the format:\n   ```\n   [DEBUG] a=<value>\n   [DEBUG] b=<value>\n   [DEBUG] c=<value>\n   ```\n3. Compute the correct **integer average** (truncate toward zero, i.e. use integer division) of the three values and print it to `std::cout` in the format:\n   ```\n   Average: <result>\n   ```\n\n**The semantic bug to avoid / fix:** A common mistake is writing `a + b + c / 3` instead of `(a + b + c) / 3`. Your solution must use the *correct* formula.\n\n### Input format\nThree integers on a single line separated by spaces.\n\n### Output format\nDebug lines go to `std::cerr`; the result line goes to `std::cout`.\n\n```\nAverage: <result>\n```\n\n### Sample (stdin)\n```\n10 20 30\n```\n\n### Sample (stdout)\n```\nAverage: 20\n```\n\n*(The `[DEBUG]` lines go to `cerr` and are not checked by the judge.)*\n",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{}, b{}, c{};\n\n    // TODO: read three integers from std::cin\n\n    // TODO: print each variable to std::cerr\n    //       in the format:  [DEBUG] a=<value>\n    //                       [DEBUG] b=<value>\n    //                       [DEBUG] c=<value>\n\n    // TODO: compute the correct integer average of a, b, and c\n    //       (remember operator precedence -- use parentheses!)\n\n    // TODO: print the result to std::cout as:  Average: <result>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    std::cerr << \"[DEBUG] a=\" << a << '\\n';\n    std::cerr << \"[DEBUG] b=\" << b << '\\n';\n    std::cerr << \"[DEBUG] c=\" << c << '\\n';\n\n    // Correct formula: parentheses ensure addition happens before division\n    int average = (a + b + c) / 3;\n\n    std::cout << \"Average: \" << average << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: equal spacing",
+          "stdin": "10 20 30",
+          "expected_stdout": "Average: 20\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: truncation check",
+          "stdin": "1 2 3",
+          "expected_stdout": "Average: 2\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: negative numbers",
+          "stdin": "-3 0 6",
+          "expected_stdout": "Average: 1\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Call Stack Simulator",
+      "prompt_md": "## Call Stack Simulator\n\nOne of the most powerful debugger features is the **call stack**, which shows you the chain of function calls active at any moment. In this exercise you will write a small program that *explicitly prints its own call stack depth* as it recurses, mimicking what a debugger's call-stack window would show you.\n\nWrite a recursive function `countdown` that:\n\n- Accepts two parameters: `int value` (the current countdown number) and `int depth` (how many calls deep we currently are, starting at `1` for the first call).\n- **Before** doing any recursive call, prints a call-stack entry to `std::cout`:\n  ```\n  [depth <depth>] countdown(<value>)\n  ```\n- If `value` is greater than `0`, calls itself with `value - 1` and `depth + 1`.\n- If `value` equals `0`, prints:\n  ```\n  [depth <depth>] base case reached\n  ```\n  and returns without further recursion.\n\nIn `main`, read a single non-negative integer `n` from `std::cin` and call `countdown(n, 1)`.\n\n**Note:** This exercise uses an `if` statement to check whether `value` equals `0`. The `if` statement will be covered formally in Chapter 4, but the pattern here is straightforward: `if (value == 0)` checks whether `value` is zero and runs the code in braces when it is; otherwise the code after `else` runs.\n\n### Input format\nA single non-negative integer `n` (0 <= n <= 10).\n\n### Output format\nLines printed by `countdown` as described above.\n\n### Sample (stdin)\n```\n3\n```\n\n### Sample (stdout)\n```\n[depth 1] countdown(3)\n[depth 2] countdown(2)\n[depth 3] countdown(1)\n[depth 4] countdown(0)\n[depth 4] base case reached\n```\n\n### Why this matters for debugging\nNotice that each line mirrors one frame you would see in a debugger's call-stack panel. When `countdown(0)` is active, the stack panel would list four frames exactly as shown above, letting you inspect `value` and `depth` at every level.\n",
+      "starter_code": "#include <iostream>\n\n// TODO: write the recursive function countdown(int value, int depth)\n//       It should:\n//         1. Print \"[depth <depth>] countdown(<value>)\" to std::cout\n//         2. If value == 0, also print \"[depth <depth>] base case reached\"\n//            and return\n//         3. Otherwise, call countdown(value - 1, depth + 1)\n\nint main()\n{\n    int n{};\n    // TODO: read n from std::cin\n    // TODO: call countdown(n, 1)\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nvoid countdown(int value, int depth)\n{\n    std::cout << \"[depth \" << depth << \"] countdown(\" << value << \")\\n\";\n\n    if (value == 0)\n    {\n        std::cout << \"[depth \" << depth << \"] base case reached\\n\";\n        return;\n    }\n\n    countdown(value - 1, depth + 1);\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    countdown(n, 1);\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: n=3",
+          "stdin": "3",
+          "expected_stdout": "[depth 1] countdown(3)\n[depth 2] countdown(2)\n[depth 3] countdown(1)\n[depth 4] countdown(0)\n[depth 4] base case reached\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: n=0 (immediate base case)",
+          "stdin": "0",
+          "expected_stdout": "[depth 1] countdown(0)\n[depth 1] base case reached\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: n=5",
+          "stdin": "5",
+          "expected_stdout": "[depth 1] countdown(5)\n[depth 2] countdown(4)\n[depth 3] countdown(3)\n[depth 4] countdown(2)\n[depth 5] countdown(1)\n[depth 6] countdown(0)\n[depth 6] base case reached\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

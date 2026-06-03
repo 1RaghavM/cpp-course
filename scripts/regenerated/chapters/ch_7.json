@@ -1,0 +1,939 @@
+{
+  "chapter": {
+    "number": "7",
+    "title": "Scope, Duration, and Linkage"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "7.1",
+      "title": "Compound statements (blocks)",
+      "sort_order": 86,
+      "summary_md": "## Compound Statements (Blocks)\n\nA **compound statement** (also called a **block**) is a sequence of zero or more statements enclosed in curly braces `{}`. The compiler treats the entire block as a single statement, which is why you can place a block anywhere a single statement is expected — inside an `if`, a `for`, a function body, or even freestanding in the middle of other code.\n\n```cpp\n#include <print>\n\nint main()\n{\n    int x = 10;\n\n    {\n        int y = 20;           // y exists only inside this block\n        x += y;               // x is still accessible here\n        std::println(\"x inside block: {}\", x);\n    }\n    // std::println(\"{}\", y); // error: y is out of scope\n\n    std::println(\"x outside block: {}\", x);\n}\n```\n\n### Why blocks matter for scope\n\nEvery name declared inside a block is **local to that block** — it comes into existence when control enters the block and ceases to exist when control leaves it. This is the foundation of **block scope**, which the rest of this chapter builds on.\n\nWhen a name declared in an inner block matches a name in an outer block, the inner declaration **shadows** the outer one. The outer variable still exists; it is simply hidden. Shadowing is legal but usually a sign of confusing code, and many compilers will warn about it with `-Wshadow`.\n\n### Blocks as a scoping tool\n\nYou can introduce a block anywhere to deliberately limit a variable's lifetime:\n\n- Keeping a temporary resource (like a lock guard or a file handle) alive for only the few lines that need it.\n- Reducing the visual noise of variables that are only relevant to one short calculation.\n- Avoiding accidental reuse of a variable after its logical purpose is done.\n\nThis is not just a theoretical nicety — it directly enables RAII (Resource Acquisition Is Initialization), a pattern covered in later chapters, where object destructors run the moment the block ends.\n\n### Nested blocks\n\nBlocks can nest to arbitrary depth. Each level creates its own scope layer. Function bodies, `if`/`else` branches, loop bodies, and `switch` cases are all blocks, so scope nesting is happening constantly in everyday C++ code, even when you never write a freestanding `{}` pair.",
+      "exercises": [
+        {
+          "title": "Track Variable Lifetime with Nested Blocks",
+          "prompt_md": "## Goal\nWrite a program that uses nested blocks to compute and print a step-by-step temperature conversion, demonstrating that variables declared inside inner blocks are not accessible outside them.\n\n## Input\n- Line 1: one integer `celsius` (-100 ≤ celsius ≤ 1000), the temperature in Celsius.\n\n## Output\nPrint exactly 3 lines in this order:\n1. `Celsius: C` where `C` is the input value.\n2. `Fahrenheit: F` where `F` is the result of the formula `F = celsius * 9 / 5 + 32` (integer arithmetic, no rounding).\n3. `Kelvin: K` where `K` is the result of `K = celsius + 273`.\n\nEach label is followed by a colon, a space, and the integer value. No trailing blank lines.\n\n## Requirements\n1. The variable that holds the Fahrenheit result must be declared inside its own inner block (a freestanding `{}` pair inside `main`) and must not be accessible after that block ends.\n2. The variable that holds the Kelvin result must be declared inside a separate inner block and must not be accessible after that block ends.\n3. Each of the 3 output lines must be produced by a `std::cout` (or `std::println`) call that lives **outside** the inner blocks — you must store the computed value in a variable declared in the outer scope before printing, or print inside the block. Either approach is acceptable as long as the intermediate computation variable is scoped to its own block.\n4. The program must use at least 2 distinct inner blocks inside `main`.\n5. Integer arithmetic throughout — no `double` or `float`.\n6. The hidden tests cover `celsius = 0`, `celsius = 100`, and `celsius = -40`.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int celsius{};\n    std::cin >> celsius;\n\n    std::cout << \"Celsius: \" << celsius << '\\n';\n\n    // TODO: open an inner block, compute fahrenheit = celsius * 9 / 5 + 32,\n    //       print \"Fahrenheit: F\", then close the block.\n\n    // TODO: open a second inner block, compute kelvin = celsius + 273,\n    //       print \"Kelvin: K\", then close the block.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int celsius{};\n    std::cin >> celsius;\n\n    std::cout << \"Celsius: \" << celsius << '\\n';\n\n    {\n        int fahrenheit = celsius * 9 / 5 + 32;\n        std::cout << \"Fahrenheit: \" << fahrenheit << '\\n';\n    }\n\n    {\n        int kelvin = celsius + 273;\n        std::cout << \"Kelvin: \" << kelvin << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: boiling point",
+              "stdin": "100\n",
+              "expected_stdout": "Celsius: 100\nFahrenheit: 212\nKelvin: 373\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: freezing point",
+              "stdin": "0\n",
+              "expected_stdout": "Celsius: 0\nFahrenheit: 32\nKelvin: 273\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: equal celsius and fahrenheit",
+              "stdin": "-40\n",
+              "expected_stdout": "Celsius: -40\nFahrenheit: -40\nKelvin: 233\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Scoped Accumulator with Shadow Detection",
+          "prompt_md": "## Goal\nWrite a program that reads a list of integers and uses inner blocks to compute both the sum of **positive** values and the sum of **negative** values separately, printing each result. Each partial sum must be accumulated inside its own dedicated block, and the running total across both sums must be tracked in the outer scope.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20), the count of integers to follow.\n- Lines 2..N+1: one integer per line, each in the range -1000 to 1000. Values equal to 0 are ignored (contribute to neither sum).\n\n## Output\nPrint exactly 3 lines:\n1. `Positive sum: P` where `P` is the sum of all positive input values (0 if none).\n2. `Negative sum: N` where `N` is the sum of all negative input values (0 if none).\n3. `Total: T` where `T` is `P + N` (the combined sum of all non-zero values).\n\nEach label is followed by a colon, a space, and the integer value. No trailing blank lines.\n\n## Requirements\n1. Declare a variable `total` in the outer scope of `main` initialized to 0; it must accumulate every non-zero value read.\n2. Use one inner block to iterate over the input and accumulate only positive values into a variable named `positiveSum` declared inside that block.\n3. Use a second, separate inner block to iterate over the input — re-reading or using a stored array — and accumulate only negative values into a variable named `negativeSum` declared inside that block.\n4. `positiveSum` and `negativeSum` must not be accessible outside their respective inner blocks; the values must be captured into outer-scope variables (e.g., `storedPositive`, `storedNegative`) before the blocks close, OR printed inside the blocks — choose one approach and apply it consistently.\n5. `total` must equal `storedPositive + storedNegative` (or the equivalent captured values). Print `total` on the third output line.\n6. The hidden tests cover all-positive input, all-negative input, and mixed input containing zeros.\n\n## Notes\n- You may store the input integers in an array or `std::vector` declared in the outer scope so both inner blocks can iterate over the same data.\n- Include `<iostream>` and optionally `<vector>`.",
+          "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: read all n integers into a vector declared in the outer scope.\n\n    int total{ 0 };\n\n    // TODO: accumulate total here by summing all non-zero values.\n\n    int storedPositive{ 0 };\n    {\n        // TODO: declare positiveSum inside this block.\n        //       Loop over the stored values and add positive ones to positiveSum.\n        //       Before the block closes, assign positiveSum to storedPositive.\n    }\n\n    int storedNegative{ 0 };\n    {\n        // TODO: declare negativeSum inside this block.\n        //       Loop over the stored values and add negative ones to negativeSum.\n        //       Before the block closes, assign negativeSum to storedNegative.\n    }\n\n    // TODO: print the three output lines using storedPositive, storedNegative, and total.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> values(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> values[i];\n\n    int total{ 0 };\n    for (int i = 0; i < n; ++i)\n        if (values[i] != 0)\n            total += values[i];\n\n    int storedPositive{ 0 };\n    {\n        int positiveSum{ 0 };\n        for (int i = 0; i < n; ++i)\n            if (values[i] > 0)\n                positiveSum += values[i];\n        storedPositive = positiveSum;\n    }\n\n    int storedNegative{ 0 };\n    {\n        int negativeSum{ 0 };\n        for (int i = 0; i < n; ++i)\n            if (values[i] < 0)\n                negativeSum += values[i];\n        storedNegative = negativeSum;\n    }\n\n    std::cout << \"Positive sum: \" << storedPositive << '\\n';\n    std::cout << \"Negative sum: \" << storedNegative << '\\n';\n    std::cout << \"Total: \"        << total           << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: mixed values",
+              "stdin": "6\n3\n-1\n7\n0\n-4\n2\n",
+              "expected_stdout": "Positive sum: 12\nNegative sum: -5\nTotal: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: all positive",
+              "stdin": "4\n5\n10\n3\n2\n",
+              "expected_stdout": "Positive sum: 20\nNegative sum: 0\nTotal: 20\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: all negative with a zero",
+              "stdin": "5\n-2\n-8\n0\n-5\n-1\n",
+              "expected_stdout": "Positive sum: 0\nNegative sum: -16\nTotal: -16\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.2",
+      "title": "User-defined namespaces and the scope resolution operator",
+      "sort_order": 87,
+      "summary_md": "## User-defined Namespaces and the Scope Resolution Operator\n\nNamespaces let you group related declarations under a named scope, preventing name collisions between your code and libraries (or between different subsystems of a large project).\n\n```cpp\n#include <print>\n\nnamespace geometry {\n    struct Point { double x, y; };\n\n    double distance(Point a, Point b) {\n        auto [dx, dy] = std::pair{a.x - b.x, a.y - b.y};\n        return std::sqrt(dx*dx + dy*dy);\n    }\n}\n\nint main() {\n    geometry::Point p1{0.0, 0.0}, p2{3.0, 4.0};\n    std::println(\"Distance: {}\", geometry::distance(p1, p2)); // 5.0\n}\n```\n\n### Defining a Namespace\n\nUse the `namespace` keyword followed by a name and a brace-enclosed block. Everything declared inside belongs to that namespace. You can have multiple namespace blocks with the same name — even across different files — and they all contribute to the same namespace.\n\n### The Scope Resolution Operator `::`\n\n`::` lets you name exactly which scope a declaration comes from. `geometry::distance` means \"the `distance` declared inside `geometry`\", not any other `distance` that might exist. The unary form `::name` refers to the global namespace explicitly, which is useful when a local or nested name would otherwise shadow it.\n\n### Nested Namespaces\n\nNamespaces can be nested. In C++17 and later you can write `namespace outer::inner { }` instead of two separate blocks. Access uses chained `::`: `outer::inner::foo`.\n\n### `using` Declarations and Directives\n\n- `using geometry::Point;` brings just `Point` into the current scope.\n- `using namespace geometry;` brings everything in — convenient interactively, but risky in headers because it silently pollutes every file that includes yours.\n\nPrefer `using` declarations over directives in production code, and avoid both at file scope in headers.\n\n### Anonymous Namespaces\n\nA namespace with no name (`namespace { ... }`) gives its contents *internal linkage* — they're visible only within the current translation unit. This is the modern replacement for file-scope `static` on non-member declarations, a topic covered more fully in the linkage lessons ahead.\n\n### Relationship to Blocks\n\nAs covered in **Compound statements (blocks)**, braces create a scope, but block scopes are tied to runtime control flow. Namespaces are purely a compile-time organisational tool with no runtime cost and no restriction on where they can appear (other than inside another namespace or at file scope — not inside a function).",
+      "exercises": [
+        {
+          "title": "Temperature Namespaces with Scope Resolution",
+          "prompt_md": "## Goal\nComplete two namespaces, `celsius` and `fahrenheit`, each containing a `display` function that prints a temperature reading with its unit label, then call both using the scope resolution operator.\n\n## Input\n- Line 1: a floating-point number representing a Celsius temperature (e.g. `100.0`).\n- Line 2: a floating-point number representing a Fahrenheit temperature (e.g. `212.0`).\n\n## Output\nPrint exactly two lines in this order:\n- `Celsius: <value> C` where `<value>` is the Celsius reading printed with one decimal place.\n- `Fahrenheit: <value> F` where `<value>` is the Fahrenheit reading printed with one decimal place.\n\nExample for inputs `100.0` and `212.0`:\n```\nCelsius: 100.0 C\nFahrenheit: 212.0 F\n```\n\n## Requirements\n1. Declare a namespace `celsius` containing a function `void display(double temp)` that prints `Celsius: <temp> C` with one decimal place.\n2. Declare a namespace `fahrenheit` containing a function `void display(double temp)` that prints `Fahrenheit: <temp> F` with one decimal place.\n3. In `main`, call each function using the `::` scope resolution operator: `celsius::display(c)` and `fahrenheit::display(f)`.\n4. Do **not** use `using namespace celsius;` or `using namespace fahrenheit;` anywhere in the file.\n5. Both `display` functions must live inside their respective named namespaces — not at global scope.\n6. Hidden tests cover negative temperatures (e.g. `-40.0`) and zero (`0.0`).\n\n## Notes\n- Use `<iomanip>` (`std::fixed`, `std::setprecision`) or `<print>` / `<format>` for the one-decimal formatting.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: define namespace celsius containing void display(double temp)\n//       that prints \"Celsius: <temp> F\" with one decimal place\n\n\n// TODO: define namespace fahrenheit containing void display(double temp)\n//       that prints \"Fahrenheit: <temp> F\" with one decimal place\n\n\nint main() {\n    double c, f;\n    std::cin >> c >> f;\n\n    // TODO: call celsius::display(c)\n    // TODO: call fahrenheit::display(f)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace celsius {\n    void display(double temp) {\n        std::cout << std::fixed << std::setprecision(1);\n        std::cout << \"Celsius: \" << temp << \" C\\n\";\n    }\n}\n\nnamespace fahrenheit {\n    void display(double temp) {\n        std::cout << std::fixed << std::setprecision(1);\n        std::cout << \"Fahrenheit: \" << temp << \" F\\n\";\n    }\n}\n\nint main() {\n    double c, f;\n    std::cin >> c >> f;\n\n    celsius::display(c);\n    fahrenheit::display(f);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Boiling point",
+              "stdin": "100.0\n212.0\n",
+              "expected_stdout": "Celsius: 100.0 C\nFahrenheit: 212.0 F\n",
+              "is_sample": true
+            },
+            {
+              "label": "Freezing point / zero",
+              "stdin": "0.0\n32.0\n",
+              "expected_stdout": "Celsius: 0.0 C\nFahrenheit: 32.0 F\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative temperature",
+              "stdin": "-40.0\n-40.0\n",
+              "expected_stdout": "Celsius: -40.0 C\nFahrenheit: -40.0 F\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Nested Namespace Variable Lookup with Block Scope Shadowing",
+          "prompt_md": "## Goal\nComplete a program that uses a nested namespace `app::config` to store a default timeout value, then demonstrates how a local block-scope variable can shadow a namespace variable, and how the scope resolution operator can recover the original namespace value.\n\n## Input\n- Line 1: a single integer `local_timeout` (1 ≤ `local_timeout` ≤ 10000) representing an override value chosen at runtime.\n\n## Output\nPrint exactly three lines:\n- `Default: <N>` where `<N>` is the compile-time constant `app::config::DEFAULT_TIMEOUT` (you must set this to `30` in your namespace).\n- `Local: <local_timeout>` where `<local_timeout>` is the value read from stdin.\n- `Restored: <N>` where `<N>` is `app::config::DEFAULT_TIMEOUT` again, accessed via the scope resolution operator after the local variable is in scope.\n\nExample for input `120`:\n```\nDefault: 30\nLocal: 120\nRestored: 30\n```\n\n## Requirements\n1. Declare a nested namespace `app::config` (using the C++17 single-line form) containing `inline constexpr int DEFAULT_TIMEOUT = 30;`.\n2. In `main`, print the default timeout using `app::config::DEFAULT_TIMEOUT`.\n3. Read the integer from stdin into a local variable named `timeout`.\n4. Print the local `timeout` value on a line labelled `Local: `.\n5. Print `app::config::DEFAULT_TIMEOUT` again on a line labelled `Restored: `, using the full `::` qualified name even though a local `timeout` variable is in scope — this demonstrates that `::` reaches past any local shadowing.\n6. Do **not** add a `using` directive or declaration for `app` or `app::config`.\n7. Hidden tests cover `local_timeout = 1` (minimum) and `local_timeout = 30` (same as the constant).\n\n## Notes\n- `inline constexpr` variables in namespaces are covered in later chapters; here they simply act as named constants — treat them like `const int` for this exercise.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare nested namespace app::config using the single-line C++17 form\n//       and define:  inline constexpr int DEFAULT_TIMEOUT = 30;\n\n\nint main() {\n    // TODO: print \"Default: \" followed by app::config::DEFAULT_TIMEOUT\n\n    int timeout;\n    std::cin >> timeout;\n\n    // TODO: print \"Local: \" followed by the local variable timeout\n\n    // TODO: print \"Restored: \" followed by app::config::DEFAULT_TIMEOUT\n    //       using the full scope-resolution path (not the local variable)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nnamespace app::config {\n    inline constexpr int DEFAULT_TIMEOUT = 30;\n}\n\nint main() {\n    std::cout << \"Default: \" << app::config::DEFAULT_TIMEOUT << \"\\n\";\n\n    int timeout;\n    std::cin >> timeout;\n\n    std::cout << \"Local: \" << timeout << \"\\n\";\n\n    std::cout << \"Restored: \" << app::config::DEFAULT_TIMEOUT << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Typical override",
+              "stdin": "120\n",
+              "expected_stdout": "Default: 30\nLocal: 120\nRestored: 30\n",
+              "is_sample": true
+            },
+            {
+              "label": "Minimum value",
+              "stdin": "1\n",
+              "expected_stdout": "Default: 30\nLocal: 1\nRestored: 30\n",
+              "is_sample": false
+            },
+            {
+              "label": "Same as default",
+              "stdin": "30\n",
+              "expected_stdout": "Default: 30\nLocal: 30\nRestored: 30\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.3",
+      "title": "Local variables",
+      "sort_order": 88,
+      "summary_md": "## Local Variables\n\nA **local variable** is any variable defined inside a block `{ }`. It comes into existence when the definition is reached and is destroyed when the enclosing block ends — this lifetime is called **automatic storage duration**.\n\nLocal variables have **block scope**: they are visible from their point of definition to the closing brace of the block that contains them. Code outside that block cannot see or name them. This pairs naturally with the compound statements covered in *Compound statements (blocks)* — every block creates a fresh scope.\n\n### Nesting and Shadowing\n\nBlocks can be nested, and an inner block can define a variable with the same name as one in an outer block. The inner definition **shadows** the outer one — the outer variable still exists but is unreachable by name inside the inner block. Shadowing is legal but almost always a bug waiting to happen; prefer distinct names.\n\n### Define Variables Close to First Use\n\nUnlike C89, C++ lets you define a variable anywhere inside a block, not just at the top. The modern idiom is to define a variable as late as possible — ideally on the line where you first have a meaningful value for it. This keeps scope narrow and makes the code easier to follow.\n\n```cpp\n#include <print>\n#include <vector>\n\nint main() {\n    std::vector<int> scores{42, 17, 95, 63};\n\n    int passing{0};\n    for (const auto score : scores) {\n        if (score >= 60) {\n            auto label{score >= 90 ? \"excellent\" : \"passing\"};\n            std::println(\"{} ({})\", score, label);\n            ++passing;\n        }\n    }\n    std::println(\"{} of {} passed\", passing, scores.size());\n}\n```\n\n`label` is defined inside the `if` block — it only exists for the iterations where it is actually needed. `passing` is defined just before the loop because the loop itself is its reason for existing.\n\n### No Linkage\n\nLocal variables have **no linkage**: the same name in two different functions refers to two completely separate variables with no connection. This is in contrast to names declared at namespace scope, which can have internal or external linkage (covered in *User-defined namespaces and the scope resolution operator* and upcoming linkage lessons).\n\nKeeping variables local by default is the right habit — it limits the surface area where a variable can be modified and makes functions easier to reason about in isolation.",
+      "exercises": [
+        {
+          "title": "Classify Temperatures Using Block-Scoped Labels",
+          "prompt_md": "## Goal\nRead a list of integer temperatures and print a classification label for each one, then print a summary count of how many were \"hot\".\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), the number of temperatures.\n- Lines 2..N+1: one integer temperature (in °F, –60 ≤ T ≤ 130) per line.\n\n## Output\n- For each temperature, print exactly one line in the format `T: label` where T is the temperature and label is determined as follows:\n  - T ≥ 90 → `hot`\n  - 60 ≤ T < 90 → `warm`\n  - 32 ≤ T < 60 → `cool`\n  - T < 32 → `cold`\n- After all temperatures, print one line: `Hot days: X` where X is the count of temperatures that are ≥ 90.\n- No extra blank lines.\n\n## Requirements\n1. Define the `label` variable **inside** the innermost block where it is used (the loop body), not before the loop.\n2. Define the `hot_count` variable **just before** the loop (not at the top of `main`).\n3. The loop must iterate exactly N times, reading one temperature per iteration and defining `label` within that iteration's block scope.\n4. Edge case: N = 1 with a single temperature must still produce exactly two lines of output.\n5. Edge case: all temperatures below 32 must produce `Hot days: 0`.\n6. Edge case: all temperatures ≥ 90 must produce `Hot days: N`.\n\n## Notes\n- You may use `<iostream>` and `<string>` (or `std::string_view`). No other special headers are required.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: define hot_count here, just before the loop\n\n    for (int i{0}; i < n; ++i) {\n        int temp{};\n        std::cin >> temp;\n\n        // TODO: define label inside this block and assign it based on temp\n        // TODO: print \"temp: label\"\n        // TODO: increment hot_count if temp >= 90\n    }\n\n    // TODO: print \"Hot days: X\"\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int hot_count{0};\n    for (int i{0}; i < n; ++i) {\n        int temp{};\n        std::cin >> temp;\n\n        std::string label{};\n        if (temp >= 90) {\n            label = \"hot\";\n            ++hot_count;\n        } else if (temp >= 60) {\n            label = \"warm\";\n        } else if (temp >= 32) {\n            label = \"cool\";\n        } else {\n            label = \"cold\";\n        }\n\n        std::cout << temp << \": \" << label << \"\\n\";\n    }\n\n    std::cout << \"Hot days: \" << hot_count << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — mixed temperatures",
+              "stdin": "5\n95\n72\n45\n28\n90\n",
+              "expected_stdout": "95: hot\n72: warm\n45: cool\n28: cold\n90: hot\nHot days: 2\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — all cold, N=1",
+              "stdin": "1\n10\n",
+              "expected_stdout": "10: cold\nHot days: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — all hot",
+              "stdin": "4\n100\n92\n90\n105\n",
+              "expected_stdout": "100: hot\n92: hot\n90: hot\n105: hot\nHot days: 4\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Per-Student Grade Summary with Shadowing Avoided",
+          "prompt_md": "## Goal\nRead records for several students, each with a name and a list of scores. For each student, compute their average score in a **separate inner block**, print a one-line summary, then print an overall class average after all students.\n\n## Input\n- Line 1: integer S (1 ≤ S ≤ 10), the number of students.\n- For each student (S groups):\n  - Line A: the student's first name (a single word, no spaces).\n  - Line B: integer K (1 ≤ K ≤ 5), the number of scores.\n  - Lines C..C+K−1: one integer score per line (0 ≤ score ≤ 100).\n\n## Output\n- For each student, print exactly one line: `Name: avg` where avg is their average score **rounded down** (integer division).\n- After all students, print one line: `Class average: avg` where avg is the sum of **all individual scores** divided by the total number of scores (integer division, rounded down).\n- No extra blank lines.\n\n## Requirements\n1. Compute each student's sum and count **inside a block** (e.g. a nested block or a helper scope `{ }`) so that those variables are destroyed before moving on to the next student — do not reuse the same variable across students by declaring it before the outer loop.\n2. Declare the running totals for the class average (`total_sum` and `total_count`) just before the outer student loop — these are the only variables that live across iterations.\n3. The student's name must be read outside the inner scoring block, since it is used both to read the scores and to print the result.\n4. Edge case: S = 1, K = 1 — single student with one score; class average equals that score.\n5. Edge case: scores of 0 for all students must produce `Class average: 0`.\n6. Edge case: all students have K = 5 scores — verify totals accumulate correctly.\n\n## Notes\n- You may use `<iostream>` and `<string>`. Integer division (truncation toward zero) is expected for all averages.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int s{};\n    std::cin >> s;\n\n    // TODO: declare total_sum and total_count here, just before the outer loop\n\n    for (int i{0}; i < s; ++i) {\n        std::string name{};\n        std::cin >> name;\n\n        int k{};\n        std::cin >> k;\n\n        // TODO: open an inner block here\n        // TODO: declare student_sum and student_count inside the inner block\n        // TODO: read k scores, accumulate student_sum, update total_sum and total_count\n        // TODO: compute student average (integer division) inside the inner block\n        // TODO: print \"name: student_avg\"\n        // TODO: close the inner block\n    }\n\n    // TODO: print \"Class average: X\" using total_sum / total_count\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int s{};\n    std::cin >> s;\n\n    int total_sum{0};\n    int total_count{0};\n\n    for (int i{0}; i < s; ++i) {\n        std::string name{};\n        std::cin >> name;\n\n        int k{};\n        std::cin >> k;\n\n        {\n            int student_sum{0};\n            int student_count{k};\n            for (int j{0}; j < k; ++j) {\n                int score{};\n                std::cin >> score;\n                student_sum += score;\n            }\n            total_sum += student_sum;\n            total_count += student_count;\n\n            int student_avg{student_sum / student_count};\n            std::cout << name << \": \" << student_avg << \"\\n\";\n        }\n    }\n\n    std::cout << \"Class average: \" << total_sum / total_count << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — three students mixed scores",
+              "stdin": "3\nAlice\n3\n80\n90\n70\nBob\n2\n50\n60\nCarla\n4\n100\n95\n85\n90\n",
+              "expected_stdout": "Alice: 80\nBob: 55\nCarla: 92\nClass average: 80\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single student single score",
+              "stdin": "1\nDan\n1\n47\n",
+              "expected_stdout": "Dan: 47\nClass average: 47\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — all zeros",
+              "stdin": "2\nEve\n2\n0\n0\nFrank\n3\n0\n0\n0\n",
+              "expected_stdout": "Eve: 0\nFrank: 0\nClass average: 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.4",
+      "title": "Introduction to global variables",
+      "sort_order": 89,
+      "summary_md": "## Introduction to Global Variables\n\nA **global variable** is declared outside any function or class, at file scope. Unlike local variables (covered in *Local variables*), global variables are created when the program starts and destroyed when it exits — they have **static duration**.\n\n```cpp\n#include <print>\n\nint g_count { 0 };          // global variable\n\nvoid increment() {\n    ++g_count;              // accessible in any function in this file\n}\n\nint main() {\n    increment();\n    increment();\n    std::println(\"Count: {}\", g_count);  // Count: 2\n}\n```\n\n### Scope and accessibility\n\nGlobal variables have **file scope** by default — visible from the point of declaration to the end of the translation unit. A global declared with `const` or `constexpr` has **internal linkage** by default, meaning it isn't visible to other translation units. A plain (non-const) global has **external linkage** by default, meaning other files can access it via `extern`.\n\nNaming convention: many codebases prefix global variables with `g_` to make their origin obvious at a glance, which helps when reading call sites far from the declaration.\n\n### Shadowing\n\nA local variable with the same name as a global **shadows** the global inside that scope. The global still exists; it's just unreachable by that name. As discussed in *User-defined namespaces and the scope resolution operator*, you can reach a shadowed global explicitly using `::g_count` (the global scope resolution operator with no namespace prefix).\n\n### Why globals are generally avoided\n\n- Any function anywhere can read or modify a global, making bugs hard to trace.\n- They introduce hidden dependencies between functions, hurting testability.\n- Initialization order across translation units is not guaranteed for non-constant globals.\n- They persist for the entire program lifetime, even when no longer needed.\n\nPrefer passing data through function parameters and return values. When shared state is genuinely needed, consider wrapping it in a namespace (see *User-defined namespaces and the scope resolution operator*) or a class to limit access points. `const` and `constexpr` globals for true program-wide constants are the main legitimate use case — a compile-time constant like `constexpr int MAX_PLAYERS { 4 };` at file scope is clean and safe.",
+      "exercises": [
+        {
+          "title": "Track a Running Total with a Global Accumulator",
+          "prompt_md": "## Goal\nComplete the program so that a global variable `g_total` accumulates a series of integers added one at a time via `addToTotal(int value)`, then reports the final sum.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100), the number of values to add.\n- Lines 2..N+1: one integer per line (each value in the range -1000 to 1000).\n\n## Output\n- Print exactly one line in the format `Total: X` where X is the sum of all N values.\n- Example: `Total: 42`\n\n## Requirements\n1. Declare `g_total` as a global `int` initialized to `0` at file scope (outside `main` and all functions).\n2. Implement `void addToTotal(int value)` — it must modify `g_total` directly (no parameters for the accumulator, no return value).\n3. `main` reads N, then calls `addToTotal` exactly once per input value in the order they appear.\n4. After all calls, `main` prints `Total: ` followed by the value of `g_total`.\n5. Do not declare any local variable named `g_total` inside any function (no shadowing the global).\n6. Edge cases covered by hidden tests: N = 1, all negative values, values that sum to zero.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare global variable g_total (int, initialized to 0) here\n\n// TODO: implement void addToTotal(int value)\n//       It should add value to g_total.\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    for (int i { 0 }; i < n; ++i) {\n        int value {};\n        std::cin >> value;\n        addToTotal(value);  // TODO: call is already here — just implement the function above\n    }\n\n    // TODO: print \"Total: \" followed by g_total\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint g_total { 0 };\n\nvoid addToTotal(int value) {\n    g_total += value;\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    for (int i { 0 }; i < n; ++i) {\n        int value {};\n        std::cin >> value;\n        addToTotal(value);\n    }\n\n    std::cout << \"Total: \" << g_total << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed positive values",
+              "stdin": "4\n10\n5\n20\n7",
+              "expected_stdout": "Total: 42\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — single value",
+              "stdin": "1\n-7",
+              "expected_stdout": "Total: -7\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — values summing to zero",
+              "stdin": "4\n100\n-50\n-30\n-20",
+              "expected_stdout": "Total: 0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Count Positives and Negatives Using Global Counters",
+          "prompt_md": "## Goal\nComplete the program so that two global counters track how many positive and negative integers are read from input, using a `classify(int value)` function that updates the globals directly.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100), the number of integers to classify.\n- Lines 2..N+1: one integer per line (each value in the range -1000 to 1000; zero may appear).\n\n## Output\nPrint exactly two lines in this order:\n- `Positives: A` where A is the count of values strictly greater than zero.\n- `Negatives: B` where B is the count of values strictly less than zero.\n- Zeros are ignored — they do not affect either counter.\n\n## Requirements\n1. Declare exactly two global `int` variables: `g_positives` and `g_negatives`, both initialized to `0` at file scope.\n2. Implement `void classify(int value)`: if `value > 0` increment `g_positives`; if `value < 0` increment `g_negatives`; do nothing for zero. The function must update the globals directly (no local shadowing variables named `g_positives` or `g_negatives`).\n3. `main` must read N, then call `classify` exactly once per input value.\n4. After all classifications, `main` prints the two output lines in the order shown above.\n5. The scope of every counter update must be inside `classify` — `main` must not modify `g_positives` or `g_negatives` itself.\n6. Edge cases covered by hidden tests: all zeros (both counts are 0), N = 1 with a positive, N = 1 with a negative.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare global variables g_positives and g_negatives (int, initialized to 0)\n\n// TODO: implement void classify(int value)\n//       Increment g_positives if value > 0,\n//       increment g_negatives if value < 0,\n//       do nothing if value == 0.\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    for (int i { 0 }; i < n; ++i) {\n        int value {};\n        std::cin >> value;\n        classify(value);  // call is already here\n    }\n\n    // TODO: print \"Positives: \" followed by g_positives\n    // TODO: print \"Negatives: \" followed by g_negatives\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint g_positives { 0 };\nint g_negatives { 0 };\n\nvoid classify(int value) {\n    if (value > 0)\n        ++g_positives;\n    else if (value < 0)\n        ++g_negatives;\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    for (int i { 0 }; i < n; ++i) {\n        int value {};\n        std::cin >> value;\n        classify(value);\n    }\n\n    std::cout << \"Positives: \" << g_positives << '\\n';\n    std::cout << \"Negatives: \" << g_negatives << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed values including zero",
+              "stdin": "6\n3\n-1\n0\n7\n-4\n-2",
+              "expected_stdout": "Positives: 2\nNegatives: 3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — all zeros",
+              "stdin": "3\n0\n0\n0",
+              "expected_stdout": "Positives: 0\nNegatives: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — single negative",
+              "stdin": "1\n-999",
+              "expected_stdout": "Positives: 0\nNegatives: 1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.5",
+      "title": "Variable shadowing (name hiding)",
+      "sort_order": 90,
+      "summary_md": "# Variable Shadowing (Name Hiding)\n\nVariable shadowing occurs when a variable declared in an inner scope has the same name as a variable in an outer scope. The inner variable \"hides\" the outer one within that scope, making the outer variable inaccessible by name alone.\n\n## How Shadowing Works\n\nWhen you declare a variable in a block (like a function body or nested block), it creates a new variable that occupies the same name in the symbol table. During lookup, the compiler finds the closest declaration in the current scope first. This is the normal scope resolution process, but when it causes confusion, we call it shadowing.\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nint x = 5;  // global x\n\nint main() {\n    int x = 10;  // local x shadows global x\n    {\n        int x = 20;  // inner block x shadows both\n        cout << x << \"\\n\";  // prints 20\n    }\n    cout << x << \"\\n\";  // prints 10\n    cout << ::x << \"\\n\";  // prints 5 (scope resolution)\n}\n```\n\n## Why This Matters\n\nShadowing is rarely intentional and often indicates a bug. When you reuse names across scopes, you risk:\n\n- **Accidentally using the wrong variable** in complicated functions\n- **Maintenance headaches** when refactoring code and forgetting about outer-scope variables\n- **Subtle logic errors** that are hard to debug\n\nThe global `x` is still accessible using the scope resolution operator `::`, as shown above, but relying on this is poor practice.\n\n## Prevention Strategies\n\nModern C++ and good practices help avoid shadowing:\n\n1. **Use meaningful names** – Reserve short names like `i`, `x`, `j` for loop counters in tight scopes only.\n2. **Use local scope appropriately** – Declare variables as close to their use as possible, limiting scope depth.\n3. **Enable compiler warnings** – Most compilers have flags to warn about shadowing (e.g., `-Wshadow` in GCC/Clang).\n4. **Use namespaces** – As covered in earlier lessons, namespaces reduce global-scope pollution and shadowing conflicts.\n5. **Prefer `const` and `auto`** – Structured bindings and `auto` with clear initialization make intent obvious.\n\n## Connection to Scope Concepts\n\nShadowing is fundamentally tied to the scope rules from **Local variables** and **Introduction to global variables**. Understanding scope resolution (covered in **User-defined namespaces and the scope resolution operator**) gives you the tools to access shadowed variables when necessary, but the best code minimizes the need.\n\nShadowing isn't a language feature—it's a pitfall to recognize and avoid through careful naming and scope discipline.",
+      "exercises": [
+        {
+          "title": "Finding the Correct Variable",
+          "prompt_md": "# Finding the Correct Variable\n\nYou are given a program where variables with the same name exist in different scopes. Your task is to determine which variable is being used at each point in the code.\n\nWrite a program that:\n1. Reads an integer `x` from input\n2. Creates a global variable `x` with value 100\n3. In main(), creates a local variable `x` with the input value\n4. In a nested block, creates another local variable `x` with value 50\n5. Prints the value of `x` at three different points:\n   - Inside the nested block (should be the innermost `x`)\n   - Back in main after the nested block (should be the main's local `x`)\n   - Using the scope resolution operator to access the global `x`\n\n## Output Format\nPrint three lines, each containing the value of `x` at the specified location.",
+          "starter_code": "#include <iostream>\nusing namespace std;\n\n// TODO: Declare a global variable x with value 100\n\nint main() {\n    int input;\n    cin >> input;\n    \n    // TODO: Declare a local variable x with the input value\n    \n    // TODO: Create a nested block that:\n    //       - Declares a local variable x with value 50\n    //       - Prints x (should print 50)\n    \n    // TODO: Print x here (should print the input value)\n    \n    // TODO: Print the global x using scope resolution operator\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\nusing namespace std;\n\nint x = 100;  // global variable x\n\nint main() {\n    int input;\n    cin >> input;\n    \n    int x = input;  // local variable x in main\n    \n    {\n        int x = 50;  // local variable x in nested block (shadows main's x)\n        cout << x << \"\\n\";  // prints 50\n    }\n    \n    cout << x << \"\\n\";  // prints the input value (main's local x)\n    cout << ::x << \"\\n\";  // prints 100 (global x)\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: input is 25",
+              "stdin": "25",
+              "expected_stdout": "50\n25\n100\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: input is 42",
+              "stdin": "42",
+              "expected_stdout": "50\n42\n100\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: input is 0",
+              "stdin": "0",
+              "expected_stdout": "50\n0\n100\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Shadowing Counter Variables",
+          "prompt_md": "# Shadowing Counter Variables\n\nVariable shadowing commonly occurs with loop counters. In this exercise, you will write a program that demonstrates shadowing with loop variables.\n\nWrite a program that:\n1. Reads an integer `n`\n2. Uses a loop counter `i` in an outer loop that runs `n` times\n3. Inside the outer loop, creates a nested block with its own variable `i` that shadows the outer `i`\n4. For each outer loop iteration:\n   - Print the outer loop's `i` value\n   - Create a nested block with a local `i` initialized to the outer `i` multiplied by 10\n   - Print the inner (shadowed) `i` value\n   - After the nested block, print the outer loop's `i` again to show it was unaffected\n\n## Output Format\nFor each iteration of the outer loop, print three lines:\n- Line 1: `outer: <outer_i_value>`\n- Line 2: `inner: <inner_i_value>`\n- Line 3: `outer: <outer_i_value>` (again)",
+          "starter_code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    \n    // TODO: Create an outer loop with counter i that runs n times\n    //       For each iteration:\n    //       - Print \"outer: \" followed by i\n    //       - Create a nested block with a local variable i\n    //         initialized to outer_i * 10\n    //       - Print \"inner: \" followed by the inner i\n    //       - Print \"outer: \" followed by i again\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    \n    for (int i = 0; i < n; ++i) {\n        cout << \"outer: \" << i << \"\\n\";\n        \n        {\n            int i = (i == 0 ? 0 : i) * 10;  // i shadows outer i\n            cout << \"inner: \" << i << \"\\n\";\n        }\n        \n        cout << \"outer: \" << i << \"\\n\";\n    }\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: n = 2",
+              "stdin": "2",
+              "expected_stdout": "outer: 0\ninner: 0\nouter: 0\nouter: 1\ninner: 10\nouter: 1\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: n = 3",
+              "stdin": "3",
+              "expected_stdout": "outer: 0\ninner: 0\nouter: 0\nouter: 1\ninner: 10\nouter: 1\nouter: 2\ninner: 20\nouter: 2\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: n = 1",
+              "stdin": "1",
+              "expected_stdout": "outer: 0\ninner: 0\nouter: 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.6",
+      "title": "Internal linkage",
+      "sort_order": 91,
+      "summary_md": "## Internal Linkage\n\nLinkage describes whether an identifier declared in one translation unit (one `.cpp` file) can be referred to from a different translation unit. **Internal linkage** means the identifier is visible only within the translation unit where it is defined — other `.cpp` files cannot see or use it.\n\n### Making identifiers have internal linkage\n\nTwo mechanisms give a non-local variable or function internal linkage:\n\n- **`static` keyword** — `static int counter = 0;` at file scope marks `counter` as internal.\n- **Anonymous namespace** — wrapping declarations in `namespace { ... }` gives everything inside internal linkage automatically, and is the preferred modern approach.\n\n```cpp\n// utils.cpp\nnamespace {\n    int callCount = 0;          // internal linkage — invisible outside this file\n\n    void incrementCount() {     // also internal linkage\n        ++callCount;\n    }\n}\n\nint getCallCount() {            // external linkage — callable from other files\n    incrementCount();\n    return callCount;\n}\n```\n\nHere `callCount` and `incrementCount` are completely private to `utils.cpp`. Other translation units can call `getCallCount()` but have no way to access the internals directly.\n\n### `static` vs anonymous namespace\n\nBoth work, but anonymous namespaces are preferred for new code because they also cover type definitions (classes, enums, aliases) — `static` cannot give a type internal linkage. Use `static` on a function or variable when you want to be explicit and brief; use an anonymous namespace when grouping several related internal items.\n\n### `const` and `constexpr` globals are special\n\nAs covered in *Introduction to global variables*, non-`const` globals have external linkage by default. However, `const` and `constexpr` variables declared at file scope have **internal linkage by default**, without needing `static` or an anonymous namespace. This is why it is common and safe to define compile-time constants in header files — each translation unit gets its own copy without a linker collision.\n\n### Why it matters\n\nInternal linkage is a tool for **encapsulation at the file level**. It prevents name collisions across translation units and signals to readers that an identifier is an implementation detail not meant to be shared. Relying on it is especially important when a project grows beyond a single file, where two `.cpp` files might independently define a helper function with the same name — internal linkage keeps them from conflicting.",
+      "exercises": [
+        {
+          "title": "Classify Linkage of File-Scope Declarations",
+          "prompt_md": "## Goal\nComplete the function `classifyLinkage(char kind)` that returns a string describing the linkage of a file-scope declaration, based on the character code passed in.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of queries.\n- Lines 2..N+1: one character per line, drawn from the set `{'s', 'a', 'c', 'e'}`, where:\n  - `'s'` — a `static` non-const variable at file scope\n  - `'a'` — a variable declared inside an anonymous namespace\n  - `'c'` — a `const` variable at file scope (no `static`, no anonymous namespace)\n  - `'e'` — a plain non-const, non-static variable at file scope\n\n## Output\n- Print exactly N lines.\n- For each query character, print one of the following strings (exact spelling, no extra spaces):\n  - `'s'` → `internal (static)`\n  - `'a'` → `internal (anonymous namespace)`\n  - `'c'` → `internal (const default)`\n  - `'e'` → `external`\n\n## Requirements\n1. Implement `std::string classifyLinkage(char kind)` in the starter file using a switch or if-else chain. The function must live **inside an anonymous namespace** so it itself has internal linkage — add that wrapper.\n2. `main()` reads N, then calls `classifyLinkage` for each character and prints the result followed by `'\\n'`.\n3. The function must return exactly the strings listed above for the four valid inputs.\n4. Hidden tests cover: all four kinds in one run, a run of length 1, and a run where the same kind appears multiple times consecutively.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: wrap classifyLinkage inside an anonymous namespace to give it\n//       internal linkage, then implement it.\n//       It should accept a char and return std::string.\n//       Valid inputs and their return values:\n//         's' -> \"internal (static)\"\n//         'a' -> \"internal (anonymous namespace)\"\n//         'c' -> \"internal (const default)\"\n//         'e' -> \"external\"\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        char kind{};\n        std::cin >> kind;\n        // TODO: call classifyLinkage and print the result\n    }\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nnamespace {\n    std::string classifyLinkage(char kind) {\n        switch (kind) {\n            case 's': return \"internal (static)\";\n            case 'a': return \"internal (anonymous namespace)\";\n            case 'c': return \"internal (const default)\";\n            case 'e': return \"external\";\n            default:  return \"unknown\";\n        }\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        char kind{};\n        std::cin >> kind;\n        std::cout << classifyLinkage(kind) << '\\n';\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "all four kinds",
+              "stdin": "4\ns\na\nc\ne\n",
+              "expected_stdout": "internal (static)\ninternal (anonymous namespace)\ninternal (const default)\nexternal\n",
+              "is_sample": true
+            },
+            {
+              "label": "single query — const",
+              "stdin": "1\nc\n",
+              "expected_stdout": "internal (const default)\n",
+              "is_sample": false
+            },
+            {
+              "label": "repeated same kind",
+              "stdin": "5\na\na\ns\na\ne\n",
+              "expected_stdout": "internal (anonymous namespace)\ninternal (anonymous namespace)\ninternal (static)\ninternal (anonymous namespace)\nexternal\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "File-Scope Counter with Internal Linkage and Block Scope",
+          "prompt_md": "## Goal\nComplete a program that tracks how many times each of two categories of words — \"internal\" and \"external\" — appears in the input, using a **file-scope counter variable with internal linkage** for each category.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100), the number of words to read.\n- Lines 2..N+1: one word per line. Each word is either exactly `internal` or exactly `external` (lowercase, no other values).\n\n## Output\nPrint exactly two lines in this order:\n```\ninternal count: <X>\nexternal count: <Y>\n```\nwhere `<X>` and `<Y>` are non-negative integers. No trailing spaces.\n\n## Requirements\n1. Declare two `static` integer variables at file scope — `s_internalCount` and `s_externalCount` — both initialised to `0`. These must have internal linkage via the `static` keyword (not an anonymous namespace).\n2. Implement two void functions also at file scope — `incrementInternal()` and `incrementExternal()` — each placed inside an **anonymous namespace**, giving them internal linkage. Each function increments the corresponding `static` counter.\n3. `main()` reads N words using a loop (a concept from this chapter's earlier lessons on block scope), calling the appropriate increment function for each word.\n4. After the loop, `main()` prints the two output lines shown above.\n5. Hidden tests cover: N = 1 with a single `internal`, all words being `external`, and a 50/50 mix of 10 words each.\n\n## Notes\n- You may use `std::string` and `std::cin >> word` for reading.\n- The `static` counters must be at file scope (not inside `main`).",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: declare two static int variables at file scope with internal linkage:\n//   s_internalCount and s_externalCount, both initialised to 0.\n\n// TODO: inside an anonymous namespace, define:\n//   void incrementInternal()  — increments s_internalCount\n//   void incrementExternal()  — increments s_externalCount\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: loop n times, read a word, and call the appropriate increment function\n\n    // TODO: print the two output lines\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstatic int s_internalCount = 0;\nstatic int s_externalCount = 0;\n\nnamespace {\n    void incrementInternal() {\n        ++s_internalCount;\n    }\n\n    void incrementExternal() {\n        ++s_externalCount;\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        std::string word{};\n        std::cin >> word;\n        if (word == \"internal\") {\n            incrementInternal();\n        } else {\n            incrementExternal();\n        }\n    }\n\n    std::cout << \"internal count: \" << s_internalCount << '\\n';\n    std::cout << \"external count: \" << s_externalCount << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "mixed input",
+              "stdin": "6\ninternal\nexternal\ninternal\ninternal\nexternal\ninternal\n",
+              "expected_stdout": "internal count: 4\nexternal count: 2\n",
+              "is_sample": true
+            },
+            {
+              "label": "single internal word",
+              "stdin": "1\ninternal\n",
+              "expected_stdout": "internal count: 1\nexternal count: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "all external",
+              "stdin": "5\nexternal\nexternal\nexternal\nexternal\nexternal\n",
+              "expected_stdout": "internal count: 0\nexternal count: 5\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.7",
+      "title": "External linkage and variable forward declarations",
+      "sort_order": 92,
+      "summary_md": "## External Linkage and Variable Forward Declarations\n\nExternal linkage means a name is visible and usable across multiple translation units (source files). A variable or function with external linkage can be defined in one `.cpp` file and referenced in others — the linker stitches them together.\n\nBy default, non-`const` global variables have external linkage. A `const` global, by contrast, defaults to internal linkage (as covered in **Internal linkage**), meaning it stays confined to its translation unit.\n\n### Declaring vs. Defining\n\nThe key distinction here is between a *definition* and a *forward declaration*:\n\n- A **definition** allocates storage and should appear in exactly one translation unit.\n- A **forward declaration** (using `extern`) tells the compiler \"this variable exists somewhere else — trust me.\" It allocates no storage.\n\n```cpp\n// constants.cpp  — definition\nint g_maxConnections { 100 };\n\n// main.cpp  — forward declaration\n#include <print>\n\nextern int g_maxConnections;   // no initialiser — declaration only\n\nint main()\n{\n    std::println(\"Max connections: {}\", g_maxConnections);\n    return 0;\n}\n```\n\nWriting `extern int g_maxConnections { 100 };` with an initialiser makes it a definition again, not a declaration. The `extern` without an initialiser is what signals \"look this up elsewhere.\"\n\n### The One-Definition Rule\n\nYou must define the variable in exactly one translation unit. Defining it in multiple `.cpp` files causes a linker error about duplicate symbols. Declaring it in multiple files (via `extern`) is fine and is exactly how shared globals are used in practice.\n\n### Avoiding Raw Global State\n\nRelying on `extern` variables across many files couples those files tightly and makes reasoning about state harder. A common mitigation is to place related globals inside a namespace (see **User-defined namespaces and the scope resolution operator**) so their origin is obvious: `Config::g_maxConnections` is clearer than a bare `g_maxConnections`. Better still, prefer passing values explicitly or using a well-encapsulated class, reserving external globals for cases where they genuinely represent program-wide, single-instance state.\n\n### Quick Reference\n\n- Non-`const` global variable — external linkage by default\n- `const` global variable — internal linkage by default\n- `extern` type name; — forward declaration, no storage allocated\n- `extern` type name `{val};` — definition with external linkage\n\nUnderstanding external linkage sets the stage for header-based declarations, where you'll see `extern` in header files so every translation unit that includes them shares the same declaration without re-defining the variable.",
+      "exercises": [
+        {
+          "title": "Forward-Declare a Global Counter Across Two Logical Units",
+          "prompt_md": "## Goal\nComplete the program so that a single global integer `g_visitCount` is **defined** in one place and **forward-declared** (using `extern`) in a second place, then both definition and declaration are used inside `main()` to print a formatted line.\n\nBecause the auto-grader compiles a single `.cpp` file, the exercise simulates two translation units with two clearly separated sections inside one file — a `// === definitions section ===` block and a `// === declarations section ===` block. You will fill in the definition in the first block and the `extern` forward declaration in the second block.\n\n## Input\n- Line 1: a single integer N (1 ≤ N ≤ 1 000 000) — the number of visits to record.\n\n## Output\n- Print exactly one line in the format `Visit count: N` where N is the value read from stdin.\n- No trailing blank lines.\n\n## Requirements\n1. In the `// === definitions section ===` block, define `int g_visitCount` and initialize it to `0`.\n2. In the `// === declarations section ===` block, write an `extern` forward declaration for `g_visitCount` (no initializer).\n3. In `main()`, read N from stdin, assign it to `g_visitCount` through the forward-declared name, then print the output line.\n4. Do **not** declare a second local variable named `g_visitCount` inside `main()`.\n5. The program must compile cleanly with no warnings under `g++ -std=c++20 -Wall -Wextra`.\n6. Edge cases the hidden tests cover: N = 1, N = 1 000 000.\n",
+          "starter_code": "#include <iostream>\n\n// === definitions section ===\n// (simulates constants.cpp or globals.cpp)\n// TODO: define int g_visitCount here, initialized to 0\n\n\n// === declarations section ===\n// (simulates a different translation unit that needs g_visitCount)\n// TODO: write an extern forward declaration for g_visitCount here (no initializer)\n\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: assign n to g_visitCount using the forward-declared name\n\n    // TODO: print \"Visit count: \" followed by g_visitCount\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\n// === definitions section ===\nint g_visitCount { 0 };\n\n// === declarations section ===\nextern int g_visitCount;\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    g_visitCount = n;\n\n    std::cout << \"Visit count: \" << g_visitCount << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — typical value",
+              "stdin": "42\n",
+              "expected_stdout": "Visit count: 42\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — minimum value",
+              "stdin": "1\n",
+              "expected_stdout": "Visit count: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — maximum value",
+              "stdin": "1000000\n",
+              "expected_stdout": "Visit count: 1000000\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Namespace-Scoped External Global with Block-Scope Shadowing",
+          "prompt_md": "## Goal\nComplete the program that uses an externally-linked global variable placed inside a namespace, then demonstrates how a block-scope local variable can shadow it — combining **external linkage / forward declarations** (this lesson) with **block scope vs. global scope** (earlier in Chapter 7).\n\nThe program reads two integers and prints three labeled values showing the global, a shadowed local, and the global again after the local goes out of scope.\n\n## Input\n- Line 1: integer G (−10 000 ≤ G ≤ 10 000) — the value to store in the global.\n- Line 2: integer L (−10 000 ≤ L ≤ 10 000) — the value to store in the local shadow.\n\n## Output\nPrint exactly three lines in this order:\n```\nGlobal: <G>\nShadow: <L>\nGlobal again: <G>\n```\nUse those exact labels (capital first letter, colon, space). No trailing blank lines.\n\n## Requirements\n1. In the `// === definitions section ===` block, define `int Config::g_threshold` and initialize it to `0`.\n2. In the `// === declarations section ===` block, write an `extern` forward declaration for `Config::g_threshold` inside `namespace Config` (no initializer).\n3. In `main()`, read G and assign it to `Config::g_threshold`, then print the first output line using `Config::g_threshold`.\n4. Open a new block (`{ }`) inside `main()`. Inside that block, declare a local `int g_threshold` and assign L to it. Print the second output line using the local variable.\n5. After the block closes, print the third output line using `Config::g_threshold` — it must still hold G unchanged.\n6. Do **not** use any `using namespace Config;` directive — always qualify with `Config::`.\n7. The program must compile cleanly under `g++ -std=c++20 -Wall -Wextra`.\n8. Edge cases the hidden tests cover: G = 0 and L = 0 (no shadowing is visible numerically, but structure still matters); G and L with opposite signs.\n",
+          "starter_code": "#include <iostream>\n\n// === definitions section ===\n// (simulates Config.cpp)\nnamespace Config\n{\n    // TODO: define int g_threshold here, initialized to 0\n}\n\n// === declarations section ===\n// (simulates another translation unit)\nnamespace Config\n{\n    // TODO: write an extern forward declaration for g_threshold (no initializer)\n}\n\nint main()\n{\n    int g {}, l {};\n    std::cin >> g >> l;\n\n    // TODO: assign g to Config::g_threshold\n\n    // TODO: print \"Global: \" followed by Config::g_threshold\n\n    {\n        // TODO: declare a local int g_threshold and assign l to it\n\n        // TODO: print \"Shadow: \" followed by the LOCAL g_threshold\n    }\n\n    // TODO: print \"Global again: \" followed by Config::g_threshold\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\n// === definitions section ===\nnamespace Config\n{\n    int g_threshold { 0 };\n}\n\n// === declarations section ===\nnamespace Config\n{\n    extern int g_threshold;\n}\n\nint main()\n{\n    int g {}, l {};\n    std::cin >> g >> l;\n\n    Config::g_threshold = g;\n\n    std::cout << \"Global: \" << Config::g_threshold << '\\n';\n\n    {\n        int g_threshold { l };\n        std::cout << \"Shadow: \" << g_threshold << '\\n';\n    }\n\n    std::cout << \"Global again: \" << Config::g_threshold << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — distinct positive values",
+              "stdin": "7\n3\n",
+              "expected_stdout": "Global: 7\nShadow: 3\nGlobal again: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — both zero",
+              "stdin": "0\n0\n",
+              "expected_stdout": "Global: 0\nShadow: 0\nGlobal again: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — opposite signs",
+              "stdin": "-500\n500\n",
+              "expected_stdout": "Global: -500\nShadow: 500\nGlobal again: -500\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.8",
+      "title": "Why (non-const) global variables are evil",
+      "sort_order": 93,
+      "summary_md": "## Why (Non-Const) Global Variables Are Evil\n\nNon-const global variables have *external linkage* by default (covered in \"External linkage and variable forward declarations\"), meaning any translation unit in your program can read **and modify** them. That freedom is the problem.\n\n### The Core Issues\n\n**Unpredictable state.** Any function, anywhere, at any time can change a global. When a bug manifests, you have to audit every site that touches the variable — not just the local scope where you expected the value to live.\n\n**Hidden dependencies.** A function that silently reads or writes a global is harder to reason about than one that takes explicit parameters. Its behavior depends on invisible state, making it difficult to test in isolation.\n\n**Initialization order chaos.** Globals in different translation units are initialized in an unspecified order. Depending on one global to initialize another across files is undefined behavior waiting to happen — the \"static initialization order fiasco.\"\n\n**Name collisions.** As projects grow, global names collide. Even with namespaces (see \"User-defined namespaces and the scope resolution operator\"), globals pollute shared state in ways local variables never can.\n\n### A Concrete Example\n\n```cpp\n#include <print>\n\nint g_score = 0;  // non-const global — trouble\n\nvoid add_points(int n) { g_score += n; }  // hidden side-effect\nvoid reset()           { g_score = 0;  }  // anyone can call this\n\nint calculate_bonus() {\n    reset();           // oops — side-effect nobody expected\n    return g_score * 2;\n}\n\nint main() {\n    add_points(10);\n    std::println(\"Bonus: {}\", calculate_bonus()); // prints 0, not 20\n}\n```\n\n`calculate_bonus` quietly resets state it doesn't own. With a local variable passed explicitly, this bug cannot exist.\n\n### What to Do Instead\n\n- Prefer local variables with the smallest possible scope (see \"Local variables\").\n- Pass values as function parameters and return results explicitly.\n- If shared state is truly necessary, encapsulate it inside a class with controlled access.\n- Constants are fine as globals — `const` or `constexpr` globals carry no mutable state and are entirely reasonable to use.\n\nThe rule is simple: if a variable can change, keep it as local as possible. Global mutable state scales poorly, tests poorly, and fails in ways that are genuinely hard to debug.",
+      "exercises": [
+        {
+          "title": "Refactor Hidden Global Side-Effect",
+          "prompt_md": "## Goal\nComplete three functions — `add_score`, `apply_penalty`, and `get_final_score` — so they compute a final score **without using any non-const global variables**. All mutable state must be passed as parameters or returned as values.\n\n## Input\n- Line 1: integer `base` (0 ≤ base ≤ 1000) — the starting score.\n- Line 2: integer `points` (0 ≤ points ≤ 500) — points to add.\n- Line 3: integer `penalty` (0 ≤ penalty ≤ 500) — penalty to subtract.\n\n## Output\nPrint exactly one line in the format `Final score: N` where `N` is the result of `get_final_score(add_score(base, points), penalty)`. `N` may be negative if penalty exceeds the sum.\n\n## Requirements\n1. `add_score(int score, int points)` must return `score + points`. It must not read or write any global variable.\n2. `apply_penalty(int score, int penalty)` must return `score - penalty`. It must not read or write any global variable.\n3. `get_final_score(int score, int penalty)` must call `apply_penalty` internally and return its result. It must not read or write any global variable.\n4. `main` reads the three integers, calls `get_final_score(add_score(base, points), penalty)`, and prints `Final score: N`.\n5. The starter code contains a broken version that uses a non-const global `g_score`; the student must remove it and rewrite the three functions.\n6. Hidden tests cover: `penalty` larger than `base + points` (negative result), all zeros, and maximum values (1000 + 500 - 0 = 1500).",
+          "starter_code": "#include <iostream>\n\n// TODO: Remove this non-const global and rewrite the three functions\n//       so all mutable state is passed via parameters / return values.\nint g_score = 0;\n\n// TODO: Complete add_score. It receives a score and points to add.\n//       Return the new score. Do NOT use g_score.\nint add_score(int score, int points)\n{\n    g_score = score + points; // broken: stores into global\n    return g_score;\n}\n\n// TODO: Complete apply_penalty. It receives a score and a penalty.\n//       Return score - penalty. Do NOT use g_score.\nint apply_penalty(int score, int penalty)\n{\n    g_score -= penalty; // broken: mutates global\n    return g_score;\n}\n\n// TODO: Complete get_final_score. It receives a score and a penalty,\n//       calls apply_penalty, and returns the result. Do NOT use g_score.\nint get_final_score(int score, int penalty)\n{\n    g_score = score;          // broken: uses global\n    return apply_penalty(g_score, penalty);\n}\n\nint main()\n{\n    int base{}, points{}, penalty{};\n    std::cin >> base >> points >> penalty;\n\n    int result{ get_final_score(add_score(base, points), penalty) };\n    std::cout << \"Final score: \" << result << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint add_score(int score, int points)\n{\n    return score + points;\n}\n\nint apply_penalty(int score, int penalty)\n{\n    return score - penalty;\n}\n\nint get_final_score(int score, int penalty)\n{\n    return apply_penalty(score, penalty);\n}\n\nint main()\n{\n    int base{}, points{}, penalty{};\n    std::cin >> base >> points >> penalty;\n\n    int result{ get_final_score(add_score(base, points), penalty) };\n    std::cout << \"Final score: \" << result << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — basic values",
+              "stdin": "10\n5\n3",
+              "expected_stdout": "Final score: 12\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — penalty exceeds total (negative result)",
+              "stdin": "5\n2\n20",
+              "expected_stdout": "Final score: -13\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — maximum values",
+              "stdin": "1000\n500\n0",
+              "expected_stdout": "Final score: 1500\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Local-Scope Accumulator with Function Linkage",
+          "prompt_md": "## Goal\nComplete the function `accumulate` so it processes a sequence of signed integers **without relying on any non-const global variable**, and returns the running total after each addition. The function must have internal linkage (`static`) so it cannot be used from another translation unit.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20) — the number of values to process.\n- Lines 2 .. N+1: one signed integer per line (−1000 ≤ value ≤ 1000).\n\n## Output\nFor each of the `N` values, print one line in the format `After adding V: total is T`, where `V` is the value just added and `T` is the running total so far. Values and totals may be negative.\n\n## Requirements\n1. `accumulate` must have the signature `static int accumulate(int running_total, int value)`. It returns `running_total + value`. It must not read or write any global variable.\n2. The keyword `static` on the function definition gives it **internal linkage** (file scope only) — this is a required part of the solution and must remain in the submitted code.\n3. `main` maintains the running total in a **local variable** initialized to `0`, calls `accumulate` in a loop, stores the returned value back into that local variable, and prints the output line after each call.\n4. No non-const variable may be declared at namespace scope (global scope). A `const` or `constexpr` global is allowed if needed.\n5. Hidden tests cover: `N = 1` with a single value, all negative values, and a mix of positive and negative values that returns to zero.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define accumulate with internal linkage (static).\n//       Signature: static int accumulate(int running_total, int value)\n//       Return running_total + value.\n//       Do NOT declare or use any non-const global variable.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Declare a local variable 'total' initialized to 0.\n    // TODO: Loop n times:\n    //         read an integer 'value',\n    //         update total by calling accumulate(total, value),\n    //         print \"After adding V: total is T\\n\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nstatic int accumulate(int running_total, int value)\n{\n    return running_total + value;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int total{ 0 };\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int value{};\n        std::cin >> value;\n        total = accumulate(total, value);\n        std::cout << \"After adding \" << value << \": total is \" << total << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed positive values",
+              "stdin": "3\n4\n6\n-2",
+              "expected_stdout": "After adding 4: total is 4\nAfter adding 6: total is 10\nAfter adding -2: total is 8\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — single value",
+              "stdin": "1\n-7",
+              "expected_stdout": "After adding -7: total is -7\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — values cancel back to zero",
+              "stdin": "4\n100\n-50\n-30\n-20",
+              "expected_stdout": "After adding 100: total is 100\nAfter adding -50: total is 50\nAfter adding -30: total is 20\nAfter adding -20: total is 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.9",
+      "title": "Inline functions and variables",
+      "sort_order": 94,
+      "summary_md": "# Inline Functions and Variables\n\n## What \"inline\" Really Means Today\n\nThe `inline` keyword has a modern meaning that differs from its historical one. Originally it was a hint to the compiler to substitute a function's body at the call site (like a macro, but type-safe). Compilers have long ignored that hint — they inline whatever they judge worthwhile regardless. Today, `inline` primarily controls **ODR (One Definition Rule) compliance**.\n\nThe ODR states that a non-inline function or variable may have **exactly one definition** across all translation units. Violating this causes a linker error. Marking something `inline` relaxes this: the linker accepts multiple identical definitions and collapses them into one.\n\n## Why This Matters for Headers\n\nRecall from *External linkage and variable forward declarations* that non-const globals have external linkage by default. If you define a regular function in a header included by multiple `.cpp` files, the linker sees duplicate definitions and complains.\n\n`inline` solves this cleanly:\n\n```cpp\n// math_utils.hpp\n#pragma once\n#include <format>\n#include <string>\n\ninline double square(double x) { return x * x; }\n\ninline std::string describe(double x) {\n    return std::format(\"{} squared is {}\", x, square(x));\n}\n```\n\nBoth functions can now live in the header and be included in as many translation units as needed. Each translation unit gets its own copy of the definition, the linker merges them, and there is no ODR violation.\n\n## Inline Variables (C++17 and Later)\n\nC++17 extended `inline` to variables. This is especially useful for header-only constants with non-trivial types, or for static data members defined directly in a class:\n\n```cpp\n// config.hpp\ninline constexpr int max_connections { 64 };\n```\n\nBefore C++17, a global `constexpr` variable in a header had **internal linkage** (one copy per translation unit). An `inline constexpr` variable has **external linkage with a single shared address** — useful when pointer identity matters.\n\n## Key Takeaways\n\n- `inline` does **not** force call-site substitution; the compiler decides that independently.\n- It allows multiple identical definitions across translation units without ODR violations.\n- `inline` functions and variables are the standard mechanism for putting definitions in headers.\n- `inline constexpr` gives a single, shared constant — compare this to the per-translation-unit copies described in *Internal linkage*.\n- Avoid `inline` on functions with large bodies in widely-included headers; binary size can grow since each translation unit embeds the definition.",
+      "exercises": [
+        {
+          "title": "Inline Header Utility: Circle Geometry",
+          "prompt_md": "## Goal\nComplete three `inline` functions declared in a provided header-style block so that a driver program computes and prints circle geometry without ODR violations.\n\n## Input\n- Line 1: a single positive floating-point number `r` representing the radius of a circle (0.0 < r ≤ 1000.0).\n\n## Output\nPrint exactly three lines in this order:\n```\nCircumference: <value>\nArea: <value>\nDiameter: <value>\n```\n- Each `<value>` is rounded to exactly **2 decimal places** using `std::fixed` and `std::setprecision(2)`.\n- No extra blank lines, no trailing spaces.\n\n## Requirements\n1. Define an `inline constexpr double PI` variable equal to `3.14159265358979` inside the header block (marked with a comment `// header block` in the starter code). It must be `inline constexpr`.\n2. Implement three `inline` functions inside the same header block:\n   - `inline double circumference(double r)` — returns `2 * PI * r`.\n   - `inline double area(double r)` — returns `PI * r * r`.\n   - `inline double diameter(double r)` — returns `2 * r`.\n3. All three functions must be marked `inline`.\n4. `main()` reads `r` from stdin, calls each function, and prints the three lines described above.\n5. Edge cases covered by hidden tests: very small radius (e.g. `0.5`), large radius (e.g. `999.9`), and whole-number radius (e.g. `1.0`).\n\n## Notes\n- You may use `#include <iostream>`, `#include <iomanip>`, and `#include <cmath>` (though `<cmath>` is not required).\n- Do not use `std::numbers::pi`; use the `inline constexpr double PI` you define.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// ---- header block (pretend this is geometry.hpp) ----\n// TODO: define inline constexpr double PI = 3.14159265358979\n\n// TODO: implement inline double circumference(double r)\n\n// TODO: implement inline double area(double r)\n\n// TODO: implement inline double diameter(double r)\n// ---- end header block --------------------------------\n\nint main()\n{\n    double r{};\n    std::cin >> r;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Circumference: \" << circumference(r) << '\\n';\n    std::cout << \"Area: \"          << area(r)          << '\\n';\n    std::cout << \"Diameter: \"      << diameter(r)       << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\n// ---- header block (pretend this is geometry.hpp) ----\ninline constexpr double PI { 3.14159265358979 };\n\ninline double circumference(double r) { return 2.0 * PI * r; }\n\ninline double area(double r) { return PI * r * r; }\n\ninline double diameter(double r) { return 2.0 * r; }\n// ---- end header block --------------------------------\n\nint main()\n{\n    double r{};\n    std::cin >> r;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Circumference: \" << circumference(r) << '\\n';\n    std::cout << \"Area: \"          << area(r)          << '\\n';\n    std::cout << \"Diameter: \"      << diameter(r)       << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: radius 5",
+              "stdin": "5\n",
+              "expected_stdout": "Circumference: 31.42\nArea: 78.54\nDiameter: 10.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: small radius 0.5",
+              "stdin": "0.5\n",
+              "expected_stdout": "Circumference: 3.14\nArea: 0.79\nDiameter: 1.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: large radius 999.9",
+              "stdin": "999.9\n",
+              "expected_stdout": "Circumference: 6282.57\nArea: 3141199.49\nDiameter: 1999.80\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Inline Converter with File-Scope Constant",
+          "prompt_md": "## Goal\nComplete a program that uses `inline` functions and an `inline constexpr` variable to convert a temperature from Celsius to three other scales, printing each result. This exercise combines inline definitions (current lesson) with variable scope and linkage (Chapter 7 prior lessons).\n\n## Input\n- Line 1: a single floating-point number `c` representing a temperature in Celsius (-273.15 ≤ c ≤ 1000.0).\n\n## Output\nPrint exactly four lines:\n```\nCelsius: <c>\nFahrenheit: <value>\nKelvin: <value>\nRankine: <value>\n```\n- All values rounded to exactly **2 decimal places** using `std::fixed` and `std::setprecision(2)`.\n- No extra blank lines, no trailing spaces.\n\n## Requirements\n1. Declare `inline constexpr double ABSOLUTE_ZERO_OFFSET { 273.15 }` at namespace (file) scope inside the marked header block. It must be `inline constexpr`.\n2. Implement these three `inline` conversion functions in the same header block:\n   - `inline double toFahrenheit(double c)` — returns `c * 9.0 / 5.0 + 32.0`.\n   - `inline double toKelvin(double c)` — returns `c + ABSOLUTE_ZERO_OFFSET`.\n   - `inline double toRankine(double c)` — returns `toKelvin(c) * 9.0 / 5.0`.\n3. `toRankine` must call `toKelvin` (not duplicate the formula), demonstrating inline functions calling each other.\n4. `main()` reads `c`, then prints the four lines shown in Output using the functions above.\n5. Edge cases covered by hidden tests: absolute zero `c = -273.15`, freezing point `c = 0`, and boiling point `c = 100`.\n\n## Notes\n- You may use `#include <iostream>` and `#include <iomanip>`.\n- `ABSOLUTE_ZERO_OFFSET` must be used inside `toKelvin`; do not hard-code `273.15` inside the function body directly.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// ---- header block (pretend this is convert.hpp) ----\n// TODO: define inline constexpr double ABSOLUTE_ZERO_OFFSET { 273.15 }\n\n// TODO: implement inline double toFahrenheit(double c)\n\n// TODO: implement inline double toKelvin(double c)\n//       (must use ABSOLUTE_ZERO_OFFSET)\n\n// TODO: implement inline double toRankine(double c)\n//       (must call toKelvin, not repeat the formula)\n// ---- end header block --------------------------------\n\nint main()\n{\n    double c{};\n    std::cin >> c;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Celsius: \"     << c                << '\\n';\n    std::cout << \"Fahrenheit: \"  << toFahrenheit(c)  << '\\n';\n    std::cout << \"Kelvin: \"      << toKelvin(c)      << '\\n';\n    std::cout << \"Rankine: \"     << toRankine(c)     << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\n// ---- header block (pretend this is convert.hpp) ----\ninline constexpr double ABSOLUTE_ZERO_OFFSET { 273.15 };\n\ninline double toFahrenheit(double c) { return c * 9.0 / 5.0 + 32.0; }\n\ninline double toKelvin(double c) { return c + ABSOLUTE_ZERO_OFFSET; }\n\ninline double toRankine(double c) { return toKelvin(c) * 9.0 / 5.0; }\n// ---- end header block --------------------------------\n\nint main()\n{\n    double c{};\n    std::cin >> c;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Celsius: \"     << c                << '\\n';\n    std::cout << \"Fahrenheit: \"  << toFahrenheit(c)  << '\\n';\n    std::cout << \"Kelvin: \"      << toKelvin(c)      << '\\n';\n    std::cout << \"Rankine: \"     << toRankine(c)     << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 25 Celsius",
+              "stdin": "25\n",
+              "expected_stdout": "Celsius: 25.00\nFahrenheit: 77.00\nKelvin: 298.15\nRankine: 536.67\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: absolute zero -273.15",
+              "stdin": "-273.15\n",
+              "expected_stdout": "Celsius: -273.15\nFahrenheit: -459.67\nKelvin: 0.00\nRankine: 0.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: boiling point 100",
+              "stdin": "100\n",
+              "expected_stdout": "Celsius: 100.00\nFahrenheit: 212.00\nKelvin: 373.15\nRankine: 671.67\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.10",
+      "title": "Sharing global constants across multiple files (using inline variables)",
+      "sort_order": 95,
+      "summary_md": "## Sharing Global Constants Across Multiple Files\n\nWhen a project grows beyond one translation unit, you often need a set of physical or mathematical constants available everywhere. The naive approach — putting `const double kPi = 3.14159;` in a header — creates a *separate copy* in every `.cpp` file that includes it. That wastes memory and, more importantly, violates the One Definition Rule if you ever need the address of that object to be consistent.\n\n### The `inline` Solution\n\nAs covered in **Inline functions and variables**, marking a variable `inline` tells the linker: *\"multiple definitions of this exist across translation units; merge them into one.\"* Applied to constants in a header, this gives you a single shared object with external linkage and no ODR violation.\n\n```cpp\n// constants.hpp\n#pragma once\n#include <numbers>   // std::numbers::pi (C++20)\n\ninline constexpr double kGravity   = 9.80665;   // m/s²\ninline constexpr double kLightSpeed = 2.998e8;  // m/s\ninline constexpr double kPi        = std::numbers::pi;\n\n// physics.cpp  (and any other .cpp) can simply include constants.hpp\n// All translation units share the same kGravity object.\n```\n\nPrefer `constexpr` alongside `inline`: `constexpr` implies `const`, enables compile-time evaluation, and, at namespace scope, also implies `inline` in C++17 and later — but writing both explicitly makes intent unmistakable.\n\n### Why Not Just Use `extern`?\n\nThe `extern` pattern from **External linkage and variable forward declarations** requires one definition file plus a `extern const` declaration in every header. That works, but it prevents constant folding at compile time in other translation units, because the compiler cannot see the value. `inline constexpr` in a header keeps the value visible everywhere, so the optimizer can substitute it directly.\n\n### Why Not Unnamed Namespaces?\n\nWrapping constants in an unnamed namespace (related to **Internal linkage**) gives every translation unit its own private copy — the opposite of sharing. That can be appropriate for internal helpers but not for a single authoritative physical constant.\n\n### Namespace Hygiene\n\nNest your constants inside a named namespace (see **User-defined namespaces and the scope resolution operator**) to avoid polluting global scope:\n\n```cpp\nnamespace physics::constants { inline constexpr double kGravity = 9.80665; }\n```\n\nAccess it as `physics::constants::kGravity` — unambiguous and self-documenting.",
+      "exercises": [
+        {
+          "title": "Inline Constexpr Constants: Unit Converter",
+          "prompt_md": "## Goal\nComplete a program that uses `inline constexpr` constants defined in a header-style namespace to convert a distance and a temperature from metric/Celsius to imperial/Fahrenheit.\n\n## Input\n- Line 1: a `double` representing a distance in kilometres (0.0 ≤ d ≤ 1,000,000.0)\n- Line 2: a `double` representing a temperature in degrees Celsius (-273.15 ≤ t ≤ 10,000.0)\n\n## Output\nPrint exactly two lines:\n- Line 1: `Distance: X miles` where X is the distance converted to miles, printed with 4 decimal places\n- Line 2: `Temperature: Y F` where Y is the temperature converted to Fahrenheit, printed with 4 decimal places\n\nExample for input `10.0` / `100.0`:\n```\nDistance: 6.2137 miles\nTemperature: 212.0000 F\n```\n\n## Requirements\n1. Define a namespace `units::constants` that contains exactly two `inline constexpr double` constants:\n   - `kKmToMiles` with value `0.621371` (kilometres → miles multiplier)\n   - `kCelsiusOffset` with value `32.0` (added after scaling for °C → °F)\n2. The Celsius-to-Fahrenheit formula is `F = C * 9.0 / 5.0 + kCelsiusOffset`.\n3. The kilometre-to-miles formula is `miles = km * kKmToMiles`.\n4. Both constants must be `inline constexpr`; a `static_assert` in `main` must verify `units::constants::kCelsiusOffset == 32.0` at compile time.\n5. Output uses `std::fixed` and `std::setprecision(4)` for both values.\n6. Edge cases tested: `d = 0.0` / `t = -40.0` (the crossover point where °C equals °F), and large values near the input maximum.\n\n## Notes\n- You may include `<iostream>`, `<iomanip>`.\n- All constants must live inside the `units::constants` namespace.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a namespace 'units::constants' containing:\n//   inline constexpr double kKmToMiles   = ...;\n//   inline constexpr double kCelsiusOffset = ...;\n\nint main()\n{\n    // TODO: Add a static_assert that verifies units::constants::kCelsiusOffset == 32.0\n\n    double km{};\n    double celsius{};\n    std::cin >> km >> celsius;\n\n    // TODO: Compute miles using units::constants::kKmToMiles\n    double miles{};\n\n    // TODO: Compute fahrenheit using the formula F = C * 9.0/5.0 + units::constants::kCelsiusOffset\n    double fahrenheit{};\n\n    std::cout << std::fixed << std::setprecision(4);\n    std::cout << \"Distance: \" << miles << \" miles\\n\";\n    std::cout << \"Temperature: \" << fahrenheit << \" F\\n\";\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace units::constants\n{\n    inline constexpr double kKmToMiles    = 0.621371;\n    inline constexpr double kCelsiusOffset = 32.0;\n}\n\nint main()\n{\n    static_assert(units::constants::kCelsiusOffset == 32.0,\n                  \"kCelsiusOffset must be 32.0\");\n\n    double km{};\n    double celsius{};\n    std::cin >> km >> celsius;\n\n    double miles      = km * units::constants::kKmToMiles;\n    double fahrenheit = celsius * 9.0 / 5.0 + units::constants::kCelsiusOffset;\n\n    std::cout << std::fixed << std::setprecision(4);\n    std::cout << \"Distance: \"     << miles      << \" miles\\n\";\n    std::cout << \"Temperature: \"  << fahrenheit << \" F\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 10 km, 100 °C",
+              "stdin": "10.0\n100.0\n",
+              "expected_stdout": "Distance: 6.2137 miles\nTemperature: 212.0000 F\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 0 km, -40 °C (crossover)",
+              "stdin": "0.0\n-40.0\n",
+              "expected_stdout": "Distance: 0.0000 miles\nTemperature: -40.0000 F\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 1000 km, 0 °C",
+              "stdin": "1000.0\n0.0\n",
+              "expected_stdout": "Distance: 621.3710 miles\nTemperature: 32.0000 F\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Inline Constants + Internal Linkage: Physics Query Filter",
+          "prompt_md": "## Goal\nComplete a program that reads N physics measurements and prints only those whose absolute value falls within a shared \"valid range\" defined by `inline constexpr` constants, using an internally-linked helper function to perform the check.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50), the number of measurements\n- Lines 2..N+1: one `double` per line, each measurement value (-10,000.0 ≤ v ≤ 10,000.0)\n\n## Output\n- For each measurement that satisfies `physics::constants::kMinValid <= |v| <= physics::constants::kMaxValid`, print one line: `Valid: X` where X is the value printed with 2 decimal places.\n- If no measurements are valid, print exactly one line: `No valid measurements`.\n- Print the valid measurements in the same order they were read.\n\nExample for N = 4, values `0.5 15.0 -9.81 300.0`:\n```\nValid: 0.50\nValid: -9.81\n```\n\n## Requirements\n1. Define a namespace `physics::constants` containing exactly two `inline constexpr double` constants:\n   - `kMinValid = 0.1` (minimum absolute value to be considered valid)\n   - `kMaxValid = 100.0` (maximum absolute value to be considered valid)\n2. Both constants must be `inline constexpr`.\n3. Define a function `isValidMeasurement(double v)` that returns `true` when `kMinValid <= std::abs(v) <= kMaxValid`. This function must have **internal linkage** (declare it `static` or place it in an unnamed namespace).\n4. `main` calls `isValidMeasurement` to decide which values to print.\n5. A `static_assert` in `main` must verify at compile time that `physics::constants::kMinValid < physics::constants::kMaxValid`.\n6. Output uses `std::fixed` and `std::setprecision(2)`.\n7. Edge cases tested: all measurements outside the range (triggers `No valid measurements`), a value exactly equal to `kMinValid` (0.1) or `kMaxValid` (100.0) (both are valid, boundary-inclusive), and negative values whose absolute value is in range.\n\n## Notes\n- You may include `<iostream>`, `<iomanip>`, `<cmath>`.\n- `isValidMeasurement` must have internal linkage — this is intentional contrast with the `inline constexpr` constants that have external linkage.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\n// TODO: Define a namespace 'physics::constants' containing:\n//   inline constexpr double kMinValid = 0.1;\n//   inline constexpr double kMaxValid = 100.0;\n\n// TODO: Define isValidMeasurement(double v) with INTERNAL linkage.\n//       Return true when kMinValid <= std::abs(v) <= kMaxValid.\n\nint main()\n{\n    // TODO: Add a static_assert verifying kMinValid < kMaxValid at compile time.\n\n    int n{};\n    std::cin >> n;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    int validCount = 0;\n    for (int i = 0; i < n; ++i)\n    {\n        double v{};\n        std::cin >> v;\n\n        // TODO: If isValidMeasurement(v) is true, print \"Valid: \" followed by v\n        //       and increment validCount.\n    }\n\n    // TODO: If validCount == 0, print \"No valid measurements\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\nnamespace physics::constants\n{\n    inline constexpr double kMinValid = 0.1;\n    inline constexpr double kMaxValid = 100.0;\n}\n\nstatic bool isValidMeasurement(double v)\n{\n    double a = std::abs(v);\n    return a >= physics::constants::kMinValid && a <= physics::constants::kMaxValid;\n}\n\nint main()\n{\n    static_assert(physics::constants::kMinValid < physics::constants::kMaxValid,\n                  \"kMinValid must be less than kMaxValid\");\n\n    int n{};\n    std::cin >> n;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    int validCount = 0;\n    for (int i = 0; i < n; ++i)\n    {\n        double v{};\n        std::cin >> v;\n\n        if (isValidMeasurement(v))\n        {\n            std::cout << \"Valid: \" << v << \"\\n\";\n            ++validCount;\n        }\n    }\n\n    if (validCount == 0)\n        std::cout << \"No valid measurements\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: mixed values",
+              "stdin": "4\n0.5\n15.0\n-9.81\n300.0\n",
+              "expected_stdout": "Valid: 0.50\nValid: 15.00\nValid: -9.81\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: all out of range",
+              "stdin": "3\n0.0\n-200.0\n101.0\n",
+              "expected_stdout": "No valid measurements\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: boundary values 0.1 and 100.0",
+              "stdin": "5\n0.1\n-0.1\n100.0\n-100.0\n0.09\n",
+              "expected_stdout": "Valid: 0.10\nValid: -0.10\nValid: 100.00\nValid: -100.00\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.11",
+      "title": "Static local variables",
+      "sort_order": 96,
+      "summary_md": "# Static Local Variables\n\nA **static local variable** is a local variable with its lifetime extended to match the program's lifetime. Declare one by adding the `static` keyword before the type inside a function or block.\n\n```cpp\n#include <format>\n#include <print>\n\nint generate_id()\n{\n    static int next_id { 1 };   // initialized exactly once\n    return next_id++;\n}\n\nint main()\n{\n    for (int i { 0 }; i < 4; ++i)\n        std::println(\"{}\", generate_id());  // prints 1 2 3 4\n}\n```\n\nTwo things happen here that differ from an ordinary local variable (covered in *Local variables*):\n\n- **Initialization**: `next_id` is initialized only the first time `generate_id()` is called, not on every call. Non-trivial initializers (including function calls) are evaluated at that first call; zero-initialized types are guaranteed zero before any code runs.\n- **Lifetime**: the variable persists across calls and is destroyed when the program exits, just like a global.\n\n**Scope is unchanged.** Despite the extended lifetime, `next_id` is still only accessible inside `generate_id`. This is the key advantage over global variables (see *Why (non-const) global variables are evil*): the persistent state is hidden behind a controlled interface, so no other code can accidentally modify it.\n\nA few practical rules:\n\n- Static local variables with constant expressions as initializers are initialized at compile time (like `constexpr`, effectively).\n- Static local variables with dynamic initializers are initialized in a thread-safe way in C++11 and later — but concurrent *use* of the variable still requires your own synchronization.\n- Avoid `static` local variables that hold mutable state unless the encapsulation benefit is clear; they make functions harder to test because calls are no longer independent.\n\n**When to reach for one:**\n\n- Counters or ID generators (as above) where you want encapsulated, persistent state.\n- Lazy-initialization of an expensive resource that should exist for the program's lifetime — a pattern sometimes called the *Meyers singleton*.\n- Caching a computed value that is constant after its first derivation.\n\nStatic local variables occupy the same memory region as globals and inline variables (*Inline functions and variables*), but their restricted scope keeps them from contributing to the global-state problems discussed earlier in this chapter.",
+      "exercises": []
+    },
+    {
+      "number": "7.12",
+      "title": "Scope, duration, and linkage summary",
+      "sort_order": 97,
+      "summary_md": "## Scope, Duration, and Linkage Summary\n\nThis lesson consolidates the vocabulary and rules introduced throughout Chapter 7. Three orthogonal properties govern every variable and function in a C++ program.\n\n**Scope** determines where an identifier can be *used*. Local variables have block scope — visible only inside the block they are declared in. Variables and functions declared outside any block have file scope (also called global scope). Namespaces, covered in \"User-defined namespaces and the scope resolution operator\", extend this by grouping identifiers under a named prefix.\n\n**Storage duration** determines *when* an object is created and destroyed. The main categories are:\n\n- **Automatic duration** — created at the point of definition, destroyed when the block exits. Ordinary local variables.\n- **Static duration** — created before `main` begins, destroyed after it ends. All globals and `static` local variables (see \"Static local variables\").\n- **Dynamic duration** — manually managed with `new`/`delete`; covered in later chapters.\n\n**Linkage** determines whether an identifier declared in one translation unit can be *seen* from another.\n\n- **No linkage** — local variables; accessible only within their block.\n- **Internal linkage** — `static` globals and `const` globals (by default); visible only within the same translation unit (\"Internal linkage\").\n- **External linkage** — non-`const` globals and `extern`-declared variables; accessible across translation units (\"External linkage and variable forward declarations\"). `inline` variables also have external linkage but share a single definition, which is why they suit the pattern in \"Sharing global constants across multiple files (using inline variables)\".\n\nName shadowing (\"Variable shadowing (name hiding)\") is a consequence of scope rules: an inner declaration with the same name as an outer one silently wins inside its block — almost always a bug.\n\n```cpp\n#include <format>\n#include <print>\n\nnamespace cfg {\n    inline constexpr int max_retries { 5 };   // external linkage, one definition\n}\n\nint main() {\n    static int call_count { 0 };              // static duration, no linkage\n    ++call_count;\n    std::println(\"{}\", std::format(\"call {} of {}\", call_count, cfg::max_retries));\n}\n```\n\nThe example shows all three axes at once: `max_retries` has external linkage and static duration with namespace scope; `call_count` has no linkage and static duration with block scope.\n\nWhen these concepts feel tangled, reduce to three questions: *where can it be named, how long does the object live, and which translation units can see it?*",
+      "exercises": [
+        {
+          "title": "Classify Variable Properties",
+          "prompt_md": "## Goal\nComplete function `classify` so that, given a variable category code, it prints the scope, storage duration, and linkage of that variable kind.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 6), the number of queries.\n- Lines 2..N+1: one integer code per line, each in the range 1–6.\n\nThe codes map to these variable kinds:\n- 1 → ordinary local variable (e.g., `int x;` inside a function)\n- 2 → `static` local variable (e.g., `static int x;` inside a function)\n- 3 → non-`const` global variable\n- 4 → `static` global variable\n- 5 → `const` global variable\n- 6 → `inline constexpr` global variable\n\n## Output\nFor each query, print exactly one line in the format:\n```\nCode <N>: scope=<scope>, duration=<duration>, linkage=<linkage>\n```\nUse these exact words for each field:\n- scope: `block` or `global`\n- duration: `automatic` or `static`\n- linkage: `none`, `internal`, or `external`\n\nExample for code 1: `Code 1: scope=block, duration=automatic, linkage=none`\n\n## Requirements\n1. Implement `void classify(int code)` that prints exactly one line per call using the format above.\n2. The correct answers are:\n   - Code 1: scope=block, duration=automatic, linkage=none\n   - Code 2: scope=block, duration=static, linkage=none\n   - Code 3: scope=global, duration=static, linkage=external\n   - Code 4: scope=global, duration=static, linkage=internal\n   - Code 5: scope=global, duration=static, linkage=internal\n   - Code 6: scope=global, duration=static, linkage=external\n3. `main` reads N then calls `classify` once per code in order.\n4. Hidden tests cover: all six codes in a single run, a single query (N=1), and codes 5 and 6 which students often confuse.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement classify(int code)\n// Print exactly one line:\n//   Code <code>: scope=<scope>, duration=<duration>, linkage=<linkage>\n// Use the words: block/global, automatic/static, none/internal/external\nvoid classify(int code) {\n    // TODO: fill in\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int code{};\n        std::cin >> code;\n        classify(code);\n    }\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nvoid classify(int code) {\n    struct Props { std::string scope, duration, linkage; };\n    Props table[7] = {\n        {},                                          // index 0 unused\n        {\"block\",  \"automatic\", \"none\"},             // 1\n        {\"block\",  \"static\",    \"none\"},             // 2\n        {\"global\", \"static\",    \"external\"},         // 3\n        {\"global\", \"static\",    \"internal\"},         // 4\n        {\"global\", \"static\",    \"internal\"},         // 5\n        {\"global\", \"static\",    \"external\"},         // 6\n    };\n    const auto& p = table[code];\n    std::cout << \"Code \" << code\n              << \": scope=\" << p.scope\n              << \", duration=\" << p.duration\n              << \", linkage=\" << p.linkage << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int code{};\n        std::cin >> code;\n        classify(code);\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — three representative codes",
+              "stdin": "3\n1\n3\n2\n",
+              "expected_stdout": "Code 1: scope=block, duration=automatic, linkage=none\nCode 3: scope=global, duration=static, linkage=external\nCode 2: scope=block, duration=static, linkage=none\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — all six codes in order",
+              "stdin": "6\n1\n2\n3\n4\n5\n6\n",
+              "expected_stdout": "Code 1: scope=block, duration=automatic, linkage=none\nCode 2: scope=block, duration=static, linkage=none\nCode 3: scope=global, duration=static, linkage=external\nCode 4: scope=global, duration=static, linkage=internal\nCode 5: scope=global, duration=static, linkage=internal\nCode 6: scope=global, duration=static, linkage=external\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — single query, inline constexpr",
+              "stdin": "1\n6\n",
+              "expected_stdout": "Code 6: scope=global, duration=static, linkage=external\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Static Call Counter with Shadowing Detection",
+          "prompt_md": "## Goal\nComplete function `process` so it uses a `static` local counter to track how many times it has been called, detects name shadowing inside a nested block, and respects a namespace constant for the call limit.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), the number of calls to simulate.\n- Lines 2..N+1: one integer value per line (the \"input\" passed to `process` each call).\n\n## Output\nFor each call to `process(value)`, print exactly one line.\n\nIf the call count (after incrementing) does not exceed the limit `limits::max_calls` (which equals 5):\n```\nCall <count>: value=<value>\n```\nIf the value equals the call count (shadow scenario — an inner variable with the same name as the counter would equal it), append ` [shadow warning]` to that same line:\n```\nCall <count>: value=<value> [shadow warning]\n```\nIf the call count exceeds `limits::max_calls`, print:\n```\nCall <count>: ignored (limit reached)\n```\nNo shadow warning is ever appended to an ignored line.\n\n## Requirements\n1. Declare `namespace limits` containing `inline constexpr int max_calls { 5 };` with external linkage.\n2. Implement `void process(int value)` containing a `static int call_count { 0 };` local variable (static duration, no linkage, block scope).\n3. Increment `call_count` at the start of every call, including those that exceed the limit.\n4. Inside `process`, when the call is not ignored, create a nested block that declares `int value { value };` — this is intentionally ill-formed. Instead, to simulate the shadow scenario without a compile error, check whether the passed-in `value` equals the current `call_count`. If so, append ` [shadow warning]`.\n5. Hidden tests cover: N=1, all calls within limit, all calls over limit, and a call where value equals call_count.\n6. Output must use the exact labels `Call`, `value=`, `ignored (limit reached)`, and `[shadow warning]` as shown.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare namespace limits with inline constexpr int max_calls = 5\n\n// TODO: implement void process(int value)\n//   - static local call_count, incremented every call\n//   - if call_count <= limits::max_calls:\n//       print \"Call <count>: value=<value>\"\n//       if value == call_count, append \" [shadow warning]\"\n//   - else:\n//       print \"Call <count>: ignored (limit reached)\"\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v{};\n        std::cin >> v;\n        process(v);\n    }\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nnamespace limits {\n    inline constexpr int max_calls { 5 };\n}\n\nvoid process(int value) {\n    static int call_count { 0 };\n    ++call_count;\n    if (call_count <= limits::max_calls) {\n        std::cout << \"Call \" << call_count << \": value=\" << value;\n        if (value == call_count)\n            std::cout << \" [shadow warning]\";\n        std::cout << '\\n';\n    } else {\n        std::cout << \"Call \" << call_count << \": ignored (limit reached)\\n\";\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v{};\n        std::cin >> v;\n        process(v);\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — 7 calls, shadow on call 3, overflow after 5",
+              "stdin": "7\n10\n20\n3\n40\n50\n60\n70\n",
+              "expected_stdout": "Call 1: value=10\nCall 2: value=20\nCall 3: value=3 [shadow warning]\nCall 4: value=40\nCall 5: value=50\nCall 6: ignored (limit reached)\nCall 7: ignored (limit reached)\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single call within limit, no shadow",
+              "stdin": "1\n99\n",
+              "expected_stdout": "Call 1: value=99\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — 5 calls all with shadow warnings (value equals call index)",
+              "stdin": "5\n1\n2\n3\n4\n5\n",
+              "expected_stdout": "Call 1: value=1 [shadow warning]\nCall 2: value=2 [shadow warning]\nCall 3: value=3 [shadow warning]\nCall 4: value=4 [shadow warning]\nCall 5: value=5 [shadow warning]\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.13",
+      "title": "Using declarations and using directives",
+      "sort_order": 98,
+      "summary_md": "## Using Declarations and Using Directives\n\nWhen you access a name from another namespace, you normally write the full qualified form: `std::cout`, `std::string`, and so on. The scope resolution operator was covered in **User-defined namespaces and the scope resolution operator**. Two shortcuts exist that let you drop the prefix — but they come with real trade-offs.\n\n### Using Declarations\n\nA **using declaration** introduces a single name into the current scope:\n\n```cpp\nusing std::cout;\nusing std::format;\n\nint main() {\n    auto items = {\"apple\", \"banana\", \"cherry\"};\n    for (auto [i, item] : items | std::views::enumerate) {\n        cout << format(\"{}: {}\\n\", i, item);\n    }\n}\n```\n\nOnly the names you explicitly list are pulled in. If another namespace also has a `cout`, there is no conflict unless you also write a using declaration for that one. This makes using declarations the safer of the two options.\n\n### Using Directives\n\nA **using directive** pulls in every name from a namespace at once:\n\n```cpp\nusing namespace std;\n```\n\nThis is what beginners often write at the top of every file, and it is the source of a class of subtle bugs. If the standard library adds a new name in a future version — or if you include a header that adds one — that name silently enters your scope and can collide with your own identifiers or with names from other namespaces. The compiler may resolve the ambiguity in a surprising way, or refuse to compile at all.\n\n### Scope Matters\n\nBoth constructs respect normal block scoping rules discussed in **Compound statements (blocks)**. A using directive inside a function body affects only that function, which limits the blast radius considerably. Putting either construct at namespace scope in a header file is the worst possible placement: every translation unit that includes the header inherits the pollution, making it a global problem of the kind warned about in **Why (non-const) global variables are evil**.\n\n### Practical Guidance\n\n- Prefer explicit qualification (`std::`) in header files — always.\n- In `.cpp` files, a using declaration for a heavily-used name is reasonable.\n- Avoid `using namespace std;` at file scope in any serious code.\n- `using namespace std::literals;` (or its sub-namespaces for `_s`, `_sv`, etc.) is a common exception because the operator suffixes it provides cannot realistically conflict with anything you write.",
+      "exercises": [
+        {
+          "title": "Format a Receipt Using Using-Declarations",
+          "prompt_md": "## Goal\nComplete a program that prints a formatted shopping receipt by using **using declarations** (not a using directive) to bring specific `std` names into scope inside `main`.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of items.\n- Lines 2..N+1: each line contains an item name (one word, no spaces) and a price (positive integer, in cents), separated by a single space.\n\n## Output\nPrint exactly N+1 lines:\n- Lines 1..N: `<name>: $<dollars>.<cents>` where dollars and cents are derived from the price in cents. Cents must always be printed as exactly 2 digits (zero-padded).\n- Line N+1: `Total: $<dollars>.<cents>` — the sum of all prices, formatted the same way.\n\nExample for input item `apple 305`: print `apple: $3.05`.\n\n## Requirements\n1. Inside `main`, you must use at least two **using declarations** of the form `using std::X;` — one for `std::cout` and one for `std::string`. No `using namespace std;` or `using namespace` of any kind is allowed anywhere in the file.\n2. Read N, then read each (name, cents) pair.\n3. Print each item line as `<name>: $<dollars>.<cents>` with cents zero-padded to 2 digits.\n4. After all items, print `Total: $<dollars>.<cents>` with the same formatting.\n5. Use `std::setw`, `std::setfill`, or manual integer arithmetic to achieve 2-digit cent padding — your choice.\n6. Edge cases the hidden tests cover: N=1 (single item), a price that is an exact dollar amount (e.g. 200 → `$2.00`), and a total whose cents are zero.\n\n## Notes\n- You may include `<iostream>`, `<iomanip>`, and `<string>`.\n- Do not put any using declaration or directive at file (namespace) scope.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nint main()\n{\n    // TODO: Add using declarations for std::cout, std::cin, and std::string\n    //       Do NOT use \"using namespace std;\"\n\n    int n{};\n    // TODO: Read n from stdin\n\n    int total{};\n\n    for (int i = 0; i < n; ++i)\n    {\n        // TODO: Read name (std::string) and price in cents (int)\n        // TODO: Print \"<name>: $<dollars>.<cents>\" with 2-digit cents\n        // TODO: Accumulate total\n    }\n\n    // TODO: Print \"Total: $<dollars>.<cents>\" with 2-digit cents\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nint main()\n{\n    using std::cout;\n    using std::cin;\n    using std::string;\n\n    int n{};\n    cin >> n;\n\n    int total{};\n\n    for (int i = 0; i < n; ++i)\n    {\n        string name{};\n        int cents{};\n        cin >> name >> cents;\n\n        int dollars = cents / 100;\n        int rem     = cents % 100;\n\n        cout << name << \": $\" << dollars << '.'\n             << std::setw(2) << std::setfill('0') << rem << '\\n';\n\n        total += cents;\n    }\n\n    int tdollars = total / 100;\n    int trem     = total % 100;\n    cout << \"Total: $\" << tdollars << '.'\n         << std::setw(2) << std::setfill('0') << trem << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: three items",
+              "stdin": "3\napple 305\nbanana 199\ncherry 450\n",
+              "expected_stdout": "apple: $3.05\nbanana: $1.99\ncherry: $4.50\nTotal: $9.54\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: single item exact dollar",
+              "stdin": "1\nwater 200\n",
+              "expected_stdout": "water: $2.00\nTotal: $2.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: total cents are zero",
+              "stdin": "2\nbread 150\nmilk 250\n",
+              "expected_stdout": "bread: $1.50\nmilk: $2.50\nTotal: $4.00\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Scoped Using-Declarations and Block Scope",
+          "prompt_md": "## Goal\nComplete a program that processes two independent blocks of data — a list of temperatures and a list of scores — demonstrating that **using declarations are scoped to the block they appear in**.\n\n## Input\n- Line 1: integer T (1 ≤ T ≤ 10), the number of temperatures.\n- Lines 2..T+1: one integer temperature (in Fahrenheit, −100 ≤ F ≤ 300) per line.\n- Line T+2: integer S (1 ≤ S ≤ 10), the number of scores.\n- Lines T+3..T+S+2: one integer score (0 ≤ score ≤ 100) per line.\n\n## Output\nPrint exactly 2 lines:\n- Line 1: `Avg temp: <value> F` where `<value>` is the integer average of the temperatures, **truncated** toward zero (integer division).\n- Line 2: `Avg score: <value>` where `<value>` is the integer average of the scores, **truncated** toward zero.\n\n## Requirements\n1. Use a **separate named block** (a pair of `{}`) for the temperature-reading logic and another for the score-reading logic.\n2. Inside the temperature block, introduce `using std::cin;` as a using declaration scoped to that block. Do the same inside the score block. Do **not** place any using declaration at function scope or file scope.\n3. Use `std::cout` with full qualification everywhere (never a using declaration for `cout`).\n4. Compute averages with integer division (truncate toward zero — standard C++ behaviour).\n5. Edge cases the hidden tests cover: T=1 (single temperature), S=1 (single score), negative temperatures whose average is negative (e.g. average = −3).\n6. No `using namespace` directive anywhere in the file.\n\n## Notes\n- You may include `<iostream>` only.\n- This exercise tests that you understand using declarations respect block scope (introduced in the Compound statements lesson), and that full qualification is always available as an alternative.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int tempSum{};\n    int tempCount{};\n\n    // Temperature block\n    {\n        // TODO: Add a using declaration for std::cin scoped to this block only\n        // TODO: Read tempCount, then read tempCount integers and accumulate tempSum\n    }\n\n    int scoreSum{};\n    int scoreCount{};\n\n    // Score block\n    {\n        // TODO: Add a using declaration for std::cin scoped to this block only\n        // TODO: Read scoreCount, then read scoreCount integers and accumulate scoreSum\n    }\n\n    // TODO: Print \"Avg temp: <value> F\" using std::cout (fully qualified)\n    // TODO: Print \"Avg score: <value>\"  using std::cout (fully qualified)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int tempSum{};\n    int tempCount{};\n\n    {\n        using std::cin;\n        cin >> tempCount;\n        for (int i = 0; i < tempCount; ++i)\n        {\n            int t{};\n            cin >> t;\n            tempSum += t;\n        }\n    }\n\n    int scoreSum{};\n    int scoreCount{};\n\n    {\n        using std::cin;\n        cin >> scoreCount;\n        for (int i = 0; i < scoreCount; ++i)\n        {\n            int s{};\n            cin >> s;\n            scoreSum += s;\n        }\n    }\n\n    std::cout << \"Avg temp: \" << tempSum / tempCount << \" F\\n\";\n    std::cout << \"Avg score: \" << scoreSum / scoreCount << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: three temps, four scores",
+              "stdin": "3\n72\n85\n90\n4\n88\n76\n95\n60\n",
+              "expected_stdout": "Avg temp: 82 F\nAvg score: 79\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: single temperature negative, single score",
+              "stdin": "1\n-10\n1\n55\n",
+              "expected_stdout": "Avg temp: -10 F\nAvg score: 55\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: negative average temperature (truncated)",
+              "stdin": "3\n-5\n-8\n-3\n2\n100\n80\n",
+              "expected_stdout": "Avg temp: -5 F\nAvg score: 90\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.14",
+      "title": "Unnamed and inline namespaces",
+      "sort_order": 99,
+      "summary_md": "# Unnamed and Inline Namespaces\n\nTwo lesser-known namespace features solve distinct problems: **unnamed namespaces** enforce internal linkage for multiple symbols at once, and **inline namespaces** support API versioning without breaking existing code.\n\n## Unnamed Namespaces\n\nAn unnamed namespace wraps declarations that should be invisible outside their translation unit. Everything inside automatically gets internal linkage — as if each declaration were marked `static`. This is the modern, preferred replacement for file-scope `static` on non-function declarations (covered in *Internal linkage*).\n\n```cpp\n// math_utils.cpp\nnamespace {\n    constexpr double pi { 3.14159265358979 };\n\n    double square(double x) { return x * x; }\n}\n\ndouble circleArea(double r) {\n    return pi * square(r);   // pi and square are local to this TU\n}\n```\n\n`pi` and `square` are inaccessible from any other translation unit. Unlike `static`, unnamed namespaces also work on type definitions (`struct`, `enum`, `class`), making them strictly more capable.\n\n## Inline Namespaces\n\nAn `inline` namespace makes its contents visible in the enclosing namespace as well as inside itself. The primary use case is **versioning**:\n\n```cpp\nnamespace audio {\n    inline namespace v2 {\n        void play(float volume) { /* new implementation */ }\n    }\n    namespace v1 {\n        void play(int volume) { /* legacy implementation */ }\n    }\n}\n\naudio::play(0.8f);       // resolves to v2::play — the default\naudio::v1::play(5);      // explicit opt-in to old API\n```\n\nSwitching the default to a new version later means moving the `inline` keyword — existing call sites that use `audio::play` automatically follow without a source change.\n\nA few practical notes:\n\n- Unnamed namespaces nest: an unnamed namespace inside a named one still restricts linkage to the translation unit.\n- `inline` and unnamed can combine: `inline namespace {}` creates an anonymous inline namespace, though this is rarely needed.\n- Inline namespaces affect name mangling, so mixing compiled objects from different versions without explicit qualification causes linker errors — exactly the protection you want.\n- The `using` directives discussed in *Using declarations and using directives* interact with inline namespaces naturally: `using namespace audio` pulls in `v2` symbols because `v2` is already promoted.\n\nUnnamed namespaces replace scattered `static` usage with a single, clean scope boundary. Inline namespaces give library authors a safe path for evolving APIs while keeping defaults obvious.",
+      "exercises": [
+        {
+          "title": "Unnamed Namespace: Internal Helper Functions",
+          "prompt_md": "## Goal\nComplete a program that uses an **unnamed namespace** to hide two helper functions — `clamp` and `normalize` — and exposes only a single public function `normalizeValue` that uses them.\n\n## Input\n- Line 1: three space-separated doubles: `value`, `lo`, `hi` (where `lo < hi`, all values in [-1000.0, 1000.0])\n\n## Output\n- Print exactly two lines:\n  - Line 1: `Clamped: X` where X is `value` clamped to `[lo, hi]`, printed with 4 decimal places.\n  - Line 2: `Normalized: Y` where Y is the clamped value linearly normalized to `[0.0, 1.0]` (i.e., `(clamped - lo) / (hi - lo)`), printed with 4 decimal places.\n\n## Requirements\n1. Define both `clamp(double value, double lo, double hi)` and `normalize(double value, double lo, double hi)` inside an **unnamed namespace** (i.e., `namespace { ... }`).\n2. Define `normalizeValue(double value, double lo, double hi)` **outside** the unnamed namespace; it must call both `clamp` and `normalize` internally.\n3. `clamp` returns `lo` if `value < lo`, `hi` if `value > hi`, otherwise returns `value`.\n4. `normalize` computes `(value - lo) / (hi - lo)` and returns the result.\n5. `main` reads the three doubles and calls only `normalizeValue`; it must not call `clamp` or `normalize` directly.\n6. Output uses `std::fixed` and `std::setprecision(4)`.\n7. Hidden tests cover: value already within range, value below `lo`, value above `hi`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define an unnamed namespace containing:\n//   - clamp(double value, double lo, double hi) -> double\n//   - normalize(double value, double lo, double hi) -> double\n\n// TODO: Define normalizeValue(double value, double lo, double hi)\n//       outside the unnamed namespace.\n//       It should:\n//         1. Clamp value to [lo, hi] using clamp()\n//         2. Print \"Clamped: \" followed by the clamped value (4 decimal places)\n//         3. Normalize the clamped value using normalize()\n//         4. Print \"Normalized: \" followed by the normalized value (4 decimal places)\n\nint main() {\n    double value, lo, hi;\n    std::cin >> value >> lo >> hi;\n\n    // TODO: call normalizeValue with the three inputs\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace {\n    double clamp(double value, double lo, double hi) {\n        if (value < lo) return lo;\n        if (value > hi) return hi;\n        return value;\n    }\n\n    double normalize(double value, double lo, double hi) {\n        return (value - lo) / (hi - lo);\n    }\n}\n\nvoid normalizeValue(double value, double lo, double hi) {\n    double clamped = clamp(value, lo, hi);\n    std::cout << std::fixed << std::setprecision(4);\n    std::cout << \"Clamped: \" << clamped << \"\\n\";\n    double normed = normalize(clamped, lo, hi);\n    std::cout << \"Normalized: \" << normed << \"\\n\";\n}\n\nint main() {\n    double value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    normalizeValue(value, lo, hi);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Value within range",
+              "stdin": "0.5 0.0 1.0",
+              "expected_stdout": "Clamped: 0.5000\nNormalized: 0.5000\n",
+              "is_sample": true
+            },
+            {
+              "label": "Value below lo",
+              "stdin": "-5.0 0.0 10.0",
+              "expected_stdout": "Clamped: 0.0000\nNormalized: 0.0000\n",
+              "is_sample": false
+            },
+            {
+              "label": "Value above hi",
+              "stdin": "250.0 100.0 200.0",
+              "expected_stdout": "Clamped: 200.0000\nNormalized: 1.0000\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Inline Namespace Versioning with Internal Linkage",
+          "prompt_md": "## Goal\nComplete a program that uses an **inline namespace** for API versioning inside a `formatter` namespace, and an **unnamed namespace** to hide a private helper. The program reads a string and an integer version selector, then prints the formatted output using the selected version.\n\n## Input\n- Line 1: a single word (no spaces, length 1–20, all printable ASCII)\n- Line 2: an integer version selector: `1` for v1, `2` for v2\n\n## Output\n- If version selector is `1`: print exactly `[v1] WORD` where WORD is the input word converted to **uppercase**.\n- If version selector is `2`: print exactly `[v2] word` where word is the input word converted to **lowercase**.\n- If version selector is anything else: print exactly `Unknown version`.\n- All output ends with a newline.\n\n## Requirements\n1. Declare a named namespace `formatter`.\n2. Inside `formatter`, declare `inline namespace v2` containing `std::string format(const std::string& s)` that returns the word in **lowercase** prefixed with `[v2] `.\n3. Inside `formatter`, declare `namespace v1` (not inline) containing `std::string format(const std::string& s)` that returns the word in **uppercase** prefixed with `[v1] `.\n4. Inside an **unnamed namespace** (outside `formatter`), define a helper `std::string toLower(const std::string& s)` and a helper `std::string toUpper(const std::string& s)`. Both `formatter::v1::format` and `formatter::v2::format` must call these helpers.\n5. `main` reads the word and version, then:\n   - For version `2`: calls `formatter::format(word)` (uses the inline `v2` by default).\n   - For version `1`: calls `formatter::v1::format(word)` (explicit opt-in).\n   - Otherwise: prints `Unknown version`.\n6. Hidden tests cover: version `1`, version `2`, and an invalid version (e.g., `0` or `3`).\n\n## Notes\n- You may `#include <algorithm>` and `#include <string>` for `std::transform`.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\n// TODO: Define an unnamed namespace with:\n//   - std::string toLower(const std::string& s)\n//   - std::string toUpper(const std::string& s)\n\n// TODO: Define namespace formatter containing:\n//   - inline namespace v2 with: std::string format(const std::string& s)\n//       -> returns \"[v2] \" + lowercase word  (call toLower)\n//   - namespace v1 with: std::string format(const std::string& s)\n//       -> returns \"[v1] \" + uppercase word  (call toUpper)\n\nint main() {\n    std::string word;\n    int version;\n    std::cin >> word >> version;\n\n    // TODO: based on 'version':\n    //   version 2 -> call formatter::format(word)   (resolves to v2 via inline)\n    //   version 1 -> call formatter::v1::format(word)\n    //   otherwise -> print \"Unknown version\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <algorithm>\n\nnamespace {\n    std::string toLower(const std::string& s) {\n        std::string result = s;\n        std::transform(result.begin(), result.end(), result.begin(),\n                       [](unsigned char c){ return static_cast<char>(std::tolower(c)); });\n        return result;\n    }\n\n    std::string toUpper(const std::string& s) {\n        std::string result = s;\n        std::transform(result.begin(), result.end(), result.begin(),\n                       [](unsigned char c){ return static_cast<char>(std::toupper(c)); });\n        return result;\n    }\n}\n\nnamespace formatter {\n    inline namespace v2 {\n        std::string format(const std::string& s) {\n            return \"[v2] \" + toLower(s);\n        }\n    }\n    namespace v1 {\n        std::string format(const std::string& s) {\n            return \"[v1] \" + toUpper(s);\n        }\n    }\n}\n\nint main() {\n    std::string word;\n    int version;\n    std::cin >> word >> version;\n\n    if (version == 2) {\n        std::cout << formatter::format(word) << \"\\n\";\n    } else if (version == 1) {\n        std::cout << formatter::v1::format(word) << \"\\n\";\n    } else {\n        std::cout << \"Unknown version\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Version 2 (inline default)",
+              "stdin": "Hello\n2",
+              "expected_stdout": "[v2] hello\n",
+              "is_sample": true
+            },
+            {
+              "label": "Version 1 (explicit opt-in)",
+              "stdin": "Hello\n1",
+              "expected_stdout": "[v1] HELLO\n",
+              "is_sample": false
+            },
+            {
+              "label": "Invalid version",
+              "stdin": "Hello\n0",
+              "expected_stdout": "Unknown version\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "7.x",
+      "title": "Chapter 7 summary and quiz",
+      "sort_order": 100,
+      "summary_md": "# Chapter 7 Summary: Scope, Duration, and Linkage\n\nThis chapter covered how variables and functions are named, where they live, and how long they persist. Three orthogonal properties govern every identifier:\n\n- **Scope** — where in source code the name is visible\n- **Duration** — when the object is created and destroyed at runtime\n- **Linkage** — whether the same name refers to the same entity across translation units\n\n## Key relationships\n\nLocal variables have block scope, automatic duration, and no linkage. They are created when execution enters their block and destroyed when it exits. Global variables have file scope, static duration (they live for the entire program), and either internal linkage (`static` keyword or anonymous namespace) or external linkage (`extern`, or just plain global).\n\nInternal linkage confines a name to its translation unit. External linkage exposes it to the linker so other `.cpp` files can reference it via a forward declaration. Non-const globals default to external linkage; `const` globals default to internal linkage unless marked `inline`.\n\n## Inline variables solve the multi-file constant problem\n\nAs covered in *Sharing global constants across multiple files (using inline variables)*, `inline constexpr` variables let you define a constant once in a header and include it everywhere without ODR violations. The linker folds the multiple definitions into one.\n\n## Static local variables\n\n`static` on a local variable changes its duration to static while keeping its scope local — useful for a counter or cache that must survive across calls without polluting the global namespace.\n\n```cpp\n#include <format>\n#include <print>\n\nauto make_id() -> int {\n    static int next = 0;   // static duration, local scope\n    return ++next;\n}\n\nint main() {\n    for (int i = 0; i < 4; ++i)\n        std::println(\"{}\", std::format(\"id = {}\", make_id()));\n}\n// prints id = 1, id = 2, id = 3, id = 4\n```\n\n## Namespaces and using-directives\n\nUser-defined namespaces prevent name collisions across large codebases. Unnamed namespaces give internal linkage to everything inside them — a cleaner alternative to `static` at file scope. Prefer explicit `using` declarations over broad `using namespace` directives to avoid polluting the surrounding scope, as discussed in *Using declarations and using directives*.\n\n## Why globals are dangerous\n\nMutable global state can be modified from anywhere, making bugs hard to trace. Prefer passing data through function parameters or wrapping shared state behind an interface. Reserve globals for true program-wide constants.",
+      "exercises": [
+        {
+          "title": "Static Local Call Counter",
+          "prompt_md": "## Goal\nComplete the function `int next_ticket()` that uses a **static local variable** to return a unique, incrementing ticket number each time it is called, starting at 1.\n\n## Input\n- Line 1: a single integer N (1 ≤ N ≤ 20), the number of tickets to dispense.\n\n## Output\n- Print exactly N lines, each of the form `Ticket: K` where K is the ticket number for that call (1-indexed, incrementing by 1 each call).\n- No extra blank lines.\n\n## Requirements\n1. `next_ticket()` must declare a `static int` local variable initialized to `0` and return its pre-incremented value.\n2. The static variable must be local to `next_ticket()` — no global variables allowed.\n3. Each call to `next_ticket()` returns the next integer in sequence (1, 2, 3, …).\n4. The loop in `main()` calls `next_ticket()` exactly N times and prints `Ticket: ` followed by the returned value.\n5. Edge cases covered by hidden tests: N = 1 (single ticket), N = 20 (maximum).",
+          "starter_code": "#include <iostream>\n\n// TODO: implement next_ticket() using a static local variable\n// It should return 1 on the first call, 2 on the second, and so on.\nint next_ticket()\n{\n    // TODO: declare a static local int initialized to 0\n    // TODO: pre-increment it and return it\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        // TODO: print \"Ticket: \" followed by the result of next_ticket()\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint next_ticket()\n{\n    static int count = 0;\n    return ++count;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — 5 tickets",
+              "stdin": "5\n",
+              "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — single ticket",
+              "stdin": "1\n",
+              "expected_stdout": "Ticket: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — maximum 20 tickets",
+              "stdin": "20\n",
+              "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\nTicket: 6\nTicket: 7\nTicket: 8\nTicket: 9\nTicket: 10\nTicket: 11\nTicket: 12\nTicket: 13\nTicket: 14\nTicket: 15\nTicket: 16\nTicket: 17\nTicket: 18\nTicket: 19\nTicket: 20\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Namespace-Scoped Running Statistics",
+          "prompt_md": "## Goal\nComplete two functions, `void record(int value)` and `void print_stats()`, that live inside a **user-defined namespace** called `Stats`. `record` accumulates values using **static local variables**, and `print_stats` prints the count, sum, and average.\n\n## Input\n- Line 1: a single integer N (1 ≤ N ≤ 50), the number of values to record.\n- Lines 2 through N+1: one integer per line (each value in the range -1000 to 1000).\n\n## Output\nPrint exactly 3 lines:\n- `Count: C` — where C is the number of values recorded.\n- `Sum: S` — where S is the integer sum of all recorded values.\n- `Average: A` — where A is the average formatted to **2 decimal places**.\n\nNo extra blank lines.\n\n## Requirements\n1. Both `record` and `print_stats` must be defined inside a namespace named `Stats`.\n2. `record(int value)` must use **static local variables** (not globals) to accumulate the running count and sum — no variables may be declared outside a function.\n3. `print_stats()` must call `record` with a sentinel or use a shared mechanism — the simplest correct approach is for both functions to call a single internal helper that holds the static state. Any design that keeps all state in static local variables (no globals, no file-scope variables) is accepted.\n4. `main()` reads N, then calls `Stats::record(v)` for each value, then calls `Stats::print_stats()` once.\n5. Average is printed with exactly 2 decimal places (use `std::fixed` and `std::setprecision(2)`).\n6. Edge cases covered by hidden tests: N = 1 (single value), a mix of negative and positive values that sum to zero.\n\n## Notes\n- `#include <iomanip>` is allowed for `std::setprecision`.\n- All mutable state must live in static local variables, not at namespace or global scope.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nnamespace Stats\n{\n    // TODO: implement a static-local-variable helper (or inline approach)\n    // that stores running count and sum across calls.\n\n    // record(int value): adds value to the running totals.\n    void record(int value)\n    {\n        // TODO: use static local variables to track count and sum\n    }\n\n    // print_stats(): prints Count, Sum, and Average (2 decimal places).\n    void print_stats()\n    {\n        // TODO: retrieve the accumulated count and sum, then print\n        // \"Count: C\", \"Sum: S\", \"Average: A\" (2 d.p.)\n    }\n} // namespace Stats\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int v{};\n        std::cin >> v;\n        Stats::record(v);\n    }\n\n    Stats::print_stats();\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace Stats\n{\n    // Internal helper holds all state in static locals.\n    // mode 0 = record a value, mode 1 = query (returns encoded via out-params).\n    void update(bool query, int value, int& out_count, int& out_sum)\n    {\n        static int count = 0;\n        static int sum   = 0;\n        if (!query)\n        {\n            ++count;\n            sum += value;\n        }\n        out_count = count;\n        out_sum   = sum;\n    }\n\n    void record(int value)\n    {\n        int c{}, s{};\n        update(false, value, c, s);\n    }\n\n    void print_stats()\n    {\n        int count{}, sum{};\n        update(true, 0, count, sum);\n        double average = static_cast<double>(sum) / count;\n        std::cout << \"Count: \"   << count << '\\n'\n                  << \"Sum: \"     << sum   << '\\n'\n                  << \"Average: \" << std::fixed << std::setprecision(2)\n                  << average    << '\\n';\n    }\n} // namespace Stats\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int v{};\n        std::cin >> v;\n        Stats::record(v);\n    }\n\n    Stats::print_stats();\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — 4 values",
+              "stdin": "4\n10\n20\n30\n40\n",
+              "expected_stdout": "Count: 4\nSum: 100\nAverage: 25.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — single value",
+              "stdin": "1\n7\n",
+              "expected_stdout": "Count: 1\nSum: 7\nAverage: 7.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — mixed negatives summing to zero",
+              "stdin": "4\n-10\n5\n3\n2\n",
+              "expected_stdout": "Count: 4\nSum: 0\nAverage: 0.00\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

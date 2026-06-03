@@ -1,0 +1,297 @@
+{
+  "chapter": {
+    "number": "F",
+    "title": "Constexpr functions"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz",
+    "8.1: Control flow introduction",
+    "8.2: If statements and blocks",
+    "8.3: Common if statement problems",
+    "8.4: Constexpr if statements",
+    "8.5: Switch statement basics",
+    "8.6: Switch fallthrough and scoping",
+    "8.7: Goto statements",
+    "8.8: Introduction to loops and while statements",
+    "8.9: Do while statements",
+    "8.10: For statements",
+    "8.11: Break and continue",
+    "8.12: Halts (exiting your program early)",
+    "8.13: Introduction to random number generation",
+    "8.14: Generating random numbers using Mersenne Twister",
+    "8.15: Global random numbers (Random.h)",
+    "8.x: Chapter 8 summary and quiz",
+    "9.1: Introduction to testing your code",
+    "9.2: Code coverage",
+    "9.3: Common semantic errors in C++",
+    "9.4: Detecting and handling errors",
+    "9.5: std::cin and handling invalid input",
+    "9.6: Assert and static_assert",
+    "9.x: Chapter 9 summary and quiz",
+    "10.1: Implicit type conversion",
+    "10.2: Floating-point and integral promotion",
+    "10.3: Numeric conversions",
+    "10.4: Narrowing conversions, list initialization, and constexpr initializers",
+    "10.5: Arithmetic conversions",
+    "10.6: Explicit type conversion (casting) and static_cast",
+    "10.7: Typedefs and type aliases",
+    "10.8: Type deduction for objects using the auto keyword",
+    "10.9: Type deduction for functions",
+    "10.x: Chapter 10 summary and quiz",
+    "11.1: Introduction to function overloading",
+    "11.2: Function overload differentiation",
+    "11.3: Function overload resolution and ambiguous matches",
+    "11.4: Deleting functions",
+    "11.5: Default arguments",
+    "11.6: Function templates",
+    "11.7: Function template instantiation",
+    "11.8: Function templates with multiple template types",
+    "11.9: Non-type template parameters",
+    "11.10: Using function templates in multiple files",
+    "11.x: Chapter 11 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "F.1",
+      "title": "Constexpr functions",
+      "sort_order": 145,
+      "summary_md": "# Constexpr Functions\n\nConstexpr functions execute at compile-time when given constant inputs, producing compile-time constants. When given runtime values, they execute normally at runtime. This single syntax handles both cases, eliminating code duplication and enabling powerful optimizations.\n\n## Key Concepts\n\nA function marked `constexpr` can run during compilation if its inputs are compile-time constants. The compiler decides automatically. This differs from macros -- constexpr has type safety and proper scoping -- and from templates, which generate different code for different types at compile-time. In contrast, a constexpr function is a single piece of code that can be evaluated at compile-time or runtime depending on context.\n\nFor a function to be constexpr, its implementation must contain only operations the compiler can evaluate: basic arithmetic, control flow, function calls to other constexpr functions, and simple data access. Notably, you cannot use I/O or modify global state. (C++20 does allow dynamic memory allocation within a constexpr evaluation, as long as all allocated memory is deallocated before the evaluation completes.)\n\nConstexpr variables store the results of constexpr expressions. When you write `constexpr int x = factorial(5);`, the compiler computes `factorial(5)` during compilation, making `x` a compile-time constant usable in contexts requiring constants (array sizes, template arguments, switch cases).\n\n## Practical Value\n\nConstexpr shines for numeric computations, bit manipulation, and lookup tables. Instead of pre-computing values offline and hardcoding them, you write straightforward logic and let the compiler optimize it away. This improves maintainability -- changes to the logic are centralized -- while keeping runtime performance identical.\n\n`consteval` (C++20) forces compile-time evaluation; the function must produce a constant or compilation fails. Use this when compile-time computation is mandatory.\n\n## Example\n\n```cpp\nconstexpr int fibonacci(int n) {\n    if (n <= 1) return n;\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconstexpr int fib10 = fibonacci(10);  // computed at compile-time\nint x = 5;\nint fib_x = fibonacci(x);             // computed at runtime\n```\n\n`fib10` is a compile-time constant. `fib_x` runs the same code at runtime because `x` is not constant. No template magic, no separate functions -- one implementation serves both compile-time and runtime contexts.\n\nConstexpr functions represent a shift in C++ philosophy: write generic, clear code and trust the compiler to optimize aggressively. The distinction between compile-time and runtime blurs, making your code simultaneously more expressive and more performant.",
+      "exercises": [
+        {
+          "title": "Power Function with Constexpr",
+          "prompt_md": "# Power Function with Constexpr\n\nWrite a `constexpr` function `power(int base, int exponent)` that computes base raised to the power of exponent using repeated multiplication. The function should work both at compile-time (when given constant arguments) and at runtime (when given runtime values).\n\nYour program should:\n1. Define a `constexpr` function `power(int base, int exponent)` that returns the result of base^exponent\n2. Handle the case where exponent is 0 (should return 1)\n3. Handle negative exponents by returning 0 (integer division constraint)\n4. Read an integer base and exponent from input\n5. Output the result of `power(base, exponent)`\n6. Also output a compile-time computed power value to demonstrate compile-time evaluation\n\nExample: `power(2, 3)` should return `8`, and `power(5, 0)` should return `1`.",
+          "starter_code": "#include <iostream>\nusing namespace std;\n\n// TODO: Define constexpr function power(int base, int exponent)\n// Should return base^exponent\n// Handle exponent == 0 (return 1)\n// Handle negative exponent (return 0)\n\nint main() {\n    // TODO: Read base and exponent from input\n    int base, exponent;\n    cin >> base >> exponent;\n    \n    // TODO: Call power() with runtime values and output result\n    cout << power(base, exponent) << endl;\n    \n    // TODO: Create a compile-time constant using constexpr\n    // For example, compute power(2, 10) at compile-time\n    constexpr int compile_result = power(2, 10);\n    cout << compile_result << endl;\n    \n    return 0;\n}\n",
+          "solution_code": null,
+          "test_cases": [
+            {
+              "label": "Sample: Basic powers",
+              "stdin": "2 5",
+              "expected_stdout": "32\n1024\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: Zero exponent and compile-time",
+              "stdin": "7 0",
+              "expected_stdout": "1\n1024\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Negative exponent",
+              "stdin": "3 -2",
+              "expected_stdout": "0\n1024\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Constexpr Digit Sum Calculator",
+          "prompt_md": "# Constexpr Digit Sum Calculator\n\nWrite a `constexpr` function `digitSum(int n)` that computes the sum of all digits in the absolute value of integer `n`. The function should work both at compile-time and runtime.\n\nYour program should:\n1. Define a `constexpr` function `digitSum(int n)` that sums the digits of the absolute value of n\n2. For example, `digitSum(1234)` returns `1+2+3+4 = 10`, and `digitSum(-567)` returns `5+6+7 = 18`\n3. Read an integer from input\n4. Output the digit sum of that integer\n5. Also output the digit sum of a compile-time constant to demonstrate compile-time evaluation (e.g., digitSum(9876) computed at compile-time)\n\nConstraints:\n- Handle negative numbers by using their absolute value\n- For single-digit numbers, return the digit itself\n- `digitSum(0)` should return `0`\n- The function must be constexpr so it can evaluate at compile-time when given constant arguments\n\nNote: `std::abs` is not guaranteed to be `constexpr` in C++20, so handle the absolute value manually (e.g., `if (n < 0) n = -n;`).",
+          "starter_code": "#include <iostream>\nusing namespace std;\n\n// TODO: Define constexpr function digitSum(int n)\n// Should return the sum of digits in |n|\n// For example: digitSum(1234) = 10\n// digitSum(-567) = 18\n\nint main() {\n    // TODO: Read an integer from input\n    int num;\n    cin >> num;\n    \n    // TODO: Call digitSum() with the runtime value and output result\n    cout << digitSum(num) << endl;\n    \n    // TODO: Create a compile-time constant that demonstrates compile-time evaluation\n    // For example, compute digitSum(9876) at compile-time\n    constexpr int compile_result = digitSum(9876);\n    cout << compile_result << endl;\n    \n    return 0;\n}\n",
+          "solution_code": null,
+          "test_cases": [
+            {
+              "label": "Sample: Positive number",
+              "stdin": "1234",
+              "expected_stdout": "10\n30\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: Negative input",
+              "stdin": "-567",
+              "expected_stdout": "18\n30\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Single digit",
+              "stdin": "5",
+              "expected_stdout": "5\n30\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Zero input",
+              "stdin": "0",
+              "expected_stdout": "0\n30\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "F.2",
+      "title": "Constexpr functions (part 2)",
+      "sort_order": 146,
+      "summary_md": "## Constexpr Functions (Part 2)\n\nA `constexpr` function can do more than return a simple arithmetic expression. In C++20, the rules are broad enough that most ordinary function bodies work at compile time, including local variables, loops, conditionals, and even calls to other `constexpr` functions.\n\n### What's allowed inside a constexpr function\n\n- Local variable declarations (including `constexpr` locals)\n- `if` / `else`, `switch`, and all loop forms\n- Calls to other `constexpr` or `consteval` functions\n- Many standard library functions, when their implementations are `constexpr`-qualified\n\nWhat remains off-limits: `goto`, non-literal-type variables, `static` local variables, and anything with undefined behavior.\n\n### Compile-time vs runtime execution\n\nA `constexpr` function is not *forced* to run at compile time. It runs at compile time only when called in a constant-expression context -- for example, as the initializer of a `constexpr` variable or as a template argument. Called with a runtime value, it behaves like a normal function. Use `consteval` (covered in *Constexpr functions (part 3) and consteval*) when you want to *require* compile-time evaluation.\n\n```cpp\n#include <iostream>\n\nconstexpr int digit_sum(int n) {\n    int total = 0;\n    while (n > 0) {\n        total += n % 10;\n        n /= 10;\n    }\n    return total;\n}\n\nint main() {\n    constexpr int compile_time = digit_sum(12345); // evaluated at compile time\n    int runtime_input = 12345;\n    int runtime_result = digit_sum(runtime_input);  // evaluated at runtime\n    std::cout << compile_time << ' ' << runtime_result << '\\n'; // 15 15\n}\n```\n\n### Checking compile-time context\n\nSometimes you want a function that behaves differently depending on *when* it runs. `std::is_constant_evaluated()` (C++20, defined in `<type_traits>`) returns `true` when the call is in a constant-expression context. This lets you swap in a compile-time-safe algorithm without losing runtime performance -- a common pattern in standard library implementations.\n\n```cpp\n#include <type_traits>\n\nconstexpr int safe_abs(int n) {\n    if (std::is_constant_evaluated()) {\n        // At compile time: manual absolute value\n        return (n < 0) ? -n : n;\n    }\n    // At runtime: could use platform-optimized code\n    return (n < 0) ? -n : n;\n}\n```\n\nIn this example, both branches happen to do the same thing. In real-world code, the runtime branch might call a platform-specific optimized routine while the compile-time branch uses a portable fallback the compiler can evaluate.\n\n### Practical guidance\n\nPrefer writing pure helper functions as `constexpr` by default. If the body is valid, you get compile-time evaluation for free wherever constants are needed, and no overhead at runtime. Reserve `consteval` for functions that have *no* meaningful runtime use.",
+      "exercises": [
+        {
+          "title": "Constexpr Array Sum with Loops",
+          "prompt_md": "# Constexpr Array Sum with Loops\n\nWrite a `constexpr` function `sumRange(int start, int end)` that returns the sum of all integers from `start` to `end` (inclusive). This exercise demonstrates that constexpr functions can contain local variables and loops -- not just simple expressions.\n\nYour program should:\n1. Define a `constexpr` function `sumRange(int start, int end)` that uses a loop and a local accumulator variable to sum all integers from `start` to `end` (inclusive)\n2. If `start > end`, return `0`\n3. Read two integers from input (start and end)\n4. Output the result of `sumRange(start, end)` called with those runtime values\n5. Also output a compile-time computed result: `sumRange(1, 100)` stored in a `constexpr` variable\n\nExample: `sumRange(1, 5)` should return `1+2+3+4+5 = 15`.\n\nHint: Use a `for` loop with a local variable to accumulate the sum. This is exactly the kind of code that was not allowed in C++11 constexpr but works in C++14 and later.",
+          "starter_code": "#include <iostream>\nusing namespace std;\n\n// TODO: Define constexpr function sumRange(int start, int end)\n// Use a loop and local variable to sum all integers from start to end (inclusive)\n// Return 0 if start > end\n\nint main() {\n    int s, e;\n    cin >> s >> e;\n    \n    cout << sumRange(s, e) << endl;\n    \n    constexpr int compile_result = sumRange(1, 100);\n    cout << compile_result << endl;\n    \n    return 0;\n}\n",
+          "solution_code": null,
+          "test_cases": [
+            {
+              "label": "Sample: Small range",
+              "stdin": "1 5",
+              "expected_stdout": "15\n5050\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: Single element range",
+              "stdin": "7 7",
+              "expected_stdout": "7\n5050\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Inverted range returns 0",
+              "stdin": "10 3",
+              "expected_stdout": "0\n5050\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Negative range",
+              "stdin": "-3 3",
+              "expected_stdout": "0\n5050\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "F.3",
+      "title": "Constexpr functions (part 3) and consteval",
+      "sort_order": 147,
+      "summary_md": "## Constexpr Functions (Part 3) and `consteval`\n\n### The `consteval` Specifier\n\nA `constexpr` function can run at either compile time or runtime depending on context. Sometimes you want to *guarantee* compile-time evaluation and treat it as an error if that's not possible. That's exactly what `consteval` does -- it declares an **immediate function**, which must be evaluated at compile time every time it's called.\n\n```cpp\nconsteval int square(int n) { return n * n; }\n\nint main() {\n    constexpr int a = square(7);   // OK: compile-time constant\n    int x = 5;\n    // int b = square(x);          // Error: x is not a constant expression\n    int c = square(10);            // OK: 10 is a constant expression\n}\n```\n\nIf you pass a runtime value to a `consteval` function, the program is ill-formed -- the compiler rejects it outright.\n\n### When to Prefer `consteval` Over `constexpr`\n\n- Use `constexpr` when a function is useful at both compile time and runtime (e.g., a math helper used in both contexts).\n- Use `consteval` when the function's *only* valid use is compile-time (e.g., generating lookup tables, compile-time configuration values, compile-time factorial tables).\n\nA `consteval` function is implicitly `inline` and follows the same rules for what code it may contain as `constexpr` functions (covered in *Constexpr Functions* and *Constexpr Functions (Part 2)*).\n\n### Forcing Compile-Time Evaluation from `constexpr`\n\nOne practical pattern is wrapping a `constexpr` call inside a `consteval` function to force the outer expression to be evaluated at compile time:\n\n```cpp\ntemplate <typename T>\nconsteval T force_consteval(T val) { return val; }\n```\n\nCalling `force_consteval(some_constexpr_fn(x))` causes a compile error if `x` isn't a constant expression -- a useful diagnostic tool.\n\n### `constexpr` vs `consteval` vs `constinit`\n\n- `constexpr` -- function may evaluate at compile time or runtime. When applied to a variable, the variable is implicitly `const` and must be initialized with a constant expression.\n- `consteval` -- *must* evaluate at compile time; function calls are not runtime-callable.\n- `constinit` -- ensures a variable is initialized at compile time but does *not* make it `const`; applies to variables, not functions.\n\nThese three keywords address different concerns and are often complementary rather than interchangeable.",
+      "exercises": [
+        {
+          "title": "Consteval Compile-Time Factorial",
+          "prompt_md": "# Consteval Compile-Time Factorial\n\nWrite a `consteval` function `factorial(int n)` that computes the factorial of `n`. Because it is `consteval`, it can *only* be called with compile-time constant arguments -- the compiler will reject any attempt to call it with a runtime value.\n\nYour program should:\n1. Define a `consteval` function `factorial(int n)` that returns `n!` (n factorial)\n2. Handle `n == 0` by returning `1` (0! = 1)\n3. For negative `n`, return `-1` as an error indicator\n4. Use `factorial` to compute several compile-time constants and output them\n5. Read an integer `k` from input and use it to select which precomputed factorial to display\n\nThe program should precompute `factorial(5)`, `factorial(10)`, and `factorial(0)` as `constexpr` variables, then:\n- If `k == 1`, output the value of `factorial(5)`\n- If `k == 2`, output the value of `factorial(10)`\n- If `k == 3`, output the value of `factorial(0)`\n- Otherwise, output `-1`\n\nOn a second line, always output `factorial(12)` (a compile-time constant) to demonstrate a larger computation.\n\nNote: You cannot pass `k` directly to `factorial()` because `k` is a runtime value and `consteval` requires compile-time arguments. That is the key lesson -- `consteval` enforces compile-time evaluation.",
+          "starter_code": "#include <iostream>\nusing namespace std;\n\n// TODO: Define consteval function factorial(int n)\n// Return n! for n >= 0\n// Return -1 for negative n\n\nint main() {\n    // Precompute factorials at compile time\n    constexpr long long fact5 = factorial(5);\n    constexpr long long fact10 = factorial(10);\n    constexpr long long fact0 = factorial(0);\n    constexpr long long fact12 = factorial(12);\n    \n    int k;\n    cin >> k;\n    \n    // TODO: Use k to select which precomputed factorial to print\n    // k==1 -> fact5, k==2 -> fact10, k==3 -> fact0, else -> -1\n    \n    // TODO: Always print fact12 on the second line\n    \n    return 0;\n}\n",
+          "solution_code": null,
+          "test_cases": [
+            {
+              "label": "Sample: Select factorial(5)",
+              "stdin": "1",
+              "expected_stdout": "120\n479001600\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: Select factorial(10)",
+              "stdin": "2",
+              "expected_stdout": "3628800\n479001600\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Select factorial(0)",
+              "stdin": "3",
+              "expected_stdout": "1\n479001600\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Invalid selection",
+              "stdin": "9",
+              "expected_stdout": "-1\n479001600\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

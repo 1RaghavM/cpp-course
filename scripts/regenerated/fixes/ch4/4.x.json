@@ -1,0 +1,60 @@
+{
+  "number": "4.x",
+  "title": "Chapter 4 summary and quiz",
+  "sort_order": 62,
+  "summary_md": "# Chapter 4 Summary: Fundamental Data Types\n\nThis chapter covered the building blocks of C++ values — the types that live directly in variables without any extra indirection.\n\n## Key Takeaways\n\n**Integer types** come in signed and unsigned variants. Prefer signed integers for general arithmetic; unsigned integers silently wrap around on underflow, producing bugs that are hard to spot. When you need a guaranteed width, use the fixed-width types from `<cstdint>`:\n\n- `int8_t` / `uint8_t` — 8-bit signed/unsigned\n- `int16_t` / `uint16_t` — 16-bit signed/unsigned\n- `int32_t` / `uint32_t` — 32-bit signed/unsigned\n- `int64_t` / `uint64_t` — 64-bit signed/unsigned\n\nUse `std::size_t` for sizes and indices returned by `sizeof` and standard-library functions.\n\n**Floating-point types** (`float`, `double`, `long double`) store approximations. Rounding errors accumulate, so never compare floats with `==`. Prefer `double` as the default. Scientific notation literals like `1.5e-3` are valid initializers.\n\n**`bool`** stores `true` or `false`. When printed with `std::cout`, it shows `1` or `0` by default; use `std::boolalpha` to get `true`/`false` text.\n\n**`char`** holds a single character as a small integer. Character literals use single quotes (`'A'`), while string literals use double quotes (`\"hello\"`). The underlying integer value maps to ASCII.\n\n**`void`** means no type. It appears as a function return type when the function produces no value, and nowhere else in the contexts covered so far.\n\n**`static_cast`** is the safe, explicit way to convert between types — for example, casting a `char` to `int` to inspect its ASCII value, or narrowing a `double` to `int` deliberately. It makes the programmer's intent visible and avoids implicit-conversion warnings.\n\n```cpp\n#include <format>\n#include <iostream>\n\nint main()\n{\n    char letter { 'Z' };\n    int  code   { static_cast<int>(letter) };\n    bool is_uppercase { letter >= 'A' && letter <= 'Z' };\n\n    std::cout << std::format(\"'{}' has ASCII code {} | uppercase: {}\\n\",\n                             letter, code, is_uppercase);\n}\n```\n\nOutput: `'Z' has ASCII code 90 | uppercase: true`\n\n**Type conversion** can happen implicitly, but implicit narrowing (e.g., `double` -> `int`) loses data silently. Always prefer `static_cast` when a conversion is intentional, as covered in *Introduction to type conversion and static_cast*.",
+  "exercises": [
+    {
+      "title": "ASCII Inspector: char to int with boolalpha",
+      "prompt_md": "## Goal\nRead a single character from stdin and print its ASCII code, whether it is a printable character (ASCII 32-126 inclusive), and whether it is a digit ('0'-'9'), using `std::boolalpha` for all boolean output.\n\n## Input\n- Line 1: exactly one printable, non-whitespace character.\n\n## Output\nPrint exactly three lines in this order:\n- `Code: <N>` — where `<N>` is the ASCII integer value of the character, produced by `static_cast<int>`.\n- `Printable: <bool>` — `true` if ASCII value is between 32 and 126 inclusive, `false` otherwise.\n- `Digit: <bool>` — `true` if the character is between `'0'` and `'9'` inclusive, `false` otherwise.\n\nAll boolean values must be printed with `std::boolalpha` (i.e., the words `true` or `false`, not `1` or `0`).\n\n## Requirements\n1. Read the character using `char ch; std::cin >> ch;`.\n2. Obtain the ASCII code with `static_cast<int>(ch)` — do not use any other cast or arithmetic trick.\n3. Enable `std::boolalpha` on `std::cout` before printing any boolean, and leave it enabled for all subsequent output.\n4. The printable check must use the integer code (32 <= code <= 126).\n5. The digit check must compare `ch` directly against `'0'` and `'9'` (character literals, not integer literals).\n6. Hidden tests cover: a digit character (`'5'`), an uppercase letter (`'A'`), and the `#` character (printable but not a digit).",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    char ch{};\n    std::cin >> ch;\n\n    // TODO: use static_cast<int> to get the ASCII code\n    int code{ 0 };\n\n    // TODO: determine whether the character is printable (ASCII 32-126)\n    bool printable{ false };\n\n    // TODO: determine whether the character is a digit ('0'-'9')\n    bool is_digit{ false };\n\n    // TODO: enable boolalpha, then print the three output lines\n    // Line 1: \"Code: <N>\"\n    // Line 2: \"Printable: <bool>\"\n    // Line 3: \"Digit: <bool>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    char ch{};\n    std::cin >> ch;\n\n    int code{ static_cast<int>(ch) };\n\n    bool printable{ code >= 32 && code <= 126 };\n\n    bool is_digit{ ch >= '0' && ch <= '9' };\n\n    std::cout << std::boolalpha;\n    std::cout << \"Code: \" << code << '\\n';\n    std::cout << \"Printable: \" << printable << '\\n';\n    std::cout << \"Digit: \" << is_digit << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Uppercase letter Z",
+          "stdin": "Z",
+          "expected_stdout": "Code: 90\nPrintable: true\nDigit: false\n",
+          "is_sample": true
+        },
+        {
+          "label": "Digit character 5",
+          "stdin": "5",
+          "expected_stdout": "Code: 53\nPrintable: true\nDigit: true\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hash character (printable, not digit)",
+          "stdin": "#",
+          "expected_stdout": "Code: 35\nPrintable: true\nDigit: false\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Float Breakdown: rounding, truncation, and unsigned wrap-around demo",
+      "prompt_md": "## Goal\nRead a non-negative `double` value and a non-negative `int` subtrahend from stdin. Print a breakdown that demonstrates floating-point truncation via `static_cast`, signed vs. unsigned integer behavior, and `bool` output with `std::boolalpha`.\n\n## Input\n- Line 1: a non-negative `double` value `d` (0.0 <= d <= 1,000,000.0), written in standard or scientific notation.\n- Line 2: a non-negative `int` value `n` (0 <= n <= 1,000,000).\n\n## Output\nPrint exactly five lines:\n1. `Truncated: <T>` — `d` truncated to an integer using `static_cast<int>(d)`.\n2. `Fractional part positive: <bool>` — `true` if `d - static_cast<int>(d) > 0.0`, `false` otherwise. Use `std::boolalpha`.\n3. `Signed result: <S>` — the signed result of `static_cast<int>(d) - n` (may be negative).\n4. `Unsigned result: <U>` — the same subtraction performed entirely in `uint32_t`: `static_cast<uint32_t>(static_cast<int>(d)) - static_cast<uint32_t>(n)`. Print the raw `uint32_t` value (wrap-around is expected and intentional when the result would be negative).\n5. `Wrapped: <bool>` — `true` if the unsigned result differs from the signed result (i.e., wrap-around occurred), `false` otherwise. Use `std::boolalpha`.\n\n## Requirements\n1. Read `d` as `double` and `n` as `int`.\n2. Compute the truncated value with `static_cast<int>(d)` — store it in an `int` variable named `truncated`.\n3. Compute the fractional boolean as `d - static_cast<double>(truncated) > 0.0`.\n4. Compute `signed_result` as `int`: `truncated - n`.\n5. Compute `unsigned_result` as `uint32_t`: `static_cast<uint32_t>(truncated) - static_cast<uint32_t>(n)`.\n6. Compute `wrapped` as `bool`: `static_cast<int>(unsigned_result) != signed_result`.\n7. Include `<cstdint>` for `uint32_t`.\n8. Enable `std::boolalpha` before any boolean output.\n9. Hidden tests cover: no fractional part and no wrap (e.g., `10.0`, `3`), a fractional value with no wrap (e.g., `7.9`, `2`), and a case where unsigned wrap-around occurs (e.g., `3.5`, `10`).",
+      "starter_code": "#include <cstdint>\n#include <iostream>\n\nint main()\n{\n    double d{};\n    int n{};\n    std::cin >> d >> n;\n\n    // TODO: truncate d to int using static_cast<int>\n    int truncated{ 0 };\n\n    // TODO: compute whether the fractional part is positive\n    bool frac_positive{ false };\n\n    // TODO: compute signed subtraction result (int)\n    int signed_result{ 0 };\n\n    // TODO: compute unsigned subtraction result (uint32_t) — wrap-around is intentional\n    uint32_t unsigned_result{ 0 };\n\n    // TODO: determine whether wrap-around occurred\n    bool wrapped{ false };\n\n    // TODO: enable boolalpha and print the five output lines\n    // Line 1: \"Truncated: <truncated>\"\n    // Line 2: \"Fractional part positive: <frac_positive>\"\n    // Line 3: \"Signed result: <signed_result>\"\n    // Line 4: \"Unsigned result: <unsigned_result>\"\n    // Line 5: \"Wrapped: <wrapped>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstdint>\n#include <iostream>\n\nint main()\n{\n    double d{};\n    int n{};\n    std::cin >> d >> n;\n\n    int truncated{ static_cast<int>(d) };\n\n    bool frac_positive{ d - static_cast<double>(truncated) > 0.0 };\n\n    int signed_result{ truncated - n };\n\n    uint32_t unsigned_result{ static_cast<uint32_t>(truncated) - static_cast<uint32_t>(n) };\n\n    bool wrapped{ static_cast<int>(unsigned_result) != signed_result };\n\n    std::cout << std::boolalpha;\n    std::cout << \"Truncated: \" << truncated << '\\n';\n    std::cout << \"Fractional part positive: \" << frac_positive << '\\n';\n    std::cout << \"Signed result: \" << signed_result << '\\n';\n    std::cout << \"Unsigned result: \" << unsigned_result << '\\n';\n    std::cout << \"Wrapped: \" << wrapped << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Fractional value, no wrap",
+          "stdin": "7.9\n2",
+          "expected_stdout": "Truncated: 7\nFractional part positive: true\nSigned result: 5\nUnsigned result: 5\nWrapped: false\n",
+          "is_sample": true
+        },
+        {
+          "label": "Exact integer value, no wrap",
+          "stdin": "10.0\n3",
+          "expected_stdout": "Truncated: 10\nFractional part positive: false\nSigned result: 7\nUnsigned result: 7\nWrapped: false\n",
+          "is_sample": false
+        },
+        {
+          "label": "Unsigned wrap-around occurs",
+          "stdin": "3.5\n10",
+          "expected_stdout": "Truncated: 3\nFractional part positive: true\nSigned result: -7\nUnsigned result: 4294967289\nWrapped: true\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

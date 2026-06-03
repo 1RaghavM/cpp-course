@@ -1,0 +1,61 @@
+{
+  "number": "8.14",
+  "title": "Generating random numbers using Mersenne Twister",
+  "sort_order": 114,
+  "summary_md": "## Generating Random Numbers Using Mersenne Twister\n\nAs discussed in \"Introduction to random number generation,\" C's `rand()` has serious flaws: short period, poor distribution, and platform-dependent behaviour. C++11 introduced `<random>`, a proper random number library. The workhorse engine is **`std::mt19937`** — a Mersenne Twister with a period of 2^19937 - 1.\n\n### The two-part model\n\nC++ separates *engines* (produce raw bits) from *distributions* (shape bits into useful ranges):\n\n```cpp\n#include <iostream>\n#include <random>\n\nint main()\n{\n    std::mt19937 mt{ std::random_device{}() };\n    std::uniform_int_distribution<int> die{ 1, 6 };\n\n    for (int i{ 0 }; i < 5; ++i)\n        std::cout << die(mt) << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```\n\n`std::random_device{}()` provides a non-deterministic seed (hardware entropy or OS randomness). The engine then produces a deterministic sequence from that seed — identical seeds produce identical sequences, which is useful for debugging.\n\n### Seeding\n\n- **`std::random_device`** — use for production code. Provides true randomness on most platforms.\n- **Fixed integer seed** — use for testing and reproducibility. `std::mt19937 mt{ 42 };` always produces the same sequence.\n\n### Distributions\n\n| Distribution | Use |\n|---|---|\n| `uniform_int_distribution<int>{a, b}` | Equal probability integers in [a, b] |\n| `uniform_real_distribution<double>{a, b}` | Equal probability doubles in [a, b) |\n| `normal_distribution<double>{mean, stddev}` | Bell curve |\n\nAlways pass the engine by reference to the distribution's `operator()` — distributions are stateless, engines are stateful.\n\n### Python comparison\n\nPython's `random.randint(a, b)` hides the engine/distribution split behind one call. C++ makes it explicit so you can swap engines, share state, or serialize the generator's state for reproducibility.\n\n### Key rules\n\n1. Create one `mt19937` per program (or thread), not one per call.\n2. Seed it once at startup.\n3. Pass it to distributions — never call `mt()` directly for a bounded range (modulo bias).\n4. Always specify the template parameter explicitly: `std::uniform_int_distribution<int>` rather than relying on deduction.",
+  "exercises": [
+    {
+      "title": "Reproducible Sequence Printer",
+      "prompt_md": "## Reproducible Sequence Printer\n\nWrite a program that demonstrates the reproducibility of `std::mt19937` by generating the same sequence twice with the same seed.\n\n### Input\n\nLine 1: `unsigned int seed`.\nLine 2: `int n` — number of values to generate per sequence (1 <= n <= 20).\n\n### Output\n\n1. Create a first `std::mt19937` engine seeded with `seed`, generate `n` values using `std::uniform_int_distribution<int>{1, 1000}`, and store the sum.\n2. Create a **second** `std::mt19937` engine seeded with the **same** `seed`, generate `n` values with the same distribution, and store the sum.\n3. Print:\n   - `Sum 1: X` (sum from first engine)\n   - `Sum 2: Y` (sum from second engine)\n   - `Match: yes` if both sums are equal, `Match: no` otherwise.\n\nBecause both engines use the same seed, the sums must always match.\n\n### Example\n\n```\nInput:\n42\n5\nOutput:\nSum 1: <some value>\nSum 2: <same value>\nMatch: yes\n```\n\n**Note:** The exact sum values depend on the implementation, but the two sums will always be equal since the seeds match.",
+      "starter_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    unsigned int seed{};\n    int n{};\n    std::cin >> seed >> n;\n\n    // TODO: Create first mt19937 engine with seed, generate n values\n    // from uniform_int_distribution<int>{1, 1000}, compute sum1\n\n    // TODO: Create second mt19937 engine with same seed, generate n values\n    // from uniform_int_distribution<int>{1, 1000}, compute sum2\n\n    // TODO: Print \"Sum 1: <sum1>\"\n    // TODO: Print \"Sum 2: <sum2>\"\n    // TODO: Print \"Match: yes\" if sum1 == sum2, else \"Match: no\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    unsigned int seed{};\n    int n{};\n    std::cin >> seed >> n;\n\n    // First engine\n    std::mt19937 mt1{ seed };\n    std::uniform_int_distribution<int> dist1{ 1, 1000 };\n    int sum1{ 0 };\n    for (int i{ 0 }; i < n; ++i)\n        sum1 += dist1(mt1);\n\n    // Second engine, same seed\n    std::mt19937 mt2{ seed };\n    std::uniform_int_distribution<int> dist2{ 1, 1000 };\n    int sum2{ 0 };\n    for (int i{ 0 }; i < n; ++i)\n        sum2 += dist2(mt2);\n\n    std::cout << \"Sum 1: \" << sum1 << '\\n';\n    std::cout << \"Sum 2: \" << sum2 << '\\n';\n    if (sum1 == sum2)\n        std::cout << \"Match: yes\\n\";\n    else\n        std::cout << \"Match: no\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Seed 42, 5 values — sums must match",
+          "stdin": "42\n5",
+          "expected_stdout_regex": "Sum 1: (\\d+)\\nSum 2: \\1\\nMatch: yes\\n",
+          "expected_stdout_contains": "Match: yes",
+          "is_sample": true
+        },
+        {
+          "label": "Seed 0, 10 values — sums must match",
+          "stdin": "0\n10",
+          "expected_stdout_contains": "Match: yes",
+          "is_sample": false
+        },
+        {
+          "label": "Seed 999, 1 value — sums must match",
+          "stdin": "999\n1",
+          "expected_stdout_contains": "Match: yes",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Random Range Validator",
+      "prompt_md": "## Random Range Validator\n\nWrite a program that generates random numbers in a user-specified range and validates they are all within bounds.\n\n### Input\n\nLine 1: `int lo` and `int hi` (space-separated).\nLine 2: `int n` — number of values to generate.\n\n### Output\n\nGenerate `n` values using `std::mt19937` seeded from `std::random_device{}()` and `std::uniform_int_distribution<int>{lo, hi}`. Track:\n- The **minimum** value generated.\n- The **maximum** value generated.\n- Whether **all** values satisfy `lo <= value <= hi`.\n\nPrint exactly three lines:\n```\nMin: <min_value>\nMax: <max_value>\nAll valid: yes\n```\n(or `All valid: no` if any value fell outside the range — which should never happen with a correct distribution.)\n\n### Example\n\n```\nInput:\n1 6\n100\nOutput:\nMin: <some value >= 1>\nMax: <some value <= 6>\nAll valid: yes\n```\n\n**Note:** Because the output depends on the random seed, tests verify structural properties: all values in range, min >= lo, max <= hi.",
+      "starter_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{}, hi{}, n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ std::random_device{}() };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    int minVal{ hi + 1 };  // start above max possible\n    int maxVal{ lo - 1 };  // start below min possible\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int val{ dist(mt) };\n        // TODO: update minVal and maxVal\n        // TODO: check if val is outside [lo, hi] and set allValid = false if so\n    }\n\n    // TODO: Print \"Min: <minVal>\"\n    // TODO: Print \"Max: <maxVal>\"\n    // TODO: Print \"All valid: yes\" or \"All valid: no\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{}, hi{}, n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ std::random_device{}() };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    int minVal{ hi + 1 };\n    int maxVal{ lo - 1 };\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int val{ dist(mt) };\n        if (val < minVal) minVal = val;\n        if (val > maxVal) maxVal = val;\n        if (val < lo || val > hi)\n            allValid = false;\n    }\n\n    std::cout << \"Min: \" << minVal << '\\n';\n    std::cout << \"Max: \" << maxVal << '\\n';\n    if (allValid)\n        std::cout << \"All valid: yes\\n\";\n    else\n        std::cout << \"All valid: no\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Range 1-6, 100 values — all must be valid",
+          "stdin": "1 6\n100",
+          "expected_stdout_contains": "All valid: yes",
+          "is_sample": true
+        },
+        {
+          "label": "Range 50-50, 10 values — min and max must be 50",
+          "stdin": "50 50\n10",
+          "expected_stdout": "Min: 50\nMax: 50\nAll valid: yes\n",
+          "is_sample": false
+        },
+        {
+          "label": "Range -100 to 100, 500 values — all valid",
+          "stdin": "-100 100\n500",
+          "expected_stdout_contains": "All valid: yes",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

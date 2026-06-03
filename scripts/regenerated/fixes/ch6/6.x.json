@@ -1,0 +1,62 @@
+{
+  "lesson": "6.x",
+  "title": "Chapter 6 summary and quiz",
+  "fixes": ["CRITICAL: exercise 2 wrong test case (Remainder: 3 should be 1)", "MODERATE: exercise 2 uses for loop (Ch 8 forward reference) — replaced with non-loop exercise", "MINOR: summary uses std::println/<print> and simple epsilon (should match 6.7 scaled version)"],
+  "summary_md": "## Chapter 6 Summary: Operators\n\nThis chapter covered the full set of C++ operators you'll use constantly, along with several traps that catch newcomers.\n\n**Precedence and associativity** determine evaluation order when multiple operators appear in one expression. When in doubt, use parentheses — they cost nothing and remove ambiguity.\n\n**Arithmetic operators** (`+`, `-`, `*`, `/`, `%`) behave mostly as expected, but integer division truncates toward zero. The remainder operator `%` works only on integers and takes the sign of the left operand in C++.\n\n**Exponentiation** has no built-in operator; use `std::pow` from `<cmath>`. Be aware it works with `double`, so results fed back into integer math need an explicit cast.\n\n**Increment/decrement** (`++`/`--`) come in prefix and postfix forms. Prefix modifies the value *before* it is used in an expression; postfix modifies it *after*. Prefer prefix when the old value isn't needed. Mixing these operators with other uses of the same variable in one expression causes undefined behavior.\n\n**The comma operator** evaluates both operands left-to-right and returns the right one. It is rarely useful outside specific contexts and is best avoided elsewhere to keep code readable.\n\n**The conditional operator** `?:` is a compact if-else for expressions. It requires both branches to produce compatible types and works well inside initializers or output expressions where a full `if` statement would be awkward.\n\n**Relational operators** (`<`, `>`, `<=`, `>=`, `==`, `!=`) work correctly for integers but are unreliable for floating-point values due to rounding. Compare floating-point numbers with a scaled epsilon check — `std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)))` — rather than `==`. The simpler `std::abs(a - b) < epsilon` works for small values but breaks down for large magnitudes.\n\n**Logical operators** (`&&`, `||`, `!`) short-circuit: `&&` stops at the first `false`, `||` stops at the first `true`. This matters when operands have side effects.\n\n```cpp\n#include <cmath>\n#include <iostream>\n\nbool approx_equal(double a, double b, double eps = 1e-9) {\n    return std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)));\n}\n\nint main() {\n    double a = 0.1 + 0.2;\n    double b = 0.3;\n\n    std::cout << std::boolalpha;\n    std::cout << \"0.1 + 0.2 == 0.3 ? \" << (a == b) << '\\n';\n    std::cout << \"approx_equal?      \" << approx_equal(a, b) << '\\n';\n\n    int score = 87;\n    char grade = (score >= 90) ? 'A' : (score >= 80) ? 'B' : 'C';\n    std::cout << \"Grade: \" << grade << '\\n';\n}\n```\n\nThis example combines the floating-point comparison technique (using the scaled epsilon from lesson 6.7), the conditional operator chained for a grade lookup, and `std::cout` — all patterns from this chapter applied together.",
+  "exercises": [
+    {
+      "title": "Classify a Number with the Conditional Operator",
+      "prompt_md": "## Goal\nComplete function `classify` that returns a `std::string` describing an integer as `\"negative\"`, `\"zero\"`, or `\"positive\"`, then print it alongside the result of a floating-point near-equality check using the scaled epsilon formula from lesson 6.7.\n\n## Input\n- Line 1: one integer `n` (-1,000,000 <= n <= 1,000,000)\n- Line 2: two space-separated `double` values `a` and `b` (absolute value <= 1e6, up to 9 decimal places)\n\n## Output\nPrint exactly two lines:\n1. `Classification: X` where `X` is `negative`, `zero`, or `positive`\n2. `Equal: Y` where `Y` is `true` if `std::abs(a - b) <= 1e-9 * std::max(1.0, std::max(std::abs(a), std::abs(b)))`, otherwise `false`\n\nNo extra blank lines.\n\n## Requirements\n1. `classify` must use **chained conditional operators** (`?:`) — no `if` statements allowed inside it.\n2. The function signature must be exactly: `std::string classify(int n)`\n3. The floating-point comparison must use the scaled epsilon formula: `std::abs(a - b) <= 1e-9 * std::max(1.0, std::max(std::abs(a), std::abs(b)))`. This is the robust version from lesson 6.7.\n4. Output the boolean result as the literal text `true` or `false` (use another conditional operator or `std::boolalpha`).\n5. Hidden tests cover: `n = 0`, `n` at the extremes (+/-1,000,000), `a == b` exactly, and values that differ by less than the scaled epsilon vs. more.\n\n## Notes\n- You may use `<cmath>`, `<string>`, and `<iostream>`.\n- `std::boolalpha` with `<<` or a `?:` expression both satisfy requirement 4.",
+      "starter_code": "#include <cmath>\n#include <iostream>\n#include <string>\n\n// TODO: implement classify using only chained ?: operators (no if statements)\nstd::string classify(int n)\n{\n    // TODO: return \"negative\", \"zero\", or \"positive\"\n    return \"\";\n}\n\nint main()\n{\n    int n;\n    double a, b;\n    std::cin >> n >> a >> b;\n\n    // TODO: call classify and print \"Classification: <result>\"\n\n    // TODO: compare a and b with scaled epsilon and print \"Equal: true\" or \"Equal: false\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <cmath>\n#include <iostream>\n#include <string>\n\nstd::string classify(int n)\n{\n    return n < 0 ? \"negative\" : n > 0 ? \"positive\" : \"zero\";\n}\n\nint main()\n{\n    int n;\n    double a, b;\n    std::cin >> n >> a >> b;\n\n    std::cout << \"Classification: \" << classify(n) << '\\n';\n\n    constexpr double eps = 1e-9;\n    bool equal = std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)));\n    std::cout << \"Equal: \" << (equal ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — positive n, unequal doubles",
+          "stdin": "42\n0.1 0.2\n",
+          "expected_stdout": "Classification: positive\nEqual: false\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — zero n, effectively equal doubles",
+          "stdin": "0\n0.3 0.30000000000000004\n",
+          "expected_stdout": "Classification: zero\nEqual: true\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — negative n, exactly equal doubles",
+          "stdin": "-1000000\n3.141592653 3.141592653\n",
+          "expected_stdout": "Classification: negative\nEqual: true\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Score Summary with Prefix/Postfix Increment and Integer Arithmetic",
+      "prompt_md": "## Goal\nRead exactly five integer scores and compute a summary that exercises prefix/postfix increment, integer division, and the remainder operator — integrating concepts from throughout Chapter 6.\n\n## Input\n- Line 1: five space-separated integers, each in the range 0-100 inclusive, representing exam scores.\n\n## Output\nPrint exactly four lines:\n1. `Pass: P` — count of scores >= 60\n2. `Fail: F` — count of scores < 60\n3. `Average: A` — integer average, truncated toward zero (integer division of the sum by 5)\n4. `Remainder: R` — the remainder when the sum is divided by 5 (use the `%` operator)\n\n## Requirements\n1. Read all five scores into separate `int` variables (no arrays or loops).\n2. Maintain a `pass` counter. Each time a score qualifies (>= 60), increment it using **prefix** `++pass`.\n3. Maintain a `fail` counter. Each time a score qualifies (< 60), increment it using **postfix** `fail++`.\n4. Both increment styles produce the same final count — the point is to practice both forms in a context where the expression value is not used.\n5. Compute `Average` using integer division (`sum / 5`) — do **not** cast to `double`.\n6. Compute `Remainder` using the `%` operator (`sum % 5`).\n7. Hidden tests cover: all scores passing (Fail = 0), all scores failing (Pass = 0), and a sum exactly divisible by 5 (Remainder = 0).\n\n## Notes\n- Use only `<iostream>`.\n- Since all inputs are non-negative and the divisor is 5, the remainder is always >= 0.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int s1, s2, s3, s4, s5;\n    std::cin >> s1 >> s2 >> s3 >> s4 >> s5;\n\n    int pass = 0;\n    int fail = 0;\n    int sum  = s1 + s2 + s3 + s4 + s5;\n\n    // TODO: for each score, check if >= 60\n    //   If yes, use prefix increment: ++pass\n    //   If no, use postfix increment: fail++\n    // Check s1:\n\n    // Check s2:\n\n    // Check s3:\n\n    // Check s4:\n\n    // Check s5:\n\n    // TODO: print Pass, Fail, Average (sum/5), Remainder (sum%5)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int s1, s2, s3, s4, s5;\n    std::cin >> s1 >> s2 >> s3 >> s4 >> s5;\n\n    int pass = 0;\n    int fail = 0;\n    int sum  = s1 + s2 + s3 + s4 + s5;\n\n    if (s1 >= 60) ++pass; else fail++;\n    if (s2 >= 60) ++pass; else fail++;\n    if (s3 >= 60) ++pass; else fail++;\n    if (s4 >= 60) ++pass; else fail++;\n    if (s5 >= 60) ++pass; else fail++;\n\n    std::cout << \"Pass: \"      << pass      << '\\n';\n    std::cout << \"Fail: \"      << fail      << '\\n';\n    std::cout << \"Average: \"   << sum / 5   << '\\n';\n    std::cout << \"Remainder: \" << sum % 5   << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — mixed scores",
+          "stdin": "70 55 90 60 45\n",
+          "expected_stdout": "Pass: 3\nFail: 2\nAverage: 64\nRemainder: 0\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — all failing",
+          "stdin": "10 20 30 40 50\n",
+          "expected_stdout": "Pass: 0\nFail: 5\nAverage: 30\nRemainder: 0\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — all passing, non-zero remainder",
+          "stdin": "80 95 70 88 61\n",
+          "expected_stdout": "Pass: 5\nFail: 0\nAverage: 78\nRemainder: 4\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

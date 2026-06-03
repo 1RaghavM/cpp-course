@@ -1,0 +1,1114 @@
+{
+  "chapter": {
+    "number": "12",
+    "title": "Compound Types: References and Pointers"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz",
+    "8.1: Control flow introduction",
+    "8.2: If statements and blocks",
+    "8.3: Common if statement problems",
+    "8.4: Constexpr if statements",
+    "8.5: Switch statement basics",
+    "8.6: Switch fallthrough and scoping",
+    "8.7: Goto statements",
+    "8.8: Introduction to loops and while statements",
+    "8.9: Do while statements",
+    "8.10: For statements",
+    "8.11: Break and continue",
+    "8.12: Halts (exiting your program early)",
+    "8.13: Introduction to random number generation",
+    "8.14: Generating random numbers using Mersenne Twister",
+    "8.15: Global random numbers (Random.h)",
+    "8.x: Chapter 8 summary and quiz",
+    "9.1: Introduction to testing your code",
+    "9.2: Code coverage",
+    "9.3: Common semantic errors in C++",
+    "9.4: Detecting and handling errors",
+    "9.5: std::cin and handling invalid input",
+    "9.6: Assert and static_assert",
+    "9.x: Chapter 9 summary and quiz",
+    "10.1: Implicit type conversion",
+    "10.2: Floating-point and integral promotion",
+    "10.3: Numeric conversions",
+    "10.4: Narrowing conversions, list initialization, and constexpr initializers",
+    "10.5: Arithmetic conversions",
+    "10.6: Explicit type conversion (casting) and static_cast",
+    "10.7: Typedefs and type aliases",
+    "10.8: Type deduction for objects using the auto keyword",
+    "10.9: Type deduction for functions",
+    "10.x: Chapter 10 summary and quiz",
+    "11.1: Introduction to function overloading",
+    "11.2: Function overload differentiation",
+    "11.3: Function overload resolution and ambiguous matches",
+    "11.4: Deleting functions",
+    "11.5: Default arguments",
+    "11.6: Function templates",
+    "11.7: Function template instantiation",
+    "11.8: Function templates with multiple template types",
+    "11.9: Non-type template parameters",
+    "11.10: Using function templates in multiple files",
+    "11.x: Chapter 11 summary and quiz",
+    "F.1: Constexpr functions",
+    "F.2: Constexpr functions (part 2)",
+    "F.3: Constexpr functions (part 3) and consteval"
+  ],
+  "lessons": [
+    {
+      "number": "12.1",
+      "title": "Introduction to compound data types",
+      "sort_order": 150,
+      "summary_md": "## Introduction to Compound Data Types\n\nC++ divides its type system into two broad categories: **fundamental types** and **compound types**.\n\nFundamental types (covered in earlier chapters) include `int`, `double`, `bool`, `char`, and the other built-in arithmetic types. They hold a single value and map directly to a machine word or byte.\n\n**Compound types** are types that are built from other types. They let you express richer structure — groupings of values, aliases for objects, sequences, and indirection. The compound types you will meet in this course are:\n\n- **References** (`T&`, `const T&`) — an alias that refers to an existing object; no copy is made.\n- **Pointers** (`T*`) — holds the memory address of another object; can be reassigned and can be null.\n- **Enumerations** (`enum class`) — a named set of integer constants with a distinct type.\n- **Structs and classes** — bundle related data (and optionally behavior) under one name.\n- **Arrays** — a contiguous sequence of elements of the same type.\n\nThe most important distinction from fundamental types is that compound types *compose*: a struct can contain pointers, a pointer can point to an array, and so on.\n\n### Why this matters for the rest of Chapter 12\n\nChapter 12 focuses on references and pointers because they are the foundation of nearly every other compound type. Understanding how a reference avoids a copy, or how a pointer stores an address, is a prerequisite for understanding dynamic memory, containers, and function design in later chapters.\n\n### A first look at the difference\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x { 42 };\n\n    int& ref { x };   // reference: ref IS x, no copy\n    int* ptr { &x };  // pointer: ptr holds the address of x\n\n    ref = 99;         // modifies x through the reference\n    std::cout << x   << '\\n'; // 99\n    std::cout << *ptr << '\\n'; // 99 (dereference the pointer)\n}\n```\n\nNotice that `ref` and `ptr` both reach the same object (`x`), but with different syntax and different semantics. References must be bound at initialization and cannot be reseated; pointers can be null and can be pointed elsewhere.\n\nThe chapters that follow will build each of these compound types from scratch. Start with references (lesson 12-2) before moving to pointers, because references are simpler and share many of the same conceptual building blocks.",
+      "exercises": [
+        {
+          "title": "Classify the Types",
+          "prompt_md": "## Goal\n\nPractice distinguishing fundamental types from compound types by completing a small program that uses both, then printing a summary of what you observe.\n\n## Requirements\n\n- Declare an `int` variable initialized from stdin.\n- Declare a **reference** to that `int`.\n- Declare a **pointer** to that `int`.\n- Modify the value through the reference (add 10).\n- Print the value obtained by dereferencing the pointer.\n- Print the memory address stored in the pointer (the address of the original variable).\n\nYou do not need to print the address in a specific format — just use `std::cout << ptr`.\n\n## Input\n\nA single integer on one line.\n\n## Output\n\nTwo lines:\n1. The value after adding 10 (accessed via the pointer dereference).\n2. The text `has_address: true` (confirming the pointer is non-null).\n\n## Example\n\nInput:\n```\n5\n```\nOutput:\n```\n15\nhas_address: true\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int value {};\n    std::cin >> value;\n\n    // TODO: declare a reference to value\n\n    // TODO: declare a pointer to value\n\n    // TODO: add 10 to value through the reference\n\n    // TODO: print the dereferenced pointer value\n\n    // TODO: print \"has_address: true\" if the pointer is non-null\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int value {};\n    std::cin >> value;\n\n    int& ref { value };\n    int* ptr { &value };\n\n    ref += 10;\n\n    std::cout << *ptr << '\\n';\n    std::cout << (ptr != nullptr ? \"has_address: true\" : \"has_address: false\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: value 5",
+              "stdin": "5",
+              "expected_stdout": "15\nhas_address: true\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: value 0",
+              "stdin": "0",
+              "expected_stdout": "10\nhas_address: true\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: negative value",
+              "stdin": "-7",
+              "expected_stdout": "3\nhas_address: true\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Swap via Pointer Parameters",
+          "prompt_md": "## Goal\n\nWrite a function that swaps two integers using pointers, then call it from `main`. This combines the compound-type concepts from this lesson (pointers) with function design covered in earlier chapters.\n\n## Requirements\n\n- Write a function `void swapInts(int* a, int* b)` that swaps the values at the two pointer targets.\n- In `main`, read two integers from stdin.\n- Call `swapInts` passing the addresses of both variables.\n- Print the two values after the swap, separated by a newline.\n\nDo not use `std::swap` — implement the swap manually inside `swapInts`.\n\n## Input\n\nTwo integers on separate lines.\n\n## Output\n\nTwo lines: the second input value, then the first input value (i.e. swapped order).\n\n## Example\n\nInput:\n```\n3\n7\n```\nOutput:\n```\n7\n3\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: implement swapInts(int* a, int* b)\n// Swap the values pointed to by a and b without using std::swap\n\nint main() {\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n\n    // TODO: call swapInts with the addresses of x and y\n\n    std::cout << x << '\\n';\n    std::cout << y << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid swapInts(int* a, int* b) {\n    int temp { *a };\n    *a = *b;\n    *b = temp;\n}\n\nint main() {\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n\n    swapInts(&x, &y);\n\n    std::cout << x << '\\n';\n    std::cout << y << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3 and 7",
+              "stdin": "3\n7",
+              "expected_stdout": "7\n3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: negative and positive",
+              "stdin": "-5\n20",
+              "expected_stdout": "20\n-5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: equal values",
+              "stdin": "42\n42",
+              "expected_stdout": "42\n42\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.2",
+      "title": "Value categories (lvalues and rvalues)",
+      "sort_order": 151,
+      "summary_md": "## Value Categories: lvalues and rvalues\n\nEvery C++ expression has two properties: a type and a **value category**. The value category determines how an expression can be used — whether it can appear on the left side of an assignment, whether its address can be taken, and how it interacts with references.\n\nThe two primary categories you need now are **lvalue** and **rvalue**.\n\n### lvalues\n\nAn lvalue (\"left value\") is an expression that refers to a persistent memory location. The name comes from the fact that lvalues can appear on the left side of an assignment.\n\nKey traits of an lvalue:\n- Has an identifiable memory address (you can apply `&` to it).\n- Persists beyond the expression that uses it.\n- Named variables, array elements, and dereferenced pointers are lvalues.\n\nNot all lvalues are assignable. A `const`-qualified variable is an lvalue but **not** a *modifiable lvalue* — the compiler rejects assignment to it.\n\n### rvalues\n\nAn rvalue (\"right value\") is a temporary result that does not have a stable address. Literal constants, the result of arithmetic expressions, and values returned by value from functions are all rvalues.\n\nKey traits of an rvalue:\n- No persistent address — `&` cannot be applied.\n- Exists only for the duration of the expression.\n- Can be bound to a `const` lvalue reference or (as covered later) an rvalue reference.\n\n### Quick example\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x { 10 };       // x is a modifiable lvalue\n    const int y { 5 };  // y is a non-modifiable lvalue\n\n    x = 20;             // OK: lvalue on left, rvalue (20) on right\n    // y = 3;           // Error: y is not a modifiable lvalue\n    // 42 = x;          // Error: 42 is an rvalue, cannot assign to it\n\n    int z { x + y };    // x+y produces an rvalue; stored into lvalue z\n    std::cout << z << '\\n'; // 25\n}\n```\n\n### Why this matters\n\nValue categories underpin lvalue references (this chapter) and move semantics (later). An lvalue reference (`int&`) must be initialized with an lvalue; attempting to bind it to an rvalue is a compile error. As introduced in *Introduction to compound data types*, compound types build on existing types — and value categories determine which bindings are legal.",
+      "exercises": [
+        {
+          "title": "Classify expressions as lvalue or rvalue",
+          "prompt_md": "## Goal\n\nPractice identifying value categories by examining a set of expressions and printing the correct label for each.\n\n## Task\n\nThe program reads an integer from stdin, assigns it to a variable, and then evaluates several expressions involving that variable. For each expression listed below, print either `lvalue` or `rvalue` on its own line, in the order given:\n\n1. The named variable `n`\n2. The literal `42`\n3. The expression `n + 1`\n4. The expression `n` after `++n` has been applied (i.e., `n` itself, not the increment expression)\n5. The result of `n * 2`\n\n## Input\n\nA single integer on one line.\n\n## Output\n\nExactly 5 lines, each containing either `lvalue` or `rvalue`.\n\n```\nlvalue\nrvalue\nrvalue\nlvalue\nrvalue\n```\n\n## Requirements\n\n- The output is **constant** regardless of the input value — you are classifying expression kinds, not computing values.\n- Your `main` must still read the integer from stdin (the test harness supplies it), but the output never changes.\n- Do not use any I/O other than reading one integer and printing the five lines.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: For each expression below, print \"lvalue\" or \"rvalue\".\n    // 1. n          (the named variable)\n    // 2. 42         (an integer literal)\n    // 3. n + 1      (arithmetic result)\n    // 4. n          (after ++n — n itself, not the ++n expression)\n    // 5. n * 2      (arithmetic result)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // 1. n is a named variable -> lvalue\n    std::cout << \"lvalue\\n\";\n    // 2. 42 is a literal constant -> rvalue\n    std::cout << \"rvalue\\n\";\n    // 3. n + 1 produces a temporary -> rvalue\n    std::cout << \"rvalue\\n\";\n    // 4. n itself (after mutation) is still a named variable -> lvalue\n    ++n;\n    std::cout << \"lvalue\\n\";\n    // 5. n * 2 produces a temporary -> rvalue\n    std::cout << \"rvalue\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample input: 7",
+              "stdin": "7",
+              "expected_stdout": "lvalue\nrvalue\nrvalue\nlvalue\nrvalue\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: zero",
+              "stdin": "0",
+              "expected_stdout": "lvalue\nrvalue\nrvalue\nlvalue\nrvalue\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: negative",
+              "stdin": "-99",
+              "expected_stdout": "lvalue\nrvalue\nrvalue\nlvalue\nrvalue\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Swap two values using lvalue references",
+          "prompt_md": "## Goal\n\nApply your understanding of lvalues and lvalue references (the main use-case enabled by lvalue expressions) to implement a generic swap, then use it to sort three integers in ascending order.\n\nThis exercise combines the value-category concept from this lesson with the compound-type foundation from *Introduction to compound data types*.\n\n## Task\n\nWrite a function:\n\n```cpp\nvoid swapInts(int& a, int& b);\n```\n\nThe function must swap the values of `a` and `b` **without using `std::swap`**. Use a temporary local variable.\n\nIn `main`, read three integers from stdin. Use `swapInts` to sort them so that the smallest is printed first and the largest is printed last, one per line.\n\n## Input\n\nThree integers on a single line, space-separated.\n\n## Output\n\nThe three integers sorted in ascending order, one per line.\n\n## Requirements\n\n- Implement `swapInts` yourself; do not call `std::swap` or `std::sort`.\n- `swapInts` parameters must be lvalue references (`int&`). Passing an rvalue must not compile.\n- You may call `swapInts` as many times as needed to sort the three values.\n- Use a simple comparison-based approach (no need for a general sort algorithm).",
+          "starter_code": "#include <iostream>\n\n// TODO: implement swapInts using lvalue references\n// void swapInts(int& a, int& b) { ... }\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // TODO: use swapInts to sort a, b, c in ascending order\n    // Then print them one per line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid swapInts(int& a, int& b) {\n    int tmp { a };\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // Bubble-sort three elements with swapInts\n    if (a > b) swapInts(a, b);\n    if (b > c) swapInts(b, c);\n    if (a > b) swapInts(a, b);\n\n    std::cout << a << '\\n' << b << '\\n' << c << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3 1 2",
+              "stdin": "3 1 2",
+              "expected_stdout": "1\n2\n3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: already sorted",
+              "stdin": "5 10 15",
+              "expected_stdout": "5\n10\n15\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: reverse order with negatives",
+              "stdin": "0 -5 -10",
+              "expected_stdout": "-10\n-5\n0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.3",
+      "title": "Lvalue references",
+      "sort_order": 152,
+      "summary_md": "## Lvalue References\n\nAn **lvalue reference** is an alias — a second name for an existing object. Declaring one uses `&` after the type:\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x { 42 };\n    int& ref { x };   // ref is an alias for x\n\n    ref = 100;         // modifies x through the alias\n    std::cout << x;    // prints 100\n\n    std::cout << '\\n' << (&ref == &x); // prints 1 — same address\n}\n```\n\n### Declaring references\n\n- Syntax: `Type& name { initializer };`\n- The `&` is part of the type, not the variable name. `int& a, b;` declares `a` as a reference and `b` as a plain `int` — a common gotcha.\n- A reference **must** be bound at the point of declaration; you cannot declare an uninitialized reference.\n- Once bound, a reference cannot be reseated to refer to a different object. Assigning through a reference changes the referred-to value, not which object is aliased.\n\n### What can a reference bind to?\n\nFrom the prior lesson *Value categories (lvalues and rvalues)*: lvalue references can only bind to **modifiable lvalues** (named, addressable objects that are not `const`). Attempting to bind to an rvalue or a `const` object produces a compile error — use `const int&` for those cases (covered in the next lesson).\n\n### References are not objects\n\nA reference has no independent storage and no address of its own — `&ref` returns the address of the referred-to object. Sizeof of a reference type equals sizeof of the underlying type. You cannot have a pointer-to-reference or a reference-to-reference.\n\n### Dangling references\n\nA reference becomes **dangling** when the object it refers to is destroyed (e.g., a local variable goes out of scope). Accessing a dangling reference is undefined behavior — the compiler will not always warn you. This is the primary safety concern with references.\n\n### Why references matter\n\n- Pass large objects to functions without copying (pass-by-reference).\n- Return multiple values indirectly via out-parameters.\n- Alias deeply-nested members for readability.\n\nThe next lesson extends this to `const` references, which accept both lvalues and rvalues and are the workhorse of C++ function signatures.",
+      "exercises": [
+        {
+          "title": "Reference Swap",
+          "prompt_md": "## Goal\n\nImplement a function that swaps two integers **using lvalue references** as parameters, without returning a value.\n\n## Requirements\n\n- Write a function `void swap(int& a, int& b)` that exchanges the values of `a` and `b`.\n- Read two integers from stdin.\n- Print the values **before** and **after** swapping, each pair on its own line, space-separated.\n- Do **not** use `std::swap` or any standard library swap helper.\n\n## Input\n\nTwo integers on a single line.\n\n## Output\n\n```\nBefore: <a> <b>\nAfter: <b> <a>\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: implement swap using lvalue references\nvoid swap(/* parameters */) {\n    // TODO: exchange a and b without using std::swap\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    std::cout << \"Before: \" << a << ' ' << b << '\\n';\n    // TODO: call swap\n    std::cout << \"After: \"  << a << ' ' << b << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid swap(int& a, int& b) {\n    int tmp { a };\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    std::cout << \"Before: \" << a << ' ' << b << '\\n';\n    swap(a, b);\n    std::cout << \"After: \"  << a << ' ' << b << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "basic swap",
+              "stdin": "3 7",
+              "expected_stdout": "Before: 3 7\nAfter: 7 3\n",
+              "is_sample": true
+            },
+            {
+              "label": "negative values",
+              "stdin": "-5 12",
+              "expected_stdout": "Before: -5 12\nAfter: 12 -5\n",
+              "is_sample": false
+            },
+            {
+              "label": "equal values",
+              "stdin": "9 9",
+              "expected_stdout": "Before: 9 9\nAfter: 9 9\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Increment via Reference",
+          "prompt_md": "## Goal\n\nCombine lvalue references with basic arithmetic: read a list of integers and use a reference alias to apply an in-place increment to each element of a stack-allocated array, then print the modified values.\n\n## Requirements\n\n- Read an integer `n` (1 ≤ n ≤ 10), then `n` integers.\n- Store them in a plain array `int arr[10]`.\n- Use a range-based `for` loop with an `int&` loop variable to add 1 to every element **through the reference**.\n- Print the resulting values space-separated on one line, followed by a newline.\n- Do **not** use index arithmetic inside the loop body — modify only through the reference variable.\n\n## Input\n\nFirst line: `n`. Second line: `n` space-separated integers.\n\n## Output\n\nThe `n` incremented integers, space-separated, on one line.\n\n## Example\n\nInput:\n```\n4\n10 20 30 40\n```\nOutput:\n```\n11 21 31 41\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i { 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: loop over the n live elements; inside the loop declare\n    //       an int& alias for arr[i] and increment through it.\n\n    // TODO: print elements space-separated, then '\\n'\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i { 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // Increment each live element through a reference alias\n    for (int i { 0 }; i < n; ++i) {\n        int& ref { arr[i] };\n        ref += 1;\n    }\n\n    for (int i { 0 }; i < n; ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "four elements",
+              "stdin": "4\n10 20 30 40",
+              "expected_stdout": "11 21 31 41\n",
+              "is_sample": true
+            },
+            {
+              "label": "single element",
+              "stdin": "1\n0",
+              "expected_stdout": "1\n",
+              "is_sample": false
+            },
+            {
+              "label": "negative numbers",
+              "stdin": "3\n-3 0 5",
+              "expected_stdout": "-2 1 6\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.4",
+      "title": "Lvalue references to const",
+      "sort_order": 153,
+      "summary_md": "## Lvalue References to Const\n\nIn *Lvalue references* (12-3), you saw that a non-const lvalue reference can only bind to a modifiable lvalue. A **const lvalue reference** (`const T&`) relaxes that restriction in two important ways.\n\n### What a const lvalue reference can bind to\n\n- A modifiable lvalue (same as a non-const ref, but read-only through this alias)\n- A non-modifiable lvalue (`const` variable)\n- An rvalue — including literals, temporary objects, and the results of expressions\n\nThis makes `const T&` far more flexible than `T&`.\n\n```cpp\n#include <iostream>\n\nvoid print(const int& val) {\n    std::cout << val << '\\n';\n}\n\nint main() {\n    int x { 42 };        // modifiable lvalue\n    const int y { 7 };   // non-modifiable lvalue\n\n    print(x);            // ok: modifiable lvalue\n    print(y);            // ok: const lvalue\n    print(x + y);        // ok: rvalue (temporary)\n    print(100);          // ok: literal rvalue\n}\n```\n\n### Lifetime extension\n\nWhen an rvalue binds to a `const` lvalue reference, the compiler extends the temporary's lifetime to match the reference's scope. Without this rule, the temporary would be destroyed at the end of the full expression, leaving a dangling reference.\n\n```cpp\nconst int& r { 3 + 4 };  // temporary lives as long as r\nstd::cout << r;          // safe: prints 7\n```\n\nLifetime extension only applies to direct binding. If the reference is stored inside a struct or returned from a function, the temporary may still expire early — a common source of bugs.\n\n### Why this matters in practice\n\nFunction parameters typed as `const T&` accept anything: variables, constants, computed results, and literals. This is why most read-only function parameters in C++ are written as `const T&` rather than `T` or `T&`.\n\n- Use `T` when the function needs its own copy.\n- Use `T&` when the function must modify the caller's object.\n- Use `const T&` when the function only reads and the type may be expensive to copy.\n\nFor small built-in types (`int`, `char`, `double`, pointers), the copy overhead is negligible and `T` by value is usually preferred. `const T&` shines with class types and large structs.\n\nRemember from *Value categories* (12-2): rvalues have no persistent identity, so they cannot bind to non-const references — but they can bind to `const` ones because read-only access on a temporary is safe.",
+      "exercises": [
+        {
+          "title": "Const Reference Parameter Inspector",
+          "prompt_md": "## Goal\n\nWrite a function that accepts a `const int&` parameter and prints information about the value. Because the parameter is a const lvalue reference, it must accept modifiable lvalues, `const` lvalues, and rvalues without copying the value.\n\n## Input\n\nThree integers on separate lines:\n1. A plain integer `a`\n2. A second integer `b`\n\nThe program should call `inspect` with:\n- `a` (modifiable lvalue)\n- A `const int` initialized to `99`\n- The rvalue expression `a + b`\n\n## Output\n\nThree lines, each of the form:\n```\nValue: <n>\n```\n\n## Requirements\n\n- Define `void inspect(const int& val)` that prints `Value: ` followed by `val`.\n- `inspect` must not take `val` by copy — the parameter type must be `const int&`.\n- Read `a` and `b` from `std::cin`.\n- Call `inspect` three times in the order described above.",
+          "starter_code": "#include <iostream>\n\n// TODO: define inspect() with a const lvalue reference parameter\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    const int c { 99 };\n\n    // TODO: call inspect with:\n    //   1. a  (modifiable lvalue)\n    //   2. c  (const lvalue)\n    //   3. a + b  (rvalue)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid inspect(const int& val) {\n    std::cout << \"Value: \" << val << '\\n';\n}\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    const int c { 99 };\n\n    inspect(a);       // modifiable lvalue\n    inspect(c);       // const lvalue\n    inspect(a + b);   // rvalue\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: a=10, b=5",
+              "stdin": "10\n5",
+              "expected_stdout": "Value: 10\nValue: 99\nValue: 15\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: a=0, b=0",
+              "stdin": "0\n0",
+              "expected_stdout": "Value: 0\nValue: 99\nValue: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: a=50, b=50",
+              "stdin": "50\n50",
+              "expected_stdout": "Value: 50\nValue: 99\nValue: 100\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Temperature Converter with Const References",
+          "prompt_md": "## Goal\n\nCombine const lvalue references with basic rvalue expressions to build a small temperature utility. This exercise revisits *Value categories* (12-2) by having you pass both stored values and computed temporaries to read-only reference parameters.\n\n## Input\n\nA single floating-point number representing a temperature in Celsius.\n\n## Output\n\nThree lines:\n```\nCelsius:    <value>\nFahrenheit: <value>\nKelvin:     <value>\n```\n\nAll values printed with exactly **2 decimal places**.\n\nConversion formulas:\n- Fahrenheit = Celsius * 9.0 / 5.0 + 32.0\n- Kelvin = Celsius + 273.15\n\n## Requirements\n\n- Define `void printTemp(const std::string& label, const double& val)` that prints `label` followed by `val` at 2 decimal places.\n- Call `printTemp` three times:\n  1. With a stored `double celsius` variable for the Celsius line.\n  2. With the rvalue expression `celsius * 9.0 / 5.0 + 32.0` for the Fahrenheit line.\n  3. With the rvalue expression `celsius + 273.15` for the Kelvin line.\n- The rvalue expressions must be passed directly as arguments (not stored in separate variables before the call).",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define printTemp(const std::string& label, const double& val)\n//       Print label then val with 2 decimal places, followed by newline.\n\nint main() {\n    double celsius {};\n    std::cin >> celsius;\n\n    // TODO: call printTemp three times\n    //   1. label=\"Celsius:    \", value=celsius (lvalue)\n    //   2. label=\"Fahrenheit: \", value=celsius * 9.0 / 5.0 + 32.0 (rvalue)\n    //   3. label=\"Kelvin:     \", value=celsius + 273.15 (rvalue)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nvoid printTemp(const std::string& label, const double& val) {\n    std::cout << std::fixed << std::setprecision(2)\n              << label << val << '\\n';\n}\n\nint main() {\n    double celsius {};\n    std::cin >> celsius;\n\n    printTemp(\"Celsius:    \", celsius);\n    printTemp(\"Fahrenheit: \", celsius * 9.0 / 5.0 + 32.0);\n    printTemp(\"Kelvin:     \", celsius + 273.15);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 0°C",
+              "stdin": "0",
+              "expected_stdout": "Celsius:    0.00\nFahrenheit: 32.00\nKelvin:     273.15\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 100°C",
+              "stdin": "100",
+              "expected_stdout": "Celsius:    100.00\nFahrenheit: 212.00\nKelvin:     373.15\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: -40°C",
+              "stdin": "-40",
+              "expected_stdout": "Celsius:    -40.00\nFahrenheit: -40.00\nKelvin:     233.15\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.5",
+      "title": "Pass by lvalue reference",
+      "sort_order": 154,
+      "summary_md": "## Pass by Lvalue Reference\n\nWhen you pass an argument to a function by value, the function receives a copy. Modifying that copy has no effect on the original variable. Pass by lvalue reference eliminates the copy: the parameter becomes an alias for the caller's object, so reads and writes through it directly affect the caller's variable.\n\nSyntax: declare the parameter with `&` after its type.\n\n```cpp\n#include <iostream>\n#include <string>\n\nvoid swap(int& a, int& b) {\n    int tmp { a };\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int x { 10 }, y { 20 };\n    swap(x, y);\n    std::cout << x << ' ' << y << '\\n'; // 20 10\n}\n```\n\n### When to prefer pass by reference\n\n- The function needs to modify the caller's variable (output parameter pattern).\n- The type is expensive to copy — `std::string`, `std::vector`, or any class holding heap data. Copying these involves memory allocation; a reference skips that entirely.\n- You are passing a large struct that you only need to read. In that case prefer `const T&` (covered in *Lvalue references to const*) so the caller's object is protected from accidental writes.\n\n### When to keep pass by value\n\n- The type is cheap to copy: `int`, `double`, `bool`, `char`, or any small trivially-copyable type. For these, the indirection of a reference is at best neutral and can confuse intent.\n- The function genuinely needs its own independent copy to modify without side effects on the caller.\n\n### Reference rules still apply\n\nBecause a reference parameter is just a reference (see *Lvalue references*), all the same restrictions hold:\n\n- It must be initialised (the argument must be an lvalue — you cannot pass a literal or temporary to a non-const reference).\n- It cannot be reseated to refer to a different object.\n- Its lifetime is tied to the caller's object; never return a reference to a local variable.\n\n### Output parameters\n\nUsing a reference parameter purely to return a value back to the caller is called an *output parameter*. This pattern is common in older C++ and in interfaces that need to return multiple values. Prefer returning a `std::pair` or structured binding when possible, but recognise the pattern when you read existing code.",
+      "exercises": [
+        {
+          "title": "Double In Place",
+          "prompt_md": "## Goal\n\nWrite a function that doubles an integer in place using pass by lvalue reference, then use it in `main`.\n\n## Requirements\n\n- Declare `void doubleIt(int& n)` that multiplies `n` by 2 via the reference.\n- In `main`, read one integer from stdin, call `doubleIt`, and print the result followed by a newline.\n- Do **not** use a return value to communicate the result — the modification must happen through the reference parameter.\n\n## Input\n\nA single integer on one line.\n\n## Output\n\nThe doubled value on one line.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare doubleIt(int& n) that doubles n in place\nvoid doubleIt(int& n) {\n    // TODO: implement\n}\n\nint main() {\n    int value{};\n    std::cin >> value;\n\n    // TODO: call doubleIt with value\n\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid doubleIt(int& n) {\n    n *= 2;\n}\n\nint main() {\n    int value{};\n    std::cin >> value;\n    doubleIt(value);\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic positive",
+              "stdin": "7",
+              "expected_stdout": "14\n",
+              "is_sample": true
+            },
+            {
+              "label": "Zero",
+              "stdin": "0",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative",
+              "stdin": "-5",
+              "expected_stdout": "-10\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Clamp and Report",
+          "prompt_md": "## Goal\n\nCombine pass by lvalue reference with a `const` lvalue reference parameter to clamp a value into a range and report what changed.\n\nThis exercise connects the current lesson with *Lvalue references to const*: parameters you only read should be `const&`; parameters you modify should be a non-const `&`.\n\n## Requirements\n\n- Declare `void clamp(int& value, const int& lo, const int& hi)` that sets `value` to `lo` if it is below `lo`, sets it to `hi` if it is above `hi`, and leaves it unchanged otherwise.\n- In `main`, read three integers: `value`, `lo`, `hi` (all on one line, space-separated).\n- Call `clamp(value, lo, hi)`.\n- Print one of the following lines:\n  - `clamped to lo` if `value` was below `lo`.\n  - `clamped to hi` if `value` was above `hi`.\n  - `in range` if `value` was already within `[lo, hi]`.\n- Then print the (possibly modified) `value` on the next line.\n\nDetermine which message to print **before** calling `clamp` (save the original, or compare before mutating), so you can accurately report what happened.\n\n## Input\n\nThree space-separated integers: `value lo hi`.\n\nYou may assume `lo <= hi`.\n\n## Output\n\nTwo lines: the status message, then the clamped value.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement clamp — modify value through a non-const reference;\n//       lo and hi are read-only, so use const int&\nvoid clamp(int& value, const int& lo, const int& hi) {\n    // TODO\n}\n\nint main() {\n    int value{}, lo{}, hi{};\n    std::cin >> value >> lo >> hi;\n\n    // TODO: save the original value so you can determine what happened\n    int original { value };\n\n    clamp(value, lo, hi);\n\n    // TODO: print \"clamped to lo\", \"clamped to hi\", or \"in range\"\n    // TODO: print the resulting value\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid clamp(int& value, const int& lo, const int& hi) {\n    if (value < lo)\n        value = lo;\n    else if (value > hi)\n        value = hi;\n}\n\nint main() {\n    int value{}, lo{}, hi{};\n    std::cin >> value >> lo >> hi;\n\n    int original { value };\n    clamp(value, lo, hi);\n\n    if (original < lo)\n        std::cout << \"clamped to lo\\n\";\n    else if (original > hi)\n        std::cout << \"clamped to hi\\n\";\n    else\n        std::cout << \"in range\\n\";\n\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Below range",
+              "stdin": "2 5 10",
+              "expected_stdout": "clamped to lo\n5\n",
+              "is_sample": true
+            },
+            {
+              "label": "Above range",
+              "stdin": "15 5 10",
+              "expected_stdout": "clamped to hi\n10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Already in range",
+              "stdin": "7 5 10",
+              "expected_stdout": "in range\n7\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.6",
+      "title": "Pass by const lvalue reference",
+      "sort_order": 155,
+      "summary_md": "## Pass by const lvalue reference\n\nIn *Lvalue references* and *Pass by lvalue reference* you learned that a non-const lvalue reference lets a function modify the caller's object. Most of the time you do not want that — you want the function to read the argument without touching it. Adding `const` to a reference parameter gives you both goals at once: no copy *and* no accidental mutation.\n\n```cpp\n#include <iostream>\n#include <string>\n\nvoid print_info(const std::string& name, const int& count)\n{\n    // name and count are read-only here; modifying them is a compile error\n    std::cout << name << \" appears \" << count << \" time(s)\\n\";\n}\n\nint main()\n{\n    std::string word{\"hello\"};\n    print_info(word, 3);        // lvalue — binds directly\n    print_info(\"world\", 1);    // rvalue — const ref extends lifetime\n}\n```\n\n### Why not just copy?\n\nFor cheap types — `int`, `bool`, `char`, raw pointers — copying is fast and you should prefer pass by value. For types that own heap memory (`std::string`, `std::vector`, any large struct) a copy can allocate and copy every element, which is expensive. Pass by `const` reference avoids that allocation entirely.\n\n### The rvalue bonus\n\nAs covered in *Lvalue references to const*, a `const T&` parameter can bind to both lvalues and rvalues (including temporaries and literals). A non-const reference cannot bind to rvalues, so `const T&` is strictly more flexible.\n\n### Decision rule: when to use each form\n\n- Pass by value when the type is small and trivially copyable (`int`, `double`, `bool`, pointers, iterators, `std::span`).\n- Pass by `const T&` when the type is large or non-trivially copyable and the function only needs to read it.\n- Pass by non-const `T&` only when the function must modify the caller's object (covered in *Pass by lvalue reference*).\n\nA practical threshold: if `sizeof(T) > 2 * sizeof(void*)`, prefer `const T&`. For `std::string` and `std::vector` this is nearly always true.\n\n### Common mistake: returning a const ref to a local\n\nA `const T&` parameter is safe because it refers to something that outlives the function call. Never return a `const T&` that refers to a local variable — the local is destroyed when the function returns, leaving a dangling reference.",
+      "exercises": [
+        {
+          "title": "Word Length Classifier via const Reference",
+          "prompt_md": "## Goal\n\nComplete the function `classify_word` that receives a `std::string` by `const` lvalue reference and returns a `std::string` describing the word's length category.\n\n## Input\n\nLine 1: a single word (no spaces, 1–50 characters).\n\n## Output\n\nPrint exactly one line with the category:\n- length 1–3 → `\"short\"`\n- length 4–7 → `\"medium\"`\n- length 8 or more → `\"long\"`\n\nNo trailing spaces; one trailing newline.\n\n## Requirements\n\n1. `classify_word` must take its parameter as `const std::string&` — the compiler must reject any attempt to modify it inside the function.\n2. Return type is `std::string`.\n3. `main` reads a word from `std::cin`, calls `classify_word`, and prints the result.\n4. Edge cases covered by hidden tests: single-character word (length 1), word of exactly 7 characters (still `\"medium\"`), word of exactly 8 characters (`\"long\"`).",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement classify_word\n// Parameter must be const std::string& (read-only reference, no copy)\nstd::string classify_word(const std::string& word)\n{\n    // TODO: return \"short\", \"medium\", or \"long\" based on word.size()\n}\n\nint main()\n{\n    std::string w{};\n    std::cin >> w;\n    std::cout << classify_word(w) << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstd::string classify_word(const std::string& word)\n{\n    if (word.size() <= 3) return \"short\";\n    if (word.size() <= 7) return \"medium\";\n    return \"long\";\n}\n\nint main()\n{\n    std::string w{};\n    std::cin >> w;\n    std::cout << classify_word(w) << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Medium word (hello)",
+              "stdin": "hello",
+              "expected_stdout": "medium\n",
+              "is_sample": true
+            },
+            {
+              "label": "Single character (a)",
+              "stdin": "a",
+              "expected_stdout": "short\n",
+              "is_sample": false
+            },
+            {
+              "label": "Long word (beautiful)",
+              "stdin": "beautiful",
+              "expected_stdout": "long\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Sentence Statistics with const Reference Parameters",
+          "prompt_md": "## Goal\n\nComplete two functions that each receive a `std::string` by `const` lvalue reference and compute a statistic about it. Then use them to report word count and longest-word length for a sentence read from stdin.\n\n## Input\n\nLine 1: a sentence of 1–10 words separated by single spaces. Words contain only lowercase letters (a–z). No leading or trailing spaces.\n\n## Output\n\nPrint exactly two lines:\n```\nWords: <N>\nLongest: <L>\n```\nwhere `<N>` is the number of words and `<L>` is the character count of the longest word.\n\n## Requirements\n\n1. Implement `count_words(const std::string& s) -> int`: count space-separated tokens in `s`. Do not modify `s`.\n2. Implement `longest_word(const std::string& s) -> int`: return the length of the longest space-separated token. Do not modify `s`.\n3. Both functions must take their parameter as `const std::string&`.\n4. `main` reads the full line with `std::getline`, calls both functions, and prints the two-line output.\n5. Edge cases: single word input (Words: 1, Longest equals that word's length); all words the same length.\n\n## Notes\n\n- You may use `<sstream>` and `std::istringstream` to parse tokens.\n- Do not use `std::getline` inside the two functions — pass the already-read string.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <sstream>\n\n// TODO: implement count_words\n// Must take const std::string& — no copy, read-only\nint count_words(const std::string& s)\n{\n    // TODO: count space-separated tokens in s\n}\n\n// TODO: implement longest_word\n// Must take const std::string& — no copy, read-only\nint longest_word(const std::string& s)\n{\n    // TODO: return the length of the longest token in s\n}\n\nint main()\n{\n    std::string line{};\n    std::getline(std::cin, line);\n\n    std::cout << \"Words: \" << count_words(line) << '\\n';\n    std::cout << \"Longest: \" << longest_word(line) << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <sstream>\n\nint count_words(const std::string& s)\n{\n    std::istringstream ss{s};\n    int count{0};\n    std::string token{};\n    while (ss >> token) ++count;\n    return count;\n}\n\nint longest_word(const std::string& s)\n{\n    std::istringstream ss{s};\n    int best{0};\n    std::string token{};\n    while (ss >> token)\n    {\n        int len{static_cast<int>(token.size())};\n        if (len > best) best = len;\n    }\n    return best;\n}\n\nint main()\n{\n    std::string line{};\n    std::getline(std::cin, line);\n\n    std::cout << \"Words: \" << count_words(line) << '\\n';\n    std::cout << \"Longest: \" << longest_word(line) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Three-word sentence",
+              "stdin": "the quick brown",
+              "expected_stdout": "Words: 3\nLongest: 5\n",
+              "is_sample": true
+            },
+            {
+              "label": "Single word",
+              "stdin": "hello",
+              "expected_stdout": "Words: 1\nLongest: 5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Mixed-length words",
+              "stdin": "i love programming in cpp",
+              "expected_stdout": "Words: 5\nLongest: 11\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.7",
+      "title": "Introduction to pointers",
+      "sort_order": 156,
+      "summary_md": "## Introduction to Pointers\n\nA **pointer** is a variable that stores a memory address. Unlike an lvalue reference (covered in *Lvalue references*), which is an alias for an existing object, a pointer is its own object and can be reassigned to point to different things.\n\n### The address-of operator (`&`)\n\nEvery object in your program lives at a unique memory address. Use the unary `&` operator to get the address of a variable:\n\n```cpp\nint x { 42 };\nstd::cout << &x; // prints something like 0x7ffee3b2c4ac\n```\n\nThe address printed will differ between runs — the OS decides where variables land.\n\n### Pointer types and declaration\n\nA pointer type is written as `T*` where `T` is the type of object being pointed at. An `int*` holds the address of an `int`; a `double*` holds the address of a `double`. The `*` in a declaration is part of the type, not the variable name.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int value { 7 };\n    int* ptr { &value };   // ptr holds the address of value\n\n    std::cout << ptr  << '\\n'; // prints the address\n    std::cout << *ptr << '\\n'; // dereferences: prints 7\n\n    *ptr = 99;             // write through the pointer\n    std::cout << value << '\\n'; // prints 99\n}\n```\n\n### The dereference operator (`*`)\n\nPlacing `*` in front of a pointer variable (in an expression context, not a declaration) **dereferences** it — you get the object the pointer is pointing at. You can both read and write through a dereferenced pointer.\n\n### Pointers vs references\n\nCompared to lvalue references (*Lvalue references* and *Lvalue references to const*):\n\n- References must be initialized and cannot be reseated; pointers can be null and can be changed to point elsewhere.\n- References have no separate storage; a pointer is a real variable that occupies memory (typically 4 or 8 bytes).\n- References give cleaner syntax at the call site; pointers make the indirection explicit.\n\n### Pointer assignment\n\nAssigning to `ptr` (without `*`) changes what the pointer points at. Assigning to `*ptr` changes the value of the pointed-to object. Confusing the two is a common source of bugs.\n\n### Null pointers\n\nA pointer that does not point to any object should be set to `nullptr`. Dereferencing a null pointer is undefined behavior — always check before dereferencing a pointer of unknown origin.\n",
+      "exercises": [
+        {
+          "title": "Pointer Inspector",
+          "prompt_md": "## Goal\n\nPractice declaring pointers, using the address-of operator (`&`), and dereferencing (`*`) to read and modify a value through a pointer.\n\n## Input\n\nA single integer on one line.\n\n## Output\n\nThree lines:\n1. The original value.\n2. The value read through the pointer (must equal the original).\n3. The value after adding 10 through the pointer (i.e. `*ptr += 10`).\n\n## Requirements\n\n- Declare an `int` variable and read the input into it.\n- Declare an `int*` pointer and point it at the variable using `&`.\n- Print the three lines described above.\n- Do **not** modify the variable directly after the pointer is set — all changes must go through `*ptr`.\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int value {};\n    std::cin >> value;\n\n    // TODO: declare an int* pointer pointing at value\n\n    // TODO: print the original value\n    // TODO: print the value read through the pointer\n    // TODO: add 10 through the pointer, then print the result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int value {};\n    std::cin >> value;\n\n    int* ptr { &value };\n\n    std::cout << value  << '\\n'; // original\n    std::cout << *ptr   << '\\n'; // read through pointer (same)\n    *ptr += 10;\n    std::cout << *ptr   << '\\n'; // after modification\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: input 5",
+              "stdin": "5",
+              "expected_stdout": "5\n5\n15\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: input 0",
+              "stdin": "0",
+              "expected_stdout": "0\n0\n10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: input -3",
+              "stdin": "-3",
+              "expected_stdout": "-3\n-3\n7\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Swap via Pointers",
+          "prompt_md": "## Goal\n\nCombine pointers (this lesson) with pass-by-reference concepts (*Pass by lvalue reference*) to write a function that swaps two integers using pointers.\n\n## Input\n\nTwo integers on one line.\n\n## Output\n\nTwo lines:\n1. The values before the swap, space-separated.\n2. The values after the swap, space-separated.\n\n## Requirements\n\n- Implement `void swapByPtr(int* a, int* b)` that swaps the two pointed-to values using a temporary variable and the dereference operator. Do **not** use `std::swap`.\n- In `main`, read two integers, print them, call `swapByPtr` with their addresses, then print them again.\n- All pointer manipulation must be done inside `swapByPtr`.\n",
+          "starter_code": "#include <iostream>\n\n// TODO: implement swapByPtr(int* a, int* b)\n// Swap the values at the two addresses without using std::swap.\n\nint main() {\n    int x {}, y {};\n    std::cin >> x >> y;\n\n    // TODO: print x and y before swap\n    // TODO: call swapByPtr with the addresses of x and y\n    // TODO: print x and y after swap\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid swapByPtr(int* a, int* b) {\n    int temp { *a };\n    *a = *b;\n    *b = temp;\n}\n\nint main() {\n    int x {}, y {};\n    std::cin >> x >> y;\n\n    std::cout << x << ' ' << y << '\\n';\n    swapByPtr(&x, &y);\n    std::cout << x << ' ' << y << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3 7",
+              "stdin": "3 7",
+              "expected_stdout": "3 7\n7 3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: negative and positive",
+              "stdin": "-5 12",
+              "expected_stdout": "-5 12\n12 -5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: same values",
+              "stdin": "4 4",
+              "expected_stdout": "4 4\n4 4\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.8",
+      "title": "Null pointers",
+      "sort_order": 157,
+      "summary_md": "## Null Pointers\n\nA pointer that does not point to any valid object is called a **null pointer**. In modern C++, you create one by initializing or assigning a pointer with the keyword `nullptr`:\n\n```cpp\n#include <iostream>\n\nint main() {\n    int* ptr { nullptr };   // null pointer — points to nothing\n\n    if (ptr) {              // false when ptr is null\n        std::cout << \"has value: \" << *ptr << '\\n';\n    } else {\n        std::cout << \"pointer is null\\n\";\n    }\n\n    int x { 42 };\n    ptr = &x;               // now points to x\n    std::cout << \"value: \" << *ptr << '\\n';\n    return 0;\n}\n```\n\n### nullptr vs. NULL vs. 0\n\n- `nullptr` (C++11+) has its own type, `std::nullptr_t`, and will not silently convert to an integer. Prefer it exclusively.\n- `NULL` is a C-era macro that expands to an integer `0`. Avoid it in C++: it can cause ambiguous overload resolution and communicates no type information.\n- Assigning literal `0` to a pointer is legal but similarly ambiguous. Never do it.\n\n### Why null pointers exist\n\nSometimes a pointer legitimately has no target — a search function that found nothing, an optional out-parameter, or a pointer member that hasn't been set yet. Null is the conventional signal for \"no object here.\" (Seen in *Introduction to pointers*: uninitialized pointers are dangerous; null is the safe \"empty\" state.)\n\n### Dereferencing null is undefined behavior\n\nDereferencing a null pointer (`*ptr` when `ptr == nullptr`) is undefined behavior and will typically crash at runtime. Always check before dereferencing when a pointer might be null.\n\n### Checking for null\n\nA pointer converts to `bool`: it is `false` when null and `true` otherwise. Both forms below are idiomatic:\n\n- `if (ptr)` — truthy check, pointer is non-null\n- `if (!ptr)` — falsy check, pointer is null\n- `if (ptr != nullptr)` — explicit, equally valid\n\n### Initialization discipline\n\nEvery pointer should be either:\n1. Initialized to `nullptr` until it has a valid target, or\n2. Initialized directly to a valid address.\n\nLeaving a pointer uninitialized (wild pointer) is strictly worse than null — at least a null pointer produces a predictable crash rather than silent memory corruption. This connects to the const-reference and value-category rules covered earlier: owning your object state explicitly prevents hard-to-debug bugs.\n\n### Key takeaways\n\n- Use `nullptr`, never `NULL` or `0`.\n- Check before you dereference when nullability is possible.\n- Prefer defaulting pointers to `nullptr` over leaving them uninitialized.",
+      "exercises": [
+        {
+          "title": "Safe pointer dereference",
+          "prompt_md": "## Goal\n\nPractice initializing a pointer to `nullptr`, conditionally assigning it a real address, and safely dereferencing it only after a null check.\n\n## Input\n\nA single integer `n` on stdin.\n- If `n` is positive, your program should point `ptr` at a local variable holding `n` and print its value through the pointer.\n- If `n` is zero or negative, `ptr` must remain `nullptr` and your program should print `null`.\n\n## Output\n\nExactly one line:\n- `value: <n>` when `n > 0`\n- `null` when `n <= 0`\n\n## Requirements\n\n- Declare `ptr` as `int*` initialized to `nullptr`.\n- Use a null check (`if (ptr)` or equivalent) before any dereference.\n- Do **not** use `NULL` or `0` as a pointer value anywhere.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int* ptr { nullptr };  // TODO: assign &n to ptr only when n > 0\n\n    // TODO: check whether ptr is null\n    //       if non-null, print \"value: \" followed by the dereferenced value\n    //       if null,     print \"null\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int* ptr { nullptr };\n    if (n > 0) {\n        ptr = &n;\n    }\n\n    if (ptr) {\n        std::cout << \"value: \" << *ptr << '\\n';\n    } else {\n        std::cout << \"null\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "positive input",
+              "stdin": "7",
+              "expected_stdout": "value: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "zero input",
+              "stdin": "0",
+              "expected_stdout": "null\n",
+              "is_sample": false
+            },
+            {
+              "label": "negative input",
+              "stdin": "-3",
+              "expected_stdout": "null\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Pointer-based linear search",
+          "prompt_md": "## Goal\n\nCombine null pointers (this lesson) with pass-by-const-lvalue-reference (*Pass by const lvalue reference*) to implement a simple linear search.\n\nWrite a function `find` that accepts a `const int[]` array, its length, and a target value, and returns a `const int*` pointing to the first matching element — or `nullptr` if not found. Then use the returned pointer safely in `main`.\n\n## Input\n\nFirst line: `n` — the number of integers in the array (1 ≤ n ≤ 20).\nSecond line: `n` space-separated integers.\nThird line: `target` — the integer to search for.\n\n## Output\n\nExactly one line:\n- `found: <value>` if the target exists in the array (print via the pointer).\n- `not found` if it does not.\n\n## Requirements\n\n- The `find` function signature must be: `const int* find(const int* arr, int len, int target)`.\n- Return `nullptr` when the target is absent.\n- In `main`, check the returned pointer for null before dereferencing.\n- Do **not** use `NULL` or bare `0` as a pointer value.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement find — return pointer to first match, or nullptr\nconst int* find(const int* arr, int len, int target) {\n    // TODO\n    return nullptr;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int arr[20]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> arr[i];\n    }\n\n    int target{};\n    std::cin >> target;\n\n    // TODO: call find, then print \"found: <value>\" or \"not found\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nconst int* find(const int* arr, int len, int target) {\n    for (int i = 0; i < len; ++i) {\n        if (arr[i] == target) {\n            return &arr[i];\n        }\n    }\n    return nullptr;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int arr[20]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> arr[i];\n    }\n\n    int target{};\n    std::cin >> target;\n\n    const int* result { find(arr, n, target) };\n\n    if (result) {\n        std::cout << \"found: \" << *result << '\\n';\n    } else {\n        std::cout << \"not found\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "target present",
+              "stdin": "5\n10 20 30 40 50\n30",
+              "expected_stdout": "found: 30\n",
+              "is_sample": true
+            },
+            {
+              "label": "target absent",
+              "stdin": "4\n1 2 3 4\n9",
+              "expected_stdout": "not found\n",
+              "is_sample": false
+            },
+            {
+              "label": "first element match",
+              "stdin": "3\n7 8 9\n7",
+              "expected_stdout": "found: 7\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.9",
+      "title": "Pointers and const",
+      "sort_order": 158,
+      "summary_md": "## Pointers and const\n\nA pointer can involve `const` in two independent places: the **value it points to** and **the pointer itself**. Getting these straight is essential before writing any non-trivial pointer code.\n\n### Pointer to const\n\nA *pointer to const* treats the pointed-at object as read-only through that pointer — even if the underlying object is not actually `const`.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x { 42 };\n    const int* p { &x };   // pointer to const int\n    // *p = 7;             // error: cannot modify through pointer to const\n    x = 7;                 // fine: x itself is not const\n    std::cout << *p << '\\n'; // prints 7\n    p = nullptr;           // fine: the pointer is not const\n}\n```\n\nThe rule for reading declarations: find the `*`, then check what is `const`:\n- `const int* p` and `int const* p` are identical — `const` applies to the `int`, so the *pointee* is read-only.\n- `int* const p` — `const` is to the right of `*`, so the *pointer* itself is read-only (a **const pointer**).\n- `const int* const p` — both are read-only (a **const pointer to const**).\n\n### Const pointer\n\nA *const pointer* must be initialised at declaration and cannot be reseated to point elsewhere, but the value it points to can still be changed (unless that value is also `const`).\n\nThis mirrors what you learned in *Lvalue references to const*: a reference to const gives you a read-only view without requiring the referent to be const. Pointers to const work the same way and are used for the same reason — accepting arguments you promise not to modify.\n\n### Top-level vs low-level const\n\nThese terms come up in compiler diagnostics and templates:\n- **Top-level const** — the pointer variable itself is `const` (`int* const p`).\n- **Low-level const** — the object the pointer refers to is `const` (`const int* p`).\n\nTop-level const is dropped when copying a value; low-level const is not. That distinction matters in template argument deduction and when mixing pointer types in assignments.\n\n### When to use each form\n\n- Use `const T*` when passing a pointer to data you will not modify (the C++ equivalent of *Pass by const lvalue reference* for pointer-based APIs).\n- Use `T* const` rarely — prefer references, which are implicitly non-reseatable.\n- Use `const T* const` for global lookup tables and other truly immutable pointer-plus-data pairs.",
+      "exercises": [
+        {
+          "title": "Read-only pointer inspector",
+          "prompt_md": "## Goal\n\nPractice declaring and using the three forms of pointer-with-const by implementing a small function that inspects an integer through a pointer to const.\n\n## Requirements\n\n- Declare a `const int*` pointer that receives an address from `stdin`-driven data (provided via a variable, not actual address input).\n- The function `printDouble` must accept a `const int*` parameter and print twice the pointed-at value.\n- Do **not** modify the value through the pointer anywhere in your code — the program must compile with no warnings under `-Wall -Wextra`.\n- Also declare a `int* const` pointer initialised to a local `int`, write through it, then print the result.\n\n## Input\n\nTwo integers on a single line: `a b`\n\n## Output\n\n```\ndouble: <2*a>\nconst ptr write: <b>\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: declare printDouble taking a pointer-to-const-int\n// and printing twice the dereferenced value, labelled \"double: \"\nvoid printDouble(/* TODO */) {\n    // TODO\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: declare a const int* pointing to a, call printDouble\n\n    // TODO: declare an int* const pointing to b, then set the pointed-at\n    // value to b (already there) and print \"const ptr write: <value>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid printDouble(const int* p) {\n    std::cout << \"double: \" << (*p * 2) << '\\n';\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    const int* pa { &a };\n    printDouble(pa);\n\n    int* const pb { &b };\n    // *pb is already b; just print it\n    std::cout << \"const ptr write: \" << *pb << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: a=5 b=9",
+              "stdin": "5 9",
+              "expected_stdout": "double: 10\nconst ptr write: 9\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: a=0 b=0",
+              "stdin": "0 0",
+              "expected_stdout": "double: 0\nconst ptr write: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: a=-3 b=100",
+              "stdin": "-3 100",
+              "expected_stdout": "double: -6\nconst ptr write: 100\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Const pointer array scanner",
+          "prompt_md": "## Goal\n\nCombine pointer-to-const with the pass-by-const-lvalue-reference pattern (from *Pass by const lvalue reference*) to write a function that scans a fixed-size array and reports the maximum value — without ever modifying the array.\n\n## Requirements\n\n- Write a function `int maxOf(const int* arr, int n)` that returns the maximum element in the first `n` elements of the array.\n- Inside `maxOf`, traverse the array using pointer arithmetic (`arr + i` or incrementing a local `const int*` copy). Do **not** cast away `const`.\n- In `main`, read `n` integers into a local array, call `maxOf`, and print the result.\n- `n` is guaranteed to be between 1 and 10 inclusive.\n- No STL containers; use a plain `int arr[10]`.\n\n## Input\n\nFirst line: integer `n` (1 – 10).  \nSecond line: `n` space-separated integers.\n\n## Output\n\n```\nmax: <value>\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: implement maxOf(const int* arr, int n) -> int\n// Traverse with pointer arithmetic; do not modify through the pointer.\nint maxOf(const int* arr, int n) {\n    // TODO\n    return 0;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: call maxOf and print \"max: <result>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint maxOf(const int* arr, int n) {\n    const int* end { arr + n };\n    int best { *arr };\n    for (const int* p { arr + 1 }; p != end; ++p) {\n        if (*p > best)\n            best = *p;\n    }\n    return best;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"max: \" << maxOf(arr, n) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: [3 1 4 1 5]",
+              "stdin": "5\n3 1 4 1 5",
+              "expected_stdout": "max: 5\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: single element",
+              "stdin": "1\n42",
+              "expected_stdout": "max: 42\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: all negative",
+              "stdin": "4\n-10 -3 -7 -1",
+              "expected_stdout": "max: -1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.10",
+      "title": "Pass by address",
+      "sort_order": 159,
+      "summary_md": "## Pass by Address\n\nPass by address means a function receives a pointer to an argument rather than a copy of it. The caller takes the address of a variable with `&` and passes that address; inside the function you dereference the pointer with `*` to read or write through it.\n\n```cpp\n#include <iostream>\n\nvoid doubleValue(int* ptr) {\n    if (ptr == nullptr) return;   // always guard\n    *ptr *= 2;\n}\n\nint main() {\n    int x { 7 };\n    doubleValue(&x);              // pass address of x\n    std::cout << x << '\\n';      // prints 14\n}\n```\n\n**When to use pass by address vs pass by reference**\n\nAs covered in *Pass by lvalue reference* and *Pass by const lvalue reference*, references are the idiomatic modern C++ choice for most cases. Prefer pass by address only when:\n\n- The argument is genuinely optional and `nullptr` is a meaningful sentinel (a reference cannot be null).\n- You are working with legacy C APIs that accept raw pointers.\n- You need a re-seatable handle (a pointer can point to different objects; a reference cannot).\n\nFor non-optional, always-valid objects, pass by (const) reference instead.\n\n**Null pointer guard**\n\nBecause a caller can pass `nullptr`, every function that accepts a pointer must decide what to do when it receives one. The two options are: assert/throw if null is a contract violation, or silently return if null is expected. Dereferencing a null pointer is undefined behaviour — never skip the check.\n\n**Modifying through a pointer**\n\nDereferencing and assigning (`*ptr = value`) modifies the original object. This is the same observable effect as pass by non-const lvalue reference, but with explicit `*` syntax at every use site, which makes mutation visible in the function body.\n\n**Pointer-to-const vs const pointer**\n\n- `const int* ptr` — the pointed-to value is read-only; the pointer itself can be reseated.\n- `int* const ptr` — the pointer cannot be reseated; the value can be modified.\n- `const int* const ptr` — both are immutable.\n\nFor read-only access to large objects you can pass `const T*`, but again a `const T&` reference is cleaner for non-nullable cases.\n\n**Key takeaway**\n\nPass by address gives explicit control over nullability and mutation, at the cost of pointer syntax overhead. In modern C++20 code, reach for references first and use pointers only when nullability or pointer semantics are required.",
+      "exercises": [
+        {
+          "title": "Clamp Value via Pointer",
+          "prompt_md": "## Goal\n\nComplete the function `clampInPlace(int* ptr, int lo, int hi)` that clamps the value pointed to by `ptr` into the inclusive range `[lo, hi]`, modifying the original variable in place.\n\n## Input\n\n- Line 1: three space-separated integers: `value lo hi` where `-1000 ≤ lo ≤ hi ≤ 1000` and `-1000 ≤ value ≤ 1000`.\n\n## Output\n\n- Print exactly one line: the clamped value followed by a newline.\n- Example: if the input is `150 0 100`, print `100`.\n\n## Requirements\n\n1. `clampInPlace` must accept an `int*` parameter (not a reference).\n2. If `ptr` is `nullptr`, the function must return immediately without crashing.\n3. If `value < lo`, set `*ptr = lo`.\n4. If `value > hi`, set `*ptr = hi`.\n5. If `value` is already in `[lo, hi]`, leave it unchanged.\n6. `main` reads the three integers, calls `clampInPlace(&value, lo, hi)`, then prints `value`.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement clampInPlace\n// - accepts int* ptr, int lo, int hi\n// - returns immediately if ptr is nullptr\n// - clamps *ptr into [lo, hi]\nvoid clampInPlace(int* ptr, int lo, int hi) {\n}\n\nint main() {\n    int value{}, lo{}, hi{};\n    std::cin >> value >> lo >> hi;\n\n    // TODO: call clampInPlace with the address of value\n\n    std::cout << value << '\\n';\n    return 0;\n}",
+          "solution_code": "#include <iostream>\n\nvoid clampInPlace(int* ptr, int lo, int hi) {\n    if (ptr == nullptr) return;\n    if (*ptr < lo) *ptr = lo;\n    else if (*ptr > hi) *ptr = hi;\n}\n\nint main() {\n    int value{}, lo{}, hi{};\n    std::cin >> value >> lo >> hi;\n    clampInPlace(&value, lo, hi);\n    std::cout << value << '\\n';\n    return 0;\n}",
+          "test_cases": [
+            {
+              "label": "Value above range",
+              "stdin": "150 0 100",
+              "expected_stdout": "100\n",
+              "is_sample": true
+            },
+            {
+              "label": "Value below range",
+              "stdin": "-50 0 100",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Value already in range",
+              "stdin": "42 0 100",
+              "expected_stdout": "42\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Swap and Scale via Pointers",
+          "prompt_md": "## Goal\n\nWrite two functions — `swapInts(int* a, int* b)` that swaps the values pointed to by `a` and `b`, and `scaleByAddress(int* ptr, int factor)` that multiplies `*ptr` by `factor` in place — then use them from `main`.\n\n## Input\n\n- Line 1: two space-separated integers `x y` where `-500 ≤ x, y ≤ 500`.\n- Line 2: one integer `factor` where `-100 ≤ factor ≤ 100`.\n\n## Output\n\nPrint exactly three lines in this order:\n1. `After swap: <x> <y>` — values after swapping (space-separated).\n2. `After scale x: <x>` — `x` after multiplying by `factor`.\n3. `After scale y: <y>` — `y` after multiplying by `factor`.\n\nExample for input `3 7` / `2`:\n```\nAfter swap: 7 3\nAfter scale x: 14\nAfter scale y: 6\n```\n\n## Requirements\n\n1. Both functions must use raw pointer parameters (`int*`), not references.\n2. `swapInts` must guard against `nullptr` on either parameter (return immediately if either is null).\n3. `scaleByAddress` must guard against `nullptr` (return immediately if null).\n4. Do not use `std::swap` — implement the swap manually with a temporary variable.\n5. After swapping, apply `scaleByAddress` to each variable independently using `factor`.\n6. Output labels must match exactly (capital A, colon, single space).\n\n## Notes\n\n- This exercise combines pass-by-address (this lesson) with basic pointer dereferencing from *Introduction to pointers*.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement swapInts(int* a, int* b)\n// - guard nullptr on either param\n// - swap the values without std::swap\nvoid swapInts(int* a, int* b) {\n}\n\n// TODO: implement scaleByAddress(int* ptr, int factor)\n// - guard nullptr\n// - multiply *ptr by factor in place\nvoid scaleByAddress(int* ptr, int factor) {\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n    int factor{};\n    std::cin >> factor;\n\n    // TODO: swap x and y via pointers, then print\n    // TODO: scale each via pointers, then print\n\n    return 0;\n}",
+          "solution_code": "#include <iostream>\n\nvoid swapInts(int* a, int* b) {\n    if (a == nullptr || b == nullptr) return;\n    int tmp = *a;\n    *a = *b;\n    *b = tmp;\n}\n\nvoid scaleByAddress(int* ptr, int factor) {\n    if (ptr == nullptr) return;\n    *ptr *= factor;\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n    int factor{};\n    std::cin >> factor;\n\n    swapInts(&x, &y);\n    std::cout << \"After swap: \" << x << ' ' << y << '\\n';\n\n    scaleByAddress(&x, factor);\n    std::cout << \"After scale x: \" << x << '\\n';\n\n    scaleByAddress(&y, factor);\n    std::cout << \"After scale y: \" << y << '\\n';\n\n    return 0;\n}",
+          "test_cases": [
+            {
+              "label": "Basic swap and scale",
+              "stdin": "3 7\n2",
+              "expected_stdout": "After swap: 7 3\nAfter scale x: 14\nAfter scale y: 6\n",
+              "is_sample": true
+            },
+            {
+              "label": "Negative factor",
+              "stdin": "5 10\n-3",
+              "expected_stdout": "After swap: 10 5\nAfter scale x: -30\nAfter scale y: -15\n",
+              "is_sample": false
+            },
+            {
+              "label": "Zero factor",
+              "stdin": "8 4\n0",
+              "expected_stdout": "After swap: 4 8\nAfter scale x: 0\nAfter scale y: 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.11",
+      "title": "Pass by address (part 2)",
+      "sort_order": 160,
+      "summary_md": "## Pass by Address (Part 2)\n\nThis lesson extends what you learned in *Pass by address* and covers two practical patterns: using a pointer parameter as an optional argument, and deciding when to prefer pass by address over pass by reference.\n\n### nullptr as a sentinel for optional arguments\n\nBecause a pointer can hold `nullptr`, you can use it to signal \"no value provided\". A reference cannot be null, so this pattern is exclusive to pointers.\n\n```cpp\n#include <iostream>\n#include <string>\n\nvoid greet(const std::string& name, const std::string* title = nullptr) {\n    if (title)\n        std::cout << *title << ' ';\n    std::cout << name << '\\n';\n}\n\nint main() {\n    greet(\"Alice\");            // prints: Alice\n    std::string t{\"Dr.\"};\n    greet(\"Alice\", &t);        // prints: Dr. Alice\n}\n```\n\nAlways check for `nullptr` before dereferencing. Dereferencing a null pointer is undefined behaviour, as covered in *Null pointers*.\n\n### Pass by const address\n\nJust as *Pass by const lvalue reference* prevents mutation of the referent, you can pass `const T*` to prevent the function from modifying the object being pointed to. The pointer itself is still passed by value, so reassigning it inside the function has no effect on the caller. If you also want to prevent the function from reseating the pointer, use `T* const`, but that is rarely needed.\n\nPrefer `const T*` whenever the function only reads through the pointer.\n\n### When to use pass by address vs. pass by reference\n\n- **Prefer pass by reference** for mandatory arguments. References are never null, so callers cannot accidentally forget to provide a value. Code is cleaner and communicates intent.\n- **Use pass by address** when `nullptr` is a meaningful input — i.e., the argument is genuinely optional or the absence of a value carries information.\n- Never design an API that accepts a pointer but immediately dereferences it without a null check; if null is not allowed, accept a reference instead.\n- `std::optional<T>` (C++17) is often a clearer alternative to nullable pointers for optional values, but pass-by-address remains idiomatic when you are handing off an address that already exists (e.g., an element inside a container).\n\n### Key rules\n\n- Check every pointer parameter for `nullptr` before use unless the contract explicitly forbids null.\n- Use `const T*` when the function should not modify the pointed-to object.\n- Default the pointer parameter to `nullptr` in the function signature to make the optional nature visible at the call site.\n",
+      "exercises": [
+        {
+          "title": "Optional Middle Name",
+          "prompt_md": "## Goal\n\nPractice using a pointer parameter as an optional argument with a `nullptr` check.\n\n## Requirements\n\n- Write a function `printFullName(const std::string& first, const std::string* middle, const std::string& last)` that prints a full name.\n- If `middle` is not `nullptr`, include it between the first and last name, separated by spaces.\n- If `middle` is `nullptr`, print only first and last name separated by a single space.\n- Output must end with a newline.\n\n## Input\n\nThree lines from stdin:\n1. First name\n2. Middle name, or the literal string `none` to indicate no middle name\n3. Last name\n\n## Output\n\nThe formatted full name on one line.\n\n### Sample\n\n**Input:**\n```\nJohn\nPaul\nJones\n```\n**Output:**\n```\nJohn Paul Jones\n```\n\n**Input (no middle name):**\n```\nJohn\nnone\nJones\n```\n**Output:**\n```\nJohn Jones\n```\n",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement printFullName.\n// middle is a pointer; pass nullptr when there is no middle name.\nvoid printFullName(const std::string& first, const std::string* middle, const std::string& last) {\n    // TODO: check if middle is nullptr before using it\n}\n\nint main() {\n    std::string first, middleInput, last;\n    std::cin >> first >> middleInput >> last;\n\n    // TODO: decide whether to pass a pointer to middleInput or nullptr\n    //       based on whether middleInput equals \"none\"\n    if (middleInput == \"none\") {\n        printFullName(first, nullptr, last);\n    } else {\n        printFullName(first, /* TODO: pass address of middleInput */ nullptr, last);\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nvoid printFullName(const std::string& first, const std::string* middle, const std::string& last) {\n    if (middle)\n        std::cout << first << ' ' << *middle << ' ' << last << '\\n';\n    else\n        std::cout << first << ' ' << last << '\\n';\n}\n\nint main() {\n    std::string first, middleInput, last;\n    std::cin >> first >> middleInput >> last;\n\n    if (middleInput == \"none\")\n        printFullName(first, nullptr, last);\n    else\n        printFullName(first, &middleInput, last);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "With middle name",
+              "stdin": "John\nPaul\nJones\n",
+              "expected_stdout": "John Paul Jones\n",
+              "is_sample": true
+            },
+            {
+              "label": "No middle name",
+              "stdin": "Ada\nnone\nLovelace\n",
+              "expected_stdout": "Ada Lovelace\n",
+              "is_sample": false
+            },
+            {
+              "label": "Single-word names with middle",
+              "stdin": "Alan\nMathison\nTuring\n",
+              "expected_stdout": "Alan Mathison Turing\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Find and Describe an Element",
+          "prompt_md": "## Goal\n\nCombine pass by address with the earlier concept of *pass by const lvalue reference*: write a function that searches an array for a target value and returns a pointer to the first match, then a second function that uses that pointer (optionally) to describe the result.\n\n## Requirements\n\n- Write `const int* findFirst(const int* arr, int size, int target)` that returns a pointer to the first element equal to `target`, or `nullptr` if not found.\n- Write `void describeResult(const int* found, int target)` that:\n  - If `found` is not `nullptr`, prints: `Found <target> at value <*found>` (they will be equal, but dereference through the pointer).\n  - If `found` is `nullptr`, prints: `<target> not found`.\n- Read from stdin: first an integer `n` (number of elements), then `n` integers, then an integer `target`.\n- Output the result of `describeResult` on one line.\n\n## Input\n\n```\n<n>\n<elem1> <elem2> ... <elemN>\n<target>\n```\n\n## Output\n\nOne line as described above.\n\n### Sample\n\n**Input:**\n```\n5\n3 7 2 9 4\n9\n```\n**Output:**\n```\nFound 9 at value 9\n```\n",
+          "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement findFirst\n// Returns a pointer to the first element equal to target, or nullptr.\nconst int* findFirst(const int* arr, int size, int target) {\n    // TODO\n    return nullptr;\n}\n\n// TODO: implement describeResult\n// Uses found (which may be nullptr) and target to print the result.\nvoid describeResult(const int* found, int target) {\n    // TODO: check for nullptr, then print the appropriate message\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> arr(n);\n    for (int& x : arr)\n        std::cin >> x;\n    int target;\n    std::cin >> target;\n\n    const int* found = findFirst(arr.data(), n, target);\n    describeResult(found, target);\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n\nconst int* findFirst(const int* arr, int size, int target) {\n    for (int i = 0; i < size; ++i) {\n        if (arr[i] == target)\n            return &arr[i];\n    }\n    return nullptr;\n}\n\nvoid describeResult(const int* found, int target) {\n    if (found)\n        std::cout << \"Found \" << target << \" at value \" << *found << '\\n';\n    else\n        std::cout << target << \" not found\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> arr(n);\n    for (int& x : arr)\n        std::cin >> x;\n    int target;\n    std::cin >> target;\n\n    const int* found = findFirst(arr.data(), n, target);\n    describeResult(found, target);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Target present",
+              "stdin": "5\n3 7 2 9 4\n9\n",
+              "expected_stdout": "Found 9 at value 9\n",
+              "is_sample": true
+            },
+            {
+              "label": "Target absent",
+              "stdin": "4\n10 20 30 40\n5\n",
+              "expected_stdout": "5 not found\n",
+              "is_sample": false
+            },
+            {
+              "label": "Target is first element",
+              "stdin": "3\n42 1 2\n42\n",
+              "expected_stdout": "Found 42 at value 42\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.12",
+      "title": "Return by reference and return by address",
+      "sort_order": 161,
+      "summary_md": "## Return by Reference and Return by Address\n\nFunctions can return values in three ways: by value, by reference, or by address. Returning by value copies the result — fine for small types but wasteful for large objects. Return by reference and return by address both hand back an alias or pointer to an existing object, skipping the copy.\n\n### Return by Reference\n\nA reference return type (e.g., `std::string&`) lets the caller use the returned alias to read or modify the original object directly.\n\n```cpp\n#include <iostream>\n#include <vector>\n\nstd::string& getFirst(std::vector<std::string>& v) {\n    return v[0]; // returns reference to first element\n}\n\nint main() {\n    std::vector<std::string> words { \"hello\", \"world\" };\n    getFirst(words) = \"goodbye\"; // modifies words[0] in place\n    std::cout << words[0] << '\\n'; // goodbye\n}\n```\n\n**Critical rule — avoid dangling references.** A reference (or pointer) must never outlive the object it refers to. Returning a reference to a local variable produces undefined behaviour the moment the function returns, because the local is destroyed. The compiler often warns about this, but not always.\n\nSafe objects to return by reference:\n- Objects passed in as reference parameters (their lifetime is the caller's concern, as covered in *Pass by lvalue reference*).\n- Static local variables — they live for the duration of the program.\n- Data members of an object whose lifetime is managed by the caller.\n\n### Return by Address\n\nReturn by address (returning a raw pointer) follows the same lifetime rule: the pointee must still be alive when the caller dereferences the pointer. Prefer returning a `const T*` when the caller should not modify the object, mirroring the guidance from *Pointers and const*.\n\nReturn `nullptr` to signal \"no result\" — the caller must check before dereferencing, just as with *Null pointers*.\n\n### Return-by-reference to a const lvalue reference parameter\n\nA common, safe pattern is accepting a `const T&` parameter and returning `const T&`. The object lives in the caller's scope, so the returned reference is always valid.\n\n### When to use each\n\n- **Return by value** — default choice; cheap for small types, and compilers apply NRVO/RVO anyway.\n- **Return by reference** — when you intentionally expose an element inside a container or class for modification, or when copying would be prohibitively expensive.\n- **Return by address** — when `nullptr` is a meaningful \"not found\" result, or when interfacing with C APIs. Prefer `std::optional<T>` or `std::optional<std::reference_wrapper<T>>` in modern C++20 code when semantics allow.\n",
+      "exercises": [
+        {
+          "title": "Safe Reference Returns from a Static Cache",
+          "prompt_md": "## Goal\n\nPractice returning references safely by using a static local variable as a backing store.\n\n## Background\n\nA common safe pattern for return-by-reference is returning a reference to a `static` local variable. Because static locals persist for the entire program lifetime, the reference remains valid after the function returns.\n\n## Task\n\nWrite a function `getLabel(int n)` that returns a `const std::string&`.\n\n- If `n` is positive, the label is `\"positive\"`.\n- If `n` is negative, the label is `\"negative\"`.\n- If `n` is zero, the label is `\"zero\"`.\n\nUse static local `std::string` variables as the backing store — do **not** construct a new string on each call.\n\nIn `main`, read integers from stdin (one per line) until EOF and print the corresponding label for each.\n\n## Input\n\nA series of integers, one per line.\n\n## Output\n\nFor each integer, print its label on its own line.\n\n## Requirements\n\n- `getLabel` must return `const std::string&`.\n- Use static local variables inside `getLabel`; do not use global variables.\n- No dynamic allocation for the label strings on each call.\n",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement getLabel(int n) -> const std::string&\n// Use three static local std::string variables for the three labels.\n// Return a const reference to the appropriate one.\n\nint main() {\n    int n{};\n    while (std::cin >> n) {\n        // TODO: call getLabel and print the result\n    }\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nconst std::string& getLabel(int n) {\n    static const std::string pos{ \"positive\" };\n    static const std::string neg{ \"negative\" };\n    static const std::string zer{ \"zero\" };\n    if (n > 0) return pos;\n    if (n < 0) return neg;\n    return zer;\n}\n\nint main() {\n    int n{};\n    while (std::cin >> n) {\n        std::cout << getLabel(n) << '\\n';\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "mixed positive, negative, zero",
+              "stdin": "5\n-3\n0",
+              "expected_stdout": "positive\nnegative\nzero",
+              "is_sample": true
+            },
+            {
+              "label": "all positive",
+              "stdin": "1\n100\n42",
+              "expected_stdout": "positive\npositive\npositive",
+              "is_sample": false
+            },
+            {
+              "label": "alternating sign with zero",
+              "stdin": "-1\n0\n1\n0\n-99",
+              "expected_stdout": "negative\nzero\npositive\nzero\nnegative",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Find Element by Address with Null Sentinel",
+          "prompt_md": "## Goal\n\nCombine return by address with pass-by-const-lvalue-reference (from *Pass by const lvalue reference*) to write a safe search function that returns `nullptr` when no match is found.\n\n## Task\n\nWrite a function:\n\n```cpp\nconst int* findFirst(const std::vector<int>& v, int target);\n```\n\nIt returns a pointer to the **first** element in `v` equal to `target`, or `nullptr` if no such element exists.\n\nIn `main`:\n\n1. Read `n` (number of elements) from stdin.\n2. Read `n` integers into a `std::vector<int>`.\n3. Read `q` (number of queries).\n4. For each query, read an integer `target`.\n   - If found, print `found: <value>` (where `<value>` is the dereferenced pointer).\n   - If not found, print `not found`.\n\n## Input\n\n```\nn\na1 a2 ... an\nq\ntarget1\ntarget2\n...\n```\n\n## Output\n\nOne line per query: either `found: <value>` or `not found`.\n\n## Requirements\n\n- `findFirst` must return `const int*`.\n- `findFirst` must accept the vector by `const` lvalue reference.\n- Dereference the returned pointer in `main` only after a null check.\n- Do not use `std::find` — implement the linear search manually.\n",
+          "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement findFirst(const std::vector<int>& v, int target) -> const int*\n// Return a pointer to the first matching element, or nullptr if not found.\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int& x : v) std::cin >> x;\n\n    int q{};\n    std::cin >> q;\n    while (q-- > 0) {\n        int target{};\n        std::cin >> target;\n        // TODO: call findFirst, null-check the result, and print the output\n    }\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n\nconst int* findFirst(const std::vector<int>& v, int target) {\n    for (const int& elem : v) {\n        if (elem == target)\n            return &elem;\n    }\n    return nullptr;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int& x : v) std::cin >> x;\n\n    int q{};\n    std::cin >> q;\n    while (q-- > 0) {\n        int target{};\n        std::cin >> target;\n        const int* result = findFirst(v, target);\n        if (result != nullptr)\n            std::cout << \"found: \" << *result << '\\n';\n        else\n            std::cout << \"not found\\n\";\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "basic found and not found",
+              "stdin": "5\n10 20 30 40 50\n3\n20\n99\n10",
+              "expected_stdout": "found: 20\nnot found\nfound: 10",
+              "is_sample": true
+            },
+            {
+              "label": "duplicates — returns first occurrence",
+              "stdin": "6\n7 3 7 1 7 2\n2\n7\n1",
+              "expected_stdout": "found: 7\nfound: 1",
+              "is_sample": false
+            },
+            {
+              "label": "empty vector and single element",
+              "stdin": "1\n42\n3\n42\n0\n-1",
+              "expected_stdout": "found: 42\nnot found\nnot found",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.13",
+      "title": "In and out parameters",
+      "sort_order": 162,
+      "summary_md": "## In and Out Parameters\n\nFunctions communicate with callers through parameters and return values. Understanding the *direction* of that data flow — in, out, or both — helps you choose the right parameter type and write clearer interfaces.\n\n### Parameter directions\n\n- **In parameter:** carries data *into* the function. The function reads it but never modifies the caller's object. Pass small types (int, double, bool) by value; pass larger types by `const` lvalue reference (covered in \"Pass by const lvalue reference\").\n- **Out parameter:** carries data *out of* the function. The caller passes a variable by non-const reference or pointer; the function writes a result into it without reading the original value. Used when a function needs to return more than one result and returning a struct feels like overkill — though returning a `struct` or `std::pair` is usually cleaner.\n- **In-out parameter:** data flows both ways. The function reads *and* modifies the caller's object. Pass by non-const lvalue reference (covered in \"Lvalue references\") or by address (covered in \"Pass by address\").\n\n### Choosing the right direction\n\nPrefer returning values over out parameters whenever possible. A return value is explicit and composes naturally; an out parameter is easy to overlook in a call site. Out and in-out parameters are appropriate when:\n- You need multiple return values and destructuring a struct is awkward.\n- The object is expensive to copy and must be modified in place.\n- You are filling a caller-owned buffer (common in low-level I/O).\n\nAlways use `const` for in parameters passed by reference. Omitting `const` signals \"I might change this\" even if you don't, which confuses readers.\n\n```cpp\n#include <string>\n\n// in: by value (cheap) and by const ref (expensive type)\n// out: return value — cleaner than an out parameter\n// in-out: balance modified in place\nvoid adjust(const std::string& label, int delta, int& balance) {\n    balance += delta;          // modifies caller's variable\n    // label is read-only\n}\n```\n\n### Pass by address vs. pass by reference for out parameters\n\nReferences (covered in \"Lvalue references\") are generally preferred over pointers (covered in \"Pass by address\") for out/in-out parameters because references cannot be null and don't require the caller to take the address explicitly. Use a pointer only when `nullptr` is a meaningful sentinel — \"no output requested\".\n\n### Key takeaways\n\n- Label mental intent: in → `const`, out/in-out → non-`const` reference or pointer.\n- Prefer return values; reach for out parameters only when you have a concrete reason.\n- `const`-correctness on in parameters prevents accidental modification and enables compiler optimisations.",
+      "exercises": [
+        {
+          "title": "Clamp with an in-out parameter",
+          "prompt_md": "## Goal\n\nWrite a function `clamp` that restricts an integer value to a `[lo, hi]` range by modifying it **in place**. This exercises the in-out parameter pattern: the value flows in (it is read) and flows out (it is written back).\n\n## Requirements\n\n- Signature: `void clamp(int& value, int lo, int hi)`\n- `lo` and `hi` are **in parameters** (pass by value — they are small and never changed).\n- `value` is an **in-out parameter** — read it, then write the clamped result back through the reference.\n- If `value < lo`, set it to `lo`. If `value > hi`, set it to `hi`. Otherwise leave it unchanged.\n- Read three integers from stdin: the value to clamp, lo, hi.\n- Print the clamped result followed by a newline.\n\n## Input\n\nA single line with three space-separated integers: `value lo hi`.\n\n## Output\n\nA single integer — the clamped value — followed by a newline.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement clamp as a void function using an in-out reference parameter\n// Signature: void clamp(int& value, int lo, int hi)\n\nint main() {\n    int value{}, lo{}, hi{};\n    std::cin >> value >> lo >> hi;\n\n    // TODO: call clamp, then print the result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid clamp(int& value, int lo, int hi) {\n    if (value < lo)\n        value = lo;\n    else if (value > hi)\n        value = hi;\n    // otherwise value stays unchanged\n}\n\nint main() {\n    int value{}, lo{}, hi{};\n    std::cin >> value >> lo >> hi;\n\n    clamp(value, lo, hi);\n    std::cout << value << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Value above range",
+              "stdin": "15 0 10",
+              "expected_stdout": "10\n",
+              "is_sample": true
+            },
+            {
+              "label": "Value below range",
+              "stdin": "-5 0 10",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Value already in range",
+              "stdin": "7 0 10",
+              "expected_stdout": "7\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Split a sentence into word count and longest word",
+          "prompt_md": "## Goal\n\nCombine the out-parameter pattern with pass-by-const-lvalue-reference (from \"Pass by const lvalue reference\"). Write a function that analyses a sentence and fills two out parameters: the total word count and the longest word found.\n\n## Requirements\n\n- Signature: `void analyse(const std::string& sentence, int& wordCount, std::string& longest)`\n- `sentence` is an **in parameter** — const reference, never modified.\n- `wordCount` and `longest` are **out parameters** — the function writes results into them without relying on their initial values.\n- Words are separated by single spaces. The sentence contains at least one word and only lowercase letters and spaces.\n- If two words share the maximum length, keep the one that appears first.\n- Read one line from stdin (the sentence). Print the word count on the first line and the longest word on the second line.\n\n## Input\n\nA single line of lowercase words separated by single spaces.\n\n## Output\n\nTwo lines: the word count, then the longest word.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <sstream>\n\n// TODO: implement analyse\n// Signature: void analyse(const std::string& sentence, int& wordCount, std::string& longest)\n// - sentence is an in parameter (const ref)\n// - wordCount and longest are out parameters (non-const ref)\n\nint main() {\n    std::string sentence{};\n    std::getline(std::cin, sentence);\n\n    int wordCount{};\n    std::string longest{};\n\n    // TODO: call analyse, then print results\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <sstream>\n\nvoid analyse(const std::string& sentence, int& wordCount, std::string& longest) {\n    wordCount = 0;\n    longest.clear();\n\n    std::istringstream stream{sentence};\n    std::string word{};\n    while (stream >> word) {\n        ++wordCount;\n        if (word.size() > longest.size())\n            longest = word;\n    }\n}\n\nint main() {\n    std::string sentence{};\n    std::getline(std::cin, sentence);\n\n    int wordCount{};\n    std::string longest{};\n\n    analyse(sentence, wordCount, longest);\n\n    std::cout << wordCount << '\\n';\n    std::cout << longest << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic sentence",
+              "stdin": "the quick brown fox",
+              "expected_stdout": "4\nquick\n",
+              "is_sample": true
+            },
+            {
+              "label": "Single word",
+              "stdin": "hello",
+              "expected_stdout": "1\nhello\n",
+              "is_sample": false
+            },
+            {
+              "label": "Tie goes to first occurrence",
+              "stdin": "cat bat rat dog",
+              "expected_stdout": "4\ncat\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.14",
+      "title": "Type deduction with pointers, references, and const",
+      "sort_order": 163,
+      "summary_md": "## Type Deduction with Pointers, References, and const\n\n`auto` deduces types from initializer expressions, but it silently drops two things: **top-level const** and **references**. Understanding exactly when and why this happens prevents subtle bugs when using `auto` with the compound types covered in this chapter.\n\n### How auto drops references\n\nWhen you initialize `auto` from an lvalue reference, the deduced type is the referred-to type — the reference itself is stripped. To keep a reference, write `auto&` explicitly. Similarly, `auto&&` gives a forwarding reference (deduced as lvalue ref for lvalues, rvalue ref for rvalues).\n\n### How auto drops top-level const\n\nTop-level const (const on the variable itself) is dropped during deduction. Low-level const (const on the thing being pointed or referred to) is preserved. If you need `const`, spell it out: `const auto` or `const auto&`.\n\n### auto with pointers\n\n`auto` deduces the full pointer type when the initializer is a pointer. Both `auto` and `auto*` work for pointer initialization; `auto*` is preferred because it makes the pointer nature explicit and forces the initializer to actually be a pointer. Top-level pointer-to-const follows the same rule: low-level const is preserved, top-level const is dropped.\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int x { 42 };\n    auto        a { x };  // int        — top-level const dropped\n    const auto  b { x };  // const int  — manually restored\n    auto&       c { x };  // const int& — low-level const preserved\n\n    const int* ptr { &x };\n    auto        p1 { ptr }; // const int* — low-level const kept\n    auto*       p2 { ptr }; // const int* — same result, clearer intent\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n}\n```\n\n### decltype\n\n`decltype(expr)` deduces the type of an expression **without** dropping references or const. If the expression is an lvalue reference or a plain lvalue wrapped in extra parens, `decltype` captures that exactly. Use `decltype` when you need a type that faithfully mirrors an existing variable — common in generic code and trailing return types.\n\n### Rules of thumb\n\n- Use `auto&` when you want a non-const reference; `const auto&` for a read-only reference.\n- Use `auto*` (not bare `auto`) for pointer variables — the asterisk signals intent.\n- Prefer `decltype(var)` over `auto` when you must preserve the exact type of `var`, including its reference or const qualification.\n- Cross-reference: the \"Pointers and const\" lesson explains low-level vs. top-level const; the \"Lvalue references to const\" lesson covers why `const auto&` can bind temporaries.",
+      "exercises": [
+        {
+          "title": "Deduction Detective",
+          "prompt_md": "## Goal\n\nPractice reading `auto` deduction rules by printing the value and size of several deduced variables to verify which qualifiers were kept or dropped.\n\n## Requirements\n\n- Declare `const int value` initialized to the number read from stdin.\n- Deduce four variables from `value`:\n  1. `auto a` — plain deduction (drops const).\n  2. `const auto b` — manually adds const back.\n  3. `auto& c` — reference to `value`.\n  4. `const auto& d` — const reference to `value`.\n- Print each variable's value on its own line, in order: `a`, `b`, `c`, `d`.\n- Then print `sizeof(a)` on a fifth line (all four share the same size; printing one is enough).\n\n## Input\n\nA single integer on stdin.\n\n## Output\n\nFive lines:\n```\n<a>\n<b>\n<c>\n<d>\n<sizeof(a)>\n```\n\n## Notes\n\nAll four variables hold the same numeric value — the exercise confirms deduction correctness, not value changes.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    const int value { n };\n\n    // TODO: deduce 'a' with plain auto\n    // TODO: deduce 'b' with const auto\n    // TODO: deduce 'c' with auto& (lvalue reference)\n    // TODO: deduce 'd' with const auto& (const lvalue reference)\n\n    // TODO: print a, b, c, d each on its own line\n    // TODO: print sizeof(a) on a final line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    const int value { n };\n\n    auto        a { value }; // int        — top-level const dropped\n    const auto  b { value }; // const int  — manually restored\n    auto&       c { value }; // const int& — low-level const preserved\n    const auto& d { value }; // const int& — explicit const ref\n\n    std::cout << a << '\\n';\n    std::cout << b << '\\n';\n    std::cout << c << '\\n';\n    std::cout << d << '\\n';\n    std::cout << sizeof(a) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: value 7",
+              "stdin": "7",
+              "expected_stdout": "7\n7\n7\n7\n4\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: value 0",
+              "stdin": "0",
+              "expected_stdout": "0\n0\n0\n0\n4\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: value -99",
+              "stdin": "-99",
+              "expected_stdout": "-99\n-99\n-99\n-99\n4\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Pointer Inspector",
+          "prompt_md": "## Goal\n\nCombine pointer-and-const knowledge (from \"Pointers and const\") with `auto*` deduction rules to inspect an array element through a deduced pointer.\n\n## Requirements\n\n- Read three integers from stdin into a `const int arr[3]`.\n- Read a zero-based index `i` (guaranteed 0–2).\n- Declare `auto* p` pointing at `arr[i]`. The deduced type must be `const int*` — low-level const is preserved.\n- Use `p` to print the pointed-to value.\n- Use `decltype(p)` to declare a second pointer `q` pointing at `arr[0]`, then print `*q`.\n- Finally print the difference `p - arr` (i.e., the index) to confirm pointer arithmetic works.\n\n## Input\n\nFour integers on one or more lines: three array values then the index.\n\n## Output\n\nThree lines:\n```\n<arr[i] via p>\n<arr[0] via q>\n<index offset>\n```\n\n## Notes\n\n`decltype(p)` should deduce `const int*`, matching the type of `p` exactly — unlike `auto`, `decltype` preserves the full type.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    const int arr[3] {};\n    // TODO: read three integers into arr (use a non-const copy trick or\n    //       read into a local int array then copy, since arr is const)\n    int tmp[3]{};\n    std::cin >> tmp[0] >> tmp[1] >> tmp[2];\n    // We need a const int array — just read into const_cast-safe locals and\n    // assign via a mutable array, then point into a const view.\n    // Simpler: use a plain int array, then point through const int*.\n    int data[3] { tmp[0], tmp[1], tmp[2] };\n    const int* base { data }; // treat as const from here on\n\n    int i{};\n    std::cin >> i;\n\n    // TODO: declare auto* p pointing at base[i]\n    // TODO: print *p\n    // TODO: declare decltype(p) q pointing at base[0]\n    // TODO: print *q\n    // TODO: print p - base  (the index offset)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int data[3]{};\n    std::cin >> data[0] >> data[1] >> data[2];\n\n    const int* base { data }; // low-level const view\n\n    int i{};\n    std::cin >> i;\n\n    auto* p { base + i };    // deduces const int*\n    std::cout << *p << '\\n';\n\n    decltype(p) q { base };  // also const int* — decltype preserves exactly\n    std::cout << *q << '\\n';\n\n    std::cout << (p - base) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: {10,20,30}, index 1",
+              "stdin": "10 20 30\n1",
+              "expected_stdout": "20\n10\n1\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: {5,15,25}, index 0",
+              "stdin": "5 15 25\n0",
+              "expected_stdout": "5\n5\n0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: {-3,0,7}, index 2",
+              "stdin": "-3 0 7\n2",
+              "expected_stdout": "7\n-3\n2\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.15",
+      "title": "std::optional",
+      "sort_order": 164,
+      "summary_md": "## std::optional\n\n`std::optional<T>` (from `<optional>`) is a wrapper that either holds a value of type `T` or holds nothing (`std::nullopt`). It makes the \"might not return anything\" contract explicit in the type signature, unlike returning a sentinel value like `-1` or using a raw pointer (covered in *Introduction to pointers* and *Return by reference and return by address*).\n\n### Construction and assignment\n\n- Construct with a value: `std::optional<int> x{42};`\n- Construct empty: `std::optional<int> x{};` or `std::optional<int> x{std::nullopt};`\n- Assign at any time: `x = 7;` or `x = std::nullopt;`\n\n### Checking and reading the value\n\n- `has_value()` — returns `true` if a value is present (also works as `if (x)` via `operator bool`).\n- `value()` — returns the stored value; throws `std::bad_optional_access` if empty.\n- `value_or(default)` — returns the stored value or `default` if empty; never throws.\n- `*x` and `x->member` — unchecked access, undefined behaviour if empty; only use after `has_value()` check.\n\n### Typical use: optional return values\n\n```cpp\n#include <optional>\n#include <string>\n#include <iostream>\n\nstd::optional<int> parse_positive(const std::string& s) {\n    int n{};\n    for (char c : s)\n        if (c < '0' || c > '9') return std::nullopt;\n        else n = n * 10 + (c - '0');\n    return (n > 0) ? n : std::nullopt;\n}\n\nint main() {\n    auto result = parse_positive(\"42\");\n    std::cout << result.value_or(-1) << '\\n'; // 42\n    std::cout << parse_positive(\"abc\").value_or(-1) << '\\n'; // -1\n}\n```\n\n### Why prefer optional over pointer-as-optional\n\nReturning `const int*` to signal \"not found\" (see *Pass by address*) forces the caller to remember to null-check and leaves ownership ambiguous. `std::optional` owns its storage, copies naturally, and communicates intent directly in the type.\n\n### Caveats\n\n- `std::optional` cannot hold references — use `std::optional<std::reference_wrapper<T>>` or reconsider the design (*Lvalue references* and *Lvalue references to const*).\n- Avoid `std::optional` for large objects where copying is expensive; a pointer or `std::unique_ptr` may be better.\n- `value_or()` always evaluates its argument eagerly; if the default is expensive to compute, use an `if`/`has_value()` branch instead.",
+      "exercises": [
+        {
+          "title": "Safe integer division",
+          "prompt_md": "## Goal\n\nWrite a function `safe_divide` that returns the quotient of two integers, but returns `std::nullopt` when division by zero would occur. Print the result or an error message.\n\n## Input\n\nTwo integers on one line separated by a space.\n\n## Output\n\nIf the divisor is non-zero, print the integer quotient (truncated toward zero, C++ default) followed by a newline.\nIf the divisor is zero, print `division by zero` followed by a newline.\n\n## Requirements\n\n- Implement `std::optional<int> safe_divide(int a, int b)`.\n- Use `value_or` or a `has_value` check in `main` to produce the output — do **not** branch inside `main` by checking `b` directly.\n- No additional output (no prompts, no labels).",
+          "starter_code": "#include <iostream>\n#include <optional>\n\n// TODO: implement safe_divide\n// Returns the integer quotient a/b, or std::nullopt if b == 0.\nstd::optional<int> safe_divide(int a, int b) {\n    // TODO\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    auto result = safe_divide(a, b);\n\n    // TODO: print the quotient, or \"division by zero\" if no value\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <optional>\n\nstd::optional<int> safe_divide(int a, int b) {\n    if (b == 0)\n        return std::nullopt;\n    return a / b;\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    auto result = safe_divide(a, b);\n\n    if (result.has_value())\n        std::cout << result.value() << '\\n';\n    else\n        std::cout << \"division by zero\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Normal division",
+              "stdin": "10 3",
+              "expected_stdout": "3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Division by zero",
+              "stdin": "7 0",
+              "expected_stdout": "division by zero\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative dividend",
+              "stdin": "-20 4",
+              "expected_stdout": "-5\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Find first element matching a predicate",
+          "prompt_md": "## Goal\n\nCombine `std::optional` with pass-by-const-lvalue-reference (covered in *Pass by const lvalue reference*) to implement a generic linear search over a fixed-size array of integers.\n\n## Input\n\nFirst line: a single integer `n` (1 ≤ n ≤ 10), the number of elements.\nSecond line: `n` space-separated integers.\nThird line: a single integer `target` to search for.\n\n## Output\n\nIf `target` is found, print `Found at index ` followed by the zero-based index of its **first** occurrence, then a newline.\nIf not found, print `Not found` followed by a newline.\n\n## Requirements\n\n- Implement `std::optional<int> find_first(const std::vector<int>& v, int target)` that returns the first matching index or `std::nullopt`.\n- Use `has_value()` or `value()` in `main` to produce the output.\n- No additional output (no prompts, no labels).",
+          "starter_code": "#include <iostream>\n#include <optional>\n#include <vector>\n\n// TODO: implement find_first\n// Returns the index of the first element equal to target, or std::nullopt.\nstd::optional<int> find_first(const std::vector<int>& v, int target) {\n    // TODO\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(static_cast<std::size_t>(n));\n    for (auto& x : v)\n        std::cin >> x;\n\n    int target{};\n    std::cin >> target;\n\n    auto result = find_first(v, target);\n\n    // TODO: print result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <optional>\n#include <vector>\n\nstd::optional<int> find_first(const std::vector<int>& v, int target) {\n    for (int i = 0; i < static_cast<int>(v.size()); ++i) {\n        if (v[static_cast<std::size_t>(i)] == target)\n            return i;\n    }\n    return std::nullopt;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(static_cast<std::size_t>(n));\n    for (auto& x : v)\n        std::cin >> x;\n\n    int target{};\n    std::cin >> target;\n\n    auto result = find_first(v, target);\n\n    if (result.has_value())\n        std::cout << \"Found at index \" << result.value() << '\\n';\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Target found at index 2",
+              "stdin": "5\n10 20 30 40 50\n30",
+              "expected_stdout": "Found at index 2\n",
+              "is_sample": true
+            },
+            {
+              "label": "Target not in array",
+              "stdin": "4\n1 2 3 4\n9",
+              "expected_stdout": "Not found\n",
+              "is_sample": false
+            },
+            {
+              "label": "Duplicate values — returns first index",
+              "stdin": "6\n5 3 5 1 5 2\n5",
+              "expected_stdout": "Found at index 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "12.x",
+      "title": "Chapter 12 summary and quiz",
+      "sort_order": 165,
+      "summary_md": "## Chapter 12 Summary: Compound Types — References and Pointers\n\nThis chapter introduced the two primary mechanisms for indirect access to objects: references and pointers.\n\n**References** are aliases — they must be initialized when declared and cannot be reseated. An lvalue reference binds to a modifiable lvalue. An lvalue reference to `const` (`const T&`) also binds to rvalues and temporaries, which is why it is the default choice for read-only function parameters.\n\n**Pointers** store the address of an object. Unlike references, a pointer can be null, can be reassigned to point at a different object, and must be dereferenced explicitly with `*`. Always initialize pointers: use `nullptr` when no target is available yet. Prefer `nullptr` over `NULL` or `0`.\n\n**Pass-by-value, reference, and address — when to use each:**\n- Pass by value when the argument is cheap to copy (fundamental types, small structs) or when the function needs its own copy to modify.\n- Pass by `const` lvalue reference for read-only access to class types or anything non-trivially copyable.\n- Pass by lvalue reference when the function intentionally modifies the caller's variable (out-parameter).\n- Pass by address (pointer) only when null is a meaningful input, or when legacy APIs require it.\n\n**Const correctness** threads through all of these: `const T&`, `const T*`, and `T* const` each protect something different. A `const T*` cannot be used to modify the pointee; a `T* const` cannot be reseated; `const T* const` enforces both.\n\n**Return by reference** avoids an extra copy when returning a member or existing object — but the returned reference must outlive the call. Never return a reference or pointer to a local variable.\n\n**Type deduction** with `auto` strips references and top-level cv-qualifiers. Write `auto&` or `const auto&` explicitly when you want reference semantics in a deduced context.\n\n**`std::optional<T>`** expresses \"value or nothing\" without the dangers of a raw nullable pointer. Prefer it over pointer-as-optional-output patterns.\n\n```cpp\n#include <optional>\n#include <string>\n\n// Returns reference into caller's vector — no copy, no null danger\nconst std::string& longerWord(const std::string& a, const std::string& b) {\n    return (a.size() >= b.size()) ? a : b;\n}\n\nstd::optional<int> parsePositive(const std::string& s) {\n    int v = std::stoi(s);\n    if (v > 0) return v;\n    return std::nullopt;\n}\n```\n\nThe central rule: use the **least powerful mechanism** that solves the problem. Prefer references over pointers, `const` wherever mutation is not required, and `std::optional` over nullable pointers for optional return values.",
+      "exercises": [
+        {
+          "title": "Swap and Inspect via References and Pointers",
+          "prompt_md": "## Goal\n\nPractice the distinction between lvalue references and pointers by implementing two utility functions and a small driver.\n\n## Requirements\n\n- `void swapInts(int& a, int& b)` — swaps two integers using lvalue references. No `<algorithm>` or `std::swap`; implement the swap body yourself.\n- `int* largerPtr(int* p, int* q)` — receives two non-null pointers and returns a pointer to the larger value. If equal, return `p`.\n- In `main`, read two integers from stdin, call both functions, and print results exactly as shown.\n\n## Input\n\nTwo space-separated integers on one line.\n\n## Output\n\n```\nBefore swap: A B\nAfter swap:  B A\nLarger value: B\n```\n\nWhere `A` and `B` are the original first and second inputs, and after the swap they are reversed. \"Larger value\" is the larger of the two original inputs (which, after the swap, is now stored in the variable that originally held `A`).\n\n## Notes\n\n- Do not use `std::swap` or `<algorithm>`.\n- `largerPtr` must work through pointer dereferencing only.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement swapInts using lvalue references\nvoid swapInts(int& a, int& b) {\n\n}\n\n// TODO: implement largerPtr — return pointer to the larger value\nint* largerPtr(int* p, int* q) {\n\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n\n    std::cout << \"Before swap: \" << x << ' ' << y << '\\n';\n\n    // TODO: call swapInts\n\n    std::cout << \"After swap:  \" << x << ' ' << y << '\\n';\n\n    // TODO: call largerPtr and print the result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid swapInts(int& a, int& b) {\n    int tmp{ a };\n    a = b;\n    b = tmp;\n}\n\nint* largerPtr(int* p, int* q) {\n    return (*p >= *q) ? p : q;\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n\n    std::cout << \"Before swap: \" << x << ' ' << y << '\\n';\n\n    swapInts(x, y);\n\n    std::cout << \"After swap:  \" << x << ' ' << y << '\\n';\n\n    int* bigger{ largerPtr(&x, &y) };\n    std::cout << \"Larger value: \" << *bigger << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic swap and larger",
+              "stdin": "3 7",
+              "expected_stdout": "Before swap: 3 7\nAfter swap:  7 3\nLarger value: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "Larger is the first value",
+              "stdin": "10 2",
+              "expected_stdout": "Before swap: 10 2\nAfter swap:  2 10\nLarger value: 10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Equal values",
+              "stdin": "5 5",
+              "expected_stdout": "Before swap: 5 5\nAfter swap:  5 5\nLarger value: 5\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Const-Correct Statistics",
+          "prompt_md": "## Goal\n\nPractice `const` correctness, pass-by-const-reference, and return-by-reference in a small statistics helper.\n\n## Requirements\n\nImplement the following functions:\n\n- `double average(const int* data, int size)` — computes the average of `size` elements. Accept the array as a pointer-to-const.\n- `const int& maxElement(const int* data, int size)` — returns a `const` reference to the maximum element in the array. The reference must alias the element inside the array itself (not a local variable).\n- `void scale(int* data, int size, int factor)` — multiplies every element by `factor` in-place.\n\nIn `main`:\n1. Read `n` (number of elements) then the elements.\n2. Print the average (one decimal place).\n3. Print the max element (via the returned reference).\n4. Scale all elements by 2, then print the new average (one decimal place) and new max.\n\n## Input\n\nFirst line: integer `n` (1 <= n <= 10).  \nSecond line: `n` space-separated integers.\n\n## Output\n\n```\nAverage: <avg>\nMax: <max>\nAfter scaling by 2:\nAverage: <new_avg>\nMax: <new_max>\n```\n\n## Notes\n\n- Use `std::fixed` and `std::setprecision(1)` for floating-point output.\n- `maxElement` must return a reference into the array, not a copy.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: implement average — accept array as pointer-to-const\ndouble average(const int* data, int size) {\n\n}\n\n// TODO: implement maxElement — return a const reference into the array\nconst int& maxElement(const int* data, int size) {\n\n}\n\n// TODO: implement scale — multiply each element by factor in-place\nvoid scale(int* data, int size, int factor) {\n\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> data[i];\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    // TODO: print average and max\n\n    scale(data, n, 2);\n    std::cout << \"After scaling by 2:\\n\";\n\n    // TODO: print new average and new max\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble average(const int* data, int size) {\n    double sum{ 0.0 };\n    for (int i{ 0 }; i < size; ++i)\n        sum += data[i];\n    return sum / size;\n}\n\nconst int& maxElement(const int* data, int size) {\n    int best{ 0 };\n    for (int i{ 1 }; i < size; ++i)\n        if (data[i] > data[best])\n            best = i;\n    return data[best];\n}\n\nvoid scale(int* data, int size, int factor) {\n    for (int i{ 0 }; i < size; ++i)\n        data[i] *= factor;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> data[i];\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    std::cout << \"Average: \" << average(data, n) << '\\n';\n    std::cout << \"Max: \" << maxElement(data, n) << '\\n';\n\n    scale(data, n, 2);\n    std::cout << \"After scaling by 2:\\n\";\n\n    std::cout << \"Average: \" << average(data, n) << '\\n';\n    std::cout << \"Max: \" << maxElement(data, n) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic three elements",
+              "stdin": "3\n1 5 3",
+              "expected_stdout": "Average: 3.0\nMax: 5\nAfter scaling by 2:\nAverage: 6.0\nMax: 10\n",
+              "is_sample": true
+            },
+            {
+              "label": "Single element",
+              "stdin": "1\n7",
+              "expected_stdout": "Average: 7.0\nMax: 7\nAfter scaling by 2:\nAverage: 14.0\nMax: 14\n",
+              "is_sample": false
+            },
+            {
+              "label": "Five elements with distinct max",
+              "stdin": "5\n4 2 9 1 6",
+              "expected_stdout": "Average: 4.4\nMax: 9\nAfter scaling by 2:\nAverage: 8.8\nMax: 18\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

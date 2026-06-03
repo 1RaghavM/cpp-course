@@ -1,0 +1,673 @@
+{
+  "chapter": {
+    "number": "5",
+    "title": "Constants and Strings"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "5.1",
+      "title": "Constant variables (named constants)",
+      "sort_order": 63,
+      "summary_md": "## Constant Variables (Named Constants)\n\nA **constant variable** is a variable whose value cannot change after initialization. Declare one with `const`:\n\n```cpp\n#include <print>\n\nint main() {\n    const double pi = 3.14159265358979;\n    const int maxRetries = 5;\n\n    // pi = 3.0;  // compile error: cannot assign to const\n\n    std::println(\"Circle area with r=2: {:.4f}\", pi * 2 * 2);\n    std::println(\"Max retries allowed: {}\", maxRetries);\n}\n```\n\n### Why Use `const` Instead of a Raw Value?\n\nSprinkling literal numbers throughout code (called **magic numbers**) makes programs hard to read and maintain. If `3.14159265358979` appears twenty times and you need to change its precision, you must find every occurrence. A named constant centralizes the value — change it once, fix everywhere.\n\nNamed constants also communicate *intent*. `maxRetries` tells the reader what 5 means; the bare number 5 does not.\n\n### `const` Requires Immediate Initialization\n\nUnlike a regular variable, a `const` variable **must** be initialized when declared. The compiler has nowhere to put the value later:\n\n```cpp\nconst int x;      // compile error: uninitialized const\nconst int y = 10; // correct\n```\n\n### `const` vs. `constexpr`\n\nYou will encounter `constexpr` in a later lesson. For now, know that `const` means \"this value won't change at runtime,\" while `constexpr` makes the stronger promise that the value is known at **compile time**. Many simple named constants can eventually become `constexpr`, but `const` is sufficient when the value might come from user input or a function call.\n\n### Naming Conventions\n\nC++ has no single enforced convention for constants, but common choices include:\n\n- `camelCase` — `maxRetries`, `defaultTimeout`\n- `SCREAMING_SNAKE_CASE` — `MAX_RETRIES`, `DEFAULT_TIMEOUT` (common in C-style code and macros)\n- `kPrefixed` — `kMaxRetries` (Google style)\n\nConsistency within a codebase matters more than which style you pick.\n\n### Key Takeaways\n\n- Prefix a declaration with `const` to make it immutable.\n- Always initialize `const` variables at the point of declaration.\n- Prefer named constants over magic numbers for readability and maintainability.\n- `const` is a runtime guarantee; `constexpr` (covered later) is a compile-time guarantee.",
+      "exercises": [
+        {
+          "title": "Circle Measurements with Named Constants",
+          "prompt_md": "## Goal\nWrite a program that reads a circle's radius from stdin and prints its circumference and area, using named constants instead of magic numbers.\n\n## Input\n- Line 1: a single positive floating-point number representing the radius (0.0 < radius ≤ 1000.0).\n\n## Output\nPrint exactly two lines:\n- Line 1: `Circumference: X` where X is the circumference formatted to 4 decimal places.\n- Line 2: `Area: X` where X is the area formatted to 4 decimal places.\n\nNo extra blank lines. No extra spaces.\n\n## Requirements\n1. Declare a `const double` named `PI` initialized to `3.14159265358979` and use it in both calculations. Do not write the literal `3.14159265358979` anywhere else in your code.\n2. Circumference formula: `2 * PI * radius`.\n3. Area formula: `PI * radius * radius`.\n4. Read the radius into a `double` variable (non-const, since it comes from user input).\n5. Output values must be formatted to exactly 4 decimal places (use `std::fixed` and `std::setprecision(4)`, or `std::println`/`std::print` with `{:.4f}`).\n6. Cover the edge case where radius is a whole number (e.g., `1`).\n\n## Notes\n- You may use `<iostream>` and `<iomanip>`, or `<print>` — either is fine.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    // TODO: declare a const double named PI equal to 3.14159265358979\n\n    double radius;\n    std::cin >> radius;\n\n    // TODO: compute circumference using PI and radius\n    // TODO: compute area using PI and radius\n\n    // TODO: print \"Circumference: \" followed by the circumference to 4 decimal places\n    // TODO: print \"Area: \" followed by the area to 4 decimal places\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    const double PI = 3.14159265358979;\n\n    double radius;\n    std::cin >> radius;\n\n    double circumference = 2 * PI * radius;\n    double area = PI * radius * radius;\n\n    std::cout << std::fixed << std::setprecision(4);\n    std::cout << \"Circumference: \" << circumference << \"\\n\";\n    std::cout << \"Area: \" << area << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — radius 5",
+              "stdin": "5\n",
+              "expected_stdout": "Circumference: 31.4159\nArea: 78.5398\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — radius 1 (edge: whole number)",
+              "stdin": "1\n",
+              "expected_stdout": "Circumference: 6.2832\nArea: 3.1416\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — radius 12.5",
+              "stdin": "12.5\n",
+              "expected_stdout": "Circumference: 78.5398\nArea: 490.8739\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Speed-to-Pace Converter with Named Constants",
+          "prompt_md": "## Goal\nWrite a program that reads a runner's speed in kilometers per hour and prints their pace (minutes and seconds per kilometer), using named constants for the fixed values involved in the conversion.\n\n## Input\n- Line 1: a single positive floating-point number representing speed in km/h (0.1 ≤ speed ≤ 100.0).\n\n## Output\nPrint exactly one line in this format:\n`Pace: M min S sec per km`\nwhere M is the whole number of minutes and S is the whole number of seconds (both as integers, no leading zeros beyond normal integer printing).\n\nExample for speed 10 km/h: `Pace: 6 min 0 sec per km`\n\n## Requirements\n1. Declare a `const double` named `SECONDS_PER_HOUR` initialized to `3600.0`. Use it (not the literal `3600`) in your conversion.\n2. Declare a `const int` named `SECONDS_PER_MINUTE` initialized to `60`. Use it (not the literal `60`) when splitting total seconds into minutes and seconds.\n3. Conversion: total seconds per km = `SECONDS_PER_HOUR / speed`. Truncate to an integer, then divide by `SECONDS_PER_MINUTE` for minutes and take the remainder for seconds.\n4. Read the speed into a `double` variable (non-const, since it comes from user input).\n5. M and S are printed as plain integers (no decimal points, no leading zeros).\n6. Cover the edge case where the pace has 0 remaining seconds (e.g., speed = 10).\n7. Cover the edge case where speed yields a pace with 0 minutes (speed fast enough that pace < 1 min/km, e.g., speed = 90).\n\n## Notes\n- This exercise combines named constants (this lesson) with integer arithmetic and the modulo operator (prior knowledge).",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare const double SECONDS_PER_HOUR = 3600.0\n    // TODO: declare const int SECONDS_PER_MINUTE = 60\n\n    double speed;\n    std::cin >> speed;\n\n    // TODO: compute total seconds per km as an integer using SECONDS_PER_HOUR and speed\n    // TODO: compute minutes using SECONDS_PER_MINUTE\n    // TODO: compute remaining seconds using SECONDS_PER_MINUTE\n\n    // TODO: print \"Pace: M min S sec per km\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    const double SECONDS_PER_HOUR = 3600.0;\n    const int SECONDS_PER_MINUTE = 60;\n\n    double speed;\n    std::cin >> speed;\n\n    int totalSeconds = static_cast<int>(SECONDS_PER_HOUR / speed);\n    int minutes = totalSeconds / SECONDS_PER_MINUTE;\n    int seconds = totalSeconds % SECONDS_PER_MINUTE;\n\n    std::cout << \"Pace: \" << minutes << \" min \" << seconds << \" sec per km\" << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — speed 10 km/h",
+              "stdin": "10\n",
+              "expected_stdout": "Pace: 6 min 0 sec per km\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — speed 8 km/h",
+              "stdin": "8\n",
+              "expected_stdout": "Pace: 7 min 30 sec per km\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — speed 90 km/h (pace under 1 minute)",
+              "stdin": "90\n",
+              "expected_stdout": "Pace: 0 min 40 sec per km\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.2",
+      "title": "Literals",
+      "sort_order": 64,
+      "summary_md": "## Literals\n\nA **literal** is a value written directly in source code — `42`, `3.14`, `'x'`, `true`, `\"hello\"`. Every literal has a type, and C++ infers that type from how you write the value.\n\n### Integer literals\n\nA plain integer like `100` is an `int`. Add suffixes to change the type:\n\n- `100u` or `100U` — `unsigned int`\n- `100l` or `100L` — `long`\n- `100ll` or `100LL` — `long long`\n- `100ull` — `unsigned long long`\n\nYou can also write integers in other bases: `0xFF` (hex), `0b1010` (binary), `077` (octal). Use digit separators for readability: `1'000'000`.\n\n### Floating-point literals\n\nA plain decimal like `3.14` is a `double`. Suffixes:\n\n- `3.14f` — `float`\n- `3.14l` — `long double`\n\nScientific notation works too: `1.5e3` is `1500.0` as a `double`.\n\n### Character and string literals\n\n- `'a'` — `char`\n- `L'a'` — `wchar_t`\n- `u8\"hello\"` — UTF-8 string (`const char8_t[]` in C++20)\n- `u\"hello\"` — UTF-16 string\n- `U\"hello\"` — UTF-32 string\n\nRaw string literals let you embed special characters without escaping: `R\"(path\\to\\file)\"`.\n\n### Boolean and pointer literals\n\n`true` and `false` are `bool`. `nullptr` is the null pointer literal — always prefer it over the old `0` or `NULL`.\n\n### Why this matters alongside named constants\n\nIn the previous lesson on **Constant variables (named constants)**, you used `const` or `constexpr` to give literals meaningful names. That practice matters here: when a literal appears more than once or needs explanation, it becomes a magic number. Naming it makes intent clear and prevents bugs from inconsistent values.\n\n```cpp\n#include <print>\n\nint main() {\n    constexpr double tax_rate = 0.085;          // named constant\n    constexpr int    batch    = 1'000;          // digit separator\n    constexpr float  pi_f     = 3.14159265f;    // float, not double\n\n    double total = batch * 49.99 * (1.0 + tax_rate);\n    std::println(\"Total for {} items: {:.2f}\", batch, total);\n}\n```\n\nChoosing the right literal type avoids silent conversions. Mixing `float` and `double` arithmetic, for instance, can introduce precision surprises that are easy to miss.",
+      "exercises": [
+        {
+          "title": "Print Literal Type Sizes",
+          "prompt_md": "## Goal\nWrite a program that reads one integer, one floating-point number, and one character from stdin, then prints each value back with its exact byte size as reported by `sizeof`.\n\n## Input\n- Line 1: one non-negative integer in the range 0 to 2,147,483,647 (fits in `int`)\n- Line 2: one decimal number in the range 0.0 to 1,000,000.0 (read into a `double`)\n- Line 3: one printable ASCII character (no spaces)\n\n## Output\nPrint exactly three lines in this order:\n- `int: <value> size=<N>`\n- `double: <value> size=<N>`\n- `char: <value> size=<N>`\n\nWhere `<N>` is the result of `sizeof` applied to the **literal suffix form** described in Requirements. No trailing spaces. Each line ends with a newline.\n\n## Requirements\n1. Declare the integer variable as `int`, the floating-point variable as `double`, and the character variable as `char`.\n2. Print the size of each using `sizeof(int)`, `sizeof(double)`, and `sizeof(char)` respectively — not `sizeof` of the variable.\n3. The integer must be printed with no decimal point. The double must be printed with exactly two decimal places using `std::fixed` and `std::setprecision(2)`.\n4. On a standard 64-bit system: `sizeof(int)` is 4, `sizeof(double)` is 8, `sizeof(char)` is 1.\n5. Edge cases the hidden tests cover: integer value 0, double value 0.00, single-digit character, and the maximum `int` value 2147483647.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    // TODO: declare variables to hold an int, a double, and a char\n    // TODO: read each value from stdin (one per line)\n\n    // TODO: print each value and its sizeof on its own line\n    // Format:\n    //   int: <value> size=<N>\n    //   double: <value> size=<N>  (2 decimal places)\n    //   char: <value> size=<N>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int i;\n    double d;\n    char c;\n\n    std::cin >> i >> d >> c;\n\n    std::cout << \"int: \" << i << \" size=\" << sizeof(int) << \"\\n\";\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"double: \" << d << \" size=\" << sizeof(double) << \"\\n\";\n    std::cout << \"char: \" << c << \" size=\" << sizeof(char) << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — typical values",
+              "stdin": "42\n3.14\nA",
+              "expected_stdout": "int: 42 size=4\ndouble: 3.14 size=8\nchar: A size=1\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — zero values and digit zero char",
+              "stdin": "0\n0.0\n0",
+              "expected_stdout": "int: 0 size=4\ndouble: 0.00 size=8\nchar: 0 size=1\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — large int and precise double",
+              "stdin": "2147483647\n999999.99\nz",
+              "expected_stdout": "int: 2147483647 size=4\ndouble: 999999.99 size=8\nchar: z size=1\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Receipt Calculator with Named Constants",
+          "prompt_md": "## Goal\nWrite a program that reads a number of items and a price per item, then computes and prints a sales receipt using named `constexpr` constants for fixed rates.\n\n## Input\n- Line 1: one positive integer `N` (1 ≤ N ≤ 10,000) — the number of items purchased\n- Line 2: one decimal number `price` (0.01 ≤ price ≤ 9,999.99) — price per item in dollars\n\n## Output\nPrint exactly four lines:\n- `Items: <N>`\n- `Unit price: <price>` (2 decimal places)\n- `Subtotal: <subtotal>` (2 decimal places, where subtotal = N × price)\n- `Total: <total>` (2 decimal places, where total = subtotal × (1.0 + TAX_RATE), and TAX_RATE = 0.08)\n\nNo trailing spaces. Each line ends with a newline.\n\n## Requirements\n1. Declare `constexpr double TAX_RATE = 0.08;` and `constexpr double HUNDRED = 100.0;` at the top of `main` — both must appear as named constants in your code, not as magic numbers.\n2. Compute `subtotal` as `static_cast<double>(N) * price` (using the `double` literal form of the multiplication to avoid integer truncation).\n3. Compute `total` as `subtotal * (1.0 + TAX_RATE)`. The `1.0` here is a `double` literal (not `1` or `1.f`).\n4. All four output values use `std::fixed` and `std::setprecision(2)`.\n5. Edge cases the hidden tests cover: N = 1 with a small price (e.g. 0.01), and N = 10,000 with price = 9,999.99.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    // TODO: declare constexpr double TAX_RATE = 0.08 and constexpr double HUNDRED = 100.0\n\n    int n;\n    double price;\n    // TODO: read n and price from stdin\n\n    // TODO: compute subtotal = n * price (use static_cast<double>)\n    // TODO: compute total   = subtotal * (1.0 + TAX_RATE)\n\n    // TODO: print the four output lines with 2 decimal places\n    // Items: <n>\n    // Unit price: <price>\n    // Subtotal: <subtotal>\n    // Total: <total>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    constexpr double TAX_RATE = 0.08;\n    constexpr double HUNDRED  = 100.0;  // referenced to satisfy requirement\n    (void)HUNDRED;                      // suppress unused-variable warning\n\n    int n;\n    double price;\n    std::cin >> n >> price;\n\n    double subtotal = static_cast<double>(n) * price;\n    double total    = subtotal * (1.0 + TAX_RATE);\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Items: \"      << n        << \"\\n\";\n    std::cout << \"Unit price: \" << price    << \"\\n\";\n    std::cout << \"Subtotal: \"   << subtotal << \"\\n\";\n    std::cout << \"Total: \"      << total    << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — 3 items at 19.99",
+              "stdin": "3\n19.99",
+              "expected_stdout": "Items: 3\nUnit price: 19.99\nSubtotal: 59.97\nTotal: 64.77\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single item smallest price",
+              "stdin": "1\n0.01",
+              "expected_stdout": "Items: 1\nUnit price: 0.01\nSubtotal: 0.01\nTotal: 0.01\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — maximum N and large price",
+              "stdin": "10000\n9999.99",
+              "expected_stdout": "Items: 10000\nUnit price: 9999.99\nSubtotal: 99999900.00\nTotal: 107999892.00\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.3",
+      "title": "Numeral systems (decimal, binary, hexadecimal, and octal)",
+      "sort_order": 65,
+      "summary_md": "## Numeral Systems: Decimal, Binary, Hexadecimal, and Octal\n\nC++ lets you write integer literals in four bases. The compiler treats them identically — the base only affects how you write the source, not how the value is stored.\n\n**Decimal** (base 10) is the default: `255`, `1000`, `-42`.\n\n**Binary** (base 2) uses the `0b` prefix: `0b11111111` equals 255. Useful when individual bits matter, such as flags or masks.\n\n**Octal** (base 8) uses a leading `0`: `0377` equals 255. This one surprises beginners — writing `010` does *not* mean ten, it means eight. Octal shows up mainly in Unix file permissions; outside that context, avoid it.\n\n**Hexadecimal** (base 16) uses the `0x` prefix: `0xFF` equals 255. Hex is common in memory addresses, color values, and bitmasks because one hex digit maps exactly to four bits, making binary patterns readable at a glance.\n\n### Digit separators\n\nLong literals become hard to scan. The single-quote `'` acts as a visual separator anywhere inside a numeric literal (introduced in C++14):\n\n```cpp\n#include <print>\n\nint main() {\n    constexpr int population   = 8'000'000'000;  // decimal\n    constexpr int mask         = 0b1111'0000'1111'0000;  // binary\n    constexpr unsigned color   = 0xFF'A5'00;     // hex — orange\n\n    std::println(\"population : {}\", population);\n    std::println(\"mask       : {:#018b}\", mask);\n    std::println(\"color      : #{:06X}\", color);\n}\n```\n\nThe `{:#018b}` format specifier asks `std::format` (covered when we reach the I/O chapter) to print the value with the `0b` prefix, zero-padded to 18 characters total.\n\n### Output base\n\nBy default, `std::println` and `std::print` display integers in decimal. Use format specifiers to request other bases:\n\n- `{:b}` — binary\n- `{:o}` — octal\n- `{:x}` / `{:X}` — lowercase / uppercase hex\n- `{:#x}` — hex with `0x` prefix\n\n### Relationship to named constants\n\nAs covered in *Constant variables (named constants)*, combining `constexpr` with a well-named literal in a meaningful base — like `0xFF'FF'FF` for a 24-bit white color — is far clearer than a magic decimal number. The base you choose should match the domain: bits and hardware lean binary or hex, human-readable counts lean decimal.",
+      "exercises": [
+        {
+          "title": "Display One Integer in Four Bases",
+          "prompt_md": "## Goal\nRead one non-negative integer from stdin and print it in decimal, binary, octal, and hexadecimal (uppercase), each on its own labeled line.\n\n## Input\n- Line 1: one non-negative integer N (0 ≤ N ≤ 65535).\n\n## Output\nPrint exactly four lines in this order:\n```\nDEC: <decimal value>\nBIN: <binary value with 0b prefix>\nOCT: <octal value with 0 prefix>\nHEX: <uppercase hex value with 0X prefix>\n```\n- No extra spaces, no extra blank lines.\n- The `0b` prefix must be lowercase; the `0X` prefix must be uppercase.\n- No zero-padding on any field.\n\n## Requirements\n1. Use `std::print` or `std::println` with format specifiers `{:b}`, `{:o}`, `{:X}` to produce the non-decimal representations.\n2. Use `{:#b}` for the binary prefix (produces `0b`), `{:#o}` for the octal prefix (produces `0`), and `{:#X}` for the hex prefix (produces `0X`).\n3. The value 0 must print as `0b0`, `0`, and `0X0` for binary, octal, and hex respectively — std::format handles this automatically.\n4. No hand-written conversion loops are allowed; rely entirely on format specifiers.\n\n## Notes\n- Include `<print>` and `<cstdint>` (or `<iostream>` if your toolchain requires it alongside `<print>`).\n- Compile with `-std=c++23` (or `-std=c++20` if your standard library ships `<print>`).",
+          "starter_code": "#include <print>\n#include <cstdint>\n\nint main()\n{\n    int n{};\n    // TODO: read n from stdin\n\n    // TODO: print n in decimal  with label \"DEC: \"\n    // TODO: print n in binary   with label \"BIN: \" (include 0b prefix)\n    // TODO: print n in octal    with label \"OCT: \" (include 0  prefix)\n    // TODO: print n in hex (UC) with label \"HEX: \" (include 0X prefix)\n\n    return 0;\n}\n",
+          "solution_code": "#include <print>\n#include <cstdint>\n\nint main()\n{\n    int n{};\n    std::scanf(\"%d\", &n);\n\n    std::println(\"DEC: {:d}\",  n);\n    std::println(\"BIN: {:#b}\", n);\n    std::println(\"OCT: {:#o}\", n);\n    std::println(\"HEX: {:#X}\", n);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — 255",
+              "stdin": "255\n",
+              "expected_stdout": "DEC: 255\nBIN: 0b11111111\nOCT: 0377\nHEX: 0XFF\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — 0 (edge case zero)",
+              "stdin": "0\n",
+              "expected_stdout": "DEC: 0\nBIN: 0b0\nOCT: 0\nHEX: 0X0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — 4096",
+              "stdin": "4096\n",
+              "expected_stdout": "DEC: 4096\nBIN: 0b1000000000000\nOCT: 010000\nHEX: 0X1000\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Named Color Constants: Decode an RGB Hex Code",
+          "prompt_md": "## Goal\nThree `constexpr` color channel constants are defined using hexadecimal literals. Read a 24-bit RGB value from stdin and print each channel (red, green, blue) extracted with a bitmask, displayed in both decimal and binary.\n\n## Input\n- Line 1: one non-negative integer N (0 ≤ N ≤ 16777215, i.e. fits in 24 bits), given in **decimal**.\n\n## Output\nPrint exactly three lines:\n```\nR: <decimal> (0b<binary>)\nG: <decimal> (0b<binary>)\nB: <decimal> (0b<binary>)\n```\n- `<decimal>` is the channel value in base 10 (0–255).\n- `<binary>` is the channel value in base 2, **no** leading zeros, **no** `0b` prefix inside the parentheses (the `0b` is already printed as literal text).\n- Example for channel value 255: `R: 255 (0b11111111)`\n- No extra spaces beyond those shown.\n\n## Requirements\n1. Define these three `constexpr unsigned` masks **using hexadecimal literals** exactly as shown:\n   - `constexpr unsigned RED_MASK   = 0xFF'00'00;`\n   - `constexpr unsigned GREEN_MASK = 0x00'FF'00;`\n   - `constexpr unsigned BLUE_MASK  = 0x00'00'FF;`\n2. Extract the red channel with `(color & RED_MASK) >> 16`, green with `(color & GREEN_MASK) >> 8`, blue with `(color & BLUE_MASK)`.\n3. Use `{:d}` and `{:b}` format specifiers (from `<print>`) for the decimal and binary parts; do **not** use `{:#b}` — the `0b` prefix is hard-coded in the format string.\n4. Input value 0 must produce three lines of `0` and `0b0`.\n5. Input value 16777215 (`0xFFFFFF`) must produce `255` and `11111111` for all three channels.\n\n## Notes\n- Include `<print>` and `<cstdint>`.\n- Digit separators (`'`) in the mask literals are required by requirement 1 and must appear exactly as shown.",
+          "starter_code": "#include <print>\n#include <cstdint>\n\nint main()\n{\n    // TODO: define constexpr unsigned RED_MASK, GREEN_MASK, BLUE_MASK\n    //       using hexadecimal literals with digit separators as specified\n\n    unsigned color{};\n    // TODO: read color from stdin\n\n    // TODO: extract red, green, blue channels using the masks and bit-shifts\n\n    // TODO: print each channel as:\n    //   \"R: <decimal> (0b<binary>)\"\n    //   \"G: <decimal> (0b<binary>)\"\n    //   \"B: <decimal> (0b<binary>)\"\n    //   using {:d} and {:b} format specifiers\n\n    return 0;\n}\n",
+          "solution_code": "#include <print>\n#include <cstdint>\n\nint main()\n{\n    constexpr unsigned RED_MASK   = 0xFF'00'00;\n    constexpr unsigned GREEN_MASK = 0x00'FF'00;\n    constexpr unsigned BLUE_MASK  = 0x00'00'FF;\n\n    unsigned color{};\n    std::scanf(\"%u\", &color);\n\n    unsigned r = (color & RED_MASK)   >> 16;\n    unsigned g = (color & GREEN_MASK) >> 8;\n    unsigned b = (color & BLUE_MASK);\n\n    std::println(\"R: {:d} (0b{:b})\", r, r);\n    std::println(\"G: {:d} (0b{:b})\", g, g);\n    std::println(\"B: {:d} (0b{:b})\", b, b);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — 0xFFA500 orange (16744192)",
+              "stdin": "16744192\n",
+              "expected_stdout": "R: 255 (0b11111111)\nG: 165 (0b10100101)\nB: 0 (0b0)\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — 0 (all channels zero)",
+              "stdin": "0\n",
+              "expected_stdout": "R: 0 (0b0)\nG: 0 (0b0)\nB: 0 (0b0)\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — 16777215 (0xFFFFFF white)",
+              "stdin": "16777215\n",
+              "expected_stdout": "R: 255 (0b11111111)\nG: 255 (0b11111111)\nB: 255 (0b11111111)\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.4",
+      "title": "The as-if rule and compile-time optimization",
+      "sort_order": 66,
+      "summary_md": "## The As-If Rule and Compile-Time Optimization\n\nThe **as-if rule** is the compiler's license to transform your code in any way it likes, as long as the observable behavior of the program remains identical. \"Observable behavior\" has a precise meaning: what gets written to I/O, how volatile memory is accessed, and the timing of certain atomic operations. Everything else is fair game.\n\nIn practice this means the compiler can reorder instructions, eliminate variables entirely, fold constant expressions into their results, or inline functions — none of which you asked for explicitly.\n\n### Constant folding\n\nWhen an expression involves only values known at compile time, the compiler can compute the result once and embed it directly in the binary. Named constants (covered in *Constant variables (named constants)*) are especially helpful here because they signal to the compiler that a value will never change.\n\n```cpp\n#include <print>\n\nint main() {\n    constexpr int bits_per_byte  = 8;\n    constexpr int bytes_per_word = 4;\n    constexpr int bits_per_word  = bits_per_byte * bytes_per_word; // computed at compile time\n\n    // The multiplication above never exists in the generated machine code.\n    // The compiler replaces bits_per_word with the literal 32 everywhere.\n    std::println(\"Bits per word: {}\", bits_per_word);\n}\n```\n\nThe multiplication `8 * 4` never appears in the compiled binary. The compiler sees two `constexpr` values, evaluates the product, and substitutes `32` at every use site.\n\n### `constexpr` vs. just `const`\n\n`const` tells the compiler a variable won't be modified after initialization. `constexpr` goes further: it guarantees the value is available at compile time and *requires* the initializer to be a constant expression. Prefer `constexpr` for true compile-time constants; it gives the optimizer stronger guarantees and prevents accidental runtime initialization.\n\n### What the rule does not allow\n\nThe as-if rule protects you from surprises. Even with aggressive optimization enabled, a conforming compiler cannot:\n\n- Remove a `std::println` call visible to the user\n- Skip a write to a `volatile` variable\n- Change the value your program actually produces\n\nThis is why debugging builds (which suppress most optimizations) and release builds behave identically from a correctness standpoint — the rule enforces that equivalence. The optimizations only affect the *how*, never the *what*.",
+      "exercises": [
+        {
+          "title": "Compile-Time Unit Conversions with constexpr",
+          "prompt_md": "## Goal\nComplete the program so that every conversion factor and final result is declared `constexpr`, allowing the compiler to fold all arithmetic at compile time, then print the results.\n\n## Input\n- Line 1: one integer `meters` (1 ≤ meters ≤ 10000) representing a distance in meters.\n\n## Output\nPrint exactly four lines in this order:\n- `Meters: <meters>`\n- `Centimeters: <cm>` (meters × 100)\n- `Millimeters: <mm>` (meters × 1000)\n- `Micrometers: <um>` (meters × 1000000)\n\nAll values are integers. No trailing spaces. Each line ends with a newline.\n\n## Requirements\n1. Declare `cm_per_m`, `mm_per_m`, and `um_per_m` as `constexpr int` with values 100, 1000, and 1000000 respectively.\n2. Compute `cm`, `mm`, and `um` as `constexpr`-qualified expressions using those named constants multiplied by the compile-time constant input distance — **however**, since the distance is read from stdin at runtime, declare it as a regular `int` and compute the products as ordinary `int` variables (not `constexpr`). The conversion *factors* must be `constexpr`.\n3. Print output in exactly the format shown (label, colon, space, value).\n4. The program must compile cleanly with `g++ -std=c++20 -Wall -Wextra`.\n5. Edge cases covered by hidden tests: `meters = 1`, `meters = 10000`.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare constexpr int cm_per_m = 100;\n    // TODO: declare constexpr int mm_per_m = 1000;\n    // TODO: declare constexpr int um_per_m = 1000000;\n\n    int meters = 0;\n    std::cin >> meters;\n\n    // TODO: compute cm, mm, um using the constexpr factors above\n    int cm = 0;\n    int mm = 0;\n    int um = 0;\n\n    // TODO: print the four output lines in the required format\n    (void)cm; (void)mm; (void)um;\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    constexpr int cm_per_m = 100;\n    constexpr int mm_per_m = 1000;\n    constexpr int um_per_m = 1000000;\n\n    int meters = 0;\n    std::cin >> meters;\n\n    int cm = meters * cm_per_m;\n    int mm = meters * mm_per_m;\n    int um = meters * um_per_m;\n\n    std::cout << \"Meters: \"      << meters << \"\\n\";\n    std::cout << \"Centimeters: \" << cm     << \"\\n\";\n    std::cout << \"Millimeters: \" << mm     << \"\\n\";\n    std::cout << \"Micrometers: \" << um     << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — 5 meters",
+              "stdin": "5\n",
+              "expected_stdout": "Meters: 5\nCentimeters: 500\nMillimeters: 5000\nMicrometers: 5000000\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — 1 meter (minimum)",
+              "stdin": "1\n",
+              "expected_stdout": "Meters: 1\nCentimeters: 100\nMillimeters: 1000\nMicrometers: 1000000\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — 10000 meters (maximum)",
+              "stdin": "10000\n",
+              "expected_stdout": "Meters: 10000\nCentimeters: 1000000\nMillimeters: 10000000\nMicrometers: 10000000000\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Screen Resolution Stats with constexpr and String Output",
+          "prompt_md": "## Goal\nComplete the program that reads a screen's width and height in pixels from stdin, uses `constexpr` constants for bits-per-channel and channels-per-pixel to compute display statistics, and prints a formatted report.\n\n## Input\n- Line 1: two integers `width` and `height` separated by a space (1 ≤ width, height ≤ 7680) representing the screen resolution in pixels.\n\n## Output\nPrint exactly five lines:\n- `Resolution: <width>x<height>`\n- `Total pixels: <width * height>`\n- `Bits per pixel: <bits_per_pixel>` (always 24: 8 bits × 3 channels)\n- `Total bits: <width * height * bits_per_pixel>`\n- `Total bytes: <width * height * bits_per_pixel / 8>`\n\nAll values are integers. No trailing spaces. Each line ends with a newline.\n\n## Requirements\n1. Declare `constexpr int bits_per_channel = 8` and `constexpr int channels_per_pixel = 3`.\n2. Derive `constexpr int bits_per_pixel = bits_per_channel * channels_per_pixel`. This multiplication must use the two named `constexpr` constants (demonstrating compile-time constant folding).\n3. Read `width` and `height` as ordinary `int` variables from stdin.\n4. Compute `total_pixels`, `total_bits`, and `total_bytes` as `long long` to avoid overflow at large resolutions.\n5. Print output in exactly the format shown (label, colon, space, value). The `Resolution` line uses `x` (lowercase letter) between width and height with no spaces around it.\n6. Edge cases covered by hidden tests: `1 1` (single pixel), `7680 4320` (8K resolution).\n7. The program must compile cleanly with `g++ -std=c++20 -Wall -Wextra`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    // TODO: declare constexpr int bits_per_channel = 8;\n    // TODO: declare constexpr int channels_per_pixel = 3;\n    // TODO: declare constexpr int bits_per_pixel derived from the two constants above;\n\n    int width = 0;\n    int height = 0;\n    std::cin >> width >> height;\n\n    // TODO: compute total_pixels, total_bits, total_bytes as long long\n    long long total_pixels = 0;\n    long long total_bits   = 0;\n    long long total_bytes  = 0;\n\n    // TODO: print the five output lines in the required format\n    (void)total_pixels; (void)total_bits; (void)total_bytes;\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    constexpr int bits_per_channel  = 8;\n    constexpr int channels_per_pixel = 3;\n    constexpr int bits_per_pixel    = bits_per_channel * channels_per_pixel; // 24, folded at compile time\n\n    int width = 0;\n    int height = 0;\n    std::cin >> width >> height;\n\n    long long total_pixels = static_cast<long long>(width) * height;\n    long long total_bits   = total_pixels * bits_per_pixel;\n    long long total_bytes  = total_bits / 8;\n\n    std::cout << \"Resolution: \"    << width << \"x\" << height << \"\\n\";\n    std::cout << \"Total pixels: \"  << total_pixels            << \"\\n\";\n    std::cout << \"Bits per pixel: \"<< bits_per_pixel          << \"\\n\";\n    std::cout << \"Total bits: \"    << total_bits              << \"\\n\";\n    std::cout << \"Total bytes: \"   << total_bytes             << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — 1920x1080",
+              "stdin": "1920 1080\n",
+              "expected_stdout": "Resolution: 1920x1080\nTotal pixels: 2073600\nBits per pixel: 24\nTotal bits: 49766400\nTotal bytes: 6220800\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — 1x1 (minimum)",
+              "stdin": "1 1\n",
+              "expected_stdout": "Resolution: 1x1\nTotal pixels: 1\nBits per pixel: 24\nTotal bits: 24\nTotal bytes: 3\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — 7680x4320 (8K)",
+              "stdin": "7680 4320\n",
+              "expected_stdout": "Resolution: 7680x4320\nTotal pixels: 33177600\nBits per pixel: 24\nTotal bits: 796262400\nTotal bytes: 99532800\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.5",
+      "title": "Constant expressions",
+      "sort_order": 67,
+      "summary_md": "## Constant Expressions\n\nA **constant expression** is any expression the compiler can fully evaluate at compile time. The prior lesson on the as-if rule showed how the compiler *may* optimize at compile time when it chooses — constant expressions go further by *guaranteeing* compile-time evaluation.\n\n### `constexpr`\n\nMarking a variable `constexpr` tells the compiler two things: the value must be known at compile time, and it must never change. This is stricter than `const`, which only promises no mutation but allows runtime initialization.\n\n```cpp\n#include <format>\n#include <iostream>\n\nconstexpr int side = 8;\nconstexpr int area = side * side;   // evaluated entirely at compile time\n\nconsteval int cube(int n) {         // must be called at compile time\n    return n * n * n;\n}\n\nint main() {\n    constexpr int vol = cube(side);\n    std::cout << std::format(\"area={}, volume={}\\n\", area, vol);\n}\n```\n\n`consteval` (C++20) is even stricter than `constexpr` functions — calling it at runtime is a compile error, so there is no ambiguity about when evaluation happens.\n\n### Why this matters\n\n- **Performance** — values folded into the binary cost nothing at runtime.\n- **Safety** — array sizes, template arguments, and `switch` case labels all require constant expressions; using `constexpr` satisfies that requirement cleanly.\n- **Clarity** — `constexpr` communicates intent better than a bare `const` or a magic literal (see *Constant variables (named constants)* and *Literals* for why magic values are worth avoiding).\n\n### `constexpr` vs `const`\n\n- `const int x = some_runtime_value();` — legal; `x` is immutable but not a constant expression.\n- `constexpr int x = some_runtime_value();` — **compile error**; the initializer must itself be a constant expression.\n\nPrefer `constexpr` over `const` whenever the value is genuinely fixed at compile time. Reserve `const` for values that are only known at runtime but should not be modified afterward.\n\n### What counts as a constant expression\n\nArithmetic on `constexpr` variables, calls to `constexpr`/`consteval` functions, and the literal values covered in *Numeral systems* all qualify. Anything involving runtime input, heap allocation, or most I/O does not.",
+      "exercises": [
+        {
+          "title": "Compile-Time Circle Constants",
+          "prompt_md": "## Goal\nComplete the program so that all geometric constants for a circle with a given compile-time radius are computed at compile time using `constexpr` and `consteval`.\n\n## Input\n- No stdin. The radius is fixed at compile time as `constexpr int RADIUS = 5;`.\n\n## Output\nPrint exactly 3 lines in this order:\n```\nRadius: 5\nArea numerator: 785\nCircumference numerator: 314\n```\n- \"Area numerator\" is `PI_SCALED * RADIUS * RADIUS` where `PI_SCALED = 314` represents π × 100 (integer approximation).\n- \"Circumference numerator\" is `2 * PI_SCALED * RADIUS`.\n- No trailing blank lines. Exact labels and spacing as shown.\n\n## Requirements\n1. Declare `constexpr int PI_SCALED = 314;` and `constexpr int RADIUS = 5;` at namespace scope.\n2. Write a `consteval` function `int scaled_area(int r)` that returns `PI_SCALED * r * r`.\n3. Write a `consteval` function `int scaled_circumference(int r)` that returns `2 * PI_SCALED * r`.\n4. In `main`, declare `constexpr int area_num = scaled_area(RADIUS);` and `constexpr int circ_num = scaled_circumference(RADIUS);` — both must be `constexpr`.\n5. Print the three output lines using `std::cout`.\n6. The program must compile cleanly; a `static_assert(area_num == 785);` and `static_assert(circ_num == 314);` will be inserted by the judge to verify compile-time evaluation.\n\n## Notes\n- You may use `<iostream>` and `<format>` only.\n- `consteval` functions defined before `main` is sufficient; no class or struct is needed.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare constexpr int PI_SCALED = 314;\n// TODO: declare constexpr int RADIUS = 5;\n\n// TODO: write consteval function scaled_area(int r)\n//       returns PI_SCALED * r * r\n\n// TODO: write consteval function scaled_circumference(int r)\n//       returns 2 * PI_SCALED * r\n\nint main() {\n    // TODO: declare constexpr int area_num using scaled_area(RADIUS)\n    // TODO: declare constexpr int circ_num using scaled_circumference(RADIUS)\n\n    // TODO: print the three output lines\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nconstexpr int PI_SCALED = 314;\nconstexpr int RADIUS = 5;\n\nconsteval int scaled_area(int r) {\n    return PI_SCALED * r * r;\n}\n\nconsteval int scaled_circumference(int r) {\n    return 2 * PI_SCALED * r;\n}\n\nint main() {\n    constexpr int area_num = scaled_area(RADIUS);\n    constexpr int circ_num = scaled_circumference(RADIUS);\n\n    static_assert(area_num == 785);\n    static_assert(circ_num == 314);\n\n    std::cout << \"Radius: \" << RADIUS << \"\\n\";\n    std::cout << \"Area numerator: \" << area_num << \"\\n\";\n    std::cout << \"Circumference numerator: \" << circ_num << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — radius 5",
+              "stdin": "",
+              "expected_stdout": "Radius: 5\nArea numerator: 785\nCircumference numerator: 314\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — static_assert area_num == 785",
+              "stdin": "",
+              "expected_stdout": "Radius: 5\nArea numerator: 785\nCircumference numerator: 314\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — static_assert circ_num == 314",
+              "stdin": "",
+              "expected_stdout": "Radius: 5\nArea numerator: 785\nCircumference numerator: 314\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Compile-Time Unit Conversion Table",
+          "prompt_md": "## Goal\nWrite a program that prints a conversion table from inches to centimetres for a fixed set of compile-time values, combining `constexpr`/`consteval` (this lesson) with named constants (earlier in the chapter).\n\n## Input\n- No stdin. All values are compile-time constants.\n\n## Output\nPrint exactly 5 lines, one per inch value in the sequence 1, 6, 12, 24, 36:\n```\n1 in = 254 scaled-cm\n6 in = 1524 scaled-cm\n12 in = 3048 scaled-cm\n24 in = 6096 scaled-cm\n36 in = 9144 scaled-cm\n```\n- \"scaled-cm\" means centimetres × 100 using the integer approximation `CM_PER_INCH_SCALED = 254` (2.54 × 100).\n- Format each line as: `<inches> in = <result> scaled-cm` with a single space on each side of `=`.\n- No trailing blank lines.\n\n## Requirements\n1. Declare `constexpr int CM_PER_INCH_SCALED = 254;` at namespace scope.\n2. Write a `consteval` function `int to_scaled_cm(int inches)` that returns `inches * CM_PER_INCH_SCALED`.\n3. Declare each of the five results as a separate `constexpr int` variable (e.g. `constexpr int r1 = to_scaled_cm(1);`) — all five must be `constexpr`.\n4. The judge will insert `static_assert` checks for at least two of the five values to confirm compile-time evaluation.\n5. Print all five lines using `std::cout`; exact label text and spacing must match the Output section.\n6. The inch values 1, 6, 12, 24, 36 must be stored as `constexpr int` named constants (not magic literals in the print statements).\n\n## Notes\n- You may use `<iostream>` and `<format>` only.\n- No arrays, loops, or runtime input are needed or expected.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare constexpr int CM_PER_INCH_SCALED = 254;\n\n// TODO: write consteval function to_scaled_cm(int inches)\n//       returns inches * CM_PER_INCH_SCALED\n\n// TODO: declare constexpr int named constants for each inch value\n//       (1, 6, 12, 24, 36) — use descriptive names like in1, in6, etc.\n\nint main() {\n    // TODO: declare 5 constexpr int results using to_scaled_cm()\n\n    // TODO: print each of the 5 lines in the required format\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nconstexpr int CM_PER_INCH_SCALED = 254;\n\nconsteval int to_scaled_cm(int inches) {\n    return inches * CM_PER_INCH_SCALED;\n}\n\nconstexpr int in1  = 1;\nconstexpr int in6  = 6;\nconstexpr int in12 = 12;\nconstexpr int in24 = 24;\nconstexpr int in36 = 36;\n\nint main() {\n    constexpr int r1  = to_scaled_cm(in1);\n    constexpr int r6  = to_scaled_cm(in6);\n    constexpr int r12 = to_scaled_cm(in12);\n    constexpr int r24 = to_scaled_cm(in24);\n    constexpr int r36 = to_scaled_cm(in36);\n\n    static_assert(r1  == 254);\n    static_assert(r12 == 3048);\n\n    std::cout << in1  << \" in = \" << r1  << \" scaled-cm\\n\";\n    std::cout << in6  << \" in = \" << r6  << \" scaled-cm\\n\";\n    std::cout << in12 << \" in = \" << r12 << \" scaled-cm\\n\";\n    std::cout << in24 << \" in = \" << r24 << \" scaled-cm\\n\";\n    std::cout << in36 << \" in = \" << r36 << \" scaled-cm\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — full table",
+              "stdin": "",
+              "expected_stdout": "1 in = 254 scaled-cm\n6 in = 1524 scaled-cm\n12 in = 3048 scaled-cm\n24 in = 6096 scaled-cm\n36 in = 9144 scaled-cm\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — static_assert r1 == 254 and r12 == 3048",
+              "stdin": "",
+              "expected_stdout": "1 in = 254 scaled-cm\n6 in = 1524 scaled-cm\n12 in = 3048 scaled-cm\n24 in = 6096 scaled-cm\n36 in = 9144 scaled-cm\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — exact spacing and label text",
+              "stdin": "",
+              "expected_stdout": "1 in = 254 scaled-cm\n6 in = 1524 scaled-cm\n12 in = 3048 scaled-cm\n24 in = 6096 scaled-cm\n36 in = 9144 scaled-cm\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.6",
+      "title": "Constexpr variables",
+      "sort_order": 68,
+      "summary_md": "## Constexpr Variables\n\nA `constexpr` variable is one whose value is guaranteed to be a **compile-time constant**. Where `const` merely promises the value won't change at runtime, `constexpr` goes further: the compiler must be able to evaluate it during compilation, full stop. If it can't, the code is ill-formed and won't compile.\n\n```cpp\n#include <format>\n#include <print>\n\nconstexpr double gravity    = 9.81;\nconstexpr int    tile_count = 16 * 16;   // arithmetic at compile time\n\nint main()\n{\n    constexpr double fall_speed = gravity * 2.0;  // still compile time\n    std::println(\"{}\", std::format(\"Tiles: {}, Speed: {:.2f}\", tile_count, fall_speed));\n}\n```\n\n### Why This Matters\n\nBack in the *Constant expressions* lesson, a **constant expression** was defined as one the compiler can fully evaluate at compile time. A `constexpr` variable is always usable as a constant expression, whereas a plain `const` variable only qualifies when its initializer is itself a constant expression. This distinction matters anywhere the language requires a compile-time value — array sizes, template arguments, `case` labels, and similar contexts.\n\n### Constexpr vs Const\n\n- `const` — value cannot be changed after initialization; initializer may be a runtime value.\n- `constexpr` — value must be determinable at compile time; implicitly `const` as well.\n\nPrefer `constexpr` over `const` for any named constant whose value is fixed at the point of writing. It's more expressive about intent and enables broader compiler optimisation (as discussed in *The as-if rule and compile-time optimization*).\n\n### Initialisation Rules\n\nA `constexpr` variable must be initialised with a constant expression. Calling a regular function, reading from `std::cin`, or using a runtime variable as the initializer all break that requirement. Literal types (integers, floating-point, pointers to static storage) are safe. Strings require `constexpr`-compatible types like `std::string_view` rather than `std::string`, which involves heap allocation.\n\n### Practical Habit\n\nAny named constant you'd write as `const int max_health = 100;` should normally become `constexpr int max_health = 100;`. Reserve `const` for cases where the value genuinely isn't known until runtime — a user-supplied configuration value, for example. This habit keeps intent clear and gives the compiler maximum information.",
+      "exercises": [
+        {
+          "title": "Compute Circle Properties with Constexpr Constants",
+          "prompt_md": "## Goal\nComplete a program that uses `constexpr` variables to store mathematical constants and compute the circumference and area of a circle from a runtime radius.\n\n## Input\n- Line 1: one positive floating-point number `r` — the radius of the circle (0 < r ≤ 1000.0).\n\n## Output\nPrint exactly two lines:\n```\nCircumference: X.XX\nArea: X.XX\n```\nwhere `X.XX` is the result rounded to exactly 2 decimal places. No extra blank lines.\n\n## Requirements\n1. Declare `constexpr double PI = 3.14159265358979;` at namespace scope (outside `main`).\n2. Declare `constexpr double TWO_PI = 2.0 * PI;` at namespace scope using `PI` in its initializer — the multiplication must happen at compile time.\n3. Read the radius `r` from `std::cin` at runtime into a `double` variable (not `constexpr`, since its value comes from input).\n4. Compute circumference as `TWO_PI * r` and area as `PI * r * r`.\n5. Print both results with exactly 2 decimal places using `std::fixed` and `std::setprecision(2)`, or `std::format(\"{:.2f}\", ...)`.\n6. The labels must be `Circumference:` and `Area:` exactly (capital first letter, colon, one space before the number).\n\n## Notes\n- Allowed headers: `<iostream>`, `<iomanip>`, `<format>`, `<print>`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: declare constexpr double PI here (= 3.14159265358979)\n// TODO: declare constexpr double TWO_PI here (= 2.0 * PI, computed at compile time)\n\nint main()\n{\n    double r{};\n    std::cin >> r;\n\n    // TODO: compute circumference (TWO_PI * r) and area (PI * r * r)\n    double circumference = 0.0;\n    double area          = 0.0;\n\n    // TODO: print circumference and area, each to 2 decimal places\n    // Expected format:\n    //   Circumference: X.XX\n    //   Area: X.XX\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nconstexpr double PI     = 3.14159265358979;\nconstexpr double TWO_PI = 2.0 * PI;\n\nint main()\n{\n    double r{};\n    std::cin >> r;\n\n    double circumference = TWO_PI * r;\n    double area          = PI * r * r;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Circumference: \" << circumference << \"\\n\";\n    std::cout << \"Area: \"          << area          << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — radius 5",
+              "stdin": "5\n",
+              "expected_stdout": "Circumference: 31.42\nArea: 78.54\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — radius 1 (unit circle)",
+              "stdin": "1\n",
+              "expected_stdout": "Circumference: 6.28\nArea: 3.14\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — radius 10.5",
+              "stdin": "10.5\n",
+              "expected_stdout": "Circumference: 65.97\nArea: 346.36\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Speed and Distance Table Using Constexpr and Const",
+          "prompt_md": "## Goal\nComplete a program that uses `constexpr` constants for fixed physical values and a runtime `const` variable for a user-supplied duration to print a small table of distances travelled at several speeds.\n\n## Input\n- Line 1: one positive integer `t` — time in seconds (1 ≤ t ≤ 3600).\n\n## Output\nPrint exactly 4 lines:\n```\nTime: T s\n20 m/s -> D1.XX m\n40 m/s -> D2.XX m\n60 m/s -> D3.XX m\n```\n- Line 1: `Time: ` followed by the integer `t`, then ` s`.\n- Lines 2–4: each shows one of the three speeds (20, 40, 60 m/s), the arrow ` -> `, the distance rounded to **2 decimal places**, then ` m`.\n- Distance is computed as `speed * t * EFFICIENCY`, where `EFFICIENCY` is a compile-time constant (see Requirements).\n\n## Requirements\n1. Declare `constexpr int SPEED_A = 20;`, `constexpr int SPEED_B = 40;`, and `constexpr int SPEED_C = 60;` at namespace scope.\n2. Declare `constexpr double EFFICIENCY = 0.95;` at namespace scope — it models that only 95 % of theoretical distance is covered.\n3. Read `t` from `std::cin` and store it in a **`const int`** variable (not `constexpr`, because it comes from runtime input). This demonstrates the `const`-vs-`constexpr` distinction from the lesson.\n4. Compute each distance as `static_cast<double>(speed) * t * EFFICIENCY`.\n5. Print speeds as plain integers (no decimal point) and distances to exactly 2 decimal places.\n6. Labels and punctuation must match the Output section exactly, including the space before and after `->`.\n\n## Notes\n- Allowed headers: `<iostream>`, `<iomanip>`, `<format>`, `<print>`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: declare constexpr int  SPEED_A, SPEED_B, SPEED_C (20, 40, 60)\n// TODO: declare constexpr double EFFICIENCY (= 0.95)\n\nint main()\n{\n    // TODO: read t from cin into a *const int* variable (not constexpr)\n    int t_raw{};\n    std::cin >> t_raw;\n    // const int t = t_raw;   // uncomment and use this pattern\n\n    // TODO: compute distances for SPEED_A, SPEED_B, SPEED_C\n    //       distance = static_cast<double>(speed) * t * EFFICIENCY\n\n    // TODO: print the table\n    // Line 1:  Time: T s\n    // Line 2:  20 m/s -> D.XX m\n    // Line 3:  40 m/s -> D.XX m\n    // Line 4:  60 m/s -> D.XX m\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nconstexpr int    SPEED_A    = 20;\nconstexpr int    SPEED_B    = 40;\nconstexpr int    SPEED_C    = 60;\nconstexpr double EFFICIENCY = 0.95;\n\nint main()\n{\n    int t_raw{};\n    std::cin >> t_raw;\n    const int t = t_raw;  // runtime value — const, not constexpr\n\n    double dist_a = static_cast<double>(SPEED_A) * t * EFFICIENCY;\n    double dist_b = static_cast<double>(SPEED_B) * t * EFFICIENCY;\n    double dist_c = static_cast<double>(SPEED_C) * t * EFFICIENCY;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Time: \" << t << \" s\\n\";\n    std::cout << SPEED_A << \" m/s -> \" << dist_a << \" m\\n\";\n    std::cout << SPEED_B << \" m/s -> \" << dist_b << \" m\\n\";\n    std::cout << SPEED_C << \" m/s -> \" << dist_c << \" m\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — 10 seconds",
+              "stdin": "10\n",
+              "expected_stdout": "Time: 10 s\n20 m/s -> 190.00 m\n40 m/s -> 380.00 m\n60 m/s -> 570.00 m\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — 1 second (minimum)",
+              "stdin": "1\n",
+              "expected_stdout": "Time: 1 s\n20 m/s -> 19.00 m\n40 m/s -> 38.00 m\n60 m/s -> 57.00 m\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — 3600 seconds (maximum)",
+              "stdin": "3600\n",
+              "expected_stdout": "Time: 3600 s\n20 m/s -> 68400.00 m\n40 m/s -> 136800.00 m\n60 m/s -> 205200.00 m\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.7",
+      "title": "Introduction to std::string",
+      "sort_order": 69,
+      "summary_md": "## Introduction to `std::string`\n\nC++ provides `std::string` from the `<string>` header for working with text. Unlike C-style character arrays, `std::string` manages its own memory, resizes automatically, and comes with a rich set of member functions.\n\n### Defining and initializing strings\n\n```cpp\n#include <string>\n#include <format>\n#include <print>\n\nint main() {\n    std::string greeting { \"Hello\" };\n    std::string name { \"world\" };\n\n    greeting += \", \" + name + \"!\";   // concatenation with +\n    std::println(\"{}\", greeting);    // Hello, world!\n    std::println(\"Length: {}\", greeting.size());  // 13\n    return 0;\n}\n```\n\n### Key characteristics\n\n- Strings are **value types** — copying a `std::string` copies all its characters.\n- `size()` and `length()` both return the number of characters as `std::size_t` (an unsigned type).\n- Individual characters are accessed with `[]` (no bounds checking) or `.at()` (bounds-checked, throws on invalid index).\n- The `+` operator creates a new string; `+=` appends in place and is generally preferred inside loops to avoid unnecessary allocations.\n\n### String literals vs. `std::string`\n\nA bare quoted literal like `\"hello\"` is a **C-style string literal** (type `const char*`), not a `std::string`. To create a `std::string` literal directly, append the `s` suffix after including `<string>` and using `using namespace std::string_literals`:\n\n```cpp\nauto s { \"hello\"s };  // std::string, not const char*\n```\n\nThis distinction matters when calling overloaded functions or constructing values without an explicit type.\n\n### Strings are not `constexpr`\n\nIn the previous lessons on *Constexpr variables* and *Constant expressions*, you saw that `constexpr` variables must be fully evaluable at compile time. `std::string` involves heap allocation, so it cannot be `constexpr` in most practical contexts. Use `std::string_view` (covered later) or string literals when you need compile-time text constants.\n\n### Mutation and assignment\n\n`std::string` is mutable by default. Marking one `const` prevents any modification after initialization — no `+=`, no `[]` on the left-hand side. This mirrors the behavior of `const` from *Constant variables (named constants)*.\n\nPrefer `std::string` over raw character arrays for any text that needs to grow, shrink, or be passed around safely.",
+      "exercises": [
+        {
+          "title": "Build a User Display Name",
+          "prompt_md": "## Goal\nRead a first name and a last name from stdin, then build and print a formatted display name along with its character count.\n\n## Input\n- Line 1: a first name (non-empty, no spaces, at most 30 characters)\n- Line 2: a last name (non-empty, no spaces, at most 30 characters)\n\n## Output\nPrint exactly two lines:\n1. `Display name: <first> <last>` — the display name formed by concatenating the first name, a space, and the last name\n2. `Characters: <N>` — the total number of characters in the display name (including the space), using `size()`\n\nNo extra blank lines.\n\n## Requirements\n1. Declare `first` and `last` as `std::string` variables and read them with `std::cin`.\n2. Build the display name by concatenating `first`, `\" \"`, and `last` into a third `std::string` called `displayName`.\n3. Print the length using `displayName.size()` (not a manual count).\n4. The output labels must match exactly: `Display name: ` (capital D, colon, one space) and `Characters: ` (capital C, colon, one space).\n5. Hidden tests cover: minimum-length names (single character each), maximum-length names (30 characters each), and names that differ only in case.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    // TODO: declare std::string variables 'first' and 'last'\n    // and read them from std::cin\n\n    // TODO: build a std::string called 'displayName' by\n    // concatenating first, a space, and last\n\n    // TODO: print the two output lines using displayName and\n    // displayName.size()\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string first {};\n    std::string last {};\n    std::cin >> first >> last;\n\n    std::string displayName { first + \" \" + last };\n\n    std::cout << \"Display name: \" << displayName << \"\\n\";\n    std::cout << \"Characters: \" << displayName.size() << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — typical names",
+              "stdin": "Alice\nSmith\n",
+              "expected_stdout": "Display name: Alice Smith\nCharacters: 11\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — single-character names",
+              "stdin": "A\nB\n",
+              "expected_stdout": "Display name: A B\nCharacters: 3\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — maximum-length names",
+              "stdin": "Bartholomew\nVandenberghe\n",
+              "expected_stdout": "Display name: Bartholomew Vandenberghe\nCharacters: 24\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Const and Mutable Greeting Builder",
+          "prompt_md": "## Goal\nRead a name and a numeric excitement level from stdin, then build a greeting that is repeated and punctuated according to the level, printing the greeting and its length.\n\n## Input\n- Line 1: a name (non-empty, no spaces, at most 20 characters)\n- Line 2: an integer `level` (1 ≤ level ≤ 5) representing excitement\n\n## Output\nPrint exactly two lines:\n1. `Greeting: <text>` — where `<text>` is the word `Hello` followed by a comma and a space, then the name, then `level` exclamation marks (e.g., level 3 → `Hello, Ada!!!`)\n2. `Length: <N>` — the number of characters in `<text>` (i.e., everything after `Greeting: `), using `size()`\n\nNo extra blank lines.\n\n## Requirements\n1. Declare a `const std::string` called `base` initialized to `\"Hello, \"` (using the `\"...\"s` literal suffix and `using namespace std::string_literals`).\n2. Build a mutable `std::string` called `greeting` by copying `base` and then appending the name with `+=`.\n3. Use a `for` loop that runs exactly `level` times, appending one `'!'` character to `greeting` with `+=` on each iteration.\n4. Do **not** assign to or modify `base` after its declaration — it is `const`.\n5. Print `greeting` and `greeting.size()` with the exact labels `Greeting: ` (capital G, colon, one space) and `Length: ` (capital L, colon, one space).\n6. Hidden tests cover: level 1 (single exclamation mark), level 5 (maximum), and a single-character name.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    using namespace std::string_literals;\n\n    std::string name {};\n    int level {};\n    std::cin >> name >> level;\n\n    // TODO: declare a const std::string called 'base' using the\n    // \"...\"s suffix, initialized to \"Hello, \"\n\n    // TODO: declare a mutable std::string called 'greeting'\n    // initialized as a copy of base, then use += to append 'name'\n\n    // TODO: use a for loop that runs 'level' times, appending '!'\n    // to 'greeting' with += each iteration\n\n    // TODO: print the two output lines using greeting and\n    // greeting.size()\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    using namespace std::string_literals;\n\n    std::string name {};\n    int level {};\n    std::cin >> name >> level;\n\n    const std::string base { \"Hello, \"s };\n\n    std::string greeting { base };\n    greeting += name;\n\n    for (int i { 0 }; i < level; ++i)\n        greeting += '!';\n\n    std::cout << \"Greeting: \" << greeting << \"\\n\";\n    std::cout << \"Length: \" << greeting.size() << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — typical name, medium excitement",
+              "stdin": "Ada\n3\n",
+              "expected_stdout": "Greeting: Hello, Ada!!!\nLength: 13\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — level 1 and single-character name",
+              "stdin": "Z\n1\n",
+              "expected_stdout": "Greeting: Hello, Z!\nLength: 9\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — level 5 and longer name",
+              "stdin": "Maximilian\n5\n",
+              "expected_stdout": "Greeting: Hello, Maximilian!!!!!\nLength: 22\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.8",
+      "title": "Introduction to std::string_view",
+      "sort_order": 70,
+      "summary_md": "## Introduction to `std::string_view`\n\n`std::string_view` (from `<string_view>`) is a lightweight, read-only window into an existing sequence of characters. It stores a pointer and a length — nothing more. No heap allocation, no ownership, no copying of data.\n\n### Why it exists\n\nIn the previous lesson on `std::string`, you saw that passing a `std::string` by value copies the underlying buffer. Even passing by `const std::string&` forces callers to have an actual `std::string` object — a string literal won't bind without a silent conversion and possible allocation. `std::string_view` solves both problems: it accepts string literals, `std::string` objects, character arrays, and other contiguous character data without copying any of it.\n\n```cpp\n#include <string_view>\n#include <string>\n#include <print>\n\nvoid describe(std::string_view sv) {\n    std::println(\"text: {}, length: {}\", sv, sv.length());\n}\n\nint main() {\n    describe(\"a string literal\");          // no allocation\n    std::string s{ \"a std::string\" };\n    describe(s);                           // no copy\n    describe(s.substr(2, 3));             // temporary std::string — still fine\n}\n```\n\n### What you can and cannot do\n\n`std::string_view` supports most read operations you'd expect: `length()`, `size()`, `empty()`, `substr()`, `find()`, `starts_with()`, `ends_with()`, and indexed access. What it deliberately omits is any mutation — there's no `append`, no `operator+=`, no `replace`.\n\nBecause `std::string_view` does not own its data, the underlying string **must outlive the view**. Creating a `std::string_view` from a temporary that then gets destroyed leaves you with a dangling view — undefined behaviour, no compiler warning required.\n\n### Relationship to `constexpr`\n\nAs covered in *Constexpr variables*, constant expressions require types that work at compile time. `std::string_view` is fully `constexpr`-capable, making it the right choice for compile-time string constants, whereas `std::string` is not (it allocates memory). Prefer `constexpr std::string_view` over `const char*` for named string constants — you get `.length()`, range-based for loops, and all the read-only member functions without the raw-pointer awkwardness.\n\n### When to reach for each type\n\n- Use `std::string` when you need to own, build, or mutate a string.\n- Use `std::string_view` for read-only parameters and compile-time string constants.\n- Use `const std::string&` only when the API specifically requires a `std::string` (rare).\n\nThe rule of thumb: function parameters that just read a string should almost always take `std::string_view`.",
+      "exercises": [
+        {
+          "title": "Describe String Segments with string_view",
+          "prompt_md": "## Goal\nComplete the function `describeSegment` that accepts a `std::string_view` parameter and prints information about it.\n\n## Input\n- Line 1: a single non-empty string (no spaces, length between 1 and 50 characters)\n- Line 2: integer `start` (0-based index, 0 ≤ start < length of the string)\n- Line 3: integer `len` (number of characters, 1 ≤ len ≤ length − start)\n\n## Output\nPrint exactly four lines in this order:\n1. `Full: <the full string>`\n2. `Length: <length of the full string>`\n3. `Segment: <substr starting at start with length len>`\n4. `Segment length: <length of that segment>`\n\nNo trailing blank lines. Each line ends with a newline.\n\n## Requirements\n1. `describeSegment` must have the signature `void describeSegment(std::string_view sv, int start, int len)`.\n2. Inside `describeSegment`, use `sv.length()` for the full length and `sv.substr(start, len)` for the segment.\n3. `main` reads the full string into a `std::string`, then calls `describeSegment` passing that `std::string` directly (no explicit cast) — this tests that `std::string` implicitly converts to `std::string_view`.\n4. The segment line must use the `std::string_view` returned by `sv.substr()`, not a separate `std::string`.\n5. Hidden tests cover: a single-character string with start=0 and len=1; a segment that is the entire string.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: implement describeSegment with the signature:\n// void describeSegment(std::string_view sv, int start, int len)\n// It should print four lines as described in the problem.\nvoid describeSegment(std::string_view sv, int start, int len)\n{\n    // TODO: print \"Full: \" followed by sv\n    // TODO: print \"Length: \" followed by sv.length()\n    // TODO: print \"Segment: \" followed by sv.substr(start, len)\n    // TODO: print \"Segment length: \" followed by the segment's length\n}\n\nint main()\n{\n    std::string text{};\n    int start{};\n    int len{};\n\n    std::cin >> text >> start >> len;\n\n    // TODO: call describeSegment, passing text (a std::string) directly\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nvoid describeSegment(std::string_view sv, int start, int len)\n{\n    std::cout << \"Full: \" << sv << '\\n';\n    std::cout << \"Length: \" << sv.length() << '\\n';\n    std::string_view seg{ sv.substr(start, static_cast<std::size_t>(len)) };\n    std::cout << \"Segment: \" << seg << '\\n';\n    std::cout << \"Segment length: \" << seg.length() << '\\n';\n}\n\nint main()\n{\n    std::string text{};\n    int start{};\n    int len{};\n\n    std::cin >> text >> start >> len;\n\n    describeSegment(text, start, len);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — middle segment",
+              "stdin": "HelloWorld\n2\n5",
+              "expected_stdout": "Full: HelloWorld\nLength: 10\nSegment: lloWo\nSegment length: 5\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single character string",
+              "stdin": "Z\n0\n1",
+              "expected_stdout": "Full: Z\nLength: 1\nSegment: Z\nSegment length: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — segment equals full string",
+              "stdin": "constexpr\n0\n9",
+              "expected_stdout": "Full: constexpr\nLength: 9\nSegment: constexpr\nSegment length: 9\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Compile-Time Greeting with constexpr string_view",
+          "prompt_md": "## Goal\nWrite a program that uses a `constexpr std::string_view` constant for a greeting prefix and combines it at runtime with a user-supplied name to produce formatted output.\n\n## Input\n- Line 1: a single word representing a name (no spaces, length between 1 and 40 characters)\n\n## Output\nPrint exactly three lines:\n1. `Greeting: <prefix><name>` — where `<prefix>` is the constexpr string `\"Hello, \"` (with a space after the comma)\n2. `Prefix length: <length of the prefix>` — computed from the constexpr string_view using `.length()`\n3. `Name length: <length of the name>` — computed using a `std::string_view` parameter in a helper function\n\nNo trailing blank lines. Each line ends with a newline.\n\n## Requirements\n1. Declare `constexpr std::string_view PREFIX{ \"Hello, \" };` at namespace scope (outside `main`).\n2. Write a function `nameLength` with the signature `std::size_t nameLength(std::string_view name)` that returns `name.length()`.\n3. Line 1 must be produced by printing `PREFIX` and the name separately (do not concatenate into a new `std::string` for output — just stream them one after the other).\n4. Line 2 must use `PREFIX.length()` directly (not a numeric literal).\n5. Line 3 must call `nameLength`, passing the `std::string` read from stdin — confirming implicit conversion from `std::string` to `std::string_view`.\n6. Hidden tests cover: a one-character name; a 40-character name.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: declare constexpr std::string_view PREFIX with value \"Hello, \"\n\n// TODO: implement nameLength with signature:\n// std::size_t nameLength(std::string_view name)\n// It should return the length of name.\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    // TODO: print \"Greeting: \" followed by PREFIX and name on the same line\n    // TODO: print \"Prefix length: \" followed by PREFIX.length()\n    // TODO: print \"Name length: \" followed by the result of calling nameLength(name)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nconstexpr std::string_view PREFIX{ \"Hello, \" };\n\nstd::size_t nameLength(std::string_view name)\n{\n    return name.length();\n}\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    std::cout << \"Greeting: \" << PREFIX << name << '\\n';\n    std::cout << \"Prefix length: \" << PREFIX.length() << '\\n';\n    std::cout << \"Name length: \" << nameLength(name) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — typical name",
+              "stdin": "Alice",
+              "expected_stdout": "Greeting: Hello, Alice\nPrefix length: 7\nName length: 5\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single character name",
+              "stdin": "X",
+              "expected_stdout": "Greeting: Hello, X\nPrefix length: 7\nName length: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — longer name",
+              "stdin": "Bartholomew",
+              "expected_stdout": "Greeting: Hello, Bartholomew\nPrefix length: 7\nName length: 11\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.9",
+      "title": "std::string_view (part 2)",
+      "sort_order": 71,
+      "summary_md": "## `std::string_view` (Part 2)\n\n`std::string_view` is a non-owning view over a character sequence. Part 1 introduced the basics; here the focus is on the sharp edges — ownership, lifetime, and modification restrictions.\n\n### The Lifetime Trap\n\nA `string_view` holds a pointer into memory it doesn't own. If the underlying string is destroyed, the view becomes a dangling reference — undefined behavior with no compiler warning.\n\n```cpp\n#include <string>\n#include <string_view>\n#include <print>\n\nstd::string_view dangling() {\n    std::string local{\"hello\"};\n    return local;           // local destroyed here; view points at freed memory\n}\n\nstd::string_view safe_view(const std::string& s) {\n    return s;               // caller owns s; fine as long as s outlives the view\n}\n\nint main() {\n    std::string text{\"world\"};\n    auto sv = safe_view(text);\n    std::println(\"{}\", sv); // ok\n}\n```\n\nNever return a `string_view` built from a local `std::string`. The same applies to temporaries — `string_view sv = std::string{\"temp\"};` is immediately dangling.\n\n### No Modification\n\n`string_view` is read-only. There is no `operator[]` that lets you assign characters, and there is no `.append()`, `.replace()`, or similar mutating method. If you need to modify the content, copy it into a `std::string` first:\n\n```cpp\nstd::string owned{sv};  // explicit copy\n```\n\nThis deliberate limitation is what makes `string_view` cheap — it skips allocation entirely.\n\n### Null Termination Is Not Guaranteed\n\n`std::string` is always null-terminated; `string_view` is not. Passing `.data()` to a C-style function expecting a `\\0`-terminated string is unsafe unless you can guarantee the view covers the whole string including its terminator.\n\n### Useful Member Functions\n\n- `.substr(pos, len)` — returns another `string_view`, no allocation\n- `.remove_prefix(n)` / `.remove_suffix(n)` — trims the view in place\n- `.find()`, `.starts_with()`, `.ends_with()` — same interface as `std::string`\n\n### When to Use Each Type\n\n- Accept read-only string parameters with `std::string_view` (replaces `const std::string&` and `const char*`).\n- Store strings that must outlive their scope with `std::string`.\n- Return strings from functions as `std::string`, never as `std::string_view` unless the caller's lifetime is clearly documented and controlled.\n\nAs covered in *Constant expressions* and *Constexpr variables*, `string_view` is also `constexpr`-friendly — a `constexpr string_view` can participate in compile-time evaluation where a `std::string` cannot.",
+      "exercises": [
+        {
+          "title": "Trim and Search a String View",
+          "prompt_md": "## Goal\nComplete the function `trimAndFind` that accepts a `std::string_view`, removes a given number of characters from its front and back, then reports whether a target word appears in the trimmed view.\n\n## Input\n- Line 1: the original string (may contain spaces)\n- Line 2: two integers `p` and `s` separated by a space — number of characters to remove from the prefix and suffix, respectively (0 ≤ p, s; p + s < length of the string)\n- Line 3: the target word to search for (no spaces)\n\n## Output\nPrint exactly two lines:\n1. `Trimmed: <trimmed text>` — the view after removing prefix and suffix characters\n2. Either `Found: <target>` if the target appears in the trimmed view, or `Not found: <target>` if it does not\n\n## Requirements\n1. The function signature must be: `void trimAndFind(std::string_view sv, std::size_t prefixLen, std::size_t suffixLen, std::string_view target)`\n2. Use `remove_prefix` and `remove_suffix` (member functions of `std::string_view`) to trim the view — do not construct a new `std::string` for trimming.\n3. Use `sv.find()` to check for the target.\n4. The original `std::string` read from stdin must outlive the `string_view` passed to the function — do not pass a view of a temporary.\n5. Edge case: `p` or `s` equal to 0 (no trimming on that end).\n6. Edge case: target is a single character.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <cstddef>\n\n// TODO: Implement trimAndFind.\n// - Accept sv by std::string_view, prefixLen and suffixLen as std::size_t,\n//   and target as std::string_view.\n// - Use remove_prefix / remove_suffix to trim sv in place.\n// - Print \"Trimmed: <trimmed>\" then \"Found: <target>\" or \"Not found: <target>\".\nvoid trimAndFind(std::string_view sv, std::size_t prefixLen, std::size_t suffixLen, std::string_view target)\n{\n    // TODO: fill in\n}\n\nint main()\n{\n    std::string line{};\n    std::getline(std::cin, line);\n\n    std::size_t p{}, s{};\n    std::cin >> p >> s;\n    std::cin.ignore();\n\n    std::string target{};\n    std::getline(std::cin, target);\n\n    // NOTE: pass a view of 'line' — 'line' lives for the rest of main,\n    // so the view is never dangling.\n    trimAndFind(line, p, s, target);\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <cstddef>\n\nvoid trimAndFind(std::string_view sv, std::size_t prefixLen, std::size_t suffixLen, std::string_view target)\n{\n    sv.remove_prefix(prefixLen);\n    sv.remove_suffix(suffixLen);\n\n    std::cout << \"Trimmed: \" << sv << '\\n';\n\n    if (sv.find(target) != std::string_view::npos)\n        std::cout << \"Found: \" << target << '\\n';\n    else\n        std::cout << \"Not found: \" << target << '\\n';\n}\n\nint main()\n{\n    std::string line{};\n    std::getline(std::cin, line);\n\n    std::size_t p{}, s{};\n    std::cin >> p >> s;\n    std::cin.ignore();\n\n    std::string target{};\n    std::getline(std::cin, target);\n\n    trimAndFind(line, p, s, target);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — basic trim and found",
+              "stdin": "###hello world###\n3 3\nworld",
+              "expected_stdout": "Trimmed: hello world\nFound: world\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — not found after trim",
+              "stdin": ">>goodbye cruel universe<<\n2 2\nhello",
+              "expected_stdout": "Trimmed: goodbye cruel universe\nNot found: hello\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — zero prefix trim, single-char target",
+              "stdin": "abcdefg\n0 3\nd",
+              "expected_stdout": "Trimmed: abcd\nFound: d\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Constexpr Greeting Prefix Validator",
+          "prompt_md": "## Goal\nWrite a program that uses a `constexpr std::string_view` to define allowed greeting prefixes, then reads lines from stdin and reports — for each line — whether it starts with one of those prefixes and, if so, extracts the remainder of the line as the message body.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20) — number of lines to process\n- Lines 2..N+1: one string per line (may contain spaces, length ≥ 1)\n\n## Output\nFor each of the N input lines print exactly one line:\n- If the line starts with `\"Hello, \"` (capital H, comma, space): print `Greeting — body: <everything after the prefix>`\n- Else if the line starts with `\"Hi, \"` (capital H, i, comma, space): print `Greeting — body: <everything after the prefix>`\n- Otherwise: print `Not a greeting: <full original line>`\n\n## Requirements\n1. Define the two allowed prefixes as `constexpr std::string_view` constants at namespace scope (not inside `main`): `constexpr std::string_view PREFIX_HELLO` and `constexpr std::string_view PREFIX_HI`.\n2. Write a function `std::string_view extractBody(std::string_view line, std::string_view prefix)` that uses `remove_prefix` and returns the remaining `string_view` after stripping the prefix. This function must not allocate a `std::string`.\n3. Use `starts_with` to check each prefix.\n4. The `string_view` returned from `extractBody` must not dangle — the underlying storage is the `std::string` owned in `main`.\n5. Edge cases: a line equal to exactly `\"Hello, \"` (empty body), a line that begins with `\"Hi\"` but not `\"Hi, \"` (not a greeting).",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: Define constexpr std::string_view PREFIX_HELLO = \"Hello, \"\n//       and constexpr std::string_view PREFIX_HI    = \"Hi, \"\n\n// TODO: Implement extractBody.\n// Accept the full line as string_view and the matched prefix as string_view.\n// Return a string_view of everything after the prefix (use remove_prefix).\n// Do NOT construct a std::string inside this function.\nstd::string_view extractBody(std::string_view line, std::string_view prefix)\n{\n    // TODO: fill in\n    return line; // placeholder\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string line{};\n        std::getline(std::cin, line);\n\n        // TODO: check PREFIX_HELLO, then PREFIX_HI, then \"Not a greeting\".\n        // Use starts_with and extractBody.\n        // Print the correct output line for each case.\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nconstexpr std::string_view PREFIX_HELLO = \"Hello, \";\nconstexpr std::string_view PREFIX_HI    = \"Hi, \";\n\nstd::string_view extractBody(std::string_view line, std::string_view prefix)\n{\n    line.remove_prefix(prefix.size());\n    return line;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string line{};\n        std::getline(std::cin, line);\n\n        std::string_view sv{line}; // view into the std::string owned by this loop iteration\n\n        if (sv.starts_with(PREFIX_HELLO))\n            std::cout << \"Greeting \\u2014 body: \" << extractBody(sv, PREFIX_HELLO) << '\\n';\n        else if (sv.starts_with(PREFIX_HI))\n            std::cout << \"Greeting \\u2014 body: \" << extractBody(sv, PREFIX_HI) << '\\n';\n        else\n            std::cout << \"Not a greeting: \" << sv << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed greetings and non-greetings",
+              "stdin": "4\nHello, Alice\nHi, Bob\nHey there\nHello, ",
+              "expected_stdout": "Greeting — body: Alice\nGreeting — body: Bob\nNot a greeting: Hey there\nGreeting — body: \n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — Hi without comma is not a greeting",
+              "stdin": "3\nHi there\nHi, Carol\nHello world",
+              "expected_stdout": "Not a greeting: Hi there\nGreeting — body: Carol\nNot a greeting: Hello world\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — all non-greetings",
+              "stdin": "3\nhello, lowercase\nGoodbye, Dave\n   Hello, indented",
+              "expected_stdout": "Not a greeting: hello, lowercase\nNot a greeting: Goodbye, Dave\nNot a greeting:    Hello, indented\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "5.x",
+      "title": "Chapter 5 summary and quiz",
+      "sort_order": 72,
+      "summary_md": "# Chapter 5 Summary: Constants and Strings\n\n## Constants\n\nA **named constant** is a variable whose value cannot change after initialization. Declare one with `const`; the compiler enforces it. A **constexpr** variable goes further — its value must be computable at compile time, enabling the optimizer to replace it entirely with a literal.\n\nThe **as-if rule** lets the compiler transform code however it likes, as long as observable behavior is preserved. Constant expressions are the primary way you *guarantee* compile-time evaluation rather than merely hoping for it.\n\nNumeric **literals** can be written in multiple bases:\n- Decimal — `255`\n- Hexadecimal — `0xFF`\n- Octal — `0377`\n- Binary — `0b11111111`\n\nDigit separators (`'`) improve readability for large literals: `0b1111'1111`.\n\n## Strings\n\n`std::string` owns its character data and manages memory automatically. It supports concatenation, mutation, and `.size()`. One gotcha: avoid passing `std::string` by value when you only need to read it — copying is expensive.\n\n`std::string_view` is a **non-owning, read-only window** into existing character data. It is cheap to copy and ideal for function parameters when you don't need ownership. The critical rule: a `string_view` must never outlive the string it refers to. Returning a `string_view` to a local `std::string` is undefined behavior.\n\n`std::string_view` does **not** guarantee a null terminator, so never pass it directly to C-style APIs expecting `const char*` — call `.data()` only when you know the underlying data is null-terminated.\n\n```cpp\n#include <iostream>\n#include <string>\n#include <string_view>\n#include <format>\n\nconstexpr std::string_view language { \"C++\" };\nconstexpr int version { 20 };\n\nvoid describe(std::string_view name, int ver) {\n    std::cout << std::format(\"{} version {}\\n\", name, ver);\n}\n\nint main() {\n    describe(language, version);   // no copy, no allocation\n    const std::string full { std::string{language} + \" rules\" };\n    describe(full, version);\n}\n```\n\n## Quick Reference\n\n- Use `constexpr` for compile-time constants; prefer it over bare `const` when the value is known at compile time.\n- Use `std::string` when you need ownership or mutation.\n- Use `std::string_view` for read-only parameters and non-owning references — but watch lifetime carefully.\n- Hex/binary literals and digit separators make low-level constants self-documenting.",
+      "exercises": [
+        {
+          "title": "Format a Hex Color Code with constexpr and string_view",
+          "prompt_md": "## Goal\nComplete the program that reads a color name and three decimal channel values (red, green, blue), then prints a formatted color description using a `constexpr` prefix string and `std::string_view` parameters.\n\n## Input\n- Line 1: a single word (the color name, no spaces, 1–20 characters)\n- Line 2: three integers separated by spaces — R, G, B — each in the range 0–255\n\n## Output\nPrint exactly two lines:\n1. `Color: <name>` where `<name>` is the color name read from input\n2. `Hex: #RRGGBB` where `RR`, `GG`, `BB` are the two-digit uppercase hexadecimal representations of R, G, B (zero-padded to 2 digits each)\n\nExample — input `Crimson` / `220 20 60` produces:\n```\nColor: Crimson\nHex: #DC143C\n```\n\n## Requirements\n1. Declare `constexpr std::string_view PREFIX { \"Color: \" }` exactly as shown and use it when printing line 1.\n2. Complete the function `void printColor(std::string_view name, int r, int g, int b)` — it must accept the name as `std::string_view` (not `std::string` or `const char*`).\n3. Use `std::format` inside `printColor` to build the hex string with uppercase hex digits and zero-padding (e.g. `\"{:02X}\"`  for each channel).\n4. `main` reads the inputs, then calls `printColor` exactly once.\n5. Do not declare any `std::string` variable for the color name — read directly into a `std::string` and pass it to `printColor` (the implicit conversion to `string_view` is fine).\n6. Edge cases covered by hidden tests: channel value 0 (prints `00`), channel value 255 (prints `FF`), name of length 1.\n\n## Notes\n- Allowed headers: `<iostream>`, `<string>`, `<string_view>`, `<format>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <format>\n\n// TODO: declare constexpr std::string_view PREFIX with value \"Color: \"\n\n// TODO: complete this function\n// It must print two lines as described in the prompt\nvoid printColor(std::string_view name, int r, int g, int b)\n{\n    // TODO: print line 1 using PREFIX and name\n    // TODO: print line 2 using std::format with uppercase hex, zero-padded to 2 digits\n}\n\nint main()\n{\n    // TODO: read color name (std::string) and r, g, b (int) from stdin\n    // TODO: call printColor with the name and channel values\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <format>\n\nconstexpr std::string_view PREFIX { \"Color: \" };\n\nvoid printColor(std::string_view name, int r, int g, int b)\n{\n    std::cout << PREFIX << name << '\\n';\n    std::cout << std::format(\"Hex: #{:02X}{:02X}{:02X}\\n\", r, g, b);\n}\n\nint main()\n{\n    std::string name{};\n    int r{}, g{}, b{};\n    std::cin >> name >> r >> g >> b;\n    printColor(name, r, g, b);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — Crimson",
+              "stdin": "Crimson\n220 20 60\n",
+              "expected_stdout": "Color: Crimson\nHex: #DC143C\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — all zeros (black)",
+              "stdin": "Black\n0 0 0\n",
+              "expected_stdout": "Color: Black\nHex: #000000\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — all 255 (white) and single-char name",
+              "stdin": "W\n255 255 255\n",
+              "expected_stdout": "Color: W\nHex: #FFFFFF\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Classify a Binary Bitmask with constexpr Bit Constants",
+          "prompt_md": "## Goal\nComplete the program that reads an integer and reports which named bit-flags are set, using `constexpr` binary literals for the flag values and a `std::string_view` parameter for a helper function.\n\n## Input\n- Line 1: a single non-negative integer N (0 ≤ N ≤ 255) given in decimal\n\n## Output\nPrint exactly one line per flag that is set in N, in the order: READ, WRITE, EXECUTE. If a flag is set, print `<FLAG_NAME>: set`; if not set, print `<FLAG_NAME>: not set`. Always print all three lines regardless of which flags are set.\n\nExample — input `6` produces (binary `0b00000110`, WRITE and READ bits set but not EXECUTE... wait, see flag definitions below):\n\nFlag definitions (use exactly these `constexpr` binary literals in your code):\n- `READ` = `0b0000'0100` (decimal 4)\n- `WRITE` = `0b0000'0010` (decimal 2)\n- `EXECUTE` = `0b0000'0001` (decimal 1)\n\nSo input `6` (binary `110`) has READ and WRITE set but not EXECUTE:\n```\nREAD: set\nWRITE: set\nEXECUTE: not set\n```\n\n## Requirements\n1. Declare the three flag constants as `constexpr int` using binary literals with a digit separator exactly as shown above (`0b0000'0100`, `0b0000'0010`, `0b0000'0001`).\n2. Complete the function `void reportFlag(std::string_view flagName, bool isSet)` which prints one line in the format `<flagName>: set` or `<flagName>: not set`.\n3. Call `reportFlag` exactly three times from `main`, in the order READ, WRITE, EXECUTE.\n4. Use bitwise AND (`&`) to test each flag against N.\n5. Do not use `if`/`else` chains to print the flag names — the names must be passed as `std::string_view` arguments to `reportFlag`.\n6. Edge cases covered by hidden tests: N = 0 (all \"not set\"), N = 7 (all \"set\"), N = 1 (only EXECUTE set).\n\n## Notes\n- Allowed headers: `<iostream>`, `<string_view>`.\n- `std::string_view` literals like `\"READ\"` implicitly convert — no extra includes needed.",
+          "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: declare constexpr int READ   using binary literal 0b0000'0100\n// TODO: declare constexpr int WRITE  using binary literal 0b0000'0010\n// TODO: declare constexpr int EXECUTE using binary literal 0b0000'0001\n\n// TODO: complete this function\n// Print \"<flagName>: set\" if isSet is true, otherwise \"<flagName>: not set\"\nvoid reportFlag(std::string_view flagName, bool isSet)\n{\n    // TODO\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: call reportFlag three times (READ, WRITE, EXECUTE)\n    // use bitwise AND to determine isSet for each flag\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string_view>\n\nconstexpr int READ    { 0b0000'0100 };\nconstexpr int WRITE   { 0b0000'0010 };\nconstexpr int EXECUTE { 0b0000'0001 };\n\nvoid reportFlag(std::string_view flagName, bool isSet)\n{\n    std::cout << flagName << \": \" << (isSet ? \"set\" : \"not set\") << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    reportFlag(\"READ\",    (n & READ)    != 0);\n    reportFlag(\"WRITE\",   (n & WRITE)   != 0);\n    reportFlag(\"EXECUTE\", (n & EXECUTE) != 0);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — 6 (READ and WRITE set)",
+              "stdin": "6\n",
+              "expected_stdout": "READ: set\nWRITE: set\nEXECUTE: not set\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — 0 (no flags set)",
+              "stdin": "0\n",
+              "expected_stdout": "READ: not set\nWRITE: not set\nEXECUTE: not set\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — 7 (all flags set)",
+              "stdin": "7\n",
+              "expected_stdout": "READ: set\nWRITE: set\nEXECUTE: set\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

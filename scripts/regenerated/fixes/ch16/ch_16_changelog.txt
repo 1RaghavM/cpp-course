@@ -1,0 +1,99 @@
+Chapter 16 Fixes Applied
+=========================
+
+Date: 2026-06-03
+Source: ch_16_audit.md findings
+
+BLOCKING FIXES (B1-B4) -- 12 test cases fixed
+-----------------------------------------------
+
+B1: 16.8 Ex1 "Sum and Count with Range-for"
+    - Added trailing \n to expected_stdout for all 3 test cases.
+    - Solution prints trailing newline via '\n'; expected_stdout must match.
+
+B2: 16.8 Ex2 "Normalise and Report Scores"
+    - Added trailing \n to expected_stdout for all 3 test cases.
+    - Same root cause as B1.
+
+B3: 16.9 Ex1 "Player stat lookup with enum indices"
+    - Added trailing \n to expected_stdout for all 3 test cases.
+    - Solution ends each line with '\n'; expected_stdout was missing final one.
+
+B4: 16.9 Ex2 "Season rainfall averages with enum indexing and loops"
+    - Added trailing \n to expected_stdout for all 3 test cases.
+    - Same root cause as B3.
+
+
+HIGH FIXES (H1-H4) -- Summary forward references
+--------------------------------------------------
+
+H1: 16.1 summary
+    - Replaced `std::array<T, N>` detailed syntax and "Prefer over C-style arrays"
+      recommendation with brief mention that says "covered in the next chapter."
+    - Replaced C-style array syntax `int arr[5]` with brief mention deferring to Ch 17.
+    - Updated "Container choice rules of thumb" to say std::array is "covered next
+      chapter" instead of recommending its template syntax.
+
+H2: 16.3 summary
+    - Replaced `std::print` (C++23, from <print>) with `std::cout` (C++20 compatible).
+    - Code example now uses <iostream> instead of <print>.
+
+H3: 16.7 summary
+    - Replaced `std::print` and `std::println` (C++23) with `std::cout` in the
+      printReverse code example.
+    - Added `static_cast<std::size_t>(i)` for operator[] indexing consistency.
+
+H4: 16.3 summary
+    - Removed `0z` literal suffix (C++23 size_t literal).
+    - Replaced `for (auto i = 0z; ...)` with `for (auto i = std::ssize(v) - std::ssize(v); ...)`
+      to initialize a ptrdiff_t zero without C++23 features.
+    - Updated text description of std::ssize option to remove 0z reference.
+
+
+MEDIUM FIXES (M1-M4)
+---------------------
+
+M1: 16.2 Ex1 "Vector Construction Sampler"
+    - Updated labels on test cases 2 and 3 to be more descriptive.
+    - NOTE: The expected_stdout remains identical across all 3 cases because
+      this exercise has no stdin input (all values hard-coded). Fundamentally
+      different test inputs are impossible without redesigning the exercise.
+
+M2: 16.3 Ex1 "Safe reverse traversal with std::ssize"
+    - Fixed starter code: `std::vector<int> v(n)` -> `std::vector<int> v(static_cast<std::size_t>(n))`
+    - Fixed starter code: `v[i]` -> `v[static_cast<std::size_t>(i)]` in read loop.
+    - Applied same fix to solution_code.
+    - Eliminates ironic signed-to-unsigned warning in an exercise about signed/unsigned safety.
+
+M3: 16.3 Ex2 "Find the last element below a threshold"
+    - Same starter code fix as M2.
+    - Same solution code fix as M2.
+
+M4: 16.10 Ex1 "Reserve and Report"
+    - Redesigned exercise to accept TWO inputs: r (reserve amount) and n (push count),
+      where n <= r. This makes shrink_to_fit observable when n < r.
+    - Updated prompt, starter code, solution code, and all 3 test cases.
+    - Test case 1: reserve 100, push 10 -- shrink releases 90 slots (sample).
+    - Test case 2: reserve 5, push 5 -- no excess, shrink is no-op.
+    - Test case 3: reserve 50, push 0 -- shrink on empty vector.
+
+
+NOT FIXED (audit recommendations deferred)
+-------------------------------------------
+
+M5: Chapter-wide exercise repetition (5 reverse-print, 3 running-sum exercises).
+    - Would require redesigning multiple exercises. Deferred to content review.
+
+M6: Same as M5.
+
+M7: Trailing-space convention inconsistency (16.1 uses trailing space, 16.2+ does not).
+    - Cosmetic inconsistency, not a correctness bug. Deferred.
+
+L1: 16.12 Ex1 contradictory auto capture instructions.
+    - Pedagogical wording issue. Deferred.
+
+L2: 16.7 Ex1 "do not cast to size_t" requirement conflicts with operator[].
+    - Wording issue. Deferred.
+
+L3: 16.12 Ex2 uses std::deque (not formally taught).
+    - Acceptable in context per audit. Deferred.

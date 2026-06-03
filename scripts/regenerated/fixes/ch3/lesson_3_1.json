@@ -1,0 +1,60 @@
+{
+  "number": "3.1",
+  "title": "Syntax and semantic errors",
+  "sort_order": 39,
+  "summary_md": "# Syntax and Semantic Errors\n\nC++ distinguishes between two fundamental error categories that behave quite differently.\n\n**Syntax errors** occur when your code violates C++ grammar rules. The compiler refuses to generate an executable and reports these before your program runs. Missing semicolons, mismatched braces, undeclared variables, and type mismatches are common examples. Because C++ is compiled, syntax errors are caught early -- a significant advantage over languages that only discover errors at runtime.\n\n**Semantic errors** represent valid C++ code that compiles successfully but does not behave as intended. Your program runs, but produces wrong results or crashes. This might mean logic errors in calculations, using the wrong operator, returning the wrong value from a function, or using an uninitialized variable. Many semantic errors will not cause immediate crashes; they silently produce incorrect output.\n\nThe C++ compiler helps prevent some semantic errors through static analysis. Type checking is strict -- you cannot accidentally pass the wrong type where another is expected. However, the compiler cannot detect logic errors like using `=` (assignment) when you meant `==` (comparison), or using `-` when you meant `+`.\n\nModern compilers with `-Wall -Wextra` flags catch many common mistakes as warnings.\n\n```cpp\n#include <iostream>\n\nint add(int a, int b)\n{\n    return a - b;  // Semantic error: subtraction instead of addition\n}\n\nint main()\n{\n    int x;           // Uninitialized -- using x now is undefined behavior\n    int y = 10;\n\n    // Syntax error example (if uncommented): missing semicolon\n    // int z = 5\n\n    std::cout << \"Result: \" << add(3, 4) << '\\n';  // Prints -1, not 7\n\n    return 0;\n}\n```\n\nBoth errors eventually require debugging. Syntax errors demand reading compiler messages carefully -- they pinpoint the problem line. Semantic errors require running your code, adding diagnostic output with `std::cout`, or reasoning through logic manually.\n\nThe investment in understanding error messages pays off quickly. C++'s compiled nature means you will fix categories of bugs before execution even begins. Lean on compiler warnings and treat them seriously.",
+  "exercises": [
+    {
+      "title": "Finding and Fixing Syntax Errors in Calculator",
+      "prompt_md": "# Finding and Fixing Syntax Errors in Calculator\n\nYou're given a program that is supposed to read two integers and print their sum, difference, and product. However, the code contains **syntax errors** that prevent it from compiling.\n\nYour task is to identify and fix all syntax errors so the program compiles and runs correctly.\n\n## Requirements:\n- Fix all syntax errors so the code compiles with `g++ -std=c++20 -Wall -Wextra`\n- The program should read two integers from input\n- Output the sum, difference, and product on separate lines\n- Do not change the overall logic or add new features\n\n## Example:\n```\nInput:\n5 3\n\nOutput:\nSum: 8\nDifference: 2\nProduct: 15\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a, b\n    std::cin >> a >> b;\n    \n    int sum = a + b\n    int diff = a - b;\n    int prod = a * b\n    \n    std::cout << \"Sum: \" << sum << std::endl\n    std::cout << \"Difference: \" << diff << std::endl\n    std::cout << \"Product: \" << prod << std::endl;\n    \n    return 0\n}",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    \n    int sum = a + b;\n    int diff = a - b;\n    int prod = a * b;\n    \n    std::cout << \"Sum: \" << sum << std::endl;\n    std::cout << \"Difference: \" << diff << std::endl;\n    std::cout << \"Product: \" << prod << std::endl;\n    \n    return 0;\n}",
+      "test_cases": [
+        {
+          "label": "Sample: Positive integers",
+          "stdin": "5 3\n",
+          "expected_stdout": "Sum: 8\nDifference: 2\nProduct: 15\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: Negative numbers",
+          "stdin": "-4 6\n",
+          "expected_stdout": "Sum: 2\nDifference: -10\nProduct: -24\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: Zero operand",
+          "stdin": "0 7\n",
+          "expected_stdout": "Sum: 7\nDifference: -7\nProduct: 0\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Detecting Semantic Errors in Arithmetic Functions",
+      "prompt_md": "# Detecting Semantic Errors in Arithmetic Functions\n\nYou're given a program with three functions that perform basic arithmetic. The code **compiles successfully** but contains **semantic errors** -- the functions produce wrong results.\n\nYour task is to identify and fix the semantic errors in each function:\n\n1. `computeSum` is supposed to return the sum of two integers, but it returns the wrong value.\n2. `computeProduct` is supposed to return the product of two integers, but it uses the wrong operator.\n3. `computeAverage` is supposed to return the integer average of three values, but the operator precedence is wrong.\n\n## Requirements:\n- Fix all semantic errors so each function returns the correct result\n- Do not change the function signatures or the `main` function\n- The program should compile and run without crashes\n\n## Example:\n```\nInput:\n6 4 8\n\nOutput:\nSum: 10\nProduct: 24\nAverage: 6\n```\n\n(Sum of 6+4=10, Product of 6*4=24, Average of (6+4+8)/3=6)",
+      "starter_code": "#include <iostream>\n\nint computeSum(int a, int b)\n{\n    return a - b;  // BUG: should be addition, not subtraction\n}\n\nint computeProduct(int a, int b)\n{\n    return a + b;  // BUG: should be multiplication, not addition\n}\n\nint computeAverage(int a, int b, int c)\n{\n    return a + b + c / 3;  // BUG: operator precedence -- division happens first\n}\n\nint main()\n{\n    int x{}, y{}, z{};\n    std::cin >> x >> y >> z;\n\n    std::cout << \"Sum: \" << computeSum(x, y) << '\\n';\n    std::cout << \"Product: \" << computeProduct(x, y) << '\\n';\n    std::cout << \"Average: \" << computeAverage(x, y, z) << '\\n';\n\n    return 0;\n}",
+      "solution_code": "#include <iostream>\n\nint computeSum(int a, int b)\n{\n    return a + b;\n}\n\nint computeProduct(int a, int b)\n{\n    return a * b;\n}\n\nint computeAverage(int a, int b, int c)\n{\n    return (a + b + c) / 3;\n}\n\nint main()\n{\n    int x{}, y{}, z{};\n    std::cin >> x >> y >> z;\n\n    std::cout << \"Sum: \" << computeSum(x, y) << '\\n';\n    std::cout << \"Product: \" << computeProduct(x, y) << '\\n';\n    std::cout << \"Average: \" << computeAverage(x, y, z) << '\\n';\n\n    return 0;\n}",
+      "test_cases": [
+        {
+          "label": "Sample: Positive integers",
+          "stdin": "6 4 8\n",
+          "expected_stdout": "Sum: 10\nProduct: 24\nAverage: 6\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: With zero",
+          "stdin": "0 5 10\n",
+          "expected_stdout": "Sum: 5\nProduct: 0\nAverage: 5\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: Negative numbers",
+          "stdin": "-3 9 6\n",
+          "expected_stdout": "Sum: 6\nProduct: -27\nAverage: 4\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -15,9 +15,17 @@ import {
 import { checkRateAndBudget } from "@/lib/rate/guard";
 import { computeTutorCostMicro } from "@/lib/ai/pricing";
 import { TUTOR_CONFIG } from "@/lib/ai/config";
+import { logTutorResponse } from "@/lib/statsig/server-events";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
+
+function bucketLatency(ms: number): string {
+  if (ms < 200) return "0-200";
+  if (ms < 800) return "200-800";
+  if (ms < 1500) return "800-1500";
+  return "1500+";
+}
 
 export async function POST(request: Request) {
   const supabase = createRouteClient();
@@ -146,6 +154,7 @@ export async function POST(request: Request) {
       tier,
       chapterTitle: lessonContext.chapterTitle,
       lessonTitle: lessonContext.lessonTitle,
+      priorLessonTitles: lessonContext.priorLessonTitles,
       editorCode: body.code ?? "",
       executionResult,
       learnerBackground: onboardingData?.background ?? null,
@@ -158,6 +167,8 @@ export async function POST(request: Request) {
     role: "user",
     content: userContent,
   });
+
+  const streamStartTime = Date.now();
 
   const result = streamText({
     model: tutorModel(),
@@ -200,6 +211,14 @@ export async function POST(request: Request) {
       } catch (e) {
         console.error("Failed to persist token usage", e);
       }
+
+      const latencyMs = Date.now() - streamStartTime;
+      logTutorResponse(userId, {
+        latency_ms_bucket: bucketLatency(latencyMs),
+        tokens_in: String(tokensIn),
+        tokens_out: String(tokensOut),
+        model: "gemini-2.5-flash",
+      }).catch(() => {});
     },
   });
 

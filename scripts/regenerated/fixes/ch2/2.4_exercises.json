@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Dimensions",
+    "prompt_md": "## Goal\n\nWrite a function `printRectangleInfo` that takes two `int` parameters -- `width` and `height` -- and prints the perimeter and area of the rectangle, each on its own line.\n\n## Input\n\nTwo integers on one line separated by a space.\n\n## Output\n\n```\nPerimeter: <value>\nArea: <value>\n```\n\n## Requirements\n\n1. Define `void printRectangleInfo(int width, int height)` that prints both lines.\n2. In `main`, read the two integers and call `printRectangleInfo`.\n3. Modifying `width` or `height` inside `printRectangleInfo` must not affect the values in `main` (pass-by-value guarantee).",
+    "starter_code": "#include <iostream>\n\n// TODO: Define printRectangleInfo(int width, int height)\n// It should print:\n//   Perimeter: <value>\n//   Area: <value>\n\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    // TODO: Call printRectangleInfo with width and height\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printRectangleInfo(int width, int height) {\n    std::cout << \"Perimeter: \" << 2 * (width + height) << '\\n';\n    std::cout << \"Area: \" << width * height << '\\n';\n}\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    printRectangleInfo(width, height);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 x 7 rectangle",
+        "is_sample": true,
+        "stdin": "4 7",
+        "expected_stdout": "Perimeter: 22\nArea: 28\n"
+      },
+      {
+        "label": "Hidden: 1 x 1 square",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Perimeter: 4\nArea: 1\n"
+      },
+      {
+        "label": "Hidden: 10 x 3 rectangle",
+        "is_sample": false,
+        "stdin": "10 3",
+        "expected_stdout": "Perimeter: 26\nArea: 30\n"
+      }
+    ]
+  },
+  {
+    "title": "Weighted Average",
+    "prompt_md": "## Goal\n\nWrite a function that computes a weighted average of two scores using parameters and return values together. This combines concepts from lessons 2.2 (return values) and 2.4 (parameters).\n\n## Input\n\nFour integers on one line separated by spaces: `score1`, `weight1`, `score2`, `weight2`.\n\n## Output\n\nThe integer weighted average on a single line: `(score1 * weight1 + score2 * weight2) / (weight1 + weight2)`\n\nNote: this uses integer division (truncation).\n\n## Requirements\n\n1. Define `int weightedAverage(int s1, int w1, int s2, int w2)` that returns the weighted average using the formula above.\n2. In `main`, read the four integers, call `weightedAverage`, and print the result followed by a newline.\n3. The function must not print anything -- all output happens in `main`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define int weightedAverage(int s1, int w1, int s2, int w2)\n// Return (s1 * w1 + s2 * w2) / (w1 + w2)\n\n\nint main() {\n    int s1{}, w1{}, s2{}, w2{};\n    std::cin >> s1 >> w1 >> s2 >> w2;\n\n    // TODO: Call weightedAverage and print the result followed by '\\n'\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint weightedAverage(int s1, int w1, int s2, int w2) {\n    return (s1 * w1 + s2 * w2) / (w1 + w2);\n}\n\nint main() {\n    int s1{}, w1{}, s2{}, w2{};\n    std::cin >> s1 >> w1 >> s2 >> w2;\n\n    std::cout << weightedAverage(s1, w1, s2, w2) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 80*3 + 90*2 = 420/5 = 84",
+        "is_sample": true,
+        "stdin": "80 3 90 2",
+        "expected_stdout": "84\n"
+      },
+      {
+        "label": "Hidden: equal weights",
+        "is_sample": false,
+        "stdin": "100 1 50 1",
+        "expected_stdout": "75\n"
+      },
+      {
+        "label": "Hidden: truncation case",
+        "is_sample": false,
+        "stdin": "70 2 90 3",
+        "expected_stdout": "82\n"
+      }
+    ]
+  }
+]

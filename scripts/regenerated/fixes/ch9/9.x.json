@@ -1,0 +1,76 @@
+{
+  "lesson": {
+    "number": "9.x",
+    "title": "Chapter 9 summary and quiz",
+    "sort_order": 123,
+    "summary_md": "# Chapter 9 Summary: Error Detection and Handling\n\nErrors fall into two broad categories: those you can catch at compile time and those that only appear at runtime. This chapter covered the full spectrum — from writing tests, through detecting logic bugs, to gracefully handling bad input and asserting invariants.\n\n## Key Ideas\n\n**Testing and coverage** — Unit tests verify that individual functions behave correctly for a range of inputs, including edge cases and boundary values. Code coverage measures how much of your code those tests actually exercise. High coverage doesn't guarantee correctness, but low coverage almost always hides bugs.\n\n**Semantic errors** are the sneakiest category: the code compiles and runs, but produces wrong results. Classic culprits include off-by-one errors, wrong operator precedence, accidentally comparing with `=` instead of `==`, and integer division where floating-point was intended.\n\n**Defensive programming** — When errors are detectable at runtime, you have three choices: handle them locally, pass them up to the caller, or terminate. `std::cin` failures taught us the concrete version of this: after a failed extraction you must clear the error flag and flush the buffer before any further input works.\n\n**Assertions** are for invariants that *must never* be false if your logic is correct. `assert` fires at runtime in debug builds; `static_assert` fires at compile time and costs nothing at runtime. Prefer `static_assert` whenever the condition can be evaluated at compile time.\n\n```cpp\n#include <cassert>\n#include <iostream>\n\nconstexpr double circle_area(double radius) {\n    return 3.14159265358979 * radius * radius;\n}\n\nint main() {\n    static_assert(sizeof(double) >= 8, \"need 64-bit double\");\n\n    double area = circle_area(5.0);\n    assert(area > 0.0 && \"area must be positive for positive radius\");\n    std::cout << \"Area: \" << area << '\\n';\n}\n```\n\nNotice both assertion types in one program: `static_assert` checks a compile-time property of the platform; `assert` guards a runtime precondition.\n\n## What to Watch Out For\n\n- Forgetting to call `std::cin.clear()` *and* `std::cin.ignore()` after a failed read — omitting either leaves the stream broken.\n- Using `assert` to validate user input — asserts are stripped in release builds, so they're for programmer errors only, not external data.\n- Treating 100 % code coverage as a correctness guarantee; you also need *meaningful* test values, not just any path through the code.\n\nThe skills from this chapter — especially distinguishing *expected* runtime errors from *programmer mistakes* — underpin every error-handling pattern you'll encounter in later chapters.",
+    "exercises": [
+      {
+        "title": "Safe Integer Division with cin Recovery",
+        "prompt_md": "## Goal\nComplete the function `safe_divide` and a `main` that reads pairs of integers, recovers from bad input, and prints either the integer quotient or an error message.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of division operations to perform.\n- Lines 2..N+1: each line contains two values intended to be integers, separated by a space. A line may contain non-integer tokens.\n\n## Output\nFor each of the N lines print exactly one of the following (no extra blank lines, no trailing spaces):\n- If either token on the line is not a valid integer: `Error: invalid input`\n- If the second integer is 0: `Error: division by zero`\n- Otherwise: `Result: Q` where Q is the integer quotient of the first value divided by the second (truncated toward zero, matching C++ integer division).\n\n## Requirements\n1. Implement `int safe_divide(int a, int b)` that uses `assert` to enforce `b != 0` (the caller guarantees this after checking).\n2. In `main`, attempt to read two integers with `std::cin`. If extraction fails, call `std::cin.clear()` then `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')` to recover, then print `Error: invalid input` and continue to the next iteration.\n3. If both integers are read successfully but the divisor is 0, print `Error: division by zero` without calling `safe_divide`.\n4. Otherwise call `safe_divide` and print the result.\n5. The program must handle N = 1 (minimum), all-valid inputs, all-invalid inputs, and a mix.",
+        "starter_code": "#include <cassert>\n#include <iostream>\n#include <limits>\n\n// TODO: implement safe_divide(int a, int b)\n// Use assert to enforce b != 0.\n// Return the integer quotient a / b.\nint safe_divide(int a, int b)\n{\n    // TODO\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int a{};\n        int b{};\n\n        // TODO: attempt to read a and b.\n        // If extraction fails:\n        //   call std::cin.clear()\n        //   call std::cin.ignore(...) to flush the bad line\n        //   print \"Error: invalid input\"\n        //   continue to next iteration\n        // If b == 0, print \"Error: division by zero\"\n        // Otherwise print \"Result: \" followed by safe_divide(a, b)\n    }\n\n    return 0;\n}\n",
+        "solution_code": "#include <cassert>\n#include <iostream>\n#include <limits>\n\nint safe_divide(int a, int b)\n{\n    assert(b != 0);\n    return a / b;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int a{};\n        int b{};\n\n        if (!(std::cin >> a >> b))\n        {\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            std::cout << \"Error: invalid input\\n\";\n            continue;\n        }\n\n        if (b == 0)\n        {\n            std::cout << \"Error: division by zero\\n\";\n            continue;\n        }\n\n        std::cout << \"Result: \" << safe_divide(a, b) << '\\n';\n    }\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "Sample — mix of valid, zero divisor, and bad input",
+            "stdin": "4\n10 3\n7 0\nhello 5\n-15 4\n",
+            "expected_stdout": "Result: 3\nError: division by zero\nError: invalid input\nResult: -3\n",
+            "is_sample": true
+          },
+          {
+            "label": "Hidden — all valid, N = 1",
+            "stdin": "1\n100 7\n",
+            "expected_stdout": "Result: 14\n",
+            "is_sample": false
+          },
+          {
+            "label": "Hidden — all error cases",
+            "stdin": "3\n0 0\nabc def\n5 0\n",
+            "expected_stdout": "Error: division by zero\nError: invalid input\nError: division by zero\n",
+            "is_sample": false
+          }
+        ]
+      },
+      {
+        "title": "Constexpr Lookup Table with static_assert and Runtime Bounds Check",
+        "prompt_md": "## Goal\nBuild a small program that uses `static_assert` to validate a compile-time lookup table of squares and `assert` to guard runtime index access, combining both assertion types from this chapter with `std::cin` recovery from earlier lessons.\n\n## Input\n- Line 1: integer Q (1 ≤ Q ≤ 20), the number of lookup operations.\n- Lines 2..Q+1: each line contains a single value intended to be an integer index.\n\n## Output\nFor each operation print exactly one line:\n- If the input is not a valid integer: `Error: invalid input`\n- If the index is in range [0, 9]: `square(I) = V` where I is the index and V is `I * I`.\n- If the index is out of range (< 0 or > 9): `Error: index I out of range` where I is the index.\n\nAfter all operations, print one final line: `Lookups complete.`\n\n## Requirements\n1. Declare a `constexpr int TABLE_SIZE = 10;` constant.\n2. Declare a C-style array `constexpr int squares[TABLE_SIZE] = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};` at namespace scope.\n3. Add a `static_assert(TABLE_SIZE > 0, \"table must have positive size\");` at namespace scope.\n4. Add a `static_assert(squares[0] == 0, \"first square must be 0\");` at namespace scope.\n5. Add a `static_assert(squares[9] == 81, \"last square must be 81\");` at namespace scope.\n6. Write a function `int lookupSquare(int index)` that uses `assert(index >= 0 && index < TABLE_SIZE && \"index out of bounds\")` and then returns `squares[index]`.\n7. In `main`, read Q, then for each operation:\n   - Attempt to read an integer. If extraction fails, clear the error, flush the line, print `Error: invalid input`, and continue.\n   - If the index is in range [0, TABLE_SIZE-1], call `lookupSquare` and print the result.\n   - If the index is out of range, print the error message (do NOT call `lookupSquare`).\n8. After all operations, print `Lookups complete.`\n9. Hidden tests cover: Q = 1 with a valid index, all out-of-range indices, a non-integer input, and boundary indices 0 and 9.",
+        "starter_code": "#include <cassert>\n#include <iostream>\n#include <limits>\n\n// TODO: declare constexpr int TABLE_SIZE = 10;\n// TODO: declare constexpr int squares[TABLE_SIZE] = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};\n\n// TODO: add three static_asserts:\n// 1. TABLE_SIZE > 0, \"table must have positive size\"\n// 2. squares[0] == 0, \"first square must be 0\"\n// 3. squares[9] == 81, \"last square must be 81\"\n\n// TODO: implement lookupSquare(int index)\n// - assert index >= 0 && index < TABLE_SIZE with message \"index out of bounds\"\n// - return squares[index]\nint lookupSquare(int index)\n{\n    // TODO\n    return 0;\n}\n\nint main()\n{\n    int q{};\n    std::cin >> q;\n\n    for (int i = 0; i < q; ++i)\n    {\n        int index{};\n\n        // TODO: attempt to read index\n        // If extraction fails: clear, ignore, print \"Error: invalid input\", continue\n        // If index is in [0, TABLE_SIZE-1]: call lookupSquare and print \"square(I) = V\"\n        // If index is out of range: print \"Error: index I out of range\"\n    }\n\n    std::cout << \"Lookups complete.\\n\";\n\n    return 0;\n}\n",
+        "solution_code": "#include <cassert>\n#include <iostream>\n#include <limits>\n\nconstexpr int TABLE_SIZE = 10;\nconstexpr int squares[TABLE_SIZE] = {0, 1, 4, 9, 16, 25, 36, 49, 64, 81};\n\nstatic_assert(TABLE_SIZE > 0, \"table must have positive size\");\nstatic_assert(squares[0] == 0, \"first square must be 0\");\nstatic_assert(squares[9] == 81, \"last square must be 81\");\n\nint lookupSquare(int index)\n{\n    assert(index >= 0 && index < TABLE_SIZE && \"index out of bounds\");\n    return squares[index];\n}\n\nint main()\n{\n    int q{};\n    std::cin >> q;\n\n    for (int i = 0; i < q; ++i)\n    {\n        int index{};\n\n        if (!(std::cin >> index))\n        {\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            std::cout << \"Error: invalid input\\n\";\n            continue;\n        }\n\n        if (index >= 0 && index < TABLE_SIZE)\n        {\n            std::cout << \"square(\" << index << \") = \" << lookupSquare(index) << '\\n';\n        }\n        else\n        {\n            std::cout << \"Error: index \" << index << \" out of range\\n\";\n        }\n    }\n\n    std::cout << \"Lookups complete.\\n\";\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "Sample — mix of valid, out-of-range, and bad input",
+            "stdin": "5\n0\n5\n10\n-1\nabc\n",
+            "expected_stdout": "square(0) = 0\nsquare(5) = 25\nError: index 10 out of range\nError: index -1 out of range\nError: invalid input\nLookups complete.\n",
+            "is_sample": true
+          },
+          {
+            "label": "Hidden — boundary indices 0 and 9",
+            "stdin": "2\n0\n9\n",
+            "expected_stdout": "square(0) = 0\nsquare(9) = 81\nLookups complete.\n",
+            "is_sample": false
+          },
+          {
+            "label": "Hidden — Q = 1, all out of range",
+            "stdin": "1\n99\n",
+            "expected_stdout": "Error: index 99 out of range\nLookups complete.\n",
+            "is_sample": false
+          }
+        ]
+      }
+    ]
+  },
+  "fixes_applied": [
+    {
+      "id": "C3",
+      "description": "Replaced exercise 9.x.2 (Compile-Time Buffer Validator using template<typename T, int N> struct FixedBuffer) with a non-template exercise that uses constexpr arrays, static_assert at namespace scope, assert for runtime bounds checking, and std::cin recovery — combining all major Ch 9 concepts without requiring templates (Ch 11) or structs (Ch 13)"
+    },
+    {
+      "id": "summary",
+      "description": "Fixed summary code example: moved static_assert outside constexpr function to namespace/block scope (more idiomatic), replaced std::println/std::format with std::cout, removed <format> and <print> includes"
+    },
+    {
+      "id": "9.x.1",
+      "description": "Exercise 9.x.1 (Safe Integer Division with cin Recovery) kept as-is — no forward reference issues found"
+    }
+  ]
+}

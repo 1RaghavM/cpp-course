@@ -1,0 +1,62 @@
+{
+  "lesson": "6.4",
+  "title": "Increment/decrement operators, and side effects",
+  "fixes": ["MODERATE: exercise 2 uses while loop (Ch 8 forward reference) — replaced with non-loop exercise", "MINOR: summary uses std::println/<print>"],
+  "summary_md": "# Increment/Decrement Operators, and Side Effects\n\nC++ provides `++` and `--` as shortcuts for adding or subtracting 1 from a variable. Each comes in two forms: **prefix** (`++x`) and **postfix** (`x++`).\n\n- **Prefix** modifies the variable first, then returns the updated value.\n- **Postfix** returns a *copy* of the original value, then modifies the variable.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x = 5;\n    std::cout << ++x << '\\n';  // prints 6, x is now 6\n    std::cout << x++ << '\\n';  // prints 6, x is now 7\n    std::cout << x   << '\\n';  // prints 7\n    --x;                       // x is now 6\n}\n```\n\nThe difference only matters when the expression's value is *used*. If you're incrementing a variable on its own line, prefix and postfix behave identically. That said, **prefer prefix** by habit — it expresses intent clearly and avoids generating a temporary copy (relevant for iterators and user-defined types, even if the compiler often optimizes it away).\n\n## Side Effects\n\nA **side effect** is any observable change that persists beyond the evaluation of an expression — writing to a variable, printing output, modifying memory. Increment and decrement operators are the classic source of side-effect confusion in C++.\n\nThe danger arises when the same variable is modified *and* read in a single expression, or modified more than once. For example:\n\n```cpp\nint i = 0;\nint result = i++ + i++;  // undefined behavior\n```\n\nThe order in which those two `i++` sub-expressions are evaluated is unspecified, and modifying `i` twice without a sequence point between them is **undefined behavior** — the program is formally broken, even if it appears to work on your machine. This was touched on in [Operator Precedence and Associativity]: precedence and associativity govern *grouping*, not *evaluation order*, so they don't save you here.\n\n**Rules to stay safe:**\n\n- Never modify a variable more than once in the same expression.\n- Never read a variable in the same expression where it is also modified, unless the read is to compute the new value (as in `x = x + 1`, which is fine).\n- When in doubt, split the expression across multiple statements. Clarity beats cleverness.\n\nModern C++ ranges and algorithms (covered in later chapters) often eliminate the need for manual increment loops entirely, sidestepping these hazards altogether.",
+  "exercises": [
+    {
+      "title": "Prefix vs Postfix Increment Trace",
+      "prompt_md": "## Goal\nComplete the function `applyIncrements` that applies a specific sequence of prefix and postfix increments/decrements to a starting integer and prints each intermediate result.\n\n## Input\n- Line 1: a single integer `x` (-100 <= x <= 100) that serves as the starting value.\n\n## Output\nPrint exactly 5 lines, each containing one integer, in this order:\n1. The result of `++x` (prefix increment), printed and kept.\n2. The result of `x++` (postfix increment), printed before the increment takes effect.\n3. The current value of `x` after the postfix increment.\n4. The result of `--x` (prefix decrement), printed and kept.\n5. The result of `x--` (postfix decrement), printed before the decrement takes effect.\n\nNo labels, no extra spaces — just the bare integer on each line.\n\n## Requirements\n1. Implement `void applyIncrements(int x)` which performs all operations on the local parameter `x` and prints the 5 values described above, one per line.\n2. Each printed value must reflect the exact semantics of prefix vs postfix: prefix returns the updated value; postfix returns the original value before modification.\n3. The operations are applied in the order listed above — each step uses the `x` that resulted from the previous step.\n4. The function must not use any helper variables — use `x` directly with `++`/`--` in the `std::cout` calls.\n5. Hidden tests cover `x = 0`, `x = -5`, and `x = 100`.\n",
+      "starter_code": "#include <iostream>\n\n// TODO: Implement applyIncrements(int x).\n// Apply the following sequence of operations on x, printing each result on its own line:\n//   1. Print the result of prefix increment (++x)\n//   2. Print the result of postfix increment (x++)\n//   3. Print the current value of x\n//   4. Print the result of prefix decrement (--x)\n//   5. Print the result of postfix decrement (x--)\n// Do not use any extra variables — use x directly in each output statement.\nvoid applyIncrements(int x)\n{\n    // TODO: fill in the 5 output statements\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    applyIncrements(x);\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nvoid applyIncrements(int x)\n{\n    std::cout << ++x << '\\n'; // 1. prefix increment: x becomes x+1, print new value\n    std::cout << x++ << '\\n'; // 2. postfix increment: print current value, then x becomes x+1\n    std::cout << x   << '\\n'; // 3. current value after postfix increment\n    std::cout << --x << '\\n'; // 4. prefix decrement: x becomes x-1, print new value\n    std::cout << x-- << '\\n'; // 5. postfix decrement: print current value, then x becomes x-1\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    applyIncrements(x);\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample: x = 5",
+          "stdin": "5",
+          "expected_stdout": "6\n6\n7\n6\n6\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden: x = 0",
+          "stdin": "0",
+          "expected_stdout": "1\n1\n2\n1\n1\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden: x = -5",
+          "stdin": "-5",
+          "expected_stdout": "-4\n-4\n-3\n-4\n-4\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Three-Step Running Product with Safe Increments",
+      "prompt_md": "## Goal\nRead exactly three integers and compute a running product, printing the result after each multiplication step. Use a counter variable with prefix increment to track the step number, demonstrating safe single-side-effect-per-statement style.\n\n## Input\n- Line 1: three space-separated integers `v1`, `v2`, `v3` (each between -10 and 10 inclusive)\n\n## Output\nPrint exactly three lines:\n- `After step 1: product = <v1>`\n- `After step 2: product = <v1 * v2>`\n- `After step 3: product = <v1 * v2 * v3>`\n\nThe label format is exactly `After step ` (capital A) followed by the step number, then `: product = `, then the product value.\n\n## Requirements\n1. Declare an `int counter = 0` and a `long long product = 1`.\n2. For each of the three values, multiply it into `product`, then increment `counter` with a standalone `++counter;` statement, then print the line using `counter` as the step number.\n3. The counter must be incremented using **prefix** `++counter` on its own line — never inside a larger expression.\n4. Do not use any loops — write three explicit read-multiply-increment-print blocks.\n5. Hidden tests cover: a product that becomes 0 (one value is 0), all negative values, and a mix of positive and negative values.\n\n## Notes\n- Use only `<iostream>`.\n- Use `long long` for the product to handle larger intermediate results safely.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int v1, v2, v3;\n    std::cin >> v1 >> v2 >> v3;\n\n    long long product = 1;\n    int counter = 0;\n\n    // Step 1: multiply v1 into product, increment counter, print\n    // TODO\n\n    // Step 2: multiply v2 into product, increment counter, print\n    // TODO\n\n    // Step 3: multiply v3 into product, increment counter, print\n    // TODO\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int v1, v2, v3;\n    std::cin >> v1 >> v2 >> v3;\n\n    long long product = 1;\n    int counter = 0;\n\n    product *= v1;\n    ++counter;\n    std::cout << \"After step \" << counter << \": product = \" << product << '\\n';\n\n    product *= v2;\n    ++counter;\n    std::cout << \"After step \" << counter << \": product = \" << product << '\\n';\n\n    product *= v3;\n    ++counter;\n    std::cout << \"After step \" << counter << \": product = \" << product << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample: 2 3 -1",
+          "stdin": "2 3 -1",
+          "expected_stdout": "After step 1: product = 2\nAfter step 2: product = 6\nAfter step 3: product = -6\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden: includes zero",
+          "stdin": "5 0 7",
+          "expected_stdout": "After step 1: product = 5\nAfter step 2: product = 0\nAfter step 3: product = 0\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden: all negative",
+          "stdin": "-3 -4 -2",
+          "expected_stdout": "After step 1: product = -3\nAfter step 2: product = 12\nAfter step 3: product = -24\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

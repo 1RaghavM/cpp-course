@@ -1,0 +1,62 @@
+{
+  "lesson": "6.1",
+  "title": "Operator precedence and associativity",
+  "fixes": ["CRITICAL: exercise 1 wrong test case expected outputs", "CRITICAL: exercise 2 wrong test case expected output", "MINOR: summary uses std::println and <print>"],
+  "summary_md": "## Operator Precedence and Associativity\n\nEvery expression with multiple operators needs a rule for evaluation order. C++ resolves this with **precedence** (which operator binds tighter) and **associativity** (left-to-right or right-to-left when precedence ties).\n\n### Precedence\n\nHigher-precedence operators bind their operands before lower-precedence ones. The classic example:\n\n```\n2 + 3 * 4   →   2 + (3 * 4)   →   14\n```\n\n`*` has higher precedence than `+`, so the multiplication groups first. Parentheses always override precedence — use them liberally when clarity matters.\n\nA few precedence landmarks worth memorising (highest to lowest, roughly):\n\n- Postfix `++`/`--`, function call `()`, subscript `[]`, member access `.` and `->`\n- Unary `!`, `~`, prefix `++`/`--`, unary `-`\n- `*`, `/`, `%`\n- `+`, `-`\n- Shift operators `<<`, `>>`\n- Relational `<`, `<=`, `>`, `>=`\n- Equality `==`, `!=`\n- Bitwise `&`, `^`, `|`\n- Logical `&&`, then `||`\n- Ternary `?:`\n- Assignment `=`, compound assignments `+=`, `*=`, etc.\n- Comma `,`\n\n### Associativity\n\nWhen two operators share the same precedence, associativity decides grouping. Most binary operators are **left-to-right**:\n\n```\n8 - 3 - 1   →   (8 - 3) - 1   →   4\n```\n\nAssignment and unary operators are **right-to-left**:\n\n```\na = b = 5   →   a = (b = 5)\n```\n\n### A Practical Example\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x = 2, y = 3, z = 4;\n\n    // Without precedence awareness this looks ambiguous\n    bool result = x + y * z > 10 && z != 0;\n    // Parsed as: (x + (y * z)) > 10) && (z != 0)\n    // →          (2 + 12) > 10  && true\n    // →          true && true   → true\n\n    std::cout << \"result = \" << (result ? \"true\" : \"false\") << '\\n';\n}\n```\n\n### The Practical Rule\n\nMemorising the full precedence table is less useful than developing two habits: parenthesise compound boolean expressions explicitly, and never rely on subtle precedence to make code \"clever.\" Code that requires a precedence table to understand is a maintenance burden.\n\nOne common trap: `&` and `|` bind *lower* than `==` and `!=`, so `x & mask == 0` parses as `x & (mask == 0)` — almost certainly not what you want. Parenthesise: `(x & mask) == 0`.",
+  "exercises": [
+    {
+      "title": "Predict Arithmetic Expression Results",
+      "prompt_md": "## Goal\nRead four integers and four operator-precedence expressions built from them, then print the evaluated result of each expression exactly as C++ computes it.\n\n## Input\n- Line 1: four integers `a b c d` separated by spaces (each in the range -100 to 100, `d` is guaranteed non-zero)\n\n## Output\nPrint exactly four lines, each with a label and its computed value:\n```\nexpr1: <value>\nexpr2: <value>\nexpr3: <value>\nexpr4: <value>\n```\nwhere the four expressions (using the input values in order) are:\n- `expr1`: `a + b * c - d` (tests `*` before `+`/`-`)\n- `expr2`: `a * b + c * d` (tests left-to-right when both are `*` vs `+`)\n- `expr3`: `a - b - c` (tests left-associativity of `-`)\n- `expr4`: `a + b * c % d` (tests `*` and `%` before `+`)\n\nNo trailing blank lines.\n\n## Requirements\n1. Declare four `int` variables (`a`, `b`, `c`, `d`) and read them from stdin.\n2. Compute each expression exactly as written above — do **not** add extra parentheses that change grouping; let operator precedence and associativity do the work.\n3. Print each result on its own line with the exact label format shown (lowercase label, colon, space, value).\n4. Edge cases covered by hidden tests: `a = 0`, `b = 0`, negative values, `d = 1`, and expressions that evaluate to a negative result.\n\n## Notes\n- Use `std::cout` for output.\n- Do not use `std::print` or `<print>` — use `<iostream>`.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a, b, c, d;\n    std::cin >> a >> b >> c >> d;\n\n    // TODO: compute and print expr1 = a + b * c - d\n    // TODO: compute and print expr2 = a * b + c * d\n    // TODO: compute and print expr3 = a - b - c\n    // TODO: compute and print expr4 = a + b * c % d\n    // Each line must look like:  exprN: <value>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a, b, c, d;\n    std::cin >> a >> b >> c >> d;\n\n    std::cout << \"expr1: \" << (a + b * c - d)   << '\\n';\n    std::cout << \"expr2: \" << (a * b + c * d)   << '\\n';\n    std::cout << \"expr3: \" << (a - b - c)       << '\\n';\n    std::cout << \"expr4: \" << (a + b * c % d)   << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — small positive values",
+          "stdin": "2 3 4 5",
+          "expected_stdout": "expr1: 9\nexpr2: 26\nexpr3: -5\nexpr4: 4\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — zeros and ones",
+          "stdin": "0 1 0 1",
+          "expected_stdout": "expr1: -1\nexpr2: 0\nexpr3: -1\nexpr4: 0\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — mixed negative values",
+          "stdin": "-3 4 -2 3",
+          "expected_stdout": "expr1: -14\nexpr2: -18\nexpr3: -5\nexpr4: -5\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Boolean Expression Evaluator with Bitwise Trap",
+      "prompt_md": "## Goal\nRead three integers and evaluate a set of boolean and bitwise expressions, printing whether each is true or false. The exercise highlights the precedence pitfall where `&` binds lower than `==`.\n\n## Input\n- Line 1: three integers `x mask threshold` separated by spaces.\n  - `x`: 0 to 255 (an 8-bit value)\n  - `mask`: 0 to 255 (a bitmask)\n  - `threshold`: -1000 to 1000\n\n## Output\nPrint exactly five lines in this format (use lowercase `true` or `false`):\n```\ncheck1: <true|false>\ncheck2: <true|false>\ncheck3: <true|false>\ncheck4: <true|false>\ncheck5: <true|false>\n```\nwhere the five checks are:\n- `check1`: `(x & mask) == 0` — masked bits are all clear\n- `check2`: `x > threshold && mask != 0` — compound relational/logical\n- `check3`: `x + mask > threshold || mask == 0` — addition before relational, `||` last\n- `check4`: `!(x == mask)` — unary `!` applied after equality\n- `check5`: `x >= 0 && x <= 255 && mask >= 0` — chained `&&` (left-to-right)\n\nNo trailing blank lines.\n\n## Requirements\n1. Declare three `int` variables (`x`, `mask`, `threshold`) and read them from stdin.\n2. Evaluate every expression exactly as written using natural C++ precedence — no extra parentheses except those already shown in `check1` and `check4`, which are required for correct semantics.\n3. Print `true` or `false` (not `1` or `0`) using `std::boolalpha`.\n4. Each output line must match the label format exactly (lowercase, colon, space, value).\n5. Edge cases covered by hidden tests: `mask = 0`, `x == mask`, `x = 0`, `threshold` negative, `x & mask` non-zero.\n\n## Notes\n- Enable `std::boolalpha` on `std::cout` before printing.\n- Use `<iostream>` only.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    std::cout << std::boolalpha;\n\n    int x, mask, threshold;\n    std::cin >> x >> mask >> threshold;\n\n    // TODO: evaluate and print check1 — (x & mask) == 0\n    // TODO: evaluate and print check2 — x > threshold && mask != 0\n    // TODO: evaluate and print check3 — x + mask > threshold || mask == 0\n    // TODO: evaluate and print check4 — !(x == mask)\n    // TODO: evaluate and print check5 — x >= 0 && x <= 255 && mask >= 0\n    // Each line must look like:  checkN: <true|false>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    std::cout << std::boolalpha;\n\n    int x, mask, threshold;\n    std::cin >> x >> mask >> threshold;\n\n    std::cout << \"check1: \" << ((x & mask) == 0)                    << '\\n';\n    std::cout << \"check2: \" << (x > threshold && mask != 0)         << '\\n';\n    std::cout << \"check3: \" << (x + mask > threshold || mask == 0)  << '\\n';\n    std::cout << \"check4: \" << (!(x == mask))                       << '\\n';\n    std::cout << \"check5: \" << (x >= 0 && x <= 255 && mask >= 0)   << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — typical bitmask scenario",
+          "stdin": "12 3 10",
+          "expected_stdout": "check1: true\ncheck2: true\ncheck3: true\ncheck4: true\ncheck5: true\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — mask zero, x equals mask",
+          "stdin": "0 0 -5",
+          "expected_stdout": "check1: true\ncheck2: false\ncheck3: true\ncheck4: false\ncheck5: true\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — x equals mask, threshold above sum",
+          "stdin": "15 15 100",
+          "expected_stdout": "check1: false\ncheck2: false\ncheck3: false\ncheck4: false\ncheck5: true\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

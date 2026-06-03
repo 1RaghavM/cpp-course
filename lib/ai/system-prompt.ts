@@ -37,6 +37,7 @@ export function buildSystemPrompt(params: {
   tier: number;
   chapterTitle: string;
   lessonTitle: string;
+  priorLessonTitles: string[];
   editorCode: string;
   executionResult: string | null;
   learnerBackground?: string | null;
@@ -48,6 +49,11 @@ export function buildSystemPrompt(params: {
     params.editorCode.length > 8192
       ? params.editorCode.slice(0, 8192) + "\n…[truncated]"
       : params.editorCode;
+
+  const priorList =
+    params.priorLessonTitles.length > 0
+      ? params.priorLessonTitles.join(", ")
+      : "(none — this is the first lesson)";
 
   let learnerContext = "";
   if (params.learnerBackground || params.learnerMotivation) {
@@ -61,6 +67,10 @@ export function buildSystemPrompt(params: {
   }
 
   let prompt = `${TUTOR_BASE}
+
+SCOPE CONSTRAINT:
+The student has completed ONLY these prior lessons: [${priorList}].
+Only reference C++ concepts from the current lesson or the prior lessons listed above. Never suggest techniques or features from later chapters. If the student asks about an advanced topic not yet covered, say "That's covered in a later chapter — for now, let's focus on ${params.lessonTitle}."
 
 HINT TIER: ${params.tier}
 ${tierInstruction}${learnerContext}

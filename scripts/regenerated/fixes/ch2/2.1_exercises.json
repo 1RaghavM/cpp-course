@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Call a Greeting Function",
+    "prompt_md": "## Goal\n\nWrite a void function called `greet` that takes **no parameters** and prints a greeting to standard output.\n\n## Input\n\nOne integer on a single line (a user ID number).\n\n## Output\n\nFirst, the greeting line printed by `greet`, then a line showing the user ID.\n\n```\nWelcome to cpproad!\nUser ID: <id>\n```\n\n## Requirements\n\n1. Define a function `void greet()` that prints `Welcome to cpproad!` followed by a newline.\n2. In `main`, call `greet()`, then read an integer from `std::cin`, and print `User ID: <id>` followed by a newline.\n3. `greet` must not take any parameters or return a value.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a function named greet that takes no parameters,\n// returns nothing (void), and prints \"Welcome to cpproad!\"\n// followed by a newline.\n\n\nint main() {\n    // TODO: Call greet()\n\n    int id {};\n    std::cin >> id;\n\n    // TODO: Print \"User ID: \" followed by id and a newline\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid greet() {\n    std::cout << \"Welcome to cpproad!\" << '\\n';\n}\n\nint main() {\n    greet();\n\n    int id {};\n    std::cin >> id;\n\n    std::cout << \"User ID: \" << id << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: user ID 42",
+        "is_sample": true,
+        "stdin": "42",
+        "expected_stdout": "Welcome to cpproad!\nUser ID: 42\n"
+      },
+      {
+        "label": "Hidden: user ID 1",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Welcome to cpproad!\nUser ID: 1\n"
+      },
+      {
+        "label": "Hidden: user ID 999",
+        "is_sample": false,
+        "stdin": "999",
+        "expected_stdout": "Welcome to cpproad!\nUser ID: 999\n"
+      }
+    ]
+  },
+  {
+    "title": "Rectangle Area and Perimeter",
+    "prompt_md": "## Goal\n\nWrite two functions that compute properties of a rectangle, then call them from `main`.\n\n## Input\n\nTwo integers on one line separated by a space: `width` and `height`.\n\n## Output\n\n```\nArea: <value>\nPerimeter: <value>\n```\n\n## Requirements\n\n1. Define `int area(int width, int height)` that returns `width * height`.\n2. Define `int perimeter(int width, int height)` that returns `2 * (width + height)`.\n3. In `main`, read the two integers, call both functions, and print the results in the format shown above.\n4. Each function should do one thing only -- compute and return a value, not print.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define function area(int width, int height) -> int\n\n\n// TODO: Define function perimeter(int width, int height) -> int\n\n\nint main() {\n    int width{}, height{};\n    std::cin >> width >> height;\n\n    // TODO: Print area using the area() function\n    // TODO: Print perimeter using the perimeter() function\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint area(int width, int height) {\n    return width * height;\n}\n\nint perimeter(int width, int height) {\n    return 2 * (width + height);\n}\n\nint main() {\n    int width{}, height{};\n    std::cin >> width >> height;\n    std::cout << \"Area: \" << area(width, height) << '\\n';\n    std::cout << \"Perimeter: \" << perimeter(width, height) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 x 5",
+        "is_sample": true,
+        "stdin": "4 5",
+        "expected_stdout": "Area: 20\nPerimeter: 18\n"
+      },
+      {
+        "label": "Hidden: 1 x 1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Area: 1\nPerimeter: 4\n"
+      },
+      {
+        "label": "Hidden: 10 x 3",
+        "is_sample": false,
+        "stdin": "10 3",
+        "expected_stdout": "Area: 30\nPerimeter: 26\n"
+      }
+    ]
+  }
+]

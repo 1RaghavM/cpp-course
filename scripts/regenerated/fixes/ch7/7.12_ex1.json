@@ -1,0 +1,31 @@
+{
+  "lesson": "7.12",
+  "exercise_index": 0,
+  "what_changed": "Replaced solution that used struct (Ch 13), array indexing (Ch 16), and for loop (Ch 8). New solution uses a simple if/else-if chain inside classify(). Starter code reads 3 codes individually instead of using a loop.",
+  "exercise": {
+    "title": "Classify Variable Properties",
+    "prompt_md": "## Goal\nComplete function `classify` so that, given a variable category code, it prints the scope, storage duration, and linkage of that variable kind.\n\n## Input\n- Lines 1-3: one integer code per line, each in the range 1-6.\n\nThe codes map to these variable kinds:\n- 1 -> ordinary local variable (e.g., `int x;` inside a function)\n- 2 -> `static` local variable (e.g., `static int x;` inside a function)\n- 3 -> non-`const` global variable\n- 4 -> `static` global variable\n- 5 -> `const` global variable\n- 6 -> `inline constexpr` global variable\n\n## Output\nFor each query, print exactly one line in the format:\n```\nCode <N>: scope=<scope>, duration=<duration>, linkage=<linkage>\n```\nUse these exact words for each field:\n- scope: `block` or `global`\n- duration: `automatic` or `static`\n- linkage: `none`, `internal`, or `external`\n\nExample for code 1: `Code 1: scope=block, duration=automatic, linkage=none`\n\n## Requirements\n1. Implement `void classify(int code)` that prints exactly one line per call using the format above. Use an if/else-if chain.\n2. The correct answers are:\n   - Code 1: scope=block, duration=automatic, linkage=none\n   - Code 2: scope=block, duration=static, linkage=none\n   - Code 3: scope=global, duration=static, linkage=external\n   - Code 4: scope=global, duration=static, linkage=internal\n   - Code 5: scope=global, duration=static, linkage=internal\n   - Code 6: scope=global, duration=static, linkage=external\n3. `main` reads 3 codes and calls `classify` once per code in order.\n4. Hidden tests cover: all six codes across runs, and codes 5 and 6 which students often confuse.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement classify(int code)\n// Print exactly one line:\n//   Code <code>: scope=<scope>, duration=<duration>, linkage=<linkage>\n// Use the words: block/global, automatic/static, none/internal/external\nvoid classify(int code) {\n    // TODO: fill in using if/else-if\n}\n\nint main() {\n    int c1{}, c2{}, c3{};\n    std::cin >> c1 >> c2 >> c3;\n\n    classify(c1);\n    classify(c2);\n    classify(c3);\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nvoid classify(int code) {\n    std::string scope{};\n    std::string duration{};\n    std::string linkage{};\n\n    if (code == 1) {\n        scope = \"block\"; duration = \"automatic\"; linkage = \"none\";\n    } else if (code == 2) {\n        scope = \"block\"; duration = \"static\"; linkage = \"none\";\n    } else if (code == 3) {\n        scope = \"global\"; duration = \"static\"; linkage = \"external\";\n    } else if (code == 4) {\n        scope = \"global\"; duration = \"static\"; linkage = \"internal\";\n    } else if (code == 5) {\n        scope = \"global\"; duration = \"static\"; linkage = \"internal\";\n    } else if (code == 6) {\n        scope = \"global\"; duration = \"static\"; linkage = \"external\";\n    }\n\n    std::cout << \"Code \" << code\n              << \": scope=\" << scope\n              << \", duration=\" << duration\n              << \", linkage=\" << linkage << '\\n';\n}\n\nint main() {\n    int c1{}, c2{}, c3{};\n    std::cin >> c1 >> c2 >> c3;\n\n    classify(c1);\n    classify(c2);\n    classify(c3);\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "sample -- three representative codes",
+        "stdin": "1\n3\n2\n",
+        "expected_stdout": "Code 1: scope=block, duration=automatic, linkage=none\nCode 3: scope=global, duration=static, linkage=external\nCode 2: scope=block, duration=static, linkage=none\n",
+        "is_sample": true
+      },
+      {
+        "label": "hidden -- codes 4, 5, 6",
+        "stdin": "4\n5\n6\n",
+        "expected_stdout": "Code 4: scope=global, duration=static, linkage=internal\nCode 5: scope=global, duration=static, linkage=internal\nCode 6: scope=global, duration=static, linkage=external\n",
+        "is_sample": false
+      },
+      {
+        "label": "hidden -- single-type focus: inline constexpr",
+        "stdin": "6\n6\n6\n",
+        "expected_stdout": "Code 6: scope=global, duration=static, linkage=external\nCode 6: scope=global, duration=static, linkage=external\nCode 6: scope=global, duration=static, linkage=external\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

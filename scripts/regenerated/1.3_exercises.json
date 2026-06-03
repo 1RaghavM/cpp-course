@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Define variables and return a computed value",
+    "prompt_md": "## Goal\n\nWrite a program that defines three `int` variables and returns a value computed from them.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code carries the result.\n\n## Requirements\n\n1. Define an `int` variable named `length` and initialize it to `8`.\n2. Define an `int` variable named `width` and initialize it to `5`.\n3. Define an `int` variable named `area` and initialize it to `length * width`.\n4. Return `area` from `main`.\n\nThe program's exit code should be `40` (since 8 × 5 = 40).\n\nDo **not** use `#include`, `cout`, `cin`, or any library features — they have not been taught yet.",
+    "starter_code": "int main()\n{\n    // TODO: Define an int variable 'length' initialized to 8\n\n    // TODO: Define an int variable 'width' initialized to 5\n\n    // TODO: Define an int variable 'area' initialized to length * width\n\n    // TODO: Return area\n    return 0;\n}\n",
+    "solution_code": "int main()\n{\n    int length = 8;\n    int width = 5;\n    int area = length * width;\n\n    return area;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Exit code is 40 (8 * 5)",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "No output produced",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Compiles cleanly with no warnings",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      }
+    ]
+  },
+  {
+    "title": "Combine variables to encode a date as a single number",
+    "prompt_md": "## Goal\n\nWrite a program that stores the parts of a date in separate variables and combines them into a single integer, then returns that integer as the exit code.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code carries the result.\n\n## Requirements\n\n1. Define an `int` variable named `month` and initialize it to `3`.\n2. Define an `int` variable named `day` and initialize it to `14`.\n3. Define an `int` variable named `combined` and initialize it to `month * day + month`. This produces a single number that encodes both values.\n4. Return `combined` from `main`.\n\nThe exit code should be `45` (since 3 × 14 + 3 = 45).\n\nDo **not** use `#include`, `cout`, `cin`, or any library features.\n\n*Hint:* Remember from *Statements and the structure of a program* that `return` passes a value back to the operating system. That value is the program's exit code.",
+    "starter_code": "int main()\n{\n    // TODO: Define an int variable 'month' initialized to 3\n\n    // TODO: Define an int variable 'day' initialized to 14\n\n    // TODO: Define an int variable 'combined' initialized to month * day + month\n\n    // TODO: Return combined\n    return 0;\n}\n",
+    "solution_code": "int main()\n{\n    int month = 3;\n    int day = 14;\n    int combined = month * day + month;\n\n    return combined;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Exit code is 45 (3 * 14 + 3)",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "No output produced",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Compiles cleanly with no warnings",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      }
+    ]
+  }
+]

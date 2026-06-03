@@ -1,0 +1,1067 @@
+{
+  "chapter": {
+    "number": "8",
+    "title": "Control Flow"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "8.1",
+      "title": "Control flow introduction",
+      "sort_order": 101,
+      "summary_md": "## Control Flow Introduction\n\nUp to now, every program you've written executes **sequentially** — one statement after another, top to bottom. Control flow is the broader term for all the mechanisms that let you change that order. C++ gives you three fundamental ways to alter execution:\n\n- **Sequential** — the default; statements run in the order they're written.\n- **Branching (selection)** — choose which block of code to run based on a condition (`if`, `if/else`, `switch`).\n- **Looping (iteration)** — repeat a block of code while some condition holds (`for`, `while`, `do/while`).\n\nYou've already seen Python's versions of all three. C++ control-flow looks similar but has a few important differences you'll encounter across this chapter.\n\n### Why this matters\n\nWithout branching, a program can't react differently to different inputs. Without looping, you'd have to write the same code hundreds of times to process a list. Real programs are almost entirely control flow wrapped around a handful of data operations.\n\n### A first look at the three forms\n\n```cpp\n#include <iostream>\n\nint main() {\n    int n = 5;\n\n    // Branching: only one arm runs\n    if (n % 2 == 0)\n        std::cout << \"even\\n\";\n    else\n        std::cout << \"odd\\n\";   // prints this\n\n    // Looping: block runs multiple times\n    for (int i = 0; i < n; ++i)\n        std::cout << i << ' ';  // 0 1 2 3 4\n    std::cout << '\\n';\n}\n```\n\nNotice that single-statement bodies don't need curly braces, though adding them is considered good practice to avoid subtle bugs (we'll revisit this in lesson 8-2).\n\n### Control flow vs. Python\n\nPython uses indentation to delimit blocks; C++ uses curly braces `{}`. Conditions in C++ must be wrapped in parentheses — `if (x > 0)` not `if x > 0`. Loop variables like `i` above are scoped to the loop body, just like Python's `for` variables are scoped to the comprehension.\n\nThe rest of chapter 8 drills into each control-flow construct in detail. This lesson is your map of the territory.\n",
+      "exercises": [
+        {
+          "title": "Classify a Number",
+          "prompt_md": "## Classify a Number\n\nWrite a program that reads a single integer from standard input and prints exactly one of the following lines:\n\n- `negative` — if the number is less than zero\n- `zero` — if the number equals zero\n- `positive` — if the number is greater than zero\n\nThis exercise practices **branching** (selection): only one branch should execute depending on the input value.\n\n### Example\n\n```\nInput:  7\nOutput: positive\n```\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: Use if/else if/else to classify n as\n    // \"negative\", \"zero\", or \"positive\" and print the result.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    if (n < 0)\n        std::cout << \"negative\\n\";\n    else if (n == 0)\n        std::cout << \"zero\\n\";\n    else\n        std::cout << \"positive\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "positive number",
+              "stdin": "7",
+              "expected_stdout": "positive\n",
+              "is_sample": true
+            },
+            {
+              "label": "zero",
+              "stdin": "0",
+              "expected_stdout": "zero\n",
+              "is_sample": false
+            },
+            {
+              "label": "negative number",
+              "stdin": "-42",
+              "expected_stdout": "negative\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Sum to N",
+          "prompt_md": "## Sum to N\n\nWrite a program that reads a non-negative integer `n` from standard input, then uses a loop to compute and print the sum `0 + 1 + 2 + ... + n`.\n\nThis exercise practices **looping** (iteration): the accumulation step must run `n + 1` times.\n\n### Example\n\n```\nInput:  5\nOutput: 15\n```\n\n*Hint: declare an `int` accumulator initialised to `0`, then add each value of `i` from `0` through `n` inclusive.*\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int sum{0};\n\n    // TODO: Use a for-loop (or while-loop) to add every integer\n    // from 0 through n (inclusive) to sum.\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int sum{0};\n    for (int i = 0; i <= n; ++i)\n        sum += i;\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sum to 5",
+              "stdin": "5",
+              "expected_stdout": "15\n",
+              "is_sample": true
+            },
+            {
+              "label": "sum to 0",
+              "stdin": "0",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "sum to 10",
+              "stdin": "10",
+              "expected_stdout": "55\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.2",
+      "title": "If statements and blocks",
+      "sort_order": 102,
+      "summary_md": "## If Statements and Blocks\n\nIn the previous lesson (Control flow introduction) you saw that C++ gives you several tools to redirect program flow. The most fundamental is the **if statement**, which executes a branch only when a condition is `true`.\n\n### Basic syntax\n\n```cpp\nif (condition) {\n    // runs when condition is true\n} else {\n    // runs when condition is false\n}\n```\n\nThe condition is any expression that evaluates to `bool`. Unlike Python, the parentheses around the condition are **required** in C++.\n\n### Blocks matter\n\nA *block* is a sequence of statements wrapped in `{}`. Without braces, only the very next statement belongs to the `if`:\n\n```cpp\nint score = 85;\nif (score >= 90)\n    std::cout << \"A\\n\";   // part of if\n    std::cout << \"Great!\"; // always runs — easy bug!\n```\n\nAlways use braces. They make intent explicit and prevent the dangling-else class of bugs. This is especially important when adding statements later.\n\n### Chaining conditions\n\nUse `else if` to test a sequence of mutually exclusive cases:\n\n```cpp\nint score = 72;\nif (score >= 90) {\n    std::cout << \"A\\n\";\n} else if (score >= 80) {\n    std::cout << \"B\\n\";\n} else if (score >= 70) {\n    std::cout << \"C\\n\";\n} else {\n    std::cout << \"Below C\\n\";\n}\n// Output: C\n```\n\nC++ evaluates each condition top-to-bottom and executes **only the first matching branch**, then skips the rest — identical to Python's `elif` chain.\n\n### Nested if statements\n\nYou can place an `if` inside another `if`'s block. Keep nesting shallow (two levels max is a good rule) to preserve readability. Consider early returns or combining conditions with `&&` / `||` when nesting grows deep.\n\n### Common pitfalls\n\n- **Assignment vs. comparison:** `if (x = 5)` assigns 5 and is always true. Use `if (x == 5)`. Enable `-Wall` warnings — the compiler will catch this.\n- **Implicit bool conversion:** integers convert to `bool` (`0` is `false`, anything else is `true`), but prefer explicit comparisons for clarity.\n- **Dangling else:** when braces are omitted, an `else` attaches to the nearest `if`, which may not be the one you intended.\n\n### Key takeaways\n\n- Always wrap `if`/`else` bodies in `{}`.\n- `else if` chains are evaluated in order; only the first match executes.\n- Nested conditions are fine in small doses; flatten them when they grow unwieldy.",
+      "exercises": [
+        {
+          "title": "Grade Classifier",
+          "prompt_md": "Write a program that reads an integer score (0–100) from standard input and prints the corresponding letter grade on its own line, followed by either `\"Pass\"` or `\"Fail\"` on the next line.\n\nGrading scale:\n- 90–100 → `A`\n- 80–89 → `B`\n- 70–79 → `C`\n- 60–69 → `D`\n- 0–59 → `F`\n\nA score of 60 or above is a **Pass**; below 60 is a **Fail**.\n\nYou may assume the input is always a valid integer in the range 0–100.\n\n**Example:**\n```\nInput:  85\nOutput:\nB\nPass\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int score{};\n    std::cin >> score;\n\n    // TODO: Use an if/else-if/else chain to print the letter grade (A, B, C, D, or F)\n\n    // TODO: Use a separate if/else block to print \"Pass\" or \"Fail\"\n    //       (Pass if score >= 60, Fail otherwise)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int score{};\n    std::cin >> score;\n\n    if (score >= 90) {\n        std::cout << \"A\\n\";\n    } else if (score >= 80) {\n        std::cout << \"B\\n\";\n    } else if (score >= 70) {\n        std::cout << \"C\\n\";\n    } else if (score >= 60) {\n        std::cout << \"D\\n\";\n    } else {\n        std::cout << \"F\\n\";\n    }\n\n    if (score >= 60) {\n        std::cout << \"Pass\\n\";\n    } else {\n        std::cout << \"Fail\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "B grade, Pass",
+              "stdin": "85",
+              "expected_stdout": "B\nPass\n",
+              "is_sample": true
+            },
+            {
+              "label": "F grade, Fail",
+              "stdin": "42",
+              "expected_stdout": "F\nFail\n",
+              "is_sample": false
+            },
+            {
+              "label": "Boundary: D grade, Pass",
+              "stdin": "60",
+              "expected_stdout": "D\nPass\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Temperature Advisor",
+          "prompt_md": "Write a program that reads two integers from standard input — a temperature in Celsius and a humidity percentage (0–100) — and prints a one-line clothing recommendation.\n\nRules (apply the **first** matching rule):\n1. If temperature < 0 → `\"Wear a heavy coat.\"`\n2. If temperature < 10 → `\"Wear a jacket.\"`\n3. If temperature < 20 → if humidity > 80 → `\"Wear a light jacket (damp).\"` else → `\"Wear a light jacket.\"`\n4. If temperature < 30 → if humidity > 60 → `\"Wear light clothes (humid).\"` else → `\"Wear light clothes.\"`\n5. Otherwise → `\"Wear minimal clothing.\"`\n\nNote how rules 3 and 4 use **nested** if statements inside an outer else-if chain.\n\n**Example:**\n```\nInput:  18 85\nOutput:\nWear a light jacket (damp).\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int temp{};\n    int humidity{};\n    std::cin >> temp >> humidity;\n\n    // TODO: Implement the nested if/else-if chain described in the prompt.\n    // Outer chain: temp < 0, temp < 10, temp < 20, temp < 30, else\n    // For temp < 20 and temp < 30, add an inner if/else on humidity.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int temp{};\n    int humidity{};\n    std::cin >> temp >> humidity;\n\n    if (temp < 0) {\n        std::cout << \"Wear a heavy coat.\\n\";\n    } else if (temp < 10) {\n        std::cout << \"Wear a jacket.\\n\";\n    } else if (temp < 20) {\n        if (humidity > 80) {\n            std::cout << \"Wear a light jacket (damp).\\n\";\n        } else {\n            std::cout << \"Wear a light jacket.\\n\";\n        }\n    } else if (temp < 30) {\n        if (humidity > 60) {\n            std::cout << \"Wear light clothes (humid).\\n\";\n        } else {\n            std::cout << \"Wear light clothes.\\n\";\n        }\n    } else {\n        std::cout << \"Wear minimal clothing.\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Cool and damp",
+              "stdin": "18 85",
+              "expected_stdout": "Wear a light jacket (damp).\n",
+              "is_sample": true
+            },
+            {
+              "label": "Freezing",
+              "stdin": "-5 40",
+              "expected_stdout": "Wear a heavy coat.\n",
+              "is_sample": false
+            },
+            {
+              "label": "Warm and humid",
+              "stdin": "27 65",
+              "expected_stdout": "Wear light clothes (humid).\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.3",
+      "title": "Common if statement problems",
+      "sort_order": 103,
+      "summary_md": "## Common `if` Statement Problems\n\nIn the previous lessons you learned what `if` statements are and why blocks matter. This lesson is about the bugs that quietly compile and silently misbehave — the ones that trip up even experienced programmers.\n\n### 1. Assignment (`=`) instead of comparison (`==`)\n\nIn Python, `=` is assignment and you cannot accidentally use it inside an `if` condition. In C++ you can, and it compiles without error:\n\n```cpp\nint x = 5;\nif (x = 10)   // assigns 10 to x, then evaluates as true (non-zero)\n    std::cout << \"x is 10\\n\";  // always prints!\n```\n\n`x = 10` assigns 10 to `x` and then the whole expression evaluates to `10`, which is truthy. The condition is *always* true. Compile with `-Wall -Wextra` and you will see `warning: suggest parentheses around assignment used as truth value`. Never ignore this warning — it almost always means you wrote `=` when you meant `==`.\n\n**Fix:** use `==` for comparison, or if you see this pattern in existing code, wrap the intentional assignment in an extra pair of parentheses: `if ((x = getValue()) != 0)`.\n\n### 2. Dangling `else`\n\nWhen you nest `if` statements without braces, an `else` attaches to the *nearest* preceding `if`, not the one you might intend:\n\n```cpp\nif (a > 0)\n    if (b > 0)\n        std::cout << \"both positive\\n\";\nelse                          // belongs to `if (b > 0)`, not `if (a > 0)`!\n    std::cout << \"a not positive\\n\";  // misleading indentation\n```\n\nThe indentation implies the `else` pairs with the outer `if`, but the compiler pairs it with the inner one. The lesson on *If statements and blocks* showed that adding braces removes ambiguity entirely — do that here too.\n\n### 3. Missing braces and accidental multi-statement bodies\n\n```cpp\nif (score >= 60)\n    std::cout << \"Passed\\n\";\n    std::cout << \"Congrats!\\n\";  // always executes — not part of the if!\n```\n\nOnly the first statement is controlled by the `if`. The second always runs. This is why the previous lesson recommended always using braces, even for single-statement bodies.\n\n### Key takeaways\n\n- Use `==` for comparison; `=` is assignment.\n- Compile with `-Wall -Wextra` to catch accidental assignments in conditions.\n- Always use braces `{}` to eliminate dangling-else and accidental-scope bugs.\n- Treat every compiler warning as an error during learning.",
+      "exercises": [
+        {
+          "title": "Spot and Fix the Assignment Bug",
+          "prompt_md": "## Spot and Fix the Assignment Bug\n\nThe program below is supposed to read an integer and print `\"Even\"` if it is even and `\"Odd\"` otherwise. However, it always prints `\"Even\"` because of a common `if` pitfall.\n\n**Your task:** Fix the condition so it correctly uses comparison (`==`) instead of assignment (`=`), then also add the missing `else` clause that prints `\"Odd\"` when the number is not even.\n\nYour output must match exactly (single word, newline-terminated).\n\n```\nSample input:  3\nSample output: Odd\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: fix the condition below — it currently uses = (assignment)\n    // instead of == (comparison). Also add the missing else branch.\n    if (n % 2 = 0) {\n        std::cout << \"Even\\n\";\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    if (n % 2 == 0) {\n        std::cout << \"Even\\n\";\n    } else {\n        std::cout << \"Odd\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Odd number (3)",
+              "stdin": "3",
+              "expected_stdout": "Odd\n",
+              "is_sample": true
+            },
+            {
+              "label": "Even number (4)",
+              "stdin": "4",
+              "expected_stdout": "Even\n",
+              "is_sample": false
+            },
+            {
+              "label": "Zero",
+              "stdin": "0",
+              "expected_stdout": "Even\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Dangling Else and Missing Braces",
+          "prompt_md": "## Dangling Else and Missing Braces\n\nThe program below reads two integers `a` and `b` and is supposed to print:\n- `\"both positive\"` when both `a > 0` and `b > 0`\n- `\"a not positive\"` when `a <= 0` (regardless of `b`)\n- `\"a positive, b not\"` when `a > 0` but `b <= 0`\n\nTwo bugs are present:\n1. A **dangling else** — the `else` attaches to the wrong `if`.\n2. A **missing-braces** bug — a second print statement runs unconditionally.\n\n**Your task:** Add the correct braces and restructure the `else` clauses so the output matches the specification.\n\n```\nSample input:  2 3\nSample output: both positive\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: fix dangling-else and missing-braces bugs below.\n    // The else on line 13 attaches to the inner if, not the outer one.\n    // The last std::cout always executes — it is not inside any if.\n    if (a > 0)\n        if (b > 0)\n            std::cout << \"both positive\\n\";\n    else                          // dangling: belongs to inner if\n        std::cout << \"a not positive\\n\";\n        std::cout << \"a positive, b not\\n\";  // always runs — missing braces\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    if (a > 0) {\n        if (b > 0) {\n            std::cout << \"both positive\\n\";\n        } else {\n            std::cout << \"a positive, b not\\n\";\n        }\n    } else {\n        std::cout << \"a not positive\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Both positive (2, 3)",
+              "stdin": "2 3",
+              "expected_stdout": "both positive\n",
+              "is_sample": true
+            },
+            {
+              "label": "a positive, b not (5, -1)",
+              "stdin": "5 -1",
+              "expected_stdout": "a positive, b not\n",
+              "is_sample": false
+            },
+            {
+              "label": "a not positive (-3, 7)",
+              "stdin": "-3 7",
+              "expected_stdout": "a not positive\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.4",
+      "title": "Constexpr if statements",
+      "sort_order": 104,
+      "summary_md": "## Constexpr if statements\n\nIn earlier lessons you learned that `if` statements choose a branch at **runtime** — after the program is already running. C++17 introduced `if constexpr`, which makes that choice at **compile time** instead. The branch that isn't chosen is completely discarded before your program ever runs.\n\n### Why it matters\n\nWhen you write template functions, the compiler must be able to compile *every* branch in an ordinary `if` — even the one that will never execute for a given type. That often causes hard-to-read errors. `if constexpr` tells the compiler: \"only compile the branch whose condition is true for this instantiation; throw the other one away.\"\n\n### Syntax\n\n```cpp\n#include <concepts>\n#include <iostream>\n#include <string>\n\ntemplate <typename T>\nvoid describe(T value) {\n    if constexpr (std::integral<T>) {\n        std::cout << \"Integer: \" << value * 2 << '\\n';\n    } else if constexpr (std::floating_point<T>) {\n        std::cout << \"Float: \" << value + 0.5 << '\\n';\n    } else {\n        std::cout << \"Other: \" << value << '\\n';\n    }\n}\n\nint main() {\n    describe(10);       // Integer: 20\n    describe(3.0);      // Float: 3.5\n    describe(\"hello\");  // Other: hello\n}\n```\n\nFor `describe(10)`, the compiler only compiles the `value * 2` branch. The floating-point and string branches are silently dropped — so there is no error even though `\"hello\" * 2` would be nonsense.\n\n### The condition must be a constant expression\n\nThe condition in `if constexpr` must be evaluable at compile time — a `constexpr` value, a type trait, or a concept check. You cannot use a runtime variable (like a function argument that isn't `constexpr`) as the condition. This is stricter than a regular `if` from the previous lessons, but that strictness is what lets the compiler prune dead branches safely.\n\n### Compared to regular `if`\n\n| | `if` | `if constexpr` |\n|---|---|---|\n| Branch selection | Runtime | Compile time |\n| Unused branch compiled | Yes | No |\n| Condition type | Any bool expression | Must be a constant expression |\n| Works in templates | Yes, but all branches must type-check | Yes, discarded branch need not type-check |\n\n### Key takeaway\n\n`if constexpr` is not a replacement for ordinary `if` in everyday code — use it specifically when you need compile-time branching, most commonly inside templates or with type traits. Think of it as a smarter, type-aware version of the preprocessor `#ifdef` you might have seen, but fully integrated into the C++ type system.",
+      "exercises": [
+        {
+          "title": "Type Classifier Template",
+          "prompt_md": "## Type Classifier Template\n\nWrite a function template `classify<T>(T value)` that prints a one-line description of the value based on its type, chosen entirely at **compile time** using `if constexpr`.\n\nRules:\n- If `T` is an integral type (use `std::integral<T>`): print `\"integral: \"` followed by the value.\n- Else if `T` is a floating-point type (use `std::floating_point<T>`): print `\"floating: \"` followed by the value.\n- Otherwise: print `\"other: \"` followed by the value.\n\nCall `classify` in `main()` with an `int`, a `double`, and a `std::string` (in that order). Each call should print exactly one line.\n\n**Hint:** Include `<concepts>` for `std::integral` and `std::floating_point`.",
+          "starter_code": "#include <concepts>\n#include <iostream>\n#include <string>\n\n// TODO: write the classify<T> function template using if constexpr\n// - if T is integral:        print \"integral: \" << value\n// - else if T is floating:   print \"floating: \" << value\n// - else:                    print \"other: \"    << value\n\nint main() {\n    // TODO: call classify with:\n    //   1. an int    (e.g. 42)\n    //   2. a double  (e.g. 3.14)\n    //   3. a std::string (e.g. \"cpp\")\n    return 0;\n}\n",
+          "solution_code": "#include <concepts>\n#include <iostream>\n#include <string>\n\ntemplate <typename T>\nvoid classify(T value) {\n    if constexpr (std::integral<T>) {\n        std::cout << \"integral: \" << value << '\\n';\n    } else if constexpr (std::floating_point<T>) {\n        std::cout << \"floating: \" << value << '\\n';\n    } else {\n        std::cout << \"other: \" << value << '\\n';\n    }\n}\n\nint main() {\n    classify(42);\n    classify(3.14);\n    classify(std::string{\"cpp\"});\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — int, double, string",
+              "stdin": "",
+              "expected_stdout": "integral: 42\nfloating: 3.14\nother: cpp\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — negative int and float",
+              "stdin": "",
+              "expected_stdout": "integral: -7\nfloating: 2.5\nother: hello\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — zero int and zero double",
+              "stdin": "",
+              "expected_stdout": "integral: 0\nfloating: 0\nother: world\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Compile-Time Size Reporter",
+          "prompt_md": "## Compile-Time Size Reporter\n\nWrite a function template `sizeReport<T>()` (no parameters, no return value) that uses `if constexpr` to print a fixed message depending on the size of `T` at compile time.\n\nBranching rules (use `sizeof(T)` as the compile-time condition):\n- If `sizeof(T) == 1`: print `\"1-byte type\"`\n- Else if `sizeof(T) <= 4`: print `\"small type (2-4 bytes)\"`\n- Else: print `\"large type (5+ bytes)\"`\n\nIn `main()`, call `sizeReport` for each of the following types **in order**:\n1. `char`\n2. `int`\n3. `double`\n\nEach call prints exactly one line.\n\n**Note:** `sizeof` is always evaluated at compile time, making it a valid `if constexpr` condition. This exercise shows you can branch on any compile-time integer expression, not just type traits.",
+          "starter_code": "#include <iostream>\n\n// TODO: write sizeReport<T>() using if constexpr and sizeof(T)\n// - sizeof(T) == 1          -> print \"1-byte type\"\n// - sizeof(T) <= 4          -> print \"small type (2-4 bytes)\"\n// - else                    -> print \"large type (5+ bytes)\"\n\nint main() {\n    // TODO: call sizeReport<char>(), sizeReport<int>(), sizeReport<double>()\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate <typename T>\nvoid sizeReport() {\n    if constexpr (sizeof(T) == 1) {\n        std::cout << \"1-byte type\\n\";\n    } else if constexpr (sizeof(T) <= 4) {\n        std::cout << \"small type (2-4 bytes)\\n\";\n    } else {\n        std::cout << \"large type (5+ bytes)\\n\";\n    }\n}\n\nint main() {\n    sizeReport<char>();\n    sizeReport<int>();\n    sizeReport<double>();\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — char, int, double",
+              "stdin": "",
+              "expected_stdout": "1-byte type\nsmall type (2-4 bytes)\nlarge type (5+ bytes)\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — short, float, long long",
+              "stdin": "",
+              "expected_stdout": "small type (2-4 bytes)\nsmall type (2-4 bytes)\nlarge type (5+ bytes)\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — signed char, unsigned int, double",
+              "stdin": "",
+              "expected_stdout": "1-byte type\nsmall type (2-4 bytes)\nlarge type (5+ bytes)\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.5",
+      "title": "Switch statement basics",
+      "sort_order": 105,
+      "summary_md": "## Switch Statement Basics\n\nIn the previous lessons you used `if`/`else if` chains to branch on conditions. When you are testing **one variable against several constant values**, a `switch` statement is cleaner and often faster.\n\n### Anatomy of a switch\n\n```cpp\n#include <iostream>\n\nint main() {\n    int day{3};\n    switch (day) {\n        case 1:  std::cout << \"Monday\\n\";    break;\n        case 2:  std::cout << \"Tuesday\\n\";   break;\n        case 3:  std::cout << \"Wednesday\\n\"; break;\n        default: std::cout << \"Other\\n\";     break;\n    }\n}\n```\n\n**Key parts:**\n\n- **`switch (expression)`** — the expression must produce an integral or enumeration type (e.g. `int`, `char`, `enum`). Unlike Python's `match`, you cannot switch on a `std::string`.\n- **`case N:`** — a label that the compiler jumps to when the expression equals `N`. The value after `case` must be a compile-time constant (same idea as the `constexpr if` values from lesson 8-4).\n- **`break`** — exits the switch body. **If you omit `break`, execution falls through to the next case label** — a common source of bugs (your compiler warns with `-Wfallthrough`).\n- **`default:`** — optional catch-all, like the final `else` in an `if`/`else if` chain (lesson 8-2). Place it last; some style guides require it even when all cases are covered.\n\n### Fallthrough — intentional vs accidental\n\nFallthrough is occasionally useful (grouping several cases that share code), but you must signal intent with `[[fallthrough]]` to silence the warning:\n\n```cpp\ncase 'a':\ncase 'e':  // empty case — falls through intentionally\n    ++vowels;\n    break;\n```\n\nEmpty cases like `case 'a':` above fall through silently; the attribute is only needed when a non-empty case intentionally falls into the next.\n\n### Switch vs if/else\n\n| Situation | Prefer |\n|---|---|\n| One variable, many constant values | `switch` |\n| Range checks (`x > 10`) | `if`/`else` |\n| String comparisons | `if`/`else` (or `std::map`) |\n\n### Declaring variables inside switch\n\nYou cannot declare an initialized variable in one case and use it in another without wrapping the case body in braces `{}` — the compiler rejects it to avoid jumping over initialization, similar to the block-scope rules from lesson 8-2.\n\nNext up: goto statements (and why you almost never use them).",
+      "exercises": [
+        {
+          "title": "Day-of-Week Classifier",
+          "prompt_md": "Write a program that reads a single integer (1–7, where 1 = Monday) from standard input and prints whether that day is a **Weekday** or **Weekend**.\n\n- Use a `switch` statement.\n- Cases 1–5 should print `Weekday`.\n- Cases 6–7 should print `Weekend`.\n- Any other value should print `Invalid day`.\n- Print a newline after the output.\n\n**Example**\n```\nInput:  3\nOutput: Weekday\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int day{};\n    std::cin >> day;\n\n    switch (day) {\n        // TODO: cases 1-5 -> print \"Weekday\"\n        // TODO: cases 6-7 -> print \"Weekend\"\n        // TODO: default   -> print \"Invalid day\"\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int day{};\n    std::cin >> day;\n\n    switch (day) {\n        case 1:\n        case 2:\n        case 3:\n        case 4:\n        case 5:\n            std::cout << \"Weekday\\n\";\n            break;\n        case 6:\n        case 7:\n            std::cout << \"Weekend\\n\";\n            break;\n        default:\n            std::cout << \"Invalid day\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Wednesday is a weekday",
+              "stdin": "3",
+              "expected_stdout": "Weekday\n",
+              "is_sample": true
+            },
+            {
+              "label": "Saturday is the weekend",
+              "stdin": "6",
+              "expected_stdout": "Weekend\n",
+              "is_sample": false
+            },
+            {
+              "label": "Zero is invalid",
+              "stdin": "0",
+              "expected_stdout": "Invalid day\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Simple Calculator",
+          "prompt_md": "Write a program that reads two integers and a single character operator (`+`, `-`, `*`, `/`) from standard input (one per line) and prints the result.\n\n- Use a `switch` on the operator character.\n- For `+`, `-`, `*`: compute and print the integer result followed by a newline.\n- For `/`: if the divisor is `0`, print `Division by zero` instead; otherwise print the integer result.\n- For any other character: print `Unknown operator`.\n\n**Input format**\n```\n<int a>\n<int b>\n<char op>\n```\n\n**Example**\n```\nInput:\n10\n3\n+\nOutput: 13\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a{}, b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    switch (op) {\n        // TODO: case '+' -> print a + b\n        // TODO: case '-' -> print a - b\n        // TODO: case '*' -> print a * b\n        // TODO: case '/' -> handle division by zero, else print a / b\n        // TODO: default  -> print \"Unknown operator\"\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a{}, b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    switch (op) {\n        case '+':\n            std::cout << a + b << '\\n';\n            break;\n        case '-':\n            std::cout << a - b << '\\n';\n            break;\n        case '*':\n            std::cout << a * b << '\\n';\n            break;\n        case '/':\n            if (b == 0)\n                std::cout << \"Division by zero\\n\";\n            else\n                std::cout << a / b << '\\n';\n            break;\n        default:\n            std::cout << \"Unknown operator\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Addition",
+              "stdin": "10\n3\n+",
+              "expected_stdout": "13\n",
+              "is_sample": true
+            },
+            {
+              "label": "Division by zero",
+              "stdin": "5\n0\n/",
+              "expected_stdout": "Division by zero\n",
+              "is_sample": false
+            },
+            {
+              "label": "Unknown operator",
+              "stdin": "4\n2\n%",
+              "expected_stdout": "Unknown operator\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.6",
+      "title": "Switch fallthrough and scoping",
+      "sort_order": 106,
+      "summary_md": "## Switch Fallthrough and Scoping\n\nIn the previous lesson you saw how a `switch` statement jumps to a matching `case` label. What happens *after* that case runs? By default, execution **falls through** -- it keeps running into the next case without checking it. This is unlike Python's `match` statement, which stops automatically.\n\n```cpp\n#include <iostream>\nint main() {\n    int x { 2 };\n    switch (x) {\n        case 1: std::cout << \"one\\n\";   // skipped\n        case 2: std::cout << \"two\\n\";   // matches, runs\n        case 3: std::cout << \"three\\n\"; // also runs (fallthrough!)\n        default: std::cout << \"done\\n\"; // also runs\n    }\n}\n// Output: two  three  done\n```\n\nFallthrough is almost always a bug. Fix it by ending every case with `break` (or `return` inside a function). The compiler warns about implicit fallthrough with `-Wextra`.\n\n### Intentional fallthrough with `[[fallthrough]]`\n\nSometimes fallthrough is deliberate -- for example, when two values share identical handling. C++17 introduced the `[[fallthrough]]` attribute to silence the compiler warning and signal intent clearly:\n\n```cpp\ncase 2:\n    [[fallthrough]]; // intentional -- fall into case 3\ncase 3:\n    std::cout << \"two or three\\n\";\n    break;\n```\n\nAlways use `[[fallthrough]]` when you mean it. A bare implicit fallthrough is a red flag in code review.\n\n### Variable declarations inside switch\n\nA `switch` body is one big compound statement. A variable declared in one `case` is technically in scope for *all* subsequent cases -- but only initialised if that case runs. Jumping past an initialisation is illegal in C++ (unlike C):\n\n```cpp\nswitch (x) {\n    case 1:\n        int val { 42 }; // ERROR if case 2 is reachable -- jumps past init\n        break;\n    case 2:\n        std::cout << val; // val is in scope but was never initialised\n}\n```\n\nThe fix is to wrap each case in **braces** to give it its own scope:\n\n```cpp\nswitch (x) {\n    case 1: { int val { 42 }; std::cout << val; break; }\n    case 2: { int val { 7 };  std::cout << val; break; }\n}\n```\n\nBraces in cases are a best practice whenever you need local variables. They also keep cases visually self-contained, echoing the block discipline from the \"If statements and blocks\" lesson.",
+      "exercises": [
+        {
+          "title": "Traffic Light Phases",
+          "prompt_md": "## Traffic Light Phases\n\nWrite a program that reads a single integer representing a traffic light phase (1, 2, or 3) and prints the corresponding behaviour.\n\n- Phase **1** -> print `Red: stop`\n- Phase **2** -> print `Yellow: caution` then fall through to also print `Green: go` (use `[[fallthrough]]` to make the intention explicit)\n- Phase **3** -> print `Green: go`\n- Any other value -> print `Unknown phase`\n\nAll output lines end with a newline.\n\n**Requirements:**\n- Use a `switch` statement.\n- The fallthrough from case 2 into case 3 must be marked with `[[fallthrough]]`.\n- Do **not** add a `break` between case 2 and case 3.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int phase {};\n    std::cin >> phase;\n\n    switch (phase) {\n        case 1:\n            // TODO: print \"Red: stop\"\n            break;\n        case 2:\n            // TODO: print \"Yellow: caution\"\n            // TODO: mark intentional fallthrough with [[fallthrough]]\n        case 3:\n            // TODO: print \"Green: go\"\n            break;\n        default:\n            // TODO: print \"Unknown phase\"\n            break;\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int phase {};\n    std::cin >> phase;\n\n    switch (phase) {\n        case 1:\n            std::cout << \"Red: stop\\n\";\n            break;\n        case 2:\n            std::cout << \"Yellow: caution\\n\";\n            [[fallthrough]];\n        case 3:\n            std::cout << \"Green: go\\n\";\n            break;\n        default:\n            std::cout << \"Unknown phase\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Phase 2 falls through to phase 3",
+              "stdin": "2",
+              "expected_stdout": "Yellow: caution\nGreen: go\n",
+              "is_sample": true
+            },
+            {
+              "label": "Phase 1 stops at break",
+              "stdin": "1",
+              "expected_stdout": "Red: stop\n",
+              "is_sample": false
+            },
+            {
+              "label": "Unknown phase hits default",
+              "stdin": "9",
+              "expected_stdout": "Unknown phase\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Scoped Switch Calculator",
+          "prompt_md": "## Scoped Switch Calculator\n\nWrite a program that reads two integers and a single character operator (`+`, `-`, `*`, `/`), then prints the result.\n\nUse a `switch` on the operator character. Each case must:\n1. Declare a local `int result` variable inside **braces** `{}` to give it its own scope.\n2. Compute the result and print it as: `Result: <value>`\n\nAdditional rules:\n- For division, if the divisor is `0`, print `Error: division by zero` instead of computing.\n- For an unrecognised operator, print `Error: unknown operator`.\n- All output ends with a newline.\n\nThis exercise practises giving each `case` its own scope with braces so that variable declarations do not leak between cases.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    char op {};\n    std::cin >> a >> b >> op;\n\n    switch (op) {\n        case '+': {\n            // TODO: declare int result, compute a + b, print \"Result: <result>\"\n            break;\n        }\n        case '-': {\n            // TODO: declare int result, compute a - b, print \"Result: <result>\"\n            break;\n        }\n        case '*': {\n            // TODO: declare int result, compute a * b, print \"Result: <result>\"\n            break;\n        }\n        case '/': {\n            // TODO: if b == 0 print \"Error: division by zero\"\n            //       else declare int result, compute a / b, print \"Result: <result>\"\n            break;\n        }\n        default:\n            // TODO: print \"Error: unknown operator\"\n            break;\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    char op {};\n    std::cin >> a >> b >> op;\n\n    switch (op) {\n        case '+': {\n            int result { a + b };\n            std::cout << \"Result: \" << result << '\\n';\n            break;\n        }\n        case '-': {\n            int result { a - b };\n            std::cout << \"Result: \" << result << '\\n';\n            break;\n        }\n        case '*': {\n            int result { a * b };\n            std::cout << \"Result: \" << result << '\\n';\n            break;\n        }\n        case '/': {\n            if (b == 0) {\n                std::cout << \"Error: division by zero\\n\";\n            } else {\n                int result { a / b };\n                std::cout << \"Result: \" << result << '\\n';\n            }\n            break;\n        }\n        default:\n            std::cout << \"Error: unknown operator\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Addition",
+              "stdin": "10 3 +",
+              "expected_stdout": "Result: 13\n",
+              "is_sample": true
+            },
+            {
+              "label": "Division by zero",
+              "stdin": "7 0 /",
+              "expected_stdout": "Error: division by zero\n",
+              "is_sample": false
+            },
+            {
+              "label": "Integer division truncates",
+              "stdin": "17 5 /",
+              "expected_stdout": "Result: 3\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.7",
+      "title": "Goto statements",
+      "sort_order": 107,
+      "summary_md": "## Goto Statements\n\n`goto` is one of C++'s oldest control-flow tools — it unconditionally jumps execution to a labelled point anywhere in the same function. The syntax is straightforward:\n\n```cpp\n#include <iostream>\nint main() {\n    int x { 0 };\ntry_again:\n    std::cin >> x;\n    if (x <= 0)\n        goto try_again;   // jump back to label\n    std::cout << \"Got: \" << x << '\\n';\n}\n```\n\nA **label** is an identifier followed by a colon (`try_again:` above). `goto` then names that label as its target. Both must live in the same function — you cannot jump between functions.\n\n### Why goto almost never belongs in modern C++\n\nEvery use-case for `goto` is handled more clearly by structured alternatives you already know:\n\n| What you might reach for `goto` | Use instead |\n|---|---|\n| Retry a read (as above) | `while` or `do-while` loop |\n| Break out of nested loops | Refactor into a function, or use a flag variable |\n| Jump to cleanup on error | RAII (destructors run automatically) |\n| State machine transitions | `switch` + enum (see lesson 8-5 and 8-6) |\n\nPython has no `goto` at all — the language designers considered it harmful enough to omit entirely. C++ keeps it for legacy compatibility, but the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/) say: *\"Don't use goto.\"*\n\nThe core problem is **spaghetti control flow**: once `goto` is present, you can no longer read a function top-to-bottom and understand what runs when. Debuggers, optimizers, and the next developer (including future you) all struggle.\n\nThere is one narrow exception you may see in generated or very low-level C code: a `goto cleanup` pattern when C-style resource management demands a single exit point. In C++ this is replaced entirely by RAII — objects clean up in destructors automatically, so the pattern is unnecessary.\n\n### The C++20 picture\n\n`constexpr if` (lesson 8-4), `switch` with scoped enums (lessons 8-5/8-6), range-`for`, and structured exception handling all existed before C++20 and have only improved. There is no C++20 feature that rehabilitates `goto`. Recognise it when you read legacy code; never reach for it in new code.",
+      "exercises": [
+        {
+          "title": "Rewrite a goto loop as a while loop",
+          "prompt_md": "The starter code uses `goto` to repeat a prompt until the user enters a positive integer. **Rewrite the logic using a `while` loop** — no `goto` or labels allowed in your solution.\n\nThe program should:\n1. Prompt `Enter a positive integer: `\n2. Read an integer from stdin.\n3. If the value is not positive (≤ 0), print `Invalid, try again.` and repeat.\n4. Once a positive value is entered, print `You entered: X` where `X` is the value.\n\n**Hint:** A `do-while` loop is also acceptable.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int value {};\n\nprompt:\n    std::cout << \"Enter a positive integer: \";\n    std::cin >> value;\n\n    if (value <= 0) {\n        std::cout << \"Invalid, try again.\\n\";\n        goto prompt;  // TODO: remove this goto\n    }\n\n    // TODO: replace the goto above with a while or do-while loop\n    // and produce the same behaviour without any labels or goto.\n\n    std::cout << \"You entered: \" << value << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int value {};\n\n    do {\n        std::cout << \"Enter a positive integer: \";\n        std::cin >> value;\n        if (value <= 0)\n            std::cout << \"Invalid, try again.\\n\";\n    } while (value <= 0);\n\n    std::cout << \"You entered: \" << value << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Valid input on first try",
+              "stdin": "7\n",
+              "expected_stdout": "Enter a positive integer: You entered: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "One invalid then valid",
+              "stdin": "-3\n5\n",
+              "expected_stdout": "Enter a positive integer: Invalid, try again.\nEnter a positive integer: You entered: 5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Zero then two negatives then valid",
+              "stdin": "0\n-1\n-99\n42\n",
+              "expected_stdout": "Enter a positive integer: Invalid, try again.\nEnter a positive integer: Invalid, try again.\nEnter a positive integer: Invalid, try again.\nEnter a positive integer: You entered: 42\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Identify and fix goto-based control flow",
+          "prompt_md": "The starter code uses `goto` to skip over a block of output. Your task is to **replace the goto and its label with an equivalent `if-else` statement** so the logic is identical but the control flow is structured.\n\nThe program reads two integers `a` and `b` from stdin.\n- If `a > b`, it prints `a is greater`.\n- Otherwise it prints `b is greater or equal`.\n- Either way it then prints `Done.`\n\nDo **not** change what the program prints — only restructure the control flow.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    if (a > b)\n        goto print_a;  // TODO: replace goto logic with if-else\n\n    std::cout << \"b is greater or equal\\n\";\n    goto done;\n\nprint_a:\n    std::cout << \"a is greater\\n\";\n\ndone:\n    // TODO: remove the labels above and restructure using if-else\n    std::cout << \"Done.\\n\";\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    if (a > b)\n        std::cout << \"a is greater\\n\";\n    else\n        std::cout << \"b is greater or equal\\n\";\n\n    std::cout << \"Done.\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "a greater than b",
+              "stdin": "10 3\n",
+              "expected_stdout": "a is greater\nDone.\n",
+              "is_sample": true
+            },
+            {
+              "label": "b greater than a",
+              "stdin": "2 9\n",
+              "expected_stdout": "b is greater or equal\nDone.\n",
+              "is_sample": false
+            },
+            {
+              "label": "a equals b",
+              "stdin": "5 5\n",
+              "expected_stdout": "b is greater or equal\nDone.\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.8",
+      "title": "Introduction to loops and while statements",
+      "sort_order": 108,
+      "summary_md": "## While Loops\n\nSo far you've used `if` statements and `switch` to branch based on a condition — but they only run their body once. A **while loop** repeats a block of code for as long as a condition remains `true`.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int count { 1 };\n    while (count <= 5) {\n        std::cout << count << '\\n';\n        ++count;          // update: avoids infinite loop\n    }\n    return 0;\n}\n```\n\nOutput: `1` through `5`, one per line.\n\n### Anatomy of a while loop\n\n```\nwhile ( condition ) {\n    // body — runs if condition is true\n    // update — move toward a false condition\n}\n```\n\n1. **Condition is evaluated** before every iteration (including the first).\n2. If it is `true`, the body runs; if `false`, execution continues after the closing brace.\n3. If the condition is never false the loop runs forever — an **infinite loop**. Always make sure the body moves toward a terminating state.\n\n### Comparison with Python\n\nPython's `while` is identical in concept; C++ just requires braces instead of a colon-plus-indent, and you must declare the loop variable with a type before the loop (e.g., `int count { 1 };`).\n\n### Loop variables and initialization\n\nBecause `strict: true` / `-Wall -Wextra` flags warn about uninitialized variables, always initialize your counter. Prefer brace-initialization (`int i { 0 };`) as you've seen since lesson 1.\n\n### Common while-loop patterns\n\n| Pattern | Example purpose |\n|---|---|\n| **Counter loop** | iterate a fixed number of times |\n| **Accumulator loop** | sum or product of a series |\n| **Sentinel loop** | read until a special value (e.g., `0` to quit) |\n| **Validation loop** | repeat until user gives valid input |\n\n### off-by-one errors\n\nThe most frequent bug: using `<` vs `<=` incorrectly. Trace through the first and last iteration mentally before committing to a condition.\n\n### Relation to other control-flow statements\n\n`break` exits a loop immediately (same keyword used in `switch` from lesson 8-5). `continue` skips the rest of the current iteration and re-evaluates the condition. Both work inside `while` loops. You'll see `for` loops — a syntactic shorthand when the counter, condition, and update are all known up front — in a later lesson.",
+      "exercises": [
+        {
+          "title": "Countdown Timer",
+          "prompt_md": "## Countdown Timer\n\nWrite a program that reads a positive integer `n` from `stdin` and prints a countdown from `n` down to `1`, one number per line, followed by `Go!` on its own line.\n\n**Example** (input: `5`):\n```\n5\n4\n3\n2\n1\nGo!\n```\n\nRequirements:\n- Use a `while` loop.\n- Do **not** print anything extra (no prompts, no blank lines).\n- Assume the input is a positive integer (≥ 1).",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    // TODO: use a while loop to print n, n-1, ..., 1\n    // each on its own line\n\n    // TODO: after the loop, print \"Go!\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    while (n >= 1) {\n        std::cout << n << '\\n';\n        --n;\n    }\n\n    std::cout << \"Go!\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: countdown from 5",
+              "stdin": "5",
+              "expected_stdout": "5\n4\n3\n2\n1\nGo!\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: countdown from 1",
+              "stdin": "1",
+              "expected_stdout": "1\nGo!\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: countdown from 10",
+              "stdin": "10",
+              "expected_stdout": "10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nGo!\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Sum of Digits",
+          "prompt_md": "## Sum of Digits\n\nRead a non-negative integer from `stdin` and print the sum of its digits.\n\n**Example** (input: `1234`):\n```\n10\n```\n\nHint: you can extract the last digit of `n` with `n % 10`, then remove it with `n /= 10`. Repeat while `n > 0`.\n\nRequirements:\n- Use a `while` loop.\n- Print only the final sum followed by a newline.\n- Assume the input is a non-negative integer. If the input is `0`, the sum is `0`.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    int sum { 0 };\n\n    // TODO: use a while loop to accumulate the digit sum\n    // Hint: last digit = n % 10, remove it with n /= 10\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    int sum { 0 };\n\n    if (n == 0) {\n        sum = 0;\n    } else {\n        while (n > 0) {\n            sum += n % 10;\n            n /= 10;\n        }\n    }\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 1234 -> 10",
+              "stdin": "1234",
+              "expected_stdout": "10\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 0 -> 0",
+              "stdin": "0",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 9999 -> 36",
+              "stdin": "9999",
+              "expected_stdout": "36\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.9",
+      "title": "Do while statements",
+      "sort_order": 109,
+      "summary_md": "## Do-While Statements\n\nIn the previous lesson you learned about `while` loops, which test their condition *before* executing the body. Sometimes you need the body to run **at least once** regardless of the condition. That's exactly what the **do-while** loop provides.\n\n### Syntax\n\n```cpp\ndo\n{\n    // body always runs at least once\n} while (condition);\n```\n\nNotice the semicolon after the closing parenthesis — it's required and easy to forget. The body executes first, then the condition is checked. If the condition is `true`, the loop repeats; if `false`, it exits.\n\n### How It Differs from `while`\n\nWith a regular `while` loop, if the condition is `false` from the start, the body never runs. A `do-while` **guarantees** the body executes at least once. Think of it like Python's `while True: ... if not condition: break` pattern, but cleaner.\n\n### The Classic Use Case: Input Validation\n\nDo-while loops shine when prompting a user for valid input — you always need to ask at least once:\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int value{};\n    do\n    {\n        std::cout << \"Enter a number between 1 and 10: \";\n        std::cin >> value;\n    } while (value < 1 || value > 10);\n\n    std::cout << \"You entered: \" << value << '\\n';\n    return 0;\n}\n```\n\nThis prompts the user, reads their input, then checks: if the value is out of range, loop back and ask again. If it's valid, exit.\n\n### Variable Scope Gotcha\n\nRecall from the switch scoping lesson that variables declared inside a block are local to it. With do-while, if you declare a variable inside the `do` block, it won't be visible in the `while (condition)` part. Declare loop-condition variables *before* the `do` keyword, as shown above with `value`.\n\n### When to Prefer Do-While vs While\n\n- Use **`while`** when the loop might legitimately execute zero times.\n- Use **`do-while`** when the first iteration is unconditional (user prompts, menu systems, game loops that must render at least one frame).\n\nFor most loops in practice, `while` or range-based `for` (covered later) is the right tool. Reserve `do-while` for cases where the \"at least once\" guarantee is semantically meaningful — it signals intent clearly to the reader.",
+      "exercises": [
+        {
+          "title": "Countdown with Do-While",
+          "prompt_md": "Write a program that reads an integer `n` from stdin and prints a countdown from `n` down to `1`, each number on its own line, followed by `\"Blast off!\"` on a new line.\n\nUse a **do-while loop** (the loop must be a do-while — not a while or for loop). You may assume `n >= 1`.\n\n**Example** (input `3`):\n```\n3\n2\n1\nBlast off!\n```",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: use a do-while loop to print n, n-1, ..., 1\n    // then print \"Blast off!\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    do\n    {\n        std::cout << n << '\\n';\n        --n;\n    } while (n >= 1);\n\n    std::cout << \"Blast off!\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Countdown from 3",
+              "stdin": "3",
+              "expected_stdout": "3\n2\n1\nBlast off!\n",
+              "is_sample": true
+            },
+            {
+              "label": "Countdown from 1 (single iteration)",
+              "stdin": "1",
+              "expected_stdout": "1\nBlast off!\n",
+              "is_sample": false
+            },
+            {
+              "label": "Countdown from 5",
+              "stdin": "5",
+              "expected_stdout": "5\n4\n3\n2\n1\nBlast off!\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Input Validation with Do-While",
+          "prompt_md": "Write a program that repeatedly prompts the user to enter an integer between `1` and `5` (inclusive) until they provide a valid value. For each invalid input, print `\"Invalid input. Try again.\"` on its own line before prompting again. Once a valid number is entered, print `\"You chose: X\"` where `X` is the valid number.\n\nUse a **do-while loop** for the validation. The prompt string to print each iteration is `\"Enter a number (1-5): \"`.\n\n**Example** (input: `7`, then `0`, then `3`):\n```\nEnter a number (1-5): Invalid input. Try again.\nEnter a number (1-5): Invalid input. Try again.\nEnter a number (1-5): You chose: 3\n```\n\n*Note: the prompt and the user's input appear on the same line in the expected output — `std::cin >> value` consumes the newline from stdin so the next `std::cout` starts right after the user's typed number in the test harness.*",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int value{};\n\n    // TODO: use a do-while loop that:\n    //   1. prints \"Enter a number (1-5): \"\n    //   2. reads an integer into value\n    //   3. if invalid, prints \"Invalid input. Try again.\"\n    //   4. repeats until value is in [1, 5]\n\n    std::cout << \"You chose: \" << value << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int value{};\n\n    do\n    {\n        std::cout << \"Enter a number (1-5): \";\n        std::cin >> value;\n        if (value < 1 || value > 5)\n            std::cout << \"Invalid input. Try again.\\n\";\n    } while (value < 1 || value > 5);\n\n    std::cout << \"You chose: \" << value << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Valid on first try (3)",
+              "stdin": "3",
+              "expected_stdout": "Enter a number (1-5): You chose: 3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Two invalid inputs then valid (7, 0, 5)",
+              "stdin": "7\n0\n5",
+              "expected_stdout": "Enter a number (1-5): Invalid input. Try again.\nEnter a number (1-5): Invalid input. Try again.\nEnter a number (1-5): You chose: 5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Boundary valid on first try (1)",
+              "stdin": "1",
+              "expected_stdout": "Enter a number (1-5): You chose: 1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.10",
+      "title": "For statements",
+      "sort_order": 110,
+      "summary_md": "## For Statements\n\nThe `for` statement is the most common loop in C++ and is ideal when you know in advance how many times you need to iterate. Unlike the `while` loop you saw in lesson 8.8, `for` packages the loop variable initialization, condition check, and increment all into one line — making the intent clearer and reducing the chance of forgetting to update the counter.\n\n### Anatomy of a `for` loop\n\n```cpp\nfor (int i { 0 }; i < 5; ++i) {\n    std::cout << i << '\\n';  // prints 0 1 2 3 4\n}\n// i is not accessible here — its scope ends with the loop\n```\n\nThe three parts inside the parentheses are:\n\n1. **Init statement** — runs once before the loop starts. Typically declares and initializes the loop variable (`int i { 0 }`). Using brace initialization here follows the same convention we prefer everywhere in C++20.\n2. **Condition** — evaluated before each iteration. If `false` from the start, the body never runs (just like `while`).\n3. **End expression** — runs after each iteration, before the next condition check. Prefer prefix `++i` over `i++` for integral types — it avoids creating a temporary.\n\n### Scope matters\n\nVariables declared in the init statement are scoped to the `for` loop itself. This is a key difference from Python's `for` loops, where the loop variable leaks into the surrounding scope. In C++ you can reuse `i` in a second `for` loop later in the same function without conflict.\n\n### Counting patterns\n\n- Count up from 0: `for (int i { 0 }; i < n; ++i)` — the idiomatic form; note `<` not `<=`.\n- Count down: `for (int i { n - 1 }; i >= 0; --i)` — be cautious with unsigned types here; use `int` or `std::ptrdiff_t`.\n- Step by 2: `i += 2` in the end expression.\n\nAny of the three parts can be omitted (leaving a blank), and a `for` loop with all three omitted (`for (;;)`) is an infinite loop — equivalent to the `while (true)` pattern from lesson 8.8. The `do-while` from lesson 8.9 guarantees at least one execution; `for` guarantees zero or more.\n\n### Off-by-one errors\n\nThe most common `for` loop bug is using `<=` when you mean `<` (or vice versa). Always ask: *should the boundary value be included?* If iterating over indices 0 through N-1, use `i < N`.",
+      "exercises": [
+        {
+          "title": "Multiplication Table Row",
+          "prompt_md": "Write a program that reads an integer `n` from standard input (1 ≤ n ≤ 12) and prints the multiplication table row for `n`, from `n × 1` through `n × 10`, one product per line in the format `n x k = result`.\n\n**Example** — input `3`, output:\n```\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30\n```\n\nUse a `for` loop with an explicit init statement, condition, and increment. The loop variable must not be accessible after the loop ends.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: write a for loop that iterates k from 1 to 10 (inclusive)\n    // and prints: n x k = (n * k)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    for (int k { 1 }; k <= 10; ++k) {\n        std::cout << n << \" x \" << k << \" = \" << n * k << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: n = 3",
+              "stdin": "3",
+              "expected_stdout": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: n = 1",
+              "stdin": "1",
+              "expected_stdout": "1 x 1 = 1\n1 x 2 = 2\n1 x 3 = 3\n1 x 4 = 4\n1 x 5 = 5\n1 x 6 = 6\n1 x 7 = 7\n1 x 8 = 8\n1 x 9 = 9\n1 x 10 = 10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: n = 12",
+              "stdin": "12",
+              "expected_stdout": "12 x 1 = 12\n12 x 2 = 24\n12 x 3 = 36\n12 x 4 = 48\n12 x 5 = 60\n12 x 6 = 72\n12 x 7 = 84\n12 x 8 = 96\n12 x 9 = 108\n12 x 10 = 120\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Sum of Integers in Range",
+          "prompt_md": "Write a program that reads two integers `a` and `b` from standard input (on the same line, space-separated) and prints the sum of all integers from `a` to `b` inclusive. You may assume `a ≤ b`.\n\nPrint exactly one line: `Sum = <result>`\n\n**Example** — input `1 5`, output:\n```\nSum = 15\n```\n\nRequirements:\n- Use a `for` loop. Declare the loop variable in the init statement (not before the loop).\n- Do **not** use the closed-form formula — the point is to practice the loop.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int sum { 0 };\n\n    // TODO: use a for loop to add every integer from a to b (inclusive) to sum\n\n    std::cout << \"Sum = \" << sum << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int sum { 0 };\n\n    for (int i { a }; i <= b; ++i) {\n        sum += i;\n    }\n\n    std::cout << \"Sum = \" << sum << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 1 to 5",
+              "stdin": "1 5",
+              "expected_stdout": "Sum = 15\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: same value (a == b)",
+              "stdin": "7 7",
+              "expected_stdout": "Sum = 7\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: larger range",
+              "stdin": "1 100",
+              "expected_stdout": "Sum = 5050\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.11",
+      "title": "Break and continue",
+      "sort_order": 111,
+      "summary_md": "## Break and Continue\n\nTwo keywords — `break` and `continue` — give you extra control over loop execution. You've already seen `break` used in `switch` statements (lesson 8-5); it works the same way inside loops.\n\n### break — Exit the loop early\n\n`break` immediately terminates the nearest enclosing loop (or `switch`) and jumps to the first statement after it. Use it when you've found what you were looking for and continuing would waste work.\n\n```cpp\n#include <iostream>\n\nint main() {\n    // Find the first number in [1, 100] divisible by both 7 and 11\n    for (int i { 1 }; i <= 100; ++i) {\n        if (i % 7 == 0 && i % 11 == 0) {\n            std::cout << \"Found: \" << i << '\\n'; // prints 77\n            break; // no need to keep going\n        }\n    }\n    return 0;\n}\n```\n\n`break` only exits **one** level of nesting. If you have nested loops and need to exit both, a common C++ pattern is to use a flag variable, or to extract the inner loop into a function and `return` from it.\n\n### continue — Skip the rest of this iteration\n\n`continue` skips the remainder of the current loop body and jumps straight to the loop's update expression (in a `for` loop) or condition check (in a `while`/`do-while` loop). The loop itself keeps running.\n\nUse `continue` when a particular iteration has nothing useful to do, rather than nesting the rest of the body inside an `if`.\n\n```cpp\n// Print odd numbers from 1 to 10 (without continue the body would need an extra if)\nfor (int i { 1 }; i <= 10; ++i) {\n    if (i % 2 == 0) continue; // skip even numbers\n    std::cout << i << ' ';    // 1 3 5 7 9\n}\n```\n\n### When to use each\n\n| Goal | Keyword |\n|---|---|\n| Stop the loop completely | `break` |\n| Skip only this iteration | `continue` |\n\nBoth keywords make loops easier to read **when used sparingly**. Overusing them — especially `continue` deep inside complex loops — can make control flow hard to follow. Prefer them over deeply nested `if` chains, but reach for a named function or an early `return` when the logic grows large.\n\nNote: unlike Python's `for`/`else` construct, C++ has no loop `else`. Any \"nothing found\" logic must go after the loop using a flag or a sentinel value.\n",
+      "exercises": [
+        {
+          "title": "Find the First Perfect Square in a Range",
+          "prompt_md": "Write a program that reads two integers `lo` and `hi` (both inclusive) from stdin, then prints the **first** perfect square in the range `[lo, hi]`.\n\nA perfect square is a non-negative integer whose square root is also an integer (e.g. 1, 4, 9, 16, 25, …).\n\n- If a perfect square is found, print `First perfect square: X` where `X` is that number, then **stop searching** (use `break`).\n- If no perfect square exists in the range, print `None found`.\n\n**Constraints:** `0 <= lo <= hi <= 10000`.\n\n**Hint:** `#include <cmath>` gives you `std::sqrt`. Cast the result to `int` and square it to check for exactness, or compare `(int)std::sqrt((double)n) * (int)std::sqrt((double)n) == n`.",
+          "starter_code": "#include <iostream>\n#include <cmath>\n\nint main() {\n    int lo {}, hi {};\n    std::cin >> lo >> hi;\n\n    bool found { false };\n\n    for (int n { lo }; n <= hi; ++n) {\n        // TODO: check whether n is a perfect square\n        // If it is, print the result, set found = true, and break\n    }\n\n    if (!found) {\n        std::cout << \"None found\\n\";\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <cmath>\n\nint main() {\n    int lo {}, hi {};\n    std::cin >> lo >> hi;\n\n    bool found { false };\n\n    for (int n { lo }; n <= hi; ++n) {\n        int root { static_cast<int>(std::sqrt(static_cast<double>(n))) };\n        if (root * root == n) {\n            std::cout << \"First perfect square: \" << n << '\\n';\n            found = true;\n            break;\n        }\n    }\n\n    if (!found) {\n        std::cout << \"None found\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — first square in range",
+              "stdin": "10 30",
+              "expected_stdout": "First perfect square: 16\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — range starts on a perfect square",
+              "stdin": "25 50",
+              "expected_stdout": "First perfect square: 25\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — no perfect square in range",
+              "stdin": "2 3",
+              "expected_stdout": "None found\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Sum of Non-Multiples",
+          "prompt_md": "Write a program that reads three integers from stdin: `n`, `a`, and `b`. Sum all integers from `1` to `n` (inclusive) that are **not** multiples of `a` and are **not** multiples of `b`, using `continue` to skip disqualified values.\n\nPrint the result as: `Sum: X`\n\n**Constraints:** `1 <= n <= 1000`, `2 <= a, b <= 100`.\n\n**Example:** For `n=10 a=3 b=5`, the values skipped are 3, 5, 6, 9, 10. The remaining values 1+2+4+7+8 = 22, so output is `Sum: 22`.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n {}, a {}, b {};\n    std::cin >> n >> a >> b;\n\n    int sum { 0 };\n\n    for (int i { 1 }; i <= n; ++i) {\n        // TODO: if i is a multiple of a OR a multiple of b, skip it with continue\n        // Otherwise, add i to sum\n    }\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n {}, a {}, b {};\n    std::cin >> n >> a >> b;\n\n    int sum { 0 };\n\n    for (int i { 1 }; i <= n; ++i) {\n        if (i % a == 0 || i % b == 0)\n            continue;\n        sum += i;\n    }\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — skip multiples of 3 and 5 up to 10",
+              "stdin": "10 3 5",
+              "expected_stdout": "Sum: 22\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — skip multiples of 3 and 5 up to 15",
+              "stdin": "15 3 5",
+              "expected_stdout": "Sum: 60\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — n=1, nothing to skip",
+              "stdin": "1 3 5",
+              "expected_stdout": "Sum: 1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.12",
+      "title": "Halts (exiting your program early)",
+      "sort_order": 112,
+      "summary_md": "## Halts: Exiting Your Program Early\n\nSo far every control-flow path you've written — `if`/`else`, `switch`, loops, `break`, `continue` — eventually falls through to the end of `main()` and returns normally. Sometimes you genuinely need to **stop the program immediately**, skipping everything that would otherwise run. C++ gives you two main tools for this.\n\n### Returning from `main()`\n\nThe cleanest exit is simply `return <code>;` inside `main()`. You already know this from the very first lesson. A return value of `0` signals success; any non-zero value signals failure. `<cstdlib>` defines two named constants:\n\n- `EXIT_SUCCESS` (equals `0`) — program finished normally\n- `EXIT_FAILURE` (equals `1` on most platforms) — program finished with an error\n\nThese are clearer than raw integers and are recognized by shells and CI systems.\n\n### `std::exit()`\n\nIncluded via `<cstdlib>`, `std::exit(status)` terminates the program **from anywhere** — not just `main()`. It accepts the same status codes as `return` in `main()`.\n\n```cpp\n#include <cstdlib>\n#include <iostream>\n\nvoid openFile(const std::string& path) {\n    if (path.empty()) {\n        std::cerr << \"Error: empty file path\\n\";\n        std::exit(EXIT_FAILURE);   // halt immediately\n    }\n    std::cout << \"Opening: \" << path << '\\n';\n}\n\nint main() {\n    openFile(\"\");   // triggers exit inside the function\n    return EXIT_SUCCESS;\n}\n```\n\n`std::exit()` does perform **some** cleanup: static-storage-duration objects with non-trivial destructors are destroyed, and buffers are flushed. However, **local variables in active stack frames are NOT destroyed** — their destructors never run. This matters if destructors do real work (file flushing, lock releasing). Because of this, most C++ guidelines prefer propagating errors back to `main()` and returning normally whenever feasible.\n\n### `std::quick_exit()` and `std::abort()`\n\nTwo more nuclear options exist. `std::quick_exit()` skips even static-object cleanup. `std::abort()` triggers abnormal termination (signal `SIGABRT`), intended for unrecoverable programmer errors — not for ordinary error handling. Avoid both unless you have a specific systems-programming reason.\n\n### When to use a halt\n\nUse a halt (especially `std::exit`) sparingly:\n\n- **Configuration or startup failures** that make the rest of the program meaningless (e.g., missing required file, bad command-line argument).\n- **Security violations** where continuing could cause harm.\n- Deep library code where propagating an error all the way up is genuinely impractical.\n\nPrefer normal `return`-based error propagation in most cases. Think of `std::exit()` as the emergency exit — visible, labeled, but not the door you use every day.\n\n### Key takeaways\n\n- `return EXIT_SUCCESS` / `return EXIT_FAILURE` from `main()` is the preferred way to exit.\n- `std::exit(status)` halts from anywhere but skips local destructors.\n- Non-zero exit codes communicate failure to the calling shell or process.\n- Reach for halts only when normal control flow would be genuinely unworkable.",
+      "exercises": [
+        {
+          "title": "Exit Code Classifier",
+          "prompt_md": "## Exit Code Classifier\n\nWrite a program that reads a single integer from stdin representing a simulated operation result code:\n\n- If the code is `0`, print `Success` and exit with `EXIT_SUCCESS`.\n- If the code is between `1` and `9` inclusive, print `Recoverable error: <code>` and exit with `EXIT_FAILURE`.\n- If the code is `10` or greater, print `Fatal error: <code>` and exit with `EXIT_FAILURE`.\n- If the code is negative, print `Invalid code` and exit with `EXIT_FAILURE`.\n\nUse `std::exit()` (not `return` from `main`) for at least the fatal and invalid cases. Use `<cstdlib>` exit status constants.\n\n**Example input:** `0`  \n**Example output:** `Success`\n\n**Example input:** `5`  \n**Example output:** `Recoverable error: 5`",
+          "starter_code": "#include <cstdlib>\n#include <iostream>\n\nint main() {\n    int code{};\n    std::cin >> code;\n\n    if (code == 0) {\n        // TODO: print \"Success\" and exit with EXIT_SUCCESS via std::exit\n    }\n    else if (code >= 1 && code <= 9) {\n        // TODO: print \"Recoverable error: <code>\" and exit with EXIT_FAILURE via std::exit\n    }\n    else if (code >= 10) {\n        // TODO: print \"Fatal error: <code>\" and exit with EXIT_FAILURE via std::exit\n    }\n    else {\n        // TODO: print \"Invalid code\" and exit with EXIT_FAILURE via std::exit\n    }\n\n    return EXIT_SUCCESS;\n}\n",
+          "solution_code": "#include <cstdlib>\n#include <iostream>\n\nint main() {\n    int code{};\n    std::cin >> code;\n\n    if (code == 0) {\n        std::cout << \"Success\\n\";\n        std::exit(EXIT_SUCCESS);\n    }\n    else if (code >= 1 && code <= 9) {\n        std::cout << \"Recoverable error: \" << code << '\\n';\n        std::exit(EXIT_FAILURE);\n    }\n    else if (code >= 10) {\n        std::cout << \"Fatal error: \" << code << '\\n';\n        std::exit(EXIT_FAILURE);\n    }\n    else {\n        std::cout << \"Invalid code\\n\";\n        std::exit(EXIT_FAILURE);\n    }\n\n    return EXIT_SUCCESS;\n}\n",
+          "test_cases": [
+            {
+              "label": "Zero means success",
+              "stdin": "0",
+              "expected_stdout": "Success\n",
+              "is_sample": true
+            },
+            {
+              "label": "Recoverable error range",
+              "stdin": "7",
+              "expected_stdout": "Recoverable error: 7\n",
+              "is_sample": false
+            },
+            {
+              "label": "Fatal error large code",
+              "stdin": "42",
+              "expected_stdout": "Fatal error: 42\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Safe Division with Early Exit",
+          "prompt_md": "## Safe Division with Early Exit\n\nWrite a program that reads two integers `a` and `b` from stdin.\n\n- If `b` is zero, print `Error: division by zero` to **stderr** (`std::cerr`) and immediately halt the program with `EXIT_FAILURE` using `std::exit()`.\n- Otherwise, print the result of integer division `a / b` followed by a newline to **stdout** and return `EXIT_SUCCESS` from `main()`.\n\nThe guard against division by zero must live inside a helper function called `guardDivisor` that accepts the divisor as its only argument, calls `std::exit(EXIT_FAILURE)` directly if it is zero, and returns `void`. `main()` calls `guardDivisor(b)` before performing the division.\n\nThis exercise demonstrates how `std::exit()` lets you enforce preconditions deep in a call chain without threading error returns back through every caller.\n\n**Example input:** `10 2`  \n**Example output:** `5`\n\n**Example input:** `7 0`  \n**Example output (stderr):** `Error: division by zero`  \n*(stdout is empty)*",
+          "starter_code": "#include <cstdlib>\n#include <iostream>\n\n// TODO: implement guardDivisor(int divisor)\n// If divisor == 0, print \"Error: division by zero\" to std::cerr and call std::exit(EXIT_FAILURE)\nvoid guardDivisor(int divisor) {\n    // TODO\n}\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: call guardDivisor(b)\n\n    // TODO: print a / b followed by newline\n\n    return EXIT_SUCCESS;\n}\n",
+          "solution_code": "#include <cstdlib>\n#include <iostream>\n\nvoid guardDivisor(int divisor) {\n    if (divisor == 0) {\n        std::cerr << \"Error: division by zero\\n\";\n        std::exit(EXIT_FAILURE);\n    }\n}\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    guardDivisor(b);\n\n    std::cout << a / b << '\\n';\n\n    return EXIT_SUCCESS;\n}\n",
+          "test_cases": [
+            {
+              "label": "Normal division",
+              "stdin": "10 2",
+              "expected_stdout": "5\n",
+              "is_sample": true
+            },
+            {
+              "label": "Negative dividend, positive divisor",
+              "stdin": "-20 4",
+              "expected_stdout": "-5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Division by zero halts with empty stdout",
+              "stdin": "99 0",
+              "expected_stdout": "",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.13",
+      "title": "Introduction to random number generation",
+      "sort_order": 113,
+      "summary_md": "## Introduction to Random Number Generation\n\nMany programs need unpredictable values: games need dice rolls, simulations need noise, security needs keys. C++ gives you tools for all of these — but you have to pick the right one.\n\n### True random vs. PRNG\n\n**True random number generators (TRNGs)** sample physical entropy: CPU thermal noise, hardware interrupts. They are genuinely unpredictable but slow and not reproducible. `std::random_device` is your TRNG interface in C++ — use it only for seeding, not in tight loops.\n\n**Pseudo-random number generators (PRNGs)** are deterministic algorithms that produce sequences that *look* random. Given the same starting value (the **seed**), a PRNG always produces the exact same sequence. That reproducibility is a feature: it lets you replay a game, reproduce a bug, or run a deterministic test.\n\n### Why `rand()` is broken\n\nThe old C function `rand()` (from `<cstdlib>`) has three problems: its period and distribution quality are implementation-defined and often poor; seeding with `srand(time(nullptr))` gives only one-second resolution, so two runs in the same second produce identical output; and it uses global mutable state, making it thread-unsafe.\n\nAvoid `rand()`/`srand()` in new code.\n\n### The modern approach: `<random>`\n\nC++11 introduced a two-object model that cleanly separates concerns:\n\n```cpp\n#include <iostream>\n#include <random>\n\nint main() {\n    std::mt19937 rng{ std::random_device{}() };  // seed from hardware\n    std::uniform_int_distribution<int> dist{ 1, 6 };  // [1, 6] inclusive\n\n    for (int i{ 0 }; i < 5; ++i)\n        std::cout << dist(rng) << '\\n';  // each call advances rng\n}\n```\n\n- **`std::mt19937`** is the Mersenne Twister engine — a high-quality PRNG with a period of 2^19937 − 1 and good statistical properties. It is fully specified by the C++ standard, so the same seed produces the same sequence on every conforming compiler.\n- **`std::uniform_int_distribution<int>`** maps raw engine output onto a uniform integer range without the modulo bias that plagues `rand() % N`.\n- **`std::random_device`** requests a non-deterministic seed from the OS. Wrap it in `{}()` to get one value and discard the object.\n\n### Seed impact\n\nThe seed is the only thing that differentiates two PRNG sequences. Two engines with the same seed are identical. In tests and exercises, pass a hard-coded seed instead of `random_device` to get reproducible output — you'll do exactly that in the exercises below.\n\nFor true unpredictability in production, always seed from `std::random_device`. For reproducible tests, seed from a constant. The rest of the code is identical either way — only the seed source changes.",
+      "exercises": [
+        {
+          "title": "Seed Sequence Comparator",
+          "prompt_md": "## Goal\n\nComplete a program that reads two integer seeds from stdin, generates a short sequence from each using `std::mt19937` and `std::uniform_int_distribution<int>(1, 100)`, and reports whether the two sequences are identical.\n\n## Input\n\nLine 1: integer `seedA` (any valid `unsigned int` value).\nLine 2: integer `seedB` (any valid `unsigned int` value).\n\n## Output\n\nPrint exactly one line:\n- `Same sequence` if both seeds produce the same first 5 numbers.\n- `Different sequences` if they do not.\n\n## Requirements\n\n1. Create two separate `std::mt19937` engines, one seeded with `seedA` and one with `seedB`.\n2. Use `std::uniform_int_distribution<int> dist{ 1, 100 }` for both engines.\n3. Generate exactly 5 values from each engine and compare them element by element.\n4. Print `Same sequence` when `seedA == seedB` (they will always match in that case).\n5. Print `Different sequences` when `seedA != seedB` (they will always differ in practice for these test values).\n6. Do not print the actual numbers — only the comparison result.",
+          "starter_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seedA{}, seedB{};\n    std::cin >> seedA >> seedB;\n\n    // TODO: create two mt19937 engines, one seeded with seedA, one with seedB\n    // std::mt19937 rngA{ ... };\n    // std::mt19937 rngB{ ... };\n\n    std::uniform_int_distribution<int> dist{ 1, 100 };\n\n    bool same{ true };\n    for (int i{ 0 }; i < 5; ++i) {\n        // TODO: generate one value from each engine\n        // int a = ...;\n        // int b = ...;\n        // TODO: if a != b, set same = false\n    }\n\n    // TODO: print \"Same sequence\" if same, else \"Different sequences\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seedA{}, seedB{};\n    std::cin >> seedA >> seedB;\n\n    std::mt19937 rngA{ seedA };\n    std::mt19937 rngB{ seedB };\n\n    std::uniform_int_distribution<int> dist{ 1, 100 };\n\n    bool same{ true };\n    for (int i{ 0 }; i < 5; ++i) {\n        int a{ dist(rngA) };\n        int b{ dist(rngB) };\n        if (a != b)\n            same = false;\n    }\n\n    if (same)\n        std::cout << \"Same sequence\\n\";\n    else\n        std::cout << \"Different sequences\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Same seed produces same sequence",
+              "stdin": "42\n42",
+              "expected_stdout": "Same sequence\n",
+              "is_sample": true
+            },
+            {
+              "label": "Different seeds produce different sequences",
+              "stdin": "1\n2",
+              "expected_stdout": "Different sequences\n",
+              "is_sample": false
+            },
+            {
+              "label": "Seed zero vs seed one are different",
+              "stdin": "0\n1",
+              "expected_stdout": "Different sequences\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Fixed-Seed Die Roller",
+          "prompt_md": "## Goal\n\nComplete a program that reads a seed and a roll count from stdin, simulates that many six-sided die rolls using a fixed-seed `std::mt19937`, and reports how many rolls landed on each face (1 through 6).\n\n## Input\n\nLine 1: `unsigned int seed`.\nLine 2: `int n` — number of rolls (1 ≤ n ≤ 1000).\n\n## Output\n\nPrint exactly 6 lines, one per face value, in this format:\n```\nFace 1: <count>\nFace 2: <count>\n...\nFace 6: <count>\n```\n\nThe total of all counts must equal `n`.\n\n## Requirements\n\n1. Create `std::mt19937 rng{ seed }` — do **not** use `std::random_device`.\n2. Use `std::uniform_int_distribution<int> dist{ 1, 6 }`.\n3. Roll `dist(rng)` exactly `n` times, tallying results in an array or six separate counters.\n4. Print each face count on its own line in the exact format shown above.\n5. Hidden test: seed=42, n=1 — only one face will have count 1, the rest 0.\n6. Hidden test: seed=0, n=6 — all counts sum to 6.\n\n## Notes\n\n- `std::mt19937` is standardized; the same seed gives the same output on every conforming C++20 compiler.\n- Do not use `rand()` or `srand()` — this exercise practices the `<random>` header.",
+          "starter_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seed{};\n    int n{};\n    std::cin >> seed >> n;\n\n    // TODO: create std::mt19937 rng seeded with `seed`\n    // TODO: create std::uniform_int_distribution<int> dist for [1, 6]\n\n    int counts[7]{}; // counts[1] through counts[6]; index 0 unused\n\n    for (int i{ 0 }; i < n; ++i) {\n        // TODO: roll dist(rng) and increment the appropriate counter\n    }\n\n    for (int face{ 1 }; face <= 6; ++face) {\n        // TODO: print \"Face <face>: <counts[face]>\"\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seed{};\n    int n{};\n    std::cin >> seed >> n;\n\n    std::mt19937 rng{ seed };\n    std::uniform_int_distribution<int> dist{ 1, 6 };\n\n    int counts[7]{}; // index 0 unused\n\n    for (int i{ 0 }; i < n; ++i) {\n        int roll{ dist(rng) };\n        ++counts[roll];\n    }\n\n    for (int face{ 1 }; face <= 6; ++face) {\n        std::cout << \"Face \" << face << \": \" << counts[face] << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: seed=99, n=6, counts sum to 6",
+              "stdin": "99\n6",
+              "expected_stdout": "Face 1: 0\nFace 2: 1\nFace 3: 2\nFace 4: 1\nFace 5: 1\nFace 6: 1\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: seed=42, n=1",
+              "stdin": "42\n1",
+              "expected_stdout": "Face 1: 1\nFace 2: 0\nFace 3: 0\nFace 4: 0\nFace 5: 0\nFace 6: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: seed=0, n=12",
+              "stdin": "0\n12",
+              "expected_stdout": "Face 1: 2\nFace 2: 2\nFace 3: 2\nFace 4: 2\nFace 5: 2\nFace 6: 2\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.14",
+      "title": "Generating random numbers using Mersenne Twister",
+      "sort_order": 114,
+      "summary_md": "## Generating Random Numbers Using Mersenne Twister\n\nAs discussed in \"Introduction to random number generation,\" C's `rand()` has serious flaws: short period, poor distribution, and platform-dependent behaviour. C++11 introduced `<random>`, a proper random number library. The workhorse engine is **`std::mt19937`** — a Mersenne Twister with a period of 2^19937 - 1.\n\n### The two-part model\n\nC++ separates *engines* (produce raw bits) from *distributions* (shape bits into useful ranges):\n\n```cpp\n#include <iostream>\n#include <random>\n\nint main()\n{\n    std::mt19937 mt{ std::random_device{}() };\n    std::uniform_int_distribution die{ 1, 6 };\n\n    for (int i{ 0 }; i < 5; ++i)\n        std::cout << die(mt) << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```\n\n`std::random_device{}()` provides a non-deterministic seed (hardware entropy or OS randomness). The engine then produces a deterministic sequence from that seed — identical seeds produce identical sequences, which is useful for debugging.\n\n### Seeding\n\n- **`std::random_device`** — use for production code. Provides true randomness on most platforms.\n- **Fixed integer seed** — use for testing and reproducibility. `std::mt19937 mt{ 42 };` always produces the same sequence.\n\n### Distributions\n\n| Distribution | Use |\n|---|---|\n| `uniform_int_distribution{a, b}` | Equal probability integers in [a, b] |\n| `uniform_real_distribution{a, b}` | Equal probability doubles in [a, b) |\n| `normal_distribution{mean, stddev}` | Bell curve |\n\nAlways pass the engine by reference to the distribution's `operator()` — distributions are stateless, engines are stateful.\n\n### Python comparison\n\nPython's `random.randint(a, b)` hides the engine/distribution split behind one call. C++ makes it explicit so you can swap engines, share state, or serialize the generator's state for reproducibility.\n\n### Key rules\n\n1. Create one `mt19937` per program (or thread), not one per call.\n2. Seed it once at startup.\n3. Pass it to distributions — never call `mt()` directly for a bounded range (modulo bias).",
+      "exercises": [
+        {
+          "title": "Dice Roller",
+          "prompt_md": "Write a program that reads an integer `n` and prints `n` simulated dice rolls (values 1-6) separated by spaces, followed by a newline.\n\n### Requirements\n- Use `std::mt19937` with a **fixed seed of 42** (for deterministic output).\n- Use `std::uniform_int_distribution` for the range [1, 6].\n- Print each roll separated by a space.\n- Print a newline at the end.",
+          "starter_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create mt19937 with seed 42\n    // TODO: Create uniform_int_distribution for [1, 6]\n    // TODO: Loop n times, print each roll followed by a space\n\n    std::cout << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::mt19937 mt{ 42 };\n    std::uniform_int_distribution die{ 1, 6 };\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << die(mt) << ' ';\n\n    std::cout << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Five rolls",
+              "stdin": "5\n",
+              "expected_stdout": "4 5 3 5 5 \n",
+              "is_sample": true
+            },
+            {
+              "label": "Single roll",
+              "stdin": "1\n",
+              "expected_stdout": "4 \n",
+              "is_sample": false
+            },
+            {
+              "label": "Ten rolls",
+              "stdin": "10\n",
+              "expected_stdout": "4 5 3 5 5 2 3 3 3 5 \n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Random Range Generator",
+          "prompt_md": "Write a program that reads two integers `lo` and `hi`, then an integer `n`. Print `n` random numbers in the range [lo, hi], each separated by a space, followed by a newline.\n\n### Requirements\n- Use `std::mt19937` with a **fixed seed of 123**.\n- Use `std::uniform_int_distribution` with the given range.\n- Print each number separated by a space, then a newline.",
+          "starter_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{};\n    int hi{};\n    int n{};\n    std::cin >> lo >> hi >> n;\n\n    // TODO: Create mt19937 with seed 123\n    // TODO: Create uniform_int_distribution for [lo, hi]\n    // TODO: Loop n times, print each number followed by a space\n\n    std::cout << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{};\n    int hi{};\n    int n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ 123 };\n    std::uniform_int_distribution dist{ lo, hi };\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << dist(mt) << ' ';\n\n    std::cout << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Range 1-10, 5 numbers",
+              "stdin": "1 10 5\n",
+              "expected_stdout": "3 3 7 2 4 \n",
+              "is_sample": true
+            },
+            {
+              "label": "Range 1-20, 3 numbers",
+              "stdin": "1 20 3\n",
+              "expected_stdout": "14 3 3 \n",
+              "is_sample": false
+            },
+            {
+              "label": "Range 1-100, 5 numbers",
+              "stdin": "1 100 5\n",
+              "expected_stdout": "67 93 99 18 84 \n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.15",
+      "title": "Global random numbers (Random.h)",
+      "sort_order": 115,
+      "summary_md": "## Global random numbers (`Random.h`)\n\nIn the previous lesson you learned how to seed and use `std::mt19937` — but you also saw the problem: every time you construct a new engine object it needs its own seed. If you create two `mt19937` objects seeded from `std::random_device` in different functions, you can accidentally pull the same seed twice, and the engines diverge in an unpredictable way. The idiomatic fix is **one engine for the whole program**, created exactly once.\n\n### Wrapping the engine in a namespace\n\nC++17 introduced `inline` variables, which let you define a variable in a header and safely include that header in multiple translation units without getting a linker error about duplicate symbols. Combining `inline` with a namespace gives you a clean, zero-overhead global engine:\n\n```cpp\n// Random.h\n#pragma once\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ std::random_device{}() };\n\n    // Returns a random int in [min, max]\n    inline int get(int min, int max) {\n        std::uniform_int_distribution dist{ min, max };\n        return dist(mt);\n    }\n}\n```\n\nBreaking it down:\n- `std::random_device{}()` — creates a temporary `random_device` and calls it immediately to get a single hardware seed. This happens **once**, when the program starts.\n- `inline std::mt19937 mt{ ... }` — the `inline` keyword tells the linker \"all translation units share the same object\"; no `extern` dance needed.\n- `Random::get(min, max)` — builds a `uniform_int_distribution` on the stack (cheap), fires it against the shared engine, and returns the result.\n\n### Why one global engine?\n\nFrom Python you're used to `random.randint()` just working. In C++ the engine is stateful — each call advances an internal 624-word state array. If you create many engines you're running many independent streams that can correlate. One shared engine gives you the full Mersenne Twister period (~4.3 × 10⁶⁰⁰⁰ values) without repeating.\n\n### Using it\n\n```cpp\n#include \"Random.h\"\nint main() {\n    int die = Random::get(1, 6);   // roll a d6\n    int card = Random::get(0, 51); // pick a card\n}\n```\n\n### Avoiding the seed-once pitfall\n\nNever seed `mt` more than once. Re-seeding mid-program resets the state and can reintroduce patterns. If you need a reproducible run for debugging, construct the engine with a fixed integer seed instead of `random_device`:\n\n```cpp\ninline std::mt19937 mt{ 42 }; // fixed seed — deterministic, useful for tests\n```\n\nThis pattern — a single header-defined engine shared across the program — is idiomatic modern C++ and is exactly what learncpp.com's `Random.h` header provides.",
+      "exercises": [
+        {
+          "title": "Roll dice and report stats",
+          "prompt_md": "You will simulate rolling a six-sided die many times and print how often each face appears.\n\n**Requirements:**\n1. Include a `Random` namespace with a **fixed seed of `42`** so results are deterministic.\n2. Read a single integer `n` from stdin — the number of rolls.\n3. Roll a d6 exactly `n` times using `Random::get(1, 6)`.\n4. Print the count for each face value 1–6, one per line, in the format:\n   ```\n   Face X: Y\n   ```\n\n**Example** (n = 12):\n```\nFace 1: 2\nFace 2: 3\nFace 3: 1\nFace 4: 2\nFace 5: 2\nFace 6: 2\n```",
+          "starter_code": "#include <iostream>\n#include <random>\n#include <array>\n\nnamespace Random {\n    // TODO: declare an inline mt19937 engine with a fixed seed of 42\n\n    inline int get(int min, int max) {\n        // TODO: create a uniform_int_distribution and return a random value\n        return 0;\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: declare a counts array for faces 1-6 (index 1 through 6)\n\n    // TODO: roll the die n times and record results\n\n    // TODO: print \"Face X: Y\" for each face 1-6\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <random>\n#include <array>\n\nnamespace Random {\n    inline std::mt19937 mt{ 42 };\n\n    inline int get(int min, int max) {\n        std::uniform_int_distribution dist{ min, max };\n        return dist(mt);\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    std::array<int, 7> counts{}; // index 0 unused; 1-6 track each face\n\n    for (int i{ 0 }; i < n; ++i) {\n        int roll{ Random::get(1, 6) };\n        ++counts[static_cast<std::size_t>(roll)];\n    }\n\n    for (int face{ 1 }; face <= 6; ++face) {\n        std::cout << \"Face \" << face << \": \" << counts[static_cast<std::size_t>(face)] << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "12 rolls",
+              "stdin": "12",
+              "expected_stdout": "Face 1: 2\nFace 2: 3\nFace 3: 1\nFace 4: 2\nFace 5: 2\nFace 6: 2\n",
+              "is_sample": true
+            },
+            {
+              "label": "1 roll",
+              "stdin": "1",
+              "expected_stdout": "Face 1: 0\nFace 2: 0\nFace 3: 0\nFace 4: 1\nFace 5: 0\nFace 6: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "60 rolls",
+              "stdin": "60",
+              "expected_stdout": "Face 1: 10\nFace 2: 10\nFace 3: 11\nFace 4: 12\nFace 5: 8\nFace 6: 9\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Random number in a custom range",
+          "prompt_md": "Practice using a shared random engine to generate numbers across different ranges.\n\n**Requirements:**\n1. Include a `Random` namespace with a **fixed seed of `123`**.\n2. Read two integers per query line: `lo` and `hi` (where `lo <= hi`).\n3. For each pair, print one random integer in `[lo, hi]` using `Random::get(lo, hi)`.\n4. Read until EOF. Each result on its own line.\n\n**Example input:**\n```\n1 10\n50 50\n-5 5\n```\n**Example output:**\n```\n3\n50\n-3\n```",
+          "starter_code": "#include <iostream>\n#include <random>\n\nnamespace Random {\n    // TODO: declare an inline mt19937 engine with a fixed seed of 123\n\n    inline int get(int min, int max) {\n        // TODO: create a uniform_int_distribution<int> and return a value\n        return 0;\n    }\n}\n\nint main() {\n    int lo{}, hi{};\n    // TODO: read (lo, hi) pairs until EOF and print Random::get(lo, hi) for each\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ 123 };\n\n    inline int get(int min, int max) {\n        std::uniform_int_distribution<int> dist{ min, max };\n        return dist(mt);\n    }\n}\n\nint main() {\n    int lo{}, hi{};\n    while (std::cin >> lo >> hi) {\n        std::cout << Random::get(lo, hi) << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "three ranges",
+              "stdin": "1 10\n50 50\n-5 5",
+              "expected_stdout": "3\n50\n-3\n",
+              "is_sample": true
+            },
+            {
+              "label": "single range full span",
+              "stdin": "0 1",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "five queries mixed ranges",
+              "stdin": "1 100\n1 100\n200 300\n-10 -1\n0 0",
+              "expected_stdout": "25\n57\n269\n-2\n0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "8.x",
+      "title": "Chapter 8 summary and quiz",
+      "sort_order": 116,
+      "summary_md": "## Chapter 8 Summary: Control Flow\n\nChapter 8 covered every mechanism C++ gives you to decide *which* code runs, *how many times* it runs, and *when* to stop.\n\n### Conditionals\n**If/else** (8.1–8.3) selects a branch based on a boolean condition. Always use braces, even for single-line bodies — it prevents bugs. **Switch** (8.5–8.6) matches an integer or enum value against compile-time `case` labels; fall-through is intentional and must be explicit. Unlike Python's `match`, every `case` needs a `break` or the next case executes too.\n\n### Loops\n- **while** (8.8): tests the condition *before* each iteration — may run zero times.\n- **do-while** (8.9): tests *after* — guaranteed to run at least once. Useful for input validation.\n- **for** (8.10): bundles init, condition, and increment into one line; prefer it when the loop counter is well-defined.\n- All three loops support **break** (exit immediately) and **continue** (skip to next iteration), covered in 8.12.\n\n### Goto and Halts\n**goto** (8.4) jumps to a named label — avoid it; it makes flow nearly impossible to trace. **Halts** (8.13) — `std::exit()`, `std::abort()`, `std::terminate()` — end the program immediately without unwinding the stack. Use only in catastrophic-failure paths.\n\n### Random Numbers\n8.14 introduced `<random>`: create a `std::mt19937` engine seeded with `std::random_device{}()`, then use a `std::uniform_int_distribution` to draw values. Never use `rand()` in modern C++.\n\n### Combined example\n\n```cpp\n#include <iostream>\n\nint main() {\n    // Count odd numbers 1-20, skip multiples of 5\n    int sum = 0;\n    for (int i = 1; i <= 20; ++i) {\n        if (i % 5 == 0) continue;   // skip 5, 10, 15, 20\n        if (i % 2 == 0) continue;   // skip evens\n        sum += i;\n    }\n    std::cout << sum << '\\n';        // 1+3+7+9+11+13+17+19 = 80\n}\n```\n\nThis example uses a `for` loop, `if`/`continue`, and arithmetic — a microcosm of the entire chapter.",
+      "exercises": [
+        {
+          "title": "Collatz Sequence Counter",
+          "prompt_md": "## Collatz Sequence Counter\n\nThe **Collatz conjecture** says that starting from any positive integer `n`, repeatedly applying the rule below will always reach 1:\n\n- If `n` is even: `n = n / 2`\n- If `n` is odd: `n = n * 3 + 1`\n\nWrite a program that:\n1. Reads a positive integer `n` from stdin.\n2. Uses a **while loop** to iterate until `n == 1`.\n3. On each step, prints the current value of `n` (before the transformation), one per line.\n4. After the loop ends, print `Steps: X` where X is the total number of transformations applied (not counting the starting value).\n5. If the input is `<= 0`, print `Invalid input` and stop immediately (use `break` or an early return).\n\n**Example** for input `6`:\n```\n6\n3\n10\n5\n16\n8\n4\n2\nSteps: 8\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: if n <= 0, print \"Invalid input\" and return 1\n\n    int steps = 0;\n\n    // TODO: while n != 1, print current n, apply Collatz rule, increment steps\n\n    // Don't forget to print the final value (1) before \"Steps:\"\n\n    std::cout << \"Steps: \" << steps << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    if (n <= 0) {\n        std::cout << \"Invalid input\\n\";\n        return 1;\n    }\n\n    int steps = 0;\n\n    while (n != 1) {\n        std::cout << n << '\\n';\n        if (n % 2 == 0)\n            n /= 2;\n        else\n            n = n * 3 + 1;\n        ++steps;\n    }\n\n    // print the final value\n    std::cout << n << '\\n';\n    std::cout << \"Steps: \" << steps << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: n=6",
+              "stdin": "6",
+              "expected_stdout": "6\n3\n10\n5\n16\n8\n4\n2\n1\nSteps: 8\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: n=1 (already at 1)",
+              "stdin": "1",
+              "expected_stdout": "1\nSteps: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: invalid input",
+              "stdin": "-3",
+              "expected_stdout": "Invalid input\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Grade Histogram",
+          "prompt_md": "## Grade Histogram\n\nWrite a program that reads exactly **10 integer scores** (each 0–100) from stdin, one per line, then prints a letter-grade histogram using the ranges below:\n\n| Grade | Range |\n|-------|-------|\n| A | 90–100 |\n| B | 80–89 |\n| C | 70–79 |\n| D | 60–69 |\n| F | 0–59 |\n\nFor each grade bucket, print a line of the form `X: ***` where `X` is the letter and `*` is repeated once per score in that bucket. If a bucket has 0 scores, still print the label with no stars (e.g. `B: `).\n\nPrint grades in order A, B, C, D, F.\n\nUse a **for loop** to read input, a **switch** (or if/else chain) to classify each score, and a **for loop** (or **while**) to print the stars.\n\n**Example input:**\n```\n95\n82\n74\n91\n60\n55\n88\n73\n100\n67\n```\n**Expected output:**\n```\nA: ***\nB: **\nC: **\nD: **\nF: *\n```",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int a = 0, b = 0, c = 0, d = 0, f = 0;\n\n    // TODO: use a for loop to read 10 scores\n    // classify each score into the correct counter using if/else or switch\n    for (int i = 0; i < 10; ++i) {\n        int score{};\n        std::cin >> score;\n\n        // TODO: increment the right counter (a, b, c, d, or f)\n    }\n\n    // TODO: for each letter in order A B C D F,\n    // print \"X: \" then repeat '*' count times, then newline\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a = 0, b = 0, c = 0, d = 0, f = 0;\n\n    for (int i = 0; i < 10; ++i) {\n        int score{};\n        std::cin >> score;\n\n        if      (score >= 90) ++a;\n        else if (score >= 80) ++b;\n        else if (score >= 70) ++c;\n        else if (score >= 60) ++d;\n        else                  ++f;\n    }\n\n    // helper lambda to print one histogram row\n    auto printRow = [](char grade, int count) {\n        std::cout << grade << \": \";\n        for (int i = 0; i < count; ++i)\n            std::cout << '*';\n        std::cout << '\\n';\n    };\n\n    printRow('A', a);\n    printRow('B', b);\n    printRow('C', c);\n    printRow('D', d);\n    printRow('F', f);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: mixed grades",
+              "stdin": "95\n82\n74\n91\n60\n55\n88\n73\n100\n67\n",
+              "expected_stdout": "A: ***\nB: **\nC: **\nD: **\nF: *\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: all F's",
+              "stdin": "0\n10\n20\n30\n40\n50\n55\n58\n1\n59\n",
+              "expected_stdout": "A: \nB: \nC: \nD: \nF: **********\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: all A's",
+              "stdin": "90\n91\n92\n93\n94\n95\n96\n97\n98\n100\n",
+              "expected_stdout": "A: **********\nB: \nC: \nD: \nF: \n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

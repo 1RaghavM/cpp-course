@@ -1,0 +1,31 @@
+{
+  "lesson": "7.8",
+  "exercise_index": 1,
+  "what_changed": "Replaced for loop with fixed 4 calls to accumulate from main. Demonstrates static function with internal linkage and local accumulator without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Local-Scope Accumulator with Function Linkage",
+    "prompt_md": "## Goal\nComplete the function `accumulate` so it processes a sequence of 4 signed integers **without relying on any non-const global variable**, and returns the running total after each addition. The function must have internal linkage (`static`) so it cannot be used from another translation unit.\n\n## Input\n- Lines 1-4: one signed integer per line (-1000 to 1000).\n\n## Output\nFor each of the 4 values, print one line in the format `After adding V: total is T`, where `V` is the value just added and `T` is the running total so far. Values and totals may be negative.\n\n## Requirements\n1. `accumulate` must have the signature `static int accumulate(int running_total, int value)`. It returns `running_total + value`. It must not read or write any global variable.\n2. The keyword `static` on the function definition gives it **internal linkage** (file scope only) -- this is a required part of the solution.\n3. `main` maintains the running total in a **local variable** initialized to `0`, calls `accumulate` once per input value, stores the returned value back, and prints the output line after each call.\n4. No non-const variable may be declared at namespace scope (global scope).\n5. Hidden tests cover: all negative values, and a mix of positive and negative values that returns to zero.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define accumulate with internal linkage (static).\n//       Signature: static int accumulate(int running_total, int value)\n//       Return running_total + value.\n//       Do NOT declare or use any non-const global variable.\n\nint main()\n{\n    int v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    int total{ 0 };\n\n    // TODO: call accumulate for each value, update total, and print\n    //       \"After adding V: total is T\\n\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstatic int accumulate(int running_total, int value)\n{\n    return running_total + value;\n}\n\nint main()\n{\n    int v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    int total{ 0 };\n\n    total = accumulate(total, v1);\n    std::cout << \"After adding \" << v1 << \": total is \" << total << '\\n';\n\n    total = accumulate(total, v2);\n    std::cout << \"After adding \" << v2 << \": total is \" << total << '\\n';\n\n    total = accumulate(total, v3);\n    std::cout << \"After adding \" << v3 << \": total is \" << total << '\\n';\n\n    total = accumulate(total, v4);\n    std::cout << \"After adding \" << v4 << \": total is \" << total << '\\n';\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed positive values",
+        "stdin": "4\n6\n-2\n3\n",
+        "expected_stdout": "After adding 4: total is 4\nAfter adding 6: total is 10\nAfter adding -2: total is 8\nAfter adding 3: total is 11\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden -- all negative",
+        "stdin": "-7\n-3\n-10\n-5\n",
+        "expected_stdout": "After adding -7: total is -7\nAfter adding -3: total is -10\nAfter adding -10: total is -20\nAfter adding -5: total is -25\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden -- values cancel back to zero",
+        "stdin": "100\n-50\n-30\n-20\n",
+        "expected_stdout": "After adding 100: total is 100\nAfter adding -50: total is 50\nAfter adding -30: total is 20\nAfter adding -20: total is 0\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

@@ -3,6 +3,7 @@ import type { TypedSupabaseClient } from "@/lib/supabase/server";
 export interface LessonContext {
   chapterTitle: string;
   lessonTitle: string;
+  priorLessonTitles: string[];
 }
 
 export async function loadLessonContext(
@@ -11,21 +12,35 @@ export async function loadLessonContext(
 ): Promise<LessonContext | null> {
   const { data: lesson } = await supabase
     .from("lessons")
-    .select("my_title, learncpp_title, chapter_id")
+    .select("my_title, learncpp_title, chapter_id, sort_order")
     .eq("id", lessonId)
     .single();
 
   if (!lesson) return null;
 
-  const { data: chapter } = await supabase
-    .from("chapters")
-    .select("learncpp_title, my_title")
-    .eq("id", lesson.chapter_id)
-    .single();
+  const [chapterResult, priorResult] = await Promise.all([
+    supabase
+      .from("chapters")
+      .select("learncpp_title, my_title")
+      .eq("id", lesson.chapter_id)
+      .single(),
+    supabase
+      .from("lessons")
+      .select("my_title, learncpp_title")
+      .eq("chapter_id", lesson.chapter_id)
+      .lt("sort_order", lesson.sort_order)
+      .order("sort_order", { ascending: true }),
+  ]);
+
+  const chapter = chapterResult.data;
+  const priorLessonTitles = (priorResult.data ?? []).map(
+    (row) => row.my_title ?? row.learncpp_title,
+  );
 
   return {
     chapterTitle: chapter?.my_title ?? chapter?.learncpp_title ?? "Unknown Chapter",
     lessonTitle: lesson.my_title ?? lesson.learncpp_title,
+    priorLessonTitles,
   };
 }
 

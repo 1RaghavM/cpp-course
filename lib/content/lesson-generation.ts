@@ -314,6 +314,7 @@ async function generateAndPersist(
       summaryMd,
       chapterCtx.number,
       chapterCtx.title,
+      priorTitles,
     );
 
     const exerciseResponse = await createCompletion(

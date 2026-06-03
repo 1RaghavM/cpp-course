@@ -1,0 +1,60 @@
+{
+  "number": "3.7",
+  "title": "Using an integrated debugger: Running and breakpoints",
+  "sort_order": 45,
+  "summary_md": "# Using an Integrated Debugger: Running and Breakpoints\n\n## Running Your Program in the Debugger\n\nThe debugger transforms how you understand program behavior. Instead of adding print statements, you run your code under debugger control and observe exactly what happens.\n\nTo start debugging in most IDEs (Visual Studio, CLion, VS Code):\n- Set your project to **Debug configuration** (not Release)\n- Click \"Debug\" or press F5 instead of \"Run\"\n- Your program launches with the debugger attached\n\nThe Debug build includes symbol information that maps compiled code back to your source, making variable inspection possible. This is why Release builds are harder to debug -- the compiler optimizes away this mapping.\n\n## Breakpoints: Pausing Execution\n\nA **breakpoint** tells the debugger \"stop here.\" When execution hits a breakpoint, the program pauses, letting you inspect state without adding temporary code.\n\n**Setting breakpoints:**\n- Click the margin left of a line number (in most IDEs)\n- A red dot appears -- that is your breakpoint\n- Run the debugger; execution stops at that line\n\n**Conditional breakpoints** (covered in \"More debugging tactics\") pause only when a condition is true.\n\n## A Practical Example\n\n```cpp\n#include <iostream>\n\nint applyDiscount(int price, int discountPercent)\n{\n    int discount = price * discountPercent / 100;  // breakpoint here\n    int finalPrice = price - discount;\n    return finalPrice;\n}\n\nint main()\n{\n    int item1 = applyDiscount(200, 10);  // Set breakpoint, step into\n    int item2 = applyDiscount(150, 20);\n    int item3 = applyDiscount(300, 15);\n\n    int total = item1 + item2 + item3;\n    std::cout << \"Total: \" << total << '\\n';\n\n    return 0;\n}\n```\n\nSet a breakpoint at the `int discount` line inside `applyDiscount`. When you run the debugger, it pauses on the first call. You can hover over `price` to see it is 200, over `discountPercent` to see 10, and watch `discount` and `finalPrice` update as you step through. Resume execution and the debugger pauses again on the second call with different values.\n\n## Why This Matters\n\nBreakpoints let you verify \"A strategy for debugging\" in practice -- you form a hypothesis (\"this function should return the correct discounted price\"), then use the debugger to confirm or refute it. Combined with the stepping techniques from the previous lesson, breakpoints are your primary tool for isolating where reality diverges from expectations.\n\nThe cost is time spent learning your IDE's debugger interface, but that investment pays back immediately on any non-trivial bug.",
+  "exercises": [
+    {
+      "title": "Finding the Calculation Error with Breakpoints",
+      "prompt_md": "# Finding the Calculation Error with Breakpoints\n\nYou have a program that applies a series of transformations to a number. Each step is a separate function call. The program has a bug: one of the functions computes the wrong value.\n\n**Your task:** Imagine setting a breakpoint at the beginning of each function. Step through the calls and find which function produces the wrong result. Then fix it.\n\nThe program should:\n1. Read two integers: `value` and `multiplier`\n2. Call `tripleIt(value)` which should return `value * 3`\n3. Call `addOffset(tripled, 100)` which should add 100 to the tripled value\n4. Call `scaleDown(withOffset, multiplier)` which should divide by the multiplier\n5. Print the final result\n\n**Input:**\n- Two space-separated integers: `value multiplier`\n\n**Output:**\n- A single integer (the final result after all transformations)\n\n**Example:**\n```\nInput: 10 2\nOutput: 65\n```\n(Because 10*3=30, 30+100=130, 130/2=65)\n\n**Debugging Note:** Set a breakpoint at the start of each function. Check whether its return value matches what you expect.",
+      "starter_code": "#include <iostream>\n\nint tripleIt(int x)\n{\n    return x * 3;\n}\n\nint addOffset(int value, int offset)\n{\n    return value - offset;  // BUG: should be + not -\n}\n\nint scaleDown(int value, int divisor)\n{\n    return value / divisor;\n}\n\nint main()\n{\n    int value{}, multiplier{};\n    std::cin >> value >> multiplier;\n\n    int tripled = tripleIt(value);\n    int withOffset = addOffset(tripled, 100);\n    int result = scaleDown(withOffset, multiplier);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint tripleIt(int x)\n{\n    return x * 3;\n}\n\nint addOffset(int value, int offset)\n{\n    return value + offset;  // Fixed: changed - to +\n}\n\nint scaleDown(int value, int divisor)\n{\n    return value / divisor;\n}\n\nint main()\n{\n    int value{}, multiplier{};\n    std::cin >> value >> multiplier;\n\n    int tripled = tripleIt(value);\n    int withOffset = addOffset(tripled, 100);\n    int result = scaleDown(withOffset, multiplier);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: value=10, multiplier=2",
+          "stdin": "10 2\n",
+          "expected_stdout": "65\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: value=20, multiplier=5",
+          "stdin": "20 5\n",
+          "expected_stdout": "32\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: value=1, multiplier=1",
+          "stdin": "1 1\n",
+          "expected_stdout": "103\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Breakpoint Inspection: Wrong Function Signature",
+      "prompt_md": "# Breakpoint Inspection: Wrong Function Signature\n\nYou are given a program with two helper functions and a `main` that calls them. The program compiles but produces the wrong output.\n\n**Your task:** The bug is that two arguments are passed in the wrong order to one of the function calls. Find and fix it.\n\nThe program should:\n1. Read two integers: `total` and `count`\n2. Call `computeShare(total, count)` which divides total by count\n3. Call `computeRemainder(total, count)` which computes total modulo count\n4. Print the share and remainder\n\n**Input:**\n- Two space-separated integers: `total count`\n\n**Output:**\n```\nShare: <share>\nRemainder: <remainder>\n```\n\n**Example:**\n```\nInput: 17 5\nOutput:\nShare: 3\nRemainder: 2\n```\n(Because 17/5=3 and 17%5=2)\n\n**Debugging Tip:** Set a breakpoint at the start of each function. Inspect the parameter values -- do they match what you expected? If `a` and `b` look swapped, the call site is passing arguments in the wrong order.",
+      "starter_code": "#include <iostream>\n\nint computeShare(int total, int count)\n{\n    return total / count;\n}\n\nint computeRemainder(int total, int count)\n{\n    return total % count;\n}\n\nint main()\n{\n    int total{}, count{};\n    std::cin >> total >> count;\n\n    int share = computeShare(total, count);\n    int remainder = computeRemainder(count, total);  // BUG: arguments swapped\n\n    std::cout << \"Share: \" << share << '\\n';\n    std::cout << \"Remainder: \" << remainder << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint computeShare(int total, int count)\n{\n    return total / count;\n}\n\nint computeRemainder(int total, int count)\n{\n    return total % count;\n}\n\nint main()\n{\n    int total{}, count{};\n    std::cin >> total >> count;\n\n    int share = computeShare(total, count);\n    int remainder = computeRemainder(total, count);  // Fixed: arguments in correct order\n\n    std::cout << \"Share: \" << share << '\\n';\n    std::cout << \"Remainder: \" << remainder << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: 17 divided by 5",
+          "stdin": "17 5\n",
+          "expected_stdout": "Share: 3\nRemainder: 2\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: even division",
+          "stdin": "20 4\n",
+          "expected_stdout": "Share: 5\nRemainder: 0\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: large remainder",
+          "stdin": "100 7\n",
+          "expected_stdout": "Share: 14\nRemainder: 2\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

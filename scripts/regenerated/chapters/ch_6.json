@@ -1,0 +1,517 @@
+{
+  "chapter": {
+    "number": "6",
+    "title": "Operators"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "6.1",
+      "title": "Operator precedence and associativity",
+      "sort_order": 73,
+      "summary_md": "## Operator Precedence and Associativity\n\nEvery expression with multiple operators needs a rule for evaluation order. C++ resolves this with **precedence** (which operator binds tighter) and **associativity** (left-to-right or right-to-left when precedence ties).\n\n### Precedence\n\nHigher-precedence operators bind their operands before lower-precedence ones. The classic example:\n\n```\n2 + 3 * 4   →   2 + (3 * 4)   →   14\n```\n\n`*` has higher precedence than `+`, so the multiplication groups first. Parentheses always override precedence — use them liberally when clarity matters.\n\nA few precedence landmarks worth memorising (highest to lowest, roughly):\n\n- Postfix `++`/`--`, function call `()`, subscript `[]`, member access `.` and `->`\n- Unary `!`, `~`, prefix `++`/`--`, unary `-`\n- `*`, `/`, `%`\n- `+`, `-`\n- Shift operators `<<`, `>>`\n- Relational `<`, `<=`, `>`, `>=`\n- Equality `==`, `!=`\n- Bitwise `&`, `^`, `|`\n- Logical `&&`, then `||`\n- Ternary `?:`\n- Assignment `=`, compound assignments `+=`, `*=`, etc.\n- Comma `,`\n\n### Associativity\n\nWhen two operators share the same precedence, associativity decides grouping. Most binary operators are **left-to-right**:\n\n```\n8 - 3 - 1   →   (8 - 3) - 1   →   4\n```\n\nAssignment and unary operators are **right-to-left**:\n\n```\na = b = 5   →   a = (b = 5)\n```\n\n### A Practical Example\n\n```cpp\n#include <print>\n\nint main() {\n    int x = 2, y = 3, z = 4;\n\n    // Without precedence awareness this looks ambiguous\n    bool result = x + y * z > 10 && z != 0;\n    // Parsed as: (x + (y * z)) > 10) && (z != 0)\n    // →          (2 + 12) > 10  && true\n    // →          true && true   → true\n\n    std::println(\"result = {}\", result);\n}\n```\n\n### The Practical Rule\n\nMemorising the full precedence table is less useful than developing two habits: parenthesise compound boolean expressions explicitly, and never rely on subtle precedence to make code \"clever.\" Code that requires a precedence table to understand is a maintenance burden.\n\nOne common trap: `&` and `|` bind *lower* than `==` and `!=`, so `x & mask == 0` parses as `x & (mask == 0)` — almost certainly not what you want. Parenthesise: `(x & mask) == 0`.",
+      "exercises": [
+        {
+          "title": "Predict Arithmetic Expression Results",
+          "prompt_md": "## Goal\nRead four integers and four operator-precedence expressions built from them, then print the evaluated result of each expression exactly as C++ computes it.\n\n## Input\n- Line 1: four integers `a b c d` separated by spaces (each in the range -100 to 100, `d` is guaranteed non-zero)\n\n## Output\nPrint exactly four lines, each with a label and its computed value:\n```\nexpr1: <value>\nexpr2: <value>\nexpr3: <value>\nexpr4: <value>\n```\nwhere the four expressions (using the input values in order) are:\n- `expr1`: `a + b * c - d` (tests `*` before `+`/`-`)\n- `expr2`: `a * b + c * d` (tests left-to-right when both are `*` vs `+`)\n- `expr3`: `a - b - c` (tests left-associativity of `-`)\n- `expr4`: `a + b * c % d` (tests `*` and `%` before `+`)\n\nNo trailing blank lines.\n\n## Requirements\n1. Declare four `int` variables (`a`, `b`, `c`, `d`) and read them from stdin.\n2. Compute each expression exactly as written above — do **not** add extra parentheses that change grouping; let operator precedence and associativity do the work.\n3. Print each result on its own line with the exact label format shown (lowercase label, colon, space, value).\n4. Edge cases covered by hidden tests: `a = 0`, `b = 0`, negative values, `d = 1`, and expressions that evaluate to a negative result.\n\n## Notes\n- Use `std::cout` for output.\n- Do not use `std::print` or `<print>` — use `<iostream>`.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a, b, c, d;\n    std::cin >> a >> b >> c >> d;\n\n    // TODO: compute and print expr1 = a + b * c - d\n    // TODO: compute and print expr2 = a * b + c * d\n    // TODO: compute and print expr3 = a - b - c\n    // TODO: compute and print expr4 = a + b * c % d\n    // Each line must look like:  exprN: <value>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a, b, c, d;\n    std::cin >> a >> b >> c >> d;\n\n    std::cout << \"expr1: \" << (a + b * c - d)   << '\\n';\n    std::cout << \"expr2: \" << (a * b + c * d)   << '\\n';\n    std::cout << \"expr3: \" << (a - b - c)       << '\\n';\n    std::cout << \"expr4: \" << (a + b * c % d)   << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — small positive values",
+              "stdin": "2 3 4 5",
+              "expected_stdout": "expr1: 12\nexpr2: 22\nexpr3: -5\nexpr4: 4\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — zeros and ones",
+              "stdin": "0 1 0 1",
+              "expected_stdout": "expr1: -1\nexpr2: 0\nexpr3: -1\nexpr4: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — mixed negative values",
+              "stdin": "-3 4 -2 3",
+              "expected_stdout": "expr1: -14\nexpr2: -18\nexpr3: -5\nexpr4: -5\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Boolean Expression Evaluator with Bitwise Trap",
+          "prompt_md": "## Goal\nRead three integers and evaluate a set of boolean and bitwise expressions, printing whether each is true or false. The exercise highlights the precedence pitfall where `&` binds lower than `==`.\n\n## Input\n- Line 1: three integers `x mask threshold` separated by spaces.\n  - `x`: 0 to 255 (an 8-bit value)\n  - `mask`: 0 to 255 (a bitmask)\n  - `threshold`: -1000 to 1000\n\n## Output\nPrint exactly five lines in this format (use lowercase `true` or `false`):\n```\ncheck1: <true|false>\ncheck2: <true|false>\ncheck3: <true|false>\ncheck4: <true|false>\ncheck5: <true|false>\n```\nwhere the five checks are:\n- `check1`: `(x & mask) == 0` — masked bits are all clear\n- `check2`: `x > threshold && mask != 0` — compound relational/logical\n- `check3`: `x + mask > threshold || mask == 0` — addition before relational, `||` last\n- `check4`: `!(x == mask)` — unary `!` applied after equality\n- `check5`: `x >= 0 && x <= 255 && mask >= 0` — chained `&&` (left-to-right)\n\nNo trailing blank lines.\n\n## Requirements\n1. Declare three `int` variables (`x`, `mask`, `threshold`) and read them from stdin.\n2. Evaluate every expression exactly as written using natural C++ precedence — no extra parentheses except those already shown in `check1` and `check4`, which are required for correct semantics.\n3. Print `true` or `false` (not `1` or `0`) using `std::boolalpha`.\n4. Each output line must match the label format exactly (lowercase, colon, space, value).\n5. Edge cases covered by hidden tests: `mask = 0`, `x == mask`, `x = 0`, `threshold` negative, `x & mask` non-zero.\n\n## Notes\n- Enable `std::boolalpha` on `std::cout` before printing.\n- Use `<iostream>` only.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    std::cout << std::boolalpha;\n\n    int x, mask, threshold;\n    std::cin >> x >> mask >> threshold;\n\n    // TODO: evaluate and print check1 — (x & mask) == 0\n    // TODO: evaluate and print check2 — x > threshold && mask != 0\n    // TODO: evaluate and print check3 — x + mask > threshold || mask == 0\n    // TODO: evaluate and print check4 — !(x == mask)\n    // TODO: evaluate and print check5 — x >= 0 && x <= 255 && mask >= 0\n    // Each line must look like:  checkN: <true|false>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    std::cout << std::boolalpha;\n\n    int x, mask, threshold;\n    std::cin >> x >> mask >> threshold;\n\n    std::cout << \"check1: \" << ((x & mask) == 0)                    << '\\n';\n    std::cout << \"check2: \" << (x > threshold && mask != 0)         << '\\n';\n    std::cout << \"check3: \" << (x + mask > threshold || mask == 0)  << '\\n';\n    std::cout << \"check4: \" << (!(x == mask))                       << '\\n';\n    std::cout << \"check5: \" << (x >= 0 && x <= 255 && mask >= 0)   << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — typical bitmask scenario",
+              "stdin": "12 3 10",
+              "expected_stdout": "check1: false\ncheck2: true\ncheck3: true\ncheck4: true\ncheck5: true\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — mask zero, x equals mask",
+              "stdin": "0 0 -5",
+              "expected_stdout": "check1: true\ncheck2: false\ncheck3: true\ncheck4: false\ncheck5: true\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — x equals mask, threshold above sum",
+              "stdin": "15 15 100",
+              "expected_stdout": "check1: false\ncheck2: false\ncheck3: false\ncheck4: false\ncheck5: true\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6.2",
+      "title": "Arithmetic operators",
+      "sort_order": 74,
+      "summary_md": "## Arithmetic Operators\n\nC++ provides the standard arithmetic operators you already know from Python: `+`, `-`, `*`, `/`, and `%`. The syntax is identical, but the *behavior* differs in important ways once types enter the picture.\n\n### Integer vs. Floating-Point Division\n\nIn Python 3, `/` always produces a float. In C++, dividing two integers performs **integer division** — the fractional part is truncated toward zero. To get floating-point division, at least one operand must be a floating-point type.\n\n```cpp\n#include <print>\n\nint main() {\n    int a = 7, b = 2;\n\n    auto int_div   = a / b;          // 3  (truncated)\n    auto float_div = a / 2.0;        // 3.5\n    auto remainder = a % b;          // 1\n\n    std::println(\"int:   {}\", int_div);\n    std::println(\"float: {}\", float_div);\n    std::println(\"rem:   {}\", remainder);\n}\n```\n\n### The Modulo Operator\n\n`%` works on integer types only — applying it to floating-point values is a compile error. For floats, use `std::fmod` from `<cmath>`. Unlike Python's `%`, which always returns a non-negative result when the divisor is positive, C++'s `%` **follows the sign of the dividend**: `-7 % 2` gives `-1`, not `1`.\n\n### Arithmetic and Types\n\nAs covered in [Operator precedence and associativity], operator precedence in C++ matches conventional mathematics: `*`, `/`, and `%` bind more tightly than `+` and `-`. Left-to-right associativity applies within the same precedence level.\n\nWhen operands have different types, **implicit conversion** kicks in. The smaller or less-precise type is promoted to match the other — `int` mixed with `double` produces `double`. This is called the *usual arithmetic conversions*. Be careful with expressions entirely in integer types: `1 / 3` is `0`, not `0.333...`.\n\n### Overflow\n\nInteger overflow is **undefined behavior** for signed types in C++ — the program is allowed to do anything, including produce nonsensical results silently. Unsigned types wrap around modulo 2ⁿ, which is well-defined. Python integers never overflow because they have arbitrary precision; C++ integers are fixed-width, so you are responsible for staying in range.\n\n### Unary Operators\n\nThe unary `-` negates a value; unary `+` exists but rarely does anything useful. Both have higher precedence than the binary arithmetic operators.",
+      "exercises": [
+        {
+          "title": "Integer and Float Division Side-by-Side",
+          "prompt_md": "## Goal\nRead two integers and print four lines showing their integer quotient, floating-point quotient (to one decimal place), remainder, and the sign of the remainder.\n\n## Input\n- Line 1: two space-separated integers `a` and `b`, where -1000 ≤ a ≤ 1000 and 1 ≤ b ≤ 1000.\n\n## Output\nPrint exactly four lines in this order:\n- `int_div: <a/b using integer division>`\n- `float_div: <a divided by b as a double, one decimal place>`\n- `remainder: <a%b>`\n- `rem_sign: <positive>, <negative>, or <zero>` depending on whether `a % b` is positive, negative, or zero.\n\nExample for input `7 2`:\n```\nint_div: 3\nfloat_div: 3.5\nremainder: 1\nrem_sign: positive\n```\n\n## Requirements\n1. Compute integer division using `/` on two `int` variables — do not cast before dividing.\n2. Compute floating-point division by casting `a` to `double` before dividing by `b`.\n3. Print `float_div` with exactly one decimal place using `std::fixed` and `std::setprecision(1)`.\n4. Compute the remainder with `%` on the original `int` variables.\n5. Print `rem_sign: positive` if `a % b > 0`, `rem_sign: negative` if `a % b < 0`, and `rem_sign: zero` if `a % b == 0`.\n6. Hidden tests cover: a negative dividend (e.g., `-7 2`), a dividend that divides evenly (e.g., `6 3`), and `a = 0`.\n\n## Notes\n- You may use `<iostream>`, `<iomanip>`, and `<print>` (or just `<iostream>` with `std::fixed`/`std::setprecision`).",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: compute integer division, float division, and remainder\n    int int_div   = 0;   // TODO: replace with a / b (integer)\n    double float_div = 0.0; // TODO: replace with a / b (floating-point)\n    int remainder = 0;   // TODO: replace with a % b\n\n    std::cout << \"int_div: \"   << int_div   << \"\\n\";\n    std::cout << \"float_div: \"\n              << std::fixed << std::setprecision(1)\n              << float_div << \"\\n\";\n    std::cout << \"remainder: \" << remainder << \"\\n\";\n\n    // TODO: print rem_sign (positive / negative / zero) based on remainder\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int    int_div   = a / b;\n    double float_div = static_cast<double>(a) / b;\n    int    remainder = a % b;\n\n    std::cout << \"int_div: \"  << int_div  << \"\\n\";\n    std::cout << \"float_div: \"\n              << std::fixed << std::setprecision(1)\n              << float_div << \"\\n\";\n    std::cout << \"remainder: \" << remainder << \"\\n\";\n\n    if (remainder > 0)\n        std::cout << \"rem_sign: positive\\n\";\n    else if (remainder < 0)\n        std::cout << \"rem_sign: negative\\n\";\n    else\n        std::cout << \"rem_sign: zero\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: positive dividend",
+              "stdin": "7 2\n",
+              "expected_stdout": "int_div: 3\nfloat_div: 3.5\nremainder: 1\nrem_sign: positive\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: negative dividend",
+              "stdin": "-7 2\n",
+              "expected_stdout": "int_div: -3\nfloat_div: -3.5\nremainder: -1\nrem_sign: negative\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: exact division",
+              "stdin": "6 3\n",
+              "expected_stdout": "int_div: 2\nfloat_div: 2.0\nremainder: 0\nrem_sign: zero\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Splitting a Three-Digit Number with Arithmetic",
+          "prompt_md": "## Goal\nRead a positive integer between 100 and 999 (inclusive) and use only arithmetic operators (`/` and `%`) to extract and print its hundreds, tens, and units digits, then print their sum and product.\n\n## Input\n- Line 1: a single integer `n` where 100 ≤ n ≤ 999.\n\n## Output\nPrint exactly five lines:\n- `hundreds: <hundreds digit>`\n- `tens: <tens digit>`\n- `units: <units digit>`\n- `digit_sum: <sum of the three digits>`\n- `digit_product: <product of the three digits>`\n\nExample for input `473`:\n```\nhundreds: 4\ntens: 7\nunits: 3\ndigit_sum: 14\ndigit_product: 84\n```\n\n## Requirements\n1. Extract the hundreds digit using `/` and `%` on integer type — do not convert `n` to a string.\n2. Extract the tens digit using `/` and `%` on integer type.\n3. Extract the units digit using `%` on integer type.\n4. Compute `digit_sum` as the sum of the three digit variables.\n5. Compute `digit_product` as the product of the three digit variables.\n6. Hidden tests cover: a number with a zero digit (e.g., `305` — units product includes 0), the minimum value `100`, and the maximum value `999`.\n\n## Notes\n- Use only `<iostream>`; no string operations or arrays are needed.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: extract hundreds, tens, and units digits using / and %\n    int hundreds = 0; // TODO\n    int tens     = 0; // TODO\n    int units    = 0; // TODO\n\n    // TODO: compute digit_sum and digit_product\n    int digit_sum     = 0; // TODO\n    int digit_product = 0; // TODO\n\n    std::cout << \"hundreds: \"      << hundreds      << \"\\n\";\n    std::cout << \"tens: \"          << tens          << \"\\n\";\n    std::cout << \"units: \"         << units         << \"\\n\";\n    std::cout << \"digit_sum: \"     << digit_sum     << \"\\n\";\n    std::cout << \"digit_product: \" << digit_product << \"\\n\";\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int hundreds = n / 100;\n    int tens     = (n / 10) % 10;\n    int units    = n % 10;\n\n    int digit_sum     = hundreds + tens + units;\n    int digit_product = hundreds * tens * units;\n\n    std::cout << \"hundreds: \"      << hundreds      << \"\\n\";\n    std::cout << \"tens: \"          << tens          << \"\\n\";\n    std::cout << \"units: \"         << units         << \"\\n\";\n    std::cout << \"digit_sum: \"     << digit_sum     << \"\\n\";\n    std::cout << \"digit_product: \" << digit_product << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: 473",
+              "stdin": "473\n",
+              "expected_stdout": "hundreds: 4\ntens: 7\nunits: 3\ndigit_sum: 14\ndigit_product: 84\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: zero digit (305)",
+              "stdin": "305\n",
+              "expected_stdout": "hundreds: 3\ntens: 0\nunits: 5\ndigit_sum: 8\ndigit_product: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: minimum value (100)",
+              "stdin": "100\n",
+              "expected_stdout": "hundreds: 1\ntens: 0\nunits: 0\ndigit_sum: 1\ndigit_product: 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6.3",
+      "title": "Remainder and Exponentiation",
+      "sort_order": 75,
+      "summary_md": "## Remainder and Exponentiation\n\n### The `%` Operator\n\nThe `%` operator returns the **remainder** after integer division. It only works with integer types — applying it to `float` or `double` is a compile error.\n\n```cpp\n#include <print>\n#include <cmath>\n\nint main() {\n    int a = 17, b = 5;\n    std::println(\"17 / 5  = {}\", a / b);   // 3\n    std::println(\"17 % 5  = {}\", a % b);   // 2\n    std::println(\"-17 % 5 = {}\", -a % b);  // -2\n    std::println(\"std::pow(2, 10) = {}\", std::pow(2, 10)); // 1024\n}\n```\n\n#### Sign of the remainder\n\nIn C++11 and later, the sign of `a % b` always matches the sign of the **left operand** `a`. So `-17 % 5` is `-2`, not `3`. This differs from Python, where the result matches the sign of the *right* operand. Keep this in mind when using `%` to wrap values around a range — a negative input can produce a negative remainder, which may need adjustment.\n\nFor floating-point remainders, use `std::fmod` from `<cmath>`.\n\n### Exponentiation: No `**` Operator\n\nUnlike Python, C++ has **no `**` operator**. For powers, you have two main options:\n\n- `std::pow(base, exp)` from `<cmath>` — works on floating-point values, returns `double`. Fast and convenient, but the floating-point result can surprise you: `std::pow(2, 10)` may return `1023.9999...` in edge cases, so avoid it when you need an exact integer result.\n- Manual multiplication in a loop, or a small recursive/constexpr function, for integer exponentiation when exactness matters.\n\n### Precedence Reminder\n\nAs covered in **Operator Precedence and Associativity**, `%` has the same precedence as `*` and `/` — all three bind more tightly than `+` and `-`. So `4 + 10 % 3` evaluates as `4 + (10 % 3)` = `4 + 1` = `5`.\n\n### Quick Reference\n\n- `%` — integer remainder only; sign follows the left operand\n- `std::fmod(a, b)` — floating-point remainder\n- `std::pow(base, exp)` — floating-point exponentiation; returns `double`\n- No `**` operator exists in C++",
+      "exercises": []
+    },
+    {
+      "number": "6.4",
+      "title": "Increment/decrement operators, and side effects",
+      "sort_order": 76,
+      "summary_md": "# Increment/Decrement Operators, and Side Effects\n\nC++ provides `++` and `--` as shortcuts for adding or subtracting 1 from a variable. Each comes in two forms: **prefix** (`++x`) and **postfix** (`x++`).\n\n- **Prefix** modifies the variable first, then returns the updated value.\n- **Postfix** returns a *copy* of the original value, then modifies the variable.\n\n```cpp\n#include <print>\n\nint main() {\n    int x = 5;\n    std::println(\"{}\", ++x);  // prints 6, x is now 6\n    std::println(\"{}\", x++);  // prints 6, x is now 7\n    std::println(\"{}\", x);    // prints 7\n    --x;                      // x is now 6\n}\n```\n\nThe difference only matters when the expression's value is *used*. If you're incrementing a variable on its own line, prefix and postfix behave identically. That said, **prefer prefix** by habit — it expresses intent clearly and avoids generating a temporary copy (relevant for iterators and user-defined types, even if the compiler often optimizes it away).\n\n## Side Effects\n\nA **side effect** is any observable change that persists beyond the evaluation of an expression — writing to a variable, printing output, modifying memory. Increment and decrement operators are the classic source of side-effect confusion in C++.\n\nThe danger arises when the same variable is modified *and* read in a single expression, or modified more than once. For example:\n\n```cpp\nint i = 0;\nint result = i++ + i++;  // undefined behavior\n```\n\nThe order in which those two `i++` sub-expressions are evaluated is unspecified, and modifying `i` twice without a sequence point between them is **undefined behavior** — the program is formally broken, even if it appears to work on your machine. This was touched on in [Operator Precedence and Associativity]: precedence and associativity govern *grouping*, not *evaluation order*, so they don't save you here.\n\n**Rules to stay safe:**\n\n- Never modify a variable more than once in the same expression.\n- Never read a variable in the same expression where it is also modified, unless the read is to compute the new value (as in `x = x + 1`, which is fine).\n- When in doubt, split the expression across multiple statements. Clarity beats cleverness.\n\nModern C++ ranges and algorithms (covered in later chapters) often eliminate the need for manual increment loops entirely, sidestepping these hazards altogether.",
+      "exercises": [
+        {
+          "title": "Prefix vs Postfix Increment Trace",
+          "prompt_md": "## Goal\nComplete the function `applyIncrements` that applies a specific sequence of prefix and postfix increments/decrements to a starting integer and prints each intermediate result.\n\n## Input\n- Line 1: a single integer `x` (-100 ≤ x ≤ 100) that serves as the starting value.\n\n## Output\nPrint exactly 5 lines, each containing one integer, in this order:\n1. The result of `++x` (prefix increment), printed and kept.\n2. The result of `x++` (postfix increment), printed before the increment takes effect.\n3. The current value of `x` after the postfix increment.\n4. The result of `--x` (prefix decrement), printed and kept.\n5. The result of `x--` (postfix decrement), printed before the decrement takes effect.\n\nNo labels, no extra spaces — just the bare integer on each line.\n\n## Requirements\n1. Implement `void applyIncrements(int x)` which performs all operations on the local parameter `x` and prints the 5 values described above, one per line.\n2. Each printed value must reflect the exact semantics of prefix vs postfix: prefix returns the updated value; postfix returns the original value before modification.\n3. The operations are applied in the order listed above — each step uses the `x` that resulted from the previous step.\n4. The function must not use any helper variables — use `x` directly with `++`/`--` in the `std::println` (or `std::cout`) calls.\n5. Hidden tests cover `x = 0`, `x = -5`, and `x = 100`.\n",
+          "starter_code": "#include <iostream>\n\n// TODO: Implement applyIncrements(int x).\n// Apply the following sequence of operations on x, printing each result on its own line:\n//   1. Print the result of prefix increment (++x)\n//   2. Print the result of postfix increment (x++)\n//   3. Print the current value of x\n//   4. Print the result of prefix decrement (--x)\n//   5. Print the result of postfix decrement (x--)\n// Do not use any extra variables — use x directly in each output statement.\nvoid applyIncrements(int x)\n{\n    // TODO: fill in the 5 output statements\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    applyIncrements(x);\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid applyIncrements(int x)\n{\n    std::cout << ++x << '\\n'; // 1. prefix increment: x becomes x+1, print new value\n    std::cout << x++ << '\\n'; // 2. postfix increment: print current value, then x becomes x+1\n    std::cout << x   << '\\n'; // 3. current value after postfix increment\n    std::cout << --x << '\\n'; // 4. prefix decrement: x becomes x-1, print new value\n    std::cout << x-- << '\\n'; // 5. postfix decrement: print current value, then x becomes x-1\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    applyIncrements(x);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: x = 5",
+              "stdin": "5",
+              "expected_stdout": "6\n6\n7\n6\n6\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: x = 0",
+              "stdin": "0",
+              "expected_stdout": "1\n1\n2\n1\n1\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: x = -5",
+              "stdin": "-5",
+              "expected_stdout": "-4\n-4\n-3\n-4\n-4\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Safe Increment Loop with Running Product",
+          "prompt_md": "## Goal\nWrite a program that reads N integers from stdin and computes their product using an explicit counter loop that relies on the prefix increment operator — demonstrating safe, single-side-effect-per-statement style.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10).\n- Lines 2 through N+1: one integer per line. Each integer is between -10 and 10 inclusive.\n\n## Output\nPrint exactly N lines. Line `i` (1-indexed) must read:\n`After step i: product = P`\nwhere `i` is the current step number (starting at 1) and `P` is the running product after multiplying in the i-th value.\n\nExample for N=3 with values 2, 3, -1:\n```\nAfter step 1: product = 2\nAfter step 2: product = 6\nAfter step 3: product = -6\n```\n\n## Requirements\n1. Use a `while` loop (not a `for` loop) with an `int counter` variable initialized to `0`.\n2. The loop condition must be `counter < N`, and the only place `counter` is modified is a standalone `++counter;` statement at the end of the loop body — never inside a larger expression.\n3. The step number printed on each line is `counter` *after* the prefix increment (i.e., print `counter` on the same line where you print the product, after `++counter` has already run).\n4. Maintain a `long long product` initialized to `1`; multiply in each new value with `product *= value;` before incrementing the counter.\n5. The output label is exactly `After step ` (capital A, no extra spaces) followed by the step number, `: product = `, then the product value.\n6. Hidden tests cover N=1 (single element), a product that stays 0 (one value is 0), and N=10 with all values = -1 (alternating sign).\n",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    long long product = 1;\n    int counter = 0;\n\n    // TODO: Write a while loop with condition (counter < n).\n    // Inside the loop:\n    //   1. Read the next integer value from std::cin.\n    //   2. Multiply it into product.\n    //   3. Increment counter with a standalone ++counter statement.\n    //   4. Print: \"After step \" << counter << \": product = \" << product\n    // Do NOT modify counter anywhere except the standalone ++counter statement.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    long long product = 1;\n    int counter = 0;\n\n    while (counter < n)\n    {\n        int value;\n        std::cin >> value;\n        product *= value;\n        ++counter;\n        std::cout << \"After step \" << counter << \": product = \" << product << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: N=3, values 2 3 -1",
+              "stdin": "3\n2\n3\n-1",
+              "expected_stdout": "After step 1: product = 2\nAfter step 2: product = 6\nAfter step 3: product = -6\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: N=1, single element 7",
+              "stdin": "1\n7",
+              "expected_stdout": "After step 1: product = 7\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: N=10, all values -1",
+              "stdin": "10\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1",
+              "expected_stdout": "After step 1: product = -1\nAfter step 2: product = 1\nAfter step 3: product = -1\nAfter step 4: product = 1\nAfter step 5: product = -1\nAfter step 6: product = 1\nAfter step 7: product = -1\nAfter step 8: product = 1\nAfter step 9: product = -1\nAfter step 10: product = 1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6.5",
+      "title": "The comma operator",
+      "sort_order": 77,
+      "summary_md": "# The Comma Operator\n\nThe comma operator (`operator,`) evaluates its left operand, discards the result, then evaluates its right operand and returns that result. It has the **lowest precedence** of all C++ operators (lower even than assignment), and it associates left-to-right.\n\n```cpp\n#include <print>\n\nint main() {\n    int x = 0;\n\n    // Both increments happen; the value of the whole expression is x after the second ++\n    int y = (++x, ++x);   // x is now 2, y is 2\n\n    // Common misread: the comma here is NOT the comma operator\n    // int a, b;  <-- this is a declarator list, not operator,\n\n    std::println(\"x={}, y={}\", x, y);\n    return 0;\n}\n```\n\n## What it actually does\n\nThe expression `(a, b)` is sequenced: `a` runs first, its value is thrown away, then `b` runs and its value becomes the result. Any side effects from `a` are complete before `b` begins — the comma operator is one of the few operators that introduces a **sequence point** (relevant to the side-effects discussion in *Increment/decrement operators and side effects*).\n\n## Where you'll see it\n\nThe comma operator appears most often in the update expression of a `for` loop when you need to advance two variables simultaneously:\n\n```cpp\nfor (int i = 0, j = 10; i < j; ++i, --j) { /* ... */ }\n```\n\nHere the `++i, --j` in the increment slot uses the comma operator — both expressions run, and the result (unused) is `--j`.\n\n## Common confusion points\n\n- **Comma in function calls** — `f(a, b)` — is a separator, not the comma operator. Evaluation order of those arguments is unspecified (unlike operator comma).\n- **Comma in initializer lists** and **declarator lists** (`int a, b;`) are also separators.\n- **Operator precedence bites hard here.** Because comma has the lowest precedence, `int y = ++x, ++x;` parses as `(int y = ++x), (++x)` — y gets the first incremented value, not the second. The parentheses in the original example above are essential.\n\n## Should you use it?\n\nRarely. Outside the `for`-loop update expression, using operator comma in hand-written code is usually a sign the logic should be restructured. Modern C++ ranges (from *Operator precedence and associativity* context onward) and algorithms make the pattern even less necessary. Know it so you can read it; don't reach for it as a design tool.",
+      "exercises": []
+    },
+    {
+      "number": "6.6",
+      "title": "The conditional operator",
+      "sort_order": 78,
+      "summary_md": "## The Conditional Operator\n\nThe conditional operator (`?:`) is C++'s only ternary operator — it takes three operands. It evaluates a condition and yields one of two values depending on whether that condition is true or false.\n\n```\ncondition ? expression_if_true : expression_if_false\n```\n\nBoth branches must produce values of compatible types, because the entire `?:` expression has a single type determined at compile time.\n\n```cpp\n#include <format>\n#include <iostream>\n\nint main() {\n    for (int n : {-3, 0, 7}) {\n        std::string label = (n > 0) ? \"positive\"\n                          : (n < 0) ? \"negative\"\n                                    : \"zero\";\n        std::cout << std::format(\"{:3}: {}\\n\", n, label);\n    }\n}\n```\n\nOutput:\n```\n -3: negative\n  0: zero\n  7: positive\n```\n\n### When to use it\n\nThe conditional operator shines when you need a value inline — initializing a variable, passing an argument, or building a format string — where an `if`/`else` statement would force you to split the logic awkwardly. It's a *value-producing* construct, whereas `if`/`else` is a *statement*.\n\n```cpp\n// Clean: single expression, no mutable variable needed\nconst int abs_val = (x >= 0) ? x : -x;\n```\n\nNesting `?:` (as shown above) is legal but degrades readability quickly. Prefer `if`/`else` or a helper function once more than one level of nesting appears.\n\n### Type rules\n\nBoth branch expressions must be convertible to a common type. If they aren't, the compiler rejects the expression. This is stricter than Python's equivalent `value_if_true if condition else value_if_false`, which is duck-typed at runtime.\n\nMixing an integer literal with a `std::string` is a typical mistake:\n\n```cpp\n// Error: int and const char* have no common type here\nauto s = flag ? std::string{\"yes\"} : \"no\";  // fine — \"no\" converts to std::string\nauto s = flag ? 42 : \"no\";                  // ill-formed\n```\n\n### Precedence\n\nAs covered in **Operator precedence and associativity**, `?:` sits near the bottom of the precedence table — lower than most arithmetic and comparison operators — so the condition is almost always parsed as you expect without extra parentheses. The right-hand side is right-associative, which is why chained ternaries work the way they do.\n\nUse the conditional operator for concise, single-expression decisions. Reach for `if`/`else` when clarity matters more than brevity.",
+      "exercises": [
+        {
+          "title": "Classify a Temperature Reading",
+          "prompt_md": "## Goal\nComplete the function `classifyTemp` that returns a `std::string` classification of a Celsius temperature using the conditional operator.\n\n## Input\n- Line 1: a single integer `T` (-50 ≤ T ≤ 50), the temperature in Celsius.\n\n## Output\n- Print exactly one line in the format: `T degrees: LABEL`\n- `T` is the integer read from stdin (no leading spaces or padding).\n- `LABEL` is one of three strings, determined as follows:\n  - `\"freezing\"` if T < 0\n  - `\"cold\"` if T is 0 to 14 (inclusive)\n  - `\"warm\"` if T is 15 or above\n- Example: `5 degrees: cold`\n\n## Requirements\n1. `classifyTemp` must have the signature `std::string classifyTemp(int temp)`.\n2. The body of `classifyTemp` must use the conditional operator (`?:`) — specifically a chained ternary — to produce the label. Do not use `if`/`else` inside this function.\n3. The returned value must be one of exactly three strings: `\"freezing\"`, `\"cold\"`, or `\"warm\"`.\n4. The output line must match the format `T degrees: LABEL` with no extra spaces or blank lines.\n5. Hidden tests cover T = -50 (minimum), T = 0 (boundary between freezing and cold), T = 14 (boundary between cold and warm), and T = 50 (maximum).",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement classifyTemp using a chained conditional operator (?:)\n// Return \"freezing\" if temp < 0, \"cold\" if 0..14, \"warm\" if >= 15\nstd::string classifyTemp(int temp) {\n    return \"\"; // TODO: replace with a chained ternary expression\n}\n\nint main() {\n    int t{};\n    std::cin >> t;\n    std::cout << t << \" degrees: \" << classifyTemp(t) << \"\\n\";\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstd::string classifyTemp(int temp) {\n    return (temp < 0) ? \"freezing\"\n         : (temp < 15) ? \"cold\"\n         : \"warm\";\n}\n\nint main() {\n    int t{};\n    std::cin >> t;\n    std::cout << t << \" degrees: \" << classifyTemp(t) << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — cold range",
+              "stdin": "5\n",
+              "expected_stdout": "5 degrees: cold\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — freezing boundary (exactly -1)",
+              "stdin": "-1\n",
+              "expected_stdout": "-1 degrees: freezing\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — warm boundary (exactly 15)",
+              "stdin": "15\n",
+              "expected_stdout": "15 degrees: warm\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Absolute Difference Table",
+          "prompt_md": "## Goal\nRead pairs of integers and print a formatted table showing each pair and the absolute difference between them, using the conditional operator to compute absolute values.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10), the number of pairs.\n- Lines 2..N+1: two integers `A` and `B` on the same line, separated by a space (-1000 ≤ A, B ≤ 1000).\n\n## Output\n- Print a header line: `A      B      |A-B|`\n- For each pair, print one line: the values of A and B left-aligned in fields of width 7, followed by the absolute difference.\n- Use `std::format` with field width 7 (left-aligned) for A and B, and no padding for `|A-B|`.\n- Example row for A=3, B=10: `3      10     7`\n- No trailing blank lines.\n\n## Requirements\n1. Use `std::format` (from `<format>`) to produce all output lines, including the header.\n2. Compute the absolute difference using the conditional operator: `(diff >= 0) ? diff : -diff` where `diff = A - B`. Do not call `std::abs` or any other library function for this computation.\n3. The header must be exactly `A      B      |A-B|` (A and B are also left-aligned in width-7 fields, `|A-B|` has no padding).\n4. Each data row must use `std::format` with `{:<7}` for A and B, followed by the absolute difference with no width specifier.\n5. Hidden tests cover N = 1 (single pair), a pair where A == B (difference is 0), and a pair where A < B (negative raw difference).",
+          "starter_code": "#include <format>\n#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: print the header line using std::format\n    // Header: \"A      B      |A-B|\"\n    // Hint: use {:<7} for \"A\" and \"B\" fields, then \"|A-B|\"\n\n    for (int i = 0; i < n; ++i) {\n        int a{}, b{};\n        std::cin >> a >> b;\n\n        // TODO: compute diff = a - b\n        // TODO: use the conditional operator to get absVal (no std::abs allowed)\n        // TODO: print the row using std::format with {:<7} for a and b\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <format>\n#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    std::cout << std::format(\"{:<7}{:<7}{}\\n\", \"A\", \"B\", \"|A-B|\");\n\n    for (int i = 0; i < n; ++i) {\n        int a{}, b{};\n        std::cin >> a >> b;\n\n        int diff    = a - b;\n        int absVal  = (diff >= 0) ? diff : -diff;\n\n        std::cout << std::format(\"{:<7}{:<7}{}\\n\", a, b, absVal);\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — three pairs, mixed signs",
+              "stdin": "3\n3 10\n-5 2\n8 8\n",
+              "expected_stdout": "A      B      |A-B|\n3      10     7\n-5     2      7\n8      8      0\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single pair, A greater than B",
+              "stdin": "1\n100 -100\n",
+              "expected_stdout": "A      B      |A-B|\n100    -100   200\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — two pairs with zero difference and large values",
+              "stdin": "2\n0 0\n1000 -1000\n",
+              "expected_stdout": "A      B      |A-B|\n0      0      0\n1000   -1000  2000\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6.7",
+      "title": "Relational operators and floating point comparisons",
+      "sort_order": 79,
+      "summary_md": "# Relational Operators and Floating Point Comparisons\n\nRelational operators compare two values and produce a `bool` result. C++ provides six:\n\n- `<` — less than\n- `>` — greater than\n- `<=` — less than or equal\n- `>=` — greater than or equal\n- `==` — equal to\n- `!=` — not equal to\n\nThese work intuitively for integers and characters. Character comparisons use the underlying numeric value from the character's encoding, so `'a' < 'b'` is `true` because `'a'` has a lower ASCII value.\n\n## The Floating Point Trap\n\nComparing floating point values with `==` or `!=` is almost always a bug. Because `float` and `double` store approximations (covered when you first encountered these types), arithmetic results accumulate tiny rounding errors. Two values that *should* be equal often differ by a minuscule amount, causing `==` to return `false`.\n\nThe standard fix is an **epsilon comparison**: check whether the difference between two values is smaller than some acceptable tolerance. The standard library provides `std::numeric_limits<double>::epsilon()` in `<limits>`, which gives the smallest representable difference near `1.0`. For most practical work, a slightly larger absolute or relative epsilon is more robust.\n\n```cpp\n#include <cmath>\n#include <format>\n#include <iostream>\n\nbool approx_equal(double a, double b, double eps = 1e-9) {\n    return std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)));\n}\n\nint main() {\n    double result = 0.1 + 0.2;\n    std::cout << std::format(\"0.1 + 0.2 == 0.3 ? {}\\n\", result == 0.3);\n    std::cout << std::format(\"approx_equal?      {}\\n\", approx_equal(result, 0.3));\n}\n```\n\nOutput:\n```\n0.1 + 0.2 == 0.3 ? false\napprox_equal?      true\n```\n\nThe epsilon is scaled by the magnitude of the operands (the `max(1.0, ...)` term) to handle both very large and very small numbers gracefully. A fixed absolute epsilon breaks down when values themselves are large.\n\n## Ordering Mixed Types\n\nWhen comparing operands of different arithmetic types, the usual arithmetic conversions apply — the same implicit promotion rules seen in **Arithmetic operators**. Comparing a signed integer to an unsigned integer is a common source of bugs, since the signed value may be converted to unsigned, turning `-1` into a large positive number. Prefer keeping comparison operands the same type, or use an explicit cast.\n\n`<=>` (the three-way comparison operator) is a C++20 addition that returns an ordering category rather than a `bool`; it appears in later lessons on operator overloading.",
+      "exercises": [
+        {
+          "title": "Grade Comparator with Epsilon Check",
+          "prompt_md": "## Goal\nComplete the function `classify_scores` that reads two exam scores (doubles), compares them using both `==` and an epsilon-based comparison, and prints the results.\n\n## Input\n- Line 1: two space-separated doubles representing scores A and B (each between 0.0 and 100.0 inclusive)\n\n## Output\nPrint exactly four lines in this order:\n- `A < B: ` followed by `true` or `false`\n- `A > B: ` followed by `true` or `false`\n- `A == B (exact): ` followed by `true` or `false`\n- `A == B (approx): ` followed by `true` or `false`\n\nUse `std::boolalpha` so booleans print as `true`/`false`. No trailing blank lines.\n\n## Requirements\n1. Use the relational operators `<` and `>` directly for the first two lines.\n2. Use the `==` operator directly (no epsilon) for the third line.\n3. For the fourth line, implement and call `bool approx_equal(double a, double b, double eps = 1e-9)` that returns `true` when `std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)))`.\n4. The hidden tests include a case where the two inputs are the result of arithmetic that produces the same mathematical value but differs by floating-point rounding (e.g., inputs that are textually different but within epsilon), and a case where A and B are clearly distinct values.\n5. All four lines must end with `\\n`.",
+          "starter_code": "#include <cmath>\n#include <iostream>\n\n// TODO: implement approx_equal(double a, double b, double eps = 1e-9)\n// Returns true when |a - b| <= eps * max(1.0, max(|a|, |b|))\n\nvoid classify_scores(double a, double b)\n{\n    // TODO: print \"A < B: \" followed by the result of (a < b)\n    // TODO: print \"A > B: \" followed by the result of (a > b)\n    // TODO: print \"A == B (exact): \" followed by the result of (a == b)\n    // TODO: print \"A == B (approx): \" followed by the result of approx_equal(a, b)\n}\n\nint main()\n{\n    std::cout << std::boolalpha;\n    double a{}, b{};\n    std::cin >> a >> b;\n    classify_scores(a, b);\n    return 0;\n}\n",
+          "solution_code": "#include <cmath>\n#include <iostream>\n\nbool approx_equal(double a, double b, double eps = 1e-9)\n{\n    return std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)));\n}\n\nvoid classify_scores(double a, double b)\n{\n    std::cout << \"A < B: \"           << (a < b)              << '\\n';\n    std::cout << \"A > B: \"           << (a > b)              << '\\n';\n    std::cout << \"A == B (exact): \"  << (a == b)             << '\\n';\n    std::cout << \"A == B (approx): \" << approx_equal(a, b)   << '\\n';\n}\n\nint main()\n{\n    std::cout << std::boolalpha;\n    double a{}, b{};\n    std::cin >> a >> b;\n    classify_scores(a, b);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "A clearly less than B",
+              "stdin": "72.5 85.0",
+              "expected_stdout": "A < B: true\nA > B: false\nA == B (exact): false\nA == B (approx): false\n",
+              "is_sample": true
+            },
+            {
+              "label": "A and B identical values",
+              "stdin": "95.0 95.0",
+              "expected_stdout": "A < B: false\nA > B: false\nA == B (exact): true\nA == B (approx): true\n",
+              "is_sample": false
+            },
+            {
+              "label": "Values within epsilon (0.1+0.2 vs 0.3)",
+              "stdin": "0.30000000001 0.3",
+              "expected_stdout": "A < B: false\nA > B: true\nA == B (exact): false\nA == B (approx): true\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Triangle Validity and Equality Checker",
+          "prompt_md": "## Goal\nWrite a program that reads three side lengths of a triangle (doubles), uses relational operators to check whether the triangle is valid, and then classifies it as equilateral, isosceles, or scalene using epsilon-based floating-point comparisons.\n\n## Input\n- Line 1: three space-separated positive doubles A, B, C representing side lengths (each between 0.01 and 1000.0)\n\n## Output\nPrint exactly two lines:\n- Line 1: `Valid triangle: ` followed by `true` or `false`\n- Line 2: `Type: ` followed by exactly one of `equilateral`, `isosceles`, `scalene`, or `N/A`\n\nPrint `N/A` for the type when the triangle is not valid. Use `std::boolalpha`. No trailing blank lines.\n\n## Requirements\n1. A triangle is valid when every side is strictly greater than `0` **and** the sum of any two sides is strictly greater than the third side (triangle inequality). Use the `>` relational operator for these checks.\n2. Implement `bool approx_equal(double a, double b, double eps = 1e-9)` using the scaled epsilon formula: `std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)))`.\n3. Use `approx_equal` (not `==`) to decide whether sides are equal when classifying the triangle type.\n4. If all three sides are approximately equal, print `equilateral`. If exactly two sides are approximately equal, print `isosceles`. Otherwise print `scalene`.\n5. Hidden tests include: an invalid triangle (e.g., sides 1 2 10), an equilateral triangle with non-integer sides (e.g., 3.0000000001 3.0 3.0), and a scalene triangle.",
+          "starter_code": "#include <cmath>\n#include <iostream>\n#include <string>\n\n// TODO: implement approx_equal(double a, double b, double eps = 1e-9)\n// Returns true when |a - b| <= eps * max(1.0, max(|a|, |b|))\n\n// TODO: implement bool is_valid_triangle(double a, double b, double c)\n// Returns true when all sides > 0 AND every triangle-inequality holds\n\n// TODO: implement std::string classify_triangle(double a, double b, double c)\n// Returns \"equilateral\", \"isosceles\", or \"scalene\" using approx_equal\n\nint main()\n{\n    std::cout << std::boolalpha;\n    double a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    bool valid = is_valid_triangle(a, b, c);\n    std::cout << \"Valid triangle: \" << valid << '\\n';\n\n    if (valid)\n        std::cout << \"Type: \" << classify_triangle(a, b, c) << '\\n';\n    else\n        std::cout << \"Type: N/A\" << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <cmath>\n#include <iostream>\n#include <string>\n\nbool approx_equal(double a, double b, double eps = 1e-9)\n{\n    return std::abs(a - b) <= eps * std::max(1.0, std::max(std::abs(a), std::abs(b)));\n}\n\nbool is_valid_triangle(double a, double b, double c)\n{\n    return (a > 0) && (b > 0) && (c > 0)\n        && (a + b > c)\n        && (a + c > b)\n        && (b + c > a);\n}\n\nstd::string classify_triangle(double a, double b, double c)\n{\n    bool ab = approx_equal(a, b);\n    bool bc = approx_equal(b, c);\n    bool ac = approx_equal(a, c);\n\n    if (ab && bc)          return \"equilateral\";\n    if (ab || bc || ac)    return \"isosceles\";\n    return \"scalene\";\n}\n\nint main()\n{\n    std::cout << std::boolalpha;\n    double a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    bool valid = is_valid_triangle(a, b, c);\n    std::cout << \"Valid triangle: \" << valid << '\\n';\n\n    if (valid)\n        std::cout << \"Type: \" << classify_triangle(a, b, c) << '\\n';\n    else\n        std::cout << \"Type: N/A\" << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Valid scalene triangle",
+              "stdin": "3.0 4.0 5.0",
+              "expected_stdout": "Valid triangle: true\nType: scalene\n",
+              "is_sample": true
+            },
+            {
+              "label": "Invalid triangle",
+              "stdin": "1.0 2.0 10.0",
+              "expected_stdout": "Valid triangle: false\nType: N/A\n",
+              "is_sample": false
+            },
+            {
+              "label": "Equilateral with floating-point near-equality",
+              "stdin": "3.0000000001 3.0 3.0",
+              "expected_stdout": "Valid triangle: true\nType: equilateral\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6.8",
+      "title": "Logical operators",
+      "sort_order": 80,
+      "summary_md": "## Logical Operators\n\nC++ provides three logical operators for combining or inverting boolean conditions:\n\n- `!` — logical NOT (unary)\n- `&&` — logical AND (binary)\n- `||` — logical OR (binary)\n\nThese work on `bool` values (or anything implicitly convertible to `bool`) and always produce a `bool` result.\n\n### Short-Circuit Evaluation\n\n`&&` and `||` use **short-circuit evaluation**: the right operand is only evaluated if the left operand doesn't already determine the outcome.\n\n- For `&&`: if the left side is `false`, the result is `false` regardless, so the right side is skipped.\n- For `||`: if the left side is `true`, the result is `true` regardless, so the right side is skipped.\n\nThis matters when the right operand has a side effect — something covered in *Increment/decrement operators, and side effects*. Relying on short-circuit order to avoid a null dereference or invalid index is common and intentional, not a code smell.\n\n### Operator Precedence\n\n`!` binds tighter than `&&`, which binds tighter than `||`. This means `a || b && c` is parsed as `a || (b && c)`. As covered in *Operator precedence and associativity*, when in doubt, use parentheses to make intent explicit rather than relying on memorised precedence rules.\n\n### De Morgan's Laws\n\nTwo identities are worth internalising for simplifying negated conditions:\n\n- `!(a && b)` is equivalent to `!a || !b`\n- `!(a || b)` is equivalent to `!a && !b`\n\nThese come up often when refactoring complex conditionals.\n\n```cpp\n#include <print>\n\nbool is_valid_age(int age)  { return age >= 0 && age <= 150; }\nbool is_teen(int age)       { return age >= 13 && age <= 19; }\n\nint main()\n{\n    int age = 17;\n\n    if (is_valid_age(age) && is_teen(age))\n        std::println(\"{} is a valid teen age.\", age);\n\n    // Short-circuit: is_teen never called if age is invalid\n    if (!is_valid_age(age) || !is_teen(age))\n        std::println(\"{} is not a valid teen age.\", age);\n}\n```\n\n### Avoid `&&` and `||` With Non-Bool Operands\n\nThese operators work on integers and pointers due to implicit conversion, but mixing them with arithmetic expressions obscures intent. Prefer explicit comparisons — `x != 0` over bare `x` — for clarity.\n\nThe logical operators pair naturally with the conditional operator from *The conditional operator* and the relational operators from *Relational operators and floating point comparisons* to express most branching conditions you'll encounter.",
+      "exercises": [
+        {
+          "title": "Theme Park Ride Eligibility Checker",
+          "prompt_md": "## Goal\nWrite a program that reads a rider's height (in cm) and age, then prints whether they are eligible for each of two rides based on logical conditions.\n\n## Input\n- Line 1: two integers separated by a space — `height` (1 ≤ height ≤ 300) and `age` (0 ≤ age ≤ 120)\n\n## Output\nPrint exactly two lines in this order:\n- Line 1: `Coaster: eligible` if the rider meets the coaster requirement, otherwise `Coaster: not eligible`\n- Line 2: `Splash: eligible` if the rider meets the splash requirement, otherwise `Splash: not eligible`\n\n## Requirements\n1. A rider is eligible for the **Coaster** if their height is at least 140 cm **and** their age is at least 12.\n2. A rider is eligible for the **Splash** if their height is at least 100 cm **or** their age is at least 8 (or both).\n3. Implement two functions with these exact signatures:\n   - `bool coaster_eligible(int height, int age)`\n   - `bool splash_eligible(int height, int age)`\n4. Each function must use at least one logical operator (`&&` or `||`).\n5. `main()` must call both functions and print the results using the exact labels `Coaster:` and `Splash:` followed by a space and then `eligible` or `not eligible`.\n6. Edge cases the hidden tests cover: a rider who meets neither requirement; a rider who meets both; a rider with height exactly 140 and age exactly 12; age 0 with height 50.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement coaster_eligible\n// Returns true if height >= 140 AND age >= 12\nbool coaster_eligible(int height, int age)\n{\n    // TODO: fill in\n}\n\n// TODO: implement splash_eligible\n// Returns true if height >= 100 OR age >= 8\nbool splash_eligible(int height, int age)\n{\n    // TODO: fill in\n}\n\nint main()\n{\n    int height{};\n    int age{};\n    std::cin >> height >> age;\n\n    // TODO: call coaster_eligible and print \"Coaster: eligible\" or \"Coaster: not eligible\"\n\n    // TODO: call splash_eligible and print \"Splash: eligible\" or \"Splash: not eligible\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nbool coaster_eligible(int height, int age)\n{\n    return height >= 140 && age >= 12;\n}\n\nbool splash_eligible(int height, int age)\n{\n    return height >= 100 || age >= 8;\n}\n\nint main()\n{\n    int height{};\n    int age{};\n    std::cin >> height >> age;\n\n    std::cout << \"Coaster: \" << (coaster_eligible(height, age) ? \"eligible\" : \"not eligible\") << '\\n';\n    std::cout << \"Splash: \"  << (splash_eligible(height, age)  ? \"eligible\" : \"not eligible\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — tall teenager",
+              "stdin": "150 15\n",
+              "expected_stdout": "Coaster: eligible\nSplash: eligible\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — exact boundary (140 cm, age 12)",
+              "stdin": "140 12\n",
+              "expected_stdout": "Coaster: eligible\nSplash: eligible\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — toddler (height 50, age 0)",
+              "stdin": "50 0\n",
+              "expected_stdout": "Coaster: not eligible\nSplash: not eligible\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Discount Qualifier Using Logical and Relational Operators",
+          "prompt_md": "## Goal\nWrite a program that reads three integers representing a customer's total purchase amount, loyalty years, and a student flag, then applies discount rules using logical operators combined with relational comparisons.\n\n## Input\n- Line 1: three integers separated by spaces:\n  - `amount` — purchase total in whole dollars (1 ≤ amount ≤ 10000)\n  - `years` — years as a loyalty member (0 ≤ years ≤ 50)\n  - `is_student` — exactly `1` if the customer is a student, `0` otherwise\n\n## Output\nPrint exactly three lines:\n- Line 1: `Bulk discount: yes` or `Bulk discount: no`\n- Line 2: `Loyalty discount: yes` or `Loyalty discount: no`\n- Line 3: `Combo discount: yes` or `Combo discount: no`\n\n## Requirements\n1. **Bulk discount**: `amount >= 200` **and** `(years >= 2 || is_student == 1)`. A big spender who is either a returning member or a student qualifies.\n2. **Loyalty discount**: `years >= 5` **and** **not** (`amount < 50`). A long-time member qualifies unless their purchase is under $50. Use the `!` operator to express the negation.\n3. **Combo discount**: the customer qualifies for the **bulk discount** **or** the **loyalty discount** (or both). Reuse the two helper functions — do **not** duplicate their logic.\n4. Implement three functions with these exact signatures:\n   - `bool bulk_discount(int amount, int years, int is_student)`\n   - `bool loyalty_discount(int amount, int years)`\n   - `bool combo_discount(int amount, int years, int is_student)`\n5. `combo_discount` must call `bulk_discount` and `loyalty_discount` and combine their results with `||`.\n6. Edge cases the hidden tests cover: `years = 0, is_student = 0` (no discounts at all); `amount = 50, years = 5` (loyalty boundary); `amount = 200, years = 0, is_student = 1` (bulk via student flag); a customer who qualifies for both.",
+          "starter_code": "#include <iostream>\n\n// TODO: implement bulk_discount\n// Returns true if amount >= 200 AND (years >= 2 OR is_student == 1)\nbool bulk_discount(int amount, int years, int is_student)\n{\n    // TODO: fill in\n}\n\n// TODO: implement loyalty_discount\n// Returns true if years >= 5 AND NOT (amount < 50)\nbool loyalty_discount(int amount, int years)\n{\n    // TODO: fill in — must use the ! operator\n}\n\n// TODO: implement combo_discount\n// Returns true if bulk_discount OR loyalty_discount qualifies\n// Must call bulk_discount() and loyalty_discount() — do not duplicate logic\nbool combo_discount(int amount, int years, int is_student)\n{\n    // TODO: fill in\n}\n\nint main()\n{\n    int amount{};\n    int years{};\n    int is_student{};\n    std::cin >> amount >> years >> is_student;\n\n    // TODO: call each function and print the result with exact labels\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nbool bulk_discount(int amount, int years, int is_student)\n{\n    return amount >= 200 && (years >= 2 || is_student == 1);\n}\n\nbool loyalty_discount(int amount, int years)\n{\n    return years >= 5 && !(amount < 50);\n}\n\nbool combo_discount(int amount, int years, int is_student)\n{\n    return bulk_discount(amount, years, is_student) || loyalty_discount(amount, years);\n}\n\nint main()\n{\n    int amount{};\n    int years{};\n    int is_student{};\n    std::cin >> amount >> years >> is_student;\n\n    std::cout << \"Bulk discount: \"    << (bulk_discount(amount, years, is_student) ? \"yes\" : \"no\") << '\\n';\n    std::cout << \"Loyalty discount: \" << (loyalty_discount(amount, years)           ? \"yes\" : \"no\") << '\\n';\n    std::cout << \"Combo discount: \"   << (combo_discount(amount, years, is_student) ? \"yes\" : \"no\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — qualifies for both",
+              "stdin": "250 6 0\n",
+              "expected_stdout": "Bulk discount: yes\nLoyalty discount: yes\nCombo discount: yes\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — no discounts at all",
+              "stdin": "80 0 0\n",
+              "expected_stdout": "Bulk discount: no\nLoyalty discount: no\nCombo discount: no\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — bulk via student flag, no loyalty",
+              "stdin": "200 0 1\n",
+              "expected_stdout": "Bulk discount: yes\nLoyalty discount: no\nCombo discount: yes\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "6.x",
+      "title": "Chapter 6 summary and quiz",
+      "sort_order": 81,
+      "summary_md": "## Chapter 6 Summary: Operators\n\nThis chapter covered the full set of C++ operators you'll use constantly, along with several traps that catch newcomers.\n\n**Precedence and associativity** determine evaluation order when multiple operators appear in one expression. When in doubt, use parentheses — they cost nothing and remove ambiguity.\n\n**Arithmetic operators** (`+`, `-`, `*`, `/`, `%`) behave mostly as expected, but integer division truncates toward zero. The remainder operator `%` works only on integers and takes the sign of the left operand in C++.\n\n**Exponentiation** has no built-in operator; use `std::pow` from `<cmath>`. Be aware it works with `double`, so results fed back into integer math need an explicit cast.\n\n**Increment/decrement** (`++`/`--`) come in prefix and postfix forms. Prefix modifies the value *before* it is used in an expression; postfix modifies it *after*. Prefer prefix when the old value isn't needed. Mixing these operators with other uses of the same variable in one expression causes undefined behavior.\n\n**The comma operator** evaluates both operands left-to-right and returns the right one. It is rarely useful outside `for` loop headers and is best avoided elsewhere to keep code readable.\n\n**The conditional operator** `?:` is a compact if-else for expressions. It requires both branches to produce compatible types and works well inside `std::format` calls or initializers where a full `if` statement would be awkward.\n\n**Relational operators** (`<`, `>`, `<=`, `>=`, `==`, `!=`) work correctly for integers but are unreliable for floating-point values due to rounding. Compare floating-point numbers with an epsilon check using `std::abs(a - b) < epsilon` rather than `==`.\n\n**Logical operators** (`&&`, `||`, `!`) short-circuit: `&&` stops at the first `false`, `||` stops at the first `true`. This matters when operands have side effects.\n\n```cpp\n#include <cmath>\n#include <format>\n#include <print>\n\nint main() {\n    double a = 0.1 + 0.2;\n    double b = 0.3;\n    constexpr double epsilon = 1e-9;\n\n    bool equal = std::abs(a - b) < epsilon;\n    int score = 87;\n    std::println(\"{}\", std::format(\"Grade: {}  Equal: {}\",\n        score >= 90 ? 'A' : score >= 80 ? 'B' : 'C', equal));\n}\n```\n\nThis example combines the floating-point comparison technique, the conditional operator chained for a grade lookup, and `std::println` — all patterns from this chapter applied together.",
+      "exercises": [
+        {
+          "title": "Classify a Number with the Conditional Operator",
+          "prompt_md": "## Goal\nComplete function `classify` that returns a `std::string` describing an integer as `\"negative\"`, `\"zero\"`, or `\"positive\"`, then print it alongside the result of a floating-point near-equality check.\n\n## Input\n- Line 1: one integer `n` (-1,000,000 ≤ n ≤ 1,000,000)\n- Line 2: two space-separated `double` values `a` and `b` (absolute value ≤ 1e6, up to 9 decimal places)\n\n## Output\nPrint exactly two lines:\n1. `Classification: X` where `X` is `negative`, `zero`, or `positive`\n2. `Equal: Y` where `Y` is `true` if `|a - b| < 1e-9`, otherwise `false`\n\nNo extra blank lines.\n\n## Requirements\n1. `classify` must use **chained conditional operators** (`?:`) — no `if` statements allowed inside it.\n2. The function signature must be exactly: `std::string classify(int n)`\n3. The floating-point comparison must use `std::abs(a - b) < 1e-9` (epsilon = 1e-9).\n4. Output the boolean result as the literal text `true` or `false` (use another conditional operator or `std::boolalpha`).\n5. Hidden tests cover: `n = 0`, `n` at the extremes (±1,000,000), `a == b` exactly, and values that differ by less than 1e-9 vs. more.\n\n## Notes\n- You may use `<cmath>`, `<string>`, and `<iostream>`.\n- `std::boolalpha` with `<<` or a `?:` expression both satisfy requirement 4.",
+          "starter_code": "#include <cmath>\n#include <iostream>\n#include <string>\n\n// TODO: implement classify using only chained ?: operators (no if statements)\nstd::string classify(int n)\n{\n    // TODO: return \"negative\", \"zero\", or \"positive\"\n    return \"\";\n}\n\nint main()\n{\n    int n;\n    double a, b;\n    std::cin >> n >> a >> b;\n\n    // TODO: call classify and print \"Classification: <result>\"\n\n    // TODO: compare a and b with epsilon 1e-9 and print \"Equal: true\" or \"Equal: false\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <cmath>\n#include <iostream>\n#include <string>\n\nstd::string classify(int n)\n{\n    return n < 0 ? \"negative\" : n > 0 ? \"positive\" : \"zero\";\n}\n\nint main()\n{\n    int n;\n    double a, b;\n    std::cin >> n >> a >> b;\n\n    std::cout << \"Classification: \" << classify(n) << '\\n';\n\n    bool equal = std::abs(a - b) < 1e-9;\n    std::cout << \"Equal: \" << (equal ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — positive n, unequal doubles",
+              "stdin": "42\n0.1 0.2\n",
+              "expected_stdout": "Classification: positive\nEqual: false\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — zero n, effectively equal doubles",
+              "stdin": "0\n0.3 0.30000000000000004\n",
+              "expected_stdout": "Classification: zero\nEqual: true\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — negative n, exactly equal doubles",
+              "stdin": "-1000000\n3.141592653 3.141592653\n",
+              "expected_stdout": "Classification: negative\nEqual: true\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Prefix vs Postfix Increment in a Grade Table",
+          "prompt_md": "## Goal\nWrite a program that reads a list of integer scores, uses prefix and postfix increment/decrement to track running counters, and prints a small summary that also demonstrates integer division and the remainder operator.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20), the number of scores\n- Line 2: `N` space-separated integers, each in the range 0–100 inclusive\n\n## Output\nPrint exactly four lines:\n1. `Pass: P` — count of scores ≥ 60\n2. `Fail: F` — count of scores < 60\n3. `Average: A` — integer average, truncated toward zero (integer division of the sum by N)\n4. `Remainder: R` — the remainder when the sum is divided by N (use the `%` operator)\n\n## Requirements\n1. Maintain the pass counter using **prefix** `++` every time a score qualifies (e.g., `++pass`).\n2. Maintain the fail counter using **postfix** `++` every time a score qualifies (e.g., `fail++`). Both are required by the starter code structure; the final counts must still be correct.\n3. Compute `Average` using integer division (`/`) — do **not** cast to `double`.\n4. Compute `Remainder` using the `%` operator — it must equal `sum % N`.\n5. Hidden tests cover: all scores passing (F = 0), all scores failing (P = 0), N = 1, sum exactly divisible by N (Remainder = 0), and scores of exactly 60 (boundary, counts as Pass).\n\n## Notes\n- Use only `<iostream>`; no `<cmath>` needed.\n- The sign rule for `%`: because all inputs are non-negative and N ≥ 1, the remainder is always ≥ 0.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    int pass = 0;\n    int fail = 0;\n    int sum  = 0;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int score;\n        std::cin >> score;\n        sum += score;\n\n        if (score >= 60)\n        {\n            // TODO: increment pass using PREFIX ++\n        }\n        else\n        {\n            // TODO: increment fail using POSTFIX ++\n        }\n    }\n\n    // TODO: print \"Pass: <pass>\"\n    // TODO: print \"Fail: <fail>\"\n    // TODO: print \"Average: <sum / n>\"  (integer division)\n    // TODO: print \"Remainder: <sum % n>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    int pass = 0;\n    int fail = 0;\n    int sum  = 0;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int score;\n        std::cin >> score;\n        sum += score;\n\n        if (score >= 60)\n            ++pass;\n        else\n            fail++;\n    }\n\n    std::cout << \"Pass: \"      << pass        << '\\n';\n    std::cout << \"Fail: \"      << fail        << '\\n';\n    std::cout << \"Average: \"   << sum / n     << '\\n';\n    std::cout << \"Remainder: \" << sum % n     << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — mixed scores",
+              "stdin": "5\n70 55 90 60 45\n",
+              "expected_stdout": "Pass: 3\nFail: 2\nAverage: 64\nRemainder: 0\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — all failing, N=1",
+              "stdin": "1\n0\n",
+              "expected_stdout": "Pass: 0\nFail: 1\nAverage: 0\nRemainder: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — all passing, non-zero remainder",
+              "stdin": "4\n80 95 70 88\n",
+              "expected_stdout": "Pass: 4\nFail: 0\nAverage: 83\nRemainder: 3\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

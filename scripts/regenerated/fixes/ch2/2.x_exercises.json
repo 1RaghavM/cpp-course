@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Mini Calculator",
+    "prompt_md": "## Goal\n\nWrite a program that reads two integers and an operation code, then prints the result. This is a chapter summary exercise that ties together functions, parameters, return values, and forward declarations.\n\n## Input\n\nThree values on one line separated by spaces: `a b op` where `op` is an integer:\n- `1` means addition\n- `2` means subtraction\n- `3` means multiplication\n\n## Output\n\nThe result of the operation on a single line.\n\n## Requirements\n\n1. Implement three functions: `int add(int a, int b)`, `int subtract(int a, int b)`, `int multiply(int a, int b)` -- each returns the result of the corresponding operation.\n2. Forward-declare all three functions above `main`, and define them below `main` (practicing forward declarations from lesson 2.7).\n3. In `main`, read `a`, `b`, and `op`. Compute the result using the expression:\n   `add(a,b) * (op == 1) + subtract(a,b) * (op == 2) + multiply(a,b) * (op == 3)`\n   This works because `(op == N)` evaluates to `1` for the matching operation and `0` for all others, so only the correct term contributes to the sum.\n4. Print the result followed by a newline.\n5. You may assume `op` is always 1, 2, or 3.",
+    "starter_code": "#include <iostream>\n\n// TODO: Forward-declare add, subtract, multiply\n\nint main() {\n    int a{}, b{}, op{};\n    std::cin >> a >> b >> op;\n\n    // TODO: Compute the result based on op and print it\n    // Hint: add(a,b)*(op==1) + subtract(a,b)*(op==2) + multiply(a,b)*(op==3)\n\n    return 0;\n}\n\n// TODO: Define add, subtract, multiply below main\n",
+    "solution_code": "#include <iostream>\n\nint add(int a, int b);\nint subtract(int a, int b);\nint multiply(int a, int b);\n\nint main() {\n    int a{}, b{}, op{};\n    std::cin >> a >> b >> op;\n\n    int result { add(a, b) * (op == 1)\n              + subtract(a, b) * (op == 2)\n              + multiply(a, b) * (op == 3) };\n    std::cout << result << '\\n';\n\n    return 0;\n}\n\nint add(int a, int b) { return a + b; }\nint subtract(int a, int b) { return a - b; }\nint multiply(int a, int b) { return a * b; }\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: addition (10 + 3)",
+        "is_sample": true,
+        "stdin": "10 3 1",
+        "expected_stdout": "13\n"
+      },
+      {
+        "label": "Hidden: multiplication (7 * 2)",
+        "is_sample": false,
+        "stdin": "7 2 3",
+        "expected_stdout": "14\n"
+      },
+      {
+        "label": "Hidden: subtraction (5 - 12)",
+        "is_sample": false,
+        "stdin": "5 12 2",
+        "expected_stdout": "-7\n"
+      }
+    ]
+  },
+  {
+    "title": "Function Chain",
+    "prompt_md": "## Goal\n\nWrite a program that reads an integer `n` and computes the result of chaining three transformations, practicing forward declarations and nested function calls.\n\n## Input\n\nOne integer on a single line.\n\n## Output\n\nOne integer: the result of `negate(add_ten(double_it(n)))`, followed by a newline.\n\nWhere:\n- `double_it(x)` returns `x * 2`\n- `add_ten(x)` returns `x + 10`\n- `negate(x)` returns `-x`\n\n## Requirements\n\n1. Forward-declare all three functions above `main`.\n2. Define all three functions **below** `main`.\n3. In `main`, read `n`, call the chained functions, and print the result.",
+    "starter_code": "#include <iostream>\n\n// TODO: Add forward declarations for double_it, add_ten, negate\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call the chained functions and print the result\n\n    return 0;\n}\n\n// TODO: Define double_it, add_ten, negate below main\n",
+    "solution_code": "#include <iostream>\n\nint double_it(int x);\nint add_ten(int x);\nint negate(int x);\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cout << negate(add_ten(double_it(n))) << '\\n';\n    return 0;\n}\n\nint double_it(int x) { return x * 2; }\nint add_ten(int x) { return x + 10; }\nint negate(int x) { return -x; }\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive input 5",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "-20\n"
+      },
+      {
+        "label": "Hidden: zero input",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "-10\n"
+      },
+      {
+        "label": "Hidden: negative input -3",
+        "is_sample": false,
+        "stdin": "-3",
+        "expected_stdout": "4\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "number": "8.1",
+  "title": "Control flow introduction",
+  "sort_order": 101,
+  "summary_md": "## Control Flow Introduction\n\nUp to now, every program you've written executes **sequentially** — one statement after another, top to bottom. Control flow is the broader term for all the mechanisms that let you change that order. C++ gives you three fundamental ways to alter execution:\n\n- **Sequential** — the default; statements run in the order they're written.\n- **Branching (selection)** — choose which block of code to run based on a condition (`if`, `if/else`, `switch`).\n- **Looping (iteration)** — repeat a block of code while some condition holds (`for`, `while`, `do/while`).\n\nYou've already seen Python's versions of all three. C++ control-flow looks similar but has a few important differences you'll encounter across this chapter.\n\n### Why this matters\n\nWithout branching, a program can't react differently to different inputs. Without looping, you'd have to write the same code hundreds of times to process a list. Real programs are almost entirely control flow wrapped around a handful of data operations.\n\n### A first look at branching\n\n```cpp\n#include <iostream>\n\nint main() {\n    int n = 5;\n\n    // Branching: only one arm runs\n    if (n % 2 == 0)\n        std::cout << \"even\\n\";\n    else\n        std::cout << \"odd\\n\";   // prints this\n}\n```\n\nNotice that single-statement bodies don't need curly braces, though adding them is considered good practice to avoid subtle bugs (we'll revisit this in lesson 8-2).\n\nYou will also learn about **loops** (repeating code) later in this chapter — `while` in lesson 8.8, `do-while` in lesson 8.9, and `for` in lesson 8.10. For now, just know they exist; this lesson is your map of the territory.\n\n### Control flow vs. Python\n\nPython uses indentation to delimit blocks; C++ uses curly braces `{}`. Conditions in C++ must be wrapped in parentheses — `if (x > 0)` not `if x > 0`.\n\nThe rest of chapter 8 drills into each control-flow construct in detail. This lesson is your map of the territory.\n",
+  "exercises": [
+    {
+      "title": "Classify a Number",
+      "prompt_md": "## Classify a Number\n\nWrite a program that reads a single integer from standard input and prints exactly one of the following lines:\n\n- `negative` — if the number is less than zero\n- `zero` — if the number equals zero\n- `positive` — if the number is greater than zero\n\nThis exercise practices **branching** (selection): only one branch should execute depending on the input value.\n\n### Example\n\n```\nInput:  7\nOutput: positive\n```\n",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: Use if/else if/else to classify n as\n    // \"negative\", \"zero\", or \"positive\" and print the result.\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    if (n < 0)\n        std::cout << \"negative\\n\";\n    else if (n == 0)\n        std::cout << \"zero\\n\";\n    else\n        std::cout << \"positive\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "positive number",
+          "stdin": "7",
+          "expected_stdout": "positive\n",
+          "is_sample": true
+        },
+        {
+          "label": "zero",
+          "stdin": "0",
+          "expected_stdout": "zero\n",
+          "is_sample": false
+        },
+        {
+          "label": "negative number",
+          "stdin": "-42",
+          "expected_stdout": "negative\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Min and Max of Three",
+      "prompt_md": "## Min and Max of Three\n\nWrite a program that reads three integers from standard input (space-separated on one line) and prints two lines:\n\n1. `Min: X` — where X is the smallest of the three.\n2. `Max: Y` — where Y is the largest of the three.\n\nThis exercise practices **nested branching**: you need multiple `if`/`else if` comparisons to find both the minimum and maximum.\n\n### Example\n\n```\nInput:  5 2 8\nOutput:\nMin: 2\nMax: 8\n```\n\n*Hint: you can find the min in one if/else-if/else chain, and the max in a separate chain.*\n",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // TODO: Find the minimum of a, b, c and print \"Min: <value>\"\n\n    // TODO: Find the maximum of a, b, c and print \"Max: <value>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // Find minimum\n    int min{};\n    if (a <= b && a <= c)\n        min = a;\n    else if (b <= a && b <= c)\n        min = b;\n    else\n        min = c;\n\n    // Find maximum\n    int max{};\n    if (a >= b && a >= c)\n        max = a;\n    else if (b >= a && b >= c)\n        max = b;\n    else\n        max = c;\n\n    std::cout << \"Min: \" << min << '\\n';\n    std::cout << \"Max: \" << max << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "ascending order",
+          "stdin": "5 2 8",
+          "expected_stdout": "Min: 2\nMax: 8\n",
+          "is_sample": true
+        },
+        {
+          "label": "all same",
+          "stdin": "4 4 4",
+          "expected_stdout": "Min: 4\nMax: 4\n",
+          "is_sample": false
+        },
+        {
+          "label": "negatives",
+          "stdin": "-3 -7 -1",
+          "expected_stdout": "Min: -7\nMax: -1\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

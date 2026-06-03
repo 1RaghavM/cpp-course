@@ -1,0 +1,37 @@
+{
+  "lesson": "5.2",
+  "title": "Literals",
+  "fixes_applied": [
+    "MAJ-4: Removed pointless HUNDRED constant. Redesigned so HUNDRED is actually used for rounding to nearest cent.",
+    "MIN-2: Changed constexpr to const in exercise requirement since constexpr is not formally taught until 5.4-5.6."
+  ],
+  "exercises": [
+    {
+      "index": 1,
+      "title": "Receipt Calculator with Named Constants",
+      "prompt_md": "## Goal\nWrite a program that reads a number of items and a price per item, then computes and prints a sales receipt using named `const` constants for fixed rates. The total is rounded to the nearest cent.\n\n## Input\n- Line 1: one positive integer `N` (1 <= N <= 10,000) -- the number of items purchased\n- Line 2: one decimal number `price` (0.01 <= price <= 9,999.99) -- price per item in dollars\n\n## Output\nPrint exactly four lines:\n- `Items: <N>`\n- `Unit price: <price>` (2 decimal places)\n- `Subtotal: <subtotal>` (2 decimal places, where subtotal = N * price)\n- `Total: <total>` (2 decimal places, where total = round(subtotal * (1.0 + TAX_RATE) * HUNDRED) / HUNDRED)\n\nNo trailing spaces. Each line ends with a newline.\n\n## Requirements\n1. Declare `const double TAX_RATE = 0.08;` and `const double HUNDRED = 100.0;` at the top of `main` -- both must appear as named constants in your code, not as magic numbers.\n2. Compute `subtotal` as `static_cast<double>(N) * price` (using the `double` literal form of the multiplication to avoid integer truncation).\n3. Compute `total` by first calculating the raw total as `subtotal * (1.0 + TAX_RATE)`, then rounding to the nearest cent using `std::round(rawTotal * HUNDRED) / HUNDRED`. The `1.0` here is a `double` literal (not `1` or `1.f`).\n4. All four output values use `std::fixed` and `std::setprecision(2)`.\n5. Edge cases the hidden tests cover: N = 1 with a small price (e.g. 0.01), and N = 10,000 with price = 9,999.99.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\nint main() {\n    // TODO: declare const double TAX_RATE = 0.08 and const double HUNDRED = 100.0\n\n    int n;\n    double price;\n    // TODO: read n and price from stdin\n\n    // TODO: compute subtotal = n * price (use static_cast<double>)\n    // TODO: compute rawTotal = subtotal * (1.0 + TAX_RATE)\n    // TODO: compute total = std::round(rawTotal * HUNDRED) / HUNDRED\n\n    // TODO: print the four output lines with 2 decimal places\n    // Items: <n>\n    // Unit price: <price>\n    // Subtotal: <subtotal>\n    // Total: <total>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\nint main() {\n    const double TAX_RATE = 0.08;\n    const double HUNDRED  = 100.0;\n\n    int n;\n    double price;\n    std::cin >> n >> price;\n\n    double subtotal = static_cast<double>(n) * price;\n    double rawTotal = subtotal * (1.0 + TAX_RATE);\n    double total    = std::round(rawTotal * HUNDRED) / HUNDRED;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Items: \"      << n        << \"\\n\";\n    std::cout << \"Unit price: \" << price    << \"\\n\";\n    std::cout << \"Subtotal: \"   << subtotal << \"\\n\";\n    std::cout << \"Total: \"      << total    << \"\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample -- 3 items at 19.99",
+          "stdin": "3\n19.99",
+          "expected_stdout": "Items: 3\nUnit price: 19.99\nSubtotal: 59.97\nTotal: 64.77\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden -- single item smallest price",
+          "stdin": "1\n0.01",
+          "expected_stdout": "Items: 1\nUnit price: 0.01\nSubtotal: 0.01\nTotal: 0.01\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden -- maximum N and large price",
+          "stdin": "10000\n9999.99",
+          "expected_stdout": "Items: 10000\nUnit price: 9999.99\nSubtotal: 99999900.00\nTotal: 107999892.00\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

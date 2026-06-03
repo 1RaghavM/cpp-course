@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Namespace Arithmetic",
+    "prompt_md": "## Goal\n\nTwo teams wrote math utilities independently and named some functions identically. Use namespaces to keep them separate.\n\n## Input\n\nFour integers on one line separated by spaces: `a b c d`.\n\n## Output\n\n```\nfast add: <a + b>\nsafe add: <(a + b) + 1>\nfast multiply: <c * d>\nsafe multiply: <(c * d) - 1>\n```\n\nThe `fast` namespace does plain arithmetic. The `safe` namespace adds a margin of 1 to sums and subtracts 1 from products (a toy simulation of \"conservative\" calculations).\n\n## Requirements\n\n1. Define `namespace fast` containing `int add(int x, int y)` (returns `x + y`) and `int multiply(int x, int y)` (returns `x * y`).\n2. Define `namespace safe` containing `int add(int x, int y)` (returns `x + y + 1`) and `int multiply(int x, int y)` (returns `x * y - 1`).\n3. In `main`, read four integers. Use `fast::add(a, b)`, `safe::add(a, b)`, `fast::multiply(c, d)`, and `safe::multiply(c, d)` to print the four lines.\n4. Use the `::` scope resolution operator for every call. Do **not** use `using namespace`.",
+    "starter_code": "#include <iostream>\n\nnamespace fast {\n    // TODO: int add(int x, int y) -- returns x + y\n    // TODO: int multiply(int x, int y) -- returns x * y\n}\n\nnamespace safe {\n    // TODO: int add(int x, int y) -- returns x + y + 1\n    // TODO: int multiply(int x, int y) -- returns x * y - 1\n}\n\nint main() {\n    int a{}, b{}, c{}, d{};\n    std::cin >> a >> b >> c >> d;\n\n    // TODO: Print using fast:: and safe:: qualified names\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nnamespace fast {\n    int add(int x, int y) { return x + y; }\n    int multiply(int x, int y) { return x * y; }\n}\n\nnamespace safe {\n    int add(int x, int y) { return x + y + 1; }\n    int multiply(int x, int y) { return x * y - 1; }\n}\n\nint main() {\n    int a{}, b{}, c{}, d{};\n    std::cin >> a >> b >> c >> d;\n\n    std::cout << \"fast add: \" << fast::add(a, b) << '\\n';\n    std::cout << \"safe add: \" << safe::add(a, b) << '\\n';\n    std::cout << \"fast multiply: \" << fast::multiply(c, d) << '\\n';\n    std::cout << \"safe multiply: \" << safe::multiply(c, d) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 4 5 6",
+        "is_sample": true,
+        "stdin": "3 4 5 6",
+        "expected_stdout": "fast add: 7\nsafe add: 8\nfast multiply: 30\nsafe multiply: 29\n"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0",
+        "expected_stdout": "fast add: 0\nsafe add: 1\nfast multiply: 0\nsafe multiply: -1\n"
+      },
+      {
+        "label": "Hidden: negatives",
+        "is_sample": false,
+        "stdin": "-5 3 2 7",
+        "expected_stdout": "fast add: -2\nsafe add: -1\nfast multiply: 14\nsafe multiply: 13\n"
+      }
+    ]
+  },
+  {
+    "title": "Using Declaration Practice",
+    "prompt_md": "## Goal\n\nPractice controlling which names are visible in a scope using targeted `using` declarations.\n\n## Input\n\nTwo integers on one line separated by a space.\n\n## Output\n\n```\nSum: <a + b>\nDifference: <a - b>\nProduct: <a * b>\n```\n\n## Requirements\n\n1. Define `namespace mathtools` containing three functions: `int add(int a, int b)`, `int subtract(int a, int b)`, and `int multiply(int a, int b)`.\n2. In `main`, use a **targeted `using` declaration** to bring only `mathtools::add` into scope. Call `add` without the `mathtools::` prefix.\n3. Call `subtract` and `multiply` with the full `mathtools::` prefix.\n4. Do **not** use `using namespace mathtools;` -- use only a targeted `using` declaration for `add`.",
+    "starter_code": "#include <iostream>\n\nnamespace mathtools {\n    // TODO: int add(int a, int b)\n    // TODO: int subtract(int a, int b)\n    // TODO: int multiply(int a, int b)\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: Add a using declaration for mathtools::add only\n\n    // TODO: Call add (no prefix), subtract and multiply (with prefix)\n    // Print Sum, Difference, and Product lines\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nnamespace mathtools {\n    int add(int a, int b) { return a + b; }\n    int subtract(int a, int b) { return a - b; }\n    int multiply(int a, int b) { return a * b; }\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    using mathtools::add;\n\n    std::cout << \"Sum: \" << add(a, b) << '\\n';\n    std::cout << \"Difference: \" << mathtools::subtract(a, b) << '\\n';\n    std::cout << \"Product: \" << mathtools::multiply(a, b) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 and 3",
+        "is_sample": true,
+        "stdin": "10 3",
+        "expected_stdout": "Sum: 13\nDifference: 7\nProduct: 30\n"
+      },
+      {
+        "label": "Hidden: 0 and 0",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "Sum: 0\nDifference: 0\nProduct: 0\n"
+      },
+      {
+        "label": "Hidden: 7 and 8",
+        "is_sample": false,
+        "stdin": "7 8",
+        "expected_stdout": "Sum: 15\nDifference: -1\nProduct: 56\n"
+      }
+    ]
+  }
+]

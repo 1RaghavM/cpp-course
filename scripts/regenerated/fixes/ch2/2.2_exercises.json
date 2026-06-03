@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Double the Number",
+    "prompt_md": "## Goal\n\nWrite a function `doubleIt` that takes an `int` and **returns** twice its value.\n\n## Input\n\nOne integer on a single line.\n\n## Output\n\nThe doubled value followed by a newline.\n\n## Requirements\n\n1. Define `int doubleIt(int x)` that returns `x * 2`.\n2. In `main`, read one integer from `std::cin`, call `doubleIt`, and print the result.\n3. The function must use a `return` statement to send the value back -- do not print inside `doubleIt`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define int doubleIt(int x)\n// Return x * 2\n\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    // TODO: Call doubleIt(n) and print the result followed by '\\n'\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint doubleIt(int x) {\n    return x * 2;\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n    std::cout << doubleIt(n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: double 5",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "10\n"
+      },
+      {
+        "label": "Hidden: double 0",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: double -7",
+        "is_sample": false,
+        "stdin": "-7",
+        "expected_stdout": "-14\n"
+      }
+    ]
+  },
+  {
+    "title": "Sum of Squares",
+    "prompt_md": "## Goal\n\nWrite a function that computes the sum of two squares using return values. This combines what you learned about parameters (from lesson 2.1) with return values.\n\n## Input\n\nTwo integers on one line separated by a space.\n\n## Output\n\nThe sum of their squares on a single line.\n\n## Requirements\n\n1. Define `int square(int x)` that returns `x * x`.\n2. Define `int sumOfSquares(int a, int b)` that calls `square` twice and returns the sum.\n3. In `main`, read two integers, call `sumOfSquares`, and print the result followed by a newline.\n4. Neither function should print anything -- all output happens in `main`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define int square(int x)\n// Return x * x\n\n\n// TODO: Define int sumOfSquares(int a, int b)\n// Return square(a) + square(b)\n\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    // TODO: Call sumOfSquares(a, b) and print the result followed by '\\n'\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint square(int x) {\n    return x * x;\n}\n\nint sumOfSquares(int a, int b) {\n    return square(a) + square(b);\n}\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n    std::cout << sumOfSquares(a, b) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "25\n"
+      },
+      {
+        "label": "Hidden: 0 and 0",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: -2 and 5",
+        "is_sample": false,
+        "stdin": "-2 5",
+        "expected_stdout": "29\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "lesson": "12.11",
+  "title": "Pass by address (part 2)",
+  "exercise_index": 1,
+  "why": "Original exercise 2 uses std::vector<int> (Ch 16/17 material). Also was the 3rd linear search in the chapter. Replaced with a different problem (count and optional min) using int arr[20] and pass-by-address optional output pattern, which is the core teaching of this lesson.",
+  "exercise": {
+    "title": "Count and Optional Minimum",
+    "prompt_md": "## Goal\n\nPractice using a pointer parameter as an optional output: write a function that counts how many elements in an array satisfy a condition, and optionally reports the minimum qualifying value through a pointer that may be `nullptr`.\n\n## Requirements\n\n- Write a function:\n  ```cpp\n  int countNegatives(const int* arr, int size, int* outMin)\n  ```\n  - Returns the count of negative elements in `arr`.\n  - If `outMin` is not `nullptr` **and** at least one negative element exists, writes the smallest (most negative) value through `outMin`.\n  - If `outMin` is `nullptr`, skip the minimum computation entirely.\n  - If no negative elements exist, do not write through `outMin` regardless.\n- In `main`, read `n` (1 <= n <= 20) then `n` integers into a plain `int arr[20]`.\n- Read a final line containing either `yes` or `no`:\n  - `yes` means the caller wants the minimum negative value (pass a valid `int*`).\n  - `no` means the caller does not care about the minimum (pass `nullptr`).\n- Print the count on the first line: `Count: <count>`\n- If the caller requested the minimum and at least one negative exists, print `Min negative: <value>` on a second line.\n- If the caller requested the minimum but none exist, print `No negatives` on the second line.\n- If the caller did not request the minimum, print nothing further.\n\n## Input\n\n```\n<n>\n<elem1> <elem2> ... <elemN>\n<yes|no>\n```\n\n## Output\n\nOne or two lines as described above.\n\n## Example\n\nInput:\n```\n5\n3 -7 2 -1 4\nyes\n```\nOutput:\n```\nCount: 2\nMin negative: -7\n```",
+    "starter_code": "#include <iostream>\n\n// TODO: implement countNegatives\n// Returns the count of negative elements.\n// If outMin is not nullptr and negatives exist, writes the smallest\n// negative value through outMin.\nint countNegatives(const int* arr, int size, int* outMin) {\n    // TODO\n    return 0;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int arr[20]{};\n    for (int i { 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::string wantMin{};\n    std::cin >> wantMin;\n\n    // TODO: call countNegatives with &minVal or nullptr based on wantMin\n    // TODO: print the results\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint countNegatives(const int* arr, int size, int* outMin) {\n    int count { 0 };\n    for (int i { 0 }; i < size; ++i) {\n        if (arr[i] < 0) {\n            if (count == 0 && outMin) {\n                *outMin = arr[i];\n            } else if (outMin && arr[i] < *outMin) {\n                *outMin = arr[i];\n            }\n            ++count;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int arr[20]{};\n    for (int i { 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::string wantMin{};\n    std::cin >> wantMin;\n\n    int minVal{};\n    int count{};\n\n    if (wantMin == \"yes\") {\n        count = countNegatives(arr, n, &minVal);\n        std::cout << \"Count: \" << count << '\\n';\n        if (count > 0)\n            std::cout << \"Min negative: \" << minVal << '\\n';\n        else\n            std::cout << \"No negatives\\n\";\n    } else {\n        count = countNegatives(arr, n, nullptr);\n        std::cout << \"Count: \" << count << '\\n';\n    }\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample: mixed values, want min",
+        "stdin": "5\n3 -7 2 -1 4\nyes",
+        "expected_stdout": "Count: 2\nMin negative: -7\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden: no negatives, want min",
+        "stdin": "4\n1 2 3 4\nyes",
+        "expected_stdout": "Count: 0\nNo negatives\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: has negatives, don't want min",
+        "stdin": "3\n-5 0 -3\nno",
+        "expected_stdout": "Count: 2\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

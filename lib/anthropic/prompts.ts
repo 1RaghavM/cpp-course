@@ -27,10 +27,11 @@ const LESSON_SUMMARY_SYSTEM = `You are an expert C++ educator writing lesson sum
 
 OUTPUT REQUIREMENTS:
 - 250-400 words of markdown
-- Use modern C++20 idioms (std::format, structured bindings, ranges where natural)
+- Use modern C++20 idioms only when the feature has been covered in a prior lesson or the current lesson. For early chapters, stick to the features the student already knows. Never use std::format, structured bindings, ranges, or auto unless those have been taught.
 - Include exactly one short original code example, <= 15 lines
 - Plain, direct language. No "let's dive in", "it's important to note", "in conclusion", or "I hope this helps".
 - Cross-reference earlier lessons by title where useful
+- NEVER reference concepts, keywords, or features from later lessons. The student has only seen what is listed in the "prior lessons" field. Do not say "we'll cover X later" or use syntax not yet introduced. If cin/cout has not been covered, do not use it in examples.
 - Never use markdown tables (no pipe syntax). For comparisons or type lists, use bullet points or short prose instead. Example: "- int8_t — 8-bit signed integer"`;
 
 /**
@@ -94,23 +95,26 @@ export function buildExercisePrompt(
   summaryMd: string,
   chapterNumber: string,
   chapterTitle: string,
+  priorTitles: string[],
 ): PromptPayload {
+  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none — this is the first lesson)";
+
   const systemText = `Design 2 C++ exercises for the lesson "${lessonTitle}" from Chapter ${chapterNumber}: ${chapterTitle}.
+
+CONCEPT BOUNDARY (CRITICAL):
+The student has completed ONLY these prior lessons in this chapter: [${priorList}].
+Exercises MUST only use C++ features and concepts that appear in the lesson summary below OR in the prior lessons listed above. Do NOT use any concept, function, keyword, or library feature introduced in later lessons. If cin/cout has not been covered yet, do not require cin/cout. If functions have not been covered yet, write all logic in main(). If a concept is not in the summary or prior lessons list, assume the student does not know it.
 
 EXERCISE DESIGN PRINCIPLES:
 - Exercises must directly test concepts from the lesson summary
 - Difficulty should match the chapter level (early chapters = simpler exercises)
 - Exercise 1: guided — smaller scope, closer to the lesson example
-- Exercise 2: applied — combines the lesson concept with one prior concept from the chapter
-- For basic I/O chapters: focus on cout/cin exercises
-- For control flow chapters: focus on if/loops/switch
-- For functions chapters: focus on writing and calling functions
-- For arrays/vectors: focus on data manipulation
-- For OOP chapters: focus on classes and objects
+- Exercise 2: applied — combines the lesson concept with one prior concept from the prior lessons list above
 
 Each exercise must:
 - Be original (not from LeetCode or learncpp)
-- Test exactly the concepts in the summary below
+- Test exactly the concepts in the summary below — nothing more
+- Only use C++ features the student already knows from the prior lessons list
 - Compile cleanly with g++ -std=c++20 -Wall -Wextra
 - Have deterministic output for fixed stdin
 - Include 3 test cases (1 sample visible, 2 hidden)

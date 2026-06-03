@@ -1,0 +1,31 @@
+{
+  "lesson": "7.5",
+  "exercise_index": 1,
+  "what_changed": "CRITICAL FIX: (1) Removed undefined behavior where inner 'int i = (i == 0 ? 0 : i) * 10;' read from an uninitialized variable (the new inner i, not the outer i). (2) Removed for loop (Ch 8). Rewrote to use 3 explicit function calls that demonstrate shadowing with nested blocks. Each call to processValue() demonstrates local vs global shadowing.",
+  "exercise": {
+    "title": "Shadowing Across Nested Blocks",
+    "prompt_md": "# Shadowing Across Nested Blocks\n\nVariable shadowing commonly occurs when an inner block declares a variable with the same name as one in an outer block. In this exercise, you will write a program that demonstrates shadowing at multiple levels.\n\nWrite a program that:\n1. Declares a global variable `value` set to 100\n2. In `main()`, declares a local variable `value` with the input integer\n3. Creates 3 nested blocks, each declaring its own local `value` that is `main`'s `value` multiplied by 1, 2, and 3 respectively\n4. In each block, prints all three levels of `value` (inner, main's, and global)\n\n## Input\n- Line 1: a single integer (the value for main's local variable)\n\n## Output\nFor each of the 3 nested blocks, print exactly 3 lines:\n- `inner: <inner_value>` (main's value * multiplier)\n- `local: <mains_value>` (main's value, accessed after block closes)\n- `global: 100` (global value via ::)\n\nTotal: 9 lines of output.\n\n## Requirements\n1. The global variable `value` must equal 100.\n2. main's local `value` shadows the global.\n3. Each inner block declares its own `value` that shadows main's local.\n4. Use `::value` to access the global from inside each block.\n5. After each inner block closes, print main's local `value` to show it was unaffected.",
+    "starter_code": "#include <iostream>\n\nint value = 100;  // global\n\nint main() {\n    int input{};\n    std::cin >> input;\n    \n    int value = input;  // shadows global\n    \n    // Block 1: inner value = main's value * 1\n    {\n        // TODO: declare value = main's value * 1\n        // TODO: print \"inner: \" << value\n    }\n    // TODO: print \"local: \" << value  (main's value)\n    // TODO: print \"global: \" << ::value\n    \n    // Block 2: inner value = main's value * 2\n    {\n        // TODO: declare value = main's value * 2\n        //       IMPORTANT: you must capture main's value BEFORE\n        //       declaring the shadowing variable!\n        // TODO: print \"inner: \" << value\n    }\n    // TODO: print \"local: \" << value  (main's value)\n    // TODO: print \"global: \" << ::value\n    \n    // Block 3: inner value = main's value * 3\n    {\n        // TODO: same pattern with multiplier 3\n    }\n    // TODO: print local and global\n    \n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint value = 100;  // global\n\nint main() {\n    int input{};\n    std::cin >> input;\n    \n    int value = input;  // shadows global\n    \n    // Block 1: inner value = main's value * 1\n    {\n        int multiplied = value * 1;  // capture BEFORE shadowing\n        int value = multiplied;      // shadows main's value\n        std::cout << \"inner: \" << value << \"\\n\";\n    }\n    std::cout << \"local: \" << value << \"\\n\";\n    std::cout << \"global: \" << ::value << \"\\n\";\n    \n    // Block 2: inner value = main's value * 2\n    {\n        int multiplied = value * 2;\n        int value = multiplied;\n        std::cout << \"inner: \" << value << \"\\n\";\n    }\n    std::cout << \"local: \" << value << \"\\n\";\n    std::cout << \"global: \" << ::value << \"\\n\";\n    \n    // Block 3: inner value = main's value * 3\n    {\n        int multiplied = value * 3;\n        int value = multiplied;\n        std::cout << \"inner: \" << value << \"\\n\";\n    }\n    std::cout << \"local: \" << value << \"\\n\";\n    std::cout << \"global: \" << ::value << \"\\n\";\n    \n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample: input is 5",
+        "stdin": "5",
+        "expected_stdout": "inner: 5\nlocal: 5\nglobal: 100\ninner: 10\nlocal: 5\nglobal: 100\ninner: 15\nlocal: 5\nglobal: 100\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden: input is 0",
+        "stdin": "0",
+        "expected_stdout": "inner: 0\nlocal: 0\nglobal: 100\ninner: 0\nlocal: 0\nglobal: 100\ninner: 0\nlocal: 0\nglobal: 100\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: input is -3",
+        "stdin": "-3",
+        "expected_stdout": "inner: -3\nlocal: -3\nglobal: 100\ninner: -6\nlocal: -3\nglobal: 100\ninner: -9\nlocal: -3\nglobal: 100\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

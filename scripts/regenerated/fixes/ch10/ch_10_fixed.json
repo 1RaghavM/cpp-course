@@ -1,0 +1,730 @@
+{
+  "chapter": {
+    "number": "10",
+    "title": "Type Conversion, Type Aliases, and Type Deduction"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz",
+    "8.1: Control flow introduction",
+    "8.2: If statements and blocks",
+    "8.3: Common if statement problems",
+    "8.4: Constexpr if statements",
+    "8.5: Switch statement basics",
+    "8.6: Switch fallthrough and scoping",
+    "8.7: Goto statements",
+    "8.8: Introduction to loops and while statements",
+    "8.9: Do while statements",
+    "8.10: For statements",
+    "8.11: Break and continue",
+    "8.12: Halts (exiting your program early)",
+    "8.13: Introduction to random number generation",
+    "8.14: Generating random numbers using Mersenne Twister",
+    "8.15: Global random numbers (Random.h)",
+    "8.x: Chapter 8 summary and quiz",
+    "9.1: Introduction to testing your code",
+    "9.2: Code coverage",
+    "9.3: Common semantic errors in C++",
+    "9.4: Detecting and handling errors",
+    "9.5: std::cin and handling invalid input",
+    "9.6: Assert and static_assert",
+    "9.x: Chapter 9 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "10.1",
+      "title": "Implicit type conversion",
+      "sort_order": 124,
+      "summary_md": "## Implicit Type Conversion\n\nWhen you assign a value of one type to a variable of a different type, C++ can automatically convert it — no cast required. This is called **implicit type conversion** (or **coercion**).\n\n### The usual arithmetic conversion ranking\n\nWhen two operands in an expression have different types, C++ uses the **usual arithmetic conversions** to find a common type. The simplified ranking from lowest to highest is:\n\n```\nbool < char < short < int < long < long long < float < double < long double\n```\n\nThis ranking determines which operand gets converted: the lower-ranked operand is converted to match the higher-ranked one. Note that this is a simplification — the full rules also account for signedness (covered in lesson 10.5).\n\nSeparately, **numeric promotions** are a narrow, always-safe subset: small integral types (`bool`, `char`, `short`) promote to `int`, and `float` promotes to `double`. These are guaranteed to preserve the value exactly.\n\n### Where implicit conversion happens\n\n**Assignments and initializations:**\n```cpp\nint i = 3.9;   // 3.9 truncated -> i == 3 (narrowing!)\ndouble d = 5;  // 5 promoted to 5.0 (safe)\nbool b = 0;    // 0 -> false; any non-zero -> true\n```\n\n**Mixed-type arithmetic — the \"usual arithmetic conversions\":**\nWhen two operands have different types, the smaller type is converted to match the larger one *before* the operation runs.\n\n```cpp\nint    a = 7;\ndouble b = 2.0;\ndouble c = a / b;  // a converted to double; c == 3.5, not 3\n```\n\nThis is the classic Python-to-C++ gotcha: in Python `7 / 2 == 3.5` always; in C++ `7 / 2 == 3` (integer division) but `7 / 2.0 == 3.5`.\n\n### `bool` in arithmetic\n\n`true` promotes to `1` and `false` to `0`, so `true + true == 2`. Harmless but surprising.\n\n### When the compiler warns you\n\nCompiling with `-Wall -Wextra` catches some implicit conversion issues like sign-compare mismatches. For broader narrowing conversion warnings, enable `-Wconversion` as well. Treat these warnings as errors; a silent data loss is far worse than a compile error.\n\n### Key rules to memorise\n\n| Situation | Result |\n|---|---|\n| `int` / `int` | integer division (truncates) |\n| `int` / `double` | floating-point division |\n| assigning `double` -> `int` | truncation (not rounding) |\n| any non-zero value -> `bool` | `true` |\n| `bool` in arithmetic | promotes to `0` or `1` |\n\nImplicit conversions are not evil — promotions keep arithmetic precise and assignments concise — but narrowing conversions are a common source of bugs. In lesson 10.6 you will learn how to use `static_cast` to convert intentionally and silence the warning legitimately.",
+      "exercises": [
+        {
+          "title": "Integer vs. Floating-Point Division",
+          "prompt_md": "## Integer vs. Floating-Point Division\n\nWhen both operands of `/` are `int`, C++ performs **integer division** (truncates toward zero). Promoting either operand to `double` switches to floating-point division.\n\n**Your task:** Read two integers `a` and `b` from stdin. Print three lines:\n1. The result of `a / b` using integer division.\n2. The result of `a / b` as a floating-point division (promote one operand).\n3. The result of `a % b` (the integer remainder).\n\nPrint floating-point results with **exactly 6 decimal places** using `std::fixed` and `std::setprecision(6)`.\n\n**Example input:**\n```\n7 2\n```\n**Expected output:**\n```\n3\n3.500000\n1\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO 1: Print integer division result (a / b)\n\n    // TODO 2: Print floating-point division result.\n    //         Promote 'a' to double before dividing so you get a decimal answer.\n\n    // TODO 3: Print the remainder (a % b)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // Integer division — both operands are int, result truncates\n    std::cout << a / b << \"\\n\";\n\n    // Floating-point division — promote 'a' via implicit conversion to double\n    std::cout << std::fixed << std::setprecision(6)\n              << static_cast<double>(a) / b << \"\\n\";\n\n    // Remainder\n    std::cout << a % b << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 7 divided by 2",
+              "stdin": "7 2",
+              "expected_stdout": "3\n3.500000\n1\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 10 divided by 4",
+              "stdin": "10 4",
+              "expected_stdout": "2\n2.500000\n2\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 9 divided by 3 (exact)",
+              "stdin": "9 3",
+              "expected_stdout": "3\n3.000000\n0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Narrowing and bool Coercion",
+          "prompt_md": "## Narrowing and bool Coercion\n\nImplicit conversions can silently change values. This exercise makes those effects visible.\n\n**Your task:** Read a `double` value `d` from stdin. Then:\n\n1. Store `d` in an `int` variable using copy initialization (e.g. `int i = d;`). This is implicit narrowing — truncation, not rounding. Print the `int`.\n2. Print the result of `d + true` as a `double` with **exactly 2 decimal places** (`true` promotes to `1`).\n3. Read a second integer `n`. Print `\"nonzero\"` if it is non-zero (i.e. it would convert to `true` as a `bool`), or `\"zero\"` otherwise.\n\n**Example input:**\n```\n3.9\n0\n```\n**Expected output:**\n```\n3\n4.90\nzero\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double d;\n    std::cin >> d;\n\n    // TODO 1: Assign d to an int (implicit narrowing) and print it.\n\n    // TODO 2: Print d + true with exactly 2 decimal places.\n    //         Remember: true promotes to 1 in arithmetic.\n\n    int n;\n    std::cin >> n;\n\n    // TODO 3: If n converts to true (non-zero bool), print \"nonzero\".\n    //         Otherwise print \"zero\".\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double d;\n    std::cin >> d;\n\n    // Implicit narrowing: fractional part is truncated, not rounded\n    int i = d;\n    std::cout << i << \"\\n\";\n\n    // true promotes to 1; result is d + 1.0\n    std::cout << std::fixed << std::setprecision(2)\n              << (d + true) << \"\\n\";\n\n    int n;\n    std::cin >> n;\n\n    // Any non-zero integer is truthy — implicit bool conversion\n    bool b = n;\n    std::cout << (b ? \"nonzero\" : \"zero\") << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3.9 then 0",
+              "stdin": "3.9\n0",
+              "expected_stdout": "3\n4.90\nzero\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 7.1 then 5",
+              "stdin": "7.1\n5",
+              "expected_stdout": "7\n8.10\nnonzero\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: -2.8 then -1",
+              "stdin": "-2.8\n-1",
+              "expected_stdout": "-2\n-1.80\nnonzero\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.2",
+      "title": "Floating-point and integral promotion",
+      "sort_order": 125,
+      "summary_md": "## Floating-Point and Integral Promotion\n\nIn the previous lesson on implicit type conversion, you saw that C++ can automatically convert between types. **Numeric promotion** is a specific, safe subset of those conversions: the compiler widens a *small* type into a *larger* type that can represent every value the small type can hold — with no loss of information.\n\n### Integral promotion\n\nC++ arithmetic operators don't work on types smaller than `int`. When you use a `char`, `short`, `unsigned char`, `unsigned short`, or `bool` in an expression, the compiler silently promotes it to `int` (or `unsigned int` if `int` can't represent all its values). This happens **before** any arithmetic is performed.\n\nA concrete consequence: `sizeof(char)` is 1, but `sizeof('A' + 0)` is 4 — the character literal was promoted to `int` before the addition.\n\n```cpp\n#include <iostream>\nint main() {\n    char a = 10, b = 20;\n    // a + b promotes both to int before adding\n    int result = a + b;              // type is int, not char\n    std::cout << sizeof(a) << '\\n';       // 1\n    std::cout << sizeof(a + b) << '\\n';   // 4  (int)\n    bool flag = true;\n    std::cout << sizeof(flag + 1) << '\\n'; // 4  (int)\n}\n```\n\nNote that the *variables* `a` and `b` keep their original `char` type in memory — only the intermediate expression is widened.\n\n### Floating-point promotion\n\nSimilarly, a `float` value used where a `double` is expected is promoted to `double`. This is called **floating-point promotion**. `long double` is never promoted further — it's already the widest standard floating-point type.\n\n### Why promotion exists\n\nHistorically, CPUs performed arithmetic on register-sized integers (typically 32-bit). Promoting small types to match the natural register width meant faster, safer operations and consistent overflow behaviour. Modern CPUs still follow this model.\n\n### Promotion vs. numeric conversion\n\nPromotion is always value-preserving — no rounding, no truncation, no undefined behaviour. Regular numeric *conversions* (covered in upcoming lessons) don't carry that guarantee. When the compiler promotes, no warning is emitted; when it converts in a potentially lossy way, tools like `-Wconversion` will flag it.\n\n**Key takeaway:** If you ever wonder why a `char` expression returns 4 bytes under `sizeof`, integral promotion is the answer. Keeping this in mind will save you from subtle bugs when mixing small integer types in arithmetic.",
+      "exercises": [
+        {
+          "title": "Integral Promotion Detective",
+          "prompt_md": "## Integral Promotion Detective\n\nYour task is to observe integral promotion in action by printing the `sizeof` several expressions, then predict and verify the promoted type.\n\n**Requirements:**\n\n1. Declare variables:\n   - `char c = 'Z';`\n   - `short s = 100;`\n   - `bool b = true;`\n   - `int i = 42;`\n2. Print the `sizeof` each *variable* (not expression) on its own line: `sizeof(c)`, `sizeof(s)`, `sizeof(b)`, `sizeof(i)`.\n3. Print the `sizeof` each *expression* on its own line: `sizeof(c + 0)`, `sizeof(s + 0)`, `sizeof(b + 0)`, `sizeof(i + 0)`.\n\nExpected output (assuming 32-bit `int`, which is standard on all modern platforms):\n```\n1\n2\n1\n4\n4\n4\n4\n4\n```\n\n**Hint:** Adding `0` (an `int` literal) forces integral promotion rules to apply before `sizeof` evaluates the expression type.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    char  c = 'Z';\n    short s = 100;\n    bool  b = true;\n    int   i = 42;\n\n    // TODO: print sizeof each variable (c, s, b, i), one per line\n\n    // TODO: print sizeof each expression (c+0, s+0, b+0, i+0), one per line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    char  c = 'Z';\n    short s = 100;\n    bool  b = true;\n    int   i = 42;\n\n    // sizeof the variables themselves\n    std::cout << sizeof(c) << '\\n';\n    std::cout << sizeof(s) << '\\n';\n    std::cout << sizeof(b) << '\\n';\n    std::cout << sizeof(i) << '\\n';\n\n    // sizeof the promoted expressions\n    std::cout << sizeof(c + 0) << '\\n';\n    std::cout << sizeof(s + 0) << '\\n';\n    std::cout << sizeof(b + 0) << '\\n';\n    std::cout << sizeof(i + 0) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Standard 32-bit int platform",
+              "stdin": "",
+              "expected_stdout": "1\n2\n1\n4\n4\n4\n4\n4\n",
+              "is_sample": true
+            },
+            {
+              "label": "Verify variable sizes unchanged",
+              "stdin": "",
+              "expected_stdout": "1\n2\n1\n4\n4\n4\n4\n4\n",
+              "is_sample": false
+            },
+            {
+              "label": "Consistent output on repeated run",
+              "stdin": "",
+              "expected_stdout": "1\n2\n1\n4\n4\n4\n4\n4\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Promotion Arithmetic Checker",
+          "prompt_md": "## Promotion Arithmetic Checker\n\nBecause small types promote to `int` before arithmetic, expressions can behave differently than you might expect from Python.\n\n**Requirements:**\n\nWrite a program that reads two integers from stdin (they will fit in a `char`, i.e. both in `[0, 127]`), stores them as `char`, adds them as `char` values, and outputs three lines:\n\n1. The result of `a + b` (integral promotion means this is an `int` sum, not a wrapped `char`).\n2. The `sizeof` the expression `a + b` (should be 4).\n3. The `sizeof` the expression `static_cast<char>(a + b)` (should be 1).\n\n**Example** — input `60 80`:\n```\n140\n4\n1\n```\n\nNote: 60 + 80 = 140, which exceeds the range of a signed `char` (max 127) — but because of promotion the addition happens in `int` space and the result 140 prints correctly on line 1. Only when you cast back to `char` does the value get narrowed (but `sizeof` doesn't evaluate the value, so line 3 still prints 1 safely).",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int tmp_a, tmp_b;\n    std::cin >> tmp_a >> tmp_b;\n\n    char a = static_cast<char>(tmp_a);\n    char b = static_cast<char>(tmp_b);\n\n    // TODO: print a + b  (the int result due to promotion)\n\n    // TODO: print sizeof(a + b)\n\n    // TODO: print sizeof(static_cast<char>(a + b))\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int tmp_a, tmp_b;\n    std::cin >> tmp_a >> tmp_b;\n\n    char a = static_cast<char>(tmp_a);\n    char b = static_cast<char>(tmp_b);\n\n    // a + b promotes both chars to int before adding\n    std::cout << (a + b) << '\\n';\n    std::cout << sizeof(a + b) << '\\n';\n    std::cout << sizeof(static_cast<char>(a + b)) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "60 + 80 exceeds char range but not int",
+              "stdin": "60 80",
+              "expected_stdout": "140\n4\n1\n",
+              "is_sample": true
+            },
+            {
+              "label": "Small values that fit in char",
+              "stdin": "10 20",
+              "expected_stdout": "30\n4\n1\n",
+              "is_sample": false
+            },
+            {
+              "label": "Max char values still promoted correctly",
+              "stdin": "100 100",
+              "expected_stdout": "200\n4\n1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.3",
+      "title": "Numeric conversions",
+      "sort_order": 126,
+      "summary_md": "## Numeric Conversions\n\nIn the previous two lessons you saw *implicit type conversion* and *promotions* — safe, value-preserving conversions the compiler performs automatically. **Numeric conversions** are the broader category: any conversion between arithmetic types that is not a promotion. They can be safe or lossy depending on direction.\n\n### The three kinds of numeric conversion\n\n| Kind | Example | Risk |\n|---|---|---|\n| Integral -> wider integral | `int` -> `long` | None — value always preserved |\n| Floating-point -> wider float | `float` -> `double` | None |\n| Narrowing | `double` -> `int`, `long` -> `short` | Truncation or overflow |\n\n### Truncation, not rounding\n\nWhen a floating-point value is converted to an integer the fractional part is **discarded** — not rounded:\n\n```cpp\n#include <iostream>\n\nint main() {\n    double d { 9.99 };\n    int i { static_cast<int>(d) };  // i == 9, NOT 10\n    std::cout << i << '\\n';         // 9\n\n    int neg { static_cast<int>(-3.7) }; // -3 (toward zero)\n    std::cout << neg << '\\n';           // -3\n    return 0;\n}\n```\n\nThis matches Python's `int()` truncation, not `round()`.\n\n### `static_cast<T>` — your explicit conversion tool\n\nC++ requires you to be intentional about narrowing conversions. Using brace-initialization (`{}`) will produce a *compile error* for narrowing, while `static_cast<T>` tells the compiler (and your future self) that you know what you are doing:\n\n```cpp\ndouble pi { 3.14159 };\n// int bad { pi };          // ERROR: narrowing in brace-init\nint truncated { static_cast<int>(pi) };  // OK — explicit\n```\n\n### Integer overflow\n\nNarrowing between integer types wraps (for unsigned) or produces implementation-defined behavior (for signed) when the value doesn't fit. A `long` holding `100000` fits in a `short` only if `short` is at least 17 bits — which it isn't on every platform. Always check ranges before narrowing integers.\n\n### Precision loss in floating-point narrowing\n\n`double` has ~15 significant decimal digits; `float` has ~7. Converting `double` -> `float` silently loses precision:\n\n```cpp\ndouble precise { 1.23456789012345 };\nfloat  approx  { static_cast<float>(precise) };  // ~1.2345679\n```\n\n### Key takeaways\n\n- Widening conversions (small -> large type) are safe.\n- Narrowing conversions (large -> small type) risk data loss — always use `static_cast<T>` to be explicit.\n- Float-to-integer conversion **truncates toward zero**, it does not round.\n- Brace-initialization (`{}`) protects you from accidental narrowing at compile time.\n",
+      "exercises": [
+        {
+          "title": "Truncation Inspector",
+          "prompt_md": "Write a program that reads a `double` from standard input and prints:\n1. The value truncated to `int` (using `static_cast<int>`).\n2. The value cast to `float` (using `static_cast<float>`), formatted with `std::fixed` and `std::setprecision(8)`.\n3. The difference between the original `double` and the `float` cast (as a `double`), using default stream formatting.\n\nOutput each result on its own line with the labels shown in the sample.\n\n**Sample input:** `3.141592653589793`\n\n**Sample output:**\n```\ntruncated int: 3\nfloat value: 3.14159274\ndifference: -1.19209e-08\n```\n\n> **Hint:** `#include <iomanip>` for `std::setprecision`. Use `std::defaultfloat` to reset formatting before printing the difference.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double d {};\n    std::cin >> d;\n\n    // TODO: cast d to int using static_cast and print with label \"truncated int: \"\n\n    // TODO: cast d to float using static_cast\n    // Print with label \"float value: \" using std::fixed and std::setprecision(8)\n\n    // TODO: reset to std::defaultfloat, then compute and print the difference\n    // (original double minus float cast as double) with label \"difference: \"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double d {};\n    std::cin >> d;\n\n    int truncated { static_cast<int>(d) };\n    std::cout << \"truncated int: \" << truncated << '\\n';\n\n    float f { static_cast<float>(d) };\n    std::cout << std::fixed << std::setprecision(8)\n              << \"float value: \" << f << '\\n';\n\n    std::cout << std::defaultfloat;\n    double diff { d - static_cast<double>(f) };\n    std::cout << \"difference: \" << diff << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "pi — truncation and float precision loss",
+              "stdin": "3.141592653589793",
+              "expected_stdout": "truncated int: 3\nfloat value: 3.14159274\ndifference: -1.19209e-08\n",
+              "is_sample": true
+            },
+            {
+              "label": "negative value — truncation toward zero and float rounding",
+              "stdin": "-7.998",
+              "expected_stdout": "truncated int: -7\nfloat value: -7.99800014\ndifference: 1.43051e-07\n",
+              "is_sample": false
+            },
+            {
+              "label": "exactly representable value — zero precision loss",
+              "stdin": "0.5",
+              "expected_stdout": "truncated int: 0\nfloat value: 0.50000000\ndifference: 0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Safe Range Checker",
+          "prompt_md": "Write a program that reads two values from standard input: a `long long` value `n` and an integer `bits` (either `8` or `16`).\n\n- If `bits` is `8`: check whether `n` fits in a **signed 8-bit integer** (`int8_t`, range -128 to 127).\n- If `bits` is `16`: check whether `n` fits in a **signed 16-bit integer** (`int16_t`, range -32768 to 32767).\n\nIf the value fits, print `fits` then the narrowed value on the next line (use `static_cast` to the target type). If it does not fit, print `overflow` only.\n\n**Sample input:**\n```\n100 8\n```\n**Sample output:**\n```\nfits\n100\n```\n\n> **Hint:** `#include <cstdint>` provides `int8_t` and `int16_t`. When printing an `int8_t`, cast it to `int` first — otherwise `std::cout` treats it as a character.",
+          "starter_code": "#include <iostream>\n#include <cstdint>\n\nint main() {\n    long long n {};\n    int bits {};\n    std::cin >> n >> bits;\n\n    if (bits == 8) {\n        // TODO: check whether n is in [-128, 127]\n        // If fits: print \"fits\" then cast n to int8_t (print via cast to int to avoid char output)\n        // If not: print \"overflow\"\n    } else { // bits == 16\n        // TODO: check whether n is in [-32768, 32767]\n        // If fits: print \"fits\" then cast n to int16_t\n        // If not: print \"overflow\"\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <cstdint>\n\nint main() {\n    long long n {};\n    int bits {};\n    std::cin >> n >> bits;\n\n    if (bits == 8) {\n        if (n >= -128LL && n <= 127LL) {\n            std::cout << \"fits\\n\";\n            std::cout << static_cast<int>(static_cast<int8_t>(n)) << '\\n';\n        } else {\n            std::cout << \"overflow\\n\";\n        }\n    } else { // bits == 16\n        if (n >= -32768LL && n <= 32767LL) {\n            std::cout << \"fits\\n\";\n            std::cout << static_cast<int16_t>(n) << '\\n';\n        } else {\n            std::cout << \"overflow\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "value fits in 8-bit signed range",
+              "stdin": "100 8",
+              "expected_stdout": "fits\n100\n",
+              "is_sample": true
+            },
+            {
+              "label": "value overflows 8-bit signed range",
+              "stdin": "200 8",
+              "expected_stdout": "overflow\n",
+              "is_sample": false
+            },
+            {
+              "label": "minimum boundary fits in 16-bit signed range",
+              "stdin": "-32768 16",
+              "expected_stdout": "fits\n-32768\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.4",
+      "title": "Narrowing conversions, list initialization, and constexpr initializers",
+      "sort_order": 127,
+      "summary_md": "## Narrowing Conversions, List Initialization, and constexpr Initializers\n\nIn the previous lessons you saw how C++ performs *implicit* numeric conversions — promoting `int` to `double`, for example, or converting between integral types. Some of those conversions are safe because no data is lost. Others are **narrowing conversions**: the destination type cannot represent every value the source type can hold.\n\n### What counts as narrowing?\n\nA narrowing conversion is any conversion that *may* lose information:\n\n- `double` -> `int` (truncates the fractional part)\n- `int` -> `char` (only 8 bits — large values wrap or get clipped)\n- `long long` -> `int` (same problem at a larger scale)\n- `float` -> `int`, `unsigned int` -> `int` when the value doesn't fit\n\nC++ historically allowed narrowing silently, which is a common source of bugs. The compiler may emit a warning, but the code still compiles.\n\n### List initialization to the rescue\n\n**Brace initialization** (also called *list initialization* or *uniform initialization*) was introduced in C++11 precisely to catch these mistakes at compile time:\n\n```cpp\n#include <iostream>\n\nint main() {\n    double pi { 3.14159 }; // OK — double into double\n    int whole { pi };       // ERROR: narrowing conversion not allowed\n    int safe { 3 };         // OK — 3 fits in int exactly\n\n    // Floating-point promotion (lesson 10.2) is still fine:\n    float f { 2.0f };\n    double d { f };         // OK — widening, not narrowing\n    std::cout << safe << '\\n';\n}\n```\n\nThe brace form `T var { expr }` rejects narrowing conversions as a **compile error**, not just a warning. This is the single biggest reason to prefer `{}` over `=` for initialization in modern C++.\n\n### constexpr initializers: a special exemption\n\nThere is one important exception: if the value is a `constexpr` and the compiler can prove at compile time that it fits in the destination type, brace initialization allows it:\n\n```cpp\nconstexpr int big { 1000 };\nconstexpr int small { 5 };\nchar c1 { small };   // OK — 5 fits in char\nchar c2 { big };     // ERROR — 1000 does not fit in char\n```\n\nThis is useful when you have a compile-time constant whose value you know is safe, without needing a verbose cast.\n\n### Practical takeaways\n\n1. **Prefer brace initialization** for all variables — it is the only form that refuses narrowing automatically.\n2. Use `static_cast<T>(expr)` when you genuinely need a narrowing conversion and want the intent to be explicit (you first saw `static_cast` in lesson 4.12, and lesson 10.6 covers it in more depth).\n3. Mark integral and floating-point constants `constexpr` so the compiler can validate them at the point of use.\n4. Remember from lesson 10.2: *promotions* (e.g., `int` -> `double`) are never narrowing; *conversions* that go toward a smaller type usually are.",
+      "exercises": [
+        {
+          "title": "Detect the Narrowing",
+          "prompt_md": "## Detect the Narrowing\n\nYou will read three integers from standard input. For each value, try to store it in a `char` (range -128 to 127 on most platforms). Print `fits` if the value is in [-128, 127], or `narrows` otherwise.\n\n**Rules:**\n- Do NOT use brace-initialization with a runtime value (that would be a compile error). Instead, check the range yourself with an `if` statement, then assign.\n- Use `constexpr` named constants for the `char` min and max bounds (do not hard-code the magic numbers inline).\n- Print each result on its own line.\n\n**Example input:**\n```\n42\n200\n-5\n```\n**Example output:**\n```\nfits\nnarrows\nfits\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: define constexpr constants for the min and max value\n    //       that can be stored in a char without narrowing.\n    // constexpr int kCharMin { ??? };\n    // constexpr int kCharMax { ??? };\n\n    for (int i { 0 }; i < 3; ++i) {\n        int value {};\n        std::cin >> value;\n\n        // TODO: check whether 'value' is in [kCharMin, kCharMax].\n        //       Print \"fits\" or \"narrows\" followed by a newline.\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    constexpr int kCharMin { -128 };\n    constexpr int kCharMax {  127 };\n\n    for (int i { 0 }; i < 3; ++i) {\n        int value {};\n        std::cin >> value;\n\n        if (value >= kCharMin && value <= kCharMax)\n            std::cout << \"fits\\n\";\n        else\n            std::cout << \"narrows\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "mixed: in-range, out-of-range, negative in-range",
+              "stdin": "42\n200\n-5\n",
+              "expected_stdout": "fits\nnarrows\nfits\n",
+              "is_sample": true
+            },
+            {
+              "label": "boundary values: -128, 127, 128",
+              "stdin": "-128\n127\n128\n",
+              "expected_stdout": "fits\nfits\nnarrows\n",
+              "is_sample": false
+            },
+            {
+              "label": "all narrowing: large positive, large negative, zero boundary-miss",
+              "stdin": "1000\n-200\n-129\n",
+              "expected_stdout": "narrows\nnarrows\nnarrows\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Safe Brace Init with constexpr",
+          "prompt_md": "## Safe Brace Init with constexpr\n\nBrace initialization forbids narrowing at compile time, but *does* allow a `constexpr` value that provably fits in the target type.\n\nYour task: complete the program so that it:\n1. Stores the integer literal `97` in a `char` using **brace initialization** via a `constexpr int` named `kCode`. (Because `97` fits in `char`, this is allowed even with braces — no cast needed!)\n2. Reads a runtime `int` from standard input.\n3. Adds `kCode` to the runtime value, stores the result in a plain `int` (brace-initialized), and prints it.\n4. Also prints the `char` corresponding to `kCode` (i.e., `'a'`).\n\nExpected output format (for input `3`):\n```\nchar: a\nsum: 100\n```\n\n**Hint:** `char c { kCode };` compiles because the compiler knows at compile time that `97` fits in `char`. A runtime variable would not be allowed here. This is the constexpr exemption in action — no `static_cast` required.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare a constexpr int named kCode with value 97.\n\n    // TODO: brace-initialize a char named c from kCode.\n    //       (This should compile — kCode is constexpr and 97 fits in char.)\n\n    int input {};\n    std::cin >> input;\n\n    // TODO: brace-initialize an int named sum equal to kCode + input.\n\n    // TODO: print \"char: \" followed by c, then a newline.\n    // TODO: print \"sum: \" followed by sum, then a newline.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    constexpr int kCode { 97 };\n    char c { kCode };  // constexpr exemption — 97 fits in char, no cast needed\n\n    int input {};\n    std::cin >> input;\n\n    int sum { kCode + input };\n\n    std::cout << \"char: \" << c << '\\n';\n    std::cout << \"sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "input 3 -> sum 100",
+              "stdin": "3\n",
+              "expected_stdout": "char: a\nsum: 100\n",
+              "is_sample": true
+            },
+            {
+              "label": "input 0 -> sum 97",
+              "stdin": "0\n",
+              "expected_stdout": "char: a\nsum: 97\n",
+              "is_sample": false
+            },
+            {
+              "label": "input 25 -> sum 122",
+              "stdin": "25\n",
+              "expected_stdout": "char: a\nsum: 122\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.5",
+      "title": "Arithmetic conversions",
+      "sort_order": 128,
+      "summary_md": "## Arithmetic Conversions\n\nWhen you write an expression like `3 + 4.5`, C++ has to figure out how to evaluate it — you're mixing an `int` and a `double`. The **usual arithmetic conversions** are the set of rules C++ uses to bring both operands to a common type before performing the operation.\n\n### The Conversion Hierarchy (simplified)\n\nC++ ranks numeric types. In simplified terms, the order from lowest to highest is:\n\n```\nbool < char < short < int < long < long long < float < double < long double\n```\n\nFor a binary operator (like `+`, `-`, `*`, `/`), C++ promotes the **lower-ranked operand** to match the higher-ranked one. This is why `3 + 4.5` gives a `double`: `int` is converted to `double`, then the addition happens entirely in `double` arithmetic.\n\nNote: this is a simplification. The actual rules also depend on the signedness of integer types (see below) and don't form a strict linear chain. But for same-signedness comparisons and integer-vs-float cases, this ranking gives the right intuition.\n\n### Signed/Unsigned Mixing — the Danger Zone\n\nThe trickiest case arises when you mix `signed` and `unsigned` integers of the **same rank**. Unlike the float/int case, there's no universally \"safer\" type. C++ resolves this by converting the **signed value to unsigned** — and this can produce wildly unexpected results:\n\n```cpp\n#include <iostream>\nint main() {\n    int s  = -1;\n    unsigned int u = 1;\n    // -1 converted to unsigned: wraps to a huge number\n    std::cout << (s + u) << '\\n';  // prints 0: (uint)-1 = 4294967295, +1 wraps to 0\n    if (s < u)   // false! -1 becomes 4294967295\n        std::cout << \"s is smaller\\n\";\n    else\n        std::cout << \"surprising result\\n\";\n}\n```\n\nThis is one reason the C++ Core Guidelines advise avoiding mixing signed and unsigned types. Compilers typically warn with `-Wsign-compare` (included in `-Wall -Wextra`).\n\n### How This Connects to Earlier Lessons\n\n- **Lesson 10.2 (Floating-point and integral promotion):** Promotions to `int`/`double` happen *before* the usual arithmetic conversions kick in.\n- **Lesson 10.3 (Numeric conversions):** The usual arithmetic conversions are a specific, rule-governed subset of numeric conversions.\n- **Lesson 10.4 (Narrowing conversions):** After computing an expression in the common type, assigning the result back to a narrower type is a narrowing conversion — a separate, potentially lossy step.\n\n### Practical Tips\n\n- Use `static_cast<double>(x)` to explicitly widen an operand when you want floating-point division (`x / y` with two `int`s gives integer division).\n- Prefer `std::size_t` loop indices **or** cast container sizes to `int` — don't mix them with signed loop variables without a cast.\n- Let `-Wall -Wextra` flag sign-compare warnings and take them seriously.",
+      "exercises": [
+        {
+          "title": "Expression Type Detective",
+          "prompt_md": "## Expression Type Detective\n\nUsual arithmetic conversions determine the **type of an expression**, not just its value. Your job is to predict and print the size (in bytes) of several mixed-type expressions using `sizeof`.\n\nFor each of the following four expressions, print the `sizeof` the result on its own line:\n\n1. `2 + 3.0f` — `int` + `float`\n2. `10u - 4` — `unsigned int` - `int`  *(print only the sizeof; do not worry about the sign-conversion warning here)*\n3. `1.0 * 2.0f` — `double` * `float`\n4. `'A' + 1` — `char` + `int`\n\n**Expected output (on most 64-bit platforms):**\n```\n4\n4\n8\n4\n```\n\n> **Hint:** `sizeof` returns a `std::size_t`. Cast to `int` when printing so the output is predictable: `std::cout << static_cast<int>(sizeof(...)) << '\\n';`\n\nThis exercise has no stdin. Run with no input.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO 1: Print sizeof(2 + 3.0f)\n    // int + float -> ?\n\n    // TODO 2: Print sizeof(10u - 4)\n    // unsigned int - int -> ?\n\n    // TODO 3: Print sizeof(1.0 * 2.0f)\n    // double * float -> ?\n\n    // TODO 4: Print sizeof('A' + 1)\n    // char + int -> ? (recall: char promotes to int first)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    // int + float -> float (4 bytes)\n    std::cout << static_cast<int>(sizeof(2 + 3.0f)) << '\\n';\n\n    // unsigned int - int -> unsigned int (4 bytes)\n    std::cout << static_cast<int>(sizeof(10u - 4)) << '\\n';\n\n    // double * float -> double (8 bytes)\n    std::cout << static_cast<int>(sizeof(1.0 * 2.0f)) << '\\n';\n\n    // char promotes to int; int + int -> int (4 bytes)\n    std::cout << static_cast<int>(sizeof('A' + 1)) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Standard 64-bit sizes",
+              "stdin": "",
+              "expected_stdout": "4\n4\n8\n4\n",
+              "is_sample": true
+            },
+            {
+              "label": "Rerun — deterministic (no input)",
+              "stdin": "",
+              "expected_stdout": "4\n4\n8\n4\n",
+              "is_sample": false
+            },
+            {
+              "label": "Rerun 2 — deterministic (no input)",
+              "stdin": "",
+              "expected_stdout": "4\n4\n8\n4\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Signed/Unsigned Surprise",
+          "prompt_md": "## Signed/Unsigned Surprise\n\nMixing signed and unsigned integers is a classic source of C++ bugs. In this exercise you will:\n\n1. Read two integers from stdin: a **signed** `int` called `s` and an **unsigned** `unsigned int` called `u`. The value of `u` is guaranteed to be in the range `[0, 100]`.\n2. Compute the sum `s + u`. Because of usual arithmetic conversions, this is evaluated as `unsigned int + unsigned int`. Store the result in an `unsigned int` named `result`.\n3. Print `result` on the first line.\n4. On the second line, print `\"s < u\"` if `s` is less than `u` when both are compared as signed values, or `\"s >= u\"` otherwise. (Since `u` is in `[0, 100]`, it safely fits in `int`.)\n5. On the third line, print `\"mixed: s < u\"` if the **mixed-type** comparison `s < u` (signed vs unsigned, no cast) is `true`, or `\"mixed: s >= u\"` otherwise.\n\nLines 4 and 5 often disagree when `s` is negative — that is the point!\n\n**Sample input:**\n```\n-1 1\n```\n**Sample output:**\n```\n0\ns < u\nmixed: s >= u\n```\n\n> **Why `0`?** `(unsigned int)(-1)` wraps to `4294967295` (i.e. `UINT_MAX` on 32-bit `unsigned int`). Adding `1` wraps back around to `0` via unsigned modular arithmetic. The **mixed comparison** `s < u` is also surprising: `-1` is converted to `unsigned int` first, becoming `4294967295`, which is *not* less than `1`, so the result is `false`.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int s{};\n    unsigned int u{};\n\n    // TODO: Read s and u from stdin\n\n    // TODO: Compute result = s + u  (usual arithmetic conversions apply)\n    unsigned int result{};\n\n    // TODO: Print result\n\n    // TODO: Print \"s < u\" or \"s >= u\" using a signed comparison\n    //       (since u is in [0,100], it safely fits in int)\n\n    // TODO: Print \"mixed: s < u\" or \"mixed: s >= u\" using the raw\n    //       mixed signed/unsigned comparison (no cast)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int s{};\n    unsigned int u{};\n    std::cin >> s >> u;\n\n    // usual arithmetic conversions: s is converted to unsigned int\n    unsigned int result = static_cast<unsigned int>(s) + u;\n    std::cout << result << '\\n';\n\n    // Signed comparison: since u is guaranteed in [0, 100], casting to int is safe\n    if (s < static_cast<int>(u))\n        std::cout << \"s < u\\n\";\n    else\n        std::cout << \"s >= u\\n\";\n\n    // Mixed comparison: s is implicitly converted to unsigned int.\n    // When s is negative, it wraps to a huge value, producing a surprising result.\n    // We replicate that logic explicitly to avoid compiler warnings in the solution:\n    // static_cast<unsigned int>(s) < u is equivalent to what the compiler does with (s < u).\n    if (static_cast<unsigned int>(s) < u)\n        std::cout << \"mixed: s < u\\n\";\n    else\n        std::cout << \"mixed: s >= u\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Negative signed, small unsigned",
+              "stdin": "-1 1\n",
+              "expected_stdout": "0\ns < u\nmixed: s >= u\n",
+              "is_sample": true
+            },
+            {
+              "label": "Both positive, s smaller",
+              "stdin": "3 7\n",
+              "expected_stdout": "10\ns < u\nmixed: s < u\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative signed, larger unsigned magnitude",
+              "stdin": "-5 3\n",
+              "expected_stdout": "4294967294\ns < u\nmixed: s >= u\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.6",
+      "title": "Explicit type conversion (casting) and static_cast",
+      "sort_order": 129,
+      "summary_md": "## Explicit Type Conversion (Casting) and `static_cast`\n\nPrior lessons covered how the compiler silently performs **implicit conversions** — promoting `int` to `double`, narrowing `double` to `int`, and so on. Sometimes you *want* a conversion, but the compiler refuses or emits a warning. That is where **explicit casts** come in.\n\n### Why explicit casts?\n\nWhen you write `int x = 3.9;`, the compiler warns about narrowing (lesson 10.4). Wrapping the value in an explicit cast tells the compiler: \"I know — do this intentionally.\" It also makes code easier to audit: a reader can search for casts to find every potential data-loss point.\n\n### `static_cast` — the right tool in C++\n\n`static_cast<TargetType>(expression)` is the preferred C++ cast for well-defined, compile-time-checkable conversions:\n\n- **Numeric narrowing** — `double` to `int` without a warning\n- **Signed/unsigned** — `int` to `unsigned int` and back\n- **`char` <-> `int`** — inspect or construct character codes\n\n```cpp\n#include <iostream>\n\nint main() {\n    double ratio = 7.0 / 3.0;                 // 2.333...\n    int truncated = static_cast<int>(ratio);   // explicit narrowing: 2\n\n    char letter = 'A';\n    int code = static_cast<int>(letter);       // 65\n\n    int a = 7, b = 3;\n    double exact = static_cast<double>(a) / b; // 2.333...\n\n    std::cout << truncated << ' ' << code << ' ' << exact << '\\n';\n}\n```\n\nOutput: `2 65 2.33333`\n\n`static_cast` is verified at **compile time**: the compiler rejects casts between completely unrelated types, so bugs surface early rather than at runtime.\n\n### C-style casts — avoid them\n\nC++ inherited the C syntax `(int)ratio`. It looks concise but silently tries multiple cast strategies in sequence, including unsafe ones that bypass type safety. **Always prefer `static_cast` over C-style casts.** Linters like clang-tidy can flag them automatically.\n\n### When should you cast?\n\n- Integer division needs a floating-point result — cast one operand to `double` first.\n- You are narrowing intentionally and want the warning gone while leaving a paper trail.\n- A legacy API returns `int` for what is logically a `char`.\n\nIf a cast feels necessary to fix a type mismatch, pause and ask whether the mismatch signals a design problem — sometimes the real fix is choosing a better type to begin with.",
+      "exercises": [
+        {
+          "title": "Cast-Based Signed/Unsigned Inspector",
+          "prompt_md": "## Exercise: Cast-Based Signed/Unsigned Inspector\n\nThis exercise practises using `static_cast` to convert between signed and unsigned integers explicitly, making the effects visible.\n\nRead two values from stdin: a **signed** `int` called `s` and an **unsigned** `unsigned int` called `u` (both in `[0, 1000]`).\n\nPrint four lines:\n1. `s` cast to `unsigned int` using `static_cast<unsigned int>(s)` — show the resulting value.\n2. `u` cast to `int` using `static_cast<int>(u)` — show the resulting value.\n3. `\"same\"` if both cast results are equal (compare as `unsigned int`), or `\"different\"` otherwise.\n4. The sum `static_cast<unsigned int>(s) + u`.\n\n**Example input:** `42 42`\n**Example output:**\n```\nunsigned s: 42\nsigned u: 42\nsame\nsum: 84\n```\n\n**Example input 2:** `0 1000`\n**Example output 2:**\n```\nunsigned s: 0\nsigned u: 1000\ndifferent\nsum: 1000\n```\n\nUse `static_cast` for every conversion — do **not** use C-style casts.\n\n**Constraints:** Both values are in `[0, 1000]`, so casting is safe in both directions.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int s{};\n    unsigned int u{};\n    std::cin >> s >> u;\n\n    // TODO: cast s to unsigned int using static_cast and print\n    //       label: \"unsigned s: \"\n\n    // TODO: cast u to int using static_cast and print\n    //       label: \"signed u: \"\n\n    // TODO: compare the two cast values (as unsigned int)\n    //       print \"same\" or \"different\"\n\n    // TODO: print the sum of static_cast<unsigned int>(s) + u\n    //       label: \"sum: \"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int s{};\n    unsigned int u{};\n    std::cin >> s >> u;\n\n    unsigned int us = static_cast<unsigned int>(s);\n    int su = static_cast<int>(u);\n\n    std::cout << \"unsigned s: \" << us << '\\n';\n    std::cout << \"signed u: \" << su << '\\n';\n\n    if (us == u)\n        std::cout << \"same\\n\";\n    else\n        std::cout << \"different\\n\";\n\n    std::cout << \"sum: \" << (us + u) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: both 42",
+              "stdin": "42 42",
+              "expected_stdout": "unsigned s: 42\nsigned u: 42\nsame\nsum: 84\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 0 and 1000",
+              "stdin": "0 1000",
+              "expected_stdout": "unsigned s: 0\nsigned u: 1000\ndifferent\nsum: 1000\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 500 and 500",
+              "stdin": "500 500",
+              "expected_stdout": "unsigned s: 500\nsigned u: 500\nsame\nsum: 1000\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Character Code Inspector",
+          "prompt_md": "## Exercise: Character Code Inspector\n\nIn C++, `char` is an integer type under the hood (as covered when we discussed numeric types). `static_cast<int>(ch)` reveals the ASCII code of a character, and `static_cast<char>(n)` turns an integer back into the corresponding character.\n\nRead a single uppercase letter from stdin. Print:\n\n1. Its ASCII code (as an `int`).\n2. The character that comes **3 positions later** in the alphabet (its ASCII code + 3), cast back to `char`.\n\nUse `static_cast` for both conversions. Do **not** use C-style casts.\n\n**Example input:** `A`\n**Example output:**\n```\nCode: 65\nShifted: D\n```\n\n**Constraints:** The input letter is guaranteed to be uppercase `A`-`W` (so +3 stays within uppercase letters).",
+          "starter_code": "#include <iostream>\n\nint main() {\n    char letter;\n    std::cin >> letter;\n\n    // TODO: use static_cast<int> to get the ASCII code\n    int code = 0;\n\n    // TODO: compute code + 3, then use static_cast<char> to get the shifted character\n    char shifted = '?';\n\n    std::cout << \"Code: \" << code << '\\n';\n    std::cout << \"Shifted: \" << shifted << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    char letter;\n    std::cin >> letter;\n\n    int code = static_cast<int>(letter);\n    char shifted = static_cast<char>(code + 3);\n\n    std::cout << \"Code: \" << code << '\\n';\n    std::cout << \"Shifted: \" << shifted << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: letter A",
+              "stdin": "A",
+              "expected_stdout": "Code: 65\nShifted: D\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: letter M",
+              "stdin": "M",
+              "expected_stdout": "Code: 77\nShifted: P\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: letter W",
+              "stdin": "W",
+              "expected_stdout": "Code: 87\nShifted: Z\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.7",
+      "title": "Typedefs and type aliases",
+      "sort_order": 130,
+      "summary_md": "## Typedefs and Type Aliases\n\nAs your programs grow, you'll write the same long type names repeatedly — things like `unsigned long long` or `std::string`. C++ gives you two tools to name a type once and reuse that name everywhere: the old `typedef` and the modern `using` alias.\n\n### The `using` alias (prefer this)\n\n```cpp\n#include <cstdint>\n#include <string>\n\nusing Score     = int;\nusing StudentId = std::uint32_t;\nusing Name      = std::string;\n\nScore calculateTotal(Score a, Score b) {\n    return a + b;\n}\n\nint main() {\n    Score s1 { 85 };\n    Score s2 { 90 };\n    Score total { calculateTotal(s1, s2) }; // 175\n}\n```\n\nThe syntax is `using AliasName = ExistingType;`. It reads left-to-right — the alias is on the left, the actual type on the right. That makes it far easier to parse than `typedef`, especially for complex types.\n\n### The old `typedef`\n\n`typedef ExistingType AliasName;` does exactly the same thing at the language level. You'll encounter it constantly in legacy C and older C++ codebases:\n\n```cpp\ntypedef unsigned long long u64;   // old style\nusing u64 = unsigned long long;   // equivalent, modern style\n```\n\nBoth create a **type alias**, not a new type. A `Score` variable is still an `int` under the hood — the compiler won't stop you from mixing `Score` and raw `int` values, which is a common source of subtle bugs.\n\n### Why aliases matter\n\n**Readability** — `Score` communicates intent better than a raw `int` that could mean anything.\n\n**Portability** — `<cstdint>` already uses aliases (`std::int32_t`, `std::uint64_t`) to let the exact width float across platforms. The same technique scales to your own code.\n\n**Single point of change** — if `Score` needs to become `double` later (say, for fractional grades), one line changes and every use site updates automatically.\n\n### Practical examples with types you already know\n\n```cpp\nusing Milliseconds = long long;     // readable duration type\nusing Celsius      = double;        // unit-specific alias\nusing PlayerId     = unsigned int;  // domain meaning for a raw type\n\nMilliseconds elapsed { 5000 };\nCelsius temperature { 22.5 };\nPlayerId winner { 42u };\n```\n\n### Key rules\n- Prefer `using` over `typedef` in all new code.\n- Type aliases are **not** distinct types; the compiler treats them as interchangeable with the original.\n- Use aliases to express domain meaning (`Milliseconds`, `PlayerId`) and to tame long type names (`unsigned long long` -> `u64`).\n- You will see `using` with templates in Chapter 11 — for now, all aliases work with concrete types.",
+      "exercises": [
+        {
+          "title": "Distance Unit Aliases",
+          "prompt_md": "## Distance Unit Aliases\n\nYou are writing a small physics helper that works with distances in different units. Using raw `double` everywhere makes it easy to accidentally mix up meters, kilometers, and miles.\n\nCreate type aliases so that each unit has a named type, then implement two conversion functions:\n\n- `kmToMeters(Kilometers km)` — returns the equivalent `Meters` value (1 km = 1000 m)\n- `milesToKm(Miles mi)` — returns the equivalent `Kilometers` value (1 mile = 1.60934 km)\n\nPrint each result with **2 decimal places**.\n\n**Example input:**\n```\n3.5\n10.0\n```\n**Example output:**\n```\n3500.00 m\n16.09 km\n```\n\n*Hint:* `using Meters = double;` is all you need for each alias. The functions should just multiply — the alias is purely for clarity.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define type aliases for Meters, Kilometers, and Miles\n//       using the `using` keyword (all alias double)\n\n// TODO: Implement kmToMeters(Kilometers km) -> Meters\n\n// TODO: Implement milesToKm(Miles mi) -> Kilometers\n\nint main() {\n    double kmVal, miVal;\n    std::cin >> kmVal >> miVal;\n\n    // TODO: Call kmToMeters and milesToKm, then print results\n    // Format: \"3500.00 m\" and \"16.09 km\"\n    std::cout << std::fixed << std::setprecision(2);\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nusing Meters    = double;\nusing Kilometers = double;\nusing Miles     = double;\n\nMeters kmToMeters(Kilometers km) {\n    return km * 1000.0;\n}\n\nKilometers milesToKm(Miles mi) {\n    return mi * 1.60934;\n}\n\nint main() {\n    double kmVal, miVal;\n    std::cin >> kmVal >> miVal;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << kmToMeters(kmVal) << \" m\\n\";\n    std::cout << milesToKm(miVal) << \" km\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3.5 km and 10.0 miles",
+              "stdin": "3.5\n10.0",
+              "expected_stdout": "3500.00 m\n16.09 km\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 1 km and 1 mile",
+              "stdin": "1.0\n1.0",
+              "expected_stdout": "1000.00 m\n1.61 km\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 0 km and 26.2 miles (marathon)",
+              "stdin": "0.0\n26.2",
+              "expected_stdout": "0.00 m\n42.16 km\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Refactor: typedef to using",
+          "prompt_md": "## Refactor: typedef to using\n\nThe starter code below uses old-style `typedef` declarations and raw types that hurt readability. Your task:\n\n1. Replace every `typedef` with an equivalent `using` alias.\n2. Add a `using PlayerId = unsigned int;` alias and use it for the player ID parameter.\n3. Complete the `formatScore` function so it returns a string of the form `\"Player <id>: <score> pts\"` (no decimal places for the score).\n\nRead two values from stdin: an unsigned integer (player ID) and an integer (score). Print the formatted string.\n\n**Example input:**\n```\n7 250\n```\n**Example output:**\n```\nPlayer 7: 250 pts\n```\n\n*This exercise focuses on the `typedef` vs `using` distinction covered in the lesson. Both produce the same type — but `using` is the modern C++11+ standard.*",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Replace these typedefs with equivalent `using` aliases\ntypedef int Score;\ntypedef std::string PlayerName;\n\n// TODO: Add a `using PlayerId = unsigned int;` alias\n\n// TODO: Complete this function.\n// Signature: std::string formatScore(PlayerId id, Score s)\n// Returns: \"Player <id>: <s> pts\"\nstd::string formatScore(/* parameters */) {\n    // your code here\n}\n\nint main() {\n    unsigned int id;\n    int score;\n    std::cin >> id >> score;\n\n    std::cout << formatScore(id, score) << \"\\n\";\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nusing Score    = int;\nusing PlayerId = unsigned int;\n\nstd::string formatScore(PlayerId id, Score s) {\n    return \"Player \" + std::to_string(id) + \": \" + std::to_string(s) + \" pts\";\n}\n\nint main() {\n    unsigned int id;\n    int score;\n    std::cin >> id >> score;\n\n    std::cout << formatScore(id, score) << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: player 7 score 250",
+              "stdin": "7 250",
+              "expected_stdout": "Player 7: 250 pts\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: player 1 score 0",
+              "stdin": "1 0",
+              "expected_stdout": "Player 1: 0 pts\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: player 100 score -50 (negative score)",
+              "stdin": "100 -50",
+              "expected_stdout": "Player 100: -50 pts\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.8",
+      "title": "Type deduction for objects using the auto keyword",
+      "sort_order": 131,
+      "summary_md": "## Type Deduction with `auto`\n\nC++ lets you skip writing out a type explicitly when the compiler can figure it out from the initializer. The keyword `auto` triggers **type deduction**: the compiler inspects the right-hand side of the declaration and assigns the variable the exact same type.\n\n```cpp\n#include <iostream>\n\nint main() {\n    auto i   = 42;        // int\n    auto d   = 3.14;      // double  (floating-point literals default to double)\n    auto f   = 3.14f;     // float   (suffix forces float)\n    auto b   = true;      // bool\n    auto big = 1'000'000LL; // long long  (LL suffix, C++14 digit separators)\n    std::cout << i << ' ' << d << ' ' << f << '\\n';\n}\n```\n\n### How the type is chosen\n\nThe deduced type is determined by the **initializer expression** — the same rules that govern template argument deduction in C++. Key points:\n\n- Integer literals (e.g. `42`) deduce to `int`, not `short` or `long`. Use suffixes (`U`, `L`, `LL`, `ULL`) when you need a different integer type.\n- Floating-point literals (e.g. `3.14`) deduce to `double`. Add the `f` suffix for `float` or `L` for `long double`.\n- `auto` **strips top-level `const`** from the initializer. Write `const auto x = 42;` if you want a const variable.\n\n### When `auto` helps readability\n\n`auto` shines when the type is long, repetitive, or obvious from context. Coming from Python, this will feel natural: you rarely write types there either.\n\n### When `auto` hurts readability\n\nAvoid `auto` when the type is not immediately obvious to a reader: `auto result = compute();` tells you nothing. Prefer explicit types for function return values that readers need to reason about, and for numeric variables where the width matters (mixing `int` and `long long` can cause silent overflow — recall **narrowing conversions** from lesson 10.4).\n\n### Connection to earlier lessons\n\n- **Implicit conversion** (10.1) still applies: if the initializer undergoes promotion or conversion, `auto` captures the *result* type, not the source type.\n- **Literal suffixes** (10.3, 10.4) are the primary tool for controlling what type `auto` deduces for numeric literals.\n- **Explicit casts** (10.6): prefer `static_cast` over relying on `auto` to silently coerce a type.",
+      "exercises": [
+        {
+          "title": "Decode the Deduced Types",
+          "prompt_md": "## Decode the Deduced Types\n\nPractice reading what `auto` actually deduces.\n\nYour program will read **four numbers from stdin** on a single line:\n\n```\n<int_val> <double_val> <float_val> <long_long_val>\n```\n\nUsing **only `auto`** (no explicit types) for the four variables, store the values and then print each variable's value **and** its size in bytes (use `sizeof`) on its own line:\n\n```\n<value> <sizeof_bytes>\n```\n\nThe float value is always given with an `f` suffix in code, but arrives over stdin as a plain decimal — cast it to `float` with `static_cast<float>` after reading it into an `auto` variable (which will deduce `double`), then re-assign to a `const auto` float variable.\n\n**Expected output format (one line per value):**\n```\n42 4\n3.14 8\n3.14 4\n1000000 8\n```\n\n**Constraints:**\n- Declare all storage variables with `auto` or `const auto`.\n- Use `sizeof` to print sizes — no hardcoded numbers.\n- Output values with default stream precision.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: read four values from stdin into auto variables\n    // Hint: read the float as double first, then static_cast to float\n\n    // TODO: re-declare float as const auto after casting\n\n    // TODO: read long long — what suffix would you use in source code?\n    //       (stdin gives you a plain integer; read into auto then store as LL)\n\n    // TODO: print each value and its sizeof on its own line\n    // Format: \"<value> <sizeof>\\n\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    // Read raw values\n    auto i_val  = 0;    // will be overwritten\n    auto d_val  = 0.0;  // will be overwritten\n    auto f_tmp  = 0.0;  // read float input as double first\n    auto ll_raw = 0LL;  // long long\n\n    std::cin >> i_val >> d_val >> f_tmp >> ll_raw;\n\n    // Cast the double to float\n    const auto f_val = static_cast<float>(f_tmp);\n\n    std::cout << i_val  << ' ' << sizeof(i_val)  << '\\n';\n    std::cout << d_val  << ' ' << sizeof(d_val)  << '\\n';\n    std::cout << f_val  << ' ' << sizeof(f_val)  << '\\n';\n    std::cout << ll_raw << ' ' << sizeof(ll_raw) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: basic values",
+              "stdin": "42 3.14 3.14 1000000",
+              "expected_stdout": "42 4\n3.14 8\n3.14 4\n1000000 8\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: negative and zero",
+              "stdin": "-7 0.0 0.0 0",
+              "expected_stdout": "-7 4\n0 8\n0 4\n0 8\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: large long long",
+              "stdin": "100 2.71828 2.71828 9000000000",
+              "expected_stdout": "100 4\n2.71828 8\n2.71828 4\n9000000000 8\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Auto Arithmetic and Literal Suffixes",
+          "prompt_md": "## Auto Arithmetic and Literal Suffixes\n\nLiteral suffixes control what type `auto` deduces. Getting this wrong causes silent narrowing or overflow.\n\nWrite a program that reads **two non-negative integers** from stdin (each fits in a 32-bit `int`). Using `auto` for all variables:\n\n1. Store them as `int` values.\n2. Compute their product as a **`long long`** — multiply one value by `1LL` to force the wider type before the other operand is multiplied in.\n3. Compute their sum as a plain `int`.\n4. Compute the ratio of the first to the second as a **`double`** — multiply the numerator by `1.0` before dividing.\n\nPrint each result on its own line followed by a space and its size in bytes:\n\n```\n<product> <sizeof_product>\n<sum> <sizeof_sum>\n<ratio> <sizeof_ratio>\n```\n\nPrint the ratio with exactly **4 decimal places**.\n\n**Example (inputs: 6 4):**\n```\n24 8\n10 4\n1.5000 8\n```\n\n**Constraints:**\n- Both inputs are non-negative.\n- All non-input variables declared with `auto`.\n- Use literal suffixes (`1LL`, `1.0`) to control deduction — no `static_cast` needed.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    // TODO: read two ints using auto\n\n    // TODO: compute product as long long (use 1LL trick)\n\n    // TODO: compute sum as int\n\n    // TODO: compute ratio as double (use 1.0 trick)\n\n    // TODO: print each result and its sizeof\n    // Ratio: use std::fixed and std::setprecision(4)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    auto a = 0, b = 0;\n    std::cin >> a >> b;\n\n    auto product = 1LL * a * b;     // long long: 1LL widens before multiplication\n    auto sum     = a + b;           // int: both operands are int\n    auto ratio   = 1.0 * a / b;    // double: 1.0 widens numerator before division\n\n    std::cout << product << ' ' << sizeof(product) << '\\n';\n    std::cout << sum     << ' ' << sizeof(sum)     << '\\n';\n    std::cout << std::fixed << std::setprecision(4)\n              << ratio   << ' ' << sizeof(ratio)   << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 6 and 4",
+              "stdin": "6 4",
+              "expected_stdout": "24 8\n10 4\n1.5000 8\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: large product",
+              "stdin": "100000 100000",
+              "expected_stdout": "10000000000 8\n200000 4\n1.0000 8\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: uneven division",
+              "stdin": "7 2",
+              "expected_stdout": "14 8\n9 4\n3.5000 8\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.9",
+      "title": "Type deduction for functions",
+      "sort_order": 132,
+      "summary_md": "## Type Deduction for Functions\n\nIn the previous lesson you saw how `auto` lets the compiler deduce the type of a variable from its initializer. The same idea extends to **function return types**: you can let the compiler figure out what a function returns rather than writing it explicitly.\n\n### `auto` return type\n\nReplace the return type with `auto` and the compiler deduces it from the `return` statement:\n\n```cpp\n#include <iostream>\n#include <string>\n\nauto add(int x, int y)  // compiler deduces int\n{\n    return x + y;\n}\n\nauto greet(bool formal) // deduces std::string\n{\n    if (formal) return std::string{\"Good day.\"};\n    return std::string{\"Hey!\"};\n}\n\nint main()\n{\n    std::cout << add(3, 4) << '\\n';  // 7\n}\n```\n\nIf a function has multiple `return` statements they must all deduce the **same** type — the compiler rejects mismatches.\n\n`auto` return types require the function body to be visible before the call site, so they do not work well across translation units (forward declarations without a body cannot carry the deduced type). For non-trivial APIs, prefer an explicit return type.\n\n### Trailing return types\n\nA *trailing return type* moves the return type after the parameter list using `->`. This is syntactic sugar — it always specifies the type explicitly:\n\n```cpp\nauto multiply(double a, double b) -> double\n{\n    return a * b;\n}\n```\n\nThis is most useful when the return type depends on the parameter types in a way that is awkward to write before the parameters. In more advanced C++ (with templates and concepts), trailing return types appear frequently in generic code.\n\n### `decltype(auto)` — a brief preview\n\n`decltype(auto)` is a stricter deduction mode. While plain `auto` always strips top-level `const`, `decltype(auto)` preserves the exact type of the expression. For everyday functions, plain `auto` is almost always the right choice. You will see `decltype(auto)` become more useful once you learn about references in Chapter 12.\n\n### When to use each form\n\n| Situation | Recommendation |\n|---|---|\n| Short, single-file helper | `auto` return type |\n| Public API / forward declaration needed | Explicit return type |\n| Syntax clarity with complex parameters | Trailing return type (`-> T`) |\n\nType deduction for functions completes the picture started by narrowing conversions (lesson 10.4) and `auto` for objects (lesson 10.8): the compiler is your ally in managing types, but always verify it deduced what you intended.",
+      "exercises": [
+        {
+          "title": "Auto Return Type — Temperature Converter",
+          "prompt_md": "## Auto Return Type — Temperature Converter\n\nWrite two functions using `auto` return types:\n\n1. `celsius_to_fahrenheit(double c)` — converts Celsius to Fahrenheit using the formula `(c * 9.0 / 5.0) + 32.0`. Return type must be deduced via `auto`.\n2. `describe_temp(double fahrenheit)` — returns a `std::string` describing the temperature:\n   - `<= 32` -> `\"freezing\"`\n   - `> 32` and `< 68` -> `\"cold\"`\n   - `>= 68` and `< 86` -> `\"comfortable\"`\n   - `>= 86` -> `\"hot\"`\n\nThe program reads one `double` (Celsius) from stdin, converts it, prints the Fahrenheit value (fixed, 1 decimal place), then prints the description on the next line.\n\n**Example (stdin: `100`):**\n```\n212.0\nhot\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: implement celsius_to_fahrenheit using auto return type\nauto celsius_to_fahrenheit(double c)\n{\n    // TODO: return (c * 9.0 / 5.0) + 32.0\n}\n\n// TODO: implement describe_temp using auto return type\nauto describe_temp(double fahrenheit)\n{\n    // TODO: return the correct std::string based on fahrenheit value\n}\n\nint main()\n{\n    double c{};\n    std::cin >> c;\n\n    double f = celsius_to_fahrenheit(c);\n    std::cout << std::fixed << std::setprecision(1) << f << '\\n';\n    std::cout << describe_temp(f) << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nauto celsius_to_fahrenheit(double c)\n{\n    return (c * 9.0 / 5.0) + 32.0;\n}\n\nauto describe_temp(double fahrenheit)\n{\n    if (fahrenheit <= 32.0) return std::string{\"freezing\"};\n    if (fahrenheit < 68.0)  return std::string{\"cold\"};\n    if (fahrenheit < 86.0)  return std::string{\"comfortable\"};\n    return std::string{\"hot\"};\n}\n\nint main()\n{\n    double c{};\n    std::cin >> c;\n\n    double f = celsius_to_fahrenheit(c);\n    std::cout << std::fixed << std::setprecision(1) << f << '\\n';\n    std::cout << describe_temp(f) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Boiling point (100 C)",
+              "stdin": "100",
+              "expected_stdout": "212.0\nhot\n",
+              "is_sample": true
+            },
+            {
+              "label": "Freezing point (0 C)",
+              "stdin": "0",
+              "expected_stdout": "32.0\nfreezing\n",
+              "is_sample": false
+            },
+            {
+              "label": "Room temperature (22 C)",
+              "stdin": "22",
+              "expected_stdout": "71.6\ncomfortable\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Trailing Return Types — Multi-Step Calculator",
+          "prompt_md": "## Trailing Return Types — Multi-Step Calculator\n\nPractise trailing return type syntax (`auto f(...) -> T`) by building a small calculator that chains conversions.\n\nImplement three functions, each using a **trailing return type**:\n\n1. `auto square(int n) -> long long` — returns `n * n` as a `long long` (use `static_cast<long long>(n) * n` to avoid overflow).\n2. `auto halve(long long n) -> double` — returns `n / 2.0`.\n3. `auto classify(double val) -> std::string` — returns `\"small\"` if `val < 100.0`, `\"medium\"` if `val < 10000.0`, or `\"large\"` otherwise.\n\nThe program reads one `int` from stdin, then:\n1. Squares it.\n2. Halves the squared result.\n3. Classifies the halved result.\n\nPrint three lines: the squared value, the halved value (fixed, 1 decimal place), and the classification.\n\n**Example (stdin: `15`):**\n```\n225\n112.5\nmedium\n```\n\n**Example (stdin: `7`):**\n```\n49\n24.5\nsmall\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: implement square with trailing return type -> long long\n\n// TODO: implement halve with trailing return type -> double\n\n// TODO: implement classify with trailing return type -> std::string\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: call square, halve, classify in sequence and print results\n    // squared value on line 1\n    // halved value (fixed, 1 dp) on line 2\n    // classification on line 3\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nauto square(int n) -> long long\n{\n    return static_cast<long long>(n) * n;\n}\n\nauto halve(long long n) -> double\n{\n    return n / 2.0;\n}\n\nauto classify(double val) -> std::string\n{\n    if (val < 100.0)   return std::string{\"small\"};\n    if (val < 10000.0) return std::string{\"medium\"};\n    return std::string{\"large\"};\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    auto sq  = square(n);\n    auto half = halve(sq);\n    auto label = classify(half);\n\n    std::cout << sq << '\\n';\n    std::cout << std::fixed << std::setprecision(1) << half << '\\n';\n    std::cout << label << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 15 squared",
+              "stdin": "15",
+              "expected_stdout": "225\n112.5\nmedium\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 7 squared (small)",
+              "stdin": "7",
+              "expected_stdout": "49\n24.5\nsmall\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 200 squared (large)",
+              "stdin": "200",
+              "expected_stdout": "40000\n20000.0\nlarge\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "10.x",
+      "title": "Chapter 10 summary and quiz",
+      "sort_order": 133,
+      "summary_md": "## Chapter 10 Summary: Type Conversion, Type Aliases, and Type Deduction\n\nThis chapter explored how C++ moves values between types — automatically and explicitly — and how you can name types and let the compiler infer them.\n\n### Implicit Conversions\n\nC++ converts values automatically in many contexts. **Numeric promotions** (covered in \"Floating-point and integral promotion\") safely widen small types like `char` or `short` to `int` or `double` — these are always value-preserving. **Numeric conversions** (covered in \"Numeric conversions\") are broader and can lose data, e.g. `double -> int` truncates the fractional part.\n\n**Arithmetic conversions** (\"Arithmetic conversions\") kick in when binary operators receive mixed types: the narrower type is promoted to the wider one before the operation. This is why `5 / 2` gives `2` (both `int`) but `5.0 / 2` gives `2.5` (the `2` is converted to `double`).\n\n**Narrowing conversions** (\"Narrowing conversions, list initialization, and constexpr initializers\") are implicit conversions that can lose information. List-initialization `{}` rejects them at compile time — prefer it over `=` for exactly this safety guarantee. `constexpr` initializers are exempt when the value fits.\n\n### Explicit Conversions\n\nWhen you want to convert intentionally, use `static_cast<T>(expr)` (\"Explicit type conversion (casting) and static_cast\"). It makes intent clear, is checked at compile time, and avoids the pitfalls of C-style casts. Use it to silence narrowing warnings when you know the conversion is safe: `static_cast<int>(myDouble)`.\n\n### Type Aliases\n\n`using Score = int;` (\"Typedefs and type aliases\") creates an alias — not a new type. Aliases improve readability and make refactoring easier: change the underlying type in one place and the whole codebase follows. Prefer `using` over the legacy `typedef` syntax.\n\n### Type Deduction\n\n`auto` (\"Type deduction for objects using the auto keyword\") lets the compiler deduce a variable's type from its initializer. It always requires an initializer and strips top-level `const` — add it back explicitly when needed (`const auto`). For functions (\"Type deduction for functions\"), `auto` return type deduces from `return` statements; all returns must deduce the same type.\n\n### Putting It Together\n\n```cpp\n#include <iostream>\n\nusing Celsius = double;\nusing Fahrenheit = double;\n\nauto toFahrenheit(Celsius c) -> Fahrenheit {\n    return c * 9.0 / 5.0 + 32.0;   // arithmetic conversion: 9.0 widens\n}\n\nint main() {\n    const auto boiling { toFahrenheit(100) };  // 100 promoted; auto deduces double\n    std::cout << static_cast<int>(boiling) << '\\n'; // explicit cast: 212\n}\n```\n\nThe alias clarifies intent, `auto` reduces redundancy, arithmetic conversion handles the mixed literal, and `static_cast` makes the narrowing deliberate.",
+      "exercises": [
+        {
+          "title": "Capstone: Grade Calculator",
+          "prompt_md": "## Capstone: Grade Calculator\n\nBuild a grade calculator that exercises type aliases, `auto`, `static_cast`, and arithmetic conversions — all concepts from this chapter.\n\n**Input:** Three integer scores on a single line (0 <= each <= 100).\n\n**Output:** Print four lines:\n1. `Sum: <integer>` — the sum of all three scores.\n2. `Average: <double, 2 decimal places>` — the average as a `double` (use `static_cast` to avoid integer division).\n3. `Max: <integer>` — the highest of the three scores.\n4. `Letter: <grade>` — a letter grade based on the average:\n   - `>= 90` -> `A`\n   - `>= 80` -> `B`\n   - `>= 70` -> `C`\n   - `>= 60` -> `D`\n   - `< 60` -> `F`\n\n**Requirements:**\n- Define `using Score = int;` and `using Average = double;` type aliases.\n- Use `auto` for local variables where the type is obvious.\n- Use `static_cast<Average>(...)` to compute the average without integer division.\n- Use list-initialization `{}` for all variable declarations.\n- Write a function `auto letterGrade(Average avg) -> std::string` that returns the letter grade using a trailing return type.\n\n**Example:**\n- Input: `85 92 78`\n- Output:\n```\nSum: 255\nAverage: 85.00\nMax: 92\nLetter: B\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define type aliases Score and Average\n\n// TODO: write letterGrade with trailing return type -> std::string\n//       >= 90 -> \"A\", >= 80 -> \"B\", >= 70 -> \"C\", >= 60 -> \"D\", else \"F\"\n\nint main() {\n    // TODO: read three Score values from stdin\n\n    // TODO: compute integer sum\n\n    // TODO: compute average using static_cast<Average> to avoid integer division\n\n    // TODO: find the max of the three scores (use if/else — no std::max needed)\n\n    // TODO: print Sum, Average (fixed, 2 dp), Max, Letter\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nusing Score   = int;\nusing Average = double;\n\nauto letterGrade(Average avg) -> std::string\n{\n    if (avg >= 90.0) return std::string{\"A\"};\n    if (avg >= 80.0) return std::string{\"B\"};\n    if (avg >= 70.0) return std::string{\"C\"};\n    if (avg >= 60.0) return std::string{\"D\"};\n    return std::string{\"F\"};\n}\n\nint main() {\n    Score s1 {}, s2 {}, s3 {};\n    std::cin >> s1 >> s2 >> s3;\n\n    auto sum { s1 + s2 + s3 };\n    const Average avg { static_cast<Average>(sum) / 3 };\n\n    // Find max without std::max (which needs <algorithm>)\n    Score maxScore { s1 };\n    if (s2 > maxScore) maxScore = s2;\n    if (s3 > maxScore) maxScore = s3;\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << std::fixed << std::setprecision(2)\n              << \"Average: \" << avg << '\\n';\n    std::cout << \"Max: \" << maxScore << '\\n';\n    std::cout << \"Letter: \" << letterGrade(avg) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: three scores",
+              "stdin": "85 92 78",
+              "expected_stdout": "Sum: 255\nAverage: 85.00\nMax: 92\nLetter: B\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: all perfect",
+              "stdin": "100 100 100",
+              "expected_stdout": "Sum: 300\nAverage: 100.00\nMax: 100\nLetter: A\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: low scores",
+              "stdin": "45 55 50",
+              "expected_stdout": "Sum: 150\nAverage: 50.00\nMax: 55\nLetter: F\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Unit Converter Chain",
+          "prompt_md": "## Unit Converter Chain\n\nBuild a small unit-conversion pipeline that chains two conversions and reports intermediate and final values.\n\nGiven:\n- An integer number of **feet** (input)\n- Convert feet -> centimetres: `cm = feet * 30.48`\n- Then convert centimetres -> a truncated integer number of **millimetres** (drop the fractional part)\n\nPrint:\n1. The original feet value\n2. The centimetre value with 2 decimal places\n3. The truncated integer millimetre value\n\nRequirements (enforced by the checker):\n- Use a `using` alias for `Centimetres` (type: `double`) and `Millimetres` (type: `int`).\n- Use `auto` for the intermediate centimetre variable.\n- Use `static_cast<Millimetres>` to truncate (not `std::floor` or `(int)`).\n- Use list-initialization `{}` everywhere.\n\n**Input:** One integer on a single line (1 <= feet <= 10000).\n\n**Output:**\n```\nFeet: <int>\nCentimetres: <double, 2 dp>\nMillimetres: <int>\n```\n\n**Example:**\n- Input: `6`\n- Output:\n```\nFeet: 6\nCentimetres: 182.88\nMillimetres: 1828\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: define type alias Centimetres for double\n// TODO: define type alias Millimetres for int\n\n// TODO: write a function with auto return type that converts feet (int) to Centimetres\n//       formula: feet * 30.48\n\n// TODO: write a function with auto return type that converts Centimetres to Millimetres\n//       use static_cast<Millimetres> to truncate (multiply cm by 10 first)\n\nint main() {\n    int feet{};\n    std::cin >> feet;\n\n    // TODO: call your conversion functions, storing results with auto\n    // TODO: print Feet, Centimetres (2 dp), Millimetres\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nusing Centimetres = double;\nusing Millimetres = int;\n\nauto toCentimetres(int feet) -> Centimetres {\n    return feet * 30.48;\n}\n\nauto toMillimetres(Centimetres cm) -> Millimetres {\n    return static_cast<Millimetres>(cm * 10.0);\n}\n\nint main() {\n    int feet{};\n    std::cin >> feet;\n\n    const auto cm { toCentimetres(feet) };\n    const auto mm { toMillimetres(cm) };\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Feet: \" << feet << '\\n';\n    std::cout << \"Centimetres: \" << cm << '\\n';\n    std::cout << \"Millimetres: \" << mm << '\\n';\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 6 feet",
+              "stdin": "6",
+              "expected_stdout": "Feet: 6\nCentimetres: 182.88\nMillimetres: 1828\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 1 foot",
+              "stdin": "1",
+              "expected_stdout": "Feet: 1\nCentimetres: 30.48\nMillimetres: 304\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 100 feet",
+              "stdin": "100",
+              "expected_stdout": "Feet: 100\nCentimetres: 3048.00\nMillimetres: 30480\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "number": "8.4",
+  "title": "Constexpr if statements",
+  "sort_order": 104,
+  "summary_md": "## Constexpr if statements\n\nIn earlier lessons you learned that `if` statements choose a branch at **runtime** — after the program is already running. C++17 introduced `if constexpr`, which makes that choice at **compile time** instead. The branch that isn't chosen is completely discarded before your program ever runs.\n\n### Why it matters\n\nSometimes you want to write code that behaves differently depending on a compile-time property — such as the size of a type or the value of a `constexpr` variable. With a regular `if`, both branches must be valid C++ even if one can never execute. `if constexpr` tells the compiler: \"only compile the branch whose condition is true; throw the other one away.\"\n\n### Syntax\n\n```cpp\n#include <iostream>\n\nint main() {\n    constexpr int version = 2;\n\n    if constexpr (version == 1) {\n        std::cout << \"Running version 1 logic\\n\";\n    } else if constexpr (version == 2) {\n        std::cout << \"Running version 2 logic\\n\";\n    } else {\n        std::cout << \"Unknown version\\n\";\n    }\n}\n// Output: Running version 2 logic\n```\n\nBecause `version` is `constexpr`, the compiler knows at compile time that only the `version == 2` branch will ever run. The other branches are discarded entirely.\n\n### The condition must be a constant expression\n\nThe condition in `if constexpr` must be evaluable at compile time — a `constexpr` variable, a `sizeof` expression, or another compile-time value. You cannot use a runtime variable (like a function parameter that isn't `constexpr`) as the condition. This is stricter than a regular `if` from the previous lessons, but that strictness is what lets the compiler prune dead branches safely.\n\n### Using `sizeof` in `if constexpr`\n\n`sizeof` is always a compile-time expression, making it a natural fit:\n\n```cpp\n#include <iostream>\n\nvoid describeInt() {\n    if constexpr (sizeof(int) == 4) {\n        std::cout << \"int is 4 bytes\\n\";\n    } else {\n        std::cout << \"int is not 4 bytes\\n\";\n    }\n}\n```\n\n### Compared to regular `if`\n\n| | `if` | `if constexpr` |\n|---|---|---|\n| Branch selection | Runtime | Compile time |\n| Unused branch compiled | Yes | No |\n| Condition type | Any bool expression | Must be a constant expression |\n\n### Key takeaway\n\n`if constexpr` is not a replacement for ordinary `if` in everyday code — use it when you need compile-time branching based on `constexpr` values, `sizeof`, or other compile-time constants. You will see it used heavily with templates in Chapter 11, but for now the important thing is understanding that C++ can choose branches at compile time, not just runtime.",
+  "exercises": [
+    {
+      "title": "Platform-Dependent Size Message",
+      "prompt_md": "## Platform-Dependent Size Message\n\nWrite a program that uses `if constexpr` to print a message about the size of `int` on the current platform.\n\nRules:\n- If `sizeof(int) == 4`: print `int is 4 bytes`\n- Else if `sizeof(int) == 2`: print `int is 2 bytes`\n- Else: print `int is an unusual size`\n\nThen, on a second line, do the same for `double`:\n- If `sizeof(double) == 8`: print `double is 8 bytes`\n- Else: print `double is not 8 bytes`\n\nThis exercise practices using `sizeof` as a compile-time condition in `if constexpr`.\n\n**Expected output on most platforms:**\n```\nint is 4 bytes\ndouble is 8 bytes\n```\n\n**Note:** `sizeof` is always evaluated at compile time, making it a valid `if constexpr` condition.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: use if constexpr with sizeof(int) to print the appropriate message\n    // sizeof(int) == 4 -> \"int is 4 bytes\"\n    // sizeof(int) == 2 -> \"int is 2 bytes\"\n    // else             -> \"int is an unusual size\"\n\n    // TODO: use if constexpr with sizeof(double) to print the appropriate message\n    // sizeof(double) == 8 -> \"double is 8 bytes\"\n    // else                -> \"double is not 8 bytes\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    if constexpr (sizeof(int) == 4) {\n        std::cout << \"int is 4 bytes\\n\";\n    } else if constexpr (sizeof(int) == 2) {\n        std::cout << \"int is 2 bytes\\n\";\n    } else {\n        std::cout << \"int is an unusual size\\n\";\n    }\n\n    if constexpr (sizeof(double) == 8) {\n        std::cout << \"double is 8 bytes\\n\";\n    } else {\n        std::cout << \"double is not 8 bytes\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Standard platform sizes (int=4, double=8)",
+          "stdin": "",
+          "expected_stdout": "int is 4 bytes\ndouble is 8 bytes\n",
+          "is_sample": true
+        }
+      ]
+    },
+    {
+      "title": "Constexpr Configuration Selector",
+      "prompt_md": "## Constexpr Configuration Selector\n\nWrite a program that uses `if constexpr` to select between different configurations at compile time.\n\nThe program should:\n1. Define a `constexpr int mode` set to the value read from the first line of the description below.\n2. Use `if constexpr` to print the mode name and a corresponding action:\n   - `mode == 1`: print `Mode: Debug` then `Verbose logging enabled`\n   - `mode == 2`: print `Mode: Release` then `Optimizations enabled`\n   - `mode == 3`: print `Mode: Test` then `Test harness active`\n   - Any other value: print `Mode: Unknown` then `No special configuration`\n\nSet `mode` to `2` in your solution.\n\n**Expected output:**\n```\nMode: Release\nOptimizations enabled\n```\n\n**Note:** Because `mode` is `constexpr`, the compiler knows which branch to take at compile time. Only one branch will exist in the final binary.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    constexpr int mode{ 2 };\n\n    // TODO: use if constexpr on mode to print the correct Mode and action\n    // mode == 1: \"Mode: Debug\" + \"Verbose logging enabled\"\n    // mode == 2: \"Mode: Release\" + \"Optimizations enabled\"\n    // mode == 3: \"Mode: Test\" + \"Test harness active\"\n    // else:      \"Mode: Unknown\" + \"No special configuration\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    constexpr int mode{ 2 };\n\n    if constexpr (mode == 1) {\n        std::cout << \"Mode: Debug\\n\";\n        std::cout << \"Verbose logging enabled\\n\";\n    } else if constexpr (mode == 2) {\n        std::cout << \"Mode: Release\\n\";\n        std::cout << \"Optimizations enabled\\n\";\n    } else if constexpr (mode == 3) {\n        std::cout << \"Mode: Test\\n\";\n        std::cout << \"Test harness active\\n\";\n    } else {\n        std::cout << \"Mode: Unknown\\n\";\n        std::cout << \"No special configuration\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Release mode output",
+          "stdin": "",
+          "expected_stdout": "Mode: Release\nOptimizations enabled\n",
+          "is_sample": true
+        }
+      ]
+    }
+  ]
+}

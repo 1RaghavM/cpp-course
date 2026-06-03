@@ -1,0 +1,31 @@
+{
+  "lesson": "7.12",
+  "exercise_index": 1,
+  "what_changed": "Replaced for loop with fixed 5 calls to process() from main. Demonstrates static local counter with namespace constant and shadow detection without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Static Call Counter with Shadowing Detection",
+    "prompt_md": "## Goal\nComplete function `process` so it uses a `static` local counter to track how many times it has been called, detects a name-value coincidence (simulating a shadow scenario), and respects a namespace constant for the call limit.\n\n## Input\n- Lines 1-5: one integer value per line (the \"input\" passed to `process` each call).\n\n## Output\nFor each call to `process(value)`, print exactly one line.\n\nIf the call count (after incrementing) does not exceed the limit `limits::max_calls` (which equals 3):\n```\nCall <count>: value=<value>\n```\nIf the value equals the call count (shadow scenario), append ` [shadow warning]` to that same line:\n```\nCall <count>: value=<value> [shadow warning]\n```\nIf the call count exceeds `limits::max_calls`, print:\n```\nCall <count>: ignored (limit reached)\n```\nNo shadow warning is ever appended to an ignored line.\n\n## Requirements\n1. Declare `namespace limits` containing `inline constexpr int max_calls { 3 };` with external linkage.\n2. Implement `void process(int value)` containing a `static int call_count { 0 };` local variable (static duration, no linkage, block scope).\n3. Increment `call_count` at the start of every call, including those that exceed the limit.\n4. Inside `process`, when the call is not ignored, check whether the passed-in `value` equals the current `call_count`. If so, append ` [shadow warning]`.\n5. Hidden tests cover: all calls within limit with a shadow match, and all calls over limit.\n6. Output must use the exact labels `Call`, `value=`, `ignored (limit reached)`, and `[shadow warning]` as shown.",
+    "starter_code": "#include <iostream>\n\n// TODO: declare namespace limits with inline constexpr int max_calls = 3\n\n// TODO: implement void process(int value)\n//   - static local call_count, incremented every call\n//   - if call_count <= limits::max_calls:\n//       print \"Call <count>: value=<value>\"\n//       if value == call_count, append \" [shadow warning]\"\n//   - else:\n//       print \"Call <count>: ignored (limit reached)\"\n\nint main() {\n    int v1{}, v2{}, v3{}, v4{}, v5{};\n    std::cin >> v1 >> v2 >> v3 >> v4 >> v5;\n\n    process(v1);\n    process(v2);\n    process(v3);\n    process(v4);\n    process(v5);\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nnamespace limits {\n    inline constexpr int max_calls { 3 };\n}\n\nvoid process(int value) {\n    static int call_count { 0 };\n    ++call_count;\n    if (call_count <= limits::max_calls) {\n        std::cout << \"Call \" << call_count << \": value=\" << value;\n        if (value == call_count)\n            std::cout << \" [shadow warning]\";\n        std::cout << '\\n';\n    } else {\n        std::cout << \"Call \" << call_count << \": ignored (limit reached)\\n\";\n    }\n}\n\nint main() {\n    int v1{}, v2{}, v3{}, v4{}, v5{};\n    std::cin >> v1 >> v2 >> v3 >> v4 >> v5;\n\n    process(v1);\n    process(v2);\n    process(v3);\n    process(v4);\n    process(v5);\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "sample -- shadow on call 2, overflow after 3",
+        "stdin": "10\n2\n30\n40\n50\n",
+        "expected_stdout": "Call 1: value=10\nCall 2: value=2 [shadow warning]\nCall 3: value=30\nCall 4: ignored (limit reached)\nCall 5: ignored (limit reached)\n",
+        "is_sample": true
+      },
+      {
+        "label": "hidden -- all shadow warnings (value equals call index)",
+        "stdin": "1\n2\n3\n4\n5\n",
+        "expected_stdout": "Call 1: value=1 [shadow warning]\nCall 2: value=2 [shadow warning]\nCall 3: value=3 [shadow warning]\nCall 4: ignored (limit reached)\nCall 5: ignored (limit reached)\n",
+        "is_sample": false
+      },
+      {
+        "label": "hidden -- no shadow warnings, all within limit negative",
+        "stdin": "-5\n-10\n-15\n99\n99\n",
+        "expected_stdout": "Call 1: value=-5\nCall 2: value=-10\nCall 3: value=-15\nCall 4: ignored (limit reached)\nCall 5: ignored (limit reached)\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

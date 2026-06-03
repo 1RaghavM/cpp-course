@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Calculator",
+    "prompt_md": "## Goal\n\nDesign a program that reads the width and height of a rectangle from standard input and prints its perimeter and area. Apply top-down design by decomposing the problem into focused functions.\n\n## Input\n\nTwo integers on separate lines: `width` then `height`.\n\n## Output\n\n```\nPerimeter: <2 * (width + height)>\nArea: <width * height>\n```\n\n## Requirements\n\n1. Define `int computePerimeter(int width, int height)` -- returns `2 * (width + height)`.\n2. Define `int computeArea(int width, int height)` -- returns `width * height`.\n3. Define `void printResults(int perimeter, int area)` -- prints both lines.\n4. `main` should only read input, call your functions, and pass results to `printResults`.\n5. Each function does one thing: compute functions do not print, print function does not compute.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement computePerimeter(int width, int height) -> int\n// Returns 2 * (width + height)\n\n// TODO: implement computeArea(int width, int height) -> int\n// Returns width * height\n\n// TODO: implement printResults(int perimeter, int area) -> void\n// Prints:\n//   Perimeter: <perimeter>\n//   Area: <area>\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    // TODO: call computePerimeter, computeArea, and printResults\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint computePerimeter(int width, int height) {\n    return 2 * (width + height);\n}\n\nint computeArea(int width, int height) {\n    return width * height;\n}\n\nvoid printResults(int perimeter, int area) {\n    std::cout << \"Perimeter: \" << perimeter << \"\\n\";\n    std::cout << \"Area: \" << area << \"\\n\";\n}\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    int perimeter{ computePerimeter(width, height) };\n    int area{ computeArea(width, height) };\n    printResults(perimeter, area);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4x7 rectangle",
+        "is_sample": true,
+        "stdin": "4\n7",
+        "expected_stdout": "Perimeter: 22\nArea: 28\n"
+      },
+      {
+        "label": "Hidden: 5x5 square",
+        "is_sample": false,
+        "stdin": "5\n5",
+        "expected_stdout": "Perimeter: 20\nArea: 25\n"
+      },
+      {
+        "label": "Hidden: 1x10 thin rectangle",
+        "is_sample": false,
+        "stdin": "1\n10",
+        "expected_stdout": "Perimeter: 22\nArea: 10\n"
+      }
+    ]
+  },
+  {
+    "title": "Step-by-Step Decomposition",
+    "prompt_md": "## Goal\n\nPractice top-down design by decomposing a multi-step computation into separate functions. Read three test scores and compute statistics about them using only `int` arithmetic.\n\n## Input\n\nThree integers on separate lines: `score1`, `score2`, `score3`.\n\n## Output\n\n```\nTotal: <sum of all three>\nAverage: <sum / 3>\nSpread: <max - min>\n```\n\nThe average uses integer division (truncation). The spread is the difference between the largest and smallest score.\n\n## Requirements\n\n1. Define `int computeTotal(int a, int b, int c)` -- returns `a + b + c`.\n2. Define `int computeAverage(int total, int count)` -- returns `total / count`.\n3. Define `int computeSpread(int a, int b, int c)` -- returns the difference between the largest and smallest of the three values. Since you do not have `if` statements yet, use this approach: the minimum of two values `x` and `y` can be computed as `(x + y - ((x - y) * (1 - 2 * ((x - y) < 0)))) / 2`, but a simpler method is to note that for three values, `spread = max - min`. You can compute max and min using helper functions if you like, or compute it inline.\n\n   **Hint for computing max/min without if**: For two ints `x` and `y`, `x * (x > y) + y * (y >= x)` gives the larger one (when `x != y`). But the simplest working approach: define `int maxOf(int x, int y)` returning `x * (x >= y) + y * (y > x)` and `int minOf(int x, int y)` returning `x * (x <= y) + y * (y < x)`. Then chain them: `maxOf(maxOf(a, b), c)` and `minOf(minOf(a, b), c)`.\n\n4. Define `void printStats(int total, int average, int spread)` -- prints all three lines.\n5. `main` reads scores, calls the compute functions, and calls `printStats`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define helper int maxOf(int x, int y)\n// Returns the larger of x and y\n// Hint: x * (x >= y) + y * (y > x)\n\n// TODO: Define helper int minOf(int x, int y)\n// Returns the smaller of x and y\n\n// TODO: Define int computeTotal(int a, int b, int c)\n\n// TODO: Define int computeAverage(int total, int count)\n\n// TODO: Define int computeSpread(int a, int b, int c)\n// Returns maxOf(maxOf(a,b),c) - minOf(minOf(a,b),c)\n\n// TODO: Define void printStats(int total, int average, int spread)\n\nint main() {\n    int s1{}, s2{}, s3{};\n    std::cin >> s1 >> s2 >> s3;\n\n    // TODO: Compute and print stats\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint maxOf(int x, int y) {\n    return x * (x >= y) + y * (y > x);\n}\n\nint minOf(int x, int y) {\n    return x * (x <= y) + y * (y < x);\n}\n\nint computeTotal(int a, int b, int c) {\n    return a + b + c;\n}\n\nint computeAverage(int total, int count) {\n    return total / count;\n}\n\nint computeSpread(int a, int b, int c) {\n    int biggest { maxOf(maxOf(a, b), c) };\n    int smallest { minOf(minOf(a, b), c) };\n    return biggest - smallest;\n}\n\nvoid printStats(int total, int average, int spread) {\n    std::cout << \"Total: \" << total << '\\n';\n    std::cout << \"Average: \" << average << '\\n';\n    std::cout << \"Spread: \" << spread << '\\n';\n}\n\nint main() {\n    int s1{}, s2{}, s3{};\n    std::cin >> s1 >> s2 >> s3;\n\n    int total { computeTotal(s1, s2, s3) };\n    int average { computeAverage(total, 3) };\n    int spread { computeSpread(s1, s2, s3) };\n    printStats(total, average, spread);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 80 90 70",
+        "is_sample": true,
+        "stdin": "80\n90\n70",
+        "expected_stdout": "Total: 240\nAverage: 80\nSpread: 20\n"
+      },
+      {
+        "label": "Hidden: all same scores",
+        "is_sample": false,
+        "stdin": "50\n50\n50",
+        "expected_stdout": "Total: 150\nAverage: 50\nSpread: 0\n"
+      },
+      {
+        "label": "Hidden: truncation in average",
+        "is_sample": false,
+        "stdin": "100\n95\n88",
+        "expected_stdout": "Total: 283\nAverage: 94\nSpread: 12\n"
+      }
+    ]
+  }
+]

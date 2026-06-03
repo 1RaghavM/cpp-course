@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Separate Compute and Print",
+    "prompt_md": "## Goal\n\nDemonstrate the Single Responsibility Principle: one function computes, another function prints. Neither does both.\n\n## Input\n\nTwo integers on one line separated by a space: `length` and `width`.\n\n## Output\n\n```\nArea: <area>\nPerimeter: <perimeter>\nHalf-perimeter: <half-perimeter>\n```\n\n## Requirements\n\n1. Define `int computeArea(int length, int width)` -- returns `length * width`.\n2. Define `int computePerimeter(int length, int width)` -- returns `2 * (length + width)`.\n3. Define `void printStats(int area, int perimeter, int halfPerimeter)` -- prints all three lines. This function does not compute anything.\n4. In `main`, read the two integers, call both compute functions, calculate the half-perimeter as `perimeter / 2`, and pass all values to `printStats`.\n5. No compute function should print. The print function should not compute.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define int computeArea(int length, int width)\n\n// TODO: Define int computePerimeter(int length, int width)\n\n// TODO: Define void printStats(int area, int perimeter, int halfPerimeter)\n// Print:\n//   Area: <area>\n//   Perimeter: <perimeter>\n//   Half-perimeter: <halfPerimeter>\n\nint main() {\n    int length{}, width{};\n    std::cin >> length >> width;\n\n    // TODO: Call compute functions, calculate halfPerimeter,\n    //       then call printStats\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint computeArea(int length, int width) {\n    return length * width;\n}\n\nint computePerimeter(int length, int width) {\n    return 2 * (length + width);\n}\n\nvoid printStats(int area, int perimeter, int halfPerimeter) {\n    std::cout << \"Area: \" << area << '\\n';\n    std::cout << \"Perimeter: \" << perimeter << '\\n';\n    std::cout << \"Half-perimeter: \" << halfPerimeter << '\\n';\n}\n\nint main() {\n    int length{}, width{};\n    std::cin >> length >> width;\n\n    int area { computeArea(length, width) };\n    int perimeter { computePerimeter(length, width) };\n    int halfPerimeter { perimeter / 2 };\n    printStats(area, perimeter, halfPerimeter);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 and 6",
+        "is_sample": true,
+        "stdin": "4 6",
+        "expected_stdout": "Area: 24\nPerimeter: 20\nHalf-perimeter: 10\n"
+      },
+      {
+        "label": "Hidden: 5 and 5 (square)",
+        "is_sample": false,
+        "stdin": "5 5",
+        "expected_stdout": "Area: 25\nPerimeter: 20\nHalf-perimeter: 10\n"
+      },
+      {
+        "label": "Hidden: 7 and 3",
+        "is_sample": false,
+        "stdin": "7 3",
+        "expected_stdout": "Area: 21\nPerimeter: 20\nHalf-perimeter: 10\n"
+      }
+    ]
+  },
+  {
+    "title": "Function Reuse: Power of Squares",
+    "prompt_md": "## Goal\n\nShow that extracting a reusable function avoids code duplication. You will write one `square` function and call it multiple times for different computations.\n\n## Input\n\nTwo integers on one line separated by a space: `a` and `b`.\n\n## Output\n\n```\nSquare of a: <a*a>\nSquare of b: <b*b>\nSum of squares: <a*a + b*b>\nSquare of sum: <(a+b)*(a+b)>\n```\n\n## Requirements\n\n1. Define `int square(int x)` -- returns `x * x`.\n2. In `main`, read two integers, then use `square` to compute and print all four lines. Call `square` four times total -- do not duplicate the multiplication logic.\n3. `square` must not print anything -- all output happens in `main`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define int square(int x)\n// Returns x * x\n\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: Use square() to print:\n    //   Square of a: <value>\n    //   Square of b: <value>\n    //   Sum of squares: <value>\n    //   Square of sum: <value>\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint square(int x) {\n    return x * x;\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Square of a: \" << square(a) << '\\n';\n    std::cout << \"Square of b: \" << square(b) << '\\n';\n    std::cout << \"Sum of squares: \" << (square(a) + square(b)) << '\\n';\n    std::cout << \"Square of sum: \" << square(a + b) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "Square of a: 9\nSquare of b: 16\nSum of squares: 25\nSquare of sum: 49\n"
+      },
+      {
+        "label": "Hidden: 0 and 5",
+        "is_sample": false,
+        "stdin": "0 5",
+        "expected_stdout": "Square of a: 0\nSquare of b: 25\nSum of squares: 25\nSquare of sum: 25\n"
+      },
+      {
+        "label": "Hidden: 2 and 2",
+        "is_sample": false,
+        "stdin": "2 2",
+        "expected_stdout": "Square of a: 4\nSquare of b: 4\nSum of squares: 8\nSquare of sum: 16\n"
+      }
+    ]
+  }
+]

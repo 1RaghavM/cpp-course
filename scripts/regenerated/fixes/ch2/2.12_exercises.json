@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Include Guard Mechanics",
+    "prompt_md": "## Goal\n\nUnderstand how include guards prevent double-definition errors by simulating what happens when a header is included twice.\n\n## Input\n\nTwo integers on one line separated by a space: `a` and `b`.\n\n## Output\n\n```\nSUM_READY = 1\nsum(a, b) = <a + b>\n```\n\n## Requirements\n\n1. Create a guarded block using `#ifndef MYMATH_H` / `#define MYMATH_H` / `#endif` that:\n   - Declares a function `int sum(int a, int b);`\n   - Defines a constant `const int SUM_READY = 1;`\n2. Duplicate the guarded block a second time (simulating a second `#include`). The guard prevents the constant from being defined twice.\n3. Define `int sum(int a, int b)` after both guarded blocks (returns `a + b`).\n4. In `main`, print `SUM_READY = <value>` and `sum(a, b) = <result>`.\n5. The program must compile cleanly despite the block appearing twice.",
+    "starter_code": "#include <iostream>\n\n// -- Simulated first inclusion of mymath.h ----------------------\n// TODO: add #ifndef MYMATH_H\n// TODO: add #define MYMATH_H\n\n// TODO: declare int sum(int a, int b);\n// TODO: define const int SUM_READY = 1;\n\n// TODO: add #endif // MYMATH_H\n// ---------------------------------------------------------------\n\n// -- Simulated second inclusion of mymath.h ---------------------\n// TODO: duplicate the guarded block here\n// ---------------------------------------------------------------\n\n// TODO: Define sum(int a, int b) -- returns a + b\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: Print SUM_READY and sum(a, b) result\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\n// -- Simulated first inclusion of mymath.h ----------------------\n#ifndef MYMATH_H\n#define MYMATH_H\n\nint sum(int a, int b);\nconst int SUM_READY = 1;\n\n#endif // MYMATH_H\n// ---------------------------------------------------------------\n\n// -- Simulated second inclusion of mymath.h ---------------------\n#ifndef MYMATH_H\n#define MYMATH_H\n\nint sum(int a, int b);\nconst int SUM_READY = 1;\n\n#endif // MYMATH_H\n// ---------------------------------------------------------------\n\nint sum(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    std::cout << \"SUM_READY = \" << SUM_READY << '\\n';\n    std::cout << \"sum(a, b) = \" << sum(a, b) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 7",
+        "is_sample": true,
+        "stdin": "3 7",
+        "expected_stdout": "SUM_READY = 1\nsum(a, b) = 10\n"
+      },
+      {
+        "label": "Hidden: 0 and 0",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "SUM_READY = 1\nsum(a, b) = 0\n"
+      },
+      {
+        "label": "Hidden: -4 and 10",
+        "is_sample": false,
+        "stdin": "-4 10",
+        "expected_stdout": "SUM_READY = 1\nsum(a, b) = 6\n"
+      }
+    ]
+  },
+  {
+    "title": "Pragma Once vs Traditional Guards",
+    "prompt_md": "## Goal\n\nWrite a program that uses traditional `#ifndef` guards to protect declarations, demonstrating the ODR (One Definition Rule). The exercise focuses on function declarations and a `const int` constant -- the kinds of things you would put in a real header file.\n\n## Input\n\nOne integer on a single line.\n\n## Output\n\n```\nVERSION: 2\nSquare: <n * n>\nCube: <n * n * n>\n```\n\n## Requirements\n\n1. Create a guarded block (macro name `HELPERS_H`) containing:\n   - `const int VERSION = 2;`\n   - Forward declarations for `int square(int x);` and `int cube(int x);`\n2. Place the same guarded block a second time in the file.\n3. Define `square` and `cube` after both blocks.\n4. In `main`, print `VERSION`, then the square and cube of the input.",
+    "starter_code": "#include <iostream>\n\n// -- Simulated first inclusion of helpers.h ---------------------\n// TODO: Write the guarded block with HELPERS_H\n// ---------------------------------------------------------------\n\n// -- Simulated second inclusion of helpers.h --------------------\n// TODO: Duplicate the guarded block\n// ---------------------------------------------------------------\n\n// TODO: Define square(int x) and cube(int x)\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: Print VERSION, Square, and Cube\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\n// -- Simulated first inclusion of helpers.h ---------------------\n#ifndef HELPERS_H\n#define HELPERS_H\n\nconst int VERSION = 2;\nint square(int x);\nint cube(int x);\n\n#endif // HELPERS_H\n// ---------------------------------------------------------------\n\n// -- Simulated second inclusion of helpers.h --------------------\n#ifndef HELPERS_H\n#define HELPERS_H\n\nconst int VERSION = 2;\nint square(int x);\nint cube(int x);\n\n#endif // HELPERS_H\n// ---------------------------------------------------------------\n\nint square(int x) {\n    return x * x;\n}\n\nint cube(int x) {\n    return x * x * x;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    std::cout << \"VERSION: \" << VERSION << '\\n';\n    std::cout << \"Square: \" << square(n) << '\\n';\n    std::cout << \"Cube: \" << cube(n) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: input 5",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "VERSION: 2\nSquare: 25\nCube: 125\n"
+      },
+      {
+        "label": "Hidden: input 0",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "VERSION: 2\nSquare: 0\nCube: 0\n"
+      },
+      {
+        "label": "Hidden: input 3",
+        "is_sample": false,
+        "stdin": "3",
+        "expected_stdout": "VERSION: 2\nSquare: 9\nCube: 27\n"
+      }
+    ]
+  }
+]

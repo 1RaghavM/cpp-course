@@ -1,0 +1,60 @@
+{
+  "number": "8.13",
+  "title": "Introduction to random number generation",
+  "sort_order": 113,
+  "summary_md": "## Introduction to Random Number Generation\n\nMany programs need unpredictable values: games need dice rolls, simulations need noise, security needs keys. C++ gives you tools for all of these — but you have to pick the right one.\n\n### True random vs. PRNG\n\n**True random number generators (TRNGs)** sample physical entropy: CPU thermal noise, hardware interrupts. They are genuinely unpredictable but slow and not reproducible. `std::random_device` is your TRNG interface in C++ — use it only for seeding, not in tight loops.\n\n**Pseudo-random number generators (PRNGs)** are deterministic algorithms that produce sequences that *look* random. Given the same starting value (the **seed**), a PRNG always produces the exact same sequence. That reproducibility is a feature: it lets you replay a game, reproduce a bug, or run a deterministic test.\n\n### Why `rand()` is broken\n\nThe old C function `rand()` (from `<cstdlib>`) has three problems: its period and distribution quality are implementation-defined and often poor; seeding with `srand(time(nullptr))` gives only one-second resolution, so two runs in the same second produce identical output; and it uses global mutable state, making it thread-unsafe.\n\nAvoid `rand()`/`srand()` in new code.\n\n### The modern approach: `<random>`\n\nC++11 introduced a two-object model that cleanly separates concerns:\n\n```cpp\n#include <iostream>\n#include <random>\n\nint main() {\n    std::mt19937 rng{ std::random_device{}() };  // seed from hardware\n    std::uniform_int_distribution<int> dist{ 1, 6 };  // [1, 6] inclusive\n\n    for (int i{ 0 }; i < 5; ++i)\n        std::cout << dist(rng) << '\\n';  // each call advances rng\n}\n```\n\n- **`std::mt19937`** is the Mersenne Twister engine — a high-quality PRNG with a period of 2^19937 - 1 and good statistical properties. It is fully specified by the C++ standard, so the same seed produces the same raw engine output on every conforming compiler.\n- **`std::uniform_int_distribution<int>`** maps raw engine output onto a uniform integer range without the modulo bias that plagues `rand() % N`.\n- **`std::random_device`** requests a non-deterministic seed from the OS. Wrap it in `{}()` to get one value and discard the object.\n\n### Seed impact\n\nThe seed is the only thing that differentiates two PRNG sequences. Two engines with the same seed are identical. In tests and exercises, pass a hard-coded seed instead of `random_device` to get reproducible output — you'll do exactly that in the exercises below.\n\nFor true unpredictability in production, always seed from `std::random_device`. For reproducible tests, seed from a constant. The rest of the code is identical either way — only the seed source changes.",
+  "exercises": [
+    {
+      "title": "Seed Sequence Comparator",
+      "prompt_md": "## Goal\n\nComplete a program that reads two integer seeds from stdin, generates a short sequence from each using `std::mt19937` and `std::uniform_int_distribution<int>(1, 100)`, and reports whether the two sequences are identical.\n\n## Input\n\nLine 1: integer `seedA` (any valid `unsigned int` value).\nLine 2: integer `seedB` (any valid `unsigned int` value).\n\n## Output\n\nPrint exactly one line:\n- `Same sequence` if both seeds produce the same first 5 numbers.\n- `Different sequences` if they do not.\n\n## Requirements\n\n1. Create two separate `std::mt19937` engines, one seeded with `seedA` and one with `seedB`.\n2. Use `std::uniform_int_distribution<int> dist{ 1, 100 }` for both engines.\n3. Generate exactly 5 values from each engine and compare them element by element.\n4. Print `Same sequence` when `seedA == seedB` (they will always match in that case).\n5. Print `Different sequences` when `seedA != seedB` (they will always differ in practice for these test values).\n6. Do not print the actual numbers — only the comparison result.",
+      "starter_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seedA{}, seedB{};\n    std::cin >> seedA >> seedB;\n\n    // TODO: create two mt19937 engines, one seeded with seedA, one with seedB\n    // std::mt19937 rngA{ ... };\n    // std::mt19937 rngB{ ... };\n\n    std::uniform_int_distribution<int> dist{ 1, 100 };\n\n    bool same{ true };\n    for (int i{ 0 }; i < 5; ++i) {\n        // TODO: generate one value from each engine\n        // int a = ...;\n        // int b = ...;\n        // TODO: if a != b, set same = false\n    }\n\n    // TODO: print \"Same sequence\" if same, else \"Different sequences\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seedA{}, seedB{};\n    std::cin >> seedA >> seedB;\n\n    std::mt19937 rngA{ seedA };\n    std::mt19937 rngB{ seedB };\n\n    std::uniform_int_distribution<int> dist{ 1, 100 };\n\n    bool same{ true };\n    for (int i{ 0 }; i < 5; ++i) {\n        int a{ dist(rngA) };\n        int b{ dist(rngB) };\n        if (a != b)\n            same = false;\n    }\n\n    if (same)\n        std::cout << \"Same sequence\\n\";\n    else\n        std::cout << \"Different sequences\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Same seed produces same sequence",
+          "stdin": "42\n42",
+          "expected_stdout": "Same sequence\n",
+          "is_sample": true
+        },
+        {
+          "label": "Different seeds produce different sequences",
+          "stdin": "1\n2",
+          "expected_stdout": "Different sequences\n",
+          "is_sample": false
+        },
+        {
+          "label": "Seed zero vs seed one are different",
+          "stdin": "0\n1",
+          "expected_stdout": "Different sequences\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Random Number Range Validator",
+      "prompt_md": "## Goal\n\nWrite a program that uses `std::mt19937` and `std::uniform_int_distribution<int>` to generate random numbers and verify they all fall within the requested range.\n\n## Input\n\nLine 1: `unsigned int seed`.\nLine 2: `int lo` and `int hi` (space-separated) defining the inclusive range.\nLine 3: `int n` — number of values to generate (1 <= n <= 1000).\n\n## Output\n\nGenerate `n` values using `std::uniform_int_distribution<int>{ lo, hi }` with the seeded engine.\n\nPrint exactly two lines:\n1. `Generated: N values` where N is the count.\n2. `All in range: yes` if every generated value v satisfies `lo <= v <= hi`, otherwise `All in range: no`.\n\n## Requirements\n\n1. Create `std::mt19937 rng{ seed }`.\n2. Use `std::uniform_int_distribution<int> dist{ lo, hi }`.\n3. Generate exactly `n` values, checking each against the range.\n4. Do NOT print the individual values.\n\n## Example\n\n```\nInput:\n42\n1 6\n10\nOutput:\nGenerated: 10 values\nAll in range: yes\n```",
+      "starter_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seed{};\n    int lo{}, hi{}, n{};\n    std::cin >> seed >> lo >> hi >> n;\n\n    // TODO: create std::mt19937 rng seeded with `seed`\n    // TODO: create std::uniform_int_distribution<int> dist for [lo, hi]\n\n    bool allInRange{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        // TODO: generate a value from dist(rng)\n        // TODO: if value < lo or value > hi, set allInRange = false\n    }\n\n    // TODO: print \"Generated: N values\"\n    // TODO: print \"All in range: yes\" or \"All in range: no\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nint main() {\n    unsigned int seed{};\n    int lo{}, hi{}, n{};\n    std::cin >> seed >> lo >> hi >> n;\n\n    std::mt19937 rng{ seed };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    bool allInRange{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int value{ dist(rng) };\n        if (value < lo || value > hi)\n            allInRange = false;\n    }\n\n    std::cout << \"Generated: \" << n << \" values\\n\";\n    if (allInRange)\n        std::cout << \"All in range: yes\\n\";\n    else\n        std::cout << \"All in range: no\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: seed=42, range 1-6, n=10",
+          "stdin": "42\n1 6\n10",
+          "expected_stdout": "Generated: 10 values\nAll in range: yes\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: seed=0, range 1-100, n=100",
+          "stdin": "0\n1 100\n100",
+          "expected_stdout": "Generated: 100 values\nAll in range: yes\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: seed=999, range -10 to 10, n=50",
+          "stdin": "999\n-10 10\n50",
+          "expected_stdout": "Generated: 50 values\nAll in range: yes\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

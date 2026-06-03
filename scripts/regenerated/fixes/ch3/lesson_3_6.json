@@ -1,0 +1,60 @@
+{
+  "number": "3.6",
+  "title": "Using an integrated debugger: Stepping",
+  "sort_order": 44,
+  "summary_md": "# Using an Integrated Debugger: Stepping\n\nStepping is the most direct way to watch your program execute line by line. Unlike print statements or breakpoints alone, stepping lets you move through code at your own pace and observe state changes as they happen.\n\n## Step Over vs. Step Into\n\nWhen execution pauses at a breakpoint, you have two primary stepping options:\n\n**Step Over** executes the current line completely, including any function calls, and pauses at the next line in the current function. Use this when you trust a function works and want to skip past it.\n\n**Step Into** enters function calls, pausing at the first line inside the called function. This is essential when you suspect a bug originates in that function.\n\nMost IDEs also offer **Step Out**, which runs until the current function returns, useful when you have stepped too deep.\n\n## Setting Up Effective Stepping\n\nStart by placing a breakpoint near where you suspect the problem (reference: *A strategy for debugging*). When paused, open your debugger's variables panel -- it shows local variables and their current values. This is your primary tool for verification.\n\nAs you step, watch for:\n- Variables changing to unexpected values\n- Functions returning incorrect results\n- Calculations producing wrong intermediate results\n\n```cpp\n#include <iostream>\n\nint multiplyAndAdd(int a, int b, int c)\n{\n    int product = a * b;     // Step here: verify product is correct\n    int result = product + c; // Step here: verify addition is correct\n    return result;\n}\n\nint scaleResult(int value, int factor)\n{\n    return value * factor;    // Step here: verify multiplication\n}\n\nint main()\n{\n    int x = 3;\n    int y = 4;\n    int z = 5;\n\n    int step1 = multiplyAndAdd(x, y, z);  // Set breakpoint, step into\n    int step2 = scaleResult(step1, 2);     // Step into to verify\n\n    std::cout << \"Result: \" << step2 << '\\n';  // Should be 34\n\n    return 0;\n}\n```\n\n## Practical Workflow\n\nCombine stepping with the watch window to track specific variables across multiple lines. If a value changes unexpectedly between two steps, you have found your problem area.\n\nStepping is slower than running to breakpoints, so use it strategically. For initial problem location, use breakpoints (reference: *Basic debugging tactics*). Once you have narrowed the scope, step through the suspicious region carefully.\n\nThe key insight: stepping transforms debugging from guessing into methodical observation. You control execution pace and can confirm or eliminate hypotheses in real time.",
+  "exercises": [
+    {
+      "title": "Debugging a Multi-Step Calculation with Stepping",
+      "prompt_md": "# Debugging a Multi-Step Calculation with Stepping\n\nYou are given a program that performs a multi-step arithmetic calculation across several functions. The program compiles but produces the wrong output.\n\n**Your task:** Trace through the code step by step to find and fix the bug.\n\nThe program should:\n1. Read three integers `a`, `b`, and `c`\n2. Call `computeWeightedSum(a, b, c)` which should compute `a*2 + b*3 + c*4`\n3. Call `adjustResult(weightedSum)` which should subtract 10 from the weighted sum\n4. Print the final result\n\n**Hint:** Imagine stepping through each function with a debugger. Watch how each intermediate value is computed. One of the functions has the wrong operator.\n\n**Input:** Three space-separated integers\n\n**Output:** A single integer -- the adjusted weighted sum\n\n**Example:**\n```\nInput: 1 2 3\nOutput: 10\n```\n(Because 1*2 + 2*3 + 3*4 = 2 + 6 + 12 = 20, then 20 - 10 = 10)",
+      "starter_code": "#include <iostream>\n\nint computeWeightedSum(int a, int b, int c)\n{\n    int termA = a * 2;\n    int termB = b * 3;\n    int termC = c * 4;\n    int sum = termA + termB - termC;  // BUG: should be + not -\n    return sum;\n}\n\nint adjustResult(int value)\n{\n    return value - 10;\n}\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    int weighted = computeWeightedSum(a, b, c);\n    int result = adjustResult(weighted);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint computeWeightedSum(int a, int b, int c)\n{\n    int termA = a * 2;\n    int termB = b * 3;\n    int termC = c * 4;\n    int sum = termA + termB + termC;  // Fixed: changed - to +\n    return sum;\n}\n\nint adjustResult(int value)\n{\n    return value - 10;\n}\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    int weighted = computeWeightedSum(a, b, c);\n    int result = adjustResult(weighted);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: 1 2 3",
+          "stdin": "1 2 3\n",
+          "expected_stdout": "10\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: all same values",
+          "stdin": "5 5 5\n",
+          "expected_stdout": "35\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: with zero",
+          "stdin": "0 10 0\n",
+          "expected_stdout": "20\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Stepping Through Functions: Finding the Wrong Return Value",
+      "prompt_md": "# Stepping Through Functions: Finding the Wrong Return Value\n\nYou have a program that uses several helper functions to compute a final score. The program compiles but gives the wrong answer.\n\n**Your task:** Step through each function call mentally (or in a debugger) and find which function returns the wrong value.\n\nThe program should:\n1. Read two integers `base` and `bonus`\n2. Call `doubleValue(base)` to get `base * 2`\n3. Call `addBonus(doubled, bonus)` to add the bonus\n4. Call `applyPenalty(total)` to subtract a fixed penalty of 5\n5. Print the final score\n\n**Hint:** Step into each function and check the return value against what you expect. One function uses the wrong formula.\n\n**Input:** Two space-separated integers: `base bonus`\n\n**Output:** A single integer -- the final score\n\n**Example:**\n```\nInput: 10 3\nOutput: 18\n```\n(Because 10*2 = 20, 20+3 = 23, 23-5 = 18)",
+      "starter_code": "#include <iostream>\n\nint doubleValue(int x)\n{\n    return x * 2;\n}\n\nint addBonus(int value, int bonus)\n{\n    return value - bonus;  // BUG: should add, not subtract\n}\n\nint applyPenalty(int value)\n{\n    return value - 5;\n}\n\nint main()\n{\n    int base{}, bonus{};\n    std::cin >> base >> bonus;\n\n    int doubled = doubleValue(base);\n    int withBonus = addBonus(doubled, bonus);\n    int finalScore = applyPenalty(withBonus);\n\n    std::cout << finalScore << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint doubleValue(int x)\n{\n    return x * 2;\n}\n\nint addBonus(int value, int bonus)\n{\n    return value + bonus;  // Fixed: changed - to +\n}\n\nint applyPenalty(int value)\n{\n    return value - 5;\n}\n\nint main()\n{\n    int base{}, bonus{};\n    std::cin >> base >> bonus;\n\n    int doubled = doubleValue(base);\n    int withBonus = addBonus(doubled, bonus);\n    int finalScore = applyPenalty(withBonus);\n\n    std::cout << finalScore << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: base=10, bonus=3",
+          "stdin": "10 3\n",
+          "expected_stdout": "18\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: larger values",
+          "stdin": "20 7\n",
+          "expected_stdout": "42\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: zero bonus",
+          "stdin": "8 0\n",
+          "expected_stdout": "11\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

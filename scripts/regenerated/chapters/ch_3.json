@@ -1,0 +1,391 @@
+{
+  "chapter": {
+    "number": "3",
+    "title": "Debugging C++ Programs"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "3.1",
+      "title": "Syntax and semantic errors",
+      "sort_order": 39,
+      "summary_md": "# Syntax and Semantic Errors\n\nC++ distinguishes between two fundamental error categories that behave quite differently from Python.\n\n**Syntax errors** occur when your code violates C++ grammar rules. The compiler refuses to generate an executable and reports these before your program runs. Missing semicolons, mismatched braces, undeclared variables, and type mismatches are common examples. Because C++ is compiled, syntax errors are caught early—a significant advantage over Python's runtime discovery.\n\n**Semantic errors** represent valid C++ code that compiles successfully but doesn't behave as intended. Your program runs, but produces wrong results or crashes. This might mean logic errors in conditionals, buffer overflows in arrays, use-after-free bugs, or dereferencing null pointers. Many semantic errors won't cause immediate crashes; they silently corrupt state or produce incorrect output.\n\nThe C++ compiler helps prevent some semantic errors through static analysis. Type checking is stricter than Python—you can't accidentally pass a `std::string` where an `int` is expected. However, the compiler can't detect logic errors like `if (x = 5)` when you meant `if (x == 5)`. Modern compilers with `-Wall -Wextra` flags catch many common mistakes.\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> nums = {1, 2, 3};\n    \n    // Semantic error: accessing beyond bounds\n    int val = nums[10];  // Compiles fine, undefined behavior at runtime\n    \n    // Logic error: assignment instead of comparison\n    if (int x = 5) {  // Always true, probably not intended\n        std::cout << std::format(\"x is {}\\n\", x);\n    }\n    \n    return 0;\n}\n```\n\nBoth errors eventually require debugging. Syntax errors demand reading compiler messages carefully—they pinpoint the problem line. Semantic errors require running your code with a debugger (like gdb), adding diagnostic output with `std::format`, or reasoning through logic manually.\n\nThe investment in understanding error messages pays off quickly. C++'s compiled nature means you'll fix categories of bugs before execution even begins. Lean on compiler warnings and use tools like AddressSanitizer to catch memory errors automatically during testing.",
+      "exercises": [
+        {
+          "title": "Finding and Fixing Syntax Errors in Calculator",
+          "prompt_md": "# Finding and Fixing Syntax Errors in Calculator\n\nYou're given a program that is supposed to read two integers and print their sum, difference, and product. However, the code contains **syntax errors** that prevent it from compiling.\n\nYour task is to identify and fix all syntax errors so the program compiles and runs correctly.\n\n## Requirements:\n- Fix all syntax errors so the code compiles with `g++ -std=c++20 -Wall -Wextra`\n- The program should read two integers from input\n- Output the sum, difference, and product on separate lines\n- Do not change the overall logic or add new features\n\n## Example:\n```\nInput:\n5 3\n\nOutput:\nSum: 8\nDifference: 2\nProduct: 15\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a, b\n    std::cin >> a >> b;\n    \n    int sum = a + b\n    int diff = a - b;\n    int prod = a * b\n    \n    std::cout << \"Sum: \" << sum << std::endl\n    std::cout << \"Difference: \" << diff << std::endl\n    std::cout << \"Product: \" << prod << std::endl;\n    \n    return 0\n}",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    \n    int sum = a + b;\n    int diff = a - b;\n    int prod = a * b;\n    \n    std::cout << \"Sum: \" << sum << std::endl;\n    std::cout << \"Difference: \" << diff << std::endl;\n    std::cout << \"Product: \" << prod << std::endl;\n    \n    return 0;\n}",
+          "test_cases": [
+            {
+              "label": "Sample: Positive integers",
+              "stdin": "5 3\n",
+              "expected_stdout": "Sum: 8\nDifference: 2\nProduct: 15\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: Negative numbers",
+              "stdin": "-4 6\n",
+              "expected_stdout": "Sum: 2\nDifference: -10\nProduct: -24\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Zero operand",
+              "stdin": "0 7\n",
+              "expected_stdout": "Sum: 7\nDifference: -7\nProduct: 0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Detecting Semantic Errors in Grade Validator",
+          "prompt_md": "# Detecting Semantic Errors in Grade Validator\n\nYou're given a program that validates student grades. The code **compiles successfully** but contains **semantic errors** that cause it to behave incorrectly.\n\nYour task is to identify and fix the semantic errors:\n\n1. A logic error using assignment (`=`) instead of comparison (`==`)\n2. An array bounds access that reads beyond valid indices\n3. Incorrect condition logic that affects grade validation\n\n## Requirements:\n- Fix all semantic errors so the program produces correct output\n- Read a student's grade (0-100)\n- Output \"Pass\" if grade >= 60, \"Fail\" if grade < 60\n- The program must compile and run without crashes\n- Output format must be exactly as specified\n\n## Example:\n```\nInput:\n75\n\nOutput:\nPass\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int grade;\n    std::cin >> grade;\n    \n    // TODO: Fix semantic error - this uses assignment instead of comparison\n    if (grade = 60) {\n        std::cout << \"Pass\" << std::endl;\n    } else {\n        std::cout << \"Fail\" << std::endl;\n    }\n    \n    // TODO: Additional semantic error - accessing invalid array index\n    int grades[3] = {85, 90, 88};\n    int boundary_test = grades[5];  // Out of bounds!\n    \n    return 0;\n}",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int grade;\n    std::cin >> grade;\n    \n    // Fixed: Use comparison (==) instead of assignment (=)\n    if (grade >= 60) {\n        std::cout << \"Pass\" << std::endl;\n    } else {\n        std::cout << \"Fail\" << std::endl;\n    }\n    \n    // Fixed: Access only valid array indices (0-2 for array of size 3)\n    int grades[3] = {85, 90, 88};\n    int boundary_test = grades[2];  // Valid index\n    \n    return 0;\n}",
+          "test_cases": [
+            {
+              "label": "Sample: Grade 75 (Pass)",
+              "stdin": "75\n",
+              "expected_stdout": "Pass\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: Grade 60 (Boundary Pass)",
+              "stdin": "60\n",
+              "expected_stdout": "Pass\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: Grade 45 (Fail)",
+              "stdin": "45\n",
+              "expected_stdout": "Fail\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "3.2",
+      "title": "The debugging process",
+      "sort_order": 40,
+      "summary_md": "# The Debugging Process\n\nDebugging is systematic error hunting. Unlike Python's immediate feedback, C++ compilation separates error detection into compile-time and runtime phases. Understanding this split is key to debugging efficiently.\n\n## Compile-Time vs Runtime Errors\n\nThe compiler catches syntax errors and many type mismatches before your program runs. When you see a compiler error, read it carefully—the line number and message point directly to the problem. Semantic errors (from the prior lesson) sometimes slip past the compiler but cause runtime failures.\n\nRuntime errors are trickier. Your program compiles and runs but produces wrong results, crashes, or hangs. This is where actual debugging begins.\n\n## The Debugging Workflow\n\n**1. Reproduce the problem consistently.** Identify exact inputs or conditions that trigger the bug.\n\n**2. Form a hypothesis.** Based on the symptom, guess where the issue might be.\n\n**3. Test your hypothesis.** Insert strategic print statements using `std::cout` or the debugger's breakpoints to inspect variable values.\n\n**4. Narrow the scope.** If a function produces wrong output, check the inputs and intermediate calculations.\n\n**5. Fix and verify.** Correct the issue and rerun tests.\n\n## Tools and Techniques\n\n**Print debugging** is quick: output variables at key points to trace execution. Use `std::format` for readable output:\n\n```cpp\n#include <iostream>\n#include <format>\n\nint main() {\n    int x = 42, y = 8;\n    int result = x / y;\n    std::cout << std::format(\"x={}, y={}, result={}\\n\", x, y, result);\n    \n    int index = 15;\n    std::vector<int> vec = {1, 2, 3};\n    std::cout << std::format(\"index={}, size={}\\n\", index, vec.size());\n    return 0;\n}\n```\n\n**Debuggers** (gdb, lldb, Visual Studio's debugger) let you pause execution, inspect variables, and step through code line-by-line. This beats print statements for complex issues.\n\n**Assertions** catch logic errors early with `assert()`. They vanish in release builds but protect development.\n\n## Common C++ Pitfalls\n\nWatch for off-by-one errors in loops, uninitialized variables, pointer dereferencing, and container access beyond bounds. C++ won't always warn you—it will crash or behave unpredictably.\n\nStart with print debugging while learning. Graduate to a real debugger once you're comfortable with syntax. Both skills matter.",
+      "exercises": []
+    },
+    {
+      "number": "3.3",
+      "title": "A strategy for debugging",
+      "sort_order": 41,
+      "summary_md": "# A Strategy for Debugging\n\nDebugging C++ requires a systematic approach. Unlike Python's dynamic nature, C++ compile-time errors catch many issues immediately, but runtime bugs demand careful investigation.\n\n## Start with Compiler Output\n\nRead error messages completely. C++ compilers (especially clang and g++ in C++20 mode) provide precise diagnostics. When you see a template error, scroll to the deepest nested message—that's where the actual problem lives. Modern compilers format messages clearly; don't skip them.\n\n## Use Incremental Compilation\n\nBuild frequently and in small steps. Add a feature, compile, run tests. This narrows the window where bugs hide. Unlike Python, you'll catch type mismatches and memory issues at compile time if you build often.\n\n## Assertion and Logging\n\nInsert `assert()` statements for invariants that must always hold. Unlike print debugging in Python, assertions disappear in release builds and document assumptions:\n\n```cpp\nstd::vector<int> data = get_data();\nassert(!data.empty());  // precondition\n\nfor (auto& val : data) {\n    assert(val >= 0);   // loop invariant\n}\n```\n\nFor runtime investigation, use `std::format` to log structured information:\n\n```cpp\nauto [x, y] = get_coords();\nstd::println(\"Position: x={}, y={}\", x, y);\n```\n\n## Debugger Basics\n\nUse gdb or lldb interactively. Set breakpoints with `break main`, step through code with `next`, inspect variables with `print`. This beats logging for understanding program flow. Modern IDEs integrate this seamlessly.\n\n## Think in Types\n\nC++ errors often stem from type confusion. When behavior surprises you, check:\n- Are your iterators valid?\n- Does lifetime match scope?\n- Are you copying when you meant to reference?\n\nThis mindset prevents whole classes of bugs that Python forgives.\n\n## Narrow the Problem\n\nIsolate the failing code. Can you reproduce it in a 10-line program? Write that test case. Remove unrelated code. Each simplification reveals whether the bug lives in your logic, resource management, or somewhere unexpected.\n\nThe debugging process in C++ rewards patience and systematic elimination. Trust the compiler, verify assumptions with assertions, and use tools properly. Compile often, think in types, and narrow aggressively.",
+      "exercises": []
+    },
+    {
+      "number": "3.4",
+      "title": "Basic debugging tactics",
+      "sort_order": 42,
+      "summary_md": "# Basic Debugging Tactics\n\nOnce you've identified that a bug exists and narrowed down where it lives, you need concrete tools and techniques to understand what's going wrong. The most practical debugging tactics combine multiple approaches.\n\n## Print Debugging and Logging\n\nThe simplest tactic is strategic output. Use `std::cout` or `std::format` to inspect variable values at key points:\n\n```cpp\n#include <iostream>\n#include <format>\n\nint main() {\n    int x = 5, y = 10;\n    std::cout << std::format(\"Before swap: x={}, y={}\\n\", x, y);\n    std::swap(x, y);\n    std::cout << std::format(\"After swap: x={}, y={}\\n\", x, y);\n}\n```\n\nIn larger codebases, conditional logging with macros or a logging level system prevents your debug output from overwhelming the real program output.\n\n## Using the Debugger\n\nC++ debuggers (gdb, lldb, Visual Studio's debugger) let you pause execution and inspect state without modifying code. Key operations:\n- **Breakpoints**: pause at a specific line\n- **Step**: execute one line at a time\n- **Watch variables**: monitor values as you step\n- **Call stack**: see which functions called the current function\n\nDebuggers are essential when print statements would be too invasive or when you need to inspect complex object state.\n\n## Assertion-Based Debugging\n\nAssertions document assumptions about program state and crash immediately if violated:\n\n```cpp\n#include <cassert>\n\ndouble divide(double a, double b) {\n    assert(b != 0.0);  // Program halts here if b is zero\n    return a / b;\n}\n```\n\nAssertions are typically disabled in release builds, making them zero-cost in production.\n\n## Binary Search on Code\n\nWhen you don't know where a bug is, comment out large chunks of code to narrow down the problematic region. This applies \"The debugging process\" strategy systematically—each iteration should halve the search space.\n\n## Reading Error Messages Carefully\n\nCompiler and runtime error messages tell you the *what* and *where*. Don't ignore them. A segmentation fault points to memory access; a linker error suggests missing definitions. The message is your starting point for investigation.\n\n## Combining Tactics\n\nEffective debugging usually mixes these approaches. Use print statements for quick checks, the debugger for complex state, assertions to catch logic errors early, and careful reading of error messages to understand the symptom. The right choice depends on your situation and what information you need.",
+      "exercises": [
+        {
+          "title": "Debug a Calculation Function with Print Statements",
+          "prompt_md": "# Debug a Calculation Function\n\nYou're given a function that computes the result of a mathematical formula. The function is supposed to calculate `(a * b) + (c / d)` but it contains a logic error. Your task is to:\n\n1. Add strategic `std::cout` statements to print variable values at key points in the calculation\n2. Identify where the calculation goes wrong\n3. Fix the bug\n4. Remove or comment out your debug output before final submission\n\nThe function should correctly compute `(a * b) + (c / d)` for the given inputs.\n\n**Input Format:**\n- Four space-separated numbers: `a b c d`\n\n**Output Format:**\n- A single number representing the result of `(a * b) + (c / d)`, formatted to 2 decimal places\n\n**Constraints:**\n- d will never be 0\n- All inputs are valid numbers\n\n**Example:**\n```\nInput: 2 3 10 5\nOutput: 8.00\n```\n(Because 2*3 + 10/5 = 6 + 2 = 8)",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\ndouble calculateFormula(double a, double b, double c, double d) {\n    // TODO: Add print statements to debug this function\n    double step1 = a * b;\n    double step2 = c / d;\n    double result = step1 - step2;  // BUG: Should be + not -\n    return result;\n}\n\nint main() {\n    double a, b, c, d;\n    std::cin >> a >> b >> c >> d;\n    \n    double answer = calculateFormula(a, b, c, d);\n    \n    // TODO: Remove debug output before final submission\n    std::cout << std::fixed << std::setprecision(2) << answer << std::endl;\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble calculateFormula(double a, double b, double c, double d) {\n    double step1 = a * b;\n    double step2 = c / d;\n    double result = step1 + step2;  // Fixed: changed - to +\n    return result;\n}\n\nint main() {\n    double a, b, c, d;\n    std::cin >> a >> b >> c >> d;\n    \n    double answer = calculateFormula(a, b, c, d);\n    \n    std::cout << std::fixed << std::setprecision(2) << answer << std::endl;\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample test",
+              "stdin": "2 3 10 5\n",
+              "expected_stdout": "8.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden test 1",
+              "stdin": "1 1 4 2\n",
+              "expected_stdout": "3.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden test 2",
+              "stdin": "5 2 15 3\n",
+              "expected_stdout": "15.00\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Use Assertions to Validate Function Preconditions",
+          "prompt_md": "# Use Assertions to Debug Preconditions\n\nYou need to implement a function that calculates the average of two positive numbers. The function has a precondition: both input numbers must be positive (greater than 0).\n\nYour task is to:\n\n1. Add assertions at the beginning of the function to validate the preconditions\n2. The function should calculate and return the average of two numbers\n3. If invalid inputs are provided, the assertion should catch the error\n\nThe program will read pairs of numbers and compute their average. If an invalid pair is encountered, the program should abort with an assertion failure.\n\n**Input Format:**\n- Two space-separated numbers on a single line: `a b`\n\n**Output Format:**\n- A single number representing the average of `a` and `b`, formatted to 2 decimal places\n\n**Constraints:**\n- Both input numbers must be positive (> 0)\n- If either number is <= 0, the program should fail an assertion\n\n**Example:**\n```\nInput: 10 20\nOutput: 15.00\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <cassert>\n\ndouble calculateAverage(double a, double b) {\n    // TODO: Add assertions to check preconditions\n    // Both a and b must be positive (> 0)\n    \n    double average = (a + b) / 2.0;\n    return average;\n}\n\nint main() {\n    double a, b;\n    std::cin >> a >> b;\n    \n    double result = calculateAverage(a, b);\n    \n    std::cout << std::fixed << std::setprecision(2) << result << std::endl;\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <cassert>\n\ndouble calculateAverage(double a, double b) {\n    assert(a > 0);  // Precondition: a must be positive\n    assert(b > 0);  // Precondition: b must be positive\n    \n    double average = (a + b) / 2.0;\n    return average;\n}\n\nint main() {\n    double a, b;\n    std::cin >> a >> b;\n    \n    double result = calculateAverage(a, b);\n    \n    std::cout << std::fixed << std::setprecision(2) << result << std::endl;\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample test",
+              "stdin": "10 20\n",
+              "expected_stdout": "15.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden test 1",
+              "stdin": "5 15\n",
+              "expected_stdout": "10.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden test 2",
+              "stdin": "0.5 2.5\n",
+              "expected_stdout": "1.50\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "3.5",
+      "title": "More debugging tactics",
+      "sort_order": 43,
+      "summary_md": "# More Debugging Tactics\n\nBuilding on the foundation from \"Basic debugging tactics,\" you now have tools to handle more complex scenarios. The strategies here target situations where simple print statements or stepping through code isn't enough.\n\n## Conditional Breakpoints\n\nRather than pausing at every iteration, set breakpoints that trigger only when specific conditions are true. In your debugger (GDB, LLDB, or IDE), you can attach conditions like `i == 500` or `ptr == nullptr`. This saves time in loops with thousands of iterations—you jump straight to the problematic case instead of manually resuming hundreds of times.\n\n## Watchpoints and Memory Inspection\n\nWhen a variable changes unexpectedly, watchpoints catch the exact moment it happens. Set a watchpoint on a variable, and execution pauses when anything modifies it. This is invaluable for tracking down silent data corruption. Pair this with memory inspection commands to examine raw bytes, struct layouts, and pointer values.\n\n## Logging with Purpose\n\nStrategic logging beats brute-force print statements. Rather than `std::cout << \"x = \" << x`, use formatted output that tells a story:\n\n```cpp\n// From A strategy for debugging lesson: know what you expect\nvoid processData(const std::vector<int>& data) {\n    for (size_t i = 0; i < data.size(); ++i) {\n        if (data[i] < 0) {\n            std::cout << std::format(\n                \"Loop {}: unexpected negative value {}\",\n                i, data[i]\n            );\n        }\n    }\n}\n```\n\nLog state transitions, boundary conditions, and assumption violations. Structure logs so you can grep for patterns later.\n\n## Assertions for Invariants\n\nAssertions document what *must* be true. They catch logic errors early:\n\n```cpp\nauto [success, value] = parseInput(input);\nassert(success && value >= 0);  // Program contracts\n```\n\nIn release builds, assertions typically vanish, so use them for development guarantees, not runtime validation.\n\n## Minimal Reproducers\n\nWhen faced with complex bugs, isolate the smallest program that exhibits the problem. Remove unrelated code, simplify data structures, hardcode values. A 50-line reproducer is worth a thousand lines of context. This forces you to understand what triggers the bug rather than flailing in complexity.\n\n## Using the Right Tools\n\nSome bugs need specialized tools: AddressSanitizer catches memory errors, Valgrind profiles memory usage, and compiler warnings (enable `-Wall -Wextra`) catch many issues before runtime. Invest time in your toolchain—it pays dividends.",
+      "exercises": []
+    },
+    {
+      "number": "3.6",
+      "title": "Using an integrated debugger: Stepping",
+      "sort_order": 44,
+      "summary_md": "# Using an Integrated Debugger: Stepping\n\nStepping is the most direct way to watch your program execute line by line. Unlike print statements or breakpoints alone, stepping lets you move through code at your own pace and observe state changes as they happen.\n\n## Step Over vs. Step Into\n\nWhen execution pauses at a breakpoint, you have two primary stepping options:\n\n**Step Over** executes the current line completely, including any function calls, and pauses at the next line in the current function. Use this when you trust a function works and want to skip past it.\n\n**Step Into** enters function calls, pausing at the first line inside the called function. This is essential when you suspect a bug originates in that function.\n\nMost IDEs also offer **Step Out**, which runs until the current function returns, useful when you've stepped too deep.\n\n## Setting Up Effective Stepping\n\nStart by placing a breakpoint near where you suspect the problem (reference: *A strategy for debugging*). When paused, open your debugger's variables panel—it shows local variables and their current values. This is your primary tool for verification.\n\nAs you step, watch for:\n- Variables changing to unexpected values\n- Functions returning incorrect results\n- Control flow taking wrong branches\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint sumPositive(const std::vector<int>& nums) {\n    int total = 0;\n    for (int n : nums) {\n        if (n > 0) total += n;  // Step into here to verify logic\n    }\n    return total;\n}\n\nint main() {\n    std::vector nums{-5, 10, 3, -2, 8};\n    int result = sumPositive(nums);  // Set breakpoint, step over or into\n    std::cout << std::format(\"Sum: {}\\n\", result);\n}\n```\n\n## Practical Workflow\n\nUse stepping alongside conditional breakpoints when debugging loops. Rather than stepping through hundreds of iterations, set a breakpoint that triggers only when a specific condition holds (e.g., `i == 50`).\n\nCombine stepping with the watch window to track specific variable expressions across multiple lines. If a value changes unexpectedly between two steps, you've found your problem area.\n\nStepping is slower than running to breakpoints, so use it strategically. For initial problem location, use breakpoints and conditional breaks (reference: *Basic debugging tactics*). Once you've narrowed the scope, step through the suspicious region carefully.\n\nThe key insight: stepping transforms debugging from guessing into methodical observation. You control execution pace and can confirm or eliminate hypotheses in real time.",
+      "exercises": [
+        {
+          "title": "Debugging a Function's Calculation with Stepping",
+          "prompt_md": "# Debugging a Function's Calculation with Stepping\n\nYou are given a program that calculates the sum of squares of numbers in a vector. The program compiles but produces incorrect output.\n\n**Your task:** Identify and fix the bug by understanding what the function does at each step.\n\nThe function `sumOfSquares` should:\n1. Take a vector of integers as input\n2. Calculate the square of each number\n3. Add only the positive squares to the total\n4. Return the total\n\nExample: For input `[2, -3, 4, -1]`:\n- 2² = 4 (positive, add it) → total = 4\n- (-3)² = 9 (positive, add it) → total = 13\n- 4² = 16 (positive, add it) → total = 29\n- (-1)² = 1 (positive, add it) → total = 30\n\n**Input:** The first line contains n (number of integers). The next n lines each contain one integer.\n\n**Output:** Print the sum of squares of all numbers (since all squares are positive, this is the total of all squares).\n\n**Hint:** When you step through the function, watch how the `total` variable changes with each iteration. Check if the square calculation and addition are correct.",
+          "starter_code": "#include <iostream>\n#include <vector>\n\nint sumOfSquares(const std::vector<int>& nums) {\n    int total = 0;\n    for (int n : nums) {\n        int square = n * n;  // TODO: Step into this to verify calculation\n        if (square > 0) {    // TODO: Check this condition during stepping\n            total += square;\n        }\n    }\n    return total;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> nums(n);\n    \n    for (int i = 0; i < n; ++i) {\n        std::cin >> nums[i];  // TODO: Set breakpoint here to watch input values\n    }\n    \n    int result = sumOfSquares(nums);  // TODO: Step into or over this function\n    std::cout << result << std::endl;\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n\nint sumOfSquares(const std::vector<int>& nums) {\n    int total = 0;\n    for (int n : nums) {\n        int square = n * n;\n        if (square > 0) {\n            total += square;\n        }\n    }\n    return total;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> nums(n);\n    \n    for (int i = 0; i < n; ++i) {\n        std::cin >> nums[i];\n    }\n    \n    int result = sumOfSquares(nums);\n    std::cout << result << std::endl;\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: Basic positive and negative numbers",
+              "stdin": "4\n2\n-3\n4\n-1\n",
+              "expected_stdout": "30\n",
+              "is_sample": true
+            },
+            {
+              "label": "All positive numbers",
+              "stdin": "3\n1\n2\n3\n",
+              "expected_stdout": "14\n",
+              "is_sample": false
+            },
+            {
+              "label": "All negative numbers",
+              "stdin": "3\n-1\n-2\n-3\n",
+              "expected_stdout": "14\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Stepping Through a Loop: Finding the Off-by-One Error",
+          "prompt_md": "# Stepping Through a Loop: Finding the Off-by-One Error\n\nYou have a program that processes a list of test scores and counts how many are passing (≥ 60). The program compiles but gives the wrong count.\n\n**Your task:** Use stepping to trace through the loop and identify why the count is incorrect.\n\nThe function `countPassing` should:\n1. Accept a vector of integers (test scores)\n2. Count how many scores are greater than or equal to 60\n3. Return the count\n\nExample: For scores `[45, 60, 75, 50, 85]`, the answer should be 3 (scores 60, 75, and 85).\n\n**Input:** The first line contains n (number of scores). The next n lines each contain one test score (0-100).\n\n**Output:** Print the count of passing scores (≥ 60).\n\n**Hint:** Step through the loop iteration by iteration. Watch the `count` variable change after each comparison. Pay attention to whether the loop index and condition are correct.",
+          "starter_code": "#include <iostream>\n#include <vector>\n\nint countPassing(const std::vector<int>& scores) {\n    int count = 0;\n    for (int i = 0; i < scores.size(); ++i) {  // TODO: Step through each iteration\n        if (scores[i] >= 60) {                   // TODO: Watch the condition evaluation\n            count++;                             // TODO: Check when count increments\n        }\n    }\n    return count;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> scores(n);\n    \n    for (int i = 0; i < n; ++i) {\n        std::cin >> scores[i];\n    }\n    \n    int result = countPassing(scores);  // TODO: Set breakpoint here, then step\n    std::cout << result << std::endl;\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n\nint countPassing(const std::vector<int>& scores) {\n    int count = 0;\n    for (int i = 0; i < scores.size(); ++i) {\n        if (scores[i] >= 60) {\n            count++;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> scores(n);\n    \n    for (int i = 0; i < n; ++i) {\n        std::cin >> scores[i];\n    }\n    \n    int result = countPassing(scores);\n    std::cout << result << std::endl;\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: Mixed passing and failing scores",
+              "stdin": "5\n45\n60\n75\n50\n85\n",
+              "expected_stdout": "3\n",
+              "is_sample": true
+            },
+            {
+              "label": "All passing scores",
+              "stdin": "4\n70\n80\n90\n100\n",
+              "expected_stdout": "4\n",
+              "is_sample": false
+            },
+            {
+              "label": "One passing, rest failing",
+              "stdin": "4\n30\n40\n60\n50\n",
+              "expected_stdout": "1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "3.7",
+      "title": "Using an integrated debugger: Running and breakpoints",
+      "sort_order": 45,
+      "summary_md": "# Using an Integrated Debugger: Running and Breakpoints\n\n## Running Your Program in the Debugger\n\nThe debugger transforms how you understand program behavior. Instead of adding print statements, you run your code under debugger control and observe exactly what happens.\n\nTo start debugging in most IDEs (Visual Studio, CLion, VS Code):\n- Set your project to **Debug configuration** (not Release)\n- Click \"Debug\" or press F5 instead of \"Run\"\n- Your program launches with the debugger attached, pausing at the first executable line\n\nThe Debug build includes symbol information that maps compiled code back to your source, making variable inspection possible. This is why Release builds are harder to debug—the compiler optimizes away this mapping.\n\n## Breakpoints: Pausing Execution\n\nA **breakpoint** tells the debugger \"stop here.\" When execution hits a breakpoint, the program pauses, letting you inspect state without adding temporary code.\n\n**Setting breakpoints:**\n- Click the margin left of a line number (in most IDEs)\n- A red dot appears—that's your breakpoint\n- Run the debugger; execution stops at that line\n\n**Conditional breakpoints** (covered in \"More debugging tactics\") pause only when a condition is true—invaluable for bugs that appear in loops with thousands of iterations.\n\n## A Practical Example\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> values{10, 20, 30};\n    \n    for (int i = 0; i < values.size(); ++i) {\n        int result = values[i] * 2;  // breakpoint here\n        std::cout << std::format(\"Result: {}\\n\", result);\n    }\n    return 0;\n}\n```\n\nSet a breakpoint at the `int result` line. When you run the debugger, it pauses on the first iteration. You can hover over `i` to see it's 0, over `values[i]` to see 10, and watch `result` change each loop cycle.\n\n## Why This Matters\n\nBreakpoints let you verify \"A strategy for debugging\" in practice—you form a hypothesis (\"this loop should assign correct values\"), then use the debugger to confirm or refute it. Combined with the stepping techniques from the previous lesson, breakpoints are your primary tool for isolating where reality diverges from expectations.\n\nThe cost is time spent learning your IDE's debugger interface, but that investment pays back immediately on any non-trivial bug.",
+      "exercises": [
+        {
+          "title": "Finding the Calculation Error with Breakpoints",
+          "prompt_md": "# Finding the Calculation Error with Breakpoints\n\nYou have a program that calculates compound interest over multiple years. The formula is: `A = P * (1 + r)^t` where:\n- P = principal amount\n- r = annual interest rate (as a decimal)\n- t = number of years\n- A = final amount\n\nThe program has a bug: it's calculating something incorrectly. Your job is to trace through the logic using debugger breakpoints to find where the mistake occurs.\n\n**Input:**\n- First line: principal amount (double)\n- Second line: annual interest rate (double, e.g., 0.05 for 5%)\n- Third line: number of years (int)\n\n**Output:**\nPrint the final amount after each year, one per line, formatted to 2 decimal places.\n\n**Example:**\n- Principal: 1000, Rate: 0.10 (10%), Years: 3\n- After year 1: 1100.00\n- After year 2: 1210.00\n- After year 3: 1331.00\n\n**Debugging Note:** When you run this in a debugger, set a breakpoint on the line where you calculate the annual amount. Step through and watch the values change to understand the correct calculation logic.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double principal, rate;\n    int years;\n    \n    std::cin >> principal >> rate >> years;\n    \n    double amount = principal;\n    \n    for (int year = 1; year <= years; ++year) {\n        // TODO: Calculate the amount after this year\n        // The amount should be multiplied by (1 + rate)\n        amount = amount * rate;  // BUG: This is wrong!\n        \n        std::cout << std::fixed << std::setprecision(2)\n                  << \"After year \" << year << \": \" << amount << std::endl;\n    }\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double principal, rate;\n    int years;\n    \n    std::cin >> principal >> rate >> years;\n    \n    double amount = principal;\n    \n    for (int year = 1; year <= years; ++year) {\n        // Calculate the amount after this year\n        // The amount should be multiplied by (1 + rate)\n        amount = amount * (1.0 + rate);\n        \n        std::cout << std::fixed << std::setprecision(2)\n                  << \"After year \" << year << \": \" << amount << std::endl;\n    }\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 10% compound interest for 3 years",
+              "stdin": "1000\n0.10\n3",
+              "expected_stdout": "After year 1: 1100.00\nAfter year 2: 1210.00\nAfter year 3: 1331.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "5% interest for 2 years with smaller principal",
+              "stdin": "500\n0.05\n2",
+              "expected_stdout": "After year 1: 525.00\nAfter year 2: 551.25\n",
+              "is_sample": false
+            },
+            {
+              "label": "20% interest for 1 year",
+              "stdin": "2000\n0.20\n1",
+              "expected_stdout": "After year 1: 2400.00\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Temperature Conversion Loop with Breakpoint Inspection",
+          "prompt_md": "# Temperature Conversion Loop with Breakpoint Inspection\n\nYou have a program that converts temperatures from Celsius to Fahrenheit for a range of starting values. The conversion formula is: `F = (C * 9/5) + 32`\n\nThe program reads:\n- A starting Celsius temperature\n- An ending Celsius temperature\n- A step size\n\nThen it should print each Celsius value and its Fahrenheit equivalent, incrementing by the step size each iteration.\n\n**Input:**\n- First line: starting Celsius temperature (int)\n- Second line: ending Celsius temperature (int)\n- Third line: step size (int)\n\n**Output:**\nFor each temperature value from start to end (inclusive, if exactly on boundary), print:\n`C C_value F F_value`\n\nwhere F_value is formatted to 1 decimal place.\n\n**Example:**\n- Start: 0, End: 20, Step: 10\n- C 0 F 32.0\n- C 10 F 50.0\n- C 20 F 68.0\n\n**Debugging Tip:** Set a breakpoint inside the loop to watch the Celsius and Fahrenheit values update with each iteration. This helps verify the conversion is happening correctly at each step.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int start, end, step;\n    \n    std::cin >> start >> end >> step;\n    \n    // TODO: Loop from start to end (inclusive)\n    // TODO: For each temperature, calculate Fahrenheit using F = (C * 9/5) + 32\n    // TODO: Print in the format: C <celsius> F <fahrenheit>\n    \n    for (int celsius = start; celsius <= end; celsius += step) {\n        double fahrenheit = (celsius * 9 / 5) + 32;  // BUG: Integer division!\n        \n        std::cout << \"C \" << celsius << \" F \" \n                  << std::fixed << std::setprecision(1) \n                  << fahrenheit << std::endl;\n    }\n    \n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int start, end, step;\n    \n    std::cin >> start >> end >> step;\n    \n    for (int celsius = start; celsius <= end; celsius += step) {\n        double fahrenheit = (celsius * 9.0 / 5.0) + 32;\n        \n        std::cout << \"C \" << celsius << \" F \" \n                  << std::fixed << std::setprecision(1) \n                  << fahrenheit << std::endl;\n    }\n    \n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 0 to 20 degrees Celsius by 10s",
+              "stdin": "0\n20\n10",
+              "expected_stdout": "C 0 F 32.0\nC 10 F 50.0\nC 20 F 68.0\n",
+              "is_sample": true
+            },
+            {
+              "label": "Negative to positive range by 5s",
+              "stdin": "-10\n10\n5",
+              "expected_stdout": "C -10 F 14.0\nC -5 F 23.0\nC 0 F 32.0\nC 5 F 41.0\nC 10 F 50.0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Single value range",
+              "stdin": "100\n100\n1",
+              "expected_stdout": "C 100 F 212.0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "3.8",
+      "title": "Using an integrated debugger: Watching variables",
+      "sort_order": 46,
+      "summary_md": "# Using an Integrated Debugger: Watching Variables\n\nWatching variables lets you monitor their values during execution without repeatedly adding print statements or stepping through code. This is the natural evolution from basic breakpoints and stepping.\n\n## Setting Up Watches\n\nMost IDEs let you add watches through a Watch window or panel. Right-click a variable in your code and select \"Watch\" or \"Add Watch,\" or manually enter the variable name. The debugger will display the current value whenever execution pauses at a breakpoint or during stepping.\n\nWatches are persistent—they remain active across multiple breakpoint hits, making them ideal for tracking how values change through loops or recursive calls.\n\n## Viewing Complex Data\n\nFor objects and structs, the watch window typically shows fields in a tree view you can expand. For a `std::vector`, you'll see the size and capacity, then can expand to inspect individual elements. This beats printing—you see the data structure's actual state without writing temporary debug code.\n\n```cpp\nstruct Player {\n    std::string name;\n    int health;\n    float speed;\n};\n\nPlayer p{\"Alice\", 100, 5.5f};\n// Add watch: p\n// Expand to see name, health, speed individually\n```\n\n## Conditional and Expression Watches\n\nMany debuggers let you watch expressions, not just variables. You might watch `health < 50` to see when a condition becomes true, or `position.x * 2` to monitor a calculation. Some IDEs support conditional watches that break only when the expression evaluates to true—more powerful than a simple breakpoint.\n\n## Effective Watch Strategy\n\nKeep your watch list focused. Watch only variables relevant to the current bug hypothesis (see \"A strategy for debugging\"). Too many watches clutter the display and slow execution. Remove watches once you've verified a variable's behavior.\n\nFor deeply nested structures, watching a single field often tells you more than watching the entire object. If debugging a game loop, watch the position or state you suspect is wrong, not every member.\n\n## Integration with Stepping\n\nWatches shine when combined with stepping (covered in \"Using an integrated debugger: Stepping\"). Step line by line while watching how a variable changes—much faster than mentally tracking values or adding temporary debug output.\n\nThe watch window updates after each step, giving you immediate visual feedback about your code's behavior.",
+      "exercises": []
+    },
+    {
+      "number": "3.9",
+      "title": "Using an integrated debugger: The call stack",
+      "sort_order": 47,
+      "summary_md": "## Using an Integrated Debugger: The Call Stack\n\nThe **call stack** is a record of every function currently executing, ordered from most recent (top) to the original entry point (bottom). When your program is paused at a breakpoint, the debugger's call stack panel shows exactly how execution arrived at that point — which function called which, and from what line.\n\nEach entry in the call stack is a **stack frame**. It holds the function name, the source file, and the line number where control currently sits. Clicking a frame in the IDE jumps the editor to that location and lets you inspect local variables at that level using the watch window covered in *Watching Variables*.\n\nThis becomes critical the moment you have nested calls. Without the call stack you might know *where* a crash occurs but not *why* — the faulty data could have been produced three calls earlier.\n\n```cpp\n#include <print>\n\nint divide(int a, int b) {\n    return a / b;          // set a breakpoint here\n}\n\nint process(int x) {\n    return divide(x, x - 5);\n}\n\nint main() {\n    std::println(\"{}\", process(5));\n}\n```\n\nPause at the `return a / b` line and open the call stack panel. You will see something like:\n\n```\ndivide   (a=5, b=0)   line 4\nprocess  (x=5)        line 8\nmain                  line 12\n```\n\nFrom the frame alone you can see `b` is zero, but the call stack tells you that `process` supplied `x - 5` as the divisor — the real bug is in `process`, not `divide`. That distinction is exactly what *A Strategy for Debugging* calls isolating the root cause rather than treating symptoms.\n\nA few practical notes:\n\n- **Recursive functions** produce many frames with the same name; the values in each frame differ, letting you trace exactly which recursive depth went wrong.\n- Frames from third-party or standard library code often appear below yours. You can usually ignore them unless you suspect a misuse of the library.\n- Some optimized builds inline or elide frames entirely, making the stack misleading. Always debug unoptimized (`-O0`) builds, consistent with the advice in *Basic Debugging Tactics*.\n- The call stack complements *Stepping* perfectly: step into a function, then glance at the stack to keep your bearings without losing context.\n\nTreat the call stack as a free, always-available history of how your code reached its current state.",
+      "exercises": []
+    },
+    {
+      "number": "3.10",
+      "title": "Finding issues before they become problems",
+      "sort_order": 48,
+      "summary_md": "## Finding Issues Before They Become Problems\n\nThe best bugs to fix are the ones that never ship. Several techniques let you catch problems at compile time or before a test even runs, rather than hunting them down with a debugger after the fact.\n\n### Compiler Warnings as a First Pass\n\nYour compiler already performs static analysis on every build. Turn it up. `-Wall -Wextra -Wpedantic` (GCC/Clang) or `/W4` (MSVC) surfaces unused variables, signed/unsigned mismatches, unreachable code, and dozens of other likely mistakes. Adding `-Werror` promotes every warning to a build failure, forcing issues to be resolved rather than ignored.\n\n### `static_assert` for Compile-Time Contracts\n\nWhen a condition must hold at compile time—a type's size, a template parameter's range, a constant's value—`static_assert` documents and enforces it:\n\n```cpp\n#include <format>\n#include <print>\n\ntemplate<typename T, std::size_t N>\nstruct FixedBuffer {\n    static_assert(N > 0,  \"Buffer size must be at least 1\");\n    static_assert(N <= 4096, \"Buffer size exceeds maximum\");\n    T data[N]{};\n};\n\nint main() {\n    FixedBuffer<int, 256> buf;   // fine\n    // FixedBuffer<int, 0> bad;  // compile error: \"Buffer size must be at least 1\"\n    std::println(\"Buffer holds {} ints\", sizeof(buf.data) / sizeof(int));\n}\n```\n\nThe error appears at the call site with a readable message—no runtime required.\n\n### Runtime Assertions with `assert`\n\nFor conditions that can only be checked at runtime but represent programmer errors rather than expected failure modes, `assert` from `<cassert>` terminates the program immediately with file and line information when the condition is false. Assertions are stripped in release builds (`NDEBUG` defined), so they carry no production cost. Never use `assert` for user-input validation or recoverable errors—only for \"this should never happen\" invariants.\n\n### Defensive Practices\n\nA few habits reduce bug surface area before any tool is needed:\n\n- **Initialise every variable** at declaration (covered in earlier lessons, but compiler warnings will remind you when you forget).\n- **Prefer `const` and `constexpr`** to prevent accidental mutation.\n- **Keep functions small**—a function short enough to read at a glance has fewer hiding spots for logic errors.\n- **Use the type system**—strong types and `enum class` prevent passing a `userId` where a `productId` is expected, a class of mistake no debugger can catch after the fact.\n\nThese techniques complement the debugger skills from earlier lessons; the goal is to shrink the number of issues that ever need a breakpoint.",
+      "exercises": []
+    },
+    {
+      "number": "3.x",
+      "title": "Chapter 3 summary and quiz",
+      "sort_order": 49,
+      "summary_md": "# Chapter 3 Summary: Debugging C++ Programs\n\nDebugging is the systematic process of finding and removing errors from code. This chapter covered two broad error categories: **syntax errors** (caught by the compiler) and **semantic errors** (code compiles but behaves incorrectly). Semantic errors are harder to find because the compiler cannot help you.\n\n## Core Debugging Strategy\n\nA repeatable process beats random guessing:\n1. Reproduce the problem reliably\n2. Locate the source of the bug\n3. Understand why it happens\n4. Fix it\n5. Retest to confirm the fix and check for regressions\n\n## Tactical Approaches\n\nBefore reaching for the debugger, simple tactics work well: add temporary `std::cerr` statements to trace program flow and variable values, then remove them when done. A cleaner alternative is a conditional debug macro or a dedicated logging flag so output can be toggled without editing multiple sites.\n\n## The Integrated Debugger\n\nThe debugger is the most powerful tool covered here. Key capabilities:\n\n| Feature | What it gives you |\n|---|---|\n| **Step into / over / out** | Execute code one statement at a time |\n| **Breakpoints** | Pause at a specific line without manual stepping |\n| **Watch window** | Monitor variable values as they change |\n| **Call stack** | See the chain of active function calls leading to the current point |\n\nWatching variables alongside the call stack lets you trace exactly how a bad value propagated through your program.\n\n## Finding Problems Early\n\nPrevention beats cure. Enable compiler warnings (`-Wall -Wextra`), treat warnings as errors (`-Werror`), and use static analysis tools. These catch many bugs before the program ever runs.\n\n```cpp\n#include <iostream>\n#include <format>\n\n// Toggle all debug output from one place\nconstexpr bool DEBUG = true;\n\nint divide(int a, int b) {\n    if constexpr (DEBUG)\n        std::cerr << std::format(\"divide({}, {})\\n\", a, b);\n    return a / b;   // semantic bug if b == 0 — debugger catches this fast\n}\n\nint main() {\n    std::cout << divide(10, 0) << '\\n';\n}\n```\n\nSetting a breakpoint inside `divide` and watching `b` in the watch window immediately surfaces the zero-divisor before undefined behaviour strikes.\n\n## Quick Self-Check\n\n- What is the difference between a syntax and a semantic error?\n- Name three pieces of information the call stack gives you.\n- Why should debug `std::cerr` output go to `cerr` rather than `cout`?",
+      "exercises": [
+        {
+          "title": "Trace the Bug: Semantic Error Detective",
+          "prompt_md": "## Trace the Bug: Semantic Error Detective\n\nA debugging session is only as good as the information you can collect. In this exercise you will **simulate a debug-logging system** using a `DEBUG` flag and `std::cerr`, then fix a deliberate semantic error.\n\nYou are given a program that is supposed to compute the **average** of three integers entered by the user. Unfortunately it contains a semantic error (it compiles fine but produces wrong results).\n\nYour tasks:\n\n1. Read three integers from `std::cin`.\n2. Add a `constexpr bool DEBUG = true;` flag.\n3. When `DEBUG` is `true`, print each variable to `std::cerr` immediately after it is read, in the format:\n ```\n [DEBUG] a=<value>\n [DEBUG] b=<value>\n [DEBUG] c=<value>\n ```\n4. Compute the correct **integer average** (truncate toward zero, i.e. use integer division) of the three values and print it to `std::cout` in the format:\n ```\n Average: <result>\n ```\n\n**The semantic bug to avoid / fix:** A common mistake is writing `a + b + c / 3` instead of `(a + b + c) / 3`. Your solution must use the *correct* formula.\n\n### Input format\nThree integers on a single line separated by spaces.\n\n### Output format\nDebug lines go to `std::cerr`; the result line goes to `std::cout`.\n\n```\nAverage: <result>\n```\n\n### Sample (stdin)\n```\n10 20 30\n```\n\n### Sample (stdout)\n```\nAverage: 20\n```\n\n*(The `[DEBUG]` lines go to `cerr` and are not checked by the judge.)*\n",
+          "starter_code": "#include <iostream>\n\n// TODO: declare a constexpr bool DEBUG flag set to true\n\nint main()\n{\n    int a{}, b{}, c{};\n\n    // TODO: read three integers from std::cin\n\n    // TODO: if DEBUG is true, print each variable to std::cerr\n    //       in the format:  [DEBUG] a=<value>\n    //                       [DEBUG] b=<value>\n    //                       [DEBUG] c=<value>\n\n    // TODO: compute the correct integer average of a, b, and c\n    //       (remember operator precedence — use parentheses!)\n\n    // TODO: print the result to std::cout as:  Average: <result>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nconstexpr bool DEBUG = true;\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    if constexpr (DEBUG)\n    {\n        std::cerr << \"[DEBUG] a=\" << a << '\\n';\n        std::cerr << \"[DEBUG] b=\" << b << '\\n';\n        std::cerr << \"[DEBUG] c=\" << c << '\\n';\n    }\n\n    // Correct formula: parentheses ensure addition happens before division\n    int average = (a + b + c) / 3;\n\n    std::cout << \"Average: \" << average << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: equal values",
+              "stdin": "10 20 30",
+              "expected_stdout": "Average: 20\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: truncation check",
+              "stdin": "1 2 3",
+              "expected_stdout": "Average: 2\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: negative numbers",
+              "stdin": "-3 0 6",
+              "expected_stdout": "Average: 1\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Call Stack Simulator",
+          "prompt_md": "## Call Stack Simulator\n\nOne of the most powerful debugger features is the **call stack**, which shows you the chain of function calls active at any moment. In this exercise you will write a small program that *explicitly prints its own call stack depth* as it recurses, mimicking what a debugger's call-stack window would show you.\n\nWrite a recursive function `countdown` that:\n\n- Accepts two parameters: `int value` (the current countdown number) and `int depth` (how many calls deep we currently are, starting at `1` for the first call).\n- **Before** doing any recursive call, prints a call-stack entry to `std::cout`:\n  ```\n  [depth <depth>] countdown(<value>)\n  ```\n- If `value` is greater than `0`, calls itself with `value - 1` and `depth + 1`.\n- If `value` equals `0`, prints:\n  ```\n  [depth <depth>] base case reached\n  ```\n  and returns without further recursion.\n\nIn `main`, read a single non-negative integer `n` from `std::cin` and call `countdown(n, 1)`.\n\n### Input format\nA single non-negative integer `n` (0 ≤ n ≤ 10).\n\n### Output format\nLines printed by `countdown` as described above.\n\n### Sample (stdin)\n```\n3\n```\n\n### Sample (stdout)\n```\n[depth 1] countdown(3)\n[depth 2] countdown(2)\n[depth 3] countdown(1)\n[depth 4] countdown(0)\n[depth 4] base case reached\n```\n\n### Why this matters for debugging\nNotice that each line mirrors one frame you would see in a debugger's call-stack panel. When `countdown(0)` is active, the stack panel would list four frames exactly as shown above, letting you inspect `value` and `depth` at every level.\n",
+          "starter_code": "#include <iostream>\n\n// TODO: write the recursive function countdown(int value, int depth)\n//       It should:\n//         1. Print \"[depth <depth>] countdown(<value>)\" to std::cout\n//         2. If value == 0, also print \"[depth <depth>] base case reached\"\n//            and return\n//         3. Otherwise, call countdown(value - 1, depth + 1)\n\nint main()\n{\n    int n{};\n    // TODO: read n from std::cin\n    // TODO: call countdown(n, 1)\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid countdown(int value, int depth)\n{\n    std::cout << \"[depth \" << depth << \"] countdown(\" << value << \")\\n\";\n\n    if (value == 0)\n    {\n        std::cout << \"[depth \" << depth << \"] base case reached\\n\";\n        return;\n    }\n\n    countdown(value - 1, depth + 1);\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    countdown(n, 1);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: n=3",
+              "stdin": "3",
+              "expected_stdout": "[depth 1] countdown(3)\n[depth 2] countdown(2)\n[depth 3] countdown(1)\n[depth 4] countdown(0)\n[depth 4] base case reached\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: n=0 (immediate base case)",
+              "stdin": "0",
+              "expected_stdout": "[depth 1] countdown(0)\n[depth 1] base case reached\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: n=5",
+              "stdin": "5",
+              "expected_stdout": "[depth 1] countdown(5)\n[depth 2] countdown(4)\n[depth 3] countdown(3)\n[depth 4] countdown(2)\n[depth 5] countdown(1)\n[depth 6] countdown(0)\n[depth 6] base case reached\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

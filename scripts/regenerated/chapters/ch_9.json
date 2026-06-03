@@ -1,0 +1,543 @@
+{
+  "chapter": {
+    "number": "9",
+    "title": "Error Detection and Handling"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz",
+    "8.1: Control flow introduction",
+    "8.2: If statements and blocks",
+    "8.3: Common if statement problems",
+    "8.4: Constexpr if statements",
+    "8.5: Switch statement basics",
+    "8.6: Switch fallthrough and scoping",
+    "8.7: Goto statements",
+    "8.8: Introduction to loops and while statements",
+    "8.9: Do while statements",
+    "8.10: For statements",
+    "8.11: Break and continue",
+    "8.12: Halts (exiting your program early)",
+    "8.13: Introduction to random number generation",
+    "8.14: Generating random numbers using Mersenne Twister",
+    "8.15: Global random numbers (Random.h)",
+    "8.x: Chapter 8 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "9.1",
+      "title": "Introduction to testing your code",
+      "sort_order": 117,
+      "summary_md": "# Introduction to Testing Your Code\n\nTesting is how you verify that your code does what you intend — not just once, but every time you change something. Without tests, every edit is a guess.\n\n## Why Testing Matters in C++\n\nC++ gives you a lot of control, which also means a lot of ways to introduce subtle bugs. A function that returns the wrong value, a loop that runs one iteration too many, a pointer that outlives its allocation — none of these produce a compiler error. Tests catch them before users do.\n\nThe core idea is simple: call a piece of code with known inputs and check that the output matches your expectation. If it doesn't, the test fails and you know exactly where to look.\n\n## Assertions as the Simplest Test\n\nThe most direct testing tool in C++ is `assert` from `<cassert>`. It takes a boolean expression and terminates the program if it evaluates to false. This is useful for quick sanity checks during development.\n\n```cpp\n#include <cassert>\n#include <string>\n#include <format>\n\nint clamp(int value, int lo, int hi) {\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\nint main() {\n    assert(clamp(5, 0, 10) == 5);\n    assert(clamp(-3, 0, 10) == 0);\n    assert(clamp(15, 0, 10) == 10);\n    std::println(\"All tests passed.\");\n}\n```\n\nEach `assert` acts as a mini-test. If `clamp` is broken, the program halts with a message pointing to the failing line.\n\n## Limitations of Raw Assertions\n\n`assert` is stripped out in release builds (when `NDEBUG` is defined), so it cannot serve as a permanent safety net. It also gives minimal output — you get a line number, not a description of what went wrong or what value was actually returned.\n\nFor serious projects, dedicated testing frameworks like Catch2 or GoogleTest provide named test cases, descriptive failure messages, and structured output. They let you organise tests separately from production code and run them automatically.\n\n## The Testing Habit\n\nThe most valuable thing testing teaches is to write small, focused functions — code that takes inputs and returns outputs without hidden side effects. Such functions are easy to test. Code tangled with global state or I/O is not.\n\nEven informal tests written as `main`-function assertions are far better than no tests at all. Start small, run often, and expand coverage as your programs grow.",
+      "exercises": [
+        {
+          "title": "Assert a Temperature Converter",
+          "prompt_md": "## Goal\nComplete the function `celsiusToFahrenheit` and write assertion-based tests inside `main` to verify it works correctly for several known inputs.\n\n## Input\nNo stdin. The program reads no input at runtime.\n\n## Output\nIf all assertions pass, print exactly one line:\n```\nAll tests passed.\n```\nIf any assertion fails, the program terminates via `assert` before printing anything (this is expected behavior and is not tested directly).\n\n## Requirements\n1. Implement `double celsiusToFahrenheit(double celsius)` using the formula `F = C * 9.0 / 5.0 + 32.0`.\n2. In `main`, use `assert` to test **at least four** of the following known conversions:\n   - 0 °C → 32 °F\n   - 100 °C → 212 °F\n   - -40 °C → -40 °F\n   - 37 °C → 98.6 °F\n3. Because `double` comparison can be imprecise, compare using a helper `bool approxEqual(double a, double b)` that returns `true` when `std::abs(a - b) < 0.001`.\n4. Every assertion must use `approxEqual`, not `==`.\n5. After all assertions, print `All tests passed.` followed by a newline (`\\n`).\n6. The program must compile cleanly with no changes to the function signatures.\n\n## Notes\n- Allowed headers: `<cassert>`, `<cmath>`, `<iostream>`.",
+          "starter_code": "#include <cassert>\n#include <cmath>\n#include <iostream>\n\n// TODO: implement this function using F = C * 9.0 / 5.0 + 32.0\ndouble celsiusToFahrenheit(double celsius)\n{\n    return 0.0; // replace with correct formula\n}\n\n// TODO: implement this helper — return true when |a - b| < 0.001\nbool approxEqual(double a, double b)\n{\n    return false; // replace with correct comparison\n}\n\nint main()\n{\n    // TODO: write at least four assert statements using approxEqual\n    // covering: 0, 100, -40, and 37 degrees Celsius\n\n    std::cout << \"All tests passed.\\n\";\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <cmath>\n#include <iostream>\n\ndouble celsiusToFahrenheit(double celsius)\n{\n    return celsius * 9.0 / 5.0 + 32.0;\n}\n\nbool approxEqual(double a, double b)\n{\n    return std::abs(a - b) < 0.001;\n}\n\nint main()\n{\n    assert(approxEqual(celsiusToFahrenheit(0.0),   32.0));\n    assert(approxEqual(celsiusToFahrenheit(100.0), 212.0));\n    assert(approxEqual(celsiusToFahrenheit(-40.0), -40.0));\n    assert(approxEqual(celsiusToFahrenheit(37.0),  98.6));\n\n    std::cout << \"All tests passed.\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "All assertions pass",
+              "stdin": "",
+              "expected_stdout": "All tests passed.\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: same binary, no stdin variant",
+              "stdin": "",
+              "expected_stdout": "All tests passed.\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: same binary, deterministic output",
+              "stdin": "",
+              "expected_stdout": "All tests passed.\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Test a Safe Integer Divider",
+          "prompt_md": "## Goal\nComplete the function `safeDivide` and write a `runTests` function that uses `assert` to verify its behavior, then report each test result to stdout.\n\n## Input\nNo stdin. The program reads no input at runtime.\n\n## Output\nPrint exactly four lines in this order, each followed by a newline:\n```\nTest 1 passed.\nTest 2 passed.\nTest 3 passed.\nTest 4 passed.\n```\nIf any assertion inside `runTests` fails, the program terminates via `assert` before reaching the corresponding print statement.\n\n## Requirements\n1. Implement `int safeDivide(int numerator, int denominator, int fallback)`:  \n   - Return `numerator / denominator` using integer division when `denominator != 0`.  \n   - Return `fallback` when `denominator == 0`.\n2. Implement `void runTests()` containing exactly **four** `assert`-based tests, each followed immediately by a `std::cout` line that prints `Test N passed.` (N = 1, 2, 3, 4):\n   - Test 1: `safeDivide(10, 2, -1)` equals `5`.\n   - Test 2: `safeDivide(7, 0, -1)` equals `-1` (division by zero returns fallback).\n   - Test 3: `safeDivide(-18, 3, 0)` equals `-6`.\n   - Test 4: `safeDivide(0, 5, 99)` equals `0`.\n3. Call `runTests()` from `main` and return `0`.\n4. Do **not** use `std::println` or `<format>`; use `std::cout` only.\n5. The program must compile cleanly; no changes to the required signatures.\n\n## Notes\n- Allowed headers: `<cassert>`, `<iostream>`.",
+          "starter_code": "#include <cassert>\n#include <iostream>\n\n// TODO: return numerator / denominator normally,\n//       or fallback when denominator == 0\nint safeDivide(int numerator, int denominator, int fallback)\n{\n    return 0; // replace with correct implementation\n}\n\n// TODO: implement four assert-based tests, each followed by a cout line\nvoid runTests()\n{\n    // Test 1: safeDivide(10, 2, -1) == 5\n\n    // Test 2: safeDivide(7, 0, -1) == -1\n\n    // Test 3: safeDivide(-18, 3, 0) == -6\n\n    // Test 4: safeDivide(0, 5, 99) == 0\n}\n\nint main()\n{\n    runTests();\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <iostream>\n\nint safeDivide(int numerator, int denominator, int fallback)\n{\n    if (denominator == 0)\n        return fallback;\n    return numerator / denominator;\n}\n\nvoid runTests()\n{\n    assert(safeDivide(10, 2, -1) == 5);\n    std::cout << \"Test 1 passed.\\n\";\n\n    assert(safeDivide(7, 0, -1) == -1);\n    std::cout << \"Test 2 passed.\\n\";\n\n    assert(safeDivide(-18, 3, 0) == -6);\n    std::cout << \"Test 3 passed.\\n\";\n\n    assert(safeDivide(0, 5, 99) == 0);\n    std::cout << \"Test 4 passed.\\n\";\n}\n\nint main()\n{\n    runTests();\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "All four tests pass",
+              "stdin": "",
+              "expected_stdout": "Test 1 passed.\nTest 2 passed.\nTest 3 passed.\nTest 4 passed.\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: division by zero uses fallback",
+              "stdin": "",
+              "expected_stdout": "Test 1 passed.\nTest 2 passed.\nTest 3 passed.\nTest 4 passed.\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: negative numerator and zero numerator cases",
+              "stdin": "",
+              "expected_stdout": "Test 1 passed.\nTest 2 passed.\nTest 3 passed.\nTest 4 passed.\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9.2",
+      "title": "Code coverage",
+      "sort_order": 118,
+      "summary_md": "## Code Coverage\n\nCode coverage measures how much of your source code is actually executed by your test suite. It answers a simple question: which lines, branches, and functions did your tests touch?\n\n### What Gets Measured\n\nMost coverage tools report several metrics:\n\n- **Line coverage** — was this line executed at least once?\n- **Branch coverage** — for every `if`/`switch`/ternary, was each possible path taken?\n- **Function coverage** — was this function called at all?\n\nBranch coverage is stricter and more useful. A test can hit every line of an `if`/`else` block without ever testing the `false` branch if the condition is always true in your tests.\n\n### Collecting Coverage Data\n\nOn GCC and Clang, compile with `-gcov`/`--coverage` flags (or use `-fprofile-arcs -ftest-coverage`). After running your tests, tools like `gcov`, `lcov`, or `llvm-cov` produce human-readable reports. CMake projects can wire this into a dedicated coverage build type.\n\n```cpp\n// Returns the absolute difference between two values.\n// Without a test where a < b, the second branch is never covered.\nint abs_diff(int a, int b) {\n    if (a >= b)\n        return a - b;\n    else\n        return b - a;  // <-- uncovered if tests only call abs_diff(5, 3)\n}\n```\n\nA coverage report on this function with only `abs_diff(5, 3)` would show 75% branch coverage — the `else` path is a gap flagged for you to fill.\n\n### Coverage Is a Floor, Not a Ceiling\n\n100% coverage does not mean your code is correct. It means every line ran — not that every *meaningful input* was tested. A test that calls `abs_diff(0, 0)` covers both branches without exercising negative inputs or overflow edge cases.\n\nCoverage is most valuable as a **gap finder**: it surfaces dead code, untested error paths, and forgotten branches that human review misses. As mentioned in [Introduction to testing your code], writing tests without measuring coverage is guessing at completeness.\n\nAim for high branch coverage on critical logic, but treat uncovered code as a question to answer (\"is this path reachable? Should it be tested?\") rather than just a number to push toward 100%.",
+      "exercises": [
+        {
+          "title": "Identify Uncovered Branches in a Grading Function",
+          "prompt_md": "## Goal\nComplete the function `letter_grade(int score)` that converts a numeric score to a letter grade, then write a `run_tests()` function that calls it with specific inputs and reports which branches were hit.\n\n## Input\n- Line 1: an integer T (1 ≤ T ≤ 10), the number of test scores to evaluate.\n- Lines 2..T+1: one integer score per line (0 ≤ score ≤ 100).\n\n## Output\nFor each score on its own line, print exactly: `score N -> GRADE` where N is the score and GRADE is one of: `A` (90–100), `B` (80–89), `C` (70–79), `D` (60–69), `F` (0–59).\n\nAfter all scores, print a blank line, then a branch coverage summary with exactly these lines in this order:\n```\nBranch coverage summary:\nA branch: HIT or MISSED\nB branch: HIT or MISSED\nC branch: HIT or MISSED\nD branch: HIT or MISSED\nF branch: HIT or MISSED\n```\nEach branch is `HIT` if at least one input score fell in that range, `MISSED` otherwise.\n\n## Requirements\n1. Implement `std::string letter_grade(int score)` returning exactly `\"A\"`, `\"B\"`, `\"C\"`, `\"D\"`, or `\"F\"`.\n2. Track branch hits using five `bool` variables (one per grade), updated as `letter_grade` is called.\n3. Print scores in the order they were read.\n4. The blank line separating scores from the summary must be exactly one empty line (one `\\n`).\n5. Edge cases the hidden tests cover: score = 0 (F boundary), score = 59 (F/D boundary), score = 90 (A boundary), score = 100 (A max), all five branches hit in one run, only one branch hit.\n\n## Notes\n- You may use `<string>` and `<iostream>`; no other headers are required.\n- Track coverage state in global or local `bool` variables — not inside `letter_grade` itself.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: declare five bool variables to track which grade branches are hit\n// e.g. bool hit_A = false, hit_B = false, ...;\n\n// TODO: implement letter_grade(int score)\n// Must return \"A\", \"B\", \"C\", \"D\", or \"F\"\n// Must also set the corresponding hit_X variable to true\nstd::string letter_grade(int score) {\n    // TODO: fill in grade logic and branch tracking\n    return \"\";\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n\n    // TODO: read each score, call letter_grade, and print \"score N -> GRADE\"\n\n    // TODO: print blank line then branch coverage summary\n    // Format:\n    // Branch coverage summary:\n    // A branch: HIT or MISSED\n    // B branch: HIT or MISSED\n    // C branch: HIT or MISSED\n    // D branch: HIT or MISSED\n    // F branch: HIT or MISSED\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nbool hit_A = false;\nbool hit_B = false;\nbool hit_C = false;\nbool hit_D = false;\nbool hit_F = false;\n\nstd::string letter_grade(int score) {\n    if (score >= 90) {\n        hit_A = true;\n        return \"A\";\n    } else if (score >= 80) {\n        hit_B = true;\n        return \"B\";\n    } else if (score >= 70) {\n        hit_C = true;\n        return \"C\";\n    } else if (score >= 60) {\n        hit_D = true;\n        return \"D\";\n    } else {\n        hit_F = true;\n        return \"F\";\n    }\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n\n    for (int i = 0; i < t; i++) {\n        int score;\n        std::cin >> score;\n        std::string grade = letter_grade(score);\n        std::cout << \"score \" << score << \" -> \" << grade << \"\\n\";\n    }\n\n    std::cout << \"\\n\";\n    std::cout << \"Branch coverage summary:\\n\";\n    std::cout << \"A branch: \" << (hit_A ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"B branch: \" << (hit_B ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"C branch: \" << (hit_C ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"D branch: \" << (hit_D ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"F branch: \" << (hit_F ? \"HIT\" : \"MISSED\") << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: mixed grades, all branches hit",
+              "stdin": "5\n95\n83\n74\n61\n42\n",
+              "expected_stdout": "score 95 -> A\nscore 83 -> B\nscore 74 -> C\nscore 61 -> D\nscore 42 -> F\n\nBranch coverage summary:\nA branch: HIT\nB branch: HIT\nC branch: HIT\nD branch: HIT\nF branch: HIT\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: only F branch hit (score 0 and 59)",
+              "stdin": "2\n0\n59\n",
+              "expected_stdout": "score 0 -> F\nscore 59 -> F\n\nBranch coverage summary:\nA branch: MISSED\nB branch: MISSED\nC branch: MISSED\nD branch: MISSED\nF branch: HIT\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: boundary scores 60, 90, 100",
+              "stdin": "3\n100\n90\n60\n",
+              "expected_stdout": "score 100 -> A\nscore 90 -> A\nscore 60 -> D\n\nBranch coverage summary:\nA branch: HIT\nB branch: MISSED\nC branch: MISSED\nD branch: HIT\nF branch: MISSED\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Triangle Classifier with Branch Coverage Report",
+          "prompt_md": "## Goal\nComplete the function `classify_triangle(int a, int b, int c)` that classifies a triangle, then detect which classification branches were never exercised by the provided inputs — combining branch coverage tracking (this lesson) with defensive input validation (Chapter 9 error handling).\n\n## Input\n- Line 1: an integer T (1 ≤ T ≤ 10), the number of test cases.\n- Lines 2..T+1: three positive integers per line separated by spaces, representing side lengths a, b, c (1 ≤ a, b, c ≤ 1000).\n\n## Output\nFor each triangle on its own line print: `a b c -> TYPE` where a, b, c are the original values and TYPE is one of:\n- `Equilateral` — all three sides equal\n- `Isosceles` — exactly two sides equal\n- `Scalene` — all sides different\n- `Invalid` — the three sides do not form a valid triangle (fails triangle inequality)\n\nAfter all triangles, print a blank line then exactly:\n```\nBranch coverage summary:\nEquilateral branch: HIT or MISSED\nIsosceles branch: HIT or MISSED\nScalene branch: HIT or MISSED\nInvalid branch: HIT or MISSED\n```\n\n## Requirements\n1. Implement `std::string classify_triangle(int a, int b, int c)` returning exactly one of the four strings above.\n2. A triangle is invalid if any side is ≤ 0, OR if the sum of any two sides is not strictly greater than the third (standard triangle inequality: a+b > c, a+c > b, b+c > a).\n3. Check for `Invalid` before checking equilateral/isosceles/scalene.\n4. Track four `bool` hit variables (one per classification), set to `true` whenever that branch is taken.\n5. Edge cases the hidden tests cover: all four branches in one run, only `Invalid` hit (e.g., sides 1 1 5), a degenerate triangle where two sides sum exactly to the third (e.g., 1 2 3 → Invalid), T = 1.\n\n## Notes\n- You may use `<string>` and `<iostream>`.\n- Track coverage state in global or local `bool` variables outside `classify_triangle`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: declare four bool variables to track which branches are hit\n// hit_equilateral, hit_isosceles, hit_scalene, hit_invalid\n\n// TODO: implement classify_triangle(int a, int b, int c)\n// Returns \"Equilateral\", \"Isosceles\", \"Scalene\", or \"Invalid\"\n// Must also update the corresponding hit_X variable\nstd::string classify_triangle(int a, int b, int c) {\n    // TODO: check Invalid first (triangle inequality)\n    // TODO: then Equilateral, Isosceles, Scalene\n    return \"\";\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n\n    // TODO: read each set of three sides, call classify_triangle,\n    // and print \"a b c -> TYPE\"\n\n    // TODO: print blank line then branch coverage summary\n    // Format:\n    // Branch coverage summary:\n    // Equilateral branch: HIT or MISSED\n    // Isosceles branch: HIT or MISSED\n    // Scalene branch: HIT or MISSED\n    // Invalid branch: HIT or MISSED\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nbool hit_equilateral = false;\nbool hit_isosceles   = false;\nbool hit_scalene     = false;\nbool hit_invalid     = false;\n\nstd::string classify_triangle(int a, int b, int c) {\n    // Check triangle inequality (also handles sides <= 0 implicitly\n    // since with positive sides 1,1,5: 1+1 > 5 is false)\n    if (a <= 0 || b <= 0 || c <= 0 ||\n        a + b <= c || a + c <= b || b + c <= a) {\n        hit_invalid = true;\n        return \"Invalid\";\n    }\n    if (a == b && b == c) {\n        hit_equilateral = true;\n        return \"Equilateral\";\n    }\n    if (a == b || b == c || a == c) {\n        hit_isosceles = true;\n        return \"Isosceles\";\n    }\n    hit_scalene = true;\n    return \"Scalene\";\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n\n    for (int i = 0; i < t; i++) {\n        int a, b, c;\n        std::cin >> a >> b >> c;\n        std::string type = classify_triangle(a, b, c);\n        std::cout << a << \" \" << b << \" \" << c << \" -> \" << type << \"\\n\";\n    }\n\n    std::cout << \"\\n\";\n    std::cout << \"Branch coverage summary:\\n\";\n    std::cout << \"Equilateral branch: \" << (hit_equilateral ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"Isosceles branch: \"   << (hit_isosceles   ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"Scalene branch: \"     << (hit_scalene     ? \"HIT\" : \"MISSED\") << \"\\n\";\n    std::cout << \"Invalid branch: \"     << (hit_invalid     ? \"HIT\" : \"MISSED\") << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: all four branches hit",
+              "stdin": "4\n5 5 5\n5 5 3\n3 4 5\n1 2 3\n",
+              "expected_stdout": "5 5 5 -> Equilateral\n5 5 3 -> Isosceles\n3 4 5 -> Scalene\n1 2 3 -> Invalid\n\nBranch coverage summary:\nEquilateral branch: HIT\nIsosceles branch: HIT\nScalene branch: HIT\nInvalid branch: HIT\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: only Invalid hit",
+              "stdin": "2\n1 1 5\n10 1 2\n",
+              "expected_stdout": "1 1 5 -> Invalid\n10 1 2 -> Invalid\n\nBranch coverage summary:\nEquilateral branch: MISSED\nIsosceles branch: MISSED\nScalene branch: MISSED\nInvalid branch: HIT\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: T=1 scalene only",
+              "stdin": "1\n6 7 8\n",
+              "expected_stdout": "6 7 8 -> Scalene\n\nBranch coverage summary:\nEquilateral branch: MISSED\nIsosceles branch: MISSED\nScalene branch: HIT\nInvalid branch: MISSED\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9.3",
+      "title": "Common semantic errors in C++",
+      "sort_order": 119,
+      "summary_md": "## Common Semantic Errors in C++\n\nSemantic errors are bugs where the code compiles and runs but produces wrong results. Unlike syntax errors, the compiler won't catch them — you need tests (covered in *Introduction to testing your code*) and careful reasoning about intent.\n\n### Off-by-one errors\n\nThe classic culprit. Iterating `i <= vec.size()` instead of `i < vec.size()` causes undefined behavior on the last step. With C++20 ranges you sidestep this entirely by iterating the container directly rather than managing indices by hand.\n\n### Signed/unsigned mismatch\n\nComparing a signed `int` to an unsigned `size_t` can silently wrap when the signed value is negative. Prefer `ssize_t`, `std::ptrdiff_t`, or cast explicitly. C++20's `std::ssize()` returns a signed count, making range loops over indices much safer.\n\n### Uninitialized variables\n\nA variable declared but not initialized holds whatever bytes were already in memory. Always initialize at the point of declaration: `int count = 0;` not `int count;` followed by later assignment.\n\n### Integer overflow and truncation\n\nAssigning a `long long` result to an `int` silently truncates. Arithmetic on two `int` values overflows silently even if the result is stored in a `long long` — the overflow happens before the assignment. Cast at least one operand first.\n\n### Operator precedence surprises\n\n`result = a & b == 0` is parsed as `result = a & (b == 0)` because `==` binds tighter than `&`. Add explicit parentheses whenever mixing bitwise, comparison, and logical operators.\n\n```cpp\n#include <print>\n#include <vector>\n\nint main() {\n    std::vector<int> scores = {90, 85, 72, 95, 60};\n\n    // Semantic error: sums only the last element due to wrong loop bound\n    // for (std::size_t i = 1; i <= scores.size(); ++i) // UB on last step\n\n    int total = 0;\n    for (std::size_t i = 0; i < scores.size(); ++i)\n        total += scores[i];\n\n    std::println(\"Total: {}, Average: {:.1f}\", total,\n                 static_cast<double>(total) / static_cast<int>(scores.size()));\n}\n```\n\n### Using code coverage to find them\n\nAs discussed in *Code coverage*, a line being executed isn't proof it's correct — 100% branch coverage still won't catch a wrong formula. Pair coverage metrics with assertions (`assert`, `[[assume]]`) and unit tests that check boundary values, not just happy paths.",
+      "exercises": [
+        {
+          "title": "Diagnose and Fix a Running Total with Semantic Bugs",
+          "prompt_md": "## Goal\nComplete the function `int computeSum(const std::vector<int>& nums)` so it correctly sums all elements of the vector and returns the result without any semantic errors.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100), the number of integers.\n- Lines 2..N+1: one integer per line, each in the range [-1000, 1000].\n\n## Output\nPrint exactly two lines:\n- Line 1: `Sum: X` where X is the sum of all N integers.\n- Line 2: `Average: Y` where Y is the average formatted to exactly one decimal place (e.g. `Average: 3.5`).\n\nNo extra blank lines.\n\n## Requirements\n1. `computeSum` must use an index-based loop with `std::ssize()` to avoid signed/unsigned mismatch warnings.\n2. The loop bound must be strictly less than the size (no off-by-one: do not use `<=`).\n3. The accumulator variable must be initialized to `0` at the point of declaration.\n4. The average must be computed by casting `computeSum`'s return value to `double` before dividing — do not perform integer division.\n5. Dividing by N must use `static_cast<double>` on at least one operand.\n6. Hidden tests cover N = 1 (single element), all negative values, and a mix of positive and negative values that sum to zero.\n",
+          "starter_code": "#include <iostream>\n#include <vector>\n#include <print>\n\n// TODO: implement this function\n// - use an index-based loop with std::ssize() for the bound\n// - initialize the accumulator at declaration\n// - use strictly-less-than (<) for the loop condition\nint computeSum(const std::vector<int>& nums)\n{\n    // TODO: declare and initialize accumulator here\n    // TODO: write the loop (use std::ssize, not .size())\n    // TODO: return the result\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> nums(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> nums[i];\n\n    int total = computeSum(nums);\n\n    // TODO: print \"Sum: X\" on one line\n    // TODO: print \"Average: Y\" on the next line, Y formatted to 1 decimal place\n    //       cast total to double before dividing by n to avoid integer division\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n#include <print>\n\nint computeSum(const std::vector<int>& nums)\n{\n    int accumulator = 0;\n    for (std::ptrdiff_t i = 0; i < std::ssize(nums); ++i)\n        accumulator += nums[i];\n    return accumulator;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> nums(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> nums[i];\n\n    int total = computeSum(nums);\n\n    std::println(\"Sum: {}\", total);\n    std::println(\"Average: {:.1f}\", static_cast<double>(total) / n);\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — five mixed values",
+              "stdin": "5\n90\n85\n72\n95\n60\n",
+              "expected_stdout": "Sum: 402\nAverage: 80.4\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single element",
+              "stdin": "1\n7\n",
+              "expected_stdout": "Sum: 7\nAverage: 7.0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — values that sum to zero",
+              "stdin": "4\n-10\n-5\n5\n10\n",
+              "expected_stdout": "Sum: 0\nAverage: 0.0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Flag Out-of-Range Scores Using Bitwise Check Without Precedence Bugs",
+          "prompt_md": "## Goal\nComplete the function `void reportScores(const std::vector<int>& scores)` that processes a list of exam scores, prints each score with a status tag, and then prints summary statistics — all without semantic errors.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50), the number of scores.\n- Lines 2..N+1: one integer per line representing a score, each in the range [0, 200].\n\n## Output\nFor each score (in order), print one line:\n`Score X: PASS` if the score is in [60, 100] (inclusive on both ends), otherwise `Score X: FAIL`.\n\nAfter all per-score lines, print two more lines:\n- `Total: T` where T is the sum of all scores.\n- `Pass count: P` where P is the number of PASS scores.\n\nNo extra blank lines.\n\n## Requirements\n1. Use `std::ssize()` for the loop bound so the loop variable can be a signed `int` or `std::ptrdiff_t` — no signed/unsigned comparison warnings.\n2. The PASS/FAIL decision must use this exact bitwise expression to determine whether a score is out of range, with explicit parentheses to prevent precedence bugs: `bool outOfRange = ((score < 60) | (score > 100)) != 0;` — use `outOfRange` (or its negation) to choose the tag.\n3. The sum accumulator must be initialized to `0` at its declaration (uninitialized variable error prevention).\n4. The pass counter must be initialized to `0` at its declaration.\n5. `Total` must be computed as the sum of all scores regardless of PASS/FAIL status.\n6. Hidden tests cover N = 1 with a boundary score of exactly 60, N = 1 with a score of exactly 100, and a list where every score fails.\n",
+          "starter_code": "#include <iostream>\n#include <vector>\n#include <print>\n\n// TODO: implement this function\n// Requirements:\n// - use std::ssize() so the index variable is signed\n// - initialize sum and passCount at declaration\n// - use the bitwise out-of-range check with explicit parentheses:\n//     bool outOfRange = ((score < 60) | (score > 100)) != 0;\n// - print \"Score X: PASS\" or \"Score X: FAIL\" for each element\n// - after the loop print \"Total: T\" then \"Pass count: P\"\nvoid reportScores(const std::vector<int>& scores)\n{\n    // TODO: initialize sum and passCount\n    // TODO: loop with signed index using std::ssize()\n    // TODO: bitwise out-of-range check (with explicit parentheses)\n    // TODO: print per-score line\n    // TODO: update sum and passCount\n    // TODO: print Total and Pass count\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> scores(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> scores[i];\n\n    reportScores(scores);\n}\n",
+          "solution_code": "#include <iostream>\n#include <vector>\n#include <print>\n\nvoid reportScores(const std::vector<int>& scores)\n{\n    int sum = 0;\n    int passCount = 0;\n\n    for (std::ptrdiff_t i = 0; i < std::ssize(scores); ++i)\n    {\n        int score = scores[i];\n        // Explicit parentheses prevent operator-precedence surprises\n        bool outOfRange = ((score < 60) | (score > 100)) != 0;\n\n        if (!outOfRange)\n        {\n            std::println(\"Score {}: PASS\", score);\n            ++passCount;\n        }\n        else\n        {\n            std::println(\"Score {}: FAIL\", score);\n        }\n\n        sum += score;\n    }\n\n    std::println(\"Total: {}\", sum);\n    std::println(\"Pass count: {}\", passCount);\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> scores(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> scores[i];\n\n    reportScores(scores);\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — mixed scores",
+              "stdin": "5\n90\n55\n100\n30\n75\n",
+              "expected_stdout": "Score 90: PASS\nScore 55: FAIL\nScore 100: PASS\nScore 30: FAIL\nScore 75: PASS\nTotal: 350\nPass count: 3\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — boundary score of exactly 60",
+              "stdin": "1\n60\n",
+              "expected_stdout": "Score 60: PASS\nTotal: 60\nPass count: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — all scores fail",
+              "stdin": "3\n150\n0\n101\n",
+              "expected_stdout": "Score 150: FAIL\nScore 0: FAIL\nScore 101: FAIL\nTotal: 251\nPass count: 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9.4",
+      "title": "Detecting and handling errors",
+      "sort_order": 120,
+      "summary_md": "## Detecting and Handling Errors\n\nC++ gives you several distinct mechanisms for signaling and recovering from errors. Choosing the right one depends on whether the error is a programming mistake or a legitimate runtime condition.\n\n### Assertions — catching bugs early\n\n`assert()` (from `<cassert>`) terminates the program immediately when a condition is false. Use it to catch *programmer errors* — precondition violations, impossible states — never for user input or network failures. In release builds, assertions are typically compiled out via `NDEBUG`, so they carry zero runtime cost in production.\n\n`static_assert` (covered in *Common semantic errors in C++*) is the compile-time equivalent and is even cheaper: wrong template arguments or bad constants become hard errors before the program ever runs.\n\n### Return values and std::expected\n\nFor recoverable runtime errors, returning a value that encodes success or failure is the simplest approach. C++23 formalises this with `std::expected<T, E>`, which holds either a result or an error without the overhead of exceptions:\n\n```cpp\n#include <expected>\n#include <format>\n#include <string>\n\nauto parse_positive(int n) -> std::expected<int, std::string> {\n    if (n <= 0)\n        return std::unexpected(std::format(\"expected positive, got {}\", n));\n    return n * 2;\n}\n\nint main() {\n    if (auto result = parse_positive(-3); result)\n        std::println(\"Value: {}\", *result);\n    else\n        std::println(\"Error: {}\", result.error());\n}\n```\n\nThe structured-binding-friendly `.value()` / `.error()` interface makes the happy path and error path explicit without silent integer return codes.\n\n### Exceptions\n\nExceptions (`throw` / `try` / `catch`) are best reserved for errors that are truly exceptional — rare, difficult to handle locally, and crossing API boundaries. They add minimal cost when *not* triggered but can be expensive when thrown. Catch by `const` reference to avoid slicing:\n\n```cpp\ncatch (const std::runtime_error& e) { ... }\n```\n\n### Choosing between them\n\n- **Assertion** — programmer contract violation; should never happen in correct code.\n- **Return value / `std::expected`** — expected failure modes the caller can reasonably handle (file not found, parse failure).\n- **Exception** — genuinely exceptional conditions or when propagating errors through many call frames is impractical.\n\nMixing all three thoughtfully, rather than defaulting to exceptions everywhere, produces code that is both easier to test (as covered in *Introduction to testing your code*) and easier to reason about at a glance.",
+      "exercises": [
+        {
+          "title": "Validate Triangle Sides with Assertions and Return Values",
+          "prompt_md": "## Goal\nComplete the function `classify_triangle` that validates its inputs with an assertion and then returns either a classification string or an error message via `std::expected<std::string, std::string>`.\n\n## Input\n- Line 1: three positive integers `a`, `b`, `c` separated by spaces, each in range 1–1000.\n\n## Output\n- If the three sides form a valid triangle, print exactly one line: `Triangle: <type>` where `<type>` is one of `equilateral`, `isosceles`, or `scalene`.\n- If the three sides do NOT form a valid triangle (i.e., they fail the triangle inequality), print exactly one line: `Error: invalid triangle sides`.\n\n## Requirements\n1. `classify_triangle` must have the signature `auto classify_triangle(int a, int b, int c) -> std::expected<std::string, std::string>`.\n2. Inside `classify_triangle`, use `assert(a > 0 && b > 0 && c > 0)` to guard against non-positive inputs (programmer contract).\n3. If `a + b <= c` or `a + c <= b` or `b + c <= a`, return `std::unexpected(\"invalid triangle sides\")`.\n4. Otherwise return `\"equilateral\"` when all three sides are equal, `\"isosceles\"` when exactly two sides are equal, and `\"scalene\"` when all three sides are different.\n5. `main()` must check the returned `std::expected` and print the correct line as described in Output — use the exact prefix `Triangle: ` or `Error: `.\n6. Hidden tests include a degenerate case where two sides sum exactly to the third (e.g., `1 2 3`) and an equilateral case (`5 5 5`).",
+          "starter_code": "#include <cassert>\n#include <expected>\n#include <iostream>\n#include <string>\n\n// TODO: implement classify_triangle\n// - assert that a, b, c are all > 0\n// - return std::unexpected(\"invalid triangle sides\") when the triangle\n//   inequality is violated\n// - otherwise return \"equilateral\", \"isosceles\", or \"scalene\"\nauto classify_triangle(int a, int b, int c) -> std::expected<std::string, std::string>\n{\n    // TODO: fill in\n    (void)a; (void)b; (void)c;\n    return std::unexpected(std::string{\"not implemented\"});\n}\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // TODO: call classify_triangle, then print\n    //   \"Triangle: <type>\"  on success\n    //   \"Error: <message>\"  on failure\n    auto result = classify_triangle(a, b, c);\n    (void)result;\n\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <expected>\n#include <iostream>\n#include <string>\n\nauto classify_triangle(int a, int b, int c) -> std::expected<std::string, std::string>\n{\n    assert(a > 0 && b > 0 && c > 0);\n\n    if (a + b <= c || a + c <= b || b + c <= a)\n        return std::unexpected(std::string{\"invalid triangle sides\"});\n\n    if (a == b && b == c)\n        return std::string{\"equilateral\"};\n    if (a == b || b == c || a == c)\n        return std::string{\"isosceles\"};\n    return std::string{\"scalene\"};\n}\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    auto result = classify_triangle(a, b, c);\n    if (result)\n        std::cout << \"Triangle: \" << *result << \"\\n\";\n    else\n        std::cout << \"Error: \" << result.error() << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "scalene valid triangle",
+              "stdin": "3 4 5",
+              "expected_stdout": "Triangle: scalene\n",
+              "is_sample": true
+            },
+            {
+              "label": "degenerate — sides sum exactly to third",
+              "stdin": "1 2 3",
+              "expected_stdout": "Error: invalid triangle sides\n",
+              "is_sample": false
+            },
+            {
+              "label": "equilateral triangle",
+              "stdin": "5 5 5",
+              "expected_stdout": "Triangle: equilateral\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Safe Integer Division with std::expected and Exceptions",
+          "prompt_md": "## Goal\nComplete two functions — `safe_divide` and `process_divisions` — that together demonstrate using `std::expected` for an anticipated error (division by zero) and a `throw`/`catch` block for a truly exceptional condition (negative divisor).\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20), the number of division pairs to process.\n- Lines 2 through N+1: each line contains two integers `dividend` and `divisor` separated by a space. Both integers are in the range -1000 to 1000.\n\n## Output\nFor each pair, print exactly one line in one of these three formats:\n- `Result: <value>` — when division succeeds (integer division, truncating toward zero).\n- `Error: division by zero` — when the divisor is exactly 0.\n- `Exception: negative divisor <divisor>` — when the divisor is strictly negative (e.g., `Exception: negative divisor -3`).\n\n## Requirements\n1. `safe_divide` must have the signature `auto safe_divide(int dividend, int divisor) -> std::expected<int, std::string>`.\n2. Inside `safe_divide`, if `divisor == 0` return `std::unexpected(\"division by zero\")`.\n3. If `divisor < 0`, throw a `std::runtime_error` whose message is `\"negative divisor \"` followed by the divisor value (e.g., `\"negative divisor -3\"`).\n4. Otherwise return `dividend / divisor` (standard C++ integer division).\n5. `process_divisions` must have the signature `void process_divisions(int dividend, int divisor)`. It calls `safe_divide`, wraps it in a `try`/`catch (const std::runtime_error& e)` block, and prints the correct output line to `std::cout`.\n6. `main()` reads `N` pairs and calls `process_divisions` for each.\n7. Hidden tests include: a divisor of 0, a negative divisor, and a case where N = 1 with a positive result.",
+          "starter_code": "#include <cassert>\n#include <expected>\n#include <iostream>\n#include <stdexcept>\n#include <string>\n#include <format>\n\n// TODO: implement safe_divide\n// - return std::unexpected(\"division by zero\") when divisor == 0\n// - throw std::runtime_error with message \"negative divisor <divisor>\"\n//   when divisor < 0\n// - otherwise return dividend / divisor\nauto safe_divide(int dividend, int divisor) -> std::expected<int, std::string>\n{\n    // TODO: fill in\n    (void)dividend; (void)divisor;\n    return std::unexpected(std::string{\"not implemented\"});\n}\n\n// TODO: implement process_divisions\n// - call safe_divide inside a try/catch block\n// - print \"Result: <value>\", \"Error: <message>\", or\n//   \"Exception: <exception message>\" accordingly\nvoid process_divisions(int dividend, int divisor)\n{\n    // TODO: fill in\n    (void)dividend; (void)divisor;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i)\n    {\n        int a{}, b{};\n        std::cin >> a >> b;\n        process_divisions(a, b);\n    }\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <expected>\n#include <iostream>\n#include <stdexcept>\n#include <string>\n#include <format>\n\nauto safe_divide(int dividend, int divisor) -> std::expected<int, std::string>\n{\n    if (divisor == 0)\n        return std::unexpected(std::string{\"division by zero\"});\n    if (divisor < 0)\n        throw std::runtime_error(std::format(\"negative divisor {}\", divisor));\n    return dividend / divisor;\n}\n\nvoid process_divisions(int dividend, int divisor)\n{\n    try\n    {\n        auto result = safe_divide(dividend, divisor);\n        if (result)\n            std::cout << \"Result: \" << *result << \"\\n\";\n        else\n            std::cout << \"Error: \" << result.error() << \"\\n\";\n    }\n    catch (const std::runtime_error& e)\n    {\n        std::cout << \"Exception: \" << e.what() << \"\\n\";\n    }\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i)\n    {\n        int a{}, b{};\n        std::cin >> a >> b;\n        process_divisions(a, b);\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "mixed: success, zero divisor, negative divisor",
+              "stdin": "3\n10 2\n5 0\n9 -3",
+              "expected_stdout": "Result: 5\nError: division by zero\nException: negative divisor -3\n",
+              "is_sample": true
+            },
+            {
+              "label": "single pair positive result",
+              "stdin": "1\n100 4",
+              "expected_stdout": "Result: 25\n",
+              "is_sample": false
+            },
+            {
+              "label": "all three error types in different order",
+              "stdin": "4\n7 0\n-8 -2\n15 3\n0 0",
+              "expected_stdout": "Error: division by zero\nException: negative divisor -2\nResult: 5\nError: division by zero\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9.5",
+      "title": "std::cin and handling invalid input",
+      "sort_order": 121,
+      "summary_md": "## `std::cin` and Handling Invalid Input\n\n`std::cin` enters a *fail state* when the input doesn't match the expected type — for example, typing `\"abc\"` when the program expects an `int`. Once in a fail state, all subsequent reads silently do nothing until you explicitly clear it. This is one of the most common sources of mysterious loops and frozen programs.\n\nTwo member functions matter most:\n\n- `std::cin.fail()` — returns `true` if the last extraction failed\n- `std::cin.clear()` — resets the error flags so reads work again\n- `std::cin.ignore(n, delim)` — discards up to `n` characters from the buffer, stopping at `delim`; use `std::numeric_limits<std::streamsize>::max()` with `'\\n'` to flush the whole line\n\nEven a *successful* extraction can leave a problem: typing `42\\n` extracts `42` but leaves `\\n` in the buffer, which a later `std::getline` will swallow immediately. The fix is the same `ignore` call.\n\n```cpp\n#include <iostream>\n#include <limits>\n#include <format>\n\nint getPositiveInt() {\n    int value{};\n    while (true) {\n        std::cout << \"Enter a positive integer: \";\n        std::cin >> value;\n        if (!std::cin.fail() && value > 0)\n            return value;\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        std::cout << std::format(\"Invalid input. Try again.\\n\");\n    }\n}\n```\n\nThe loop retries until both conditions hold: no extraction failure *and* the value is in range. Separating these two checks is deliberate — a failed extraction leaves `value` unchanged from its previous state, so testing `value > 0` alone after a bad read would silently pass on whatever value happened to be there before.\n\nThis pattern connects back to **Common Semantic Errors in C++**: relying on an uninitialised or stale variable after a failed read is exactly the kind of silent logic error that produces wrong output with no compiler warning.\n\nExtraction with `>>` also skips leading whitespace by default, which is usually convenient. `std::getline` does *not* skip whitespace, so mixing the two in the same program requires care with the leftover newline described above.\n\nFor programs that need robust input handling, consider reading the whole line with `std::getline` first and then parsing or validating the string, which avoids most of the fail-state complexity entirely.",
+      "exercises": [
+        {
+          "title": "Validated Integer Input with Retry",
+          "prompt_md": "## Goal\nWrite a function `getIntInRange(int lo, int hi)` that repeatedly prompts the user for an integer until a valid one in the closed range `[lo, hi]` is entered, then returns it.\n\n## Input\n- Multiple lines of stdin, each containing one token.\n- A line may contain a non-integer token (e.g. `abc`, `3.7`) or an integer outside `[lo, hi]`.\n- The last line always contains a valid integer in `[lo, hi]`.\n- For this exercise, `lo = 1` and `hi = 10` (hardcoded in `main`).\n\n## Output\n- Before each read attempt, print exactly: `Enter an integer between 1 and 10: ` (no newline after the colon-space; `std::cout` flushes on input).\n- If the extraction fails (non-integer token), print: `Invalid input. Please try again.` followed by a newline, then prompt again.\n- If the extraction succeeds but the value is outside `[lo, hi]`, print: `Out of range. Please try again.` followed by a newline, then prompt again.\n- When a valid value is finally read, print exactly one line: `You entered: N` where `N` is that integer.\n\n## Requirements\n1. Implement `int getIntInRange(int lo, int hi)` with that exact signature.\n2. After a failed extraction, call `std::cin.clear()` then `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')` before the next read.\n3. After an out-of-range extraction, call `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')` to flush the rest of the line.\n4. The function must use a loop that retries on both failure types; it must not return until a valid value is obtained.\n5. `main` calls `getIntInRange(1, 10)` and prints the result as specified.\n6. Edge cases covered by hidden tests: first input is valid, first input is a word, first input is an in-type but out-of-range integer (e.g. `0` or `11`), multiple consecutive bad inputs before a good one.",
+          "starter_code": "#include <iostream>\n#include <limits>\n\n// TODO: Implement getIntInRange(int lo, int hi).\n// - Loop until a valid integer in [lo, hi] is entered.\n// - On extraction failure: print \"Invalid input. Please try again.\",\n//   clear the fail state, flush the line, then re-prompt.\n// - On out-of-range value: print \"Out of range. Please try again.\",\n//   flush the line, then re-prompt.\n// - Return the valid value.\nint getIntInRange(int lo, int hi)\n{\n    // TODO: fill in\n    return 0;\n}\n\nint main()\n{\n    int result{ getIntInRange(1, 10) };\n    std::cout << \"You entered: \" << result << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <limits>\n\nint getIntInRange(int lo, int hi)\n{\n    int value{};\n    while (true)\n    {\n        std::cout << \"Enter an integer between \" << lo << \" and \" << hi << \": \";\n        std::cin >> value;\n\n        if (std::cin.fail())\n        {\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            std::cout << \"Invalid input. Please try again.\\n\";\n        }\n        else if (value < lo || value > hi)\n        {\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            std::cout << \"Out of range. Please try again.\\n\";\n        }\n        else\n        {\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            return value;\n        }\n    }\n}\n\nint main()\n{\n    int result{ getIntInRange(1, 10) };\n    std::cout << \"You entered: \" << result << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Non-integer then valid",
+              "stdin": "abc\n7\n",
+              "expected_stdout": "Enter an integer between 1 and 10: Invalid input. Please try again.\nEnter an integer between 1 and 10: You entered: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "First input already valid",
+              "stdin": "5\n",
+              "expected_stdout": "Enter an integer between 1 and 10: You entered: 5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Out-of-range then non-integer then valid",
+              "stdin": "0\nfoo\n10\n",
+              "expected_stdout": "Enter an integer between 1 and 10: Out of range. Please try again.\nEnter an integer between 1 and 10: Invalid input. Please try again.\nEnter an integer between 1 and 10: You entered: 10\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Sum of N Valid Integers with Input Recovery",
+          "prompt_md": "## Goal\nWrite a program that reads a count `N`, then reads exactly `N` integers from the user (re-prompting on any invalid input), and prints their sum.\n\n## Input\n- Line 1: a single positive integer `N` (1 ≤ N ≤ 20), always valid.\n- Lines 2 onward: tokens entered by the user in response to prompts for each of the `N` integers. A token may be a non-integer (causing a fail state) or a valid integer. There are always exactly enough valid integers embedded in the stream to satisfy all `N` slots.\n\n## Output\n- Print `How many integers? ` (no newline) before reading `N`.\n- For each of the `N` integers to collect, print `Enter integer N/total: ` where `N` is the 1-based slot number and `total` is the value read on line 1. Example for slot 2 of 3: `Enter integer 2/3: `.\n- If an extraction fails (non-integer), print `Bad input, skipping.` followed by a newline, then re-prompt the **same** slot.\n- After all `N` valid integers are collected, print exactly one line: `Sum: S` where `S` is their sum.\n\n## Requirements\n1. Read `N` with `std::cin >>` (it is always a valid positive integer; no recovery needed for this read, but do call `ignore` after it to clear the newline).\n2. Use a loop over slots 1..N; for each slot, loop with retry until a valid integer is extracted.\n3. On extraction failure: call `std::cin.clear()`, then `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')`, print `Bad input, skipping.`, and retry the same slot.\n4. On extraction success: add the value to the running sum and advance to the next slot.\n5. Edge cases covered by hidden tests: N = 1 with no bad inputs; multiple consecutive bad inputs before a good one; bad inputs spread across different slots; all inputs immediately valid.",
+          "starter_code": "#include <iostream>\n#include <limits>\n\nint main()\n{\n    // TODO: Print \"How many integers? \" and read N.\n    // Remember to ignore the leftover newline after reading N.\n\n    // TODO: Loop over slots 1..N.\n    //   For each slot, loop with retry:\n    //     - Print \"Enter integer slot/N: \"\n    //     - Attempt std::cin >> value\n    //     - If fail: clear, ignore, print \"Bad input, skipping.\\n\", retry same slot\n    //     - If success: add to sum, move to next slot\n\n    // TODO: Print \"Sum: \" and the total.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <limits>\n\nint main()\n{\n    std::cout << \"How many integers? \";\n    int n{};\n    std::cin >> n;\n    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n\n    long long sum{ 0 };\n\n    for (int slot{ 1 }; slot <= n; )\n    {\n        std::cout << \"Enter integer \" << slot << \"/\" << n << \": \";\n        int value{};\n        std::cin >> value;\n\n        if (std::cin.fail())\n        {\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            std::cout << \"Bad input, skipping.\\n\";\n            // do NOT advance slot\n        }\n        else\n        {\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            sum += value;\n            ++slot;\n        }\n    }\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Bad input on first slot, then all valid",
+              "stdin": "3\nfoo\n4\n7\n2\n",
+              "expected_stdout": "How many integers? Enter integer 1/3: Bad input, skipping.\nEnter integer 1/3: Enter integer 2/3: Enter integer 3/3: Sum: 13\n",
+              "is_sample": true
+            },
+            {
+              "label": "N=1, immediately valid",
+              "stdin": "1\n42\n",
+              "expected_stdout": "How many integers? Enter integer 1/1: Sum: 42\n",
+              "is_sample": false
+            },
+            {
+              "label": "Multiple bad inputs across different slots",
+              "stdin": "2\nabc\n10\nxyz\nww\n5\n",
+              "expected_stdout": "How many integers? Enter integer 1/2: Bad input, skipping.\nEnter integer 1/2: Enter integer 2/2: Bad input, skipping.\nEnter integer 2/2: Bad input, skipping.\nEnter integer 2/2: Sum: 15\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9.6",
+      "title": "Assert and static_assert",
+      "sort_order": 122,
+      "summary_md": "## Assert and static_assert\n\nC++ provides two assertion mechanisms that catch bugs at different points in time: `assert` for runtime checks and `static_assert` for compile-time checks.\n\n### Runtime assertions with `assert`\n\n`assert` lives in `<cassert>` and takes a boolean expression. If the expression is false at runtime, the program immediately aborts with a diagnostic message showing the failed expression, file, and line number. This makes it useful for catching precondition violations during development — for example, verifying that a pointer is non-null before dereferencing it, or that an index is within bounds.\n\nCritically, `assert` is disabled in release builds when `NDEBUG` is defined (typically set by your build system in release mode). This means assertions have zero cost in shipped code, but it also means **you must never put side effects inside an assert** — the expression may not execute at all.\n\n```cpp\n#include <cassert>\n#include <format>\n#include <string_view>\n\ndouble divide(double numerator, double denominator)\n{\n    assert(denominator != 0.0 && \"denominator must not be zero\");\n    return numerator / denominator;\n}\n\nint main()\n{\n    auto result = divide(10.0, 2.0);\n    // divide(10.0, 0.0); // triggers assert in debug builds\n}\n```\n\nThe string literal trick (`&& \"message\"`) is a common idiom: a non-null string literal is always truthy, so it doesn't affect the condition but does appear in the abort message.\n\nAssertions differ from the error-handling strategies covered in **Detecting and handling errors** — they are for catching *programmer mistakes*, not *recoverable runtime conditions* like bad user input. For handling invalid input gracefully, see **std::cin and handling invalid input**.\n\n### Compile-time assertions with `static_assert`\n\n`static_assert` evaluates a constant expression at compile time and produces a compiler error if it is false. It accepts an optional string literal as a human-readable message.\n\n```cpp\nstatic_assert(sizeof(int) == 4, \"This code assumes 32-bit int\");\n```\n\n`static_assert` is especially powerful with templates and type traits — you can reject invalid template arguments before any code runs. Unlike `assert`, it is never disabled; it either passes or prevents compilation entirely.\n\n### When to use which\n\n- Use `static_assert` whenever the condition is knowable at compile time.\n- Use `assert` to document and enforce invariants and preconditions during development.\n- Use proper error handling (exceptions, return codes) for conditions that can legitimately occur in production.",
+      "exercises": [
+        {
+          "title": "Assert Array Index Access",
+          "prompt_md": "## Goal\nComplete the function `safeGet` that retrieves an element from a fixed-size integer array, using `assert` to enforce that the index is within bounds before accessing the array.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10), the number of elements in the array.\n- Line 2: exactly `N` space-separated integers, the array values.\n- Line 3: integer `idx`, the index to look up (0-based). The hidden tests that are expected to succeed will always provide a valid index (0 ≤ idx < N).\n\n## Output\nPrint exactly one line in the format: `Element at index <idx>: <value>` where `<idx>` and `<value>` are the provided index and the corresponding element.\n\nExample: `Element at index 2: 7`\n\n## Requirements\n1. Implement `int safeGet(const int* arr, int size, int idx)` which asserts `idx >= 0` and `idx < size` before returning `arr[idx]`.\n2. Use `assert` from `<cassert>` (not a manual `if` check) for both boundary conditions.\n3. The assert message for the upper-bound check must use the string-literal idiom so the text `\"index must be less than size\"` appears in the assert expression.\n4. The assert message for the lower-bound check must use the string-literal idiom so the text `\"index must be non-negative\"` appears in the assert expression.\n5. `main` reads N, the array values, and `idx`, then calls `safeGet` and prints the result.\n6. Edge cases covered by hidden tests: `idx = 0` (first element), `idx = N-1` (last element), N = 1.",
+          "starter_code": "#include <cassert>\n#include <iostream>\n\n// TODO: Implement safeGet.\n// - Assert that idx >= 0 (use the string-literal idiom with message \"index must be non-negative\")\n// - Assert that idx < size (use the string-literal idiom with message \"index must be less than size\")\n// - Return arr[idx]\nint safeGet(const int* arr, int size, int idx)\n{\n    // TODO: add assertions here\n    return arr[idx]; // TODO: this line is fine, just add assertions above\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int idx;\n    std::cin >> idx;\n\n    int value = safeGet(arr, n, idx);\n    std::cout << \"Element at index \" << idx << \": \" << value << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <iostream>\n\nint safeGet(const int* arr, int size, int idx)\n{\n    assert(idx >= 0 && \"index must be non-negative\");\n    assert(idx < size && \"index must be less than size\");\n    return arr[idx];\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int idx;\n    std::cin >> idx;\n\n    int value = safeGet(arr, n, idx);\n    std::cout << \"Element at index \" << idx << \": \" << value << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: middle element",
+              "stdin": "5\n3 1 7 4 9\n2",
+              "expected_stdout": "Element at index 2: 7\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: first element (idx = 0)",
+              "stdin": "4\n10 20 30 40\n0",
+              "expected_stdout": "Element at index 0: 10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: last element and N = 1",
+              "stdin": "1\n42\n0",
+              "expected_stdout": "Element at index 0: 42\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Compile-Time Power Validator",
+          "prompt_md": "## Goal\nComplete the function template `power2Info` and the required `static_assert` checks so that the program prints information about a compile-time base-2 exponent, while rejecting invalid template arguments entirely at compile time.\n\n## Input\n- Line 1: integer `x` (−10,000 ≤ x ≤ 10,000), a runtime value.\n- The template argument `E` is fixed at 3 in `main` and must satisfy the compile-time constraints.\n\n## Output\nPrint exactly two lines:\n- Line 1: `2^<E> = <value>` where `<E>` is the template exponent (3) and `<value>` is 2 raised to that power.\n- Line 2: `Runtime value: <x>` where `<x>` is the value read from stdin.\n\nExample output for E=3 and x=5:\n```\n2^3 = 8\nRuntime value: 5\n```\n\n## Requirements\n1. Write a `constexpr` helper function `compileTimePow(int base, int exp)` that computes `base` raised to `exp` using a loop; `exp` must be ≥ 0.\n2. Write a function template `power2Info<int E>` that:\n   - Contains a `static_assert` that rejects `E <= 0` with the message `\"exponent must be positive\"`.\n   - Contains a `static_assert` that rejects `E > 10` with the message `\"exponent must be 10 or less\"`.\n   - Prints line 1 (`2^<E> = <value>`) using `compileTimePow(2, E)` as the value.\n3. `main` reads `x`, calls `power2Info<3>()`, then prints line 2.\n4. The two `static_assert` constraints must be `static_assert` (not runtime `if` or `assert`).\n5. The starter code must compile and run correctly for `E = 3`.\n6. Edge cases covered by hidden tests: `x = 0`, `x = -10000`, `x = 10000`.",
+          "starter_code": "#include <cassert>\n#include <iostream>\n\n// TODO: Implement compileTimePow(int base, int exp) as a constexpr function.\n// Use a loop to compute base^exp. Assume exp >= 0.\nconstexpr int compileTimePow(int base, int exp)\n{\n    // TODO: implement\n    return 0;\n}\n\n// TODO: Implement the function template power2Info<int E>.\n// 1. Add a static_assert that E > 0 with message \"exponent must be positive\".\n// 2. Add a static_assert that E <= 10 with message \"exponent must be 10 or less\".\n// 3. Print: 2^<E> = <compileTimePow(2,E)>\ntemplate <int E>\nvoid power2Info()\n{\n    // TODO: static_asserts here\n\n    // TODO: print line 1\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n\n    power2Info<3>();\n\n    std::cout << \"Runtime value: \" << x << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <iostream>\n\nconstexpr int compileTimePow(int base, int exp)\n{\n    int result = 1;\n    for (int i = 0; i < exp; ++i)\n        result *= base;\n    return result;\n}\n\ntemplate <int E>\nvoid power2Info()\n{\n    static_assert(E > 0, \"exponent must be positive\");\n    static_assert(E <= 10, \"exponent must be 10 or less\");\n\n    std::cout << \"2^\" << E << \" = \" << compileTimePow(2, E) << '\\n';\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n\n    power2Info<3>();\n\n    std::cout << \"Runtime value: \" << x << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: x = 5",
+              "stdin": "5",
+              "expected_stdout": "2^3 = 8\nRuntime value: 5\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: x = 0",
+              "stdin": "0",
+              "expected_stdout": "2^3 = 8\nRuntime value: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: x = -10000",
+              "stdin": "-10000",
+              "expected_stdout": "2^3 = 8\nRuntime value: -10000\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "9.x",
+      "title": "Chapter 9 summary and quiz",
+      "sort_order": 123,
+      "summary_md": "# Chapter 9 Summary: Error Detection and Handling\n\nErrors fall into two broad categories: those you can catch at compile time and those that only appear at runtime. This chapter covered the full spectrum — from writing tests, through detecting logic bugs, to gracefully handling bad input and asserting invariants.\n\n## Key Ideas\n\n**Testing and coverage** — Unit tests verify that individual functions behave correctly for a range of inputs, including edge cases and boundary values. Code coverage measures how much of your code those tests actually exercise. High coverage doesn't guarantee correctness, but low coverage almost always hides bugs.\n\n**Semantic errors** are the sneakiest category: the code compiles and runs, but produces wrong results. Classic culprits include off-by-one errors, wrong operator precedence, accidentally comparing with `=` instead of `==`, and integer division where floating-point was intended.\n\n**Defensive programming** — When errors are detectable at runtime, you have three choices: handle them locally, pass them up to the caller, or terminate. `std::cin` failures taught us the concrete version of this: after a failed extraction you must clear the error flag and flush the buffer before any further input works.\n\n**Assertions** are for invariants that *must never* be false if your logic is correct. `assert` fires at runtime in debug builds; `static_assert` fires at compile time and costs nothing at runtime. Prefer `static_assert` whenever the condition can be evaluated at compile time.\n\n```cpp\n#include <cassert>\n#include <format>\n#include <print>\n\nconstexpr double circle_area(double radius) {\n    static_assert(sizeof(double) >= 8, \"need 64-bit double\");\n    assert(radius >= 0.0 && \"radius must be non-negative\");\n    return 3.14159265358979 * radius * radius;\n}\n\nint main() {\n    std::println(\"{}\", std::format(\"Area: {:.4f}\", circle_area(5.0)));\n}\n```\n\nNotice both assertion types in one function: `static_assert` checks a compile-time property of the platform; `assert` guards a runtime precondition.\n\n## What to Watch Out For\n\n- Forgetting to call `std::cin.clear()` *and* `std::cin.ignore()` after a failed read — omitting either leaves the stream broken.\n- Using `assert` to validate user input — asserts are stripped in release builds, so they're for programmer errors only, not external data.\n- Treating 100 % code coverage as a correctness guarantee; you also need *meaningful* test values, not just any path through the code.\n\nThe skills from this chapter — especially distinguishing *expected* runtime errors from *programmer mistakes* — underpin every error-handling pattern you'll encounter in later chapters.",
+      "exercises": [
+        {
+          "title": "Safe Integer Division with cin Recovery",
+          "prompt_md": "## Goal\nComplete the function `safe_divide` and a `main` that reads pairs of integers, recovers from bad input, and prints either the integer quotient or an error message.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of division operations to perform.\n- Lines 2..N+1: each line contains two values intended to be integers, separated by a space. A line may contain non-integer tokens.\n\n## Output\nFor each of the N lines print exactly one of the following (no extra blank lines, no trailing spaces):\n- If either token on the line is not a valid integer: `Error: invalid input`\n- If the second integer is 0: `Error: division by zero`\n- Otherwise: `Result: Q` where Q is the integer quotient of the first value divided by the second (truncated toward zero, matching C++ integer division).\n\n## Requirements\n1. Implement `int safe_divide(int a, int b)` that uses `assert` to enforce `b != 0` (the caller guarantees this after checking).\n2. In `main`, attempt to read two integers with `std::cin`. If extraction fails, call `std::cin.clear()` then `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')` to recover, then print `Error: invalid input` and continue to the next iteration.\n3. If both integers are read successfully but the divisor is 0, print `Error: division by zero` without calling `safe_divide`.\n4. Otherwise call `safe_divide` and print the result.\n5. The program must handle N = 1 (minimum), all-valid inputs, all-invalid inputs, and a mix.",
+          "starter_code": "#include <cassert>\n#include <iostream>\n#include <limits>\n\n// TODO: implement safe_divide(int a, int b)\n// Use assert to enforce b != 0.\n// Return the integer quotient a / b.\nint safe_divide(int a, int b)\n{\n    // TODO\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int a{};\n        int b{};\n\n        // TODO: attempt to read a and b.\n        // If extraction fails:\n        //   call std::cin.clear()\n        //   call std::cin.ignore(...) to flush the bad line\n        //   print \"Error: invalid input\"\n        //   continue to next iteration\n        // If b == 0, print \"Error: division by zero\"\n        // Otherwise print \"Result: \" followed by safe_divide(a, b)\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <iostream>\n#include <limits>\n\nint safe_divide(int a, int b)\n{\n    assert(b != 0);\n    return a / b;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int a{};\n        int b{};\n\n        if (!(std::cin >> a >> b))\n        {\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            std::cout << \"Error: invalid input\\n\";\n            continue;\n        }\n\n        if (b == 0)\n        {\n            std::cout << \"Error: division by zero\\n\";\n            continue;\n        }\n\n        std::cout << \"Result: \" << safe_divide(a, b) << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mix of valid, zero divisor, and bad input",
+              "stdin": "4\n10 3\n7 0\nhello 5\n-15 4\n",
+              "expected_stdout": "Result: 3\nError: division by zero\nError: invalid input\nResult: -3\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — all valid, N = 1",
+              "stdin": "1\n100 7\n",
+              "expected_stdout": "Result: 14\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — all error cases",
+              "stdin": "3\n0 0\nabc def\n5 0\n",
+              "expected_stdout": "Error: division by zero\nError: invalid input\nError: division by zero\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Compile-Time Buffer Validator with Runtime Bounds Check",
+          "prompt_md": "## Goal\nComplete the struct template `FixedBuffer<typename T, int N>` and the function `set_element` so that illegal template parameters are rejected at compile time and out-of-range indices are caught at runtime.\n\n## Input\n- Line 1: integer Q (1 ≤ Q ≤ 20), the number of operations.\n- Lines 2..Q+1: each line contains one integer index and one integer value, separated by a space.\n\nThe program uses a `FixedBuffer<int, 5>` (capacity 5, indices 0–4).\n\n## Output\nFor each operation print exactly one line:\n- If the index is in range [0, 4]: `Set index I to V` where I is the index and V is the value.\n- If the index is out of range: `Error: index I out of range` where I is the index.\n\nAfter all operations, print the final contents of the buffer on one line as: `Buffer: A B C D E` (space-separated, values in index order, initial value of every element is 0).\n\n## Requirements\n1. `FixedBuffer<T, N>` must contain a `static_assert` that fires when `N <= 0`, with the message `\"Buffer capacity must be positive\"`.\n2. `FixedBuffer<T, N>` must contain a `static_assert` that fires when `sizeof(T) > 8`, with the message `\"Element type too large\"`.\n3. `set_element(FixedBuffer<int,5>& buf, int index, int value)` must use `assert(index >= 0 && index < N)` to guard the write (the caller checks bounds first and only calls this function for valid indices).\n4. In `main`, check the index before calling `set_element`: print the error message for out-of-range indices and skip the call.\n5. The hidden tests cover Q = 1 (minimum), all in-range indices, all out-of-range indices, and boundary indices 0 and 4.",
+          "starter_code": "#include <cassert>\n#include <iostream>\n\n// TODO: define FixedBuffer<typename T, int N>\n// Fields needed:\n//   T data[N] initialized to all zeros\n// static_asserts:\n//   N > 0  (message: \"Buffer capacity must be positive\")\n//   sizeof(T) <= 8  (message: \"Element type too large\")\ntemplate <typename T, int N>\nstruct FixedBuffer\n{\n    // TODO\n};\n\n// TODO: implement set_element\n// Use assert to enforce index is in [0, N).\n// Set buf.data[index] = value.\nvoid set_element(FixedBuffer<int, 5>& buf, int index, int value)\n{\n    // TODO\n}\n\nint main()\n{\n    FixedBuffer<int, 5> buf{};\n\n    int q{};\n    std::cin >> q;\n\n    for (int i = 0; i < q; ++i)\n    {\n        int index{};\n        int value{};\n        std::cin >> index >> value;\n\n        // TODO: if index is in [0, 4], call set_element and print the success message.\n        // Otherwise print the error message.\n    }\n\n    // TODO: print the buffer contents.\n\n    return 0;\n}\n",
+          "solution_code": "#include <cassert>\n#include <iostream>\n\ntemplate <typename T, int N>\nstruct FixedBuffer\n{\n    static_assert(N > 0, \"Buffer capacity must be positive\");\n    static_assert(sizeof(T) <= 8, \"Element type too large\");\n    T data[N]{};\n};\n\nvoid set_element(FixedBuffer<int, 5>& buf, int index, int value)\n{\n    assert(index >= 0 && index < 5);\n    buf.data[index] = value;\n}\n\nint main()\n{\n    FixedBuffer<int, 5> buf{};\n\n    int q{};\n    std::cin >> q;\n\n    for (int i = 0; i < q; ++i)\n    {\n        int index{};\n        int value{};\n        std::cin >> index >> value;\n\n        if (index >= 0 && index < 5)\n        {\n            set_element(buf, index, value);\n            std::cout << \"Set index \" << index << \" to \" << value << '\\n';\n        }\n        else\n        {\n            std::cout << \"Error: index \" << index << \" out of range\\n\";\n        }\n    }\n\n    std::cout << \"Buffer:\";\n    for (int i = 0; i < 5; ++i)\n        std::cout << ' ' << buf.data[i];\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mix of valid and invalid indices",
+              "stdin": "5\n0 10\n3 7\n5 99\n4 42\n-1 3\n",
+              "expected_stdout": "Set index 0 to 10\nSet index 3 to 7\nError: index 5 out of range\nSet index 4 to 42\nError: index -1 out of range\nBuffer: 10 0 0 7 42\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — all in range, boundary indices 0 and 4",
+              "stdin": "3\n0 1\n4 9\n2 5\n",
+              "expected_stdout": "Set index 0 to 1\nSet index 4 to 9\nSet index 2 to 5\nBuffer: 1 0 5 0 9\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — all out of range, Q = 1",
+              "stdin": "1\n10 55\n",
+              "expected_stdout": "Error: index 10 out of range\nBuffer: 0 0 0 0 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

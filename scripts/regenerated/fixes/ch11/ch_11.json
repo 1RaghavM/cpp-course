@@ -1,0 +1,747 @@
+{
+  "chapter": {
+    "number": "11",
+    "title": "Function Overloading and Function Templates"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz",
+    "8.1: Control flow introduction",
+    "8.2: If statements and blocks",
+    "8.3: Common if statement problems",
+    "8.4: Constexpr if statements",
+    "8.5: Switch statement basics",
+    "8.6: Switch fallthrough and scoping",
+    "8.7: Goto statements",
+    "8.8: Introduction to loops and while statements",
+    "8.9: Do while statements",
+    "8.10: For statements",
+    "8.11: Break and continue",
+    "8.12: Halts (exiting your program early)",
+    "8.13: Introduction to random number generation",
+    "8.14: Generating random numbers using Mersenne Twister",
+    "8.15: Global random numbers (Random.h)",
+    "8.x: Chapter 8 summary and quiz",
+    "9.1: Introduction to testing your code",
+    "9.2: Code coverage",
+    "9.3: Common semantic errors in C++",
+    "9.4: Detecting and handling errors",
+    "9.5: std::cin and handling invalid input",
+    "9.6: Assert and static_assert",
+    "9.x: Chapter 9 summary and quiz",
+    "10.1: Implicit type conversion",
+    "10.2: Floating-point and integral promotion",
+    "10.3: Numeric conversions",
+    "10.4: Narrowing conversions, list initialization, and constexpr initializers",
+    "10.5: Arithmetic conversions",
+    "10.6: Explicit type conversion (casting) and static_cast",
+    "10.7: Typedefs and type aliases",
+    "10.8: Type deduction for objects using the auto keyword",
+    "10.9: Type deduction for functions",
+    "10.x: Chapter 10 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "11.1",
+      "title": "Introduction to function overloading",
+      "sort_order": 134,
+      "summary_md": "## Introduction to Function Overloading\n\nC++ lets you define multiple functions with the **same name** as long as their parameter lists differ. The compiler picks the right version at compile time based on the types and number of arguments you pass — this is called *overload resolution*.\n\nTwo overloads are distinct if they differ in:\n- the number of parameters\n- the types of parameters\n\nReturn type alone does **not** distinguish overloads. Two functions that differ only in what they return are a compile error.\n\n```cpp\n#include <print>\n#include <string>\n\nint square(int x)       { return x * x; }\ndouble square(double x) { return x * x; }\nstd::string square(std::string s) { return s + s; }\n\nint main() {\n    std::println(\"{}\", square(3));       // calls int version -> 9\n    std::println(\"{}\", square(2.5));     // calls double version -> 6.25\n    std::println(\"{}\", square(\"hi\"));   // calls string version -> hihi\n}\n```\n\n### How the compiler chooses\n\nWhen you write `square(3)`, the compiler builds a *candidate set* — all functions named `square` that are visible — then narrows it to *viable* candidates whose parameters can accept your arguments. Finally it ranks the viable candidates by how closely the argument types match:\n\n- **Exact match** — no conversion needed\n- **Promotion** — e.g. `bool`/`char`/`short` -> `int`, or `float` -> `double`\n- **Standard conversion** — e.g. `int` -> `double`, or `double` -> `int` (narrowing, but legal)\n- **User-defined conversion** — via constructors or conversion operators\n\nIf two candidates tie at the best rank, the call is *ambiguous* and won't compile. A classic trap: calling `square(42L)` when only `int` and `double` overloads exist is ambiguous because `long` converts equally well to `int` or `double` (both are standard conversions).\n\n### Overloading vs. default arguments\n\nBoth let one name handle multiple call signatures, but they're different tools. Default arguments (covered later in this chapter) add optional trailing parameters to a single function. Overloading is the right choice when the *logic* genuinely differs per type, not just the default values.\n\n### Why it matters\n\nOverloading is the foundation of most C++ APIs. The standard library relies on it heavily — `std::println`, `std::abs`, container constructors, and more are all overloaded. Understanding overload resolution now will also make function templates (coming next in this chapter) much easier to reason about, since templates generate overloads automatically.",
+      "exercises": [
+        {
+          "title": "Overloaded describe() for int, double, and string",
+          "prompt_md": "## Goal\nComplete three overloads of a function named `describe` that each print a one-line description of their argument.\n\n## Input\n- Line 1: an integer (may be negative, fits in `int`)\n- Line 2: a floating-point number (fits in `double`)\n- Line 3: a single word (no spaces, non-empty)\n\n## Output\nPrint exactly three lines in this order:\n- `int: <value>` where `<value>` is the integer from line 1\n- `double: <value>` where `<value>` is the double from line 2, printed with exactly 2 decimal places\n- `string: <value>` where `<value>` is the word from line 3\n\nNo extra blank lines. No trailing spaces.\n\n## Requirements\n1. You must define exactly three overloads, all named `describe`, with these signatures:\n   - `void describe(int x)`\n   - `void describe(double x)`\n   - `void describe(std::string s)`\n2. `main()` must call `describe` three times — once for each variable read from stdin — and the compiler must select the correct overload each time via overload resolution.\n3. The double line must use `std::fixed` and `std::setprecision(2)` (or equivalent) so that, for example, `3.5` prints as `3.50`.\n4. Negative integers must print with their minus sign, e.g. `-7` prints as `int: -7`.\n5. Do not use `if`/`else` or type-checking logic inside a single function to dispatch — each overload must handle exactly one type.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define void describe(int x)\n//       print \"int: \" followed by x\n\n// TODO: define void describe(double x)\n//       print \"double: \" followed by x with 2 decimal places\n\n// TODO: define void describe(std::string s)\n//       print \"string: \" followed by s\n\nint main() {\n    int    i;\n    double d;\n    std::string s;\n\n    std::cin >> i >> d >> s;\n\n    // TODO: call describe(i), describe(d), describe(s) in order\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nvoid describe(int x) {\n    std::cout << \"int: \" << x << \"\\n\";\n}\n\nvoid describe(double x) {\n    std::cout << std::fixed << std::setprecision(2)\n              << \"double: \" << x << \"\\n\";\n}\n\nvoid describe(std::string s) {\n    std::cout << \"string: \" << s << \"\\n\";\n}\n\nint main() {\n    int    i;\n    double d;\n    std::string s;\n\n    std::cin >> i >> d >> s;\n\n    describe(i);\n    describe(d);\n    describe(s);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — positive int, neat double, simple word",
+              "stdin": "5\n3.5\nhello\n",
+              "expected_stdout": "int: 5\ndouble: 3.50\nstring: hello\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — negative int, double needing rounding, longer word",
+              "stdin": "-12\n7.987\noverload\n",
+              "expected_stdout": "int: -12\ndouble: 7.99\nstring: overload\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — zero int, whole-number double, single char word",
+              "stdin": "0\n100.0\nz\n",
+              "expected_stdout": "int: 0\ndouble: 100.00\nstring: z\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Overloaded clamp() Applied to a Mixed List",
+          "prompt_md": "## Goal\nComplete two overloads of `clamp` — one for `int` and one for `double` — then use them to process a list of values read from stdin.\n\n## Background\n`clamp(value, lo, hi)` returns `lo` if `value < lo`, `hi` if `value > hi`, and `value` otherwise. You will write this logic twice: once for `int` and once for `double`, relying on overload resolution to call the right version.\n\n## Input\n- Line 1: two integers `lo` and `hi` separated by a space — the inclusive bounds for the `int` overload (`-1000 <= lo < hi <= 1000`)\n- Line 2: two doubles `flo` and `fhi` separated by a space — the inclusive bounds for the `double` overload (`-1000.0 <= flo < fhi <= 1000.0`)\n- Line 3: integer `N` (1 <= N <= 20) — total number of values to process\n- Lines 4 through N+3: each line contains a type tag (`I` or `D`) followed by a space and a value. Tag `I` means the value is an integer; tag `D` means it is a double.\n\n## Output\nFor each of the N input values, print one line:\n- If the tag was `I`: `clamped int: <result>` where `<result>` is the integer returned by your `int` overload\n- If the tag was `D`: `clamped double: <result>` where `<result>` is the double returned by your `double` overload, printed with exactly 2 decimal places\n\nNo extra blank lines. No trailing spaces.\n\n## Requirements\n1. Define exactly two overloads, both named `clamp`, with these signatures:\n   - `int clamp(int value, int lo, int hi)`\n   - `double clamp(double value, double lo, double hi)`\n2. Each overload must implement the clamp logic independently (no shared helper or casting between types).\n3. `main()` must read each tag, then call `clamp` with the matching bounds. The compiler must select the overload via overload resolution — do not cast arguments to force a specific version.\n4. Doubles must print with `std::fixed` and `std::setprecision(2)`.\n5. Hidden tests include values exactly equal to `lo` or `hi` (boundary), values well inside the range, and values far outside the range on both ends.\n6. N = 1 is a valid edge case and must produce exactly one output line.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define int clamp(int value, int lo, int hi)\n//       return lo if value < lo, hi if value > hi, else value\n\n// TODO: define double clamp(double value, double lo, double hi)\n//       same logic for doubles\n\nint main() {\n    int lo, hi;\n    double flo, fhi;\n    int n;\n\n    std::cin >> lo >> hi;\n    std::cin >> flo >> fhi;\n    std::cin >> n;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    for (int i = 0; i < n; ++i) {\n        char tag;\n        std::cin >> tag;\n\n        if (tag == 'I') {\n            int v;\n            std::cin >> v;\n            // TODO: call clamp(v, lo, hi) and print \"clamped int: <result>\"\n        } else {\n            double v;\n            std::cin >> v;\n            // TODO: call clamp(v, flo, fhi) and print \"clamped double: <result>\"\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nint clamp(int value, int lo, int hi) {\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\ndouble clamp(double value, double lo, double hi) {\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\nint main() {\n    int lo, hi;\n    double flo, fhi;\n    int n;\n\n    std::cin >> lo >> hi;\n    std::cin >> flo >> fhi;\n    std::cin >> n;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    for (int i = 0; i < n; ++i) {\n        char tag;\n        std::cin >> tag;\n\n        if (tag == 'I') {\n            int v;\n            std::cin >> v;\n            std::cout << \"clamped int: \" << clamp(v, lo, hi) << \"\\n\";\n        } else {\n            double v;\n            std::cin >> v;\n            std::cout << \"clamped double: \" << clamp(v, flo, fhi) << \"\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — mixed values, some out of range",
+              "stdin": "0 10\n0.0 5.0\n4\nI 7\nD 6.75\nI -3\nD 2.5\n",
+              "expected_stdout": "clamped int: 7\nclamped double: 5.00\nclamped int: 0\nclamped double: 2.50\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — boundary values and N=1",
+              "stdin": "-5 5\n-2.5 2.5\n1\nI 5\n",
+              "expected_stdout": "clamped int: 5\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — all values far outside range, mixed types",
+              "stdin": "1 9\n1.0 9.0\n5\nI 100\nD 0.001\nI -50\nD 9.0\nI 5\n",
+              "expected_stdout": "clamped int: 9\nclamped double: 1.00\nclamped int: 1\nclamped double: 9.00\nclamped int: 5\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.2",
+      "title": "Function overload differentiation",
+      "sort_order": 135,
+      "summary_md": "## Function Overload Differentiation\n\nThe compiler picks among overloaded functions by comparing the *call signature* to each candidate's *parameter list*. Understanding the exact rules prevents surprises and helps you design clean overload sets.\n\n### What Makes Two Overloads Distinct\n\nTwo functions with the same name are legal only if their parameter lists differ in at least one of these ways:\n\n- **Number of parameters** — `f(int)` vs `f(int, int)`\n- **Types of parameters** — `f(int)` vs `f(double)`\n\nReturn type alone **never** differentiates overloads. `int f()` and `double f()` cause a compile error if both exist.\n\nTop-level `const` on a value parameter is also irrelevant for differentiation: `f(int)` and `f(const int)` are the same signature because the caller cannot tell the difference.\n\n### How the Compiler Chooses\n\nResolution happens in ranked stages:\n\n1. **Exact match** — argument type matches parameter type precisely (after trivial conversions like array-to-pointer).\n2. **Promotion** — e.g., `char` or `short` promotes to `int`; `float` promotes to `double`.\n3. **Standard conversion** — `int` -> `double`, `long` -> `int`, pointer to `void*`, etc.\n4. **User-defined conversion** — constructors or `operator` conversions.\n5. **Variadic (`...`)** — last resort.\n\nIf two candidates tie at the *same* best stage, the call is **ambiguous** and fails to compile — the compiler won't guess.\n\n### A Common Pitfall\n\n```cpp\n#include <print>\n\nvoid show(int x)    { std::println(\"int: {}\", x); }\nvoid show(double x) { std::println(\"double: {}\", x); }\n\nint main() {\n    show(42);      // exact match -> int\n    show(3.14);    // exact match -> double\n    show(42L);     // long -> ambiguous! neither int nor double wins\n}\n```\n\nThe `long` argument requires a standard conversion to reach either `int` or `double`; neither wins outright, so the compiler rejects the call. Adding `void show(long x)` resolves it with an exact match.\n\n### Overloading vs. Default Arguments\n\nAs covered in *Introduction to function overloading*, default arguments can reduce the number of overloads you write, but they don't help when you need genuinely different behavior per type. Prefer overloads in that case and keep each one's intent obvious from its parameter types alone.\n\nWhen the overload set grows complex — especially across types you don't control — function templates (coming next in this chapter) are often the cleaner solution.",
+      "exercises": []
+    },
+    {
+      "number": "11.3",
+      "title": "Function overload resolution and ambiguous matches",
+      "sort_order": 136,
+      "summary_md": "## Function Overload Resolution and Ambiguous Matches\n\nWhen you call an overloaded function, the compiler works through a fixed sequence of steps to find the best candidate. Understanding this sequence explains why some calls compile cleanly, others pick a surprising overload, and others fail entirely.\n\n**The resolution sequence** (simplified to three stages):\n\n1. **Exact match** — argument types match a parameter list directly, or after trivial adjustments like array-to-pointer decay or adding `const`.\n2. **Promotion** — small integral types (`bool`, `char`, `short`) promote to `int`; `float` promotes to `double`.\n3. **Standard conversion** — any built-in conversion applies: `int` -> `double`, `double` -> `int`, `long` -> `int`, etc.\n\nThe compiler scores every viable candidate. If exactly one candidate wins at the *earliest* stage, it is called. If two candidates tie at the same stage, the call is **ambiguous** and the program won't compile.\n\n```cpp\n#include <print>\n\nvoid display(int x)    { std::println(\"int: {}\", x); }\nvoid display(double x) { std::println(\"double: {}\", x); }\nvoid display(int x, int y) { std::println(\"two ints: {} {}\", x, y); }\n\nint main() {\n    display(42);        // exact match -> int\n    display(3.14);      // exact match -> double\n    display(42, 7);     // exact match -> two ints\n    display(3.14f);     // float promotes to double -> double overload wins\n    // display(42L);    // ambiguous: long->int and long->double are both standard conversions\n}\n```\n\nNotice that `display(3.14f)` is **not** ambiguous: `float` to `double` is a *promotion* (stage 2), while `float` to `int` is a standard conversion (stage 3). Since promotion ranks higher, the `double` overload wins cleanly.\n\nThe commented-out `display(42L)` call *is* ambiguous: `long` to `int` and `long` to `double` are both standard conversions at the same rank, so neither wins.\n\n**Common ambiguity traps:**\n\n- Passing a `long` when only `int` and `double` overloads exist — both require a standard conversion, creating a tie.\n- Passing `unsigned int` when only `int` and `double` overloads exist — both are standard conversions.\n- Two overloads that differ only in `const`-ness of a *value* parameter (not pointer), since top-level `const` on a value is stripped during overload differentiation, as discussed in *Function overload differentiation*.\n\n**Resolving ambiguity** is straightforward: cast at the call site (`display(static_cast<int>(myLong))`), add an overload for the exact type, or consolidate overloads with a function template — the topic that opens the next section of this chapter.\n\nWhen the resolution rules feel surprising, reading the call through the three-stage checklist almost always reveals which step the compiler stalls on.",
+      "exercises": [
+        {
+          "title": "Trace Overload Resolution Stages",
+          "prompt_md": "## Goal\nComplete three overloaded functions named `describe` so that a driver program prints exactly which overload was selected for each of several argument types, demonstrating exact-match, promotion, and standard-conversion stages.\n\n## Input\n- Line 1: one integer N (1 <= N <= 6), the number of calls to make.\n- Lines 2..N+1: each line contains a tag character followed by a space and a numeric value.\n  - Tag `i` means pass the value as `int` (e.g. `i 7`).\n  - Tag `d` means pass the value as `double` (e.g. `d 3.14`).\n  - Tag `s` means pass the value as `short` — read it as `int` and cast to `short` before calling.\n  - Tag `c` means pass the value as `char` — read it as `int` and cast to `char` before calling.\n  - Values are in the range [-32768, 32767] for `s`/`c` tags, and general numeric range for `i`/`d` tags.\n\n## Output\nFor each call, print exactly one line in the format produced by the matching overload:\n- `int overload: X` where X is the integer value (for `i` and promotion-based calls like `s` and `c`).\n- `double overload: X` where X is the double value printed with exactly 2 decimal places (for `d` calls).\n\nPrint a trailing newline after each line. No blank lines between outputs.\n\n## Requirements\n1. Define exactly these three overloads (no others):\n   - `void describe(int x)` — prints `int overload: ` followed by `x`.\n   - `void describe(double x)` — prints `double overload: ` followed by `x` with 2 decimal places.\n   - `void describe(long long x)` — prints `long long overload: ` followed by `x`. (This overload exists but no test case exercises it — it is present to make the promotion rules observable: `short` and `char` must promote to `int`, not to `long long`.)\n2. For tag `s`, cast the read integer to `short` and call `describe` with that `short` value. The compiler must select the `int` overload via promotion.\n3. For tag `c`, cast the read integer to `char` and call `describe` with that `char` value. The compiler must select the `int` overload via promotion.\n4. For tag `d`, call `describe` with the read `double`. The compiler must select the `double` overload via exact match.\n5. For tag `i`, call `describe` with the read `int`. The compiler must select the `int` overload via exact match.\n6. Do **not** use `static_cast` at the call sites for `i` and `d` — the tags already determine the argument type.\n7. Output for `double` must use `std::fixed` and `std::setprecision(2)`.\n\n## Notes\n- Include `<iostream>` and `<iomanip>`; no other headers are required.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: define void describe(int x)\n// prints: int overload: X\n\n// TODO: define void describe(double x)\n// prints: double overload: X  (2 decimal places, fixed)\n\n// TODO: define void describe(long long x)\n// prints: long long overload: X\n// (exists so short/char promotion to int is unambiguous)\n\nint main() {\n    std::cout << std::fixed << std::setprecision(2);\n\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        char tag;\n        std::cin >> tag;\n\n        if (tag == 'i') {\n            int v;\n            std::cin >> v;\n            // TODO: call describe with an int argument\n        } else if (tag == 'd') {\n            double v;\n            std::cin >> v;\n            // TODO: call describe with a double argument\n        } else if (tag == 's') {\n            int raw;\n            std::cin >> raw;\n            // TODO: cast raw to short, then call describe\n        } else if (tag == 'c') {\n            int raw;\n            std::cin >> raw;\n            // TODO: cast raw to char, then call describe\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nvoid describe(int x) {\n    std::cout << \"int overload: \" << x << \"\\n\";\n}\n\nvoid describe(double x) {\n    std::cout << \"double overload: \" << x << \"\\n\";\n}\n\nvoid describe(long long x) {\n    std::cout << \"long long overload: \" << x << \"\\n\";\n}\n\nint main() {\n    std::cout << std::fixed << std::setprecision(2);\n\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        char tag;\n        std::cin >> tag;\n\n        if (tag == 'i') {\n            int v;\n            std::cin >> v;\n            describe(v);\n        } else if (tag == 'd') {\n            double v;\n            std::cin >> v;\n            describe(v);\n        } else if (tag == 's') {\n            int raw;\n            std::cin >> raw;\n            describe(static_cast<short>(raw));\n        } else if (tag == 'c') {\n            int raw;\n            std::cin >> raw;\n            describe(static_cast<char>(raw));\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed tags",
+              "stdin": "4\ni 42\nd 3.14\ns 7\nc 65\n",
+              "expected_stdout": "int overload: 42\ndouble overload: 3.14\nint overload: 7\nint overload: 65\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — all promotions",
+              "stdin": "3\ns -100\nc 97\ns 32767\n",
+              "expected_stdout": "int overload: -100\nint overload: 97\nint overload: 32767\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — exact matches only",
+              "stdin": "3\ni 0\nd 0.00\nd -9.99\n",
+              "expected_stdout": "int overload: 0\ndouble overload: 0.00\ndouble overload: -9.99\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Safe Numeric Printer with Cast-to-Resolve Ambiguity",
+          "prompt_md": "## Goal\nWrite a program that reads a sequence of tagged numeric values, resolves potential overload ambiguities using explicit casts at the call site, and prints the result of calling the correct overload of `print_value`.\n\nThis exercise combines **overload resolution / ambiguous matches** (the current lesson) with **function overloading** (earlier in Chapter 11): you must both define the overload set correctly and use casts to break ties when the raw type would be ambiguous.\n\n## Input\n- Line 1: integer N (1 <= N <= 8), the number of values to process.\n- Lines 2..N+1: each line has the form `TAG VALUE` where:\n  - `TAG` is one of: `INT`, `DBL`, `LNG`, `UINT`.\n  - `VALUE` is a numeric literal (possibly with a decimal point).\n  - `INT`  — treat as `int` (range -10000 to 10000).\n  - `DBL`  — treat as `double` (up to 4 decimal digits).\n  - `LNG`  — read as `long`; because passing `long` to `int` or `double` are both standard conversions, the call would be ambiguous. Resolve by casting to `int` at the call site.\n  - `UINT` — read as `unsigned int` (range 0 to 65535); because passing `unsigned int` to `int` or `double` are both standard conversions, resolve by casting to `int` at the call site.\n\n## Output\nFor each input line, print exactly one line:\n- For `INT`, `LNG`, or `UINT` calls (which land on the `int` overload): `[int] X` where X is the integer.\n- For `DBL` calls (which land on the `double` overload): `[double] X` where X is printed with exactly 4 decimal places.\n\nNo blank lines. Trailing newline after each output line.\n\n## Requirements\n1. Define exactly two overloads (no others are permitted): `void print_value(int x)` and `void print_value(double x)`.\n2. For `INT`: read an `int`, call `print_value` directly — this is an exact match.\n3. For `DBL`: read a `double`, call `print_value` directly — this is an exact match.\n4. For `LNG`: read the number into a `long` variable, then resolve the ambiguity by calling `print_value(static_cast<int>(val))`. Output uses the `int` overload.\n5. For `UINT`: read the number into an `unsigned int` variable, then resolve the ambiguity by calling `print_value(static_cast<int>(u))`. Output uses the `int` overload.\n6. Output for the `double` overload must use `std::fixed` and `std::setprecision(4)`.\n7. Hidden tests include: a single `UINT` call with value 0, a single `INT` call with a negative value, and mixed sequences that include both `LNG` and `UINT` entries.\n\n## Notes\n- Include `<iostream>`, `<iomanip>`, and `<string>`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define void print_value(int x)\n// prints: [int] X\n\n// TODO: define void print_value(double x)\n// prints: [double] X  (4 decimal places, fixed)\n\nint main() {\n    std::cout << std::fixed << std::setprecision(4);\n\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        std::string tag;\n        std::cin >> tag;\n\n        if (tag == \"INT\") {\n            int v;\n            std::cin >> v;\n            // TODO: call print_value — exact match, no cast needed\n        } else if (tag == \"DBL\") {\n            double v;\n            std::cin >> v;\n            // TODO: call print_value — exact match, no cast needed\n        } else if (tag == \"LNG\") {\n            long val;\n            std::cin >> val;\n            // TODO: call print_value resolving the long ambiguity with a cast to int\n        } else if (tag == \"UINT\") {\n            unsigned int u;\n            std::cin >> u;\n            // TODO: call print_value resolving the unsigned int ambiguity with a cast to int\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nvoid print_value(int x) {\n    std::cout << \"[int] \" << x << \"\\n\";\n}\n\nvoid print_value(double x) {\n    std::cout << \"[double] \" << x << \"\\n\";\n}\n\nint main() {\n    std::cout << std::fixed << std::setprecision(4);\n\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        std::string tag;\n        std::cin >> tag;\n\n        if (tag == \"INT\") {\n            int v;\n            std::cin >> v;\n            print_value(v);\n        } else if (tag == \"DBL\") {\n            double v;\n            std::cin >> v;\n            print_value(v);\n        } else if (tag == \"LNG\") {\n            long val;\n            std::cin >> val;\n            print_value(static_cast<int>(val));\n        } else if (tag == \"UINT\") {\n            unsigned int u;\n            std::cin >> u;\n            print_value(static_cast<int>(u));\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — all four tags",
+              "stdin": "4\nINT 25\nDBL 1.5\nLNG 42\nUINT 200\n",
+              "expected_stdout": "[int] 25\n[double] 1.5000\n[int] 42\n[int] 200\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — edge values: zero UINT, negative INT",
+              "stdin": "3\nUINT 0\nINT -999\nDBL 0.0001\n",
+              "expected_stdout": "[int] 0\n[int] -999\n[double] 0.0001\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — mixed LNG and UINT sequence",
+              "stdin": "5\nLNG 100\nUINT 65535\nINT 1\nLNG -50\nDBL 100.0\n",
+              "expected_stdout": "[int] 100\n[int] 65535\n[int] 1\n[int] -50\n[double] 100.0000\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.4",
+      "title": "Deleting functions",
+      "sort_order": 137,
+      "summary_md": "## Deleting Functions\n\nSometimes you want a function to explicitly *not* exist. C++ lets you delete a function with `= delete`, which causes the compiler to emit an error if anyone tries to call it.\n\n### Why Delete?\n\nThe most common reason is to block implicit conversions that overload resolution would otherwise allow. From *Function overload resolution and ambiguous matches* you know the compiler will try to convert arguments to find a match. Deleting specific overloads lets you shut that door.\n\n```cpp\n#include <print>\n\nvoid process(int x) { std::println(\"process(int): {}\", x); }\nvoid process(double) = delete;   // block double -> int silent conversion\nvoid process(bool)   = delete;   // block bool   -> int silent conversion\n\nint main() {\n    process(42);      // OK\n    // process(3.14); // error: call to deleted function\n    // process(true); // error: call to deleted function\n}\n```\n\nWithout the deleted overloads, `process(3.14)` would silently convert `3.14` to `3` (truncating the fractional part) — probably not what you want.\n\n### The Rule: Deleted Doesn't Mean Gone From Overload Resolution\n\nThis is the key point that surprises people. A deleted function still *participates* in overload resolution. The compiler selects the best match first, *then* checks whether it's deleted. If the best match is deleted, you get an error. If the deleted overload is not the best match, it's ignored entirely.\n\nThis distinction matters: `= delete` does not make the function invisible, it makes calling it a hard error. That's exactly what you want — it prevents a silent fallback to a different overload.\n\n### Placement\n\nA deleted definition must appear at the first declaration of the function. You cannot declare a function normally and then delete it later.\n\n### When to use `= delete`\n\nThe most practical use is blocking narrowing conversions in overload sets, as shown above. Any function can be deleted — free functions, template specializations, and more. You will encounter additional uses (such as preventing copying of objects) in later chapters when classes are introduced.",
+      "exercises": [
+        {
+          "title": "Block Implicit Conversions with Deleted Overloads",
+          "prompt_md": "## Goal\nComplete a program that defines a `printValue(int)` function and uses deleted overloads to block calls with `double`, `bool`, and `char` arguments.\n\n## Input\n- Line 1: one integer N (1 <= N <= 10)\n- Lines 2..N+1: each line contains exactly one token that is either an `int` literal (e.g. `7`), the word `DOUBLE`, the word `BOOL`, or the word `CHAR`\n\nYour `main()` reads each token and calls `printValue` with the matching type. The starter code handles all input and dispatch — you only need to supply the function declarations.\n\n## Output\n- For each `int` token: print exactly `Value: X` where X is the integer, followed by a newline.\n- The program must **not compile** if `printValue` is ever called with a `double`, `bool`, or `char` argument. Because the starter's `main()` uses `if constexpr` dispatch that is only compiled when the token matches, the program will compile fine for the provided test cases — but attempting to call the deleted overloads directly in new code would be a compile error.\n\n## Requirements\n1. Declare `void printValue(int x)` and implement it to print `Value: X` (capital V, colon, space, newline).\n2. Declare `void printValue(double) = delete;` — this blocks silent `double`->`int` conversion.\n3. Declare `void printValue(bool) = delete;` — this blocks silent `bool`->`int` conversion.\n4. Declare `void printValue(char) = delete;` — this blocks silent `char`->`int` conversion.\n5. All four declarations must appear before `main`.\n6. The hidden tests use only `int` tokens; they verify the correct output lines appear in order.\n\n## Notes\n- Use `#include <iostream>` and `#include <string>` (already in starter).\n- Do not modify `main()` — only fill in the four function declarations/definitions marked TODO.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: declare void printValue(int x) and implement it to print \"Value: X\"\n// TODO: declare void printValue(double) = delete;\n// TODO: declare void printValue(bool)   = delete;\n// TODO: declare void printValue(char)   = delete;\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        // Only the int branch is ever reached in the test cases.\n        // The other branches exist solely to show what would be deleted.\n        if (token == \"DOUBLE\")\n        {\n            // printValue(3.14);  // would be a compile error — not called here\n        }\n        else if (token == \"BOOL\")\n        {\n            // printValue(true);  // would be a compile error — not called here\n        }\n        else if (token == \"CHAR\")\n        {\n            // printValue('A');   // would be a compile error — not called here\n        }\n        else\n        {\n            printValue(std::stoi(token));\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nvoid printValue(int x)    { std::cout << \"Value: \" << x << \"\\n\"; }\nvoid printValue(double)   = delete;\nvoid printValue(bool)     = delete;\nvoid printValue(char)     = delete;\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        if (token == \"DOUBLE\")\n        {\n            // printValue(3.14);\n        }\n        else if (token == \"BOOL\")\n        {\n            // printValue(true);\n        }\n        else if (token == \"CHAR\")\n        {\n            // printValue('A');\n        }\n        else\n        {\n            printValue(std::stoi(token));\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — three int values",
+              "stdin": "3\n7\n-2\n100",
+              "expected_stdout": "Value: 7\nValue: -2\nValue: 100\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single value",
+              "stdin": "1\n42",
+              "expected_stdout": "Value: 42\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — larger sequence including zero and negative",
+              "stdin": "5\n0\n-99\n1\n55\n-1",
+              "expected_stdout": "Value: 0\nValue: -99\nValue: 1\nValue: 55\nValue: -1\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Type-Safe Logger with Deleted Overloads",
+          "prompt_md": "## Goal\nComplete a program that combines function overloading (from earlier in the chapter) with deleted overloads to build a small type-safe logger. Define overloaded `logValue` functions for `int` and `std::string`, and delete the `double`, `bool`, and `char` overloads so those types can never silently fall through.\n\n## Input\n- Line 1: integer N (1 <= N <= 20)\n- Lines 2..N+1: each line starts with a tag followed by a value:\n  - `INT X` — X is an integer (-10000 <= X <= 10000)\n  - `STR S` — S is a single word (no spaces, 1-20 characters)\n\nNo `DOUBLE`, `BOOL`, or `CHAR` tags appear in the test input.\n\n## Output\nFor each input line print exactly one of:\n- `[int] X` (square bracket tag, space, the integer value)\n- `[str] S` (square bracket tag, space, the string value)\n\nLines are printed in the same order they appear in the input.\n\n## Requirements\n1. Provide `void logValue(int x)` that prints `[int] X` followed by a newline.\n2. Provide `void logValue(std::string s)` that prints `[str] S` followed by a newline. The string is passed **by value** (not by reference, which is covered in a later chapter).\n3. Delete `void logValue(double)`, `void logValue(bool)`, and `void logValue(char)` so those calls are hard errors.\n4. All declarations must precede `main`.\n5. `main()` dispatches by reading the tag string: when tag is `\"INT\"` call `logValue(int)`, when tag is `\"STR\"` read a `std::string` and call `logValue(std::string)`.\n6. Hidden tests cover N = 1, alternating INT/STR lines, and the maximum magnitude integer -10000 and 10000.\n\n## Notes\n- Use `#include <iostream>` and `#include <string>` (already in starter).\n- Do not modify the structure of `main()` — only fill in the function declarations/definitions marked TODO.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement void logValue(int x)           — prints \"[int] X\\n\"\n// TODO: implement void logValue(std::string s)    — prints \"[str] S\\n\"\n// TODO: delete    void logValue(double)\n// TODO: delete    void logValue(bool)\n// TODO: delete    void logValue(char)\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string tag;\n        std::cin >> tag;\n\n        if (tag == \"INT\")\n        {\n            int x{};\n            std::cin >> x;\n            logValue(x);\n        }\n        else if (tag == \"STR\")\n        {\n            std::string s;\n            std::cin >> s;\n            logValue(s);\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nvoid logValue(int x)          { std::cout << \"[int] \" << x << \"\\n\"; }\nvoid logValue(std::string s)  { std::cout << \"[str] \" << s << \"\\n\"; }\nvoid logValue(double)         = delete;\nvoid logValue(bool)           = delete;\nvoid logValue(char)           = delete;\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string tag;\n        std::cin >> tag;\n\n        if (tag == \"INT\")\n        {\n            int x{};\n            std::cin >> x;\n            logValue(x);\n        }\n        else if (tag == \"STR\")\n        {\n            std::string s;\n            std::cin >> s;\n            logValue(s);\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — mixed INT and STR",
+              "stdin": "4\nINT 5\nSTR hello\nINT -3\nSTR world",
+              "expected_stdout": "[int] 5\n[str] hello\n[int] -3\n[str] world\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — single INT",
+              "stdin": "1\nINT 42",
+              "expected_stdout": "[int] 42\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — boundary integers and STR",
+              "stdin": "5\nINT -10000\nINT 10000\nSTR cpp\nINT 0\nSTR deleted",
+              "expected_stdout": "[int] -10000\n[int] 10000\n[str] cpp\n[int] 0\n[str] deleted\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.5",
+      "title": "Default arguments",
+      "sort_order": 138,
+      "summary_md": "## Default Arguments\n\nA **default argument** is a value supplied automatically when a caller omits that parameter. Declare defaults in the function declaration (usually in the header), not the definition.\n\n```cpp\n#include <print>\n\nstd::string formatScore(std::string name, int score, bool showRank = false, int rank = 0) {\n    if (showRank)\n        return std::format(\"{} — {} (rank {})\", name, score, rank);\n    return std::format(\"{} — {}\", name, score);\n}\n\nint main() {\n    std::println(\"{}\", formatScore(\"Alice\", 95));           // uses both defaults\n    std::println(\"{}\", formatScore(\"Bob\", 88, true, 2));    // overrides both\n}\n```\n\n### Rules and Restrictions\n\nDefault arguments must be **rightmost** — once you assign a default to a parameter, every parameter to its right must also have a default. You cannot leave a gap.\n\nDefaults can only be specified **once** per declaration in a translation unit. If you forward-declare a function and define it separately, put the defaults on the declaration, not the definition.\n\nAny expression that is evaluable at the call site is valid as a default: literals, `constexpr` variables, or even function calls — though mutable global state as a default is usually a maintenance hazard.\n\n### Interaction with Overloading\n\nDefault arguments are *not* overloads; the compiler still sees a single function. This means they can create **ambiguous matches** with actual overloads. For example, if `formatScore(std::string, int)` is also defined as a separate overload, a two-argument call becomes ambiguous. Keep this in mind from the earlier lesson *Function overload resolution and ambiguous matches* — the resolution rules treat the defaulted version as one candidate, and a second overload as another.\n\nSimilarly, `= delete` (covered in *Deleting functions*) applies to entire overload sets. You cannot delete just the \"version\" of a function that uses its defaults; deleting the function removes all calls to it.\n\n### When to Prefer Defaults vs. Overloads\n\n- Use default arguments when the extra parameters are genuinely optional add-ons to the same behavior.\n- Use overloads when the different parameter sets imply meaningfully different logic.\n\nMixing both strategies freely in the same overload set tends to produce hard-to-read resolution errors, so pick one approach per logical function and stay consistent.",
+      "exercises": [
+        {
+          "title": "Format a Receipt Line with Default Arguments",
+          "prompt_md": "## Goal\nComplete the function `formatReceiptLine` that formats a single item on a store receipt, using default arguments for the optional currency symbol and discount percentage.\n\n## Input\n- Line 1: integer N (1 <= N <= 10), the number of receipt lines to print.\n- Each of the next N lines contains one of the following formats:\n  - `name price` — two tokens: a string (no spaces) and a double\n  - `name price symbol` — three tokens: a string, a double, and a single-character string\n  - `name price symbol discount` — four tokens: a string, a double, a single-character string, and a double (0.0-100.0)\n\n## Output\n- Print exactly N lines, one per receipt item.\n- If no discount was provided (or discount is 0.0): print `[symbol]price — name` where price is shown with exactly 2 decimal places.\n- If a positive discount was provided: print `[symbol]discounted_price — name (discount% off)` where both prices are shown with exactly 2 decimal places and discount is shown with exactly 1 decimal place.\n- The default currency symbol is `$`.\n- The default discount is `0.0`.\n\n## Requirements\n1. Declare and define a function with this exact signature: `std::string formatReceiptLine(std::string name, double price, std::string symbol = \"$\", double discount = 0.0)`\n2. When `discount` is `0.0`, omit the discount portion entirely and print the original price.\n3. When `discount` is positive, compute `discounted = price * (1.0 - discount / 100.0)` and append ` (X.X% off)` to the line.\n4. The symbol appears immediately before the price with no space.\n5. Your function must use default arguments (not overloads) to handle the 2-, 3-, and 4-argument call forms.\n6. Hidden tests include: N=1 with only name and price, a discount of exactly 10.0, and a non-dollar symbol like `€`.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <format>\n#include <sstream>\n\n// TODO: declare and define formatReceiptLine here.\n// Signature: std::string formatReceiptLine(std::string name, double price,\n//                                          std::string symbol = \"$\", double discount = 0.0)\n// - If discount == 0.0: return \"[symbol]price — name\" (price to 2 decimal places)\n// - If discount  > 0.0: return \"[symbol]discounted_price — name (discount% off)\"\n//   where discounted_price = price * (1.0 - discount / 100.0)\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n\n    for (int i = 0; i < n; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        std::istringstream ss(line);\n\n        std::string name, symbol;\n        double price, discount;\n\n        ss >> name >> price;\n        if (ss >> symbol) {\n            if (ss >> discount) {\n                std::cout << formatReceiptLine(name, price, symbol, discount) << \"\\n\";\n            } else {\n                std::cout << formatReceiptLine(name, price, symbol) << \"\\n\";\n            }\n        } else {\n            std::cout << formatReceiptLine(name, price) << \"\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <format>\n#include <sstream>\n\nstd::string formatReceiptLine(std::string name, double price,\n                               std::string symbol = \"$\", double discount = 0.0) {\n    if (discount == 0.0) {\n        return std::format(\"{}{:.2f} — {}\", symbol, price, name);\n    } else {\n        double discounted = price * (1.0 - discount / 100.0);\n        return std::format(\"{}{:.2f} — {} ({:.1f}% off)\", symbol, discounted, name, discount);\n    }\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n\n    for (int i = 0; i < n; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        std::istringstream ss(line);\n\n        std::string name, symbol;\n        double price, discount;\n\n        ss >> name >> price;\n        if (ss >> symbol) {\n            if (ss >> discount) {\n                std::cout << formatReceiptLine(name, price, symbol, discount) << \"\\n\";\n            } else {\n                std::cout << formatReceiptLine(name, price, symbol) << \"\\n\";\n            }\n        } else {\n            std::cout << formatReceiptLine(name, price) << \"\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed argument counts",
+              "stdin": "3\nApple 1.50\nBanana 0.99 $\nChocolate 4.00 $ 25.0\n",
+              "expected_stdout": "$1.50 — Apple\n$0.99 — Banana\n$3.00 — Chocolate (25.0% off)\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — single item, price only",
+              "stdin": "1\nCoffee 3.75\n",
+              "expected_stdout": "$3.75 — Coffee\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — non-dollar symbol and 10% discount",
+              "stdin": "2\nCroissant 2.80 € 10.0\nWater 1.20 £\n",
+              "expected_stdout": "€2.52 — Croissant (10.0% off)\n£1.20 — Water\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Overloaded Shape Area with Default Rounding",
+          "prompt_md": "## Goal\nComplete two overloaded functions named `describeArea` — one for circles and one for rectangles — each accepting an optional boolean `rounded` (default `false`) that controls whether the result is rounded to the nearest integer before display.\n\n## Input\n- Line 1: integer N (1 <= N <= 10), the number of queries.\n- Each of the next N lines starts with a shape tag followed by numbers:\n  - `circle radius` or `circle radius rounded` where radius is a double and rounded is `0` or `1`\n  - `rect width height` or `rect width height rounded` where width and height are doubles and rounded is `0` or `1`\n\n## Output\n- For each query print exactly one line.\n- Circle line format: `Circle area: A` where A is pi * r * r displayed with 2 decimal places normally, or as an integer (no decimal point) when rounded is true.\n- Rectangle line format: `Rectangle area: A` where A is width * height displayed with 2 decimal places normally, or as an integer when rounded.\n- Use 3.14159265358979 for pi.\n\n## Requirements\n1. Declare and define two overloaded functions:\n   - `std::string describeArea(double radius, bool rounded = false)` — for circles\n   - `std::string describeArea(double width, double height, bool rounded = false)` — for rectangles\n2. Both functions must use a default argument for `rounded`; do not write additional overloads to handle the missing `rounded` case.\n3. When `rounded` is `true`, cast the computed area to `int` (truncate via `static_cast<int>(std::round(area))`) before formatting.\n4. When `rounded` is `false`, format the area with exactly 2 decimal places.\n5. The circle overload must prepend `\"Circle area: \"` and the rectangle overload must prepend `\"Rectangle area: \"`.\n6. Hidden tests include: a circle with no rounded flag, a rectangle with rounded=1, and a radius of 1.0 (area is approximately 3.14).",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <format>\n#include <cmath>\n#include <sstream>\n\nconstexpr double PI = 3.14159265358979;\n\n// TODO: define the circle overload\n// std::string describeArea(double radius, bool rounded = false)\n// Returns \"Circle area: A\" where A is PI*radius*radius\n// If rounded: format A as integer (use static_cast<int>(std::round(area)))\n// Else: format A with 2 decimal places\n\n// TODO: define the rectangle overload\n// std::string describeArea(double width, double height, bool rounded = false)\n// Returns \"Rectangle area: A\" where A is width*height\n// If rounded: format A as integer\n// Else: format A with 2 decimal places\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n\n    for (int i = 0; i < n; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        std::istringstream ss(line);\n\n        std::string shape;\n        ss >> shape;\n\n        if (shape == \"circle\") {\n            double radius;\n            int rounded = 0;\n            ss >> radius;\n            ss >> rounded; // may fail if not present; that's fine\n            std::cout << describeArea(radius, static_cast<bool>(rounded)) << \"\\n\";\n        } else { // rect\n            double width, height;\n            int rounded = 0;\n            ss >> width >> height;\n            ss >> rounded;\n            std::cout << describeArea(width, height, static_cast<bool>(rounded)) << \"\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <format>\n#include <cmath>\n#include <sstream>\n\nconstexpr double PI = 3.14159265358979;\n\nstd::string describeArea(double radius, bool rounded = false) {\n    double area = PI * radius * radius;\n    if (rounded)\n        return std::format(\"Circle area: {}\", static_cast<int>(std::round(area)));\n    return std::format(\"Circle area: {:.2f}\", area);\n}\n\nstd::string describeArea(double width, double height, bool rounded = false) {\n    double area = width * height;\n    if (rounded)\n        return std::format(\"Rectangle area: {}\", static_cast<int>(std::round(area)));\n    return std::format(\"Rectangle area: {:.2f}\", area);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n\n    for (int i = 0; i < n; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        std::istringstream ss(line);\n\n        std::string shape;\n        ss >> shape;\n\n        if (shape == \"circle\") {\n            double radius;\n            int rounded = 0;\n            ss >> radius;\n            ss >> rounded;\n            std::cout << describeArea(radius, static_cast<bool>(rounded)) << \"\\n\";\n        } else {\n            double width, height;\n            int rounded = 0;\n            ss >> width >> height;\n            ss >> rounded;\n            std::cout << describeArea(width, height, static_cast<bool>(rounded)) << \"\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed shapes and rounding",
+              "stdin": "4\ncircle 5.0\ncircle 5.0 1\nrect 4.0 3.0\nrect 4.0 3.0 1\n",
+              "expected_stdout": "Circle area: 78.54\nCircle area: 79\nRectangle area: 12.00\nRectangle area: 12\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — radius 1.0 and small rectangle",
+              "stdin": "2\ncircle 1.0\nrect 2.5 2.5 1\n",
+              "expected_stdout": "Circle area: 3.14\nRectangle area: 6\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — rectangle with rounded=1 and circle no flag",
+              "stdin": "3\nrect 7.0 3.0 1\ncircle 3.0\nrect 1.5 4.0\n",
+              "expected_stdout": "Rectangle area: 21\nCircle area: 28.27\nRectangle area: 6.00\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.6",
+      "title": "Function templates",
+      "sort_order": 139,
+      "summary_md": "## Function Templates\n\nWhen you need the same logic for multiple types, writing separate overloads is tedious and fragile. **Function templates** let you write the logic once and let the compiler generate the concrete functions it needs.\n\n```cpp\n#include <format>\n#include <iostream>\n\ntemplate <typename T>\nT larger(T a, T b)\n{\n    return (a > b) ? a : b;\n}\n\nint main()\n{\n    std::cout << std::format(\"{}\\n\", larger(3, 7));        // int\n    std::cout << std::format(\"{}\\n\", larger(1.2, 0.8));    // double\n    std::cout << std::format(\"{}\\n\", larger('z', 'a'));    // char\n}\n```\n\n### Template parameters\n\nThe `template <typename T>` line declares `T` as a **type parameter** — a placeholder the compiler fills in during compilation. `class` is interchangeable with `typename` here; `typename` is the modern preference for clarity.\n\n### Instantiation\n\nWhen the compiler sees `larger(3, 7)`, it **instantiates** the template: it deduces `T = int` and generates a concrete `larger(int, int)` function. Each unique combination of argument types produces a separate instantiation. The template itself compiles to no code on its own — only instantiations do.\n\n### Template argument deduction\n\nThe compiler infers `T` from the function arguments automatically. Both arguments must agree: `larger(3, 1.5)` is a deduction failure because `T` can't be both `int` and `double` simultaneously. You can resolve this by providing the type explicitly — `larger<double>(3, 1.5)` — or by adjusting the template to accept two independent type parameters.\n\n### Relationship to overloads\n\nTemplates and regular overloads coexist. As covered in *Function overload resolution and ambiguous matches*, the compiler prefers a non-template overload when it's an equally good match. A template is chosen only when no concrete overload fits better. This means you can write a template as the general case and a hand-tuned overload for a specific type without conflict.\n\n### Constraints to keep in mind\n\n- The template body must make sense for every type `T` used to instantiate it. If `T` lacks `operator>`, compilation fails at instantiation.\n- Errors in templates often produce verbose diagnostics because the compiler reports the failure inside the generated code, not at the call site.\n- C++20 **concepts** (a later topic) let you constrain what types `T` may be, producing cleaner errors and better documentation.\n\nFunction templates are the foundation of generic programming in C++ — the same mechanism powers the standard library containers and algorithms you will use constantly.",
+      "exercises": [
+        {
+          "title": "Clamp a Value Between Two Bounds",
+          "prompt_md": "## Goal\nComplete the function template `clamp` that returns a value restricted to the inclusive range `[lo, hi]`.\n\n## Input\n- Line 1: a single character indicating the type to test — either `i` (int), `d` (double), or `c` (char).\n- Line 2: three space-separated values of the indicated type — `value`, `lo`, `hi`.\n\n## Output\nPrint exactly one line in the format `Clamped: X` where `X` is the clamped result.\n- For `i`: print the integer with no decimal point.\n- For `d`: print the double with no trailing zeros beyond what `std::format(\"{}\", ...)` produces by default.\n- For `c`: print the single character.\n\n## Requirements\n1. Implement a single function template `clamp(T value, T lo, T hi)` with type parameter `T`. Do **not** write three separate overloads.\n2. `clamp` must return `lo` if `value < lo`, return `hi` if `value > hi`, and return `value` otherwise.\n3. `main()` reads the type tag and dispatches to the same template for all three branches.\n4. The hidden tests cover: `value` already within range (no clamping needed), `value` equal to `lo`, and `value` equal to `hi`.\n5. Use `std::format` for output.\n\n## Notes\n- Include `<format>`, `<iostream>`, and `<string>` only.\n- `operator<` and `operator>` must be valid for every type `T` the template is instantiated with — int, double, and char all satisfy this.",
+          "starter_code": "#include <format>\n#include <iostream>\n#include <string>\n\n// TODO: write a function template named clamp with one type parameter T.\n// It takes three parameters: value, lo, hi — all of type T.\n// Return value clamped to the inclusive range [lo, hi].\n\nint main()\n{\n    char tag{};\n    std::cin >> tag;\n\n    if (tag == 'i')\n    {\n        int value{}, lo{}, hi{};\n        std::cin >> value >> lo >> hi;\n        // TODO: call clamp with int arguments and print the result\n    }\n    else if (tag == 'd')\n    {\n        double value{}, lo{}, hi{};\n        std::cin >> value >> lo >> hi;\n        // TODO: call clamp with double arguments and print the result\n    }\n    else // 'c'\n    {\n        char value{}, lo{}, hi{};\n        std::cin >> value >> lo >> hi;\n        // TODO: call clamp with char arguments and print the result\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <format>\n#include <iostream>\n#include <string>\n\ntemplate <typename T>\nT clamp(T value, T lo, T hi)\n{\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\nint main()\n{\n    char tag{};\n    std::cin >> tag;\n\n    if (tag == 'i')\n    {\n        int value{}, lo{}, hi{};\n        std::cin >> value >> lo >> hi;\n        std::cout << std::format(\"Clamped: {}\\n\", clamp(value, lo, hi));\n    }\n    else if (tag == 'd')\n    {\n        double value{}, lo{}, hi{};\n        std::cin >> value >> lo >> hi;\n        std::cout << std::format(\"Clamped: {}\\n\", clamp(value, lo, hi));\n    }\n    else // 'c'\n    {\n        char value{}, lo{}, hi{};\n        std::cin >> value >> lo >> hi;\n        std::cout << std::format(\"Clamped: {}\\n\", clamp(value, lo, hi));\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — int below range",
+              "stdin": "i\n-5 0 10\n",
+              "expected_stdout": "Clamped: 0\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — double within range",
+              "stdin": "d\n3.7 1.0 5.5\n",
+              "expected_stdout": "Clamped: 3.7\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — char above range",
+              "stdin": "c\nz a m\n",
+              "expected_stdout": "Clamped: m\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Generic Larger-Of-Two with Overload Preference",
+          "prompt_md": "## Goal\nComplete a function template `larger` and a non-template overload for `int` that demonstrates how overload resolution prefers a non-template exact match over a template instantiation.\n\n## Input\n- Line 1: integer N (1 <= N <= 10) — the number of operations.\n- Each of the next N lines contains a type tag followed by two values:\n  - Tag `i`: two integers.\n  - Tag `d`: two doubles.\n  - Tag `c`: two characters.\n\n## Output\nFor each operation print exactly one line:\n- `larger: X` where X is the larger of the two values (if equal, return the first).\n- When the `int` non-template overload is selected (tag `i`), it must also print `[overload]` before the result line, on its own line.\n\nSo for tag `i`, output is two lines:\n```\n[overload]\nlarger: X\n```\nFor tags `d` and `c`, output is one line:\n```\nlarger: X\n```\n\n## Requirements\n1. Implement a function template `template <typename T> T larger(T a, T b)` that returns `a` if `a >= b`, else `b`.\n2. Implement a non-template overload `int larger(int a, int b)` that prints `[overload]` on its own line, then returns `a` if `a >= b`, else `b`.\n3. For tag `i`, call `larger` with two `int` values. The compiler must prefer the non-template overload (exact match preference).\n4. For tag `d`, call `larger` with two `double` values. The compiler must instantiate the template.\n5. For tag `c`, call `larger` with two `char` values. The compiler must instantiate the template.\n6. Use `std::format` for the result line.\n7. Hidden tests cover: equal values (tie goes to first), negative integers, and single-character comparison.\n\n## Notes\n- Include `<format>` and `<iostream>` only.\n- The key learning point: when a non-template overload and a template instantiation are equally good matches, the non-template wins.",
+          "starter_code": "#include <format>\n#include <iostream>\n\n// TODO: write the function template larger(T a, T b)\n// Returns a if a >= b, else b.\n\n// TODO: write the non-template overload larger(int a, int b)\n// Prints \"[overload]\" on its own line, then returns a if a >= b, else b.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{}; i < n; ++i)\n    {\n        char tag{};\n        std::cin >> tag;\n\n        if (tag == 'i')\n        {\n            int a{}, b{};\n            std::cin >> a >> b;\n            // TODO: call larger, print result as \"larger: X\"\n        }\n        else if (tag == 'd')\n        {\n            double a{}, b{};\n            std::cin >> a >> b;\n            // TODO: call larger, print result as \"larger: X\"\n        }\n        else // 'c'\n        {\n            char a{}, b{};\n            std::cin >> a >> b;\n            // TODO: call larger, print result as \"larger: X\"\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <format>\n#include <iostream>\n\ntemplate <typename T>\nT larger(T a, T b)\n{\n    return (a >= b) ? a : b;\n}\n\nint larger(int a, int b)\n{\n    std::cout << \"[overload]\\n\";\n    return (a >= b) ? a : b;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{}; i < n; ++i)\n    {\n        char tag{};\n        std::cin >> tag;\n\n        if (tag == 'i')\n        {\n            int a{}, b{};\n            std::cin >> a >> b;\n            int result = larger(a, b);\n            std::cout << std::format(\"larger: {}\\n\", result);\n        }\n        else if (tag == 'd')\n        {\n            double a{}, b{};\n            std::cin >> a >> b;\n            std::cout << std::format(\"larger: {}\\n\", larger(a, b));\n        }\n        else // 'c'\n        {\n            char a{}, b{};\n            std::cin >> a >> b;\n            std::cout << std::format(\"larger: {}\\n\", larger(a, b));\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — all three types",
+              "stdin": "3\ni 3 7\nd 1.5 0.8\nc z a\n",
+              "expected_stdout": "[overload]\nlarger: 7\nlarger: 1.5\nlarger: z\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — equal values, negative int",
+              "stdin": "3\ni -5 -5\nd 4.0 4.0\nc m m\n",
+              "expected_stdout": "[overload]\nlarger: -5\nlarger: 4\nlarger: m\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — first is larger in all cases",
+              "stdin": "3\ni 10 -3\nd 9.9 1.1\nc z b\n",
+              "expected_stdout": "[overload]\nlarger: 10\nlarger: 9.9\nlarger: z\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.7",
+      "title": "Function template instantiation",
+      "sort_order": 140,
+      "summary_md": "## Function Template Instantiation\n\nWhen the compiler encounters a call to a function template, it generates a concrete function from that template for the specific types involved. This generated function is called a **template instantiation**, and the process is called **instantiation**.\n\n### Implicit vs Explicit Instantiation\n\n**Implicit instantiation** happens automatically when you call a function template and the compiler deduces the template arguments from the arguments you pass:\n\n```cpp\n#include <print>\n\ntemplate <typename T>\nT add(T a, T b) { return a + b; }\n\nint main()\n{\n    auto i = add(1, 2);         // instantiates add<int>\n    auto d = add(1.5, 2.5);    // instantiates add<double>\n    auto e = add<int>(1, 2);   // explicit template argument — still implicit instantiation\n    std::println(\"{} {}\", i, d);\n}\n```\n\nThe compiler writes `add<int>` and `add<double>` behind the scenes — two separate functions in the compiled output. Calling `add` with the same type a hundred times still produces only one instantiation for that type.\n\n**Explicit instantiation** forces the compiler to generate a specific instantiation immediately, without a call:\n\n```cpp\ntemplate int add<int>(int, int);   // explicit instantiation definition\n```\n\nThis matters mainly when you split templates across translation units, which is an advanced topic covered later.\n\n### Type Deduction Rules\n\nThe compiler deduces `T` by matching each template parameter against the actual argument types. A few constraints apply:\n\n- Each occurrence of `T` in the parameter list must deduce to the **same type**. Calling `add(1, 2.5)` fails because the first argument deduces `int` and the second deduces `double`.\n- You can override deduction by providing an explicit type: `add<double>(1, 2.5)` coerces `1` to `double`.\n- Deduction does not consider implicit conversions the way overload resolution does (covered in *Function overload resolution and ambiguous matches*).\n\n### One Definition, Many Functions\n\nEach unique set of template arguments produces a distinct instantiation with its own compiled code. If `T = int` and `T = double` are both used, both exist in the binary. This is the core trade-off of templates: expressive generality at the cost of potential code size growth (sometimes called **code bloat**).\n\nThe compiler only instantiates what is actually used, so unused template specializations produce no code at all.",
+      "exercises": [
+        {
+          "title": "Absolute Value Template with Explicit Instantiation",
+          "prompt_md": "## Goal\nComplete the function template `absVal` that returns the absolute value of its argument, then call it for `int` and `double` — once using implicit deduction and once using an explicit template argument — to demonstrate both instantiation styles.\n\n## Input\n- Line 1: one integer and one double, space-separated (e.g. `-7 3.14`).\n\n## Output\nPrint exactly four lines:\n- `implicit int: X` — result of `absVal(intVal)` (implicit deduction -> `absVal<int>`)\n- `explicit int: X` — result of `absVal<int>(intVal)` (explicit template argument)\n- `implicit double: X` — result of `absVal(doubleVal)` with 2 decimal places\n- `explicit double: X` — result of `absVal<double>(doubleVal)` with 2 decimal places\n\nExample for input `-7 3.14`:\n```\nimplicit int: 7\nexplicit int: 7\nimplicit double: 3.14\nexplicit double: 3.14\n```\n\n## Requirements\n1. Write a single function template `template <typename T> T absVal(T x)` that returns the absolute value. Use a simple conditional: `return (x < 0) ? -x : x;` — do **not** use `std::abs`.\n2. Call `absVal(intVal)` for implicit int deduction.\n3. Call `absVal<int>(intVal)` for explicit int instantiation.\n4. Call `absVal(doubleVal)` for implicit double deduction.\n5. Call `absVal<double>(doubleVal)` for explicit double instantiation.\n6. Use `std::fixed` and `std::setprecision(2)` for the double output lines.\n7. Hidden tests cover: positive input (no change needed), zero values, and large negative numbers.\n\n## Notes\n- Include `<iostream>` and `<iomanip>` only.\n- Both implicit and explicit calls produce the same result — the point is to observe that both syntaxes work.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: write the function template absVal(T x)\n// Returns x if x >= 0, otherwise -x.\n// Do NOT use std::abs.\n\nint main()\n{\n    int intVal{};\n    double doubleVal{};\n    std::cin >> intVal >> doubleVal;\n\n    // TODO: call absVal with implicit deduction for int, print \"implicit int: X\"\n    // TODO: call absVal<int> with explicit template argument, print \"explicit int: X\"\n    // TODO: call absVal with implicit deduction for double, print \"implicit double: X\" (2 dp)\n    // TODO: call absVal<double> with explicit template argument, print \"explicit double: X\" (2 dp)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ntemplate <typename T>\nT absVal(T x)\n{\n    return (x < 0) ? -x : x;\n}\n\nint main()\n{\n    int intVal{};\n    double doubleVal{};\n    std::cin >> intVal >> doubleVal;\n\n    std::cout << \"implicit int: \" << absVal(intVal) << \"\\n\";\n    std::cout << \"explicit int: \" << absVal<int>(intVal) << \"\\n\";\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"implicit double: \" << absVal(doubleVal) << \"\\n\";\n    std::cout << \"explicit double: \" << absVal<double>(doubleVal) << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — negative int, positive double",
+              "stdin": "-7 3.14\n",
+              "expected_stdout": "implicit int: 7\nexplicit int: 7\nimplicit double: 3.14\nexplicit double: 3.14\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — both positive (no change)",
+              "stdin": "42 9.50\n",
+              "expected_stdout": "implicit int: 42\nexplicit int: 42\nimplicit double: 9.50\nexplicit double: 9.50\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — both zero",
+              "stdin": "0 0.00\n",
+              "expected_stdout": "implicit int: 0\nexplicit int: 0\nimplicit double: 0.00\nexplicit double: 0.00\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Overload vs Template: Absolute Maximum Finder",
+          "prompt_md": "## Goal\nComplete a program that uses both a **function template** and a **regular function overload** to find the larger of two values in absolute terms, demonstrating how overload resolution and template instantiation interact.\n\n## Background (relates to function overloading from earlier in the chapter)\nThe compiler first checks whether a non-template overload matches the call exactly. Only when no exact match exists does it consider template instantiation. You will write one template and one hand-written overload, then observe which is selected.\n\n## Input\n- Line 1: two integers `a` and `b` (-1000 <= a, b <= 1000).\n- Line 2: two doubles `c` and `d` (same magnitude limits, up to 2 decimal places).\n- Line 3: two integers `e` and `f` identical in format to line 1.\n\n## Output\n- Line 1: `template<int>: ` followed by the result of the template instantiation called with `a` and `b`.\n- Line 2: `template<double>: ` followed by the result of the template instantiation called with `c` and `d`, printed with exactly 2 decimal places.\n- Line 3: `overload: ` followed by the result of the int overload called with `e` and `f`, printed as an integer.\n\nThe result in every case is whichever of the two inputs has the larger absolute value; if they are equal in absolute value, return the first argument.\n\nExample for `3 -7` / `1.50 -4.00` / `6 6`:\n```\ntemplate<int>: -7\ntemplate<double>: -4.00\noverload: 6\n```\n\n## Requirements\n1. Write a function template `absMax(T a, T b)` that returns whichever argument has the greater absolute value (using `std::abs` from `<cmath>`); on a tie, return `a`.\n2. Write a **non-template overload** `absMax(int a, int b)` that does the same logic but also prints the line `[overload called]` to stdout before returning (so you can confirm the overload — not the template — was selected for the third call).\n3. Call `absMax` with the two integers from line 1 — this must invoke the **template** (not the overload). Achieve this by using an explicit template argument: `absMax<int>(a, b)`.\n4. Call `absMax` with the two doubles from line 2 — implicit deduction produces `absMax<double>`.\n5. Call `absMax` with the two integers from line 3 — **without** an explicit template argument — so overload resolution selects the non-template overload.\n6. Output must appear in exactly the order: template<int> line, template<double> line, then `[overload called]` on its own line, then the overload line.\n7. Hidden tests cover: both values negative, one value zero, and both values having equal absolute value (tie goes to first argument).\n\n## Notes\n- You may use `<iostream>`, `<iomanip>`, and `<cmath>`.\n- The key observable difference between calls 1 and 3 is the presence or absence of an explicit template argument `<int>`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\n// TODO: write a function template `absMax(T a, T b)` that returns the argument\n// with the larger absolute value; on a tie, return a.\n\n// TODO: write a non-template overload `absMax(int a, int b)` that:\n//   1. prints \"[overload called]\" followed by a newline\n//   2. returns the argument with the larger absolute value (tie -> a)\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n\n    double c, d;\n    std::cin >> c >> d;\n\n    int e, f;\n    std::cin >> e >> f;\n\n    // TODO: call absMax<int>(a, b) — explicit template argument forces template instantiation\n    // store result in res1 (int)\n\n    // TODO: call absMax(c, d) — implicit deduction gives absMax<double>\n    // store result in res2 (double)\n\n    // TODO: call absMax(e, f) — no explicit template argument; overload resolution picks non-template\n    // store result in res3 (int)\n\n    // TODO: print the three result lines in order\n    // Line 1: \"template<int>: \" then res1\n    // Line 2: \"template<double>: \" then res2 with 2 decimal places\n    // (the overload prints \"[overload called]\" on its own line before returning)\n    // Line 3: \"overload: \" then res3\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\ntemplate <typename T>\nT absMax(T a, T b)\n{\n    return (std::abs(b) > std::abs(a)) ? b : a;\n}\n\nint absMax(int a, int b)\n{\n    std::cout << \"[overload called]\\n\";\n    return (std::abs(b) > std::abs(a)) ? b : a;\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n\n    double c, d;\n    std::cin >> c >> d;\n\n    int e, f;\n    std::cin >> e >> f;\n\n    int    res1 = absMax<int>(a, b);   // explicit template arg -> template\n    double res2 = absMax(c, d);        // deduced as double    -> template\n    // print first two results before res3 triggers the overload print\n    std::cout << \"template<int>: \" << res1 << \"\\n\";\n    std::cout << \"template<double>: \"\n              << std::fixed << std::setprecision(2)\n              << res2 << \"\\n\";\n\n    int    res3 = absMax(e, f);        // no explicit arg, int -> overload\n    std::cout << \"overload: \" << res3 << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: mixed signs, negative dominant double, tie on integers",
+              "stdin": "3 -7\n1.50 -4.00\n6 6\n",
+              "expected_stdout": "template<int>: -7\ntemplate<double>: -4.00\n[overload called]\noverload: 6\n",
+              "is_sample": true
+            },
+            {
+              "label": "both values negative, zero involved",
+              "stdin": "-8 0\n-3.00 -3.00\n-10 -2\n",
+              "expected_stdout": "template<int>: -8\ntemplate<double>: -3.00\n[overload called]\noverload: -10\n",
+              "is_sample": false
+            },
+            {
+              "label": "first argument dominates all cases",
+              "stdin": "100 -50\n9.99 1.00\n7 -3\n",
+              "expected_stdout": "template<int>: 100\ntemplate<double>: 9.99\n[overload called]\noverload: 7\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.8",
+      "title": "Function templates with multiple template types",
+      "sort_order": 141,
+      "summary_md": "## Function Templates with Multiple Template Types\n\nA single template type parameter works fine when all arguments share the same type, but breaks down the moment you mix types. If you write `template <typename T>` and call `add(1, 2.5)`, the compiler cannot deduce a single `T` that satisfies both `int` and `double`, producing a deduction failure (covered in *Function template instantiation*).\n\nThe fix is straightforward: declare multiple type parameters.\n\n```cpp\n#include <format>\n#include <iostream>\n\ntemplate <typename T, typename U>\nauto multiply(T lhs, U rhs)\n{\n    return lhs * rhs;\n}\n\nint main()\n{\n    std::cout << std::format(\"{} {} {}\\n\",\n        multiply(3, 2.5),     // 7.5\n        multiply(1.5f, 4),    // 6\n        multiply(2, 7));      // 14\n}\n```\n\nA few things to notice:\n\n- **`auto` return type** lets the compiler deduce the result of mixing `T` and `U` without you having to spell out `std::common_type_t<T, U>` or similar machinery. The deduced type follows the same arithmetic conversion rules as ordinary expressions.\n- **Each parameter gets its own deduced type.** `T` and `U` are independent; they can match the same underlying type or different ones.\n\n### Abbreviated function templates (C++20)\n\nC++20 lets you drop the `template` line entirely by using `auto` parameters directly:\n\n```cpp\nauto multiply(auto lhs, auto rhs) { return lhs * rhs; }\n```\n\nEach `auto` parameter becomes its own implicit template type, equivalent to writing `template <typename T, typename U>`. This is the cleanest spelling for simple cases, though explicit template syntax remains necessary when you need to constrain types with concepts or reference a parameter type more than once.\n\n### Watch out for unintended conversions\n\nMore type parameters means more flexibility, but also more rope. `multiply(std::string{\"hi\"}, 3)` will compile only if `operator*` exists for those types — it does not here, so you get a clear error at instantiation time rather than a silent wrong result. As seen in *Function template instantiation*, template errors surface when the compiler generates the concrete function, not when you write the template itself.",
+      "exercises": [
+        {
+          "title": "Compare and Label Two Mixed-Type Values",
+          "prompt_md": "## Goal\nComplete the function template `compareValues` that accepts two values of potentially different types and prints a formatted comparison label.\n\n## Input\n- Line 1: two space-separated tokens on one line. The first token is an integer, the second is a floating-point number (e.g. `3 4.7`).\n- Line 2: two space-separated tokens on one line. The first token is a floating-point number, the second is an integer (e.g. `9.1 2`).\n\n## Output\nFor each pair of inputs, print exactly one line in this format:\n```\n<first> vs <second>: <label>\n```\nwhere `<label>` is:\n- `first is greater` if the first value is strictly greater than the second\n- `second is greater` if the second value is strictly greater than the first\n- `equal` if both values are equal\n\nPrint exactly two such lines, one per input pair, with no extra blank lines.\n\n**Example** (from the sample test):\n```\n3 vs 4.7: second is greater\n9.1 vs 2: first is greater\n```\n\n## Requirements\n1. Declare `compareValues` as `template <typename T, typename U>` taking two parameters of independent types and returning `void`.\n2. Inside `compareValues`, compare using `>` between the two values directly (no casting). The `auto` arithmetic conversion rules handle mixed-type comparison.\n3. Print the output line inside `compareValues` using `std::cout`.\n4. `main` reads Line 1 as `int` and `double`, calls `compareValues(a, b)`. Reads Line 2 as `double` and `int`, calls `compareValues(c, d)`.\n5. The hidden tests cover: two equal values (e.g. `5 5.0`), negative numbers (e.g. `-3 -1.5`), and zero vs. positive.",
+          "starter_code": "#include <iostream>\n\n// TODO: declare a function template with two type parameters T and U\n// named compareValues(T first, U second) -> void\n// It should print: \"<first> vs <second>: <label>\\n\"\n// where label is \"first is greater\", \"second is greater\", or \"equal\"\n\nint main()\n{\n    // Line 1: int and double\n    int a;\n    double b;\n    std::cin >> a >> b;\n    compareValues(a, b); // TODO: call compareValues with a, b\n\n    // Line 2: double and int\n    double c;\n    int d;\n    std::cin >> c >> d;\n    compareValues(c, d); // TODO: call compareValues with c, d\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate <typename T, typename U>\nvoid compareValues(T first, U second)\n{\n    std::cout << first << \" vs \" << second << \": \";\n    if (first > second)\n        std::cout << \"first is greater\\n\";\n    else if (second > first)\n        std::cout << \"second is greater\\n\";\n    else\n        std::cout << \"equal\\n\";\n}\n\nint main()\n{\n    int a;\n    double b;\n    std::cin >> a >> b;\n    compareValues(a, b);\n\n    double c;\n    int d;\n    std::cin >> c >> d;\n    compareValues(c, d);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: second greater then first greater",
+              "stdin": "3 4.7\n9.1 2\n",
+              "expected_stdout": "3 vs 4.7: second is greater\n9.1 vs 2: first is greater\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: equal values",
+              "stdin": "5 5.0\n0 0\n",
+              "expected_stdout": "5 vs 5: equal\n0 vs 0: equal\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: negative numbers",
+              "stdin": "-3 -1.5\n0 -2\n",
+              "expected_stdout": "-3 vs -1.5: second is greater\n0 vs -2: first is greater\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Overloaded Scale and Mixed-Type Scale with Templates",
+          "prompt_md": "## Goal\nComplete two function templates — an overloaded `scale` pair — so that scaling works for same-type calls (via a single-parameter template) and mixed-type calls (via a two-parameter template). The program reads a series of scale operations and prints each result.\n\n## Input\n- Line 1: integer N (1 <= N <= 20), the number of operations.\n- Lines 2..N+1: each line contains a character `S` or `M` followed by two space-separated numbers.\n  - `S` means same-type: both numbers are integers.\n  - `M` means mixed-type: the first number is a floating-point value and the second is an integer.\n\n## Output\nFor each operation print exactly one line:\n```\nscale(<first>, <second>) = <result>\n```\n- For `S` lines: both `<first>` and `<second>` are printed as integers; `<result>` is an integer (integer multiplication).\n- For `M` lines: `<first>` is printed as a double, `<second>` as an integer; `<result>` is a double.\n- No extra blank lines.\n\n**Example** (from the sample test):\n```\nscale(4, 3) = 12\nscale(2.5, 4) = 10\nscale(7, 2) = 14\n```\n\n## Requirements\n1. Write a single-type template `template <typename T> auto scale(T value, T factor)` that returns `value * factor`.\n2. Write a two-type template `template <typename T, typename U> auto scale(T value, U factor)` that returns `value * factor` with an `auto` return type.\n3. In `main`, for `S` lines read two `int` values and call `scale(value, factor)` — the compiler must resolve to the single-type overload.\n4. In `main`, for `M` lines read a `double` and an `int` and call `scale(value, factor)` — the compiler must resolve to the two-type overload.\n5. This exercise combines **function overloading** (Chapter 11 prior concept) with **multiple template type parameters** (this lesson).\n6. Hidden tests cover: N = 1 with a single `S` operation; a mix where a `M` line produces a whole-number double result (e.g. `3.0 2` -> `6`); and N = 20 alternating lines.",
+          "starter_code": "#include <iostream>\n\n// TODO: write a single-type function template:\n//   template <typename T>\n//   auto scale(T value, T factor)\n// that returns value * factor\n\n// TODO: write a two-type function template:\n//   template <typename T, typename U>\n//   auto scale(T value, U factor)\n// that returns value * factor\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        char kind;\n        std::cin >> kind;\n\n        if (kind == 'S')\n        {\n            int value, factor;\n            std::cin >> value >> factor;\n            // TODO: call scale(value, factor) and print the result line\n            // Format: scale(<value>, <factor>) = <result>\n        }\n        else // kind == 'M'\n        {\n            double value;\n            int factor;\n            std::cin >> value >> factor;\n            // TODO: call scale(value, factor) and print the result line\n            // Format: scale(<value>, <factor>) = <result>\n        }\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate <typename T>\nauto scale(T value, T factor)\n{\n    return value * factor;\n}\n\ntemplate <typename T, typename U>\nauto scale(T value, U factor)\n{\n    return value * factor;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        char kind;\n        std::cin >> kind;\n\n        if (kind == 'S')\n        {\n            int value, factor;\n            std::cin >> value >> factor;\n            std::cout << \"scale(\" << value << \", \" << factor << \") = \"\n                      << scale(value, factor) << \"\\n\";\n        }\n        else\n        {\n            double value;\n            int factor;\n            std::cin >> value >> factor;\n            std::cout << \"scale(\" << value << \", \" << factor << \") = \"\n                      << scale(value, factor) << \"\\n\";\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample: three operations",
+              "stdin": "3\nS 4 3\nM 2.5 4\nS 7 2\n",
+              "expected_stdout": "scale(4, 3) = 12\nscale(2.5, 4) = 10\nscale(7, 2) = 14\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden: single S operation",
+              "stdin": "1\nS 6 6\n",
+              "expected_stdout": "scale(6, 6) = 36\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden: mixed with whole-number double result",
+              "stdin": "4\nM 3.0 2\nS 5 3\nM 1.5 2\nS 10 0\n",
+              "expected_stdout": "scale(3, 2) = 6\nscale(5, 3) = 15\nscale(1.5, 2) = 3\nscale(10, 0) = 0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.9",
+      "title": "Non-type template parameters",
+      "sort_order": 142,
+      "summary_md": "# Non-type Template Parameters\n\nTemplate parameters don't have to be types. A **non-type template parameter** is a template parameter that holds a value rather than a type. You've seen type parameters written as `template <typename T>` — non-type parameters look like ordinary variable declarations inside the angle brackets instead.\n\n```cpp\n#include <format>\n#include <print>\n\ntemplate <int N>\nint multiplyBy(int x) {\n    return x * N;\n}\n\ntemplate <int Exp>\ndouble power(double base) {\n    double result = 1.0;\n    for (int i = 0; i < Exp; ++i)\n        result *= base;\n    return result;\n}\n\nint main() {\n    std::println(\"{}\", multiplyBy<3>(7));    // prints 21\n    std::println(\"{}\", multiplyBy<10>(5));   // prints 50\n    std::println(\"{}\", power<4>(2.0));       // prints 16\n}\n```\n\nHere `N` and `Exp` are non-type parameters of type `int`. The compiler generates a separate function for each distinct value: `multiplyBy<3>` and `multiplyBy<10>` are two completely separate functions in the compiled output.\n\n## What values are allowed\n\nNon-type parameters must be **compile-time constant** values. Accepted categories in C++20 include:\n\n- Integral types (`int`, `std::size_t`, `bool`, etc.)\n- Floating-point types (`float`, `double`)\n- Pointer and reference types\n- Enumeration types\n\nThe most common are integral types, especially `int` for counts and multipliers.\n\n## Why use them\n\nThe key benefit is that the value becomes part of the type. Each distinct non-type argument produces a separate instantiation, so the compiler can optimize with the value known at compile time. You can also use the parameter in `static_assert` or `if constexpr` to enforce or branch on constraints at compile time.\n\n## Relationship to overloading\n\nAs discussed in *Function overload differentiation*, two function templates with different non-type arguments produce different instantiations, not overloads — but they behave similarly from the caller's perspective. A call like `multiplyBy<3>(x)` and `multiplyBy<10>(x)` dispatches to separate instantiated functions.\n\n## Default values\n\nNon-type parameters can have defaults just like type parameters:\n\n```cpp\ntemplate <int Factor = 2>\nint scale(int x) { return x * Factor; }\n\nint main() {\n    std::println(\"{}\", scale(5));      // uses default Factor=2, prints 10\n    std::println(\"{}\", scale<3>(5));   // overrides to Factor=3, prints 15\n}\n```\n\nThis mirrors how *Default arguments* work for ordinary functions, but applied at the template level.",
+      "exercises": [
+        {
+          "title": "Compile-Time Multiplier with Non-Type Template Parameter",
+          "prompt_md": "## Goal\nComplete the function template `multiplyBy` that uses a non-type template parameter `int N` to multiply its argument by a compile-time constant, then call it with several different values of N.\n\n## Input\n- Line 1: one integer X (-1000 <= X <= 1000).\n\n## Output\nPrint exactly four lines:\n- `x2: Y` where Y = X * 2\n- `x3: Y` where Y = X * 3\n- `x10: Y` where Y = X * 10\n- `x0: Y` where Y = X * 0\n\nExample for input `7`:\n```\nx2: 14\nx3: 21\nx10: 70\nx0: 0\n```\n\n## Requirements\n1. Write a function template `template <int N> int multiplyBy(int x)` that returns `x * N`.\n2. Call `multiplyBy<2>(x)`, `multiplyBy<3>(x)`, `multiplyBy<10>(x)`, and `multiplyBy<0>(x)` and print the results.\n3. Each call produces a separate template instantiation — verify this mentally: the compiler generates four distinct functions.\n4. Hidden tests cover: negative input, zero input, and a large value near the boundary.\n5. Do not use any runtime variable for the multiplier — the multiplier must be the non-type template parameter.\n\n## Notes\n- Include `<iostream>` only.\n- This exercise demonstrates the simplest use of non-type template parameters without requiring arrays or references.",
+          "starter_code": "#include <iostream>\n\n// TODO: write template <int N> int multiplyBy(int x)\n// Returns x * N.\n\nint main()\n{\n    int x{};\n    std::cin >> x;\n\n    // TODO: call multiplyBy<2>(x) and print \"x2: Y\"\n    // TODO: call multiplyBy<3>(x) and print \"x3: Y\"\n    // TODO: call multiplyBy<10>(x) and print \"x10: Y\"\n    // TODO: call multiplyBy<0>(x) and print \"x0: Y\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate <int N>\nint multiplyBy(int x)\n{\n    return x * N;\n}\n\nint main()\n{\n    int x{};\n    std::cin >> x;\n\n    std::cout << \"x2: \" << multiplyBy<2>(x) << \"\\n\";\n    std::cout << \"x3: \" << multiplyBy<3>(x) << \"\\n\";\n    std::cout << \"x10: \" << multiplyBy<10>(x) << \"\\n\";\n    std::cout << \"x0: \" << multiplyBy<0>(x) << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — positive value",
+              "stdin": "7\n",
+              "expected_stdout": "x2: 14\nx3: 21\nx10: 70\nx0: 0\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — negative value",
+              "stdin": "-5\n",
+              "expected_stdout": "x2: -10\nx3: -15\nx10: -50\nx0: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — zero input",
+              "stdin": "0\n",
+              "expected_stdout": "x2: 0\nx3: 0\nx10: 0\nx0: 0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Compile-Time Power Function with Non-Type Exponent",
+          "prompt_md": "## Goal\nComplete two function templates that use non-type template parameters: `power` computes `base` raised to a compile-time exponent, and `repeat` prints a character a compile-time number of times. This demonstrates that non-type parameters can serve different purposes in different templates.\n\n## Input\n- Line 1: a double `base` (e.g. `2.0`).\n- Line 2: a character `ch` (e.g. `*`).\n\n## Output\nPrint exactly four lines:\n- `power<2>: Y` where Y = base^2, printed with 2 decimal places\n- `power<3>: Y` where Y = base^3, printed with 2 decimal places\n- `power<0>: Y` where Y = base^0 = 1.00, printed with 2 decimal places\n- `repeat<5>: CCCCC` where C is the character repeated 5 times (no spaces between)\n\nExample for input `2.0` and `*`:\n```\npower<2>: 4.00\npower<3>: 8.00\npower<0>: 1.00\nrepeat<5>: *****\n```\n\n## Requirements\n1. Write `template <int Exp> double power(double base)` that computes base raised to the Exp-th power using a simple loop (do not use `std::pow`). When Exp is 0, return 1.0.\n2. Write `template <int N> void repeat(char ch)` that prints the character `ch` exactly N times (no spaces, no newline — the caller prints the newline).\n3. Call `power<2>(base)`, `power<3>(base)`, `power<0>(base)`, and `repeat<5>(ch)` from main.\n4. Use `std::fixed` and `std::setprecision(2)` for the power output lines.\n5. Hidden tests cover: base of 1.0 (all powers equal 1), base of 0.5 (fractional results), and different characters.\n\n## Notes\n- Include `<iostream>` and `<iomanip>` only.\n- Each distinct non-type argument produces a separate template instantiation.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: write template <int Exp> double power(double base)\n// Compute base^Exp using a loop. If Exp == 0, return 1.0.\n\n// TODO: write template <int N> void repeat(char ch)\n// Print ch exactly N times (no spaces, no newline).\n\nint main()\n{\n    double base{};\n    char ch{};\n    std::cin >> base >> ch;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    // TODO: call power<2>(base) and print \"power<2>: Y\"\n    // TODO: call power<3>(base) and print \"power<3>: Y\"\n    // TODO: call power<0>(base) and print \"power<0>: Y\"\n    // TODO: print \"repeat<5>: \" then call repeat<5>(ch), then print newline\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ntemplate <int Exp>\ndouble power(double base)\n{\n    double result = 1.0;\n    for (int i = 0; i < Exp; ++i)\n        result *= base;\n    return result;\n}\n\ntemplate <int N>\nvoid repeat(char ch)\n{\n    for (int i = 0; i < N; ++i)\n        std::cout << ch;\n}\n\nint main()\n{\n    double base{};\n    char ch{};\n    std::cin >> base >> ch;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    std::cout << \"power<2>: \" << power<2>(base) << \"\\n\";\n    std::cout << \"power<3>: \" << power<3>(base) << \"\\n\";\n    std::cout << \"power<0>: \" << power<0>(base) << \"\\n\";\n    std::cout << \"repeat<5>: \";\n    repeat<5>(ch);\n    std::cout << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — base 2.0 and asterisk",
+              "stdin": "2.0\n*\n",
+              "expected_stdout": "power<2>: 4.00\npower<3>: 8.00\npower<0>: 1.00\nrepeat<5>: *****\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — base 1.0 (all powers equal 1)",
+              "stdin": "1.0\n#\n",
+              "expected_stdout": "power<2>: 1.00\npower<3>: 1.00\npower<0>: 1.00\nrepeat<5>: #####\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — base 0.5 (fractional results)",
+              "stdin": "0.5\n@\n",
+              "expected_stdout": "power<2>: 0.25\npower<3>: 0.12\npower<0>: 1.00\nrepeat<5>: @@@@@\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.10",
+      "title": "Using function templates in multiple files",
+      "sort_order": 143,
+      "summary_md": "## Using Function Templates in Multiple Files\n\nWhen you split a normal function across files, you put the declaration in a header and the definition in a `.cpp` file. Function templates **cannot** follow this pattern without extra work — and the workaround that pattern requires is almost never worth it.\n\n### Why the Usual Approach Breaks\n\nThe compiler generates template instantiations (covered in *Function template instantiation*) at compile time, on demand, for each type it encounters. When the template definition lives in a `.cpp` file, it is compiled in isolation — the compiler sees no calls there, so it instantiates nothing. A different translation unit that includes only the declaration then tries to link against an instantiation that was never created, producing an unresolved external symbol error.\n\n### The Standard Solution: Define Templates in Headers\n\nPut the full template definition directly in the header file. Every translation unit that includes the header then has everything it needs to instantiate the template for any required type.\n\n```cpp\n// math_utils.hpp\n#pragma once\n#include <format>\n#include <string>\n\ntemplate <typename T>\nT lerp(T a, T b, T t)\n{\n    return a + t * (b - a);\n}\n\ntemplate <typename T>\nstd::string lerp_str(T a, T b, T t)\n{\n    return std::format(\"{}\", lerp(a, b, t));\n}\n```\n\nAny `.cpp` file that includes `math_utils.hpp` can call `lerp<float>`, `lerp<double>`, or any other floating-point specialisation without linker errors.\n\n### Duplicate Instantiations Are Fine\n\nIncluding the same header in multiple `.cpp` files means the compiler may instantiate `lerp<double>` in several translation units. The linker discards the duplicates — this is guaranteed by the One Definition Rule's exception for template instantiations. Compile times increase slightly, but correctness is maintained.\n\n### The `extern template` Escape Hatch\n\nIf a specific instantiation is used in many translation units and compile time matters, you can explicitly instantiate it once in a `.cpp` file and declare it `extern` in the header:\n\n```cpp\n// header: suppress implicit instantiation\nextern template double lerp<double>(double, double, double);\n\n// one .cpp file: explicit instantiation\ntemplate double lerp<double>(double, double, double);\n```\n\nThis is an optimisation, not a fix for the original problem — the definition still lives in the header.\n\n### Key Takeaway\n\nDefault rule: **template definitions go in headers**. Reach for `extern template` only when profiling shows instantiation overhead is a real cost.",
+      "exercises": [
+        {
+          "title": "Header-Only Template: Sign of a Value",
+          "prompt_md": "## Goal\nComplete the function template `sign` (declared and defined in the provided header-style section) so that it returns -1, 0, or +1 indicating the sign of its argument, then call it from `main` for three different types.\n\n## Input\n- Line 1: one integer (may be negative, zero, or positive).\n- Line 2: one double (may be negative, zero, or positive; up to 2 decimal places).\n- Line 3: one float (may be negative, zero, or positive; up to 2 decimal places).\n\n## Output\nPrint exactly three lines, one per input line:\n- `int: <result>` where `<result>` is -1, 0, or 1.\n- `double: <result>` where `<result>` is -1, 0, or 1.\n- `float: <result>` where `<result>` is -1, 0, or 1.\n\nExample (matching sample test):\n```\nint: 1\ndouble: -1\nfloat: 0\n```\n\n## Requirements\n1. Implement a single function template `template <typename T> int sign(T value)` that returns `-1` if `value < 0`, `0` if `value == 0`, and `1` if `value > 0`. The template definition must appear before `main` (simulating a header-only definition).\n2. Call `sign` with `int`, `double`, and `float` arguments respectively — the compiler must instantiate all three from the same template.\n3. The key lesson: because the full template definition appears before `main`, every instantiation succeeds. If the definition were in a separate `.cpp` file with no calls, the linker would fail.\n4. Hidden tests cover: all three values zero, all three negative, and mixed signs.",
+          "starter_code": "#include <iostream>\n\n// TODO: define the function template sign(T value)\n// The full definition must appear here (not split into a separate .cpp),\n// so every call site can instantiate it for any type.\n// Returns -1 if value < 0, 0 if value == 0, 1 if value > 0.\n\nint main()\n{\n    // --- int ---\n    int iv;\n    std::cin >> iv;\n    // TODO: call sign with int argument and print result\n\n    // --- double ---\n    double dv;\n    std::cin >> dv;\n    // TODO: call sign with double argument and print result\n\n    // --- float ---\n    float fv;\n    std::cin >> fv;\n    // TODO: call sign with float argument and print result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate <typename T>\nint sign(T value)\n{\n    if (value < 0) return -1;\n    if (value > 0) return 1;\n    return 0;\n}\n\nint main()\n{\n    int iv;\n    std::cin >> iv;\n    std::cout << \"int: \" << sign(iv) << \"\\n\";\n\n    double dv;\n    std::cin >> dv;\n    std::cout << \"double: \" << sign(dv) << \"\\n\";\n\n    float fv;\n    std::cin >> fv;\n    std::cout << \"float: \" << sign(fv) << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — positive int, negative double, zero float",
+              "stdin": "42\n-3.14\n0.0\n",
+              "expected_stdout": "int: 1\ndouble: -1\nfloat: 0\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — all three zero",
+              "stdin": "0\n0.0\n0.0\n",
+              "expected_stdout": "int: 0\ndouble: 0\nfloat: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — all three negative",
+              "stdin": "-99\n-0.01\n-7.5\n",
+              "expected_stdout": "int: -1\ndouble: -1\nfloat: -1\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Header-Only Template with Overload: Describe and Scale",
+          "prompt_md": "## Goal\nComplete two things: a function template `scale(T value, T factor)` that returns `value * factor`, and two **overloaded** non-template functions `describe(int x)` and `describe(double x)` that return a descriptive string. Then wire them together in `main`.\n\nThis exercise combines header-only template definitions (lesson topic) with function overloading (earlier chapter topic).\n\n## Input\n- Line 1: one integer `n` and one integer `factor` — space-separated.\n- Line 2: one double `d` and one double `factor` — space-separated.\n\nAll integers fit in a 32-bit int. Doubles have at most 4 decimal places.\n\n## Output\nPrint exactly two lines:\n- Line 1: `int scaled: <scaled_n> -> <description>` where `<scaled_n>` is `scale(n, factor)` and `<description>` is `describe(scaled_n)`.\n- Line 2: `double scaled: <scaled_d> -> <description>` where `<scaled_d>` is `scale(d, factor_d)` printed with 2 decimal places, and `<description>` is `describe(scaled_d)`.\n\nThe `describe` rules:\n- For `int x`: return `\"negative\"` if `x < 0`, `\"zero\"` if `x == 0`, `\"positive\"` if `x > 0`.\n- For `double x`: return `\"negative\"` if `x < 0.0`, `\"zero\"` if `x == 0.0`, `\"positive\"` if `x > 0.0`.\n\nExample (matching sample test):\n```\nint scaled: 12 -> positive\ndouble scaled: -4.50 -> negative\n```\n\n## Requirements\n1. `scale` must be a single function template whose full definition appears before `main` (simulating header-only placement). It must be instantiated for both `int` and `double` from that one template.\n2. `describe` must be implemented as two separate overloaded functions — one taking `int`, one taking `double` — not as a template.\n3. Use `std::fixed` and `std::setprecision(2)` for the double output.\n4. Hidden tests cover: scaled result of 0 for both types, negative scaled result for int, and a positive double result.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define the function template scale(T value, T factor)\n// Full definition here (header-style) so both int and double\n// instantiations are available without a separate .cpp file.\n\n// TODO: define overload describe(int x)   -> returns std::string\n// TODO: define overload describe(double x) -> returns std::string\n// Rules: return \"negative\", \"zero\", or \"positive\"\n\nint main()\n{\n    int n, ifactor;\n    std::cin >> n >> ifactor;\n\n    double d, dfactor;\n    std::cin >> d >> dfactor;\n\n    // TODO: compute int result, call describe, print line 1\n    // TODO: compute double result, call describe, print line 2\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// Full template definition — header-style, visible to every call site.\ntemplate <typename T>\nT scale(T value, T factor)\n{\n    return value * factor;\n}\n\n// Overloaded describe — one for int, one for double.\nstd::string describe(int x)\n{\n    if (x < 0) return \"negative\";\n    if (x == 0) return \"zero\";\n    return \"positive\";\n}\n\nstd::string describe(double x)\n{\n    if (x < 0.0) return \"negative\";\n    if (x == 0.0) return \"zero\";\n    return \"positive\";\n}\n\nint main()\n{\n    int n, ifactor;\n    std::cin >> n >> ifactor;\n\n    double d, dfactor;\n    std::cin >> d >> dfactor;\n\n    int   iresult = scale(n, ifactor);\n    double dresult = scale(d, dfactor);\n\n    std::cout << \"int scaled: \" << iresult\n              << \" -> \" << describe(iresult) << \"\\n\";\n\n    std::cout << \"double scaled: \"\n              << std::fixed << std::setprecision(2)\n              << dresult\n              << \" -> \" << describe(dresult) << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample — positive int, negative double",
+              "stdin": "3 4\n-1.5 3.0\n",
+              "expected_stdout": "int scaled: 12 -> positive\ndouble scaled: -4.50 -> negative\n",
+              "is_sample": true
+            },
+            {
+              "label": "hidden — scaled results are zero",
+              "stdin": "7 0\n0.0 99.9\n",
+              "expected_stdout": "int scaled: 0 -> zero\ndouble scaled: 0.00 -> zero\n",
+              "is_sample": false
+            },
+            {
+              "label": "hidden — negative int result, positive double result",
+              "stdin": "-5 3\n2.5 2.0\n",
+              "expected_stdout": "int scaled: -15 -> negative\ndouble scaled: 5.00 -> positive\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "11.x",
+      "title": "Chapter 11 summary and quiz",
+      "sort_order": 144,
+      "summary_md": "# Chapter 11 Summary: Function Overloading and Function Templates\n\n## Function Overloading\n\n**Function overloading** lets you define multiple functions with the same name, distinguished by their parameter lists. The compiler selects the right version at the call site — a process called **overload resolution**.\n\nDifferentiation rules:\n- Number of parameters matters\n- Types of parameters matter (after removing top-level `const` from value parameters)\n- Return type alone does **not** differentiate overloads\n\nResolution works through a tiered matching process: exact matches win first, then trivial conversions, then numeric promotions (`bool`/`char`/`short` -> `int`, `float` -> `double`), then standard conversions (`int` -> `double`, `long` -> `int`, etc.), then user-defined conversions, and finally variadics. When two candidates tie at the same tier, the call is **ambiguous** and won't compile.\n\nUse `= delete` (covered in *Deleting functions*) to explicitly forbid certain argument types — the deleted overload still participates in resolution, so a match on it produces a clear error rather than silently converting to another overload.\n\n**Default arguments** let callers omit trailing parameters. They must appear at the right end of the parameter list and live in only one translation unit (typically the header declaration).\n\n## Function Templates\n\nTemplates shift work from the programmer to the compiler. A **function template** is a blueprint; the compiler generates a concrete **template instantiation** from it when you call the function with specific types.\n\nKey mechanics:\n- Template type parameters (`typename T`) let a single definition handle many types\n- Multiple type parameters (`typename T, typename U`) handle cases where arguments may differ in type — or use `auto` parameters for the same effect in C++20\n- **Non-type template parameters** carry compile-time values (e.g., multipliers or exponents) rather than types\n- Explicit template arguments (`func<int>(x)`) override deduction when needed\n\nBecause the compiler needs the full template definition to instantiate it, templates generally live in header files — unlike regular functions split across declarations and definitions (see *Chapter 2*).\n\n```cpp\n#include <format>\n#include <iostream>\n\ntemplate <typename T>\nT clamp(T value, T lo, T hi)\n{\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\nint main()\n{\n    std::cout << std::format(\"{}\\n\", clamp(3.7, 1.0, 5.0));   // 3.7\n    std::cout << std::format(\"{}\\n\", clamp(-2, 0, 10));        // 0\n}\n```\n\nOverloading and templates compose well: you can overload a template with a non-template function for types that need special handling, and the compiler prefers the non-template exact match during resolution.",
+      "exercises": [
+        {
+          "title": "Overloaded describe() for int, double, and bool",
+          "prompt_md": "## Goal\nComplete three overloads of a function named `describe` that print a formatted description of their argument to stdout.\n\n## Input\n- Line 1: an integer (may be negative, range -10000 to 10000)\n- Line 2: a floating-point number (one decimal place, range -10000.0 to 10000.0)\n- Line 3: either `0` or `1` (read as an `int`, then cast to `bool`)\n\n## Output\nPrint exactly three lines in this order:\n1. `int: <value>` — the integer value as-is\n2. `double: <value>` — the double value with exactly 2 decimal places\n3. `bool: <value>` — print `true` or `false` (not `1` or `0`)\n\nExample for inputs `42`, `3.1`, `1`:\n```\nint: 42\ndouble: 3.10\nbool: true\n```\n\n## Requirements\n1. Write exactly three overloads: `void describe(int n)`, `void describe(double d)`, and `void describe(bool b)`. No other overloads.\n2. `describe(bool)` must print the word `true` or `false`, never a number.\n3. `describe(double)` must print exactly 2 decimal places (e.g., `3.10`, `-0.50`).\n4. Return type alone cannot differentiate overloads — all three must return `void`.\n5. `main()` reads the three values from stdin, then calls `describe` once per value in the order listed above.\n6. Hidden tests cover: a negative integer, a value of exactly `0.00`, and `bool` input `0` (prints `false`).",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: write void describe(int n)\n\n// TODO: write void describe(double d)\n\n// TODO: write void describe(bool b)\n\nint main()\n{\n    int    n{};\n    double d{};\n    int    bInput{};\n\n    std::cin >> n >> d >> bInput;\n\n    // TODO: call describe for each value (cast bInput to bool for the third call)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nvoid describe(int n)\n{\n    std::cout << \"int: \" << n << '\\n';\n}\n\nvoid describe(double d)\n{\n    std::cout << \"double: \"\n              << std::fixed << std::setprecision(2)\n              << d << '\\n';\n}\n\nvoid describe(bool b)\n{\n    std::cout << std::boolalpha << \"bool: \" << b << '\\n';\n}\n\nint main()\n{\n    int    n{};\n    double d{};\n    int    bInput{};\n\n    std::cin >> n >> d >> bInput;\n\n    describe(n);\n    describe(d);\n    describe(static_cast<bool>(bInput));\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — positive values, bool true",
+              "stdin": "42\n3.1\n1\n",
+              "expected_stdout": "int: 42\ndouble: 3.10\nbool: true\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — negative integer, zero double, bool false",
+              "stdin": "-7\n0.0\n0\n",
+              "expected_stdout": "int: -7\ndouble: 0.00\nbool: false\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — negative double, bool true",
+              "stdin": "100\n-4.5\n1\n",
+              "expected_stdout": "int: 100\ndouble: -4.50\nbool: true\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Template minOfThree with a Deleted char Overload",
+          "prompt_md": "## Goal\nComplete a function template `minOfThree` that returns the smallest of three values, then add a deleted overload so `char` arguments are explicitly forbidden.\n\n## Input\n- Line 1: a string indicating the type to test — either `int` or `double`\n- Line 2: three space-separated values of the indicated type\n\n## Output\nPrint exactly one line: `min: <value>`\n- If the type is `int`, print the minimum as an integer (no decimal point).\n- If the type is `double`, print the minimum with exactly 2 decimal places.\n\nExample for `int` and values `5 2 8`:\n```\nmin: 2\n```\nExample for `double` and values `1.5 0.75 3.0`:\n```\nmin: 0.75\n```\n\n## Requirements\n1. Write a function template `template <typename T> T minOfThree(T a, T b, T c)` that returns the smallest of the three arguments using `<` comparisons only (no `std::min`).\n2. Add a deleted overload `char minOfThree(char, char, char) = delete;` so that calling `minOfThree` with `char` arguments produces a compile error instead of silently promoting to `int`.\n3. `main()` reads the type string and three values, then calls `minOfThree` with the correct type and prints the result in the format above.\n4. For `double` output, use exactly 2 decimal places.\n5. The template must work correctly when all three values are equal (hidden test).\n6. Hidden tests cover: all three values equal (`int`), a negative minimum (`double`), and the case where the minimum is the third argument.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: write the function template minOfThree<T>(T a, T b, T c)\n\n// TODO: add the deleted overload for char\n\nint main()\n{\n    std::string typeLabel{};\n    std::cin >> typeLabel;\n\n    if (typeLabel == \"int\")\n    {\n        int a{}, b{}, c{};\n        std::cin >> a >> b >> c;\n        // TODO: call minOfThree and print result as: min: <value>\n    }\n    else // \"double\"\n    {\n        double a{}, b{}, c{};\n        std::cin >> a >> b >> c;\n        // TODO: call minOfThree and print result with 2 decimal places as: min: <value>\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\ntemplate <typename T>\nT minOfThree(T a, T b, T c)\n{\n    T result = a;\n    if (b < result) result = b;\n    if (c < result) result = c;\n    return result;\n}\n\nchar minOfThree(char, char, char) = delete;\n\nint main()\n{\n    std::string typeLabel{};\n    std::cin >> typeLabel;\n\n    if (typeLabel == \"int\")\n    {\n        int a{}, b{}, c{};\n        std::cin >> a >> b >> c;\n        std::cout << \"min: \" << minOfThree(a, b, c) << '\\n';\n    }\n    else\n    {\n        double a{}, b{}, c{};\n        std::cin >> a >> b >> c;\n        std::cout << \"min: \"\n                  << std::fixed << std::setprecision(2)\n                  << minOfThree(a, b, c) << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — int, minimum is middle value",
+              "stdin": "int\n5 2 8\n",
+              "expected_stdout": "min: 2\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — double, negative minimum is third value",
+              "stdin": "double\n1.5 0.75 -3.0\n",
+              "expected_stdout": "min: -3.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — int, all three values equal",
+              "stdin": "int\n7 7 7\n",
+              "expected_stdout": "min: 7\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

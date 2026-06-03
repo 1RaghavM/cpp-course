@@ -1,0 +1,875 @@
+{
+  "chapter": {
+    "number": "2",
+    "title": "C++ Basics: Functions and Files"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz"
+  ],
+  "lessons": [
+    {
+      "number": "2.1",
+      "title": "Introduction to functions",
+      "sort_order": 25,
+      "summary_md": "## Introduction to Functions\n\nA **function** is a named block of code that performs a specific task. You have already been using one function: `main`. Every C++ program must define `main` — it is where execution begins. Now you will write your own.\n\n### Anatomy of a function\n\n```cpp\n#include <iostream>\n\n// Function definition\nint add(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int result = add(3, 4);  // function call\n    std::cout << result << '\\n';  // prints 7\n    return 0;\n}\n```\n\nBreaking down the definition:\n\n- **Return type** (`int`) — the type of value the function sends back to the caller. Use `void` when there is nothing to return.\n- **Function name** (`add`) — follows the same naming rules as variables: lowercase, descriptive.\n- **Parameter list** (`int a, int b`) — zero or more typed inputs, separated by commas. Like Python's arguments, but every parameter needs an explicit type.\n- **Body** — the block `{ ... }` containing the statements that run when the function is called.\n- **`return` statement** — exits the function and hands a value back to the caller. A `void` function returns with bare `return;` or by falling off the end.\n\n### Calling a function\n\nWriting `add(3, 4)` is a **function call**. C++ evaluates the arguments left-to-right, copies them into the parameters, runs the body, and then substitutes the return value in place of the call expression.\n\n### Why functions?\n\n1. **Avoid repetition** — write logic once, call it many times.\n2. **Readability** — a well-named function makes the caller's intent obvious without reading the implementation.\n3. **Testability** — small, focused functions are easier to verify in isolation.\n\n### Key differences from Python\n\nPython infers types at runtime; C++ requires you to state the return type and each parameter type at compile time. There is no `def` keyword — the return type itself signals the start of a function definition. C++ also requires a function to be **declared before it is used** (covered in lesson 2-7 on forward declarations).\n\nStart every function with a single, clear responsibility. If you find yourself writing a function that does two unrelated things, split it.",
+      "exercises": [
+        {
+          "title": "Greet by Name",
+          "prompt_md": "Write a function `greet` that takes a `std::string` parameter called `name` and prints a greeting to standard output in the exact format:\n\n```\nHello, <name>!\n```\n\nCall `greet` from `main` with the name provided on standard input.\n\n**Input:** A single word (no spaces) on one line.\n**Output:** The greeting line.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a function named `greet` that takes a std::string\n// parameter and prints \"Hello, <name>!\" followed by a newline.\n\n\nint main() {\n    std::string name;\n    std::cin >> name;\n\n    // TODO: Call greet with name\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nvoid greet(std::string name) {\n    std::cout << \"Hello, \" << name << \"!\\n\";\n}\n\nint main() {\n    std::string name;\n    std::cin >> name;\n    greet(name);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: greet Alice",
+              "stdin": "Alice",
+              "expected_stdout": "Hello, Alice!\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: greet World",
+              "stdin": "World",
+              "expected_stdout": "Hello, World!\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: greet CPlusPlus",
+              "stdin": "CPlusPlus",
+              "expected_stdout": "Hello, CPlusPlus!\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Rectangle Area and Perimeter",
+          "prompt_md": "Write two functions:\n\n- `int area(int width, int height)` — returns the area of a rectangle.\n- `int perimeter(int width, int height)` — returns the perimeter of a rectangle.\n\nRead two integers from standard input (width then height). Print the area on the first line and the perimeter on the second line.\n\n**Input:** Two integers on one line separated by a space.\n**Output:**\n```\nArea: <value>\nPerimeter: <value>\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: Define function area(int width, int height) -> int\n\n\n// TODO: Define function perimeter(int width, int height) -> int\n\n\nint main() {\n    int width{}, height{};\n    std::cin >> width >> height;\n\n    // TODO: Print area using the area() function\n    // TODO: Print perimeter using the perimeter() function\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint area(int width, int height) {\n    return width * height;\n}\n\nint perimeter(int width, int height) {\n    return 2 * (width + height);\n}\n\nint main() {\n    int width{}, height{};\n    std::cin >> width >> height;\n    std::cout << \"Area: \" << area(width, height) << '\\n';\n    std::cout << \"Perimeter: \" << perimeter(width, height) << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 4 x 5",
+              "stdin": "4 5",
+              "expected_stdout": "Area: 20\nPerimeter: 18\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 1 x 1",
+              "stdin": "1 1",
+              "expected_stdout": "Area: 1\nPerimeter: 4\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 10 x 3",
+              "stdin": "10 3",
+              "expected_stdout": "Area: 30\nPerimeter: 26\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.2",
+      "title": "Function return values (value-returning functions)",
+      "sort_order": 26,
+      "summary_md": "## Function Return Values\n\nIn [Introduction to functions](/lessons/2-1), you saw how to define and call functions. Those functions did their work and returned to the caller without sending any data back. **Value-returning functions** change that — they compute something and hand it back to whoever called them.\n\n### The return type\n\nEvery function declaration begins with a **return type**, placed before the function name:\n\n```cpp\n#include <iostream>\n\n// Returns the larger of two integers\nint max(int a, int b) {\n    if (a > b)\n        return a;\n    return b;\n}\n\nint main() {\n    int result { max(7, 3) };\n    std::cout << result << '\\n'; // 7\n    return 0;\n}\n```\n\n`int` before `max` tells the compiler — and the reader — that this function produces an `int`. The `return` statement exits the function and passes its expression back to the caller.\n\n### `return` ends execution immediately\n\nAs soon as a `return` statement runs, the function stops. Any code after it in the same path is unreachable. In the example above, when `a > b` is true, `return a` fires and the second `return b` is never reached.\n\n### `main` is special\n\n`main` must be declared `int` and return a status code to the operating system. `return 0` signals success. You have seen this in every program so far. The compiler inserts an implicit `return 0` at the end of `main` if you omit it, but writing it explicitly is good practice.\n\n### `void` — when there is nothing to return\n\nIf a function does not produce a value, declare its return type as `void` and omit the `return` statement (or use a bare `return;` to exit early). You cannot use the result of a `void` function in an expression.\n\n### Using return values\n\nA return value can be stored in a variable, passed directly to another function, or used in an expression:\n\n```cpp\nstd::cout << max(max(1, 5), 3); // nested call, prints 5\n```\n\nIn Python you may have written functions that return `None` by default; in C++ every non-`void` function **must** reach a `return` statement that provides a value of the declared type, or the behavior is undefined. The compiler will warn — often error — if a code path is missing a return.\n\n### Key takeaways\n\n- The return type comes first in the function signature.\n- `return <expr>;` sends the value back and exits the function immediately.\n- `main` returns `int`; `return 0` means success.\n- `void` functions produce no value and need no `return` expression.",
+      "exercises": [
+        {
+          "title": "Temperature Converter",
+          "prompt_md": "Write a function `celsiusToFahrenheit` that takes a `double` representing a temperature in Celsius and **returns** the equivalent Fahrenheit temperature as a `double`.\n\nFormula: `F = C * 9.0 / 5.0 + 32.0`\n\nYour `main` function should:\n1. Read one `double` from `stdin`.\n2. Call `celsiusToFahrenheit` and print the result followed by a newline.\n\nPrint the result with **one decimal place** using `std::fixed` and `std::setprecision(1)` (include `<iomanip>`).\n\n**Example**\n```\nInput:  100\nOutput: 212.0\n```",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: declare and implement celsiusToFahrenheit\n// It should accept a double and return a double.\ndouble celsiusToFahrenheit(double celsius)\n{\n    // TODO: apply the formula F = C * 9.0 / 5.0 + 32.0\n    // TODO: return the result\n}\n\nint main()\n{\n    double c {};\n    std::cin >> c;\n\n    // TODO: call celsiusToFahrenheit and print the result\n    // with one decimal place followed by '\\n'\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble celsiusToFahrenheit(double celsius)\n{\n    return celsius * 9.0 / 5.0 + 32.0;\n}\n\nint main()\n{\n    double c {};\n    std::cin >> c;\n    std::cout << std::fixed << std::setprecision(1)\n              << celsiusToFahrenheit(c) << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Boiling point (100 C)",
+              "stdin": "100",
+              "expected_stdout": "212.0\n",
+              "is_sample": true
+            },
+            {
+              "label": "Freezing point (0 C)",
+              "stdin": "0",
+              "expected_stdout": "32.0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Body temperature (37 C)",
+              "stdin": "37",
+              "expected_stdout": "98.6\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Absolute Difference",
+          "prompt_md": "Write a function `absDiff` that takes two `int` parameters and **returns** the absolute (non-negative) difference between them.\n\nDo **not** use `std::abs` or any standard library math function — compute the result using an `if` statement and the return value directly.\n\nYour `main` should:\n1. Read two integers from `stdin` (space-separated on one line).\n2. Call `absDiff` and print the result followed by a newline.\n\n**Example**\n```\nInput:  10 3\nOutput: 7\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: implement absDiff(int a, int b) -> int\n// Return the non-negative difference |a - b|\n// without using std::abs.\nint absDiff(int a, int b)\n{\n    // TODO: if a >= b return a - b, else return b - a\n}\n\nint main()\n{\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    // TODO: print the result of absDiff(a, b) followed by '\\n'\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint absDiff(int a, int b)\n{\n    if (a >= b)\n        return a - b;\n    return b - a;\n}\n\nint main()\n{\n    int a {}, b {};\n    std::cin >> a >> b;\n    std::cout << absDiff(a, b) << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Positive difference (10, 3)",
+              "stdin": "10 3",
+              "expected_stdout": "7\n",
+              "is_sample": true
+            },
+            {
+              "label": "Reversed order gives same result (3, 10)",
+              "stdin": "3 10",
+              "expected_stdout": "7\n",
+              "is_sample": false
+            },
+            {
+              "label": "Equal values (5, 5)",
+              "stdin": "5 5",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.3",
+      "title": "Void functions (non-value returning functions)",
+      "sort_order": 27,
+      "summary_md": "## Void Functions (Non-Value Returning Functions)\n\nIn [Function return values (value-returning functions)](/lessons/2-2), you saw how functions can compute and return a result the caller uses directly. But many functions exist purely to *do something* — print output, modify state, or coordinate work — and have no meaningful value to hand back. For these, C++ provides the `void` return type.\n\n### Declaring a Void Function\n\nReplace the return type with `void`. The function body may contain an explicit `return;` (no value) to exit early, or simply fall off the end — both are valid.\n\n```cpp\n#include <iostream>\n\nvoid printTemperature(double celsius) {\n    double fahrenheit = celsius * 9.0 / 5.0 + 32.0;\n    std::cout << celsius << \"°C = \" << fahrenheit << \"°F\\n\";\n}\n\nint main() {\n    printTemperature(0.0);   // 0°C = 32°F\n    printTemperature(100.0); // 100°C = 212°F\n    return 0;\n}\n```\n\n`printTemperature` performs a **side effect** — writing to the console — instead of producing a value. The caller cannot write `double f = printTemperature(20.0);` because `void` carries no data.\n\n### Side Effects vs. Return Values\n\nA **side effect** is any observable change outside a function's own local scope: printing, writing to a file, modifying a variable passed by reference, or updating global state. Void functions are the natural home for side effects.\n\nChoose `void` when:\n- The function's entire purpose is its side effect (printing, logging, drawing).\n- There is no single meaningful result to return.\n\nChoose a return type when:\n- The caller needs the computed value to make a decision or do further work (see [Function return values](/lessons/2-2)).\n- You want the function to stay pure — same inputs always produce the same output with no side effects.\n\n### Python Comparison\n\nIn Python every function implicitly returns `None` when no `return` statement is present. C++ makes the intent explicit: `void` tells both the compiler and the reader that no return value exists. Trying to `return 42;` from a `void` function is a compile error in C++.\n\n### Early Return from Void\n\nUse a bare `return;` to exit early — useful for guard clauses:\n\n```cpp\nvoid printPositive(int n) {\n    if (n <= 0) return;   // guard: do nothing for non-positive input\n    std::cout << n << '\\n';\n}\n```\n\nKeep functions focused: a void function should perform one clear action, just as a value-returning function should compute one clear result.",
+      "exercises": [
+        {
+          "title": "Formatted Receipt Printer",
+          "prompt_md": "## Formatted Receipt Printer\n\nWrite **two void functions** that together print a simple store receipt:\n\n1. `printItem(std::string name, int quantity, double unitPrice)` — prints one line in the format:\n   ```\n   <name> x<quantity> @ $<unitPrice> = $<total>\n   ```\n   where `<total>` is `quantity * unitPrice`, printed with **2 decimal places**.\n\n2. `printTotal(double total)` — prints:\n   ```\n   Total: $<total>\n   ```\n   with **2 decimal places**.\n\nIn `main`, call them to produce a receipt for:\n- Apple, 3 units, $0.99 each\n- Bread, 1 unit, $2.49 each\n- Milk, 2 units, $1.75 each\n\nThen call `printTotal` with the sum of all three line totals.\n\n**Hint:** Use `std::fixed` and `std::setprecision(2)` from `<iomanip>` to format decimals.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: define printItem(std::string name, int quantity, double unitPrice)\n// Print: \"<name> x<quantity> @ $<unitPrice> = $<total>\"\n// with 2 decimal places on the prices\n\n\n// TODO: define printTotal(double total)\n// Print: \"Total: $<total>\" with 2 decimal places\n\n\nint main() {\n    // TODO: call printItem for Apple (3 @ $0.99), Bread (1 @ $2.49), Milk (2 @ $1.75)\n    // TODO: call printTotal with the sum of all three line totals\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nvoid printItem(std::string name, int quantity, double unitPrice) {\n    double total = quantity * unitPrice;\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << name << \" x\" << quantity\n              << \" @ $\" << unitPrice\n              << \" = $\" << total << '\\n';\n}\n\nvoid printTotal(double total) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Total: $\" << total << '\\n';\n}\n\nint main() {\n    printItem(\"Apple\", 3, 0.99);\n    printItem(\"Bread\", 1, 2.49);\n    printItem(\"Milk\",  2, 1.75);\n    printTotal(3 * 0.99 + 1 * 2.49 + 2 * 1.75);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample output",
+              "stdin": "",
+              "expected_stdout": "Apple x3 @ $0.99 = $2.97\nBread x1 @ $2.49 = $2.49\nMilk x2 @ $1.75 = $3.50\nTotal: $8.96\n",
+              "is_sample": true
+            },
+            {
+              "label": "Line totals are correct",
+              "stdin": "",
+              "expected_stdout": "Apple x3 @ $0.99 = $2.97\nBread x1 @ $2.49 = $2.49\nMilk x2 @ $1.75 = $3.50\nTotal: $8.96\n",
+              "is_sample": false
+            },
+            {
+              "label": "Two-decimal formatting",
+              "stdin": "",
+              "expected_stdout": "Apple x3 @ $0.99 = $2.97\nBread x1 @ $2.49 = $2.49\nMilk x2 @ $1.75 = $3.50\nTotal: $8.96\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Countdown with Early Exit",
+          "prompt_md": "## Countdown with Early Exit\n\nWrite a void function `countdown(int start)` that:\n\n- If `start` is **less than 1**, prints `Invalid start value.` and returns immediately (early return guard).\n- Otherwise prints each integer from `start` down to `1`, one per line, then prints `Go!`.\n\nIn `main`, call `countdown` with the values **5**, **0**, and **3** (in that order), each on a separate invocation.\n\nExpected output:\n```\n5\n4\n3\n2\n1\nGo!\nInvalid start value.\n3\n2\n1\nGo!\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: define void countdown(int start)\n// - If start < 1, print \"Invalid start value.\" and return early\n// - Otherwise print start, start-1, ..., 1, each on its own line\n// - Then print \"Go!\"\n\n\nint main() {\n    // TODO: call countdown(5), countdown(0), countdown(3)\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid countdown(int start) {\n    if (start < 1) {\n        std::cout << \"Invalid start value.\\n\";\n        return;\n    }\n    for (int i = start; i >= 1; --i) {\n        std::cout << i << '\\n';\n    }\n    std::cout << \"Go!\\n\";\n}\n\nint main() {\n    countdown(5);\n    countdown(0);\n    countdown(3);\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 5, 0, 3",
+              "stdin": "",
+              "expected_stdout": "5\n4\n3\n2\n1\nGo!\nInvalid start value.\n3\n2\n1\nGo!\n",
+              "is_sample": true
+            },
+            {
+              "label": "Early exit guard fires for zero",
+              "stdin": "",
+              "expected_stdout": "5\n4\n3\n2\n1\nGo!\nInvalid start value.\n3\n2\n1\nGo!\n",
+              "is_sample": false
+            },
+            {
+              "label": "Go! appears after each valid countdown",
+              "stdin": "",
+              "expected_stdout": "5\n4\n3\n2\n1\nGo!\nInvalid start value.\n3\n2\n1\nGo!\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.4",
+      "title": "Introduction to function parameters and arguments",
+      "sort_order": 28,
+      "summary_md": "## Function Parameters and Arguments\n\nIn \"Introduction to functions\" you learned how to define and call functions. So far those functions always did the same thing every time. **Parameters** let you pass data *into* a function so it can work on different values each call.\n\n### Parameters vs. arguments\n\n- A **parameter** is a variable declared in the function signature. It lives only for the duration of that function call.\n- An **argument** is the concrete value you supply at the call site — it gets copied into the parameter.\n\n```cpp\n#include <iostream>\n\n// 'base' and 'exponent' are parameters\nint power(int base, int exponent) {\n    int result{1};\n    for (int i{0}; i < exponent; ++i)\n        result *= base;\n    return result;\n}\n\nint main() {\n    std::cout << power(2, 8) << '\\n';  // arguments: 2 and 8\n    std::cout << power(3, 4) << '\\n';  // arguments: 3 and 4\n    return 0;\n}\n```\n\nOutput: `256` then `81`.\n\n### Pass by value\n\nC++ copies arguments into parameters — this is called **pass by value**. Modifying a parameter inside the function has no effect on the variable the caller used. If you come from Python, this matches how Python handles integers and other immutable types.\n\n### Multiple parameters\n\nSeparate parameters with commas. Each parameter needs its own type declaration — you cannot write `int a, b` (unlike Python's `a, b = ...`). Write `int a, int b`.\n\n### Parameters vs. return values\n\nRemember from \"Function return values (value-returning functions)\": a `return` statement sends data *out* of a function. Parameters send data *in*. Together they let functions act as self-contained, reusable transformations: accept inputs, produce output, change nothing else.\n\n### Void functions with parameters\n\n\"Void functions (non-value returning functions)\" showed that not every function needs to return something. A void function can still accept parameters — for example, a `printGreeting(std::string name)` function produces side-effects (printing) without returning a value.\n\n### Key rules\n\n- Declare every parameter with an explicit type.\n- Parameter names are local to the function body; name collisions with `main` variables are harmless.\n- The order of arguments must match the order of parameters.\n- Pass by value means the caller's variables are never changed by the function unless you later learn about references or pointers.",
+      "exercises": [
+        {
+          "title": "Rectangle Dimensions",
+          "prompt_md": "Write a function `printRectangleInfo` that takes two `int` parameters — `width` and `height` — and prints the perimeter and area of the rectangle, each on its own line in the format shown below.\n\nThen call it from `main` using values read from standard input.\n\n**Sample interaction (input `4 7`):**\n```\nPerimeter: 22\nArea: 28\n```\n\nRemember: modifying `width` or `height` inside `printRectangleInfo` must not affect the values in `main` (pass-by-value guarantee).",
+          "starter_code": "#include <iostream>\n\n// TODO: Define printRectangleInfo(int width, int height)\n// It should print:\n//   Perimeter: <value>\n//   Area: <value>\n\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    // TODO: Call printRectangleInfo with width and height\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid printRectangleInfo(int width, int height) {\n    std::cout << \"Perimeter: \" << 2 * (width + height) << '\\n';\n    std::cout << \"Area: \" << width * height << '\\n';\n}\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    printRectangleInfo(width, height);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 4 x 7 rectangle",
+              "stdin": "4 7",
+              "expected_stdout": "Perimeter: 22\nArea: 28\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: 1 x 1 square",
+              "stdin": "1 1",
+              "expected_stdout": "Perimeter: 4\nArea: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: 10 x 3 rectangle",
+              "stdin": "10 3",
+              "expected_stdout": "Perimeter: 26\nArea: 30\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Clamp a Value",
+          "prompt_md": "Write a function `clamp` that accepts three `int` parameters — `value`, `low`, and `high` — and **returns** the value clamped to the inclusive range `[low, high]`:\n\n- If `value < low`, return `low`.\n- If `value > high`, return `high`.\n- Otherwise return `value` unchanged.\n\nRead three integers from standard input and print the clamped result.\n\n**Sample interaction (input `15 0 10`):**\n```\n10\n```\n\nThis exercise reinforces that parameters are copies: the function must not need to modify the caller's variables to produce its answer.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define int clamp(int value, int low, int high)\n// Return value clamped to [low, high]\n\n\nint main() {\n    int value{};\n    int low{};\n    int high{};\n    std::cin >> value >> low >> high;\n\n    // TODO: Call clamp and print the result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint clamp(int value, int low, int high) {\n    if (value < low)\n        return low;\n    if (value > high)\n        return high;\n    return value;\n}\n\nint main() {\n    int value{};\n    int low{};\n    int high{};\n    std::cin >> value >> low >> high;\n\n    std::cout << clamp(value, low, high) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 15 clamped to [0, 10]",
+              "stdin": "15 0 10",
+              "expected_stdout": "10\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: value already in range",
+              "stdin": "5 0 10",
+              "expected_stdout": "5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: value below lower bound",
+              "stdin": "-3 1 100",
+              "expected_stdout": "1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.5",
+      "title": "Introduction to local scope",
+      "sort_order": 29,
+      "summary_md": "## Introduction to Local Scope\n\nEvery variable in C++ has a **scope** — the region of code where that variable can be seen and used. A variable defined inside a function has **local scope**: it exists only within the curly braces `{}` where it was defined.\n\n### Block scope\n\nA *block* is any section of code enclosed in `{}`. A variable declared inside a block is visible only from its declaration to the closing `}` of that block.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x { 5 };           // x visible from here\n    {\n        int y { 10 };      // y only visible inside this block\n        std::cout << x + y << '\\n';  // OK\n    }                      // y destroyed here\n    // std::cout << y;     // ERROR: y is out of scope\n    std::cout << x << '\\n';  // OK: x still alive\n}                          // x destroyed here\n```\n\n### Variable lifetime\n\nScope is about *visibility*; *lifetime* is about when storage is allocated and released. For locals these align: a variable's lifetime begins at its definition and ends when its enclosing block exits. C++ destroys it automatically — no manual cleanup.\n\nThis differs from Python, where objects persist as long as something references them. In C++, a local is unconditionally gone once its block closes.\n\n### Each call gets its own locals\n\nAs you saw in [Function return values (value-returning functions)], each function call creates fresh copies of its local variables. Two concurrent (or sequential) calls never share storage, even for identically named variables.\n\n### Shadowing (avoid it)\n\nYou can declare a variable in an inner block with the same name as an outer one. The inner variable *shadows* the outer inside its block. This is legal but confusing — `-Wall -Wextra` will warn you. Prefer distinct names.\n\n### Practical rules\n\n- Declare variables in the **innermost** block that needs them: shorter lifetime, clearer intent.\n- A variable cannot be used before its declaration, even in the same block.\n- These rules apply equally to [Void functions (non-value returning functions)] and value-returning ones.",
+      "exercises": [
+        {
+          "title": "Scoped Counters",
+          "prompt_md": "## Scoped Counters\n\nWrite a program that reads an integer `n` from `stdin`, then prints two lines:\n\n1. The sum of integers from `1` to `n` (inclusive), computed inside a dedicated block using a loop variable that goes out of scope after the block.\n2. The product of integers from `1` to `n` (inclusive), computed inside a second dedicated block using a fresh loop variable.\n\nUse a separate inner block `{}` for each computation so the loop variable `i` is local to each block. The outer `main` scope should only hold `n`, `sum`, and `product`.\n\n**Example (n = 4):**\n```\nSum: 10\nProduct: 24\n```\n\n**Constraints:** `1 <= n <= 10`",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    int sum { 0 };\n    {\n        // TODO: declare loop variable i here and compute sum of 1..n\n    }\n    // i should NOT be accessible here\n\n    int product { 1 };\n    {\n        // TODO: declare loop variable i here and compute product of 1..n\n    }\n    // i should NOT be accessible here\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << \"Product: \" << product << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    int sum { 0 };\n    {\n        for (int i { 1 }; i <= n; ++i)\n            sum += i;\n    }\n\n    int product { 1 };\n    {\n        for (int i { 1 }; i <= n; ++i)\n            product *= i;\n    }\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << \"Product: \" << product << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "n = 4 (sample)",
+              "stdin": "4",
+              "expected_stdout": "Sum: 10\nProduct: 24\n",
+              "is_sample": true
+            },
+            {
+              "label": "n = 1 (edge case)",
+              "stdin": "1",
+              "expected_stdout": "Sum: 1\nProduct: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "n = 7",
+              "stdin": "7",
+              "expected_stdout": "Sum: 28\nProduct: 5040\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Lifetime Reporter",
+          "prompt_md": "## Lifetime Reporter\n\nWrite a program that demonstrates variable lifetime by printing messages as variables are created and destroyed — simulated manually since C++ destructor output requires classes (covered later).\n\nRead two integers `a` and `b` from `stdin`. Then:\n\n1. Print `\"outer a = <value>\"` for the outer `a`.\n2. Inside an inner block, declare a **new** variable also named `a` initialised to `a * 2` (shadowing the outer). Print `\"inner a = <value>\"` for the inner `a`, then print `\"inner b = <value>\"` using `b` from the outer scope.\n3. After the inner block closes, print `\"back to outer a = <value>\"` showing the outer `a` is unchanged.\n\n**Example (a = 3, b = 5):**\n```\nouter a = 3\ninner a = 6\ninner b = 5\nback to outer a = 3\n```\n\n**Constraints:** `1 <= a, b <= 100`",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    std::cout << \"outer a = \" << a << '\\n';\n\n    {\n        // TODO: declare a new variable 'a' initialised to the outer a * 2\n        // TODO: print \"inner a = \" followed by the inner a\n        // TODO: print \"inner b = \" followed by b (from outer scope)\n    }\n\n    // TODO: print \"back to outer a = \" followed by a (should be unchanged)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    std::cout << \"outer a = \" << a << '\\n';\n\n    {\n        int a { ::a * 2 };  // shadow outer a; use :: to refer to outer scope\n        // Alternative without :::\n        // captured before block: int doubled { a * 2 }; int a { doubled };\n        std::cout << \"inner a = \" << a << '\\n';\n        std::cout << \"inner b = \" << b << '\\n';\n    }\n\n    std::cout << \"back to outer a = \" << a << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "a=3 b=5 (sample)",
+              "stdin": "3 5",
+              "expected_stdout": "outer a = 3\ninner a = 6\ninner b = 5\nback to outer a = 3\n",
+              "is_sample": true
+            },
+            {
+              "label": "a=1 b=1 (minimum)",
+              "stdin": "1 1",
+              "expected_stdout": "outer a = 1\ninner a = 2\ninner b = 1\nback to outer a = 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "a=10 b=7",
+              "stdin": "10 7",
+              "expected_stdout": "outer a = 10\ninner a = 20\ninner b = 7\nback to outer a = 10\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.6",
+      "title": "Why functions are useful, and how to use them effectively",
+      "sort_order": 30,
+      "summary_md": "## Why Functions Are Useful, and How to Use Them Effectively\n\nIn *Introduction to functions* you saw how to define and call a function. Now let's talk about *when* to write one and how to keep functions clean as your programs grow.\n\n### The three reasons to extract a function\n\n1. **Avoid duplicate code.** If you copy-paste logic, bugs get fixed in one place and silently survive in the other. A function lets you write the logic once and call it anywhere.\n2. **Name a concept.** A function called `calculateCircleArea` communicates intent instantly; six lines of arithmetic scattered inline do not.\n3. **Limit scope.** Recall from *Introduction to local scope* that every variable lives only inside its enclosing `{}`. Pushing a self-contained task into its own function keeps its variables from polluting the caller.\n\n### Single Responsibility Principle\n\nEach function should do **one thing**. A function that calculates a value *and* prints it *and* writes to a file is doing three things — split it. This makes each piece easier to test, reuse, and understand.\n\n### Return values carry the result — don't mix concerns\n\nFrom *Function return values (value-returning functions)* you know a function returns exactly one value. As seen in *Void functions*, if a function only performs a side effect (like printing), make it `void`. If it computes something, make it return that value and leave printing to the caller:\n\n```cpp\n#include <iostream>\n\n// computes only — no printing\ndouble cylinderVolume(double radius, double height) {\n    constexpr double pi { 3.14159265358979 };\n    return pi * radius * radius * height;\n}\n\nint main() {\n    double vol { cylinderVolume(3.0, 5.0) };\n    std::cout << \"Volume: \" << vol << '\\n';\n    return 0;\n}\n```\n\n### Parameters keep functions general\n\n*Introduction to function parameters and arguments* showed that parameters let a function work on different data each call. Prefer parameters over hard-coded values so the function is reusable without modification.\n\n### When *not* to extract a function\n\nDon't extract a function just to shorten `main`. One-liners used only once are fine inline. The signal to extract is **reuse or clarity**, not line count.\n\n### Practical checklist\n- Does the function have a single, nameable job? Good.\n- Is logic duplicated elsewhere? Extract it.\n- Does it mix computation with I/O? Split it.\n- Are parameters named for what they represent, not their type? Good.\n\nFollowing these habits from the start keeps C++ programs readable as they scale from dozens to thousands of lines.",
+      "exercises": [
+        {
+          "title": "Temperature Converter",
+          "prompt_md": "Write two conversion functions and a `main` that uses both.\n\n**Requirements:**\n- `celsiusToFahrenheit(double c)` — returns the Fahrenheit equivalent using `F = c * 9.0 / 5.0 + 32.0`\n- `fahrenheitToCelsius(double f)` — returns the Celsius equivalent using `C = (f - 32.0) * 5.0 / 9.0`\n- `main` reads **two lines** of input:\n  - Line 1: a `double` value in Celsius\n  - Line 2: a `double` value in Fahrenheit\n- Print the Celsius value converted to Fahrenheit on the first output line, then the Fahrenheit value converted to Celsius on the second output line.\n- Use `std::cout << std::fixed << std::setprecision(2)` (include `<iomanip>`) so all outputs are rounded to exactly 2 decimal places.\n\n**Example** (input `0` then `212`):\n```\n32.00\n100.00\n```\n\nEach function must do only one thing (no printing inside the conversion functions).",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: implement celsiusToFahrenheit(double c) -> double\n\n// TODO: implement fahrenheitToCelsius(double f) -> double\n\nint main() {\n    double celsius {};\n    double fahrenheit {};\n\n    // TODO: read celsius, then fahrenheit from std::cin\n\n    // TODO: print celsius->fahrenheit conversion (2 decimal places)\n    // TODO: print fahrenheit->celsius conversion (2 decimal places)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble celsiusToFahrenheit(double c) {\n    return c * 9.0 / 5.0 + 32.0;\n}\n\ndouble fahrenheitToCelsius(double f) {\n    return (f - 32.0) * 5.0 / 9.0;\n}\n\nint main() {\n    double celsius {};\n    double fahrenheit {};\n\n    std::cin >> celsius >> fahrenheit;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << celsiusToFahrenheit(celsius) << '\\n';\n    std::cout << fahrenheitToCelsius(fahrenheit) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Freezing and boiling",
+              "stdin": "0\n212",
+              "expected_stdout": "32.00\n100.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "Body temperature",
+              "stdin": "37\n98.6",
+              "expected_stdout": "98.60\n37.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative Celsius and cold Fahrenheit",
+              "stdin": "-40\n32",
+              "expected_stdout": "-40.00\n0.00\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Rectangle Calculator",
+          "prompt_md": "Decompose a rectangle calculator into focused single-responsibility functions.\n\n**Requirements:**\n- `area(double width, double height)` — returns `width * height`\n- `perimeter(double width, double height)` — returns `2.0 * (width + height)`\n- `isSquare(double width, double height)` — returns `true` if `width == height`, `false` otherwise\n- `main` reads **two doubles** (width then height) from a single line of input.\n- Print three lines:\n  1. `Area: <value>` (2 decimal places)\n  2. `Perimeter: <value>` (2 decimal places)\n  3. `Square: yes` or `Square: no`\n\n**Example** (input `4 4`):\n```\nArea: 16.00\nPerimeter: 16.00\nSquare: yes\n```\n\nNo function should print anything — all output happens in `main`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: implement area(double width, double height) -> double\n\n// TODO: implement perimeter(double width, double height) -> double\n\n// TODO: implement isSquare(double width, double height) -> bool\n\nint main() {\n    double width {};\n    double height {};\n\n    // TODO: read width and height\n\n    // TODO: print Area, Perimeter, and Square lines\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble area(double width, double height) {\n    return width * height;\n}\n\ndouble perimeter(double width, double height) {\n    return 2.0 * (width + height);\n}\n\nbool isSquare(double width, double height) {\n    return width == height;\n}\n\nint main() {\n    double width {};\n    double height {};\n\n    std::cin >> width >> height;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << area(width, height) << '\\n';\n    std::cout << \"Perimeter: \" << perimeter(width, height) << '\\n';\n    std::cout << \"Square: \" << (isSquare(width, height) ? \"yes\" : \"no\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Square input",
+              "stdin": "4 4",
+              "expected_stdout": "Area: 16.00\nPerimeter: 16.00\nSquare: yes\n",
+              "is_sample": true
+            },
+            {
+              "label": "Rectangle (non-square)",
+              "stdin": "3 7",
+              "expected_stdout": "Area: 21.00\nPerimeter: 20.00\nSquare: no\n",
+              "is_sample": false
+            },
+            {
+              "label": "Decimal dimensions",
+              "stdin": "2.5 5.0",
+              "expected_stdout": "Area: 12.50\nPerimeter: 15.00\nSquare: no\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.7",
+      "title": "Forward declarations and definitions",
+      "sort_order": 31,
+      "summary_md": "## Forward Declarations and Definitions\n\nC++ compiles files **top to bottom**. When the compiler encounters a function call, it must already know that function's name, parameter types, and return type — otherwise it stops with an error. This is unlike Python, which resolves names at runtime.\n\n### The problem\n\nIf you write `main` before `add`, the compiler sees the call to `add` before it knows what `add` is:\n\n```cpp\n#include <iostream>\n\nint main() {\n    std::cout << add(3, 4) << '\\n'; // Error: 'add' not declared yet\n    return 0;\n}\n\nint add(int a, int b) {\n    return a + b;\n}\n```\n\n### Declarations vs. definitions\n\nA **declaration** tells the compiler a name exists and what its type is — no body required. A **definition** provides the full implementation. Every definition is also a declaration, but a declaration is not a definition.\n\nA **forward declaration** is a declaration placed before the point of use so the compiler can type-check calls before it has seen the definition:\n\n```cpp\nint add(int a, int b); // forward declaration (semicolon, no body)\n\nint main() {\n    std::cout << add(3, 4) << '\\n'; // OK — compiler knows the signature\n    return 0;\n}\n\nint add(int a, int b) {             // definition — appears later\n    return a + b;\n}\n```\n\nThe parameter names in a forward declaration are optional; only the types matter. `int add(int, int);` is equally valid.\n\n### The One Definition Rule (ODR)\n\nA name may be **declared** multiple times in a translation unit, but **defined** exactly once. Defining the same function twice produces a linker error. Declaring it twice is harmless.\n\n### When you need forward declarations\n\nForward declarations become essential when:\n- Two functions call each other (mutual recursion) — neither can come first without one.\n- You want to keep function definitions in a logical order (e.g., helpers at the bottom).\n- You split code across multiple files (covered in a later lesson on header files).\n\n### Relationship to earlier lessons\n\nIn *Introduction to functions* you learned that a function body must be defined somewhere. Forward declarations separate the **promise** (declaration) from the **fulfillment** (definition), letting you call a function before its body appears. In *Function return values* and *Introduction to function parameters and arguments*, you saw that the compiler enforces correct types — forward declarations are exactly how it learns those types ahead of time.\n\nForward declarations are a small but load-bearing tool: nearly every real C++ project uses them through header files.",
+      "exercises": [
+        {
+          "title": "Fix the Order with a Forward Declaration",
+          "prompt_md": "The program below tries to call two helper functions from `main`, but they are defined **after** `main`, causing compile errors.\n\nYour task:\n1. Add forward declarations for `square` and `cube` above `main` so the program compiles.\n2. Do **not** reorder or change any existing function definitions.\n\nExpected output when run with input `4`:\n```\nSquare: 16\nCube: 64\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: add forward declarations for square() and cube() here\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << '\\n';\n    std::cout << \"Cube: \"   << cube(n)   << '\\n';\n    return 0;\n}\n\nint square(int x) {\n    return x * x;\n}\n\nint cube(int x) {\n    return x * x * x;\n}\n",
+          "solution_code": "#include <iostream>\n\nint square(int x); // forward declaration\nint cube(int x);   // forward declaration\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << '\\n';\n    std::cout << \"Cube: \"   << cube(n)   << '\\n';\n    return 0;\n}\n\nint square(int x) {\n    return x * x;\n}\n\nint cube(int x) {\n    return x * x * x;\n}\n",
+          "test_cases": [
+            {
+              "label": "Input 4",
+              "stdin": "4",
+              "expected_stdout": "Square: 16\nCube: 64\n",
+              "is_sample": true
+            },
+            {
+              "label": "Input 1",
+              "stdin": "1",
+              "expected_stdout": "Square: 1\nCube: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "Input 5",
+              "stdin": "5",
+              "expected_stdout": "Square: 25\nCube: 125\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Mutual Recursion with Forward Declarations",
+          "prompt_md": "Two functions `isEven` and `isOdd` call each other — neither can be placed entirely before the other. This is a classic use case for forward declarations.\n\nImplement both functions so that:\n- `isEven(n)` returns `true` when `n` is even, `false` otherwise.\n- `isOdd(n)` returns `true` when `n` is odd, `false` otherwise.\n- Both functions handle `n >= 0` only.\n- Base cases: `isEven(0)` is `true`; `isOdd(0)` is `false`.\n- Recursive step: `isEven(n)` calls `isOdd(n - 1)`, and `isOdd(n)` calls `isEven(n - 1)`.\n\nThe `main` function reads one integer and prints two lines:\n```\nEven: 1\nOdd: 0\n```\n(Use `1` for true and `0` for false — `std::cout` prints `bool` as an integer by default.)\n\nSample input: `6`\nSample output:\n```\nEven: 1\nOdd: 0\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: add a forward declaration for isOdd so isEven can call it\n\nbool isEven(int n) {\n    if (n == 0) return true;\n    return isOdd(n - 1); // calls isOdd — needs forward declaration above\n}\n\nbool isOdd(int n) {\n    if (n == 0) return false;\n    return isEven(n - 1);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Even: \" << isEven(n) << '\\n';\n    std::cout << \"Odd: \"  << isOdd(n)  << '\\n';\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nbool isOdd(int n); // forward declaration — lets isEven call isOdd before its definition\n\nbool isEven(int n) {\n    if (n == 0) return true;\n    return isOdd(n - 1);\n}\n\nbool isOdd(int n) {\n    if (n == 0) return false;\n    return isEven(n - 1);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Even: \" << isEven(n) << '\\n';\n    std::cout << \"Odd: \"  << isOdd(n)  << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Input 6 (even)",
+              "stdin": "6",
+              "expected_stdout": "Even: 1\nOdd: 0\n",
+              "is_sample": true
+            },
+            {
+              "label": "Input 0 (zero base case)",
+              "stdin": "0",
+              "expected_stdout": "Even: 1\nOdd: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Input 7 (odd)",
+              "stdin": "7",
+              "expected_stdout": "Even: 0\nOdd: 1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.8",
+      "title": "Programs with multiple code files",
+      "sort_order": 32,
+      "summary_md": "## Programs with multiple code files\n\nAs programs grow, keeping everything in one file becomes unmanageable. C++ lets you split code across multiple `.cpp` files (called **translation units**), each compiled separately and then **linked** together into a single executable.\n\n### Why split files?\n\nIn Python you use `import` to pull in other modules. C++ has a two-step equivalent:\n\n1. **Declare** a function so the compiler knows its signature (like a promise it exists).\n2. **Define** it somewhere — either in the same file or another `.cpp` file.\n\nFrom \"Forward declarations and definitions\", you already know that a declaration tells the compiler the name, return type, and parameter list without the body. When you split across files, that forward declaration is what lets `main.cpp` call a function defined in `math.cpp`.\n\n### The typical layout\n\n```cpp\n// math.cpp  — definition lives here\nint add(int a, int b) { return a + b; }\n\n// main.cpp  — forward declaration, then use\nint add(int a, int b);   // declaration\nint main() {\n    return add(3, 4);    // linker resolves this\n}\n```\n\nYou compile both files together: `g++ -std=c++20 main.cpp math.cpp -o app`. The compiler processes each file independently; the **linker** then resolves the call in `main.cpp` to the definition in `math.cpp`.\n\n### Header files (preview)\n\nRepeating forward declarations in every file that needs them is tedious and error-prone. The standard solution is a **header file** (`.h` or `.hpp`) that holds declarations, which every `.cpp` file can `#include`. You will cover headers in detail in the next lesson — for now, focus on understanding that the compiler and linker are separate steps.\n\n### Key rules\n\n- A function may be **declared** many times, but **defined** exactly once across all translation units (the **One Definition Rule**, ODR).\n- Local variables from \"Introduction to local scope\" remain local to their translation unit — no file can see another file's locals.\n- Each `.cpp` file must be passed to the compiler; forgetting one causes a **linker error** (\"undefined reference\"), not a compiler error.\n\n### Mental model\n\nThink of each `.cpp` file as an isolated mini-program that exports some of its functions. The linker is the glue that connects callers in one file to definitions in another.",
+      "exercises": [
+        {
+          "title": "Simulating a multi-file math library",
+          "prompt_md": "In a real multi-file project you would place helper functions in a separate `.cpp` file and forward-declare them in `main.cpp`. Because our sandbox is single-file, simulate that structure here:\n\n1. Write forward declarations for `multiply` and `subtract` **before** `main`.\n2. Define `main` so it reads two integers from stdin, then prints their product and difference (product first, then difference), each on its own line.\n3. Place the **definitions** of `multiply` and `subtract` **after** `main`.\n\nThis mirrors exactly what the compiler sees when `main.cpp` uses functions defined in a separate `math.cpp`: the body of `main` only needs the declaration, and the linker resolves the definition later.\n\n**Input:** Two integers on one line separated by a space.\n\n**Output:**\n```\n<product>\n<difference>\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: forward-declare multiply(int, int) -> int\n// TODO: forward-declare subtract(int, int) -> int\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: print multiply(a, b), then subtract(a, b), each on its own line\n\n    return 0;\n}\n\n// TODO: define multiply — returns a * b\n\n// TODO: define subtract — returns a - b\n",
+          "solution_code": "#include <iostream>\n\n// Forward declarations (simulating what you'd put in main.cpp\n// when the definitions live in math.cpp)\nint multiply(int a, int b);\nint subtract(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    std::cout << multiply(a, b) << '\\n';\n    std::cout << subtract(a, b) << '\\n';\n\n    return 0;\n}\n\n// Definitions (simulating math.cpp)\nint multiply(int a, int b) {\n    return a * b;\n}\n\nint subtract(int a, int b) {\n    return a - b;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3 and 4",
+              "stdin": "3 4",
+              "expected_stdout": "12\n-1\n",
+              "is_sample": true
+            },
+            {
+              "label": "Negative numbers: -5 and 2",
+              "stdin": "-5 2",
+              "expected_stdout": "-10\n-7\n",
+              "is_sample": false
+            },
+            {
+              "label": "Zero and a number: 0 and 7",
+              "stdin": "0 7",
+              "expected_stdout": "0\n-7\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Chained helper functions with forward declarations",
+          "prompt_md": "A common multi-file pattern is having `main.cpp` call a high-level function that internally calls lower-level helpers defined in yet another file. Simulate that here in a single file.\n\nImplement three functions:\n- `square(int n)` — returns `n * n`\n- `sumOfSquares(int a, int b)` — returns `square(a) + square(b)`\n- `main` — reads two integers and prints `sumOfSquares(a, b)`\n\n**Requirements (mirroring real multi-file layout):**\n1. Forward-declare **both** `square` and `sumOfSquares` before `main`.\n2. Define `main` in the middle.\n3. Place definitions of `sumOfSquares` and `square` after `main` (in that order — `sumOfSquares` calls `square`, which is fine because the forward declaration already told the compiler about `square`).\n\nThis demonstrates the ODR: each function defined exactly once, callable anywhere because of its declaration.\n\n**Input:** Two integers on one line separated by a space.\n\n**Output:** One integer — the sum of their squares.",
+          "starter_code": "#include <iostream>\n\n// TODO: forward-declare square(int) -> int\n// TODO: forward-declare sumOfSquares(int, int) -> int\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: print sumOfSquares(a, b)\n\n    return 0;\n}\n\n// TODO: define sumOfSquares — uses square internally\n\n// TODO: define square — returns n * n\n",
+          "solution_code": "#include <iostream>\n\n// Forward declarations — mirrors what you'd #include from a header\nint square(int n);\nint sumOfSquares(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    std::cout << sumOfSquares(a, b) << '\\n';\n\n    return 0;\n}\n\n// Definitions (simulating helpers.cpp)\n// sumOfSquares calls square; the forward declaration above\n// means the compiler already knows square's signature.\nint sumOfSquares(int a, int b) {\n    return square(a) + square(b);\n}\n\nint square(int n) {\n    return n * n;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3 and 4",
+              "stdin": "3 4",
+              "expected_stdout": "25\n",
+              "is_sample": true
+            },
+            {
+              "label": "Zeros: 0 and 0",
+              "stdin": "0 0",
+              "expected_stdout": "0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative: -3 and 5",
+              "stdin": "-3 5",
+              "expected_stdout": "34\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.9",
+      "title": "Naming collisions and an introduction to namespaces",
+      "sort_order": 33,
+      "summary_md": "## Naming Collisions and an Introduction to Namespaces\n\nAs your programs grow — especially once you split them across multiple files (see *Programs with multiple code files*) — you will eventually define two functions or variables with the same name in the same scope. The compiler cannot tell which one you meant, so it emits a **naming collision** error.\n\n### Why collisions happen\n\nRecall from *Introduction to local scope* that every name lives in a **scope**. At the top level of a file, names land in the **global namespace**. If two translation units each define a free function called `add`, the linker sees two definitions of the same global symbol and refuses to link.\n\nThe same problem arises with third-party libraries: a library might expose a function called `max`, clashing with the standard library's `std::max`.\n\n### Namespaces to the rescue\n\nA **namespace** is a named scope that wraps a group of identifiers, preventing them from colliding with names in other namespaces.\n\n```cpp\n#include <iostream>\n\nnamespace math {\n    int add(int a, int b) { return a + b; }\n}\n\nnamespace io {\n    void add(int a, int b) {  // same name, no collision\n        std::cout << a + b << '\\n';\n    }\n}\n\nint main() {\n    std::cout << math::add(3, 4) << '\\n';  // 7\n    io::add(3, 4);                          // 7\n}\n```\n\nThe `::` operator is the **scope resolution operator**. `math::add` means \"the `add` living inside `math`\".\n\n### The `std` namespace\n\nThe entire C++ standard library lives in the `std` namespace. That is why you write `std::cout`, `std::string`, and `std::endl` rather than bare `cout`. This design lets the standard library add thousands of names without ever colliding with yours.\n\n### `using` declarations\n\nTyping `std::` everywhere is verbose. A **`using` declaration** brings one name into the current scope:\n\n```cpp\nusing std::cout;  // only cout, nothing else\ncout << \"hello\\n\";\n```\n\nAvoid `using namespace std;` (a *using directive*) in header files and at global scope in source files — it defeats the entire purpose of namespaces by dumping every `std` name into your scope, recreating the collision risk you were trying to escape. Prefer qualified names (`std::`) or narrow `using` declarations scoped to a function body.\n\n### Key takeaways\n\n- Naming collisions occur when two definitions share the same name in the same scope.\n- Namespaces group names to avoid collisions.\n- `::` resolves which namespace a name comes from.\n- The standard library lives in `std`; always qualify its names.\n- Prefer `std::name` over broad `using namespace std;`.",
+      "exercises": [
+        {
+          "title": "Namespace Arithmetic",
+          "prompt_md": "Two teams wrote math utilities independently and named some functions identically.\n\nYour task:\n1. Implement `integer::multiply(int a, int b)` — returns `a * b`.\n2. Implement `real::multiply(double a, double b)` — returns `a * b`.\n3. In `main`, read two integers and two doubles from stdin, call both functions, and print each result on its own line.\n\n**Input format (single line, space-separated):** `int_a int_b double_a double_b`\n\n**Output format:**\n```\n<integer product>\n<real product (2 decimal places)>\n```\n\n**Example:**\n- Input: `3 4 1.5 2.0`\n- Output:\n```\n12\n3.00\n```\n\nUse the `::` scope resolution operator to call each function. Do **not** use `using namespace std;`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nnamespace integer {\n    // TODO: implement multiply(int a, int b) -> int\n}\n\nnamespace real {\n    // TODO: implement multiply(double a, double b) -> double\n}\n\nint main() {\n    int a, b;\n    double x, y;\n    std::cin >> a >> b >> x >> y;\n\n    // TODO: call integer::multiply and real::multiply,\n    //       print integer result, then real result with 2 decimal places\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace integer {\n    int multiply(int a, int b) { return a * b; }\n}\n\nnamespace real {\n    double multiply(double a, double b) { return a * b; }\n}\n\nint main() {\n    int a, b;\n    double x, y;\n    std::cin >> a >> b >> x >> y;\n\n    std::cout << integer::multiply(a, b) << '\\n';\n    std::cout << std::fixed << std::setprecision(2) << real::multiply(x, y) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 3*4 and 1.5*2.0",
+              "stdin": "3 4 1.5 2.0",
+              "expected_stdout": "12\n3.00\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: negative integer, fractional double",
+              "stdin": "-5 6 2.5 4.0",
+              "expected_stdout": "-30\n10.00\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: zeros",
+              "stdin": "0 99 0.0 7.7",
+              "expected_stdout": "0\n0.00\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Scoped Greetings",
+          "prompt_md": "Practice controlling which names are visible in a scope using `using` declarations.\n\nThe program must define:\n- `greet::formal(const std::string& name)` — prints `\"Good day, <name>.\"`\n- `greet::casual(const std::string& name)` — prints `\"Hey, <name>!\"`\n\nIn `main`:\n1. Read a single name from stdin.\n2. Use a **`using` declaration** (`using greet::formal;`) inside `main` so you can call `formal` without the `greet::` prefix.\n3. Call `formal` without the prefix and `greet::casual` with the prefix.\n4. Print the formal greeting first, then the casual greeting.\n\n**Input:** one word (a name)\n\n**Output (two lines):**\n```\nGood day, <name>.\nHey, <name>!\n```\n\n**Example:**\n- Input: `Alice`\n- Output:\n```\nGood day, Alice.\nHey, Alice!\n```\n\nDo **not** write `using namespace greet;` — use only a targeted `using` declaration for `formal`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nnamespace greet {\n    // TODO: implement formal(const std::string& name)\n    // TODO: implement casual(const std::string& name)\n}\n\nint main() {\n    std::string name;\n    std::cin >> name;\n\n    // TODO: add a using declaration for greet::formal only\n    // TODO: call formal without prefix\n    // TODO: call casual with greet:: prefix\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nnamespace greet {\n    void formal(const std::string& name) {\n        std::cout << \"Good day, \" << name << \".\\n\";\n    }\n    void casual(const std::string& name) {\n        std::cout << \"Hey, \" << name << \"!\\n\";\n    }\n}\n\nint main() {\n    std::string name;\n    std::cin >> name;\n\n    using greet::formal;\n    formal(name);\n    greet::casual(name);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: Alice",
+              "stdin": "Alice",
+              "expected_stdout": "Good day, Alice.\nHey, Alice!\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: single-character name",
+              "stdin": "Z",
+              "expected_stdout": "Good day, Z.\nHey, Z!\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: longer name",
+              "stdin": "Bjarne",
+              "expected_stdout": "Good day, Bjarne.\nHey, Bjarne!\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.10",
+      "title": "Introduction to the preprocessor",
+      "sort_order": 34,
+      "summary_md": "## Introduction to the Preprocessor\n\nBefore the C++ compiler sees your code, a separate tool called the **preprocessor** runs first. It scans your source file for lines that start with `#` (called **preprocessor directives**) and transforms the text — including files, replacing macros, and stripping out conditional blocks — before compilation begins.\n\n### `#include`: pulling in other files\n\nYou have already seen `#include` in every example so far. When the preprocessor encounters `#include <iostream>`, it replaces that line with the entire contents of the `iostream` header. Angle brackets (`< >`) look in the standard library paths; double quotes (`\" \"`) first search the project directory, then fall back to library paths. This is how the multi-file programs from \"Programs with multiple code files\" share declarations: each `.cpp` file `#include`s the same header.\n\n### `#define`: object-like macros\n\n`#define IDENTIFIER replacement_text` tells the preprocessor to substitute every subsequent occurrence of `IDENTIFIER` with `replacement_text`.\n\n```cpp\n#define MAX_SIZE 100\n#define GREETING \"Hello, learner!\"\n\nint main() {\n    int arr[MAX_SIZE];   // becomes int arr[100];\n    // GREETING becomes \"Hello, learner!\"\n}\n```\n\nMacros are a text-substitution mechanism — they have no type and no scope. Prefer `constexpr` constants and `inline` functions over macros for anything that carries a value or logic; macros cannot be inspected by the debugger and can produce confusing errors when their expansion is unexpected.\n\n### Conditional compilation: `#ifdef`, `#ifndef`, `#endif`\n\nConditional directives let you include or exclude entire sections of code at build time.\n\n- `#ifdef SYMBOL` — compiles the following block only if `SYMBOL` has been defined.\n- `#ifndef SYMBOL` — compiles the block only if `SYMBOL` has *not* been defined.\n- `#endif` closes any conditional block.\n- `#define NDEBUG` is a conventional symbol that disables `assert()` checks in release builds.\n\nThis technique is also used for **include guards** — a pattern that prevents a header from being pasted into a translation unit more than once. Without them, the same declarations could appear twice and cause compiler errors. Modern code often uses `#pragma once` as a simpler alternative, though it is not technically part of the standard.\n\n### What the preprocessor is *not*\n\nThe preprocessor knows nothing about C++ types, functions, or namespaces (introduced in \"Naming collisions and an introduction to namespaces\"). It operates purely on text. Errors introduced by bad macros often appear in confusing locations because the compiler reports the error on the expanded line, not the macro definition.",
+      "exercises": [
+        {
+          "title": "Debug Build Flag",
+          "prompt_md": "## Debug Build Flag\n\nUsing preprocessor directives, write a program that prints different messages depending on whether a `DEBUG` macro is defined.\n\n**Requirements:**\n1. At the top of the file, use `#define DEBUG` to enable debug mode.\n2. If `DEBUG` is defined, print: `Debug mode: enabled`\n3. If `DEBUG` is **not** defined, print: `Debug mode: disabled`\n4. Unconditionally print: `Program running`\n\nThe expected output when `DEBUG` is defined (as in the starter code) is:\n```\nDebug mode: enabled\nProgram running\n```\n\n**Hint:** Use `#ifdef` / `#else` / `#endif` to branch on whether `DEBUG` is defined.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define the DEBUG macro here\n\nint main() {\n    // TODO: Use #ifdef DEBUG ... #else ... #endif to print the correct\n    // debug status message\n\n    // TODO: Unconditionally print \"Program running\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\n#define DEBUG\n\nint main() {\n#ifdef DEBUG\n    std::cout << \"Debug mode: enabled\\n\";\n#else\n    std::cout << \"Debug mode: disabled\\n\";\n#endif\n    std::cout << \"Program running\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "DEBUG defined — sample",
+              "stdin": "",
+              "expected_stdout": "Debug mode: enabled\nProgram running\n",
+              "is_sample": true
+            },
+            {
+              "label": "Unconditional line always present",
+              "stdin": "",
+              "expected_stdout": "Debug mode: enabled\nProgram running\n",
+              "is_sample": false
+            },
+            {
+              "label": "Output has exactly two lines",
+              "stdin": "",
+              "expected_stdout": "Debug mode: enabled\nProgram running\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Greeting with a Text Macro",
+          "prompt_md": "## Greeting with a Text Macro\n\nUse a `#define` macro to give a name to a greeting string, then print it alongside a version number defined by a second macro.\n\n**Requirements:**\n1. Define a macro `APP_NAME` that expands to `\"cpproad\"`.\n2. Define a macro `VERSION` that expands to `\"1.0\"`.\n3. In `main`, use `#ifndef` to check whether a macro `QUIET` has been defined. If `QUIET` is **not** defined, print:\n   ```\n   Welcome to cpproad v1.0\n   ```\n4. Regardless of `QUIET`, always print:\n   ```\n   Ready\n   ```\n\nDo **not** define `QUIET` in your solution — the expected output should include the welcome line.\n\n**Hint:** `#define APP_NAME \"cpproad\"` lets you write `APP_NAME` in a `std::cout` statement and the preprocessor will substitute the string literal before compilation.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define APP_NAME as \"cpproad\"\n// TODO: Define VERSION as \"1.0\"\n\nint main() {\n    // TODO: Use #ifndef QUIET ... #endif to conditionally print the\n    // welcome message using APP_NAME and VERSION\n\n    // TODO: Always print \"Ready\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\n#define APP_NAME \"cpproad\"\n#define VERSION \"1.0\"\n\nint main() {\n#ifndef QUIET\n    std::cout << \"Welcome to \" << APP_NAME << \" v\" << VERSION << \"\\n\";\n#endif\n    std::cout << \"Ready\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "QUIET not defined — welcome + ready — sample",
+              "stdin": "",
+              "expected_stdout": "Welcome to cpproad v1.0\nReady\n",
+              "is_sample": true
+            },
+            {
+              "label": "APP_NAME macro expands correctly",
+              "stdin": "",
+              "expected_stdout": "Welcome to cpproad v1.0\nReady\n",
+              "is_sample": false
+            },
+            {
+              "label": "VERSION macro expands correctly",
+              "stdin": "",
+              "expected_stdout": "Welcome to cpproad v1.0\nReady\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.11",
+      "title": "Header files",
+      "sort_order": 35,
+      "summary_md": "## Header Files\n\nIn \"Programs with multiple code files\" you saw how to split a project across `.cpp` files. The problem: every `.cpp` that *uses* a function needs to know its signature. Copying declarations by hand across files violates the DRY principle and drifts out of sync the moment you rename a parameter.\n\n**Header files** (`.h` or `.hpp`) solve this. A header contains *declarations* — the function signatures, type definitions, and constants that other files need — while the matching `.cpp` file holds the *definitions* (the actual bodies). Any translation unit that `#include`s the header instantly gets all those declarations.\n\n### `#include`: angle brackets vs. quotes\n\n```cpp\n#include <iostream>   // Standard library header — searched in system include paths\n#include \"mathutils.h\" // Your own header — searched relative to the current file first\n```\n\nAngle brackets tell the preprocessor to look only in the compiler's standard search paths. Quotes tell it to start from the directory of the file doing the including, then fall back to the standard paths. Always use quotes for headers you own.\n\n### What belongs in a header\n\n- Function *declarations* (prototypes)\n- `class` / `struct` / `enum` definitions\n- `inline` function definitions (must be visible at every call site)\n- `constexpr` / `const` values used across files\n- `using` type aliases (with care — avoid `using namespace` in headers)\n\n**Never put in a header:** non-`inline` function *definitions*, `using namespace std;`, or mutable global variable definitions. Doing so causes linker errors (multiple definitions) or pollutes every includer's namespace.\n\n### Header guards\n\nBecause the preprocessor does textual substitution, the same header can be included more than once in a translation unit (a chain like `a.h` includes `b.h`, and your `.cpp` includes both). Header guards prevent double-inclusion:\n\n```cpp\n#ifndef MATHUTILS_H\n#define MATHUTILS_H\n\nint add(int a, int b);   // declaration only\nint multiply(int a, int b);\n\n#endif // MATHUTILS_H\n```\n\nModern alternative: `#pragma once` — supported by every major compiler and less error-prone than manual guards, though technically non-standard.\n\n### Connection to forward declarations\n\nIn \"Forward declarations and definitions\" you wrote `int add(int, int);` directly in `main.cpp`. A header file is just that pattern scaled up: one authoritative place for all forward declarations shared across the project.\n\nAs a Python analogy: a header is like a module's `__all__` plus type stubs — it tells callers what exists and what types to expect, without revealing (or repeating) the implementation.",
+      "exercises": [
+        {
+          "title": "Declare Before You Call",
+          "prompt_md": "## Declare Before You Call\n\nIn real projects, function declarations live in header files so any `.cpp` can include them. Since the sandbox is a single file, you'll practice the same discipline inline.\n\n**Your task:**\n\n1. The `main` function below calls three math helper functions: `square`, `cube`, and `absolute_value`. All three **definitions** are already written at the bottom of the file.\n2. Add the three **declarations** (prototypes) in the marked section near the top — exactly as they would appear in a header file.\n3. Each prototype must end with a semicolon and match the definition's signature precisely.\n\nExpected output for input `4`:\n```\nSquare: 16\nCube: 64\nAbsolute value of -4: 4\n```\n\n**Rules (mirroring header-file best practices):**\n- Declarations go in the designated block — nowhere else.\n- Do not move or modify the definitions.\n- Do not add `#include` directives beyond what is already present.",
+          "starter_code": "#include <iostream>\n\n// ── Declarations (as if this block were \"mathutils.h\") ────────────────────────\n// TODO: declare square(int) -> int\n// TODO: declare cube(int) -> int\n// TODO: declare absolute_value(int) -> int\n// ─────────────────────────────────────────────────────────────────────────────\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    std::cout << \"Cube: \" << cube(n) << \"\\n\";\n    std::cout << \"Absolute value of \" << -n << \": \" << absolute_value(-n) << \"\\n\";\n\n    return 0;\n}\n\n// ── Definitions (as if this block were \"mathutils.cpp\") ───────────────────────\nint square(int x) { return x * x; }\nint cube(int x) { return x * x * x; }\nint absolute_value(int x) { return x < 0 ? -x : x; }\n",
+          "solution_code": "#include <iostream>\n\n// ── Declarations (as if this block were \"mathutils.h\") ────────────────────────\nint square(int x);\nint cube(int x);\nint absolute_value(int x);\n// ─────────────────────────────────────────────────────────────────────────────\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    std::cout << \"Cube: \" << cube(n) << \"\\n\";\n    std::cout << \"Absolute value of \" << -n << \": \" << absolute_value(-n) << \"\\n\";\n\n    return 0;\n}\n\n// ── Definitions (as if this block were \"mathutils.cpp\") ───────────────────────\nint square(int x) { return x * x; }\nint cube(int x) { return x * x * x; }\nint absolute_value(int x) { return x < 0 ? -x : x; }\n",
+          "test_cases": [
+            {
+              "label": "Input 4",
+              "stdin": "4",
+              "expected_stdout": "Square: 16\nCube: 64\nAbsolute value of -4: 4\n",
+              "is_sample": true
+            },
+            {
+              "label": "Input 1",
+              "stdin": "1",
+              "expected_stdout": "Square: 1\nCube: 1\nAbsolute value of -1: 1\n",
+              "is_sample": false
+            },
+            {
+              "label": "Input 7",
+              "stdin": "7",
+              "expected_stdout": "Square: 49\nCube: 343\nAbsolute value of -7: 7\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Header Guard Reconstruction",
+          "prompt_md": "## Header Guard Reconstruction\n\nHeader guards stop a header from being processed more than once per translation unit. The pattern mirrors what you would write at the top and bottom of every `.h` file you create.\n\nThe code below simulates including a header twice (as can happen in larger projects when two headers each include the same dependency). Without a guard the `struct Point` definition would appear twice, causing a compile error.\n\n**Your task:**\n\n1. In the first `// ── Simulated point.h ──` block, add the three-line header guard:\n   - `#ifndef POINT_H` at the top\n   - `#define POINT_H` immediately after\n   - `#endif // POINT_H` at the bottom\n2. Leave the second inclusion block (`// ── Second inclusion of point.h ──`) unchanged — it already contains the same raw content, and the guard you added will suppress it automatically.\n3. Complete `print_point` so it prints `(x, y)` followed by a newline.\n\nExpected output for input `3 7`:\n```\n(3, 7)\n(3, 7)\n```",
+          "starter_code": "#include <iostream>\n\n// ── Simulated first inclusion of point.h ─────────────────────────────────────\n// TODO: add #ifndef POINT_H\n// TODO: add #define POINT_H\n\nstruct Point { int x; int y; };\nvoid print_point(Point p);\n\n// TODO: add #endif // POINT_H\n// ─────────────────────────────────────────────────────────────────────────────\n\n// ── Simulated second inclusion of point.h (guard keeps this harmless) ────────\n#ifndef POINT_H\n#define POINT_H\nstruct Point { int x; int y; };\nvoid print_point(Point p);\n#endif // POINT_H\n// ─────────────────────────────────────────────────────────────────────────────\n\nint main() {\n    int x, y;\n    std::cin >> x >> y;\n    Point p{x, y};\n    print_point(p);\n    print_point(p);\n    return 0;\n}\n\n// TODO: define print_point — print \"(x, y)\" then a newline\nvoid print_point(Point p) {\n}\n",
+          "solution_code": "#include <iostream>\n\n// ── Simulated first inclusion of point.h ─────────────────────────────────────\n#ifndef POINT_H\n#define POINT_H\n\nstruct Point { int x; int y; };\nvoid print_point(Point p);\n\n#endif // POINT_H\n// ─────────────────────────────────────────────────────────────────────────────\n\n// ── Simulated second inclusion of point.h (guard keeps this harmless) ────────\n#ifndef POINT_H\n#define POINT_H\nstruct Point { int x; int y; };\nvoid print_point(Point p);\n#endif // POINT_H\n// ─────────────────────────────────────────────────────────────────────────────\n\nint main() {\n    int x, y;\n    std::cin >> x >> y;\n    Point p{x, y};\n    print_point(p);\n    print_point(p);\n    return 0;\n}\n\nvoid print_point(Point p) {\n    std::cout << \"(\" << p.x << \", \" << p.y << \")\\n\";\n}\n",
+          "test_cases": [
+            {
+              "label": "Input 3 7",
+              "stdin": "3 7",
+              "expected_stdout": "(3, 7)\n(3, 7)\n",
+              "is_sample": true
+            },
+            {
+              "label": "Input 0 0",
+              "stdin": "0 0",
+              "expected_stdout": "(0, 0)\n(0, 0)\n",
+              "is_sample": false
+            },
+            {
+              "label": "Input -5 12",
+              "stdin": "-5 12",
+              "expected_stdout": "(-5, 12)\n(-5, 12)\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.12",
+      "title": "Header guards",
+      "sort_order": 36,
+      "summary_md": "## Header Guards\n\nIn **Header files** you learned that `.h` files let you share declarations across multiple `.cpp` files. Header guards solve the next problem: what happens when the same header gets included more than once in a single translation unit?\n\n### The double-inclusion problem\n\nWhen the preprocessor sees `#include \"math.h\"`, it literally pastes the file's contents in place (from **Introduction to the preprocessor**). If two different headers both include `math.h`, the compiler sees every declaration in `math.h` twice. For plain function declarations that is usually harmless, but a **type definition** (a `struct`, `class`, or `enum`) included twice violates the **One Definition Rule (ODR)**: every type may be defined exactly once per translation unit. The result is a hard compile error.\n\n### Traditional include guards\n\nThe classic fix wraps the entire header in a preprocessor conditional:\n\n```cpp\n#ifndef MATH_H   // if this macro is NOT defined yet...\n#define MATH_H   // ...define it, so the next #include is skipped\n\nstruct Vec2 {\n    double x, y;\n};\n\ndouble dot(Vec2 a, Vec2 b);\n\n#endif // MATH_H\n```\n\nFirst inclusion: `MATH_H` is not defined, so the block is compiled and `MATH_H` is set. Second inclusion: `MATH_H` is already defined, so the entire block is skipped. The struct is defined exactly once — ODR satisfied.\n\nThe macro name must be unique across the whole project. The convention is `<FILENAME>_H` in all caps, though some projects prefix it with a namespace or module name.\n\n### `#pragma once`\n\nAll major compilers (GCC, Clang, MSVC) support a simpler alternative:\n\n```cpp\n#pragma once\n\nstruct Vec2 { double x, y; };\ndouble dot(Vec2 a, Vec2 b);\n```\n\nOne line, no name to invent, no risk of a typo in the `#endif`. The compiler guarantees the file is processed only once. `#pragma once` is **not** part of the C++ standard, but in practice it works everywhere you are likely to deploy.\n\n### Which to use?\n\nBoth styles are widespread in production code. `#pragma once` is less error-prone and is preferred in new code. Traditional guards are still found in cross-platform libraries that target exotic toolchains. Knowing both lets you read any codebase.\n\n### Key takeaway\n\nHeader guards (and `#pragma once`) are a direct consequence of how `#include` works — it is purely textual substitution. Every header you write should have one or the other. Without them, even a small project with a few shared headers will eventually hit an ODR error that can be confusing to diagnose.",
+      "exercises": [
+        {
+          "title": "Simulating Include Guard Behavior",
+          "prompt_md": "Include guards work by defining a macro on first inclusion and skipping the body on subsequent inclusions.\n\nYour task: simulate what a preprocessor does with an include guard.\n\n- Define a macro `GREETER_H` the first time a \"header block\" runs.\n- The header block should print `\"Header loaded\"` and define a constant `int GREETING_VALUE = 42;`.\n- Below the simulated header, print `GREETING_VALUE` once.\n- If the macro is already defined when the block is reached a second time, the block must be **skipped** (print nothing extra, define nothing extra).\n\nUse `#ifndef` / `#define` / `#endif` to guard the block. Your program must print exactly:\n\n```\nHeader loaded\n42\n```\n\nHint: in a real project this block lives in a `.h` file; here you will write it inline in `main.cpp` to test the mechanism directly.",
+          "starter_code": "#include <iostream>\n\n// TODO: Write an include guard using #ifndef / #define / #endif\n// that wraps the following two lines:\n//   (a side-effect print so we can see when the block runs)\n//       std::cout << \"Header loaded\\n\";\n//   (a constant definition)\n//       const int GREETING_VALUE = 42;\n//\n// Guard macro name: GREETER_H\n\n// TODO: Place the guarded block here.\n\n// TODO: Place the guarded block a SECOND time here\n//       (simulating a second #include of the same header).\n//       The guard should prevent it from running again.\n\nint main() {\n    // TODO: Print GREETING_VALUE\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\n#ifndef GREETER_H\n#define GREETER_H\nconst int GREETING_VALUE = 42;\n// This line only runs the first time the block is reached:\nnamespace _greeter_init { inline int _x = (std::cout << \"Header loaded\\n\", 0); }\n#endif // GREETER_H\n\n// Second \"inclusion\" — guard fires, entire block is skipped:\n#ifndef GREETER_H\n#define GREETER_H\nconst int GREETING_VALUE = 42;\nnamespace _greeter_init { inline int _x = (std::cout << \"Header loaded\\n\", 0); }\n#endif // GREETER_H\n\nint main() {\n    std::cout << GREETING_VALUE << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: correct output",
+              "stdin": "",
+              "expected_stdout": "Header loaded\n42\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: output has exactly two lines",
+              "stdin": "",
+              "expected_stdout": "Header loaded\n42\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: GREETING_VALUE is 42",
+              "stdin": "",
+              "expected_stdout": "Header loaded\n42\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "ODR Violation Detector",
+          "prompt_md": "The **One Definition Rule** says every type may be defined at most once in a translation unit. Header guards prevent double-definition by skipping the second inclusion.\n\nIn this exercise you will write a program that:\n\n1. Uses `#pragma once` style (simulated with an include guard) to define a `struct Point { int x; int y; };` exactly once.\n2. Defines a function `std::string describe(Point p)` that returns the string `\"(x, y)\"` where `x` and `y` are the actual values — for example `\"(3, 7)\"`.\n3. Reads two integers from stdin (space-separated on one line), constructs a `Point`, calls `describe`, and prints the result followed by a newline.\n\nYou must guard the struct definition with `#ifndef POINT_H` / `#define POINT_H` / `#endif` so that placing the definition block twice in the file compiles without error.\n\n**Sample input:** `3 7`  \n**Sample output:** `(3, 7)`",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Write an include guard (macro name: POINT_H) wrapping:\n//   struct Point { int x; int y; };\n//   std::string describe(Point p); // declaration\n\n// Place the guarded block a second time here to prove it compiles cleanly.\n\n// TODO: Implement describe(Point p) — return \"(x, y)\" with actual values.\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    // TODO: Construct a Point and print describe(point)\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\n#ifndef POINT_H\n#define POINT_H\nstruct Point { int x; int y; };\n#endif // POINT_H\n\n// Second \"inclusion\" — guard skips this block, no ODR violation:\n#ifndef POINT_H\n#define POINT_H\nstruct Point { int x; int y; };\n#endif // POINT_H\n\nstd::string describe(Point p) {\n    return \"(\" + std::to_string(p.x) + \", \" + std::to_string(p.y) + \")\";\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    Point pt{a, b};\n    std::cout << describe(pt) << \"\\n\";\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: (3, 7)",
+              "stdin": "3 7",
+              "expected_stdout": "(3, 7)\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden: negative coordinates",
+              "stdin": "-5 0",
+              "expected_stdout": "(-5, 0)\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: zero point",
+              "stdin": "0 0",
+              "expected_stdout": "(0, 0)\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.13",
+      "title": "How to design your first programs",
+      "sort_order": 37,
+      "summary_md": "## How to Design Your First Programs\n\nWriting code is easy. Knowing *what* to write before you type a single line is the skill that separates working programs from frustrating debugging sessions. This lesson is about the design step that comes before the code.\n\n### Start with the problem, not the syntax\n\nWhen you get a new problem, resist the urge to open your editor. Instead, write down — in plain English — what your program must do. Break that into a list of steps. Each step that is non-trivial and reusable is a candidate for its own function (see \"Introduction to functions\" and \"Why functions are useful, and how to use them effectively\").\n\nThis approach is called **top-down design**: start from the high-level goal, decompose into sub-tasks, and implement each sub-task as a focused function.\n\n### A concrete process\n\n1. **Clarify outputs** — what does the program print or return?\n2. **Identify inputs** — what data does it need, and where does it come from?\n3. **List the steps** — write pseudocode if helpful.\n4. **Map steps to functions** — each cohesive step becomes a function with a clear name and a single responsibility.\n5. **Write `main` last** — `main` should read like a summary of your pseudocode, calling the functions you defined.\n\n### Example: temperature converter\n\n```cpp\n#include <iostream>\n\n// Convert Celsius to Fahrenheit\ndouble celsiusToFahrenheit(double celsius) {\n    return celsius * 9.0 / 5.0 + 32.0;\n}\n\nvoid printResult(double celsius, double fahrenheit) {\n    std::cout << celsius << \" C = \" << fahrenheit << \" F\\n\";\n}\n\nint main() {\n    double temp{};\n    std::cin >> temp;\n    printResult(temp, celsiusToFahrenheit(temp));\n}\n```\n\n`main` is a three-line story: read, convert, print. Each piece lives in its own function with a name that explains its purpose.\n\n### Common pitfalls\n\n- **Monolithic `main`:** stuffing all logic into `main` makes code hard to test and reason about. Use forward declarations (see \"Forward declarations and definitions\") so you can define helpers above `main` or in separate files (see \"Programs with multiple code files\").\n- **Naming too late:** choose clear function and variable names *while designing*, not after. The name forces you to articulate what the function actually does.\n- **Over-engineering:** do not add functions for their own sake. A two-line computation used once can stay inline.\n\n### Design is iterative\n\nYour first design will not be perfect. That is expected. Write the simplest version that works, then refactor by extracting repeated logic into functions. Each iteration, your program becomes easier to read and extend.",
+      "exercises": [
+        {
+          "title": "Rectangle Calculator",
+          "prompt_md": "Design a program that reads the width and height of a rectangle from standard input (two integers on separate lines) and prints its **perimeter** and **area**, each on its own line.\n\nApply top-down design:\n- Write a function `computePerimeter(int width, int height)` that returns the perimeter.\n- Write a function `computeArea(int width, int height)` that returns the area.\n- Write a function `printResults(int perimeter, int area)` that prints both values in the format shown below.\n- `main` should only read input, call your functions, and pass results to `printResults`.\n\n**Expected output format (for width=4, height=7):**\n```\nPerimeter: 22\nArea: 28\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: implement computePerimeter(int width, int height) -> int\n// Returns 2 * (width + height)\n\n// TODO: implement computeArea(int width, int height) -> int\n// Returns width * height\n\n// TODO: implement printResults(int perimeter, int area) -> void\n// Prints:\n//   Perimeter: <perimeter>\n//   Area: <area>\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    // TODO: call computePerimeter, computeArea, and printResults\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint computePerimeter(int width, int height) {\n    return 2 * (width + height);\n}\n\nint computeArea(int width, int height) {\n    return width * height;\n}\n\nvoid printResults(int perimeter, int area) {\n    std::cout << \"Perimeter: \" << perimeter << \"\\n\";\n    std::cout << \"Area: \" << area << \"\\n\";\n}\n\nint main() {\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    int perimeter{ computePerimeter(width, height) };\n    int area{ computeArea(width, height) };\n    printResults(perimeter, area);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 4x7 rectangle",
+              "stdin": "4\n7",
+              "expected_stdout": "Perimeter: 22\nArea: 28\n",
+              "is_sample": true
+            },
+            {
+              "label": "Square: 5x5",
+              "stdin": "5\n5",
+              "expected_stdout": "Perimeter: 20\nArea: 25\n",
+              "is_sample": false
+            },
+            {
+              "label": "Thin rectangle: 1x10",
+              "stdin": "1\n10",
+              "expected_stdout": "Perimeter: 22\nArea: 10\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Odd/Even Counter",
+          "prompt_md": "Design a program that reads exactly **5 integers** from standard input (one per line) and prints how many of them are odd and how many are even.\n\nApply top-down design:\n- Write a function `isOdd(int n)` that returns `true` when `n` is odd.\n- Write a function `countOdd(int a, int b, int c, int d, int e)` that returns the number of odd values among the five arguments.\n- Write a function `printCounts(int oddCount, int evenCount)` that prints the results.\n- `main` reads the five integers, calls `countOdd`, derives `evenCount`, and calls `printCounts`.\n\n**Expected output format (for inputs 1 2 3 4 5):**\n```\nOdd: 3\nEven: 2\n```",
+          "starter_code": "#include <iostream>\n\n// TODO: implement isOdd(int n) -> bool\n// Returns true when n is odd (hint: use the % operator)\n\n// TODO: implement countOdd(int a, int b, int c, int d, int e) -> int\n// Returns how many of the five arguments are odd\n// Use isOdd() inside this function\n\n// TODO: implement printCounts(int oddCount, int evenCount) -> void\n// Prints:\n//   Odd: <oddCount>\n//   Even: <evenCount>\n\nint main() {\n    int a{}, b{}, c{}, d{}, e{};\n    std::cin >> a >> b >> c >> d >> e;\n\n    // TODO: call countOdd, derive evenCount (always 5 - oddCount), call printCounts\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nbool isOdd(int n) {\n    return n % 2 != 0;\n}\n\nint countOdd(int a, int b, int c, int d, int e) {\n    int count{ 0 };\n    if (isOdd(a)) ++count;\n    if (isOdd(b)) ++count;\n    if (isOdd(c)) ++count;\n    if (isOdd(d)) ++count;\n    if (isOdd(e)) ++count;\n    return count;\n}\n\nvoid printCounts(int oddCount, int evenCount) {\n    std::cout << \"Odd: \" << oddCount << \"\\n\";\n    std::cout << \"Even: \" << evenCount << \"\\n\";\n}\n\nint main() {\n    int a{}, b{}, c{}, d{}, e{};\n    std::cin >> a >> b >> c >> d >> e;\n\n    int oddCount{ countOdd(a, b, c, d, e) };\n    int evenCount{ 5 - oddCount };\n    printCounts(oddCount, evenCount);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample: 1 2 3 4 5",
+              "stdin": "1\n2\n3\n4\n5",
+              "expected_stdout": "Odd: 3\nEven: 2\n",
+              "is_sample": true
+            },
+            {
+              "label": "All even: 2 4 6 8 10",
+              "stdin": "2\n4\n6\n8\n10",
+              "expected_stdout": "Odd: 0\nEven: 5\n",
+              "is_sample": false
+            },
+            {
+              "label": "Mix with negatives: -3 0 7 -2 9",
+              "stdin": "-3\n0\n7\n-2\n9",
+              "expected_stdout": "Odd: 3\nEven: 2\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "2.x",
+      "title": "Chapter 2 summary and quiz",
+      "sort_order": 38,
+      "summary_md": "## Chapter 2 Review: Functions and Files\n\nThis chapter introduced the core building block of C++ program structure: functions. Here is what you covered.\n\n### Functions and return values\n\nAs shown in \"Introduction to functions\" and \"Function return values,\" every function has a return type, a name, and a body. Value-returning functions use `return` to send a result back to the caller; void functions (\"Void functions\") perform side effects and return nothing.\n\n### Parameters and scope\n\n\"Introduction to function parameters and arguments\" showed how to pass data into functions — always by value unless explicitly changed later. \"Introduction to local scope\" established that variables declared inside a function (or block) are destroyed when the block ends. This is stricter than Python's function scope; C++ has *block* scope.\n\n### Program organization\n\n\"Forward declarations and definitions\" solved the top-to-bottom compilation constraint. \"Programs with multiple code files\" extended this to separate `.cpp` files linked together. \"Header files\" and \"Header guards\" formalized the pattern: declarations go in `.h` files protected by `#ifndef` or `#pragma once`.\n\n### Namespaces and the preprocessor\n\n\"Naming collisions and an introduction to namespaces\" explained why `std::` exists. \"Introduction to the preprocessor\" covered `#include`, `#define`, and conditional compilation — the text substitution phase that runs before the compiler sees your code.\n\n### Putting it together\n\n\"How to design your first programs\" capped the chapter with a top-down strategy: define the problem, break it into functions, implement one at a time.\n\n```cpp\n#include <iostream>\n\nint square(int n) { return n * n; }\nint sumOfSquares(int a, int b) { return square(a) + square(b); }\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n    std::cout << sumOfSquares(x, y) << '\\n';\n    return 0;\n}\n```\n\nThis example combines value-returning functions, parameters, local scope, forward-compatible ordering, and `std::` — every concept from the chapter in under 15 lines.",
+      "exercises": [
+        {
+          "title": "Mini Calculator",
+          "prompt_md": "Write a program that reads two integers and an operator character (`+`, `-`, `*`, `/`) from stdin, then prints the result.\n\n### Requirements\n- Implement four functions: `add(int, int)`, `subtract(int, int)`, `multiply(int, int)`, `divide(int, int)` — each returns an `int`.\n- `main` reads `a`, `b`, and `op`, calls the correct function, and prints the result followed by a newline.\n- For division, use integer division (truncate toward zero).\n- You may assume valid input (no division by zero, valid operator).",
+          "starter_code": "#include <iostream>\n\n// TODO: Implement add, subtract, multiply, divide functions\n\nint main()\n{\n    int a{};\n    int b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    // TODO: Call the correct function based on op and print the result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint add(int a, int b) { return a + b; }\nint subtract(int a, int b) { return a - b; }\nint multiply(int a, int b) { return a * b; }\nint divide(int a, int b) { return a / b; }\n\nint main()\n{\n    int a{};\n    int b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    int result{};\n    if (op == '+') result = add(a, b);\n    else if (op == '-') result = subtract(a, b);\n    else if (op == '*') result = multiply(a, b);\n    else if (op == '/') result = divide(a, b);\n\n    std::cout << result << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Addition",
+              "stdin": "10 3 +\n",
+              "expected_stdout": "13\n",
+              "is_sample": true
+            },
+            {
+              "label": "Division truncates",
+              "stdin": "7 2 /\n",
+              "expected_stdout": "3\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative subtraction",
+              "stdin": "5 12 -\n",
+              "expected_stdout": "-7\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Function Chain",
+          "prompt_md": "Write a program that reads an integer `n` and computes the result of chaining three transformations:\n\n1. `double_it(int x)` — returns `x * 2`\n2. `add_ten(int x)` — returns `x + 10`\n3. `negate(int x)` — returns `-x`\n\nApply them in order: `negate(add_ten(double_it(n)))` and print the result.\n\n### Requirements\n- Implement all three functions with forward declarations above `main`.\n- Definitions must appear *below* `main` (to practice forward declarations).\n- Print the single result followed by a newline.",
+          "starter_code": "#include <iostream>\n\n// TODO: Add forward declarations for double_it, add_ten, negate\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call the chained functions and print the result\n\n    return 0;\n}\n\n// TODO: Define double_it, add_ten, negate below main\n",
+          "solution_code": "#include <iostream>\n\nint double_it(int x);\nint add_ten(int x);\nint negate(int x);\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cout << negate(add_ten(double_it(n))) << '\\n';\n    return 0;\n}\n\nint double_it(int x) { return x * 2; }\nint add_ten(int x) { return x + 10; }\nint negate(int x) { return -x; }\n",
+          "test_cases": [
+            {
+              "label": "Positive input",
+              "stdin": "5\n",
+              "expected_stdout": "-20\n",
+              "is_sample": true
+            },
+            {
+              "label": "Zero input",
+              "stdin": "0\n",
+              "expected_stdout": "-10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Negative input",
+              "stdin": "-3\n",
+              "expected_stdout": "4\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

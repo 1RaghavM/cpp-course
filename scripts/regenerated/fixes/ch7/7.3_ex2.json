@@ -1,0 +1,31 @@
+{
+  "lesson": "7.3",
+  "exercise_index": 1,
+  "what_changed": "Rewrote to use exactly 2 students with fixed score counts (2 scores each) instead of nested for loops. Demonstrates inner-block scoping of student computation without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Per-Student Grade Summary with Shadowing Avoided",
+    "prompt_md": "## Goal\nRead records for exactly 2 students, each with a name and exactly 2 scores. For each student, compute their average score in a **separate inner block**, print a one-line summary, then print an overall class average after both students.\n\n## Input\n- For each of the 2 students:\n  - Line A: the student's first name (a single word, no spaces).\n  - Lines B-C: two integer scores (0 to 100), one per line.\n\n(Total: 6 lines of input.)\n\n## Output\n- For each student, print exactly one line: `Name: avg` where avg is their average score **rounded down** (integer division).\n- After both students, print one line: `Class average: avg` where avg is the sum of **all 4 scores** divided by 4 (integer division, rounded down).\n- No extra blank lines.\n\n## Requirements\n1. Compute each student's sum **inside a block** (a nested `{}` pair) so that those variables are destroyed before moving on to the next student.\n2. Declare the running totals for the class average (`total_sum` and `total_count`) in the outer scope of `main` -- these are the only variables that live across both student blocks.\n3. The student's name must be read outside the inner scoring block.\n4. Edge case: scores of 0 for all students must produce `Class average: 0`.\n\n## Notes\n- You may use `<iostream>` and `<string>`. Integer division (truncation toward zero) is expected for all averages.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int total_sum{0};\n    int total_count{0};\n\n    // --- Student 1 ---\n    std::string name1{};\n    std::cin >> name1;\n    {\n        // TODO: declare student_sum inside this block\n        // TODO: read 2 scores, accumulate student_sum\n        // TODO: update total_sum and total_count\n        // TODO: compute student average (integer division)\n        // TODO: print \"name1: student_avg\"\n    }\n\n    // --- Student 2 ---\n    std::string name2{};\n    std::cin >> name2;\n    {\n        // TODO: declare student_sum inside this block\n        // TODO: read 2 scores, accumulate student_sum\n        // TODO: update total_sum and total_count\n        // TODO: compute student average (integer division)\n        // TODO: print \"name2: student_avg\"\n    }\n\n    std::cout << \"Class average: \" << total_sum / total_count << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int total_sum{0};\n    int total_count{0};\n\n    // --- Student 1 ---\n    std::string name1{};\n    std::cin >> name1;\n    {\n        int s1{}, s2{};\n        std::cin >> s1 >> s2;\n        int student_sum{s1 + s2};\n        total_sum += student_sum;\n        total_count += 2;\n        std::cout << name1 << \": \" << student_sum / 2 << \"\\n\";\n    }\n\n    // --- Student 2 ---\n    std::string name2{};\n    std::cin >> name2;\n    {\n        int s1{}, s2{};\n        std::cin >> s1 >> s2;\n        int student_sum{s1 + s2};\n        total_sum += student_sum;\n        total_count += 2;\n        std::cout << name2 << \": \" << student_sum / 2 << \"\\n\";\n    }\n\n    std::cout << \"Class average: \" << total_sum / total_count << \"\\n\";\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "sample -- two students mixed scores",
+        "stdin": "Alice\n80\n90\nBob\n50\n60\n",
+        "expected_stdout": "Alice: 85\nBob: 55\nClass average: 70\n",
+        "is_sample": true
+      },
+      {
+        "label": "hidden -- all zeros",
+        "stdin": "Eve\n0\n0\nFrank\n0\n0\n",
+        "expected_stdout": "Eve: 0\nFrank: 0\nClass average: 0\n",
+        "is_sample": false
+      },
+      {
+        "label": "hidden -- high scores with truncation",
+        "stdin": "Carla\n99\n100\nDan\n73\n84\n",
+        "expected_stdout": "Carla: 99\nDan: 78\nClass average: 89\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

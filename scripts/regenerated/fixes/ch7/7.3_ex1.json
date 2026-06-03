@@ -1,0 +1,31 @@
+{
+  "lesson": "7.3",
+  "exercise_index": 0,
+  "what_changed": "Rewrote to use exactly 3 fixed temperature inputs instead of N inputs with a for loop. Demonstrates block-scoped labels without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Classify Temperatures Using Block-Scoped Labels",
+    "prompt_md": "## Goal\nRead exactly 3 integer temperatures and print a classification label for each one using block-scoped variables, then print a summary count of how many were \"hot\".\n\n## Input\n- Lines 1-3: one integer temperature per line (in degrees F, -60 to 130).\n\n## Output\n- For each temperature, print exactly one line in the format `T: label` where T is the temperature and label is determined as follows:\n  - T >= 90 -> `hot`\n  - 60 <= T < 90 -> `warm`\n  - 32 <= T < 60 -> `cool`\n  - T < 32 -> `cold`\n- After all temperatures, print one line: `Hot days: X` where X is the count of temperatures that are >= 90.\n- No extra blank lines.\n\n## Requirements\n1. Read all 3 temperatures into separate variables in the outer scope of `main`.\n2. Process each temperature inside its own inner block `{}`. Inside each block, declare a `std::string` variable named `label` and assign the appropriate classification using if/else-if.\n3. The `label` variable must be declared **inside** each inner block and must not be accessible outside it.\n4. Declare a `hot_count` variable in the outer scope (before the blocks) to track how many temperatures are hot.\n5. Edge case: all temperatures below 32 must produce `Hot days: 0`.\n6. Edge case: all temperatures >= 90 must produce `Hot days: 3`.\n\n## Notes\n- You may use `<iostream>` and `<string>`. No other special headers are required.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int t1{}, t2{}, t3{};\n    std::cin >> t1 >> t2 >> t3;\n\n    int hot_count{0};\n\n    // TODO: process t1 in an inner block\n    //   - declare label inside the block\n    //   - classify t1 using if/else-if\n    //   - print \"t1: label\"\n    //   - increment hot_count if t1 >= 90\n\n    // TODO: process t2 in a separate inner block (same pattern)\n\n    // TODO: process t3 in a separate inner block (same pattern)\n\n    // TODO: print \"Hot days: X\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int t1{}, t2{}, t3{};\n    std::cin >> t1 >> t2 >> t3;\n\n    int hot_count{0};\n\n    {\n        std::string label{};\n        if (t1 >= 90) {\n            label = \"hot\";\n            ++hot_count;\n        } else if (t1 >= 60) {\n            label = \"warm\";\n        } else if (t1 >= 32) {\n            label = \"cool\";\n        } else {\n            label = \"cold\";\n        }\n        std::cout << t1 << \": \" << label << \"\\n\";\n    }\n\n    {\n        std::string label{};\n        if (t2 >= 90) {\n            label = \"hot\";\n            ++hot_count;\n        } else if (t2 >= 60) {\n            label = \"warm\";\n        } else if (t2 >= 32) {\n            label = \"cool\";\n        } else {\n            label = \"cold\";\n        }\n        std::cout << t2 << \": \" << label << \"\\n\";\n    }\n\n    {\n        std::string label{};\n        if (t3 >= 90) {\n            label = \"hot\";\n            ++hot_count;\n        } else if (t3 >= 60) {\n            label = \"warm\";\n        } else if (t3 >= 32) {\n            label = \"cool\";\n        } else {\n            label = \"cold\";\n        }\n        std::cout << t3 << \": \" << label << \"\\n\";\n    }\n\n    std::cout << \"Hot days: \" << hot_count << \"\\n\";\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "sample -- mixed temperatures",
+        "stdin": "95\n45\n90\n",
+        "expected_stdout": "95: hot\n45: cool\n90: hot\nHot days: 2\n",
+        "is_sample": true
+      },
+      {
+        "label": "hidden -- all cold",
+        "stdin": "10\n-5\n28\n",
+        "expected_stdout": "10: cold\n-5: cold\n28: cold\nHot days: 0\n",
+        "is_sample": false
+      },
+      {
+        "label": "hidden -- all hot",
+        "stdin": "100\n92\n105\n",
+        "expected_stdout": "100: hot\n92: hot\n105: hot\nHot days: 3\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

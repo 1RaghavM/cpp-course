@@ -1,0 +1,66 @@
+{
+  "number": "4.11",
+  "title": "Chars",
+  "sort_order": 60,
+  "summary_md": "## Chars\n\nThe `char` type holds a single character — a letter, digit, punctuation mark, or control code. Under the hood it stores a small integer, and the mapping between that integer and the visible character is defined by **ASCII** (for values 0-127). The character `'A'` is stored as `65`, `'a'` as `97`, `'0'` as `48`.\n\n### Declaring and initializing chars\n\nUse single quotes for character literals, never double quotes (double quotes produce string literals, covered later):\n\n```cpp\n#include <print>\n\nint main()\n{\n    char grade  { 'B' };\n    char newline { '\\n' };          // escape sequence\n    char fromInt { 65 };            // also valid: stores 'A'\n\n    std::print(\"Grade: {}\\n\", grade);\n    std::print(\"Char from int: {}\\n\", fromInt);\n    std::print(\"ASCII value of grade: {}\\n\", static_cast<int>(grade));\n}\n```\n\nOutput:\n```\nGrade: B\nChar from int: A\nASCII value of grade: 66\n```\n\n### Char is just a small integer\n\nAs shown in *Signed integers* and *Fixed-width integers and size_t*, integer types differ mainly in size and signedness. `char` is typically 1 byte (confirmed with `sizeof`), but whether it is signed or unsigned is **implementation-defined** — the compiler decides. If you need a guaranteed signed or unsigned 8-bit value, prefer `int8_t` or `uint8_t` from `<cstdint>`, not `char`. Use `char` only when you actually mean a character.\n\nCasting between `char` and `int` is straightforward with `static_cast<int>(c)` to see the numeric value, or `static_cast<char>(n)` to go the other way.\n\n### Escape sequences\n\nSome characters cannot be typed literally and require an escape sequence:\n\n- `'\\n'` — newline\n- `'\\t'` — horizontal tab\n- `'\\\\'` — literal backslash\n- `'\\''` — literal single quote\n- `'\\0'` — null character (value 0, used as a string terminator later)\n\n### Wchar, char8_t, char16_t, char32_t\n\nC++ provides wider character types for Unicode text. `char8_t` (C++20) holds a single UTF-8 code unit, while `char16_t` and `char32_t` handle UTF-16 and UTF-32 respectively. `wchar_t` is older and its size is platform-dependent. For most introductory work, plain `char` and standard ASCII are sufficient; Unicode handling becomes relevant when you deal with internationalized text.",
+  "exercises": [
+    {
+      "title": "ASCII Info for a Single Character",
+      "prompt_md": "## Goal\nRead a single character from stdin and print its ASCII value, whether it is uppercase, lowercase, a digit, or none of those.\n\n## Input\n- Line 1: a single printable ASCII character (no leading/trailing spaces)\n\n## Output\nPrint exactly 2 lines:\n- Line 1: `ASCII: <value>` where `<value>` is the integer ASCII code of the character\n- Line 2: one of the following labels (no extra spaces):\n  - `uppercase` — if the character is between `'A'` and `'Z'` (inclusive)\n  - `lowercase` — if the character is between `'a'` and `'z'` (inclusive)\n  - `digit` — if the character is between `'0'` and `'9'` (inclusive)\n  - `other` — for any character not in the above ranges\n\n## Requirements\n1. Read the character using `cin >> ch` into a `char` variable.\n2. Obtain the ASCII value using `static_cast<int>(ch)` — do not use any `<cctype>` functions.\n3. Determine the category by comparing `ch` directly against character literals (`'A'`, `'z'`, `'0'`, etc.), not by comparing the integer value.\n4. Print the label in lowercase exactly as shown above.\n5. Hidden tests cover: an uppercase letter (`'G'`), a digit (`'5'`), and a non-alphanumeric character (`'!'`).",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    char ch {};\n    std::cin >> ch;\n\n    // TODO: print \"ASCII: \" followed by the integer ASCII value of ch\n    // using static_cast<int>\n\n    // TODO: print one of \"uppercase\", \"lowercase\", \"digit\", or \"other\"\n    // by comparing ch against character literals\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    char ch {};\n    std::cin >> ch;\n\n    std::cout << \"ASCII: \" << static_cast<int>(ch) << '\\n';\n\n    if (ch >= 'A' && ch <= 'Z')\n        std::cout << \"uppercase\\n\";\n    else if (ch >= 'a' && ch <= 'z')\n        std::cout << \"lowercase\\n\";\n    else if (ch >= '0' && ch <= '9')\n        std::cout << \"digit\\n\";\n    else\n        std::cout << \"other\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "lowercase letter",
+          "stdin": "m",
+          "expected_stdout": "ASCII: 109\nlowercase\n",
+          "is_sample": true
+        },
+        {
+          "label": "uppercase letter",
+          "stdin": "G",
+          "expected_stdout": "ASCII: 71\nuppercase\n",
+          "is_sample": false
+        },
+        {
+          "label": "digit character",
+          "stdin": "5",
+          "expected_stdout": "ASCII: 53\ndigit\n",
+          "is_sample": false
+        },
+        {
+          "label": "non-alphanumeric character",
+          "stdin": "!",
+          "expected_stdout": "ASCII: 33\nother\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Character Shifter",
+      "prompt_md": "## Goal\nRead an integer offset and exactly three characters, then print each character shifted by the offset, along with the original and new ASCII values.\n\nThis exercise practices `static_cast` between `char` and `int` without requiring loops.\n\n## Input\n- Line 1: a single integer `offset` (-25 <= offset <= 25)\n- Lines 2-4: one printable ASCII character per line (ASCII values 33-126 inclusive)\n\n## Output\nFor each of the three characters (in the order given), print exactly one line in this format:\n`<original_char> (<original_ascii>) -> <new_char> (<new_ascii>)`\n\nFor example, shifting `'A'` (65) by 3 gives `'D'` (68), so the line is:\n`A (65) -> D (68)`\n\nSpacing must be exact: a single space before and after `->`, no extra spaces.\n\n## Requirements\n1. Read each character using `cin >> ch` into a `char` variable.\n2. Compute the new ASCII value as `static_cast<int>(ch) + offset` (a plain `int` addition).\n3. Obtain the new character using `static_cast<char>(new_ascii_value)`.\n4. Print both the original and new characters as characters (not integers), and both ASCII values as integers, following the exact format above.\n5. The input guarantees that `static_cast<int>(ch) + offset` will always be in the printable ASCII range (33-126), so no clamping is needed.\n6. Process exactly three characters with three separate read-and-print blocks. Do not use a loop.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int offset {};\n    std::cin >> offset;\n\n    // Character 1\n    char ch1 {};\n    std::cin >> ch1;\n    // TODO: compute new_ascii1 and new_ch1, then print the line\n\n    // Character 2\n    char ch2 {};\n    std::cin >> ch2;\n    // TODO: compute new_ascii2 and new_ch2, then print the line\n\n    // Character 3\n    char ch3 {};\n    std::cin >> ch3;\n    // TODO: compute new_ascii3 and new_ch3, then print the line\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int offset {};\n    std::cin >> offset;\n\n    char ch1 {};\n    std::cin >> ch1;\n    int new_ascii1 { static_cast<int>(ch1) + offset };\n    char new_ch1   { static_cast<char>(new_ascii1) };\n    std::cout << ch1 << \" (\" << static_cast<int>(ch1) << \") -> \" << new_ch1 << \" (\" << new_ascii1 << \")\\n\";\n\n    char ch2 {};\n    std::cin >> ch2;\n    int new_ascii2 { static_cast<int>(ch2) + offset };\n    char new_ch2   { static_cast<char>(new_ascii2) };\n    std::cout << ch2 << \" (\" << static_cast<int>(ch2) << \") -> \" << new_ch2 << \" (\" << new_ascii2 << \")\\n\";\n\n    char ch3 {};\n    std::cin >> ch3;\n    int new_ascii3 { static_cast<int>(ch3) + offset };\n    char new_ch3   { static_cast<char>(new_ascii3) };\n    std::cout << ch3 << \" (\" << static_cast<int>(ch3) << \") -> \" << new_ch3 << \" (\" << new_ascii3 << \")\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "positive offset, three chars",
+          "stdin": "3\nA\nb\n0",
+          "expected_stdout": "A (65) -> D (68)\nb (98) -> e (101)\n0 (48) -> 3 (51)\n",
+          "is_sample": true
+        },
+        {
+          "label": "negative offset",
+          "stdin": "-2\nC\nz\nF",
+          "expected_stdout": "C (67) -> A (65)\nz (122) -> x (120)\nF (70) -> D (68)\n",
+          "is_sample": false
+        },
+        {
+          "label": "zero offset",
+          "stdin": "0\nQ\nm\n7",
+          "expected_stdout": "Q (81) -> Q (81)\nm (109) -> m (109)\n7 (55) -> 7 (55)\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

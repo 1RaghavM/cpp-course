@@ -1,0 +1,60 @@
+{
+  "number": "8.7",
+  "title": "Goto statements",
+  "sort_order": 107,
+  "summary_md": "## Goto Statements\n\n`goto` is one of C++'s oldest control-flow tools — it unconditionally jumps execution to a labelled point anywhere in the same function. The syntax is straightforward:\n\n```cpp\n#include <iostream>\nint main() {\n    int x { 0 };\ntry_again:\n    std::cin >> x;\n    if (x <= 0)\n        goto try_again;   // jump back to label\n    std::cout << \"Got: \" << x << '\\n';\n}\n```\n\nA **label** is an identifier followed by a colon (`try_again:` above). `goto` then names that label as its target. Both must live in the same function — you cannot jump between functions.\n\n### Why goto almost never belongs in modern C++\n\nEvery use-case for `goto` is handled more clearly by structured alternatives:\n\n| What you might reach for `goto` | Use instead |\n|---|---|\n| Retry a read (as above) | `while` or `do-while` loop (lesson 8.8/8.9) |\n| Break out of nested loops | Refactor into a function, or use a flag variable |\n| Jump to cleanup on error | RAII (destructors run automatically) |\n| State machine transitions | `switch` + enum (see lesson 8-5 and 8-6) |\n\nPython has no `goto` at all — the language designers considered it harmful enough to omit entirely. C++ keeps it for legacy compatibility, but the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/) say: *\"Don't use goto.\"*\n\nThe core problem is **spaghetti control flow**: once `goto` is present, you can no longer read a function top-to-bottom and understand what runs when. Debuggers, optimizers, and the next developer (including future you) all struggle.\n\nThere is one narrow exception you may see in generated or very low-level C code: a `goto cleanup` pattern when C-style resource management demands a single exit point. In C++ this is replaced entirely by RAII — objects clean up in destructors automatically, so the pattern is unnecessary.\n\n### The C++20 picture\n\n`constexpr if` (lesson 8-4), `switch` with scoped enums (lessons 8-5/8-6), and structured exception handling all make `goto` even less necessary. There is no C++20 feature that rehabilitates `goto`. Recognise it when you read legacy code; never reach for it in new code.",
+  "exercises": [
+    {
+      "title": "Identify and fix goto-based control flow",
+      "prompt_md": "The starter code uses `goto` to skip over a block of output. Your task is to **replace the goto and its label with an equivalent `if-else` statement** so the logic is identical but the control flow is structured.\n\nThe program reads two integers `a` and `b` from stdin.\n- If `a > b`, it prints `a is greater`.\n- Otherwise it prints `b is greater or equal`.\n- Either way it then prints `Done.`\n\nDo **not** change what the program prints — only restructure the control flow.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    if (a > b)\n        goto print_a;  // TODO: replace goto logic with if-else\n\n    std::cout << \"b is greater or equal\\n\";\n    goto done;\n\nprint_a:\n    std::cout << \"a is greater\\n\";\n\ndone:\n    // TODO: remove the labels above and restructure using if-else\n    std::cout << \"Done.\\n\";\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    if (a > b)\n        std::cout << \"a is greater\\n\";\n    else\n        std::cout << \"b is greater or equal\\n\";\n\n    std::cout << \"Done.\\n\";\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "a greater than b",
+          "stdin": "10 3\n",
+          "expected_stdout": "a is greater\nDone.\n",
+          "is_sample": true
+        },
+        {
+          "label": "b greater than a",
+          "stdin": "2 9\n",
+          "expected_stdout": "b is greater or equal\nDone.\n",
+          "is_sample": false
+        },
+        {
+          "label": "a equals b",
+          "stdin": "5 5\n",
+          "expected_stdout": "b is greater or equal\nDone.\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Replace goto with if-else chain",
+      "prompt_md": "## Replace goto with if-else chain\n\nThe starter code uses `goto` to implement a multi-way branch based on a menu choice. Your task is to **replace all gotos and labels with an equivalent `if/else if/else` chain**.\n\nThe program reads a single integer `choice` from stdin:\n- If `choice` is `1`, print `Action: Save`\n- If `choice` is `2`, print `Action: Load`\n- If `choice` is `3`, print `Action: Quit`\n- For any other value, print `Action: Unknown`\n\nAfter the action line, always print `Menu complete.`\n\nDo **not** change what the program prints — only restructure the control flow to eliminate `goto`.\n\n```\nSample input:  2\nSample output:\nAction: Load\nMenu complete.\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int choice{};\n    std::cin >> choice;\n\n    // TODO: Replace all goto statements and labels with an if/else if/else chain.\n    if (choice == 1)\n        goto save;\n    if (choice == 2)\n        goto load;\n    if (choice == 3)\n        goto quit;\n    goto unknown;\n\nsave:\n    std::cout << \"Action: Save\\n\";\n    goto end;\nload:\n    std::cout << \"Action: Load\\n\";\n    goto end;\nquit:\n    std::cout << \"Action: Quit\\n\";\n    goto end;\nunknown:\n    std::cout << \"Action: Unknown\\n\";\n\nend:\n    std::cout << \"Menu complete.\\n\";\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int choice{};\n    std::cin >> choice;\n\n    if (choice == 1) {\n        std::cout << \"Action: Save\\n\";\n    } else if (choice == 2) {\n        std::cout << \"Action: Load\\n\";\n    } else if (choice == 3) {\n        std::cout << \"Action: Quit\\n\";\n    } else {\n        std::cout << \"Action: Unknown\\n\";\n    }\n\n    std::cout << \"Menu complete.\\n\";\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Choice 2: Load",
+          "stdin": "2",
+          "expected_stdout": "Action: Load\nMenu complete.\n",
+          "is_sample": true
+        },
+        {
+          "label": "Choice 1: Save",
+          "stdin": "1",
+          "expected_stdout": "Action: Save\nMenu complete.\n",
+          "is_sample": false
+        },
+        {
+          "label": "Choice 99: Unknown",
+          "stdin": "99",
+          "expected_stdout": "Action: Unknown\nMenu complete.\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "8.15",
+  "title": "Global random numbers (Random.h)",
+  "sort_order": 115,
+  "summary_md": "## Global random numbers (`Random.h`)\n\nIn the previous lesson you learned how to seed and use `std::mt19937` — but you also saw the problem: every time you construct a new engine object it needs its own seed. If you create two `mt19937` objects seeded from `std::random_device` in different functions, you can accidentally pull the same seed twice, and the engines diverge in an unpredictable way. The idiomatic fix is **one engine for the whole program**, created exactly once.\n\n### Wrapping the engine in a namespace\n\nC++17 introduced `inline` variables, which let you define a variable in a header and safely include that header in multiple translation units without getting a linker error about duplicate symbols. Combining `inline` with a namespace gives you a clean, zero-overhead global engine:\n\n```cpp\n// Random.h\n#pragma once\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ std::random_device{}() };\n\n    // Returns a random int in [min, max]\n    inline int get(int min, int max) {\n        std::uniform_int_distribution<int> dist{ min, max };\n        return dist(mt);\n    }\n}\n```\n\nBreaking it down:\n- `std::random_device{}()` — creates a temporary `random_device` and calls it immediately to get a single hardware seed. This happens **once**, when the program starts.\n- `inline std::mt19937 mt{ ... }` — the `inline` keyword tells the linker \"all translation units share the same object\"; no `extern` dance needed.\n- `Random::get(min, max)` — builds a `uniform_int_distribution<int>` on the stack (cheap), fires it against the shared engine, and returns the result.\n\n### Why one global engine?\n\nFrom Python you're used to `random.randint()` just working. In C++ the engine is stateful — each call advances an internal 624-word state array. If you create many engines you're running many independent streams that can correlate. One shared engine gives you the full Mersenne Twister period (~4.3 x 10^6000 values) without repeating.\n\n### Using it\n\n```cpp\n#include \"Random.h\"\nint main() {\n    int die = Random::get(1, 6);   // roll a d6\n    int card = Random::get(0, 51); // pick a card\n}\n```\n\n### Avoiding the seed-once pitfall\n\nNever seed `mt` more than once. Re-seeding mid-program resets the state and can reintroduce patterns. If you need a reproducible run for debugging, construct the engine with a fixed integer seed instead of `random_device`:\n\n```cpp\ninline std::mt19937 mt{ 42 }; // fixed seed — deterministic, useful for tests\n```\n\nThis pattern — a single header-defined engine shared across the program — is idiomatic modern C++ and is exactly what learncpp.com's `Random.h` header provides.",
+  "exercises": [
+    {
+      "title": "Roll dice and verify distribution",
+      "prompt_md": "## Roll dice and verify distribution\n\nYou will simulate rolling a six-sided die many times and verify that all rolls are within the valid range [1, 6].\n\n**Requirements:**\n1. Define a `Random` namespace with a **fixed seed of `42`** so results are deterministic.\n2. Read a single integer `n` from stdin — the number of rolls.\n3. Roll a d6 exactly `n` times using `Random::get(1, 6)`.\n4. Count how many times each face (1-6) appears, and verify all rolls were in [1, 6].\n5. Print:\n   - `Total rolls: N`\n   - `All valid: yes` (or `no` if any roll was outside 1-6)\n   - `Unique faces seen: X` (how many distinct face values appeared at least once)\n\n**Example** (n = 100):\n```\nTotal rolls: 100\nAll valid: yes\nUnique faces seen: 6\n```\n\n**Note:** With 100 rolls, it is extremely likely all 6 faces appear at least once. With 1 roll, only 1 unique face will be seen.",
+      "starter_code": "#include <iostream>\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ 42 };\n\n    inline int get(int min, int max) {\n        std::uniform_int_distribution<int> dist{ min, max };\n        return dist(mt);\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int count1{ 0 }, count2{ 0 }, count3{ 0 };\n    int count4{ 0 }, count5{ 0 }, count6{ 0 };\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int roll{ Random::get(1, 6) };\n        // TODO: increment the appropriate counter based on roll value\n        // TODO: if roll < 1 or roll > 6, set allValid to false\n    }\n\n    // TODO: count how many of the 6 counters are > 0\n    int uniqueFaces{ 0 };\n    // TODO: check each counter\n\n    std::cout << \"Total rolls: \" << n << '\\n';\n    // TODO: print \"All valid: yes\" or \"All valid: no\"\n    std::cout << \"Unique faces seen: \" << uniqueFaces << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ 42 };\n\n    inline int get(int min, int max) {\n        std::uniform_int_distribution<int> dist{ min, max };\n        return dist(mt);\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int count1{ 0 }, count2{ 0 }, count3{ 0 };\n    int count4{ 0 }, count5{ 0 }, count6{ 0 };\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int roll{ Random::get(1, 6) };\n        if (roll == 1) ++count1;\n        else if (roll == 2) ++count2;\n        else if (roll == 3) ++count3;\n        else if (roll == 4) ++count4;\n        else if (roll == 5) ++count5;\n        else if (roll == 6) ++count6;\n        else allValid = false;\n    }\n\n    int uniqueFaces{ 0 };\n    if (count1 > 0) ++uniqueFaces;\n    if (count2 > 0) ++uniqueFaces;\n    if (count3 > 0) ++uniqueFaces;\n    if (count4 > 0) ++uniqueFaces;\n    if (count5 > 0) ++uniqueFaces;\n    if (count6 > 0) ++uniqueFaces;\n\n    std::cout << \"Total rolls: \" << n << '\\n';\n    if (allValid)\n        std::cout << \"All valid: yes\\n\";\n    else\n        std::cout << \"All valid: no\\n\";\n    std::cout << \"Unique faces seen: \" << uniqueFaces << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "100 rolls — all valid, all 6 faces seen",
+          "stdin": "100",
+          "expected_stdout": "Total rolls: 100\nAll valid: yes\nUnique faces seen: 6\n",
+          "is_sample": true
+        },
+        {
+          "label": "1 roll — all valid, 1 unique face",
+          "stdin": "1",
+          "expected_stdout": "Total rolls: 1\nAll valid: yes\nUnique faces seen: 1\n",
+          "is_sample": false
+        },
+        {
+          "label": "1000 rolls — all valid, all 6 faces seen",
+          "stdin": "1000",
+          "expected_stdout": "Total rolls: 1000\nAll valid: yes\nUnique faces seen: 6\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Random number in a custom range",
+      "prompt_md": "## Random number in a custom range\n\nPractice using a shared random engine to generate numbers across different ranges and verify they are within bounds.\n\n**Requirements:**\n1. Define a `Random` namespace with a **fixed seed of `123`**.\n2. Read pairs of integers `lo` and `hi` from stdin until EOF.\n3. For each pair, generate one random integer using `Random::get(lo, hi)` and verify it is within [lo, hi].\n4. For each pair, print:\n   - `Range [lo, hi]: <value> (valid)` if the value is in range.\n   - `Range [lo, hi]: <value> (INVALID)` if it is not (which should never happen).\n\n**Example input:**\n```\n1 10\n50 50\n-5 5\n```\n\n**Example output:**\n```\nRange [1, 10]: <some value> (valid)\nRange [50, 50]: 50 (valid)\nRange [-5, 5]: <some value> (valid)\n```\n\n**Note:** When lo == hi, the output value must equal lo (and hi). Tests check this deterministic case and that all values are marked `(valid)`.",
+      "starter_code": "#include <iostream>\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ 123 };\n\n    inline int get(int min, int max) {\n        std::uniform_int_distribution<int> dist{ min, max };\n        return dist(mt);\n    }\n}\n\nint main() {\n    int lo{}, hi{};\n\n    while (std::cin >> lo >> hi) {\n        int value{ Random::get(lo, hi) };\n        // TODO: print \"Range [lo, hi]: value (valid)\" or \"(INVALID)\"\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nnamespace Random {\n    inline std::mt19937 mt{ 123 };\n\n    inline int get(int min, int max) {\n        std::uniform_int_distribution<int> dist{ min, max };\n        return dist(mt);\n    }\n}\n\nint main() {\n    int lo{}, hi{};\n\n    while (std::cin >> lo >> hi) {\n        int value{ Random::get(lo, hi) };\n        std::cout << \"Range [\" << lo << \", \" << hi << \"]: \" << value;\n        if (value >= lo && value <= hi)\n            std::cout << \" (valid)\\n\";\n        else\n            std::cout << \" (INVALID)\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Fixed range lo==hi always returns that value",
+          "stdin": "50 50\n100 100\n-3 -3",
+          "expected_stdout": "Range [50, 50]: 50 (valid)\nRange [100, 100]: 100 (valid)\nRange [-3, -3]: -3 (valid)\n",
+          "is_sample": true
+        },
+        {
+          "label": "Various ranges — all valid",
+          "stdin": "1 10\n-5 5\n0 1000",
+          "expected_stdout_contains": "(valid)",
+          "is_sample": false
+        },
+        {
+          "label": "Single query — must be valid",
+          "stdin": "1 6",
+          "expected_stdout_contains": "(valid)",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

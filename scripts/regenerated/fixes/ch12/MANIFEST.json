@@ -1,0 +1,86 @@
+{
+  "chapter": 12,
+  "generated": "2026-06-03",
+  "source": "ch_12.json",
+  "audit": "ch_12_audit.md",
+  "fixes": [
+    {
+      "file": "12.1_exercises.json",
+      "lesson": "12.1",
+      "scope": "both exercises (index 0 and 1)",
+      "severity": "HIGH",
+      "issues_fixed": [
+        "Ex1 used pointer declaration (int*), dereference (*ptr), and nullptr comparison -- all taught in 12.7-12.8, six lessons later",
+        "Ex2 was a pointer-based swap exercise identical to 12.7 ex2 -- forward-reference and duplicate",
+        "Reduces swap-exercise count from 5 to 4 (one removed from pre-pointer section)"
+      ],
+      "replacements": {
+        "ex1": "Reference Alias Demo -- demonstrates copy vs reference alias using only int& (no pointers)",
+        "ex2": "Compound vs Fundamental Type Sizes -- explores sizeof and references across int and double types (no pointers)"
+      }
+    },
+    {
+      "file": "12.11_ex2.json",
+      "lesson": "12.11",
+      "scope": "exercise index 1 only (ex2)",
+      "severity": "HIGH",
+      "issues_fixed": [
+        "Used std::vector<int> with .data(), range-for, and vector constructor -- Ch 16/17 material",
+        "Was the 3rd linear search exercise in the chapter (search fatigue)"
+      ],
+      "replacements": {
+        "ex2": "Count and Optional Minimum -- counts negatives with optional min output via nullable pointer (uses int arr[20], no vector, not a linear search)"
+      }
+    },
+    {
+      "file": "12.12_exercises.json",
+      "lesson": "12.12",
+      "scope": "both exercises (index 0 and 1)",
+      "severity": "CRITICAL + HIGH",
+      "issues_fixed": [
+        "Ex1: all 3 test cases missing trailing newline in expected_stdout -- guaranteed test failures",
+        "Ex2: used std::vector<int> extensively -- Ch 16/17 material",
+        "Ex2: all 3 test cases missing trailing newline -- guaranteed test failures",
+        "Ex2: was the 4th linear search exercise in the chapter"
+      ],
+      "replacements": {
+        "ex1": "Same exercise (Safe Reference Returns from a Static Cache) with corrected test case expected_stdout (added trailing newlines)",
+        "ex2": "Return Grade Label by Address -- maps score to static grade string, returns const std::string* with nullptr for invalid scores (no vector, no linear search, exercises return-by-address + null sentinel)"
+      }
+    },
+    {
+      "file": "12.15_ex2.json",
+      "lesson": "12.15",
+      "scope": "exercise index 1 only (ex2)",
+      "severity": "HIGH",
+      "issues_fixed": [
+        "Used std::vector<int> -- Ch 16/17 material",
+        "Was the 4th linear search exercise in the chapter (search fatigue)",
+        "Title said 'matching a predicate' but exercise just searched for equality"
+      ],
+      "replacements": {
+        "ex2": "Safe Average of Positive Elements -- uses std::optional<double> to return conditional average, const int* array parameter, no vector, not a linear search"
+      }
+    }
+  ],
+  "lessons_not_fixed": [
+    "12.2 -- PASS (both exercises clean)",
+    "12.3 -- PASS (ex2 has prompt wording caveat but code and tests are correct)",
+    "12.4 -- PASS",
+    "12.5 -- PASS",
+    "12.6 -- PASS",
+    "12.7 -- PASS",
+    "12.8 -- PASS",
+    "12.9 -- PASS (minor prompt-solution mismatch noted but not broken)",
+    "12.10 -- PASS",
+    "12.13 -- PASS",
+    "12.14 -- PASS (sizeof assumption noted but correct on Judge0)",
+    "12.x -- PASS"
+  ],
+  "remaining_concerns_not_addressed": [
+    "12.3 ex2 prompt says 'range-based for loop' but solution uses indexed loop -- prompt wording issue only, code works correctly",
+    "12.5 ex2 and 12.13 ex1 are both clamp exercises -- similar but teach different parameter patterns (const ref vs in-out), kept as-is since each is in a different lesson",
+    "12.7 ex2 and 12.10 ex2 are both pointer-swap exercises -- kept because they teach different patterns (basic pointer swap vs swap+scale with null guard)",
+    "12.14 ex1 assumes sizeof(int)==4 -- correct on Judge0 x86-64 Linux, no change needed"
+  ]
+}

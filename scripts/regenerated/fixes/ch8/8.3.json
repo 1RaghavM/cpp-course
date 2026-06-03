@@ -1,0 +1,60 @@
+{
+  "number": "8.3",
+  "title": "Common if statement problems",
+  "sort_order": 103,
+  "summary_md": "## Common `if` Statement Problems\n\nIn the previous lessons you learned what `if` statements are and why blocks matter. This lesson is about the bugs that quietly compile and silently misbehave — the ones that trip up even experienced programmers.\n\n### 1. Assignment (`=`) instead of comparison (`==`)\n\nIn Python, `=` is assignment and you cannot accidentally use it inside an `if` condition. In C++ you can, and it compiles without error:\n\n```cpp\nint x = 5;\nif (x = 10)   // assigns 10 to x, then evaluates as true (non-zero)\n    std::cout << \"x is 10\\n\";  // always prints!\n```\n\n`x = 10` assigns 10 to `x` and then the whole expression evaluates to `10`, which is truthy. The condition is *always* true. Compile with `-Wall -Wextra` and you will see `warning: suggest parentheses around assignment used as truth value`. Never ignore this warning — it almost always means you wrote `=` when you meant `==`.\n\n**Fix:** use `==` for comparison, or if you see this pattern in existing code, wrap the intentional assignment in an extra pair of parentheses: `if ((x = getValue()) != 0)`.\n\n### 2. Dangling `else`\n\nWhen you nest `if` statements without braces, an `else` attaches to the *nearest* preceding `if`, not the one you might intend:\n\n```cpp\nif (a > 0)\n    if (b > 0)\n        std::cout << \"both positive\\n\";\nelse                          // belongs to `if (b > 0)`, not `if (a > 0)`!\n    std::cout << \"a not positive\\n\";  // misleading indentation\n```\n\nThe indentation implies the `else` pairs with the outer `if`, but the compiler pairs it with the inner one. The lesson on *If statements and blocks* showed that adding braces removes ambiguity entirely — do that here too.\n\n### 3. Missing braces and accidental multi-statement bodies\n\n```cpp\nif (score >= 60)\n    std::cout << \"Passed\\n\";\n    std::cout << \"Congrats!\\n\";  // always executes — not part of the if!\n```\n\nOnly the first statement is controlled by the `if`. The second always runs. This is why the previous lesson recommended always using braces, even for single-statement bodies.\n\n### Key takeaways\n\n- Use `==` for comparison; `=` is assignment.\n- Compile with `-Wall -Wextra` to catch accidental assignments in conditions.\n- Always use braces `{}` to eliminate dangling-else and accidental-scope bugs.\n- Treat every compiler warning as an error during learning.",
+  "exercises": [
+    {
+      "title": "Spot and Fix the Assignment Bug",
+      "prompt_md": "## Spot and Fix the Assignment Bug\n\nThe program below is supposed to read an integer and print `\"Even\"` if it is even and `\"Odd\"` otherwise. However, it always prints `\"Even\"` because of a common `if` pitfall: it uses `=` (assignment) instead of `==` (comparison).\n\n**Your task:** Fix the condition so it correctly uses comparison (`==`) instead of assignment (`=`), then also add the missing `else` clause that prints `\"Odd\"` when the number is not even.\n\nYour output must match exactly (single word, newline-terminated).\n\n```\nSample input:  3\nSample output: Odd\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // BUG: the condition below uses = (assignment) instead of == (comparison).\n    // Because 'remainder' is an lvalue, 'remainder = 0' compiles silently\n    // but always evaluates to 0 (false), so it always takes the else branch.\n    // Fix the condition AND add the missing else branch.\n    int remainder = n % 2;\n    if (remainder = 0) {\n        std::cout << \"Even\\n\";\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int remainder = n % 2;\n    if (remainder == 0) {\n        std::cout << \"Even\\n\";\n    } else {\n        std::cout << \"Odd\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Odd number (3)",
+          "stdin": "3",
+          "expected_stdout": "Odd\n",
+          "is_sample": true
+        },
+        {
+          "label": "Even number (4)",
+          "stdin": "4",
+          "expected_stdout": "Even\n",
+          "is_sample": false
+        },
+        {
+          "label": "Zero",
+          "stdin": "0",
+          "expected_stdout": "Even\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Dangling Else and Missing Braces",
+      "prompt_md": "## Dangling Else and Missing Braces\n\nThe program below reads two integers `a` and `b` and is supposed to print:\n- `\"both positive\"` when both `a > 0` and `b > 0`\n- `\"a not positive\"` when `a <= 0` (regardless of `b`)\n- `\"a positive, b not\"` when `a > 0` but `b <= 0`\n\nTwo bugs are present:\n1. A **dangling else** — the `else` attaches to the wrong `if`.\n2. A **missing-braces** bug — a second print statement runs unconditionally.\n\n**Your task:** Add the correct braces and restructure the `else` clauses so the output matches the specification.\n\n```\nSample input:  2 3\nSample output: both positive\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: fix dangling-else and missing-braces bugs below.\n    // The else on line 13 attaches to the inner if, not the outer one.\n    // The last std::cout always executes — it is not inside any if.\n    if (a > 0)\n        if (b > 0)\n            std::cout << \"both positive\\n\";\n    else                          // dangling: belongs to inner if\n        std::cout << \"a not positive\\n\";\n        std::cout << \"a positive, b not\\n\";  // always runs — missing braces\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    if (a > 0) {\n        if (b > 0) {\n            std::cout << \"both positive\\n\";\n        } else {\n            std::cout << \"a positive, b not\\n\";\n        }\n    } else {\n        std::cout << \"a not positive\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Both positive (2, 3)",
+          "stdin": "2 3",
+          "expected_stdout": "both positive\n",
+          "is_sample": true
+        },
+        {
+          "label": "a positive, b not (5, -1)",
+          "stdin": "5 -1",
+          "expected_stdout": "a positive, b not\n",
+          "is_sample": false
+        },
+        {
+          "label": "a not positive (-3, 7)",
+          "stdin": "-3 7",
+          "expected_stdout": "a not positive\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

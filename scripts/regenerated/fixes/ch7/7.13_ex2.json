@@ -1,0 +1,31 @@
+{
+  "lesson": "7.13",
+  "exercise_index": 1,
+  "what_changed": "Replaced for loops with fixed-count reads (3 temperatures, 2 scores) inside separate blocks. Demonstrates block-scoped using declarations without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Scoped Using-Declarations and Block Scope",
+    "prompt_md": "## Goal\nComplete a program that processes two independent blocks of data -- exactly 3 temperatures and exactly 2 scores -- demonstrating that **using declarations are scoped to the block they appear in**.\n\n## Input\n- Lines 1-3: one integer temperature per line (in Fahrenheit, -100 to 300).\n- Lines 4-5: one integer score per line (0 to 100).\n\n## Output\nPrint exactly 2 lines:\n- Line 1: `Avg temp: <value> F` where `<value>` is the integer average of the 3 temperatures, **truncated** toward zero (integer division).\n- Line 2: `Avg score: <value>` where `<value>` is the integer average of the 2 scores, **truncated** toward zero.\n\n## Requirements\n1. Use a **separate named block** (a pair of `{}`) for the temperature-reading logic and another for the score-reading logic.\n2. Inside the temperature block, introduce `using std::cin;` as a using declaration scoped to that block. Do the same inside the score block. Do **not** place any using declaration at function scope or file scope.\n3. Use `std::cout` with full qualification everywhere (never a using declaration for `cout`).\n4. Compute averages with integer division (truncate toward zero -- standard C++ behaviour).\n5. Edge cases the hidden tests cover: negative temperatures whose average is negative, single-digit scores.\n6. No `using namespace` directive anywhere in the file.\n\n## Notes\n- You may include `<iostream>` only.\n- This exercise tests that you understand using declarations respect block scope.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int tempSum{};\n\n    // Temperature block\n    {\n        // TODO: Add a using declaration for std::cin scoped to this block only\n        // TODO: Read 3 temperatures and accumulate tempSum\n    }\n\n    int scoreSum{};\n\n    // Score block\n    {\n        // TODO: Add a using declaration for std::cin scoped to this block only\n        // TODO: Read 2 scores and accumulate scoreSum\n    }\n\n    // TODO: Print \"Avg temp: <value> F\" using std::cout (fully qualified)\n    // TODO: Print \"Avg score: <value>\"  using std::cout (fully qualified)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int tempSum{};\n\n    {\n        using std::cin;\n        int t1{}, t2{}, t3{};\n        cin >> t1 >> t2 >> t3;\n        tempSum = t1 + t2 + t3;\n    }\n\n    int scoreSum{};\n\n    {\n        using std::cin;\n        int s1{}, s2{};\n        cin >> s1 >> s2;\n        scoreSum = s1 + s2;\n    }\n\n    std::cout << \"Avg temp: \" << tempSum / 3 << \" F\\n\";\n    std::cout << \"Avg score: \" << scoreSum / 2 << '\\n';\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample: three temps, two scores",
+        "stdin": "72\n85\n90\n88\n76\n",
+        "expected_stdout": "Avg temp: 82 F\nAvg score: 82\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden: negative temperatures",
+        "stdin": "-5\n-8\n-3\n100\n80\n",
+        "expected_stdout": "Avg temp: -5 F\nAvg score: 90\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: small scores, positive temps",
+        "stdin": "100\n200\n300\n1\n3\n",
+        "expected_stdout": "Avg temp: 200 F\nAvg score: 2\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "lesson": "7.4",
+  "exercise_index": 0,
+  "what_changed": "Replaced for loop with fixed 4 calls to addToTotal from main, reading each value individually. Demonstrates global variable mutation via function calls without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Track a Running Total with a Global Accumulator",
+    "prompt_md": "## Goal\nComplete the program so that a global variable `g_total` accumulates exactly 4 integers added one at a time via `addToTotal(int value)`, then reports the final sum.\n\n## Input\n- Lines 1-4: one integer per line (each value in the range -1000 to 1000).\n\n## Output\n- Print exactly one line in the format `Total: X` where X is the sum of all 4 values.\n- Example: `Total: 42`\n\n## Requirements\n1. Declare `g_total` as a global `int` initialized to `0` at file scope (outside `main` and all functions).\n2. Implement `void addToTotal(int value)` -- it must modify `g_total` directly (no parameters for the accumulator, no return value).\n3. `main` reads 4 values and calls `addToTotal` once per value in the order they appear.\n4. After all calls, `main` prints `Total: ` followed by the value of `g_total`.\n5. Do not declare any local variable named `g_total` inside any function (no shadowing the global).\n6. Edge cases covered by hidden tests: all negative values, values that sum to zero.",
+    "starter_code": "#include <iostream>\n\n// TODO: declare global variable g_total (int, initialized to 0) here\n\n// TODO: implement void addToTotal(int value)\n//       It should add value to g_total.\n\nint main() {\n    int v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    addToTotal(v1);\n    addToTotal(v2);\n    addToTotal(v3);\n    addToTotal(v4);\n\n    // TODO: print \"Total: \" followed by g_total\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint g_total { 0 };\n\nvoid addToTotal(int value) {\n    g_total += value;\n}\n\nint main() {\n    int v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    addToTotal(v1);\n    addToTotal(v2);\n    addToTotal(v3);\n    addToTotal(v4);\n\n    std::cout << \"Total: \" << g_total << '\\n';\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed positive values",
+        "stdin": "10\n5\n20\n7\n",
+        "expected_stdout": "Total: 42\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden -- all negative values",
+        "stdin": "-7\n-3\n-10\n-5\n",
+        "expected_stdout": "Total: -25\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden -- values summing to zero",
+        "stdin": "100\n-50\n-30\n-20\n",
+        "expected_stdout": "Total: 0\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

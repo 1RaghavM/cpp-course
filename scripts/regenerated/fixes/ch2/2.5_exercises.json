@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Block Scope Demo",
+    "prompt_md": "## Goal\n\nDemonstrate that variables declared inside a block `{}` are not accessible outside it, while variables from an outer scope remain visible inside inner blocks.\n\n## Input\n\nTwo integers on one line separated by a space: `x` and `y`.\n\n## Output\n\n```\nouter x: <x>\nouter y: <y>\nblock sum: <x + y>\nouter x after block: <x>\n```\n\n## Requirements\n\n1. In `main`, declare `int x` and `int y` and read them from `std::cin`.\n2. Print `outer x: <x>` and `outer y: <y>`.\n3. Open an inner block `{}`. Inside it, declare `int sum` initialized to `x + y`. Print `block sum: <sum>`.\n4. After the block closes, print `outer x after block: <x>` to show `x` is unchanged.\n5. Do NOT try to use `sum` after the block -- it is out of scope.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n\n    // TODO: Print outer x and outer y\n\n    {\n        // TODO: Declare int sum initialized to x + y\n        // TODO: Print block sum\n    }\n    // sum is out of scope here\n\n    // TODO: Print outer x after block\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n\n    std::cout << \"outer x: \" << x << '\\n';\n    std::cout << \"outer y: \" << y << '\\n';\n\n    {\n        int sum { x + y };\n        std::cout << \"block sum: \" << sum << '\\n';\n    }\n\n    std::cout << \"outer x after block: \" << x << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 5",
+        "is_sample": true,
+        "stdin": "3 5",
+        "expected_stdout": "outer x: 3\nouter y: 5\nblock sum: 8\nouter x after block: 3\n"
+      },
+      {
+        "label": "Hidden: 0 and 0",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "outer x: 0\nouter y: 0\nblock sum: 0\nouter x after block: 0\n"
+      },
+      {
+        "label": "Hidden: 10 and 7",
+        "is_sample": false,
+        "stdin": "10 7",
+        "expected_stdout": "outer x: 10\nouter y: 7\nblock sum: 17\nouter x after block: 10\n"
+      }
+    ]
+  },
+  {
+    "title": "Shadowing Reporter",
+    "prompt_md": "## Goal\n\nDemonstrate variable shadowing: an inner block can declare a variable with the same name as an outer one, temporarily hiding the outer variable within that block.\n\n## Input\n\nTwo integers on one line separated by a space: `a` and `b`.\n\n## Output\n\n```\nouter a = <a>\ninner a = <a * 2>\ninner b = <b>\nback to outer a = <a>\n```\n\n## Requirements\n\n1. Read `a` and `b` in `main`.\n2. Print `outer a = <a>`.\n3. Open an inner block. Before shadowing, save `a`'s value in a variable `int saved_a`. Then declare a new `int a` initialized to `saved_a * 2` (this shadows the outer `a`). Print `inner a = <inner a>` and `inner b = <b>` (b is still visible from the outer scope).\n4. After the inner block closes, print `back to outer a = <a>` to confirm the outer `a` is unchanged.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    std::cout << \"outer a = \" << a << '\\n';\n\n    {\n        // TODO: Save a's value, then declare a new int a initialized\n        //       to the saved value * 2 (this shadows the outer a)\n        // TODO: Print \"inner a = \" followed by the inner a\n        // TODO: Print \"inner b = \" followed by b (from outer scope)\n    }\n\n    // TODO: Print \"back to outer a = \" followed by a (should be unchanged)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    std::cout << \"outer a = \" << a << '\\n';\n\n    {\n        int saved_a { a };\n        int a { saved_a * 2 };\n        std::cout << \"inner a = \" << a << '\\n';\n        std::cout << \"inner b = \" << b << '\\n';\n    }\n\n    std::cout << \"back to outer a = \" << a << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a=3 b=5",
+        "is_sample": true,
+        "stdin": "3 5",
+        "expected_stdout": "outer a = 3\ninner a = 6\ninner b = 5\nback to outer a = 3\n"
+      },
+      {
+        "label": "Hidden: a=1 b=1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "outer a = 1\ninner a = 2\ninner b = 1\nback to outer a = 1\n"
+      },
+      {
+        "label": "Hidden: a=10 b=7",
+        "is_sample": false,
+        "stdin": "10 7",
+        "expected_stdout": "outer a = 10\ninner a = 20\ninner b = 7\nback to outer a = 10\n"
+      }
+    ]
+  }
+]

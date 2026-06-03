@@ -1,0 +1,62 @@
+{
+  "lesson": "6.6",
+  "title": "The conditional operator",
+  "fixes": ["MODERATE: exercise 2 uses for loop (Ch 8) and std::format — replaced with non-loop exercise", "MINOR: summary uses range-based for loop and std::format — replaced with separate statements and iostream"],
+  "summary_md": "## The Conditional Operator\n\nThe conditional operator (`?:`) is C++'s only ternary operator — it takes three operands. It evaluates a condition and yields one of two values depending on whether that condition is true or false.\n\n```\ncondition ? expression_if_true : expression_if_false\n```\n\nBoth branches must produce values of compatible types, because the entire `?:` expression has a single type determined at compile time.\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main() {\n    int n1 = -3;\n    int n2 = 0;\n    int n3 = 7;\n\n    std::string label1 = (n1 > 0) ? \"positive\"\n                       : (n1 < 0) ? \"negative\"\n                                   : \"zero\";\n    std::string label2 = (n2 > 0) ? \"positive\"\n                       : (n2 < 0) ? \"negative\"\n                                   : \"zero\";\n    std::string label3 = (n3 > 0) ? \"positive\"\n                       : (n3 < 0) ? \"negative\"\n                                   : \"zero\";\n\n    std::cout << n1 << \": \" << label1 << '\\n';\n    std::cout << n2 << \": \" << label2 << '\\n';\n    std::cout << n3 << \": \" << label3 << '\\n';\n}\n```\n\nOutput:\n```\n-3: negative\n0: zero\n7: positive\n```\n\n### When to use it\n\nThe conditional operator shines when you need a value inline — initializing a variable, passing an argument, or building an output expression — where an `if`/`else` statement would force you to split the logic awkwardly. It's a *value-producing* construct, whereas `if`/`else` is a *statement*.\n\n```cpp\n// Clean: single expression, no mutable variable needed\nconst int abs_val = (x >= 0) ? x : -x;\n```\n\nNesting `?:` (as shown above) is legal but degrades readability quickly. Prefer `if`/`else` or a helper function once more than one level of nesting appears.\n\n### Type rules\n\nBoth branch expressions must be convertible to a common type. If they aren't, the compiler rejects the expression. This is stricter than Python's equivalent `value_if_true if condition else value_if_false`, which is duck-typed at runtime.\n\nMixing an integer literal with a `std::string` is a typical mistake:\n\n```cpp\n// Error: int and const char* have no common type here\nstd::string s1 = flag ? std::string{\"yes\"} : \"no\";  // fine — \"no\" converts to std::string\n// auto s2 = flag ? 42 : \"no\";                       // ill-formed\n```\n\n### Precedence\n\nAs covered in **Operator precedence and associativity**, `?:` sits near the bottom of the precedence table — lower than most arithmetic and comparison operators — so the condition is almost always parsed as you expect without extra parentheses. The right-hand side is right-associative, which is why chained ternaries work the way they do.\n\nUse the conditional operator for concise, single-expression decisions. Reach for `if`/`else` when clarity matters more than brevity.",
+  "exercises": [
+    {
+      "title": "Classify a Temperature Reading",
+      "prompt_md": "## Goal\nComplete the function `classifyTemp` that returns a `std::string` classification of a Celsius temperature using the conditional operator.\n\n## Input\n- Line 1: a single integer `T` (-50 <= T <= 50), the temperature in Celsius.\n\n## Output\n- Print exactly one line in the format: `T degrees: LABEL`\n- `T` is the integer read from stdin (no leading spaces or padding).\n- `LABEL` is one of three strings, determined as follows:\n  - `\"freezing\"` if T < 0\n  - `\"cold\"` if T is 0 to 14 (inclusive)\n  - `\"warm\"` if T is 15 or above\n- Example: `5 degrees: cold`\n\n## Requirements\n1. `classifyTemp` must have the signature `std::string classifyTemp(int temp)`.\n2. The body of `classifyTemp` must use the conditional operator (`?:`) — specifically a chained ternary — to produce the label. Do not use `if`/`else` inside this function.\n3. The returned value must be one of exactly three strings: `\"freezing\"`, `\"cold\"`, or `\"warm\"`.\n4. The output line must match the format `T degrees: LABEL` with no extra spaces or blank lines.\n5. Hidden tests cover T = -50 (minimum), T = 0 (boundary between freezing and cold), T = 14 (boundary between cold and warm), and T = 50 (maximum).",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement classifyTemp using a chained conditional operator (?:)\n// Return \"freezing\" if temp < 0, \"cold\" if 0..14, \"warm\" if >= 15\nstd::string classifyTemp(int temp) {\n    return \"\"; // TODO: replace with a chained ternary expression\n}\n\nint main() {\n    int t{};\n    std::cin >> t;\n    std::cout << t << \" degrees: \" << classifyTemp(t) << \"\\n\";\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nstd::string classifyTemp(int temp) {\n    return (temp < 0) ? \"freezing\"\n         : (temp < 15) ? \"cold\"\n         : \"warm\";\n}\n\nint main() {\n    int t{};\n    std::cin >> t;\n    std::cout << t << \" degrees: \" << classifyTemp(t) << \"\\n\";\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — cold range",
+          "stdin": "5\n",
+          "expected_stdout": "5 degrees: cold\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — freezing boundary (exactly -1)",
+          "stdin": "-1\n",
+          "expected_stdout": "-1 degrees: freezing\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — warm boundary (exactly 15)",
+          "stdin": "15\n",
+          "expected_stdout": "15 degrees: warm\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Absolute Difference of Three Pairs",
+      "prompt_md": "## Goal\nRead exactly three pairs of integers and print a formatted table showing each pair and the absolute difference between them, using the conditional operator to compute absolute values without calling `std::abs`.\n\n## Input\n- Lines 1-3: each line contains two integers `A` and `B` separated by a space (-1000 <= A, B <= 1000).\n\n## Output\n- Print a header line: `A       B       |A-B|`\n- For each of the three pairs, print one line with A padded to width 8 (left-aligned), B padded to width 8 (left-aligned), and the absolute difference with no padding.\n- Use `std::left` and `std::setw(8)` from `<iomanip>` for formatting A and B.\n- No trailing blank lines.\n\nExample for pairs (3,10), (-5,2), (8,8):\n```\nA       B       |A-B|\n3       10      7\n-5      2       7\n8       8       0\n```\n\n## Requirements\n1. Read exactly three pairs — do not use any loops.\n2. Compute the absolute difference using the conditional operator: `(diff >= 0) ? diff : -diff` where `diff = A - B`. Do not call `std::abs` or any other library function for this computation.\n3. The header must be exactly `A       B       |A-B|` (A and B are left-aligned in width-8 fields, `|A-B|` has no padding).\n4. Each data row must use `std::left << std::setw(8)` for A and B.\n5. Hidden tests cover: a pair where A == B (difference is 0), a pair where A < B (negative raw difference), and large values near the boundary.\n\n## Notes\n- Use `<iostream>` and `<iomanip>` only.",
+      "starter_code": "#include <iomanip>\n#include <iostream>\n\nint main() {\n    // Print the header\n    std::cout << std::left << std::setw(8) << \"A\"\n              << std::setw(8) << \"B\"\n              << \"|A-B|\" << '\\n';\n\n    // Pair 1\n    int a1{}, b1{};\n    std::cin >> a1 >> b1;\n    // TODO: compute diff and absVal using the conditional operator\n    // TODO: print the row with std::left << std::setw(8) for a1 and b1\n\n    // Pair 2\n    int a2{}, b2{};\n    std::cin >> a2 >> b2;\n    // TODO: compute diff and absVal using the conditional operator\n    // TODO: print the row\n\n    // Pair 3\n    int a3{}, b3{};\n    std::cin >> a3 >> b3;\n    // TODO: compute diff and absVal using the conditional operator\n    // TODO: print the row\n\n    return 0;\n}\n",
+      "solution_code": "#include <iomanip>\n#include <iostream>\n\nint main() {\n    std::cout << std::left << std::setw(8) << \"A\"\n              << std::setw(8) << \"B\"\n              << \"|A-B|\" << '\\n';\n\n    int a1{}, b1{};\n    std::cin >> a1 >> b1;\n    int diff1 = a1 - b1;\n    int abs1 = (diff1 >= 0) ? diff1 : -diff1;\n    std::cout << std::left << std::setw(8) << a1\n              << std::setw(8) << b1\n              << abs1 << '\\n';\n\n    int a2{}, b2{};\n    std::cin >> a2 >> b2;\n    int diff2 = a2 - b2;\n    int abs2 = (diff2 >= 0) ? diff2 : -diff2;\n    std::cout << std::left << std::setw(8) << a2\n              << std::setw(8) << b2\n              << abs2 << '\\n';\n\n    int a3{}, b3{};\n    std::cin >> a3 >> b3;\n    int diff3 = a3 - b3;\n    int abs3 = (diff3 >= 0) ? diff3 : -diff3;\n    std::cout << std::left << std::setw(8) << a3\n              << std::setw(8) << b3\n              << abs3 << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — three pairs, mixed signs",
+          "stdin": "3 10\n-5 2\n8 8\n",
+          "expected_stdout": "A       B       |A-B|\n3       10      7\n-5      2       7\n8       8       0\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — A greater than B, large values",
+          "stdin": "100 -100\n999 1\n0 -500\n",
+          "expected_stdout": "A       B       |A-B|\n100     -100    200\n999     1       998\n0       -500    500\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — all equal pairs and negative pairs",
+          "stdin": "0 0\n-50 -50\n1000 -1000\n",
+          "expected_stdout": "A       B       |A-B|\n0       0       0\n-50     -50     0\n1000    -1000   2000\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

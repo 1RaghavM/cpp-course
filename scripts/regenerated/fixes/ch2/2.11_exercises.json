@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Declare Before You Call",
+    "prompt_md": "## Goal\n\nIn real projects, function declarations live in header files so any `.cpp` can include them. Since the sandbox is a single file, you will practice the same discipline inline.\n\n## Input\n\nOne integer on a single line.\n\n## Output\n\n```\nSquare: <n*n>\nCube: <n*n*n>\nAbsolute value of -<n>: <|n|>\n```\n\nNote: the absolute value line always prints the negation of the input, then its absolute value. For input `4`, it prints `Absolute value of -4: 4`.\n\n## Requirements\n\n1. The `main` function calls three math helper functions: `square`, `cube`, and `absolute_value`. All three **definitions** are already written at the bottom of the file.\n2. Add the three **declarations** (prototypes) in the marked section near the top -- exactly as they would appear in a header file.\n3. Each prototype must end with a semicolon and match the definition's signature precisely.\n4. Do not move or modify the definitions. Do not add `#include` directives beyond what is already present.",
+    "starter_code": "#include <iostream>\n\n// -- Declarations (as if this block were \"mathutils.h\") ----------\n// TODO: declare square(int) -> int\n// TODO: declare cube(int) -> int\n// TODO: declare absolute_value(int) -> int\n// ----------------------------------------------------------------\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    std::cout << \"Cube: \" << cube(n) << \"\\n\";\n    std::cout << \"Absolute value of \" << -n << \": \" << absolute_value(-n) << \"\\n\";\n\n    return 0;\n}\n\n// -- Definitions (as if this block were \"mathutils.cpp\") ---------\nint square(int x) { return x * x; }\nint cube(int x) { return x * x * x; }\nint absolute_value(int x) { return x < 0 ? -x : x; }\n",
+    "solution_code": "#include <iostream>\n\n// -- Declarations (as if this block were \"mathutils.h\") ----------\nint square(int x);\nint cube(int x);\nint absolute_value(int x);\n// ----------------------------------------------------------------\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    std::cout << \"Cube: \" << cube(n) << \"\\n\";\n    std::cout << \"Absolute value of \" << -n << \": \" << absolute_value(-n) << \"\\n\";\n\n    return 0;\n}\n\n// -- Definitions (as if this block were \"mathutils.cpp\") ---------\nint square(int x) { return x * x; }\nint cube(int x) { return x * x * x; }\nint absolute_value(int x) { return x < 0 ? -x : x; }\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: input 4",
+        "is_sample": true,
+        "stdin": "4",
+        "expected_stdout": "Square: 16\nCube: 64\nAbsolute value of -4: 4\n"
+      },
+      {
+        "label": "Hidden: input 1",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Square: 1\nCube: 1\nAbsolute value of -1: 1\n"
+      },
+      {
+        "label": "Hidden: input 7",
+        "is_sample": false,
+        "stdin": "7",
+        "expected_stdout": "Square: 49\nCube: 343\nAbsolute value of -7: 7\n"
+      }
+    ]
+  },
+  {
+    "title": "Header Guard Practice",
+    "prompt_md": "## Goal\n\nHeader guards stop a header from being processed more than once per translation unit. Practice the three-line `#ifndef` / `#define` / `#endif` pattern that you would write at the top and bottom of every `.h` file.\n\n## Input\n\nTwo integers on one line separated by a space: `a` and `b`.\n\n## Output\n\n```\nadd(a, b) = <a + b>\nmultiply(a, b) = <a * b>\n```\n\n## Requirements\n\n1. Simulate a header file called `mathutils.h` by wrapping function **declarations** for `int add(int, int)` and `int multiply(int, int)` inside a header guard using macro name `MATHUTILS_H`.\n2. Place the guarded declaration block **twice** in the file (simulating what happens when two different headers both `#include` the same dependency). The guard ensures the declarations appear only once.\n3. Define `add` and `multiply` after both guarded blocks.\n4. In `main`, read two integers and print both results.",
+    "starter_code": "#include <iostream>\n\n// -- Simulated first inclusion of mathutils.h --------------------\n// TODO: add #ifndef MATHUTILS_H\n// TODO: add #define MATHUTILS_H\n\n// TODO: declare int add(int a, int b);\n// TODO: declare int multiply(int a, int b);\n\n// TODO: add #endif // MATHUTILS_H\n// ----------------------------------------------------------------\n\n// -- Simulated second inclusion of mathutils.h (guard skips it) --\n#ifndef MATHUTILS_H\n#define MATHUTILS_H\nint add(int a, int b);\nint multiply(int a, int b);\n#endif // MATHUTILS_H\n// ----------------------------------------------------------------\n\n// TODO: Define add -- returns a + b\n// TODO: Define multiply -- returns a * b\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: Print results\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\n// -- Simulated first inclusion of mathutils.h --------------------\n#ifndef MATHUTILS_H\n#define MATHUTILS_H\n\nint add(int a, int b);\nint multiply(int a, int b);\n\n#endif // MATHUTILS_H\n// ----------------------------------------------------------------\n\n// -- Simulated second inclusion of mathutils.h (guard skips it) --\n#ifndef MATHUTILS_H\n#define MATHUTILS_H\nint add(int a, int b);\nint multiply(int a, int b);\n#endif // MATHUTILS_H\n// ----------------------------------------------------------------\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint multiply(int a, int b) {\n    return a * b;\n}\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    std::cout << \"add(a, b) = \" << add(a, b) << '\\n';\n    std::cout << \"multiply(a, b) = \" << multiply(a, b) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 7",
+        "is_sample": true,
+        "stdin": "3 7",
+        "expected_stdout": "add(a, b) = 10\nmultiply(a, b) = 21\n"
+      },
+      {
+        "label": "Hidden: 0 and 0",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "add(a, b) = 0\nmultiply(a, b) = 0\n"
+      },
+      {
+        "label": "Hidden: -5 and 4",
+        "is_sample": false,
+        "stdin": "-5 4",
+        "expected_stdout": "add(a, b) = -1\nmultiply(a, b) = -20\n"
+      }
+    ]
+  }
+]

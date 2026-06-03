@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Write a minimal valid C++ program",
+    "prompt_md": "## Goal\n\nWrite the smallest valid C++ program that compiles and runs successfully.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code is what matters.\n\n## Requirements\n\n- The program must contain a `main` function that returns `0`.\n- The program must compile without errors or warnings using `g++ -std=c++20 -Wall -Wextra`.\n- Do **not** use `#include`, `cout`, `cin`, or any library features — they have not been taught yet.\n- The return value `0` signals successful execution to the operating system.",
+    "starter_code": "// TODO: Write a complete, minimal C++ program.\n// It should have a main function that returns 0.\n\nint main()\n{\n    // TODO: return 0 from here\n    return 0;\n}\n",
+    "solution_code": "int main()\n{\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Program exits with code 0",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "No output produced",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Compiles cleanly with no warnings",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      }
+    ]
+  },
+  {
+    "title": "Use statements to compute and return a value",
+    "prompt_md": "## Goal\n\nWrite a program that uses declaration statements and expression statements to perform a simple computation, then returns the result as the program's exit code.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code carries the result.\n\n## Requirements\n\n1. Declare an integer variable `a` and initialize it to `3`.\n2. Declare an integer variable `b` and initialize it to `4`.\n3. Declare an integer variable `result` with initial value `0`.\n4. Use an expression statement to assign `a + b` to `result`.\n5. Return `result` from `main`.\n\nThe program's exit code should be `7` (since 3 + 4 = 7).\n\nDo **not** use `#include`, `cout`, `cin`, or any library features.",
+    "starter_code": "int main()\n{\n    // TODO: Declare integer variable 'a' and initialize it to 3\n\n    // TODO: Declare integer variable 'b' and initialize it to 4\n\n    // TODO: Declare integer variable 'result' with initial value 0\n\n    // TODO: Assign a + b to result\n\n    // TODO: Return result from main\n    return 0;\n}\n",
+    "solution_code": "int main()\n{\n    int a = 3;\n    int b = 4;\n    int result = 0;\n\n    result = a + b;\n\n    return result;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Exit code is 7 (3 + 4)",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "No output produced",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Compiles cleanly with no warnings",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      }
+    ]
+  }
+]

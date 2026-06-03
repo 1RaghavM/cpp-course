@@ -1,0 +1,60 @@
+{
+  "number": "8.x",
+  "title": "Chapter 8 summary and quiz",
+  "sort_order": 116,
+  "summary_md": "## Chapter 8 Summary: Control Flow\n\nChapter 8 covered every mechanism C++ gives you to decide *which* code runs, *how many times* it runs, and *when* to stop.\n\n### Conditionals\n**If/else** (8.1-8.3) selects a branch based on a boolean condition. Always use braces, even for single-line bodies — it prevents bugs. **Constexpr if** (8.4) selects a branch at compile time based on a constant expression. **Switch** (8.5-8.6) matches an integer or enum value against compile-time `case` labels; fall-through is intentional and must be explicit. Unlike Python's `match`, every `case` needs a `break` or the next case executes too.\n\n### Goto\n**goto** (8.7) jumps to a named label — avoid it; it makes flow nearly impossible to trace. Every use case has a structured alternative (`if/else`, `switch`, loops).\n\n### Loops\n- **while** (8.8): tests the condition *before* each iteration — may run zero times.\n- **do-while** (8.9): tests *after* — guaranteed to run at least once. Useful for input validation.\n- **for** (8.10): bundles init, condition, and increment into one line; prefer it when the loop counter is well-defined.\n- All three loops support **break** (exit immediately) and **continue** (skip to next iteration), covered in 8.11.\n\n### Halts\n**Halts** (8.12) — `std::exit()`, `std::abort()`, `std::terminate()` — end the program immediately without unwinding the stack. Use only in catastrophic-failure paths.\n\n### Random Numbers\n8.13 introduced `<random>`: create a `std::mt19937` engine seeded with `std::random_device{}()`, then use a `std::uniform_int_distribution<int>` to draw values. 8.14 went deeper into Mersenne Twister, and 8.15 showed the idiomatic pattern of a shared global engine via `Random.h`. Never use `rand()` in modern C++.\n\n### Combined example\n\n```cpp\n#include <iostream>\n\nint main() {\n    // Count odd numbers 1-20, skip multiples of 5\n    int sum = 0;\n    for (int i = 1; i <= 20; ++i) {\n        if (i % 5 == 0) continue;   // skip 5, 10, 15, 20\n        if (i % 2 == 0) continue;   // skip evens\n        sum += i;\n    }\n    std::cout << sum << '\\n';        // 1+3+7+9+11+13+17+19 = 80\n}\n```\n\nThis example uses a `for` loop, `if`/`continue`, and arithmetic — a microcosm of the entire chapter.",
+  "exercises": [
+    {
+      "title": "Collatz Sequence Counter",
+      "prompt_md": "## Collatz Sequence Counter\n\nThe **Collatz conjecture** says that starting from any positive integer `n`, repeatedly applying the rule below will always reach 1:\n\n- If `n` is even: `n = n / 2`\n- If `n` is odd: `n = n * 3 + 1`\n\nWrite a program that:\n1. Reads a positive integer `n` from stdin.\n2. Uses a **while loop** to iterate until `n == 1`.\n3. On each step, prints the current value of `n` (before the transformation), one per line.\n4. After the loop ends, print the final value `1` on its own line.\n5. Then print `Steps: X` where X is the total number of transformations applied (not counting the starting value).\n6. If the input is `<= 0`, print `Invalid input` and stop immediately.\n\n**Example** for input `6`:\n```\n6\n3\n10\n5\n16\n8\n4\n2\n1\nSteps: 8\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: if n <= 0, print \"Invalid input\" and return 1\n\n    int steps = 0;\n\n    // TODO: while n != 1, print current n, apply Collatz rule, increment steps\n\n    // Don't forget to print the final value (1) before \"Steps:\"\n\n    std::cout << \"Steps: \" << steps << '\\n';\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    if (n <= 0) {\n        std::cout << \"Invalid input\\n\";\n        return 1;\n    }\n\n    int steps = 0;\n\n    while (n != 1) {\n        std::cout << n << '\\n';\n        if (n % 2 == 0)\n            n /= 2;\n        else\n            n = n * 3 + 1;\n        ++steps;\n    }\n\n    // print the final value\n    std::cout << n << '\\n';\n    std::cout << \"Steps: \" << steps << '\\n';\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: n=6",
+          "stdin": "6",
+          "expected_stdout": "6\n3\n10\n5\n16\n8\n4\n2\n1\nSteps: 8\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: n=1 (already at 1)",
+          "stdin": "1",
+          "expected_stdout": "1\nSteps: 0\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: invalid input",
+          "stdin": "-3",
+          "expected_stdout": "Invalid input\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Grade Histogram",
+      "prompt_md": "## Grade Histogram\n\nWrite a program that reads exactly **10 integer scores** (each 0-100) from stdin, one per line, then prints a letter-grade histogram using the ranges below:\n\n| Grade | Range |\n|-------|-------|\n| A | 90-100 |\n| B | 80-89 |\n| C | 70-79 |\n| D | 60-69 |\n| F | 0-59 |\n\nFor each grade bucket, print a line of the form `X: ***` where `X` is the letter and `*` is repeated once per score in that bucket. If a bucket has 0 scores, still print the label with no stars (e.g. `B: `).\n\nPrint grades in order A, B, C, D, F.\n\nUse a **for loop** to read input, an **if/else chain** to classify each score, and a **for loop** to print the stars.\n\n**Example input:**\n```\n95\n82\n74\n91\n60\n55\n88\n73\n100\n67\n```\n**Expected output:**\n```\nA: ***\nB: **\nC: **\nD: **\nF: *\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a = 0, b = 0, c = 0, d = 0, f = 0;\n\n    // TODO: use a for loop to read 10 scores\n    // classify each score into the correct counter using if/else\n    for (int i = 0; i < 10; ++i) {\n        int score{};\n        std::cin >> score;\n\n        // TODO: increment the right counter (a, b, c, d, or f)\n    }\n\n    // TODO: for each letter in order A B C D F,\n    // print \"X: \" then repeat '*' count times, then newline\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nvoid printRow(char grade, int count) {\n    std::cout << grade << \": \";\n    for (int i = 0; i < count; ++i)\n        std::cout << '*';\n    std::cout << '\\n';\n}\n\nint main() {\n    int a = 0, b = 0, c = 0, d = 0, f = 0;\n\n    for (int i = 0; i < 10; ++i) {\n        int score{};\n        std::cin >> score;\n\n        if      (score >= 90) ++a;\n        else if (score >= 80) ++b;\n        else if (score >= 70) ++c;\n        else if (score >= 60) ++d;\n        else                  ++f;\n    }\n\n    printRow('A', a);\n    printRow('B', b);\n    printRow('C', c);\n    printRow('D', d);\n    printRow('F', f);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: mixed grades",
+          "stdin": "95\n82\n74\n91\n60\n55\n88\n73\n100\n67\n",
+          "expected_stdout": "A: ***\nB: **\nC: **\nD: **\nF: *\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: all F's",
+          "stdin": "0\n10\n20\n30\n40\n50\n55\n58\n1\n59\n",
+          "expected_stdout": "A: \nB: \nC: \nD: \nF: **********\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: all A's",
+          "stdin": "90\n91\n92\n93\n94\n95\n96\n97\n98\n100\n",
+          "expected_stdout": "A: **********\nB: \nC: \nD: \nF: \n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "4.10",
+  "title": "Introduction to if statements",
+  "sort_order": 59,
+  "summary_md": "# Introduction to `if` Statements\n\nAn `if` statement lets your program choose between paths based on a condition. The condition is any expression that evaluates to a Boolean value — `true` or `false`. As covered in **Boolean values**, C++ treats any non-zero value as `true` and zero as `false`.\n\n## Basic Syntax\n\n```cpp\nif (condition)\n    statement;          // runs when condition is true\nelse\n    statement;          // runs when condition is false\n```\n\nWrap multiple statements in braces `{}` to form a block. Prefer braces even for single statements — it prevents bugs when code is added later.\n\n## Conditions and Data Types\n\nAny of the fundamental types from this chapter can appear in conditions. A few things worth knowing:\n\n- **Integers** — zero is `false`, anything else is `true`. This means a signed or fixed-width integer like `int32_t` works directly as a condition, though explicit comparisons are clearer.\n- **Floating point** — avoid equality comparisons (`==`) with `float` or `double` due to precision issues discussed in **Floating point numbers**.\n- **Unsigned integers** — be careful with comparisons. As noted in **Unsigned integers, and why to avoid them**, mixing signed and unsigned values in a condition can produce surprising results.\n\n## Chaining with `else if`\n\n```cpp\n#include <format>\n#include <iostream>\n\nint main() {\n    int temperature { 72 };\n\n    if (temperature > 90)\n        std::cout << std::format(\"Hot: {}°F\\n\", temperature);\n    else if (temperature > 60)\n        std::cout << std::format(\"Comfortable: {}°F\\n\", temperature);\n    else\n        std::cout << std::format(\"Cold: {}°F\\n\", temperature);\n}\n```\n\nEach `else if` is checked only when all previous conditions were `false`. Only one branch executes.\n\n## Short-Circuit Evaluation\n\nWhen combining conditions with `&&` (and) or `||` (or), C++ stops evaluating as soon as the outcome is determined. With `&&`, if the left side is `false`, the right side is never evaluated. With `||`, if the left side is `true`, the right side is skipped. This matters when the right-hand expression has side effects or could cause errors (like dividing by zero).\n\n## Key Points\n\n- Conditions reduce to `bool` — review **Boolean values** for how conversions work.\n- Always use braces for clarity and safety.\n- Floating-point equality in conditions is unreliable.\n- `else if` chains are evaluated top to bottom; order your conditions accordingly.",
+  "exercises": [
+    {
+      "title": "Classify a Single Integer as Negative, Zero, or Positive",
+      "prompt_md": "## Goal\nRead one integer from stdin and print exactly which of three categories it falls into: negative, zero, or positive.\n\n## Input\n- Line 1: one integer `N` (-1,000,000 <= N <= 1,000,000).\n\n## Output\nPrint exactly one line, chosen by these rules (match the labels exactly, including capitalization):\n- If `N` is less than 0, print `Negative`.\n- If `N` is equal to 0, print `Zero`.\n- If `N` is greater than 0, print `Positive`.\n\nNo extra blank lines, no trailing spaces.\n\n## Requirements\n1. Use an `if` / `else if` / `else` chain — do not use a `switch` statement or the ternary operator.\n2. Each branch must be enclosed in braces `{}`.\n3. The program must handle the boundary value `N = 0` correctly (prints `Zero`, not `Negative` or `Positive`).\n4. The program must handle the minimum value (`N = -1000000`) and maximum value (`N = 1000000`).",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: write an if / else if / else chain that prints\n    //       \"Negative\", \"Zero\", or \"Positive\" based on n.\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    if (n < 0)\n    {\n        std::cout << \"Negative\\n\";\n    }\n    else if (n == 0)\n    {\n        std::cout << \"Zero\\n\";\n    }\n    else\n    {\n        std::cout << \"Positive\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "zero boundary",
+          "stdin": "0\n",
+          "expected_stdout": "Zero\n",
+          "is_sample": false
+        },
+        {
+          "label": "negative number",
+          "stdin": "-7\n",
+          "expected_stdout": "Negative\n",
+          "is_sample": false
+        },
+        {
+          "label": "positive number",
+          "stdin": "42\n",
+          "expected_stdout": "Positive\n",
+          "is_sample": true
+        }
+      ]
+    },
+    {
+      "title": "Letter Grade from a Numeric Score",
+      "prompt_md": "## Goal\nRead a student's initial (a single character) and an integer score, then print the student's initial alongside their letter grade.\n\n## Input\n- Line 1: one character representing the student's initial (a single alphabetic character).\n- Line 2: one integer score `S` (0 <= S <= 100).\n\n## Output\nPrint exactly one line in the format `<initial>: <grade>` where `<grade>` is determined as follows:\n- 90 <= S <= 100 -> `A`\n- 80 <= S <= 89  -> `B`\n- 70 <= S <= 79  -> `C`\n- 60 <= S <= 69  -> `D`\n- S < 60         -> `F`\n\nExample for initial `A` and score `85`: `A: B`\n\nNo extra blank lines, no trailing spaces.\n\n## Requirements\n1. Read the initial using `char` and the score using `int`.\n2. Use an `if` / `else if` / `else` chain to determine the grade — do not use a `switch` or lookup table.\n3. Every branch must use braces `{}`.\n4. The conditions must be ordered from highest to lowest so that the chain short-circuits correctly — place the 90-100 check first.\n5. Boundary scores must be handled correctly: 90 -> `A`, 89 -> `B`, 80 -> `B`, 79 -> `C`, 70 -> `C`, 69 -> `D`, 60 -> `D`, 59 -> `F`, 0 -> `F`, 100 -> `A`.\n6. The output label and colon-space separator must match exactly: `<initial>: <grade>`.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    char initial {};\n    int score {};\n\n    std::cin >> initial >> score;\n\n    // TODO: declare a char variable called grade.\n\n    // TODO: write an if / else if / else chain that assigns\n    //       'A', 'B', 'C', 'D', or 'F' to grade based on score.\n\n    // TODO: print the result in the format \"<initial>: <grade>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    char initial {};\n    int score {};\n\n    std::cin >> initial >> score;\n\n    char grade {};\n\n    if (score >= 90)\n    {\n        grade = 'A';\n    }\n    else if (score >= 80)\n    {\n        grade = 'B';\n    }\n    else if (score >= 70)\n    {\n        grade = 'C';\n    }\n    else if (score >= 60)\n    {\n        grade = 'D';\n    }\n    else\n    {\n        grade = 'F';\n    }\n\n    std::cout << initial << \": \" << grade << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "B grade sample",
+          "stdin": "A\n85\n",
+          "expected_stdout": "A: B\n",
+          "is_sample": true
+        },
+        {
+          "label": "exact boundary 90 gives A",
+          "stdin": "B\n90\n",
+          "expected_stdout": "B: A\n",
+          "is_sample": false
+        },
+        {
+          "label": "score below 60 gives F",
+          "stdin": "C\n0\n",
+          "expected_stdout": "C: F\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

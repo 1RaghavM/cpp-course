@@ -1,0 +1,31 @@
+{
+  "lesson": "7.4",
+  "exercise_index": 1,
+  "what_changed": "Replaced for loop with fixed 5 calls to classify from main. Demonstrates global variable mutation via function without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Count Positives and Negatives Using Global Counters",
+    "prompt_md": "## Goal\nComplete the program so that two global counters track how many positive and negative integers are found among exactly 5 input values, using a `classify(int value)` function that updates the globals directly.\n\n## Input\n- Lines 1-5: one integer per line (each value in the range -1000 to 1000; zero may appear).\n\n## Output\nPrint exactly two lines in this order:\n- `Positives: A` where A is the count of values strictly greater than zero.\n- `Negatives: B` where B is the count of values strictly less than zero.\n- Zeros are ignored -- they do not affect either counter.\n\n## Requirements\n1. Declare exactly two global `int` variables: `g_positives` and `g_negatives`, both initialized to `0` at file scope.\n2. Implement `void classify(int value)`: if `value > 0` increment `g_positives`; if `value < 0` increment `g_negatives`; do nothing for zero. The function must update the globals directly.\n3. `main` must read 5 values and call `classify` exactly once per input value.\n4. After all classifications, `main` prints the two output lines in the order shown above.\n5. The scope of every counter update must be inside `classify` -- `main` must not modify `g_positives` or `g_negatives` itself.\n6. Edge cases covered by hidden tests: all zeros (both counts are 0), single positive among negatives and zeros.",
+    "starter_code": "#include <iostream>\n\n// TODO: declare global variables g_positives and g_negatives (int, initialized to 0)\n\n// TODO: implement void classify(int value)\n//       Increment g_positives if value > 0,\n//       increment g_negatives if value < 0,\n//       do nothing if value == 0.\n\nint main() {\n    int v1{}, v2{}, v3{}, v4{}, v5{};\n    std::cin >> v1 >> v2 >> v3 >> v4 >> v5;\n\n    classify(v1);\n    classify(v2);\n    classify(v3);\n    classify(v4);\n    classify(v5);\n\n    // TODO: print \"Positives: \" followed by g_positives\n    // TODO: print \"Negatives: \" followed by g_negatives\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint g_positives { 0 };\nint g_negatives { 0 };\n\nvoid classify(int value) {\n    if (value > 0)\n        ++g_positives;\n    else if (value < 0)\n        ++g_negatives;\n}\n\nint main() {\n    int v1{}, v2{}, v3{}, v4{}, v5{};\n    std::cin >> v1 >> v2 >> v3 >> v4 >> v5;\n\n    classify(v1);\n    classify(v2);\n    classify(v3);\n    classify(v4);\n    classify(v5);\n\n    std::cout << \"Positives: \" << g_positives << '\\n';\n    std::cout << \"Negatives: \" << g_negatives << '\\n';\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed values including zero",
+        "stdin": "3\n-1\n0\n7\n-4\n",
+        "expected_stdout": "Positives: 2\nNegatives: 2\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden -- all zeros",
+        "stdin": "0\n0\n0\n0\n0\n",
+        "expected_stdout": "Positives: 0\nNegatives: 0\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden -- single positive among negatives",
+        "stdin": "-5\n-3\n1\n-8\n-2\n",
+        "expected_stdout": "Positives: 1\nNegatives: 4\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

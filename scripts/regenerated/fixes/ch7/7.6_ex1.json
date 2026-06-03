@@ -1,0 +1,31 @@
+{
+  "lesson": "7.6",
+  "exercise_index": 0,
+  "what_changed": "Replaced switch statement (Ch 8) with if/else-if chain. Removed for loop by using exactly 4 fixed queries that main calls individually. Removed 'switch or' from prompt.",
+  "exercise": {
+    "title": "Classify Linkage of File-Scope Declarations",
+    "prompt_md": "## Goal\nComplete the function `classifyLinkage(char kind)` that returns a string describing the linkage of a file-scope declaration, based on the character code passed in.\n\n## Input\n- Lines 1-4: one character per line, drawn from the set `{'s', 'a', 'c', 'e'}`, where:\n  - `'s'` -- a `static` non-const variable at file scope\n  - `'a'` -- a variable declared inside an anonymous namespace\n  - `'c'` -- a `const` variable at file scope (no `static`, no anonymous namespace)\n  - `'e'` -- a plain non-const, non-static variable at file scope\n\n## Output\n- Print exactly 4 lines.\n- For each query character, print one of the following strings (exact spelling, no extra spaces):\n  - `'s'` -> `internal (static)`\n  - `'a'` -> `internal (anonymous namespace)`\n  - `'c'` -> `internal (const default)`\n  - `'e'` -> `external`\n\n## Requirements\n1. Implement `std::string classifyLinkage(char kind)` using an if/else-if chain. The function must live **inside an anonymous namespace** so it itself has internal linkage.\n2. `main()` reads 4 characters (one per line) and calls `classifyLinkage` for each, printing the result followed by `'\\n'`.\n3. The function must return exactly the strings listed above for the four valid inputs.\n4. Hidden tests cover: all four kinds in one run, and a run where the same kind appears multiple times.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: wrap classifyLinkage inside an anonymous namespace to give it\n//       internal linkage, then implement it using if/else-if.\n//       It should accept a char and return std::string.\n//       Valid inputs and their return values:\n//         's' -> \"internal (static)\"\n//         'a' -> \"internal (anonymous namespace)\"\n//         'c' -> \"internal (const default)\"\n//         'e' -> \"external\"\n\nint main() {\n    char k1{}, k2{}, k3{}, k4{};\n    std::cin >> k1 >> k2 >> k3 >> k4;\n\n    // TODO: call classifyLinkage for each and print the result\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nnamespace {\n    std::string classifyLinkage(char kind) {\n        if (kind == 's') return \"internal (static)\";\n        else if (kind == 'a') return \"internal (anonymous namespace)\";\n        else if (kind == 'c') return \"internal (const default)\";\n        else if (kind == 'e') return \"external\";\n        else return \"unknown\";\n    }\n}\n\nint main() {\n    char k1{}, k2{}, k3{}, k4{};\n    std::cin >> k1 >> k2 >> k3 >> k4;\n\n    std::cout << classifyLinkage(k1) << '\\n';\n    std::cout << classifyLinkage(k2) << '\\n';\n    std::cout << classifyLinkage(k3) << '\\n';\n    std::cout << classifyLinkage(k4) << '\\n';\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "all four kinds",
+        "stdin": "s\na\nc\ne\n",
+        "expected_stdout": "internal (static)\ninternal (anonymous namespace)\ninternal (const default)\nexternal\n",
+        "is_sample": true
+      },
+      {
+        "label": "hidden: repeated same kind",
+        "stdin": "a\na\ns\ne\n",
+        "expected_stdout": "internal (anonymous namespace)\ninternal (anonymous namespace)\ninternal (static)\nexternal\n",
+        "is_sample": false
+      },
+      {
+        "label": "hidden: const and external focus",
+        "stdin": "c\ne\nc\ne\n",
+        "expected_stdout": "internal (const default)\nexternal\ninternal (const default)\nexternal\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

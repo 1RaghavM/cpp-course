@@ -1,0 +1,60 @@
+{
+  "number": "4.2",
+  "title": "Void",
+  "sort_order": 51,
+  "summary_md": "# Void\n\nThe `void` type in C++ is a special fundamental type that represents the absence of a value. Unlike Python, where functions implicitly return `None`, C++ requires explicit type declarations. Understanding `void` helps you write clearer function signatures and manage type safety effectively.\n\n## The Core Concept\n\n`void` means \"no type.\" It's used in three main contexts:\n\n**Function return types**: A function returning `void` produces no value.\n\n```cpp\nvoid printMessage(int code) {\n    std::cout << \"Message code: \" << code << '\\n';\n}\n```\n\nThis is fundamentally different from Python, where all functions return a value (even if it's `None`). In C++, calling a `void` function and trying to use its return value is a compile error.\n\n**Generic pointers**: `void*` is a pointer to any type of data. It's a generic pointer type that loses type information, making it dangerous for type safety. Modern C++ rarely uses it directly; prefer templates instead.\n\n**Function parameters**: `void` in the parameter list explicitly means \"no parameters.\" In C++, writing `void functionName()` and `void functionName(void)` are equivalent, though the first style is idiomatic.\n\n## Practical Implications\n\nSince C++ enforces type safety, `void` functions don't return anything — they operate for side effects (printing, modifying state, etc.). If you need a function to sometimes return a value and sometimes not, later chapters cover types designed for that purpose.\n\nCompare this to Python's flexible typing: a Python function can return different types or `None` depending on logic. C++ requires you to commit to the return type upfront, which catches errors at compile time.\n\n`void*` exists for low-level programming and C compatibility. It requires explicit casting to become a typed pointer again. Modern C++ code avoids this when possible.\n\n## Key Takeaway\n\n`void` is a declaration of intent: \"this doesn't apply here.\" It makes C++'s type system more explicit and catches errors earlier than Python's dynamic typing. Use it confidently in function signatures — it's not a limitation, it's a feature.",
+  "exercises": [
+    {
+      "title": "Void vs Value-Returning Functions",
+      "prompt_md": "## Void vs Value-Returning Functions\n\nWrite a program that demonstrates the difference between `void` functions and value-returning functions.\n\nYou need to implement:\n1. A `void` function named `printLabel` that takes an `int` parameter and prints it in the format: `Info: <value>`\n2. A function named `readInt` that takes no parameters, reads an integer from `std::cin`, and returns it\n3. A `main()` function that:\n   - Calls `readInt()` three times, storing each result in a separate variable (`a`, `b`, `c`)\n   - Calls `printLabel` for each of the three values, in the order they were read\n\n**Important**: The `void` function `printLabel` has no return value. Trying to use its return value would cause a compile error.\n\n### Example\n**Input:**\n```\n42\n100\n7\n```\n\n**Output:**\n```\nInfo: 42\nInfo: 100\nInfo: 7\n```\n\n### Notes\n- Exactly three integers are read. No loops needed.\n- Use `int` for all integer variables.\n",
+      "starter_code": "#include <iostream>\n\n// TODO: Implement printLabel() - a void function that takes an int\n//       and prints \"Info: \" followed by the value\nvoid printLabel(int value) {\n    // TODO: Print the value in the required format\n}\n\n// TODO: Implement readInt() - a function that reads and returns an integer\nint readInt() {\n    // TODO: Read an integer from cin and return it\n}\n\nint main() {\n    // TODO: Call readInt() three times, storing each result\n    //       Then call printLabel() for each value\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nvoid printLabel(int value) {\n    std::cout << \"Info: \" << value << '\\n';\n}\n\nint readInt() {\n    int x{};\n    std::cin >> x;\n    return x;\n}\n\nint main() {\n    int a = readInt();\n    int b = readInt();\n    int c = readInt();\n\n    printLabel(a);\n    printLabel(b);\n    printLabel(c);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: three values",
+          "stdin": "42\n100\n7\n",
+          "expected_stdout": "Info: 42\nInfo: 100\nInfo: 7\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: negative and zero",
+          "stdin": "-5\n0\n999\n",
+          "expected_stdout": "Info: -5\nInfo: 0\nInfo: 999\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: all same value",
+          "stdin": "1\n1\n1\n",
+          "expected_stdout": "Info: 1\nInfo: 1\nInfo: 1\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Void Function with Side Effects",
+      "prompt_md": "## Void Function with Side Effects\n\nWrite a program that uses `void` functions to perform calculations and display results.\n\nYou need to implement:\n1. A `void` function named `printSquare` that takes an `int` parameter and prints the square of the number in the format: `Square of <n>: <result>`\n2. A `void` function named `separator` that takes no parameters and prints a line of dashes: `----------`\n3. A `main()` function that:\n   - Reads two integers from standard input\n   - For each integer: calls `separator()`, then calls `printSquare()` with that integer\n   - After both integers are processed, calls `separator()` one final time\n\nNotice that both `printSquare` and `separator` are `void` — they perform side effects (printing) and return nothing.\n\n### Example\n**Input:**\n```\n5\n-3\n```\n\n**Output:**\n```\n----------\nSquare of 5: 25\n----------\nSquare of -3: 9\n----------\n```\n\n### Notes\n- Exactly two integers are read. No loops needed.\n- The square of a negative number is positive (e.g., (-3) * (-3) = 9).\n",
+      "starter_code": "#include <iostream>\n\n// TODO: Implement separator() - a void function with no parameters\n//       that prints \"----------\"\nvoid separator() {\n    // TODO\n}\n\n// TODO: Implement printSquare() - a void function that takes an int\n//       and prints \"Square of <num>: <square>\"\nvoid printSquare(int num) {\n    // TODO\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n\n    // TODO: For each value, call separator() then printSquare()\n    //       After both, call separator() one final time\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nvoid separator() {\n    std::cout << \"----------\\n\";\n}\n\nvoid printSquare(int num) {\n    std::cout << \"Square of \" << num << \": \" << num * num << '\\n';\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n\n    separator();\n    printSquare(x);\n    separator();\n    printSquare(y);\n    separator();\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: positive and negative",
+          "stdin": "5\n-3\n",
+          "expected_stdout": "----------\nSquare of 5: 25\n----------\nSquare of -3: 9\n----------\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: zero and positive",
+          "stdin": "0\n10\n",
+          "expected_stdout": "----------\nSquare of 0: 0\n----------\nSquare of 10: 100\n----------\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: both negative",
+          "stdin": "-7\n-4\n",
+          "expected_stdout": "----------\nSquare of -7: 49\n----------\nSquare of -4: 16\n----------\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Practice initialization forms",
+    "prompt_md": "## Goal\n\nDeclare several integer variables using different initialization styles, then return a computed result as the program's exit code.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code carries the result.\n\n## Requirements\n\n1. Declare an integer variable `a` using **copy initialization** with the value `10`.\n2. Declare an integer variable `b` using **direct initialization** with the value `20`.\n3. Declare an integer variable `c` using **brace initialization** with the value `15`.\n4. Declare an integer variable `result` using **brace initialization** and initialize it to `0`.\n5. Assign `a + b - c` to `result`.\n6. Return `result` from `main`.\n\nThe program's exit code should be `15` (since 10 + 20 - 15 = 15).\n\nDo **not** use `#include`, `cout`, `cin`, or any library features.",
+    "starter_code": "int main()\n{\n    // TODO: Declare 'a' using copy initialization with value 10\n\n    // TODO: Declare 'b' using direct initialization with value 20\n\n    // TODO: Declare 'c' using brace initialization with value 15\n\n    // TODO: Declare 'result' using brace initialization, initialized to 0\n\n    // TODO: Assign a + b - c to result\n\n    // TODO: Return result\n    return 0;\n}\n",
+    "solution_code": "int main()\n{\n    int a = 10;   // copy initialization\n    int b(20);    // direct initialization\n    int c{15};    // brace initialization\n    int result{0};\n\n    result = a + b - c;\n\n    return result;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Exit code is 15 (10 + 20 - 15)",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "No output produced",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Compiles cleanly with no warnings",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      }
+    ]
+  },
+  {
+    "title": "Swap two variables and return the difference",
+    "prompt_md": "## Goal\n\nDeclare two integer variables, swap their values using a temporary variable, then return the difference as the program's exit code.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code carries the result.\n\n## Requirements\n\n1. Declare an integer variable `x` using brace initialization with the value `50`.\n2. Declare an integer variable `y` using brace initialization with the value `30`.\n3. Swap the values of `x` and `y` using a temporary variable `temp`. After the swap, `x` should hold `30` and `y` should hold `50`.\n4. Return `y - x` from `main`.\n\nThe program's exit code should be `20` (since after the swap, y is 50 and x is 30, so 50 - 30 = 20).\n\nDo **not** use `#include`, `cout`, `cin`, or any library features — they have not been taught yet.",
+    "starter_code": "int main()\n{\n    int x{50};\n    int y{30};\n\n    // TODO: Declare a temporary variable 'temp' and use it to swap x and y\n\n    // TODO: Return y - x\n    return 0;\n}\n",
+    "solution_code": "int main()\n{\n    int x{50};\n    int y{30};\n\n    int temp{x};\n    x = y;\n    y = temp;\n\n    return y - x;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Exit code is 20 (50 - 30 after swap)",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "No output produced",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Compiles cleanly with no warnings",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": ""
+      }
+    ]
+  }
+]

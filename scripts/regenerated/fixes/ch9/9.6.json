@@ -1,0 +1,84 @@
+{
+  "lesson": {
+    "number": "9.6",
+    "title": "Assert and static_assert",
+    "sort_order": 122,
+    "summary_md": "## Assert and static_assert\n\nC++ provides two assertion mechanisms that catch bugs at different points in time: `assert` for runtime checks and `static_assert` for compile-time checks.\n\n### Runtime assertions with `assert`\n\n`assert` lives in `<cassert>` and takes a boolean expression. If the expression is false at runtime, the program immediately aborts with a diagnostic message showing the failed expression, file, and line number. This makes it useful for catching precondition violations during development — for example, verifying that a divisor is non-zero before dividing, or that an index is within bounds.\n\nCritically, `assert` is disabled in release builds when `NDEBUG` is defined (typically set by your build system in release mode). This means assertions have zero cost in shipped code, but it also means **you must never put side effects inside an assert** — the expression may not execute at all.\n\n```cpp\n#include <cassert>\n#include <iostream>\n\ndouble divide(double numerator, double denominator)\n{\n    assert(denominator != 0.0 && \"denominator must not be zero\");\n    return numerator / denominator;\n}\n\nint main()\n{\n    double result = divide(10.0, 2.0);\n    std::cout << \"Result: \" << result << '\\n';\n    // divide(10.0, 0.0); // triggers assert in debug builds\n}\n```\n\nThe string literal trick (`&& \"message\"`) is a common idiom: a non-null string literal is always truthy, so it doesn't affect the condition but does appear in the abort message.\n\nAssertions differ from the error-handling strategies covered in **Detecting and handling errors** — they are for catching *programmer mistakes*, not *recoverable runtime conditions* like bad user input. For handling invalid input gracefully, see **std::cin and handling invalid input**.\n\n### Compile-time assertions with `static_assert`\n\n`static_assert` evaluates a constant expression at compile time and produces a compiler error if it is false. It accepts an optional string literal as a human-readable message.\n\n```cpp\nstatic_assert(sizeof(int) == 4, \"This code assumes 32-bit int\");\n```\n\n`static_assert` is especially powerful for verifying platform assumptions and constant expressions. Unlike `assert`, it is never disabled; it either passes or prevents compilation entirely.\n\n### When to use which\n\n- Use `static_assert` whenever the condition is knowable at compile time.\n- Use `assert` to document and enforce invariants and preconditions during development.\n- Use proper error handling (exceptions, return codes) for conditions that can legitimately occur in production.",
+    "exercises": [
+      {
+        "title": "Assert Array Index Access",
+        "prompt_md": "## Goal\nComplete the function `safeGet` that retrieves an element from a fixed-size integer array, using `assert` to enforce that the index is within bounds before accessing the array.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10), the number of elements in the array.\n- Line 2: exactly `N` space-separated integers, the array values.\n- Line 3: integer `idx`, the index to look up (0-based). The hidden tests that are expected to succeed will always provide a valid index (0 ≤ idx < N).\n\n## Output\nPrint exactly one line in the format: `Element at index <idx>: <value>` where `<idx>` and `<value>` are the provided index and the corresponding element.\n\nExample: `Element at index 2: 7`\n\n## Requirements\n1. Implement `int safeGet(const int* arr, int size, int idx)` which asserts `idx >= 0` and `idx < size` before returning `arr[idx]`.\n2. Use `assert` from `<cassert>` (not a manual `if` check) for both boundary conditions.\n3. The assert message for the upper-bound check must use the string-literal idiom so the text `\"index must be less than size\"` appears in the assert expression.\n4. The assert message for the lower-bound check must use the string-literal idiom so the text `\"index must be non-negative\"` appears in the assert expression.\n5. `main` reads N, the array values, and `idx`, then calls `safeGet` and prints the result.\n6. Edge cases covered by hidden tests: `idx = 0` (first element), `idx = N-1` (last element), N = 1.",
+        "starter_code": "#include <cassert>\n#include <iostream>\n\n// TODO: Implement safeGet.\n// - Assert that idx >= 0 (use the string-literal idiom with message \"index must be non-negative\")\n// - Assert that idx < size (use the string-literal idiom with message \"index must be less than size\")\n// - Return arr[idx]\nint safeGet(const int* arr, int size, int idx)\n{\n    // TODO: add assertions here\n    return arr[idx]; // TODO: this line is fine, just add assertions above\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int idx;\n    std::cin >> idx;\n\n    int value = safeGet(arr, n, idx);\n    std::cout << \"Element at index \" << idx << \": \" << value << '\\n';\n\n    return 0;\n}\n",
+        "solution_code": "#include <cassert>\n#include <iostream>\n\nint safeGet(const int* arr, int size, int idx)\n{\n    assert(idx >= 0 && \"index must be non-negative\");\n    assert(idx < size && \"index must be less than size\");\n    return arr[idx];\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int idx;\n    std::cin >> idx;\n\n    int value = safeGet(arr, n, idx);\n    std::cout << \"Element at index \" << idx << \": \" << value << '\\n';\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "Sample: middle element",
+            "stdin": "5\n3 1 7 4 9\n2",
+            "expected_stdout": "Element at index 2: 7\n",
+            "is_sample": true
+          },
+          {
+            "label": "Hidden: first element (idx = 0)",
+            "stdin": "4\n10 20 30 40\n0",
+            "expected_stdout": "Element at index 0: 10\n",
+            "is_sample": false
+          },
+          {
+            "label": "Hidden: last element and N = 1",
+            "stdin": "1\n42\n0",
+            "expected_stdout": "Element at index 0: 42\n",
+            "is_sample": false
+          }
+        ]
+      },
+      {
+        "title": "Compile-Time Platform Assumptions with static_assert",
+        "prompt_md": "## Goal\nWrite a program that uses `static_assert` to verify compile-time platform assumptions about fundamental type sizes, and a `constexpr` function whose result is validated at compile time.\n\n## Input\n- Line 1: integer `x` (−10,000 ≤ x ≤ 10,000), a runtime value.\n\n## Output\nPrint exactly three lines:\n- Line 1: `int size: S` where S is `sizeof(int)`.\n- Line 2: `max factorial(12) = V` where V is the value of 12! (479001600).\n- Line 3: `Runtime value: x` where x is the value read from stdin.\n\nExample output for x = 5:\n```\nint size: 4\nmax factorial(12) = 479001600\nRuntime value: 5\n```\n\n## Requirements\n1. Write a `constexpr int factorial(int n)` function that computes n! using a loop. Assume n >= 0.\n2. Add `static_assert(sizeof(int) >= 4, \"This program requires at least 32-bit int\");` at namespace scope (outside any function).\n3. Add `static_assert(sizeof(long long) >= 8, \"This program requires at least 64-bit long long\");` at namespace scope.\n4. Inside `main`, add `static_assert(factorial(12) == 479001600, \"factorial(12) must fit in int\");` to verify the constexpr function at compile time.\n5. Inside `main`, add `static_assert(factorial(0) == 1, \"factorial(0) must be 1\");` to verify the base case.\n6. `main` reads `x`, then prints the three output lines using `std::cout`.\n7. Edge cases covered by hidden tests: `x = 0`, `x = -10000`, `x = 10000`.\n\n## Notes\n- Allowed headers: `<cassert>`, `<iostream>`.\n- Do NOT use templates. The `constexpr` function and `static_assert` at namespace/block scope are sufficient.",
+        "starter_code": "#include <cassert>\n#include <iostream>\n\n// TODO: Implement constexpr int factorial(int n).\n// Use a loop to compute n!. Assume n >= 0. factorial(0) = 1.\nconstexpr int factorial(int n)\n{\n    // TODO: implement\n    return 0;\n}\n\n// TODO: Add two static_asserts at namespace scope:\n// 1. sizeof(int) >= 4 with message \"This program requires at least 32-bit int\"\n// 2. sizeof(long long) >= 8 with message \"This program requires at least 64-bit long long\"\n\nint main()\n{\n    // TODO: Add two static_asserts inside main:\n    // 1. factorial(12) == 479001600 with message \"factorial(12) must fit in int\"\n    // 2. factorial(0) == 1 with message \"factorial(0) must be 1\"\n\n    int x;\n    std::cin >> x;\n\n    // TODO: Print the three output lines:\n    // \"int size: <sizeof(int)>\"\n    // \"max factorial(12) = <factorial(12)>\"\n    // \"Runtime value: <x>\"\n\n    return 0;\n}\n",
+        "solution_code": "#include <cassert>\n#include <iostream>\n\nconstexpr int factorial(int n)\n{\n    int result = 1;\n    for (int i = 2; i <= n; ++i)\n        result *= i;\n    return result;\n}\n\nstatic_assert(sizeof(int) >= 4, \"This program requires at least 32-bit int\");\nstatic_assert(sizeof(long long) >= 8, \"This program requires at least 64-bit long long\");\n\nint main()\n{\n    static_assert(factorial(12) == 479001600, \"factorial(12) must fit in int\");\n    static_assert(factorial(0) == 1, \"factorial(0) must be 1\");\n\n    int x;\n    std::cin >> x;\n\n    std::cout << \"int size: \" << sizeof(int) << '\\n';\n    std::cout << \"max factorial(12) = \" << factorial(12) << '\\n';\n    std::cout << \"Runtime value: \" << x << '\\n';\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "Sample: x = 5",
+            "stdin": "5",
+            "expected_stdout": "int size: 4\nmax factorial(12) = 479001600\nRuntime value: 5\n",
+            "is_sample": true
+          },
+          {
+            "label": "Hidden: x = 0",
+            "stdin": "0",
+            "expected_stdout": "int size: 4\nmax factorial(12) = 479001600\nRuntime value: 0\n",
+            "is_sample": false
+          },
+          {
+            "label": "Hidden: x = -10000",
+            "stdin": "-10000",
+            "expected_stdout": "int size: 4\nmax factorial(12) = 479001600\nRuntime value: -10000\n",
+            "is_sample": false
+          }
+        ]
+      }
+    ]
+  },
+  "fixes_applied": [
+    {
+      "id": "C2",
+      "description": "Replaced exercise 9.6.2 (Compile-Time Power Validator using function template<int E>) with a non-template exercise that uses constexpr functions and static_assert at namespace/block scope — no templates required"
+    },
+    {
+      "id": "M5",
+      "description": "Fixed summary code example: replaced 'auto result = divide(10.0, 2.0)' with 'double result = divide(10.0, 2.0)' to avoid forward reference to auto (Ch 10)"
+    },
+    {
+      "id": "m4",
+      "description": "Removed unused <format> and <string_view> includes from summary code example; replaced std::println with std::cout"
+    },
+    {
+      "id": "M5",
+      "description": "Removed mentions of 'templates and type traits' and 'pointer is non-null before dereferencing' from summary text to avoid forward references to Ch 11 and Ch 12"
+    },
+    {
+      "id": "9.6.1",
+      "description": "Exercise 9.6.1 (Assert Array Index Access) kept as-is — the const int* pointer parameter is a minor exposure (m5) where students only add assert lines and do not interact with pointer mechanics directly"
+    }
+  ]
+}

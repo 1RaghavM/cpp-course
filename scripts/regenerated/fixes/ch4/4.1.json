@@ -1,0 +1,60 @@
+{
+  "number": "4.1",
+  "title": "Introduction to fundamental data types",
+  "sort_order": 50,
+  "summary_md": "# Introduction to Fundamental Data Types\n\nC++ is a statically typed language — every variable has a type known at compile time, unlike Python where types are inferred at runtime and can change. You declare a type once and the compiler enforces it throughout.\n\n## The Core Types\n\n| Category | Types |\n|----------|-------|\n| Boolean | `bool` |\n| Character | `char`, `wchar_t`, `char8_t`, `char16_t`, `char32_t` |\n| Integer | `short`, `int`, `long`, `long long` (each optionally `unsigned`) |\n| Floating point | `float`, `double`, `long double` |\n| Null pointer | `std::nullptr_t` |\n\nEach type has a guaranteed minimum size. Use `sizeof(T)` to check the exact size on your platform. For integers where size matters, prefer the fixed-width types from `<cstdint>`: `int32_t`, `uint64_t`, etc.\n\n## Initialization\n\nAlways initialize variables. Uninitialized variables in C++ hold garbage values — a common source of bugs that Python programmers don't encounter.\n\n```cpp\n#include <format>\n#include <print>\n#include <cstdint>\n\nint main() {\n    bool active        = true;\n    char grade         = 'A';\n    int32_t score      = 42;\n    double temperature = 98.6;\n\n    std::println(\"active={}, grade={}, score={}, temp={}\",\n                 active, grade, score, temperature);\n}\n```\n\n## Key Differences from Python\n\n- **Fixed size**: an `int` is typically 32 bits, not arbitrary precision. Overflow wraps around silently for unsigned types and is undefined behavior for signed types.\n- **No automatic promotion**: dividing two integers does integer division. `7 / 2` is `3`, not `3.5`.\n- **`bool` is strict**: in Python, many objects are truthy. In C++, `bool` holds exactly `true` or `false`, though integers implicitly convert (`0` is `false`, anything else is `true`).\n- **`char` is numeric**: it stores a small integer representing a character code, not a string.\n\nC++ also has a feature called type deduction that lets the compiler figure out a variable's type from its initializer — this is covered in a later chapter.",
+  "exercises": [
+    {
+      "title": "Type Inspector",
+      "prompt_md": "## Type Inspector\n\nWrite a program that reads four values from standard input and prints information about each one using C++ fundamental data types.\n\nSpecifically, your program should:\n\n1. Read an integer (store as `int32_t`)\n2. Read a floating-point number (store as `double`)\n3. Read a single character (store as `char`)\n4. Read a boolean integer — `0` for false, any non-zero for `bool`\n\nFor each value, print a labeled line in the following format:\n\n```\nint32: <value>, size=<sizeof bytes>\ndouble: <value>, size=<sizeof bytes>\nchar: <value>, numeric=<char as int>\nbool: <value>\n```\n\n**Notes:**\n- For the `char` line, `numeric=` shows the character's numeric (ASCII) value by casting to `int`.\n- For the `bool` line, print `true` or `false` (C++ `std::println` does this automatically for `bool`).\n- For `double`, print with exactly 1 decimal place using `std::format`.\n- `int32_t` is 4 bytes and `double` is 8 bytes on all modern platforms.\n\n### Example\n\n**Input:**\n```\n42\n3.7\nA\n1\n```\n\n**Output:**\n```\nint32: 42, size=4\ndouble: 3.7, size=8\nchar: A, numeric=65\nbool: true\n```\n",
+      "starter_code": "#include <cstdint>\n#include <format>\n#include <print>\n#include <iostream>\n\nint main() {\n    // TODO: Declare variables of type int32_t, double, char, and bool\n\n    // TODO: Read each value from standard input\n    // Hint: read the bool as an int first, then assign to bool\n\n    // TODO: Print the int32_t line with its sizeof\n\n    // TODO: Print the double line with 1 decimal place and its sizeof\n\n    // TODO: Print the char line showing the character and its numeric (ASCII) value\n\n    // TODO: Print the bool line (std::println prints true/false automatically)\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstdint>\n#include <format>\n#include <print>\n#include <iostream>\n\nint main() {\n    int32_t i;\n    double d;\n    char c;\n    bool b;\n\n    int raw_bool;\n    std::cin >> i >> d >> c >> raw_bool;\n    b = (raw_bool != 0);\n\n    std::println(\"int32: {}, size={}\", i, sizeof(i));\n    std::println(\"double: {}, size={}\", std::format(\"{:.1f}\", d), sizeof(d));\n    std::println(\"char: {}, numeric={}\", c, static_cast<int>(c));\n    std::println(\"bool: {}\", b);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: basic values",
+          "stdin": "42\n3.7\nA\n1\n",
+          "expected_stdout": "int32: 42, size=4\ndouble: 3.7, size=8\nchar: A, numeric=65\nbool: true\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: zero bool and lowercase char",
+          "stdin": "-10\n0.5\nz\n0\n",
+          "expected_stdout": "int32: -10, size=4\ndouble: 0.5, size=8\nchar: z, numeric=122\nbool: false\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: large int and non-zero bool",
+          "stdin": "32767\n99.0\nM\n7\n",
+          "expected_stdout": "int32: 32767, size=4\ndouble: 99.0, size=8\nchar: M, numeric=77\nbool: true\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Integer Division Trap",
+      "prompt_md": "## Integer Division Trap\n\nOne of the most common surprises for programmers coming from Python is that dividing two integers in C++ performs **integer division** — the fractional part is discarded.\n\nWrite a program that reads two positive integers `a` and `b`, then prints three lines:\n\n1. The result of integer division: `a / b` stored in an `int`\n2. The remainder: `a % b` stored in an `int`\n3. The true decimal result: recompute using `double` arithmetic, printed with exactly 2 decimal places\n\n**Output format:**\n```\ninteger division: <result>\nremainder: <result>\ntrue result: <result>\n```\n\nDo **not** cast inside the division for line 3 — instead, store `a` and `b` in `double` variables first, then divide.\n\n### Example\n\n**Input:**\n```\n7 2\n```\n\n**Output:**\n```\ninteger division: 3\nremainder: 1\ntrue result: 3.50\n```\n\n**Constraints:**\n- `1 <= b <= a <= 10000`\n",
+      "starter_code": "#include <print>\n#include <format>\n#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: Compute and print integer division (a / b)\n\n    // TODO: Compute and print the remainder (a % b)\n\n    // TODO: Store a and b as doubles, divide, and print with 2 decimal places\n\n    return 0;\n}\n",
+      "solution_code": "#include <print>\n#include <format>\n#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int quotient  = a / b;\n    int remainder = a % b;\n\n    double da = a;\n    double db = b;\n    double true_result = da / db;\n\n    std::println(\"integer division: {}\", quotient);\n    std::println(\"remainder: {}\", remainder);\n    std::println(\"true result: {}\", std::format(\"{:.2f}\", true_result));\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: 7 divided by 2",
+          "stdin": "7 2\n",
+          "expected_stdout": "integer division: 3\nremainder: 1\ntrue result: 3.50\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: exact division",
+          "stdin": "100 4\n",
+          "expected_stdout": "integer division: 25\nremainder: 0\ntrue result: 25.00\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: large uneven division",
+          "stdin": "999 7\n",
+          "expected_stdout": "integer division: 142\nremainder: 5\ntrue result: 142.71\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

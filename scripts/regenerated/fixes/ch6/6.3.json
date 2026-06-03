@@ -1,0 +1,62 @@
+{
+  "lesson": "6.3",
+  "title": "Remainder and Exponentiation",
+  "fixes": ["MINOR: summary uses std::println/<print>", "INFO: add exercises for std::pow coverage"],
+  "summary_md": "## Remainder and Exponentiation\n\n### The `%` Operator\n\nThe `%` operator returns the **remainder** after integer division. It only works with integer types — applying it to `float` or `double` is a compile error.\n\n```cpp\n#include <iostream>\n#include <cmath>\n\nint main() {\n    int a = 17, b = 5;\n    std::cout << \"17 / 5  = \" << a / b   << '\\n';   // 3\n    std::cout << \"17 % 5  = \" << a % b   << '\\n';   // 2\n    std::cout << \"-17 % 5 = \" << -a % b  << '\\n';   // -2\n    std::cout << \"std::pow(2, 10) = \" << std::pow(2, 10) << '\\n'; // 1024\n}\n```\n\n#### Sign of the remainder\n\nIn C++11 and later, the sign of `a % b` always matches the sign of the **left operand** `a`. So `-17 % 5` is `-2`, not `3`. This differs from Python, where the result matches the sign of the *right* operand. Keep this in mind when using `%` to wrap values around a range — a negative input can produce a negative remainder, which may need adjustment.\n\nFor floating-point remainders, use `std::fmod` from `<cmath>`.\n\n### Exponentiation: No `**` Operator\n\nUnlike Python, C++ has **no `**` operator**. For powers, you have two main options:\n\n- `std::pow(base, exp)` from `<cmath>` — works on floating-point values, returns `double`. Fast and convenient, but the floating-point result can surprise you: `std::pow(2, 10)` may return `1023.9999...` in edge cases, so avoid it when you need an exact integer result.\n- Manual multiplication for small integer exponentiation when exactness matters (e.g., `x * x` instead of `std::pow(x, 2)`).\n\n### Precedence Reminder\n\nAs covered in **Operator Precedence and Associativity**, `%` has the same precedence as `*` and `/` — all three bind more tightly than `+` and `-`. So `4 + 10 % 3` evaluates as `4 + (10 % 3)` = `4 + 1` = `5`.\n\n### Quick Reference\n\n- `%` — integer remainder only; sign follows the left operand\n- `std::fmod(a, b)` — floating-point remainder\n- `std::pow(base, exp)` — floating-point exponentiation; returns `double`\n- No `**` operator exists in C++",
+  "exercises": [
+    {
+      "title": "Integer Exponentiation with std::pow",
+      "prompt_md": "## Goal\nRead a base and an exponent, compute the power using `std::pow`, and demonstrate the need to cast the result back to `int` for exact integer arithmetic.\n\n## Input\n- Line 1: two space-separated integers `base` and `exp` (0 <= base <= 10, 0 <= exp <= 9). The result is guaranteed to fit in an `int`.\n\n## Output\nPrint exactly three lines:\n- `double_result: <value>` — the raw `double` result from `std::pow(base, exp)`\n- `int_result: <value>` — the result cast to `int` using `static_cast<int>(std::pow(base, exp) + 0.5)` (rounded to nearest to avoid truncation errors)\n- `manual_check: <value>` — for verification, compute `base * base` when `exp == 2`, `base * base * base` when `exp == 3`, or just the `int_result` otherwise. This line always prints the `int_result` value (the manual check is for your understanding).\n\n## Requirements\n1. Use `std::pow` from `<cmath>` for the computation.\n2. Print `double_result` using `std::fixed` and `std::setprecision(1)` to show one decimal place.\n3. For `int_result`, add `0.5` before casting to `int` to round correctly: `static_cast<int>(std::pow(base, exp) + 0.5)`.\n4. `manual_check` must always equal `int_result` — just print the same `int_result` value.\n5. Hidden tests cover: `exp = 0` (any base to the power 0 is 1), `base = 0` with `exp > 0` (result is 0), and `base = 2, exp = 9` (512).\n\n## Notes\n- Use `<iostream>`, `<iomanip>`, and `<cmath>`.",
+      "starter_code": "#include <cmath>\n#include <iomanip>\n#include <iostream>\n\nint main() {\n    int base, exp;\n    std::cin >> base >> exp;\n\n    // TODO: compute the power using std::pow\n    double double_result = 0.0; // TODO\n\n    // TODO: cast to int with rounding: static_cast<int>(std::pow(base, exp) + 0.5)\n    int int_result = 0; // TODO\n\n    std::cout << \"double_result: \"\n              << std::fixed << std::setprecision(1)\n              << double_result << '\\n';\n    std::cout << \"int_result: \" << int_result << '\\n';\n    std::cout << \"manual_check: \" << int_result << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <cmath>\n#include <iomanip>\n#include <iostream>\n\nint main() {\n    int base, exp;\n    std::cin >> base >> exp;\n\n    double double_result = std::pow(base, exp);\n    int int_result = static_cast<int>(std::pow(base, exp) + 0.5);\n\n    std::cout << \"double_result: \"\n              << std::fixed << std::setprecision(1)\n              << double_result << '\\n';\n    std::cout << \"int_result: \" << int_result << '\\n';\n    std::cout << \"manual_check: \" << int_result << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — 3 to the power of 4",
+          "stdin": "3 4",
+          "expected_stdout": "double_result: 81.0\nint_result: 81\nmanual_check: 81\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — any base to the power 0",
+          "stdin": "7 0",
+          "expected_stdout": "double_result: 1.0\nint_result: 1\nmanual_check: 1\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — 2 to the power 9",
+          "stdin": "2 9",
+          "expected_stdout": "double_result: 512.0\nint_result: 512\nmanual_check: 512\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Remainder Chain and Sign Behavior",
+      "prompt_md": "## Goal\nRead three integers and demonstrate how the `%` operator behaves with positive and negative dividends, reinforcing that in C++ the sign of the remainder follows the left operand.\n\n## Input\n- Line 1: three space-separated integers `a`, `b`, and `c` where `b != 0` and `c != 0`. Each value is in the range -100 to 100.\n\n## Output\nPrint exactly four lines:\n- `a % b: <value>` — remainder of `a` divided by `b`\n- `a % c: <value>` — remainder of `a` divided by `c`\n- `sign_ab: <positive|negative|zero>` — sign of `a % b`\n- `sign_ac: <positive|negative|zero>` — sign of `a % c`\n\n## Requirements\n1. Compute both remainders using the `%` operator on `int` values.\n2. Determine the sign of each remainder: print `positive` if the remainder > 0, `negative` if < 0, `zero` if == 0.\n3. Use `if`/`else if`/`else` to classify the sign.\n4. Hidden tests cover: negative dividend with positive divisor, positive dividend with negative divisor, and a case where the remainder is exactly zero.\n\n## Notes\n- Use only `<iostream>`.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n\n    // TODO: compute a % b and a % c\n    int rem_ab = 0; // TODO\n    int rem_ac = 0; // TODO\n\n    std::cout << \"a % b: \" << rem_ab << '\\n';\n    std::cout << \"a % c: \" << rem_ac << '\\n';\n\n    // TODO: print sign_ab based on rem_ab\n    // TODO: print sign_ac based on rem_ac\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n\n    int rem_ab = a % b;\n    int rem_ac = a % c;\n\n    std::cout << \"a % b: \" << rem_ab << '\\n';\n    std::cout << \"a % c: \" << rem_ac << '\\n';\n\n    if (rem_ab > 0)\n        std::cout << \"sign_ab: positive\\n\";\n    else if (rem_ab < 0)\n        std::cout << \"sign_ab: negative\\n\";\n    else\n        std::cout << \"sign_ab: zero\\n\";\n\n    if (rem_ac > 0)\n        std::cout << \"sign_ac: positive\\n\";\n    else if (rem_ac < 0)\n        std::cout << \"sign_ac: negative\\n\";\n    else\n        std::cout << \"sign_ac: zero\\n\";\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "sample — positive dividend",
+          "stdin": "17 5 3",
+          "expected_stdout": "a % b: 2\na % c: 2\nsign_ab: positive\nsign_ac: positive\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — negative dividend, positive divisors",
+          "stdin": "-17 5 3",
+          "expected_stdout": "a % b: -2\na % c: -2\nsign_ab: negative\nsign_ac: negative\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — exact division (remainder zero)",
+          "stdin": "12 4 6",
+          "expected_stdout": "a % b: 0\na % c: 0\nsign_ab: zero\nsign_ac: zero\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

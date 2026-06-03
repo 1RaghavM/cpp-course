@@ -1,0 +1,48 @@
+{
+  "number": "4.6",
+  "title": "Fixed-width integers and size_t",
+  "sort_order": 55,
+  "summary_md": "## Fixed-Width Integers and `size_t`\n\nStandard `int` is not guaranteed to be any particular size — it's \"at least 16 bits\" and typically 32 bits, but that's platform-dependent. When you need exact bit widths, use the types from `<cstdint>`.\n\n### Fixed-Width Integer Types\n\n| Type | Width | Signed? |\n|------|-------|---------|\n| `int8_t` | 8 bits | Yes |\n| `uint8_t` | 8 bits | No |\n| `int16_t` | 16 bits | Yes |\n| `uint16_t` | 16 bits | No |\n| `int32_t` | 32 bits | Yes |\n| `uint32_t` | 32 bits | No |\n| `int64_t` | 64 bits | Yes |\n| `uint64_t` | 64 bits | No |\n\nThese are guaranteed to be exactly the advertised size, or the program won't compile on platforms that can't provide them. For most desktop and server targets, all eight types are available.\n\nTwo useful companions: `int_fast32_t` and `int_least32_t`. The *fast* variant picks the quickest type that is at least 32 bits; the *least* variant picks the smallest type that is at least 32 bits. These exist when portability matters more than a fixed size, but in practice fixed-width types are preferred for clarity.\n\n### `size_t`\n\n`size_t` (from `<cstddef>`) is the type returned by `sizeof` — as covered in *Object sizes and the sizeof operator* — and by anything that measures memory or counts elements: array lengths, string lengths, container sizes. It is unsigned and guaranteed to be wide enough to represent the size of the largest possible object on the platform (32 bits on 32-bit systems, 64 bits on 64-bit systems).\n\n```cpp\n#include <cstdint>\n#include <cstddef>\n#include <print>\n\nint main() {\n    std::println(\"sizeof(int8_t)  = {}\", sizeof(int8_t));\n    std::println(\"sizeof(int16_t) = {}\", sizeof(int16_t));\n    std::println(\"sizeof(int32_t) = {}\", sizeof(int32_t));\n    std::println(\"sizeof(int64_t) = {}\", sizeof(int64_t));\n    std::println(\"sizeof(size_t)  = {}\", sizeof(std::size_t));\n}\n```\n\nNotice that `sizeof` returns a `size_t` value — comparing a signed integer to a `size_t` triggers a compiler warning, a hint that mixing signed and unsigned is risky, as discussed in *Unsigned integers, and why to avoid them*.\n\n### When to Use What\n\n- Prefer `int` for general arithmetic where exact width doesn't matter.\n- Use fixed-width types when bit layout is meaningful (file formats, network packets, hardware registers).\n- Use `size_t` for sizes, counts, and indices into containers.\n- Avoid `uint8_t` as a character substitute — it may be a `typedef` for `unsigned char`, which prints as a character rather than a number.",
+  "exercises": [
+    {
+      "title": "Fixed-Width Size Comparison",
+      "prompt_md": "## Fixed-Width Size Comparison\n\nWrite a program that demonstrates the sizes of fixed-width integer types from `<cstdint>` and compares them to the standard types.\n\nThe program takes no input. Print exactly eight lines showing pairs of types and their sizes:\n\n```\nint8_t:   <N> byte(s)  |  char:      <N> byte(s)\nint16_t:  <N> byte(s)  |  short:     <N> byte(s)\nint32_t:  <N> byte(s)  |  int:       <N> byte(s)\nint64_t:  <N> byte(s)  |  long long: <N> byte(s)\nuint8_t:  <N> byte(s)\nuint16_t: <N> byte(s)\nuint32_t: <N> byte(s)\nuint64_t: <N> byte(s)\n```\n\nThen print one final line:\n```\nsize_t: <N> byte(s)\n```\n\n### Notes\n- Use `sizeof` on each type. Do **not** hardcode values.\n- Include `<cstdint>` for the fixed-width types and `<cstddef>` for `size_t`.\n- The spacing in the output must match exactly.\n\n### Example (typical 64-bit system)\n\n```\nint8_t:   1 byte(s)  |  char:      1 byte(s)\nint16_t:  2 byte(s)  |  short:     2 byte(s)\nint32_t:  4 byte(s)  |  int:       4 byte(s)\nint64_t:  8 byte(s)  |  long long: 8 byte(s)\nuint8_t:  1 byte(s)\nuint16_t: 2 byte(s)\nuint32_t: 4 byte(s)\nuint64_t: 8 byte(s)\nsize_t: 8 byte(s)\n```\n",
+      "starter_code": "#include <cstdint>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    // TODO: Print the comparison lines for signed fixed-width vs standard types\n    // TODO: Print the unsigned fixed-width type sizes\n    // TODO: Print the size_t size\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstdint>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::cout << \"int8_t:   \" << sizeof(int8_t)   << \" byte(s)  |  char:      \" << sizeof(char)      << \" byte(s)\\n\";\n    std::cout << \"int16_t:  \" << sizeof(int16_t)  << \" byte(s)  |  short:     \" << sizeof(short)     << \" byte(s)\\n\";\n    std::cout << \"int32_t:  \" << sizeof(int32_t)  << \" byte(s)  |  int:       \" << sizeof(int)       << \" byte(s)\\n\";\n    std::cout << \"int64_t:  \" << sizeof(int64_t)  << \" byte(s)  |  long long: \" << sizeof(long long) << \" byte(s)\\n\";\n    std::cout << \"uint8_t:  \" << sizeof(uint8_t)  << \" byte(s)\\n\";\n    std::cout << \"uint16_t: \" << sizeof(uint16_t) << \" byte(s)\\n\";\n    std::cout << \"uint32_t: \" << sizeof(uint32_t) << \" byte(s)\\n\";\n    std::cout << \"uint64_t: \" << sizeof(uint64_t) << \" byte(s)\\n\";\n    std::cout << \"size_t: \"   << sizeof(std::size_t) << \" byte(s)\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Default platform output",
+          "stdin": "",
+          "expected_stdout": "int8_t:   1 byte(s)  |  char:      1 byte(s)\nint16_t:  2 byte(s)  |  short:     2 byte(s)\nint32_t:  4 byte(s)  |  int:       4 byte(s)\nint64_t:  8 byte(s)  |  long long: 8 byte(s)\nuint8_t:  1 byte(s)\nuint16_t: 2 byte(s)\nuint32_t: 4 byte(s)\nuint64_t: 8 byte(s)\nsize_t: 8 byte(s)\n",
+          "is_sample": true
+        }
+      ]
+    },
+    {
+      "title": "Unsigned Overflow Detector",
+      "prompt_md": "## Unsigned Overflow Detector\n\nFixed-width unsigned integers wrap around (modulo arithmetic) when they overflow. Your task is to explore this behaviour for `uint8_t` and `uint16_t`.\n\nGiven two non-negative integers `a` and `b` (each fitting in a 32-bit signed integer), compute:\n\n1. Their sum stored in a `uint8_t` — print the wrapped result as an **integer** (not a character).\n2. Their sum stored in a `uint16_t` — print the wrapped result.\n3. Their sum stored in a `uint32_t` — print the exact result.\n4. Whether overflow occurred in each of the narrower types: print `true` if the `uint8_t` result differs from the `uint32_t` result, otherwise `false`. Do the same for `uint16_t`.\n\n### Output format\n```\nuint8_t  result: <value>\nuint16_t result: <value>\nuint32_t result: <value>\nuint8_t  overflow: <true|false>\nuint16_t overflow: <true|false>\n```\n\n### Example\n**Input:**\n```\n200 100\n```\n**Output:**\n```\nuint8_t  result: 44\nuint16_t result: 300\nuint32_t result: 300\nuint8_t  overflow: true\nuint16_t overflow: false\n```\n\n### Notes\n- Cast the sum explicitly to each unsigned type before printing, e.g. `static_cast<uint8_t>(a + b)`.\n- Print `uint8_t` values as integers — to avoid the character-printing pitfall, cast to `uint32_t` when passing to `std::cout`.\n- Use `std::boolalpha` to print `true`/`false` for the overflow detection.\n- The overflow check is simply comparing whether the narrow result equals the `uint32_t` result.\n",
+      "starter_code": "#include <cstdint>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    int32_t a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: compute the sum cast to uint8_t, uint16_t, and uint32_t\n\n    // TODO: detect overflow by comparing narrow results to the uint32_t result\n    //       Store each comparison in a bool variable\n\n    // TODO: print the five required lines\n    // Use std::boolalpha for the overflow lines\n    // When printing a uint8_t, cast it to uint32_t first\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstdint>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    int32_t a{}, b{};\n    std::cin >> a >> b;\n\n    uint8_t  r8  = static_cast<uint8_t> (a + b);\n    uint16_t r16 = static_cast<uint16_t>(a + b);\n    uint32_t r32 = static_cast<uint32_t>(a + b);\n\n    bool overflow8  { static_cast<uint32_t>(r8)  != r32 };\n    bool overflow16 { static_cast<uint32_t>(r16) != r32 };\n\n    std::cout << \"uint8_t  result: \" << static_cast<uint32_t>(r8)  << '\\n';\n    std::cout << \"uint16_t result: \" << static_cast<uint32_t>(r16) << '\\n';\n    std::cout << \"uint32_t result: \" << r32 << '\\n';\n    std::cout << std::boolalpha;\n    std::cout << \"uint8_t  overflow: \" << overflow8  << '\\n';\n    std::cout << \"uint16_t overflow: \" << overflow16 << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: overflow in uint8_t only",
+          "stdin": "200 100\n",
+          "expected_stdout": "uint8_t  result: 44\nuint16_t result: 300\nuint32_t result: 300\nuint8_t  overflow: true\nuint16_t overflow: false\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: overflow in both",
+          "stdin": "60000 10000\n",
+          "expected_stdout": "uint8_t  result: 16\nuint16_t result: 4464\nuint32_t result: 70000\nuint8_t  overflow: true\nuint16_t overflow: true\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: no overflow",
+          "stdin": "10 15\n",
+          "expected_stdout": "uint8_t  result: 25\nuint16_t result: 25\nuint32_t result: 25\nuint8_t  overflow: false\nuint16_t overflow: false\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

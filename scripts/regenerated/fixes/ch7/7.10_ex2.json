@@ -1,0 +1,31 @@
+{
+  "lesson": "7.10",
+  "exercise_index": 1,
+  "what_changed": "Replaced for loop with fixed 4 measurements read individually. Demonstrates inline constexpr constants with internal-linkage helper function without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Inline Constants + Internal Linkage: Physics Measurement Validator",
+    "prompt_md": "## Goal\nComplete a program that reads exactly 4 physics measurements and prints only those whose absolute value falls within a shared \"valid range\" defined by `inline constexpr` constants, using an internally-linked helper function to perform the check.\n\n## Input\n- Lines 1-4: one `double` per line, each measurement value (-10,000.0 to 10,000.0)\n\n## Output\n- For each measurement that satisfies `physics::constants::kMinValid <= |v| <= physics::constants::kMaxValid`, print one line: `Valid: X` where X is the value printed with 2 decimal places.\n- If no measurements are valid, print exactly one line: `No valid measurements`.\n- Print the valid measurements in the same order they were read.\n\nExample for values `0.5 15.0 -9.81 300.0`:\n```\nValid: 0.50\nValid: 15.00\nValid: -9.81\n```\n\n## Requirements\n1. Define a namespace `physics::constants` containing exactly two `inline constexpr double` constants:\n   - `kMinValid = 0.1` (minimum absolute value to be considered valid)\n   - `kMaxValid = 100.0` (maximum absolute value to be considered valid)\n2. Both constants must be `inline constexpr`.\n3. Define a function `isValidMeasurement(double v)` that returns `true` when `kMinValid <= std::abs(v) <= kMaxValid`. This function must have **internal linkage** (declare it `static` or place it in an unnamed namespace).\n4. `main` reads 4 values and calls `isValidMeasurement` on each to decide which to print.\n5. A `static_assert` in `main` must verify at compile time that `physics::constants::kMinValid < physics::constants::kMaxValid`.\n6. Output uses `std::fixed` and `std::setprecision(2)`.\n7. Edge cases tested: all measurements outside the range (triggers `No valid measurements`), boundary values (0.1 and 100.0 are valid, inclusive), and negative values whose absolute value is in range.\n\n## Notes\n- You may include `<iostream>`, `<iomanip>`, `<cmath>`.\n- `isValidMeasurement` must have internal linkage -- this is intentional contrast with the `inline constexpr` constants that have external linkage.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\n// TODO: Define a namespace 'physics::constants' containing:\n//   inline constexpr double kMinValid = 0.1;\n//   inline constexpr double kMaxValid = 100.0;\n\n// TODO: Define isValidMeasurement(double v) with INTERNAL linkage.\n//       Return true when kMinValid <= std::abs(v) <= kMaxValid.\n\nint main()\n{\n    // TODO: Add a static_assert verifying kMinValid < kMaxValid at compile time.\n\n    double v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    int validCount = 0;\n\n    // TODO: check each value with isValidMeasurement\n    //       if valid, print \"Valid: \" followed by the value and increment validCount\n\n    // TODO: If validCount == 0, print \"No valid measurements\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <cmath>\n\nnamespace physics::constants\n{\n    inline constexpr double kMinValid = 0.1;\n    inline constexpr double kMaxValid = 100.0;\n}\n\nstatic bool isValidMeasurement(double v)\n{\n    double a = std::abs(v);\n    return a >= physics::constants::kMinValid && a <= physics::constants::kMaxValid;\n}\n\nint main()\n{\n    static_assert(physics::constants::kMinValid < physics::constants::kMaxValid,\n                  \"kMinValid must be less than kMaxValid\");\n\n    double v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    int validCount = 0;\n\n    if (isValidMeasurement(v1)) {\n        std::cout << \"Valid: \" << v1 << \"\\n\";\n        ++validCount;\n    }\n    if (isValidMeasurement(v2)) {\n        std::cout << \"Valid: \" << v2 << \"\\n\";\n        ++validCount;\n    }\n    if (isValidMeasurement(v3)) {\n        std::cout << \"Valid: \" << v3 << \"\\n\";\n        ++validCount;\n    }\n    if (isValidMeasurement(v4)) {\n        std::cout << \"Valid: \" << v4 << \"\\n\";\n        ++validCount;\n    }\n\n    if (validCount == 0)\n        std::cout << \"No valid measurements\\n\";\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample: mixed values",
+        "stdin": "0.5\n15.0\n-9.81\n300.0\n",
+        "expected_stdout": "Valid: 0.50\nValid: 15.00\nValid: -9.81\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden: all out of range",
+        "stdin": "0.0\n-200.0\n101.0\n0.05\n",
+        "expected_stdout": "No valid measurements\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: boundary values 0.1 and 100.0",
+        "stdin": "0.1\n-0.1\n100.0\n-100.0\n",
+        "expected_stdout": "Valid: 0.10\nValid: -0.10\nValid: 100.00\nValid: -100.00\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

@@ -9,6 +9,12 @@ import {
 } from "@/lib/judge0/client";
 import { evaluateTestCases, type TestCase } from "@/lib/judge0/verdict";
 import type { Json } from "@/lib/supabase/types";
+import {
+  logExercisePassed,
+  logExerciseFailed,
+  logLessonCompleted,
+  logExecutionTimeout,
+} from "@/lib/statsig/server-events";
 
 export const dynamic = "force-dynamic";
 
@@ -266,6 +272,40 @@ export async function POST(request: NextRequest) {
         { onConflict: "user_id,lesson_id" },
       );
     }
+  }
+
+  // ---- Statsig events (fire-and-forget) ------------------------------------
+  const testsPassed = verdict.testResults.filter((t) => t.passed).length;
+  const testsTotal = verdict.testResults.length;
+
+  if (verdict.overallStatus === "passed") {
+    logExercisePassed(userId, {
+      exercise_id,
+      difficulty: "standard",
+      attempts: 1,
+      time_to_pass_seconds_bucket: "unknown",
+      hints_used: 0,
+      tutor_used: false,
+    }).catch(() => {});
+  } else {
+    logExerciseFailed(userId, {
+      exercise_id,
+      attempt_number: 1,
+      tests_passed: testsPassed,
+      tests_total: testsTotal,
+    }).catch(() => {});
+  }
+
+  if (lessonCompleted) {
+    logLessonCompleted(userId, {
+      lesson_id: exercise.lesson_id,
+      module_id: exercise.lesson_id,
+    }).catch(() => {});
+  }
+
+  const hasTimeout = judgeResults.some((r) => r.status === "tle");
+  if (hasTimeout) {
+    logExecutionTimeout(userId, { exercise_id }).catch(() => {});
   }
 
   return NextResponse.json({

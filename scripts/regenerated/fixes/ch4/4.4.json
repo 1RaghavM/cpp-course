@@ -1,0 +1,60 @@
+{
+  "number": "4.4",
+  "title": "Signed integers",
+  "sort_order": 53,
+  "summary_md": "## Signed Integers\n\nC++ provides four signed integer types, differing only in their guaranteed minimum sizes:\n\n| Type | Minimum size |\n|------|-------------|\n| `short` | 16 bits |\n| `int` | 16 bits (usually 32) |\n| `long` | 32 bits |\n| `long long` | 64 bits |\n\nAs covered in **Object sizes and the sizeof operator**, actual sizes are platform-dependent. Use `sizeof` when you need to confirm what your compiler provides.\n\n**Signed** means the type can represent both negative and positive values. A 16-bit signed integer holds −32,768 to 32,767; a 32-bit signed integer holds roughly −2.1 billion to 2.1 billion. The general formula: an *n*-bit signed integer covers −2ⁿ⁻¹ to 2ⁿ⁻¹ − 1.\n\n### Overflow is undefined behavior\n\nExceeding an integer's range causes **signed integer overflow**, which is undefined behavior in C++. The compiler is allowed to assume it never happens, and will optimize accordingly — sometimes in surprising ways. Never rely on wraparound for signed types.\n\n### Prefer `int` for general use\n\nUnless you have a specific reason (interfacing with hardware, serialization, memory-constrained embedded work), use `int` for everyday integer arithmetic. It maps to the CPU's natural word size and avoids accidental truncation from smaller types.\n\nWhen you need a fixed, portable width — guaranteed exactly 32 bits everywhere — use the types from `<cstdint>` such as `int32_t`, `int64_t`. These are aliases to whatever underlying type provides that exact size on the target platform.\n\n```cpp\n#include <cstdint>\n#include <format>\n#include <print>\n\nint main() {\n    int        score   = -150;\n    long long  bigNum  = 9'000'000'000LL;\n    int32_t    exactly = 2'147'483'647;   // guaranteed 32-bit signed max\n\n    std::println(\"{}\", std::format(\"score={}, big={}, exact={}\", score, bigNum, exactly));\n}\n```\n\nA few syntax notes visible above:\n- `LL` suffix forces a literal to `long long`.\n- Single-quote `'` is a digit separator (C++14 onward) — purely visual, ignored by the compiler.\n- `int32_t` requires `<cstdint>`.\n\n### Quick rules\n\n- Use `int` by default.\n- Use `int64_t` / `int32_t` when size must be exact and portable.\n- Never intentionally overflow a signed integer.\n- `short` and `long` without `long long` are rarely needed in modern code.",
+  "exercises": [
+    {
+      "title": "Integer Range Inspector",
+      "prompt_md": "## Integer Range Inspector\n\nWrite a program that reads a single integer value from the user and reports whether it fits in various signed integer widths, using boolean expressions printed with `std::boolalpha`.\n\n### Input\nA single integer on one line. You may assume the input itself fits in a `long long`.\n\n### Output\nFour lines exactly:\n```\nValue: <value>\nFits in 16-bit: <true/false>\nFits in 32-bit: <true/false>\nSquare: <value*value>\n```\n\n### Details\n- A value \"fits in 16-bit\" means it is in the range -32768 to 32767 (inclusive).\n- A value \"fits in 32-bit\" means it is in the range -2147483648 to 2147483647 (inclusive).\n- Store the input in a `long long` so reading large values doesn't itself overflow.\n- Compute the square using `long long` arithmetic.\n- Use `std::boolalpha` so the boolean values print as `true` or `false`.\n\n### Examples\n\n**Input:**\n```\n200\n```\n**Output:**\n```\nValue: 200\nFits in 16-bit: true\nFits in 32-bit: true\nSquare: 40000\n```\n\n**Input:**\n```\n50000\n```\n**Output:**\n```\nValue: 50000\nFits in 16-bit: false\nFits in 32-bit: true\nSquare: 2500000000\n```\n",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    long long value{};\n    std::cin >> value;\n\n    // TODO: Compute bool variables for whether value fits in 16-bit and 32-bit ranges\n    //       16-bit signed: -32768 to 32767\n    //       32-bit signed: -2147483648 to 2147483647\n\n    // TODO: Compute the square using long long arithmetic\n\n    // TODO: Print all four lines using std::boolalpha for the boolean values\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    long long value{};\n    std::cin >> value;\n\n    bool fits16 { value >= -32768LL && value <= 32767LL };\n    bool fits32 { value >= -2147483648LL && value <= 2147483647LL };\n\n    long long square = value * value;\n\n    std::cout << \"Value: \" << value << '\\n';\n    std::cout << std::boolalpha;\n    std::cout << \"Fits in 16-bit: \" << fits16 << '\\n';\n    std::cout << \"Fits in 32-bit: \" << fits32 << '\\n';\n    std::cout << \"Square: \" << square << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: small positive value",
+          "stdin": "200\n",
+          "expected_stdout": "Value: 200\nFits in 16-bit: true\nFits in 32-bit: true\nSquare: 40000\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: exceeds 16-bit but fits 32-bit",
+          "stdin": "50000\n",
+          "expected_stdout": "Value: 50000\nFits in 16-bit: false\nFits in 32-bit: true\nSquare: 2500000000\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: large negative exceeds 32-bit",
+          "stdin": "-3000000000\n",
+          "expected_stdout": "Value: -3000000000\nFits in 16-bit: false\nFits in 32-bit: false\nSquare: 9000000000000000000\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Long Long Arithmetic",
+      "prompt_md": "## Long Long Arithmetic\n\nYou are given **three integers** on separate lines. Each integer can be large enough to require a `long long` (up to +/-9,000,000,000).\n\nCompute and print:\n1. Their **sum**\n2. Their **average** as a `double` with exactly 2 decimal places\n3. The **product of the first two**, stored in `long long`\n\nAll three input values must be stored in `long long` variables because they exceed the 32-bit signed range.\n\n### Input\nThree integers, one per line. Each is in the range -9,000,000,000 to 9,000,000,000.\n\n### Output\nThree lines:\n```\nSum: <value>\nAverage: <value>\nProduct of first two: <value>\n```\n\nThe average must be printed with exactly 2 decimal places.\n\n### Example\n\n**Input:**\n```\n9000000000\n-4000000000\n1500000000\n```\n**Output:**\n```\nSum: 6500000000\nAverage: 2166666666.67\nProduct of first two: -36000000000000000000\n```\n\n### Notes\n- These values exceed the 32-bit signed range (+/-2,147,483,647), so a plain `int` would overflow.\n- To compute the average as a `double`, cast the sum to `double` before dividing by 3: `double avg = static_cast<double>(sum) / 3.0;`\n- Use `std::fixed` and `std::setprecision(2)` for the average line.\n",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    // TODO: Declare three long long variables and read them\n\n    // TODO: Compute the sum\n\n    // TODO: Compute the average as a double (cast sum to double, divide by 3.0)\n\n    // TODO: Compute the product of the first two values\n\n    // TODO: Print:\n    //   \"Sum: <sum>\"\n    //   \"Average: <avg>\" (2 decimal places)\n    //   \"Product of first two: <product>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    long long a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    long long sum = a + b + c;\n    double avg = static_cast<double>(sum) / 3.0;\n    long long product = a * b;\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Average: \" << avg << '\\n';\n    std::cout << \"Product of first two: \" << product << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: mix of large positive and negative",
+          "stdin": "9000000000\n-4000000000\n1500000000\n",
+          "expected_stdout": "Sum: 6500000000\nAverage: 2166666666.67\nProduct of first two: -36000000000000000000\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: all negative",
+          "stdin": "-1000000000\n-2000000000\n-3000000000\n",
+          "expected_stdout": "Sum: -6000000000\nAverage: -2000000000.00\nProduct of first two: 2000000000000000000\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: zeros and small values",
+          "stdin": "0\n5000000000\n5000000000\n",
+          "expected_stdout": "Sum: 10000000000\nAverage: 3333333333.33\nProduct of first two: 0\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

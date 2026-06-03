@@ -1,0 +1,60 @@
+{
+  "number": "8.8",
+  "title": "Introduction to loops and while statements",
+  "sort_order": 108,
+  "summary_md": "## While Loops\n\nSo far you've used `if` statements and `switch` to branch based on a condition — but they only run their body once. A **while loop** repeats a block of code for as long as a condition remains `true`.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int count { 1 };\n    while (count <= 5) {\n        std::cout << count << '\\n';\n        ++count;          // update: avoids infinite loop\n    }\n    return 0;\n}\n```\n\nOutput: `1` through `5`, one per line.\n\n### Anatomy of a while loop\n\n```\nwhile ( condition ) {\n    // body — runs if condition is true\n    // update — move toward a false condition\n}\n```\n\n1. **Condition is evaluated** before every iteration (including the first).\n2. If it is `true`, the body runs; if `false`, execution continues after the closing brace.\n3. If the condition is never false the loop runs forever — an **infinite loop**. Always make sure the body moves toward a terminating state.\n\n### Comparison with Python\n\nPython's `while` is identical in concept; C++ just requires braces instead of a colon-plus-indent, and you must declare the loop variable with a type before the loop (e.g., `int count { 1 };`).\n\n### Loop variables and initialization\n\nBecause `strict: true` / `-Wall -Wextra` flags warn about uninitialized variables, always initialize your counter. Prefer brace-initialization (`int i { 0 };`) as you've seen since lesson 1.\n\n### Common while-loop patterns\n\n| Pattern | Example purpose |\n|---|---|\n| **Counter loop** | iterate a fixed number of times |\n| **Accumulator loop** | sum or product of a series |\n| **Sentinel loop** | read until a special value (e.g., `0` to quit) |\n| **Validation loop** | repeat until user gives valid input |\n\n### off-by-one errors\n\nThe most frequent bug: using `<` vs `<=` incorrectly. Trace through the first and last iteration mentally before committing to a condition.\n\n### Looking ahead\n\nYou already know `break` from `switch` statements (lesson 8-5) — it also works inside loops to exit them early. In a later lesson (8.11) you will learn about `break` and `continue` in the context of loops. For now, focus on writing correct `while` loop conditions that naturally terminate.",
+  "exercises": [
+    {
+      "title": "Countdown Timer",
+      "prompt_md": "## Countdown Timer\n\nWrite a program that reads a positive integer `n` from `stdin` and prints a countdown from `n` down to `1`, one number per line, followed by `Go!` on its own line.\n\n**Example** (input: `5`):\n```\n5\n4\n3\n2\n1\nGo!\n```\n\nRequirements:\n- Use a `while` loop.\n- Do **not** print anything extra (no prompts, no blank lines).\n- Assume the input is a positive integer (>= 1).",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    // TODO: use a while loop to print n, n-1, ..., 1\n    // each on its own line\n\n    // TODO: after the loop, print \"Go!\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    while (n >= 1) {\n        std::cout << n << '\\n';\n        --n;\n    }\n\n    std::cout << \"Go!\\n\";\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: countdown from 5",
+          "stdin": "5",
+          "expected_stdout": "5\n4\n3\n2\n1\nGo!\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: countdown from 1",
+          "stdin": "1",
+          "expected_stdout": "1\nGo!\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: countdown from 10",
+          "stdin": "10",
+          "expected_stdout": "10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nGo!\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Sum of Digits",
+      "prompt_md": "## Sum of Digits\n\nRead a non-negative integer from `stdin` and print the sum of its digits.\n\n**Example** (input: `1234`):\n```\n10\n```\n\nHint: you can extract the last digit of `n` with `n % 10`, then remove it with `n /= 10`. Repeat while `n > 0`.\n\nRequirements:\n- Use a `while` loop.\n- Print only the final sum followed by a newline.\n- Assume the input is a non-negative integer. If the input is `0`, the sum is `0`.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    int sum { 0 };\n\n    // TODO: use a while loop to accumulate the digit sum\n    // Hint: last digit = n % 10, remove it with n /= 10\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    int sum { 0 };\n\n    while (n > 0) {\n        sum += n % 10;\n        n /= 10;\n    }\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: 1234 -> 10",
+          "stdin": "1234",
+          "expected_stdout": "10\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: 0 -> 0",
+          "stdin": "0",
+          "expected_stdout": "0\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: 9999 -> 36",
+          "stdin": "9999",
+          "expected_stdout": "36\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

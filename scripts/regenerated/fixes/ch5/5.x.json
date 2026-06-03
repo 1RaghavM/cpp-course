@@ -1,0 +1,49 @@
+{
+  "lesson": "5.x",
+  "title": "Chapter 5 summary and quiz",
+  "fixes_applied": [
+    "MAJ-2: Ex2 -- replaced bitwise AND exercise with a non-bitwise exercise. The new exercise tests constexpr, string_view, and if/else (all Ch 5 material) without requiring bitwise operators (Ch 6) or ternary (Ch 6).",
+    "MAJ-3: Ex2 -- eliminated ternary operator usage by redesigning the exercise entirely."
+  ],
+  "exercises": [
+    {
+      "index": 1,
+      "title": "Classify a String with constexpr Length Thresholds",
+      "prompt_md": "## Goal\nComplete the program that reads a word from stdin and classifies it by length using `constexpr` thresholds and a `std::string_view` parameter, printing the classification.\n\n## Input\n- Line 1: a single word (no spaces, 1 to 50 characters)\n\n## Output\nPrint exactly two lines:\n1. `Word: <word> (length: <N>)` -- where `<word>` is the input and `<N>` is its length\n2. One of:\n   - `Category: short` if length <= SHORT_MAX (3)\n   - `Category: medium` if length <= MEDIUM_MAX (7) and length > SHORT_MAX\n   - `Category: long` if length > MEDIUM_MAX\n\n## Requirements\n1. Declare `constexpr int SHORT_MAX = 3;` and `constexpr int MEDIUM_MAX = 7;` at namespace scope using named constants (not magic numbers).\n2. Write a function `void classify(std::string_view word)` that accepts the word as `std::string_view`, prints both output lines, and uses the two `constexpr` thresholds with `if`/`else if`/`else` to determine the category.\n3. Read the word into a `std::string` in `main` and pass it to `classify` (testing implicit conversion from `std::string` to `std::string_view`).\n4. Use `word.length()` to get the size -- do not compute length manually.\n5. Edge cases covered by hidden tests: a 1-character word (short), a 3-character word (short boundary), a 7-character word (medium boundary), and a long word.\n\n## Notes\n- Allowed headers: `<iostream>`, `<string>`, `<string_view>`.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: declare constexpr int SHORT_MAX = 3;\n// TODO: declare constexpr int MEDIUM_MAX = 7;\n\n// TODO: complete this function\n// Print two lines:\n//   Word: <word> (length: <N>)\n//   Category: short | medium | long\nvoid classify(std::string_view word)\n{\n    // TODO\n}\n\nint main()\n{\n    std::string input{};\n    std::cin >> input;\n\n    // TODO: call classify with input\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nconstexpr int SHORT_MAX  = 3;\nconstexpr int MEDIUM_MAX = 7;\n\nvoid classify(std::string_view word)\n{\n    std::cout << \"Word: \" << word << \" (length: \" << word.length() << \")\\n\";\n\n    if (word.length() <= SHORT_MAX)\n        std::cout << \"Category: short\\n\";\n    else if (word.length() <= MEDIUM_MAX)\n        std::cout << \"Category: medium\\n\";\n    else\n        std::cout << \"Category: long\\n\";\n}\n\nint main()\n{\n    std::string input{};\n    std::cin >> input;\n\n    classify(input);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- medium word",
+          "stdin": "Hello\n",
+          "expected_stdout": "Word: Hello (length: 5)\nCategory: medium\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden -- 1-character word (short)",
+          "stdin": "A\n",
+          "expected_stdout": "Word: A (length: 1)\nCategory: short\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- 3-character word (short boundary)",
+          "stdin": "cat\n",
+          "expected_stdout": "Word: cat (length: 3)\nCategory: short\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- 7-character word (medium boundary)",
+          "stdin": "concise\n",
+          "expected_stdout": "Word: concise (length: 7)\nCategory: medium\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- long word",
+          "stdin": "extraordinary\n",
+          "expected_stdout": "Word: extraordinary (length: 13)\nCategory: long\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Fix the Order with a Forward Declaration",
+    "prompt_md": "## Goal\n\nThe program below tries to call two helper functions from `main`, but they are defined **after** `main`, causing compile errors.\n\n## Input\n\nOne integer on a single line.\n\n## Output\n\n```\nSquare: <n*n>\nCube: <n*n*n>\n```\n\n## Requirements\n\n1. Add forward declarations for `square` and `cube` above `main` so the program compiles.\n2. Do **not** reorder or change any existing function definitions.",
+    "starter_code": "#include <iostream>\n\n// TODO: add forward declarations for square() and cube() here\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << '\\n';\n    std::cout << \"Cube: \"   << cube(n)   << '\\n';\n    return 0;\n}\n\nint square(int x) {\n    return x * x;\n}\n\nint cube(int x) {\n    return x * x * x;\n}\n",
+    "solution_code": "#include <iostream>\n\nint square(int x); // forward declaration\nint cube(int x);   // forward declaration\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << '\\n';\n    std::cout << \"Cube: \"   << cube(n)   << '\\n';\n    return 0;\n}\n\nint square(int x) {\n    return x * x;\n}\n\nint cube(int x) {\n    return x * x * x;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: input 4",
+        "is_sample": true,
+        "stdin": "4",
+        "expected_stdout": "Square: 16\nCube: 64\n"
+      },
+      {
+        "label": "Hidden: input 1",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Square: 1\nCube: 1\n"
+      },
+      {
+        "label": "Hidden: input 5",
+        "is_sample": false,
+        "stdin": "5",
+        "expected_stdout": "Square: 25\nCube: 125\n"
+      }
+    ]
+  },
+  {
+    "title": "Three Functions, All Forward-Declared",
+    "prompt_md": "## Goal\n\nPractice forward declarations with three functions that call each other in a chain. This is a common pattern in real C++ projects where functions are defined in a different order than they are called.\n\n## Input\n\nTwo integers on one line separated by a space: `a` and `b`.\n\n## Output\n\n```\nSum: <a + b>\nProduct: <a * b>\nCombined: <(a + b) + (a * b)>\n```\n\n## Requirements\n\n1. Forward-declare three functions above `main`: `int add(int, int)`, `int multiply(int, int)`, and `int combined(int, int)`.\n2. `main` reads two integers, calls `combined`, and prints all three lines.\n3. Define the functions **below** `main` in this order: `combined` first (it calls `add` and `multiply`), then `add`, then `multiply`.\n4. `combined(a, b)` returns `add(a, b) + multiply(a, b)`.\n5. The forward declarations above `main` are what allow `combined` to call `add` and `multiply` even though their definitions appear after `combined`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Forward-declare add(int, int), multiply(int, int), combined(int, int)\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: Print Sum, Product, and Combined lines\n    // Use add, multiply, and combined functions\n\n    return 0;\n}\n\n// TODO: Define combined(int a, int b) -- returns add(a, b) + multiply(a, b)\n\n// TODO: Define add(int a, int b) -- returns a + b\n\n// TODO: Define multiply(int a, int b) -- returns a * b\n",
+    "solution_code": "#include <iostream>\n\nint add(int a, int b);\nint multiply(int a, int b);\nint combined(int a, int b);\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Sum: \" << add(a, b) << '\\n';\n    std::cout << \"Product: \" << multiply(a, b) << '\\n';\n    std::cout << \"Combined: \" << combined(a, b) << '\\n';\n\n    return 0;\n}\n\nint combined(int a, int b) {\n    return add(a, b) + multiply(a, b);\n}\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint multiply(int a, int b) {\n    return a * b;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "Sum: 7\nProduct: 12\nCombined: 19\n"
+      },
+      {
+        "label": "Hidden: 0 and 5",
+        "is_sample": false,
+        "stdin": "0 5",
+        "expected_stdout": "Sum: 5\nProduct: 0\nCombined: 5\n"
+      },
+      {
+        "label": "Hidden: 6 and 7",
+        "is_sample": false,
+        "stdin": "6 7",
+        "expected_stdout": "Sum: 13\nProduct: 42\nCombined: 55\n"
+      }
+    ]
+  }
+]

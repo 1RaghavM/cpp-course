@@ -1,0 +1,59 @@
+{
+  "lesson": "12.1",
+  "title": "Introduction to compound data types",
+  "why": "Both original exercises use pointer syntax (*, nullptr, dereference) which is not taught until 12.7. Exercise 2 was also a duplicate of 12.7 ex2 (swap via pointers). Replaced with reference-only exercises appropriate for this introductory lesson.",
+  "exercises": [
+    {
+      "title": "Reference Alias Demo",
+      "prompt_md": "## Goal\n\nDemonstrate the fundamental difference between a copy and a reference alias. This exercise uses only lvalue references — no pointers.\n\n## Requirements\n\n- Read a single integer from stdin into a variable `value`.\n- Create a **copy** of `value` in a second variable called `copy`.\n- Create a **reference** to `value` called `ref`.\n- Add 10 to `value` through `ref` (i.e., `ref += 10`).\n- Print three lines:\n  1. `ref: <ref>` — the value seen through the reference (should reflect the +10).\n  2. `copy: <copy>` — the copy (should still hold the original value).\n  3. `same_object: true` — confirming that `ref` and `value` refer to the same object (print this literally; it is always true by definition).\n\n## Input\n\nA single integer on one line.\n\n## Output\n\n```\nref: <value+10>\ncopy: <original>\nsame_object: true\n```\n\n## Example\n\nInput:\n```\n5\n```\nOutput:\n```\nref: 15\ncopy: 5\nsame_object: true\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int value {};\n    std::cin >> value;\n\n    // TODO: create a copy of value\n\n    // TODO: create a reference to value\n\n    // TODO: add 10 to value through the reference\n\n    // TODO: print ref, copy, and \"same_object: true\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int value {};\n    std::cin >> value;\n\n    int copy { value };   // independent copy\n    int& ref { value };   // alias for value\n\n    ref += 10;            // modifies value through the reference\n\n    std::cout << \"ref: \" << ref << '\\n';\n    std::cout << \"copy: \" << copy << '\\n';\n    std::cout << \"same_object: true\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: value 5",
+          "stdin": "5",
+          "expected_stdout": "ref: 15\ncopy: 5\nsame_object: true\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: value 0",
+          "stdin": "0",
+          "expected_stdout": "ref: 10\ncopy: 0\nsame_object: true\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: negative value",
+          "stdin": "-7",
+          "expected_stdout": "ref: 3\ncopy: -7\nsame_object: true\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Compound vs Fundamental Type Sizes",
+      "prompt_md": "## Goal\n\nExplore the distinction between fundamental types and compound types by printing the size (in bytes) of several types alongside their values. This exercise uses only references — no pointers.\n\n## Requirements\n\n- Read two integers `a` and `b` from stdin (on the same line, space-separated).\n- Declare a `double` variable `d` initialized to `a + 0.5`.\n- Declare an `int&` reference `refA` bound to `a`.\n- Declare a `double&` reference `refD` bound to `d`.\n- Modify `a` through `refA`: multiply it by `b` (i.e., `refA *= b`).\n- Print the following five lines:\n  1. `a: <a> size: <sizeof(a)>` — the modified value and its size.\n  2. `b: <b> size: <sizeof(b)>`\n  3. `d: <d> size: <sizeof(d)>` — print `d` with default formatting (no fixed precision).\n  4. `refA: <refA> size: <sizeof(refA)>` — same value and size as `a` (references share their referent's properties).\n  5. `refD: <refD> size: <sizeof(refD)>` — same value and size as `d`.\n\n## Input\n\nTwo integers on one line, space-separated.\n\n## Output\n\nFive lines as described above.\n\n## Example\n\nInput:\n```\n3 4\n```\nOutput (assuming 4-byte int, 8-byte double):\n```\na: 12 size: 4\nb: 4 size: 4\nd: 3.5 size: 8\nrefA: 12 size: 4\nrefD: 3.5 size: 8\n```",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    // TODO: declare a double d initialized to a + 0.5\n\n    // TODO: declare a reference refA to a\n\n    // TODO: declare a reference refD to d\n\n    // TODO: multiply a through refA by b\n\n    // TODO: print the five lines showing values and sizes\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int a {}, b {};\n    std::cin >> a >> b;\n\n    double d { a + 0.5 };\n\n    int& refA { a };\n    double& refD { d };\n\n    refA *= b;\n\n    std::cout << \"a: \" << a << \" size: \" << sizeof(a) << '\\n';\n    std::cout << \"b: \" << b << \" size: \" << sizeof(b) << '\\n';\n    std::cout << \"d: \" << d << \" size: \" << sizeof(d) << '\\n';\n    std::cout << \"refA: \" << refA << \" size: \" << sizeof(refA) << '\\n';\n    std::cout << \"refD: \" << refD << \" size: \" << sizeof(refD) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: 3 4",
+          "stdin": "3 4",
+          "expected_stdout": "a: 12 size: 4\nb: 4 size: 4\nd: 3.5 size: 8\nrefA: 12 size: 4\nrefD: 3.5 size: 8\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: 0 5",
+          "stdin": "0 5",
+          "expected_stdout": "a: 0 size: 4\nb: 5 size: 4\nd: 0.5 size: 8\nrefA: 0 size: 4\nrefD: 0.5 size: 8\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: -2 3",
+          "stdin": "-2 3",
+          "expected_stdout": "a: -6 size: 4\nb: 3 size: 4\nd: -1.5 size: 8\nrefA: -6 size: 4\nrefD: -1.5 size: 8\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

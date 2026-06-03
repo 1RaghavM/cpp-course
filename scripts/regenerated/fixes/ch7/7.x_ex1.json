@@ -1,0 +1,31 @@
+{
+  "lesson": "7.x",
+  "exercise_index": 0,
+  "what_changed": "Replaced for loop with fixed 5 explicit calls to next_ticket() from main. Demonstrates static local variable persistence across multiple function calls without requiring Ch 8 loops.",
+  "exercise": {
+    "title": "Static Local Call Counter",
+    "prompt_md": "## Goal\nComplete the function `int next_ticket()` that uses a **static local variable** to return a unique, incrementing ticket number each time it is called, starting at 1.\n\nThe program always dispenses exactly 5 tickets.\n\n## Input\nNone (no input is read).\n\n## Output\n- Print exactly 5 lines, each of the form `Ticket: K` where K is the ticket number for that call (1, 2, 3, 4, 5).\n- No extra blank lines.\n\n## Requirements\n1. `next_ticket()` must declare a `static int` local variable initialized to `0` and return its pre-incremented value.\n2. The static variable must be local to `next_ticket()` -- no global variables allowed.\n3. Each call to `next_ticket()` returns the next integer in sequence (1, 2, 3, 4, 5).\n4. `main` calls `next_ticket()` exactly 5 times and prints `Ticket: ` followed by the returned value.\n5. No loops are used -- each call is written explicitly.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement next_ticket() using a static local variable\n// It should return 1 on the first call, 2 on the second, and so on.\nint next_ticket()\n{\n    // TODO: declare a static local int initialized to 0\n    // TODO: pre-increment it and return it\n}\n\nint main()\n{\n    // TODO: call next_ticket() 5 times and print each result\n    //       \"Ticket: \" followed by the returned value\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint next_ticket()\n{\n    static int count = 0;\n    return ++count;\n}\n\nint main()\n{\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample -- 5 tickets",
+        "stdin": "",
+        "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden -- same test (deterministic, no input)",
+        "stdin": "",
+        "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden -- verify exact output format",
+        "stdin": "",
+        "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

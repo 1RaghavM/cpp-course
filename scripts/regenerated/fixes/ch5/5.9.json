@@ -1,0 +1,49 @@
+{
+  "lesson": "5.9",
+  "title": "std::string_view (part 2)",
+  "fixes_applied": [
+    "CRIT-4: Ex2 -- redesigned to process a single line instead of N lines, eliminating the for loop (Ch 8 material). The exercise now reads one line and checks it against the two greeting prefixes.",
+    "MIN-3: Ex2 -- replaced Unicode em-dash (U+2014) with ASCII double-hyphen (--) in expected output and solution."
+  ],
+  "exercises": [
+    {
+      "index": 1,
+      "title": "Constexpr Greeting Prefix Validator",
+      "prompt_md": "## Goal\nWrite a program that uses `constexpr std::string_view` constants to define allowed greeting prefixes, then reads a single line from stdin and reports whether it starts with one of those prefixes and, if so, extracts the remainder of the line as the message body.\n\n## Input\n- Line 1: one string (may contain spaces, length >= 1)\n\n## Output\nPrint exactly one line:\n- If the line starts with `\"Hello, \"` (capital H, comma, space): print `Greeting -- body: <everything after the prefix>`\n- Else if the line starts with `\"Hi, \"` (capital H, i, comma, space): print `Greeting -- body: <everything after the prefix>`\n- Otherwise: print `Not a greeting: <full original line>`\n\n## Requirements\n1. Define the two allowed prefixes as `constexpr std::string_view` constants at namespace scope (not inside `main`): `constexpr std::string_view PREFIX_HELLO` and `constexpr std::string_view PREFIX_HI`.\n2. Write a function `std::string_view extractBody(std::string_view line, std::string_view prefix)` that uses `remove_prefix` and returns the remaining `string_view` after stripping the prefix. This function must not allocate a `std::string`.\n3. Use `starts_with` to check each prefix.\n4. The `string_view` returned from `extractBody` must not dangle -- the underlying storage is the `std::string` owned in `main`.\n5. Edge cases: a line equal to exactly `\"Hello, \"` (empty body), a line that begins with `\"Hi\"` but not `\"Hi, \"` (not a greeting).",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: Define constexpr std::string_view PREFIX_HELLO = \"Hello, \"\n//       and constexpr std::string_view PREFIX_HI    = \"Hi, \"\n\n// TODO: Implement extractBody.\n// Accept the full line as string_view and the matched prefix as string_view.\n// Return a string_view of everything after the prefix (use remove_prefix).\n// Do NOT construct a std::string inside this function.\nstd::string_view extractBody(std::string_view line, std::string_view prefix)\n{\n    // TODO: fill in\n    return line; // placeholder\n}\n\nint main()\n{\n    std::string line{};\n    std::getline(std::cin, line);\n\n    // TODO: create a string_view of 'line'\n    // TODO: check PREFIX_HELLO, then PREFIX_HI, then \"Not a greeting\".\n    // Use starts_with and extractBody.\n    // Print the correct output line.\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nconstexpr std::string_view PREFIX_HELLO = \"Hello, \";\nconstexpr std::string_view PREFIX_HI    = \"Hi, \";\n\nstd::string_view extractBody(std::string_view line, std::string_view prefix)\n{\n    line.remove_prefix(prefix.size());\n    return line;\n}\n\nint main()\n{\n    std::string line{};\n    std::getline(std::cin, line);\n\n    std::string_view sv{line};\n\n    if (sv.starts_with(PREFIX_HELLO))\n        std::cout << \"Greeting -- body: \" << extractBody(sv, PREFIX_HELLO) << '\\n';\n    else if (sv.starts_with(PREFIX_HI))\n        std::cout << \"Greeting -- body: \" << extractBody(sv, PREFIX_HI) << '\\n';\n    else\n        std::cout << \"Not a greeting: \" << sv << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- Hello greeting",
+          "stdin": "Hello, Alice",
+          "expected_stdout": "Greeting -- body: Alice\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden -- Hi greeting",
+          "stdin": "Hi, Bob",
+          "expected_stdout": "Greeting -- body: Bob\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- not a greeting",
+          "stdin": "Hey there",
+          "expected_stdout": "Not a greeting: Hey there\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- Hello with empty body",
+          "stdin": "Hello, ",
+          "expected_stdout": "Greeting -- body: \n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden -- Hi without comma is not a greeting",
+          "stdin": "Hi there",
+          "expected_stdout": "Not a greeting: Hi there\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

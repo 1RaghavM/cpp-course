@@ -1,0 +1,31 @@
+{
+  "lesson": "7.2",
+  "exercise_index": 0,
+  "what_changed": "Fixed starter code comment bug: celsius namespace comment said 'F' unit label instead of 'C'.",
+  "exercise": {
+    "title": "Temperature Namespaces with Scope Resolution",
+    "prompt_md": "## Goal\nComplete two namespaces, `celsius` and `fahrenheit`, each containing a `display` function that prints a temperature reading with its unit label, then call both using the scope resolution operator.\n\n## Input\n- Line 1: a floating-point number representing a Celsius temperature (e.g. `100.0`).\n- Line 2: a floating-point number representing a Fahrenheit temperature (e.g. `212.0`).\n\n## Output\nPrint exactly two lines in this order:\n- `Celsius: <value> C` where `<value>` is the Celsius reading printed with one decimal place.\n- `Fahrenheit: <value> F` where `<value>` is the Fahrenheit reading printed with one decimal place.\n\nExample for inputs `100.0` and `212.0`:\n```\nCelsius: 100.0 C\nFahrenheit: 212.0 F\n```\n\n## Requirements\n1. Declare a namespace `celsius` containing a function `void display(double temp)` that prints `Celsius: <temp> C` with one decimal place.\n2. Declare a namespace `fahrenheit` containing a function `void display(double temp)` that prints `Fahrenheit: <temp> F` with one decimal place.\n3. In `main`, call each function using the `::` scope resolution operator: `celsius::display(c)` and `fahrenheit::display(f)`.\n4. Do **not** use `using namespace celsius;` or `using namespace fahrenheit;` anywhere in the file.\n5. Both `display` functions must live inside their respective named namespaces — not at global scope.\n6. Hidden tests cover negative temperatures (e.g. `-40.0`) and zero (`0.0`).\n\n## Notes\n- Use `<iomanip>` (`std::fixed`, `std::setprecision`) or `<print>` / `<format>` for the one-decimal formatting.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: define namespace celsius containing void display(double temp)\n//       that prints \"Celsius: <temp> C\" with one decimal place\n\n\n// TODO: define namespace fahrenheit containing void display(double temp)\n//       that prints \"Fahrenheit: <temp> F\" with one decimal place\n\n\nint main() {\n    double c, f;\n    std::cin >> c >> f;\n\n    // TODO: call celsius::display(c)\n    // TODO: call fahrenheit::display(f)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace celsius {\n    void display(double temp) {\n        std::cout << std::fixed << std::setprecision(1);\n        std::cout << \"Celsius: \" << temp << \" C\\n\";\n    }\n}\n\nnamespace fahrenheit {\n    void display(double temp) {\n        std::cout << std::fixed << std::setprecision(1);\n        std::cout << \"Fahrenheit: \" << temp << \" F\\n\";\n    }\n}\n\nint main() {\n    double c, f;\n    std::cin >> c >> f;\n\n    celsius::display(c);\n    fahrenheit::display(f);\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Boiling point",
+        "stdin": "100.0\n212.0\n",
+        "expected_stdout": "Celsius: 100.0 C\nFahrenheit: 212.0 F\n",
+        "is_sample": true
+      },
+      {
+        "label": "Freezing point / zero",
+        "stdin": "0.0\n32.0\n",
+        "expected_stdout": "Celsius: 0.0 C\nFahrenheit: 32.0 F\n",
+        "is_sample": false
+      },
+      {
+        "label": "Negative temperature",
+        "stdin": "-40.0\n-40.0\n",
+        "expected_stdout": "Celsius: -40.0 C\nFahrenheit: -40.0 F\n",
+        "is_sample": false
+      }
+    ]
+  }
+}

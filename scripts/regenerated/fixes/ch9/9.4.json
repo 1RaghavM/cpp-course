@@ -1,0 +1,88 @@
+{
+  "lesson": {
+    "number": "9.4",
+    "title": "Detecting and handling errors",
+    "sort_order": 120,
+    "summary_md": "## Detecting and Handling Errors\n\nC++ gives you several distinct mechanisms for signaling and recovering from errors. Choosing the right one depends on whether the error is a programming mistake or a legitimate runtime condition.\n\n### Assertions — catching bugs early\n\n`assert()` (from `<cassert>`) terminates the program immediately when a condition is false. Use it to catch *programmer errors* — precondition violations, impossible states — never for user input or network failures. In release builds, assertions are typically compiled out via `NDEBUG`, so they carry zero runtime cost in production.\n\n`static_assert` is the compile-time equivalent and is even cheaper: wrong constants or invalid assumptions become hard errors before the program ever runs. It is covered in detail in *Assert and static_assert* later in this chapter.\n\n### Return values and std::expected\n\nFor recoverable runtime errors, returning a value that encodes success or failure is the simplest approach. C++23 formalises this with `std::expected<T, E>`, which holds either a result or an error without the overhead of exceptions:\n\n```cpp\n#include <expected>\n#include <iostream>\n#include <string>\n\nstd::expected<int, std::string> parse_positive(int n) {\n    if (n <= 0)\n        return std::unexpected(std::string{\"expected positive, got negative or zero\"});\n    return n * 2;\n}\n\nint main() {\n    std::expected<int, std::string> result = parse_positive(-3);\n    if (result)\n        std::cout << \"Value: \" << *result << '\\n';\n    else\n        std::cout << \"Error: \" << result.error() << '\\n';\n}\n```\n\nThe `.value()` / `.error()` interface makes the happy path and error path explicit without silent integer return codes.\n\n### Exceptions\n\nExceptions (`throw` / `try` / `catch`) are best reserved for errors that are truly exceptional — rare, difficult to handle locally, and crossing API boundaries. They add minimal cost when *not* triggered but can be expensive when thrown. Catch by `const` reference to avoid slicing:\n\n```cpp\ncatch (const std::runtime_error& e) { ... }\n```\n\n### Choosing between them\n\n- **Assertion** — programmer contract violation; should never happen in correct code.\n- **Return value / `std::expected`** — expected failure modes the caller can reasonably handle (file not found, parse failure).\n- **Exception** — genuinely exceptional conditions or when propagating errors through many call frames is impractical.\n\nMixing all three thoughtfully, rather than defaulting to exceptions everywhere, produces code that is both easier to test (as covered in *Introduction to testing your code*) and easier to reason about at a glance.",
+    "exercises": [
+      {
+        "title": "Validate a Password Strength Checker with std::expected",
+        "prompt_md": "## Goal\nComplete the function `validate_password` that checks a password string and returns either a strength rating or an error message via `std::expected<std::string, std::string>`.\n\n## Input\n- Line 1: a single string (the password to validate). The string contains no spaces and has length 0–100.\n\n## Output\n- If the password is empty (length 0), print: `Error: password is empty`\n- If the password is shorter than 4 characters, print: `Error: password too short`\n- If the password is 4–7 characters, print: `Strength: weak`\n- If the password is 8–11 characters, print: `Strength: moderate`\n- If the password is 12 or more characters, print: `Strength: strong`\n\n## Requirements\n1. `validate_password` must have the signature:\n   `std::expected<std::string, std::string> validate_password(std::string password)`\n2. For empty passwords, return `std::unexpected(std::string{\"password is empty\"})`.\n3. For passwords shorter than 4 characters, return `std::unexpected(std::string{\"password too short\"})`.\n4. Otherwise return `\"weak\"`, `\"moderate\"`, or `\"strong\"` as described above.\n5. `main()` must check the returned `std::expected` and print the correct line as described in Output — use the exact prefix `Strength: ` or `Error: `.\n6. Hidden tests include an empty string, a 3-character password, a 4-character password (boundary), an 8-character password (boundary), and a 12-character password (boundary).",
+        "starter_code": "#include <cassert>\n#include <expected>\n#include <iostream>\n#include <string>\n\n// TODO: implement validate_password\n// - return std::unexpected(\"password is empty\") for empty input\n// - return std::unexpected(\"password too short\") for length < 4\n// - return \"weak\" for length 4-7\n// - return \"moderate\" for length 8-11\n// - return \"strong\" for length >= 12\nstd::expected<std::string, std::string> validate_password(std::string password)\n{\n    // TODO: fill in\n    return std::unexpected(std::string{\"not implemented\"});\n}\n\nint main()\n{\n    std::string password;\n    std::cin >> password;\n\n    // TODO: call validate_password, then print\n    //   \"Strength: <rating>\"  on success\n    //   \"Error: <message>\"    on failure\n    std::expected<std::string, std::string> result = validate_password(password);\n    (void)result;\n\n    return 0;\n}\n",
+        "solution_code": "#include <cassert>\n#include <expected>\n#include <iostream>\n#include <string>\n\nstd::expected<std::string, std::string> validate_password(std::string password)\n{\n    if (password.empty())\n        return std::unexpected(std::string{\"password is empty\"});\n    if (password.length() < 4)\n        return std::unexpected(std::string{\"password too short\"});\n    if (password.length() < 8)\n        return std::string{\"weak\"};\n    if (password.length() < 12)\n        return std::string{\"moderate\"};\n    return std::string{\"strong\"};\n}\n\nint main()\n{\n    std::string password;\n    std::cin >> password;\n\n    std::expected<std::string, std::string> result = validate_password(password);\n    if (result)\n        std::cout << \"Strength: \" << *result << '\\n';\n    else\n        std::cout << \"Error: \" << result.error() << '\\n';\n\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "moderate password (8 chars)",
+            "stdin": "abcd1234",
+            "expected_stdout": "Strength: moderate\n",
+            "is_sample": true
+          },
+          {
+            "label": "hidden — too short (3 chars)",
+            "stdin": "abc",
+            "expected_stdout": "Error: password too short\n",
+            "is_sample": false
+          },
+          {
+            "label": "hidden — strong password (12+ chars)",
+            "stdin": "securepass12",
+            "expected_stdout": "Strength: strong\n",
+            "is_sample": false
+          }
+        ]
+      },
+      {
+        "title": "Safe Integer Division with std::expected and Exceptions",
+        "prompt_md": "## Goal\nComplete two functions — `safe_divide` and `process_divisions` — that together demonstrate using `std::expected` for an anticipated error (division by zero) and a `throw`/`catch` block for a truly exceptional condition (integer overflow detected when dividing `INT_MIN` by `-1`).\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20), the number of division pairs to process.\n- Lines 2 through N+1: each line contains two integers `dividend` and `divisor` separated by a space. Both integers are in the range -1000000 to 1000000.\n\n## Output\nFor each pair, print exactly one line in one of these three formats:\n- `Result: <value>` — when division succeeds (integer division, truncating toward zero).\n- `Error: division by zero` — when the divisor is exactly 0.\n- `Exception: overflow` — when the division would overflow (dividend is the minimum int value and divisor is -1).\n\n## Requirements\n1. `safe_divide` must have the signature:\n   `std::expected<int, std::string> safe_divide(int dividend, int divisor)`\n2. Inside `safe_divide`, if `divisor == 0` return `std::unexpected(std::string{\"division by zero\"})`.\n3. If `dividend == INT_MIN && divisor == -1`, throw a `std::overflow_error` with the message `\"overflow\"`. This is a genuinely exceptional condition — signed integer overflow is undefined behavior in C++, so we must detect and reject it before it happens.\n4. Otherwise return `dividend / divisor` (standard C++ integer division).\n5. `process_divisions` must have the signature `void process_divisions(int dividend, int divisor)`. It calls `safe_divide`, wraps it in a `try`/`catch (const std::overflow_error& e)` block, and prints the correct output line to `std::cout`.\n6. `main()` reads `N` pairs and calls `process_divisions` for each.\n7. Hidden tests include: a divisor of 0, the overflow case, and a case where N = 1 with a positive result.\n\n## Notes\n- Allowed headers: `<cassert>`, `<climits>`, `<expected>`, `<iostream>`, `<stdexcept>`, `<string>`.\n- `INT_MIN` is defined in `<climits>`.",
+        "starter_code": "#include <cassert>\n#include <climits>\n#include <expected>\n#include <iostream>\n#include <stdexcept>\n#include <string>\n\n// TODO: implement safe_divide\n// - return std::unexpected(\"division by zero\") when divisor == 0\n// - throw std::overflow_error(\"overflow\") when dividend == INT_MIN\n//   and divisor == -1 (signed overflow would be undefined behavior)\n// - otherwise return dividend / divisor\nstd::expected<int, std::string> safe_divide(int dividend, int divisor)\n{\n    // TODO: fill in\n    (void)dividend; (void)divisor;\n    return std::unexpected(std::string{\"not implemented\"});\n}\n\n// TODO: implement process_divisions\n// - call safe_divide inside a try/catch block\n// - print \"Result: <value>\", \"Error: <message>\", or\n//   \"Exception: <exception message>\" accordingly\nvoid process_divisions(int dividend, int divisor)\n{\n    // TODO: fill in\n    (void)dividend; (void)divisor;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i)\n    {\n        int a{}, b{};\n        std::cin >> a >> b;\n        process_divisions(a, b);\n    }\n    return 0;\n}\n",
+        "solution_code": "#include <cassert>\n#include <climits>\n#include <expected>\n#include <iostream>\n#include <stdexcept>\n#include <string>\n\nstd::expected<int, std::string> safe_divide(int dividend, int divisor)\n{\n    if (divisor == 0)\n        return std::unexpected(std::string{\"division by zero\"});\n    if (dividend == INT_MIN && divisor == -1)\n        throw std::overflow_error(\"overflow\");\n    return dividend / divisor;\n}\n\nvoid process_divisions(int dividend, int divisor)\n{\n    try\n    {\n        std::expected<int, std::string> result = safe_divide(dividend, divisor);\n        if (result)\n            std::cout << \"Result: \" << *result << '\\n';\n        else\n            std::cout << \"Error: \" << result.error() << '\\n';\n    }\n    catch (const std::overflow_error& e)\n    {\n        std::cout << \"Exception: \" << e.what() << '\\n';\n    }\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i)\n    {\n        int a{}, b{};\n        std::cin >> a >> b;\n        process_divisions(a, b);\n    }\n    return 0;\n}\n",
+        "test_cases": [
+          {
+            "label": "mixed: success and zero divisor",
+            "stdin": "3\n10 2\n5 0\n-15 3\n",
+            "expected_stdout": "Result: 5\nError: division by zero\nResult: -5\n",
+            "is_sample": true
+          },
+          {
+            "label": "single pair positive result",
+            "stdin": "1\n100 4\n",
+            "expected_stdout": "Result: 25\n",
+            "is_sample": false
+          },
+          {
+            "label": "all three cases including overflow",
+            "stdin": "3\n-2147483648 -1\n7 0\n20 4\n",
+            "expected_stdout": "Exception: overflow\nError: division by zero\nResult: 5\n",
+            "is_sample": false
+          }
+        ]
+      }
+    ]
+  },
+  "fixes_applied": [
+    {
+      "id": "M1",
+      "description": "Removed auto trailing return types from both exercises; replaced with explicit std::expected<std::string, std::string> return types"
+    },
+    {
+      "id": "M2",
+      "description": "Replaced exercise 9.4.1 (triangle classifier — duplicate of 9.2.2) with a password strength checker that uses a different domain"
+    },
+    {
+      "id": "M3",
+      "description": "Redesigned exercise 9.4.2: replaced throwing on negative divisor (routine input, contradicts lesson guidance) with throwing on INT_MIN/-1 overflow — a genuinely exceptional condition (undefined behavior in C++)"
+    },
+    {
+      "id": "M4",
+      "description": "Fixed summary cross-reference: changed 'covered in Common semantic errors in C++' to 'covered in detail in Assert and static_assert later in this chapter' since static_assert is actually introduced in lesson 9.6, not 9.3"
+    },
+    {
+      "id": "m2",
+      "description": "Fixed summary code example: added explicit return type instead of auto, included <iostream> instead of relying on <print>, used std::cout instead of std::println"
+    },
+    {
+      "id": "M1",
+      "description": "Removed std::format usage from exercise 9.4.2 solution; exception message is now a plain string literal"
+    }
+  ]
+}
