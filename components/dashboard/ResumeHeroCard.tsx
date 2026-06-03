@@ -79,7 +79,7 @@ export function ResumeHeroCard({
             <span className="font-medium text-foreground">{resumeLesson.title}</span>
           )}
           {variant === "complete" && (
-            <>You've completed the entire C++ curriculum. Revisit any lesson to reinforce your knowledge.</>
+            <>You&apos;ve completed the entire C++ curriculum. Revisit any lesson to reinforce your knowledge.</>
           )}
         </CardDescription>
       </CardHeader>
@@ -93,7 +93,7 @@ export function ResumeHeroCard({
             </div>
             <Progress value={modulePercent}>
               <ProgressLabel>Module progress</ProgressLabel>
-              <ProgressValue>{modulePercent}%</ProgressValue>
+              <ProgressValue>{() => `${modulePercent}%`}</ProgressValue>
             </Progress>
           </>
         )}

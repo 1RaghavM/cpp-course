@@ -1,9 +1,17 @@
-import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
+import { StatsHeatmap } from "@/components/stats/StatsHeatmap"
+import { ResumeHeroCard } from "@/components/dashboard/ResumeHeroCard"
+import { CurriculumProgressCard } from "@/components/dashboard/CurriculumProgressCard"
 import { requireServerSession } from "@/lib/auth/require-auth"
 import { createServiceClient } from "@/lib/supabase/server"
 import { buildCurriculum, flattenLessons } from "@/lib/dashboard/curriculum"
-import { computeStreakDays, computeWeeklyCompleted } from "@/lib/dashboard/resume"
+import {
+  computeStreakDays,
+  computeWeeklyCompleted,
+  computeResumeTarget,
+  computeResumeVariant,
+} from "@/lib/dashboard/resume"
+import type { LessonStatus, DashboardProgress } from "@/lib/dashboard/types"
 
 export const dynamic = "force-dynamic"
 
@@ -54,11 +62,6 @@ export default async function Page() {
   const curriculum = buildCurriculum(dbLessons)
   const allLessons = flattenLessons(curriculum)
 
-  const lessonProgress: Record<string, string> = {}
-  for (const row of progressRows) {
-    lessonProgress[row.lesson_id] = row.state
-  }
-
   const totalCompleted = progressRows.filter(
     (r) => r.state === "completed" || r.state === "skipped"
   ).length
@@ -81,28 +84,70 @@ export default async function Page() {
   const lessonsCompletedThisWeek = computeWeeklyCompleted(weeklyRecords, today)
   const weeklyGoal = statsError ? null : (userStats?.weekly_goal ?? null)
 
-  const tableData = allLessons.map((lesson, idx) => {
-    const state = lessonProgress[lesson.id]
-    const mod = curriculum.find((m) => m.id === lesson.moduleId)
-    const status =
-      state === "completed" || state === "skipped"
-        ? "Done"
-        : state === "in_progress"
-          ? "In Progress"
-          : "Not Started"
-
-    return {
-      id: idx + 1,
-      header: lesson.title,
-      type: mod?.title ?? "",
-      status,
-      slug: lesson.slug,
-      lessonId: lesson.id,
+  const activityData: Record<string, number> = {}
+  for (const row of progressRows) {
+    if (row.last_visit_at) {
+      const dateStr = row.last_visit_at.slice(0, 10)
+      activityData[dateStr] = (activityData[dateStr] ?? 0) + 1
     }
-  })
+    if (row.completed_at) {
+      const dateStr = row.completed_at.slice(0, 10)
+      activityData[dateStr] = (activityData[dateStr] ?? 0) + 1
+    }
+  }
+
+  const progressMap: Record<string, string> = {}
+  for (const row of progressRows) {
+    progressMap[row.lesson_id] = row.state
+  }
+
+  let lastActiveLessonId: string | null = null
+  let latestTime = ""
+  for (const row of progressRows) {
+    if (row.state === "in_progress" && row.last_visit_at && row.last_visit_at > latestTime) {
+      latestTime = row.last_visit_at
+      lastActiveLessonId = row.lesson_id
+    }
+  }
+
+  const resumeProgress: DashboardProgress = {
+    lessonProgress: Object.fromEntries(
+      progressRows.map((r) => [
+        r.lesson_id,
+        { status: r.state as LessonStatus, lastVisitAt: r.last_visit_at ?? "" },
+      ])
+    ),
+    streakDays,
+    lastActiveDate: null,
+    weeklyGoal,
+    totalLessonsCompleted: totalCompleted,
+    lessonsCompletedThisWeek,
+  }
+  const resumeTarget = computeResumeTarget(curriculum, resumeProgress, lastActiveLessonId)
+  const resumeVariant = computeResumeVariant(curriculum, resumeProgress)
+
+  const resumeModule = curriculum.find((m) => m.id === resumeTarget.moduleId)!
+  const moduleName = resumeModule.title
+  const sortedModuleLessons = [...resumeModule.lessons].sort((a, b) => a.order - b.order)
+  const lessonPosition = sortedModuleLessons.findIndex((l) => l.id === resumeTarget.id) + 1
+  const moduleLessonCount = resumeModule.lessons.length
+  const moduleCompletedCount = resumeModule.lessons.filter((l) => {
+    const s = progressMap[l.id]
+    return s === "completed" || s === "skipped"
+  }).length
 
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+      <div className="px-4 lg:px-6">
+        <ResumeHeroCard
+          resumeLesson={{ title: resumeTarget.title, slug: resumeTarget.slug }}
+          moduleName={moduleName}
+          lessonPosition={lessonPosition}
+          moduleLessonCount={moduleLessonCount}
+          moduleCompletedCount={moduleCompletedCount}
+          variant={resumeVariant}
+        />
+      </div>
       <SectionCards
         totalLessons={allLessons.length}
         totalCompleted={totalCompleted}
@@ -111,7 +156,17 @@ export default async function Page() {
         lessonsCompletedThisWeek={lessonsCompletedThisWeek}
         weeklyGoal={weeklyGoal}
       />
-      <DataTable data={tableData} />
+      <div className="px-4 lg:px-6">
+        <CurriculumProgressCard
+          curriculum={curriculum}
+          progressMap={progressMap}
+          totalCompleted={totalCompleted}
+          totalLessons={allLessons.length}
+        />
+      </div>
+      <div className="px-4 lg:px-6">
+        <StatsHeatmap activityData={activityData} />
+      </div>
     </div>
   )
 }
