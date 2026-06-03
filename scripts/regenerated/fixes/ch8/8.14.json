@@ -13,35 +13,34 @@
         {
           "label": "Seed 42, 5 values — sums must match",
           "stdin": "42\n5",
-          "expected_stdout_regex": "Sum 1: (\\d+)\\nSum 2: \\1\\nMatch: yes\\n",
-          "expected_stdout_contains": "Match: yes",
-          "is_sample": true
+          "is_sample": true,
+          "expected_stdout": "Sum 1: 3039\nSum 2: 3039\nMatch: yes\n"
         },
         {
           "label": "Seed 0, 10 values — sums must match",
           "stdin": "0\n10",
-          "expected_stdout_contains": "Match: yes",
-          "is_sample": false
+          "is_sample": false,
+          "expected_stdout": "Sum 1: 6605\nSum 2: 6605\nMatch: yes\n"
         },
         {
           "label": "Seed 999, 1 value — sums must match",
           "stdin": "999\n1",
-          "expected_stdout_contains": "Match: yes",
-          "is_sample": false
+          "is_sample": false,
+          "expected_stdout": "Sum 1: 804\nSum 2: 804\nMatch: yes\n"
         }
       ]
     },
     {
       "title": "Random Range Validator",
-      "prompt_md": "## Random Range Validator\n\nWrite a program that generates random numbers in a user-specified range and validates they are all within bounds.\n\n### Input\n\nLine 1: `int lo` and `int hi` (space-separated).\nLine 2: `int n` — number of values to generate.\n\n### Output\n\nGenerate `n` values using `std::mt19937` seeded from `std::random_device{}()` and `std::uniform_int_distribution<int>{lo, hi}`. Track:\n- The **minimum** value generated.\n- The **maximum** value generated.\n- Whether **all** values satisfy `lo <= value <= hi`.\n\nPrint exactly three lines:\n```\nMin: <min_value>\nMax: <max_value>\nAll valid: yes\n```\n(or `All valid: no` if any value fell outside the range — which should never happen with a correct distribution.)\n\n### Example\n\n```\nInput:\n1 6\n100\nOutput:\nMin: <some value >= 1>\nMax: <some value <= 6>\nAll valid: yes\n```\n\n**Note:** Because the output depends on the random seed, tests verify structural properties: all values in range, min >= lo, max <= hi.",
-      "starter_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{}, hi{}, n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ std::random_device{}() };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    int minVal{ hi + 1 };  // start above max possible\n    int maxVal{ lo - 1 };  // start below min possible\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int val{ dist(mt) };\n        // TODO: update minVal and maxVal\n        // TODO: check if val is outside [lo, hi] and set allValid = false if so\n    }\n\n    // TODO: Print \"Min: <minVal>\"\n    // TODO: Print \"Max: <maxVal>\"\n    // TODO: Print \"All valid: yes\" or \"All valid: no\"\n\n    return 0;\n}\n",
-      "solution_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{}, hi{}, n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ std::random_device{}() };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    int minVal{ hi + 1 };\n    int maxVal{ lo - 1 };\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int val{ dist(mt) };\n        if (val < minVal) minVal = val;\n        if (val > maxVal) maxVal = val;\n        if (val < lo || val > hi)\n            allValid = false;\n    }\n\n    std::cout << \"Min: \" << minVal << '\\n';\n    std::cout << \"Max: \" << maxVal << '\\n';\n    if (allValid)\n        std::cout << \"All valid: yes\\n\";\n    else\n        std::cout << \"All valid: no\\n\";\n\n    return 0;\n}\n",
+      "prompt_md": "## Random Range Validator\n\nWrite a program that generates random numbers in a user-specified range and validates they are all within bounds.\n\n### Input\n\nLine 1: `int lo` and `int hi` (space-separated).\nLine 2: `int n` — number of values to generate.\n\n### Output\n\nGenerate `n` values using `std::mt19937` with a **fixed seed of `42`** (so results are reproducible for grading) and `std::uniform_int_distribution<int>{lo, hi}`. Track:\n- The **minimum** value generated.\n- The **maximum** value generated.\n- Whether **all** values satisfy `lo <= value <= hi`.\n\nPrint exactly three lines:\n```\nMin: <min_value>\nMax: <max_value>\nAll valid: yes\n```\n(or `All valid: no` if any value fell outside the range — which should never happen with a correct distribution.)\n\n### Example\n\n```\nInput:\n1 6\n100\nOutput:\nMin: <some value >= 1>\nMax: <some value <= 6>\nAll valid: yes\n```\n\n**Note:** Because the engine uses a fixed seed, the generated sequence is fully deterministic. Print exactly the three lines shown above.",
+      "starter_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{}, hi{}, n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ 42 };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    int minVal{ hi + 1 };  // start above max possible\n    int maxVal{ lo - 1 };  // start below min possible\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int val{ dist(mt) };\n        // TODO: update minVal and maxVal\n        // TODO: check if val is outside [lo, hi] and set allValid = false if so\n    }\n\n    // TODO: Print \"Min: <minVal>\"\n    // TODO: Print \"Max: <maxVal>\"\n    // TODO: Print \"All valid: yes\" or \"All valid: no\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <random>\n\nint main()\n{\n    int lo{}, hi{}, n{};\n    std::cin >> lo >> hi >> n;\n\n    std::mt19937 mt{ 42 };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    int minVal{ hi + 1 };\n    int maxVal{ lo - 1 };\n    bool allValid{ true };\n\n    for (int i{ 0 }; i < n; ++i) {\n        int val{ dist(mt) };\n        if (val < minVal) minVal = val;\n        if (val > maxVal) maxVal = val;\n        if (val < lo || val > hi)\n            allValid = false;\n    }\n\n    std::cout << \"Min: \" << minVal << '\\n';\n    std::cout << \"Max: \" << maxVal << '\\n';\n    if (allValid)\n        std::cout << \"All valid: yes\\n\";\n    else\n        std::cout << \"All valid: no\\n\";\n\n    return 0;\n}\n",
       "test_cases": [
         {
           "label": "Range 1-6, 100 values — all must be valid",
           "stdin": "1 6\n100",
-          "expected_stdout_contains": "All valid: yes",
-          "is_sample": true
+          "is_sample": true,
+          "expected_stdout": "Min: 1\nMax: 6\nAll valid: yes\n"
         },
         {
           "label": "Range 50-50, 10 values — min and max must be 50",
@@ -52,8 +51,8 @@
         {
           "label": "Range -100 to 100, 500 values — all valid",
           "stdin": "-100 100\n500",
-          "expected_stdout_contains": "All valid: yes",
-          "is_sample": false
+          "is_sample": false,
+          "expected_stdout": "Min: -100\nMax: 100\nAll valid: yes\n"
         }
       ]
     }

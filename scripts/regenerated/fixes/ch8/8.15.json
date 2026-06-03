@@ -45,14 +45,14 @@
         {
           "label": "Various ranges — all valid",
           "stdin": "1 10\n-5 5\n0 1000",
-          "expected_stdout_contains": "(valid)",
-          "is_sample": false
+          "is_sample": false,
+          "expected_stdout": "Range [1, 10]: 7 (valid)\nRange [-5, 5]: 2 (valid)\nRange [0, 1000]: 286 (valid)\n"
         },
         {
           "label": "Single query — must be valid",
           "stdin": "1 6",
-          "expected_stdout_contains": "(valid)",
-          "is_sample": false
+          "is_sample": false,
+          "expected_stdout": "Range [1, 6]: 5 (valid)\n"
         }
       ]
     }

@@ -17,39 +17,27 @@
         "is_sample": false,
         "stdin": "",
         "expected_stdout": ""
-      },
-      {
-        "label": "Exit code is 0",
-        "is_sample": false,
-        "stdin": "",
-        "expected_stdout": ""
       }
     ]
   },
   {
     "title": "Commented-Out Code",
-    "prompt_md": "## Goal\n\nUse comments to change which `return` statement actually executes, without deleting any line.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program must return `42` from `main` (exit code 42). It must produce no printed output.\n\n## Requirements\n\n1. The starter code has two `return` statements. Currently the program returns `0`.\n2. **Comment out** the `return 0;` statement using a single-line comment (`//`) so the compiler skips it.\n3. **Uncomment** the line `// return 42;` so it becomes active code.\n4. Do **not** delete or add any lines — only add or remove comment markers.",
-    "starter_code": "int main()\n{\n    return 0;\n    // return 42;\n}\n",
-    "solution_code": "int main()\n{\n    // return 0;\n    return 42;\n}\n",
+    "prompt_md": "## Goal\n\nUse comments to change which print statement actually executes, without deleting any line.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program must print `42` on its own line.\n\n## Requirements\n\n1. The starter code has two print statements. Currently the program prints `0`.\n2. **Comment out** the `std::cout << 0` line using a single-line comment (`//`) so the compiler skips it.\n3. **Uncomment** the line `// std::cout << 42` so it becomes active code.\n4. Do **not** delete or add any lines — only add or remove comment markers.\n\n*Note:* You will learn about `std::cout` in detail in the next lesson. For now, just add and remove the `//` markers as instructed.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    std::cout << 0 << '\\n';\n    // std::cout << 42 << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    // std::cout << 0 << '\\n';\n    std::cout << 42 << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Program returns exit code 42",
+        "label": "Prints 42",
         "is_sample": true,
         "stdin": "",
-        "expected_stdout": ""
+        "expected_stdout": "42\n"
       },
       {
-        "label": "No output produced",
+        "label": "Exactly one line of output",
         "is_sample": false,
         "stdin": "",
-        "expected_stdout": ""
-      },
-      {
-        "label": "Correct exit code verified",
-        "is_sample": false,
-        "stdin": "",
-        "expected_stdout": ""
+        "expected_stdout": "42\n"
       }
     ]
   }

@@ -1,0 +1,60 @@
+{
+  "number": "14.1",
+  "title": "Introduction to object-oriented programming",
+  "sort_order": 183,
+  "summary_md": "# Introduction to Object-Oriented Programming\n\nObject-oriented programming (OOP) organizes code around **objects** — bundles of data and the functions that operate on that data. Before classes, you wrote free functions that acted on variables passed in as arguments. OOP flips that relationship: the data and its behavior live together in one unit.\n\nThe three core ideas underpinning OOP are:\n\n- **Encapsulation** — hiding internal state and exposing only what callers need\n- **Inheritance** — building new types by extending existing ones\n- **Polymorphism** — treating different types through a shared interface\n\nThis chapter focuses on **classes**, C++'s primary tool for defining your own types.\n\n## Classes vs. Structs\n\nA `class` groups member variables (data) with member functions (methods). In C++, `struct` and `class` are nearly identical — the only built-in difference is default access: `struct` members are `public` by default, `class` members are `private`. In practice, `struct` is conventionally used for simple data aggregates, and `class` for types with meaningful behavior and invariants.\n\n## A Minimal Example\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Book {\n    std::string title;\n    int pages{};\n\n    void print() const {\n        std::cout << title << \" (\" << pages << \" pages)\\n\";\n    }\n};\n\nint main() {\n    Book b{\"Clean Code\", 431};\n    std::cout << b.title << '\\n';\n    b.print();\n}\n```\n\n`Book` has two public member variables and one member function. Because this is a `struct`, all members are public by default. The object is created using **aggregate initialization** — the `{\"Clean Code\", 431}` syntax fills in the members in declaration order.\n\nThe `const` qualifier on `print()` is a promise: calling this method will not modify the object. Get into the habit of marking any method that only reads data as `const` — it communicates intent and enables the compiler to catch accidental mutations.\n\n## Why This Matters\n\nWithout OOP, related data drifts apart across your codebase. A `Book` might become three separate variables managed by scattered functions, with nothing preventing callers from putting the page count at -500. Classes centralize that data and — in upcoming lessons on access specifiers and constructors — will let you enforce rules about it.\n\nUpcoming lessons in this chapter will cover member functions in depth, access specifiers, constructors, and how to design a class interface that's hard to misuse.",
+  "exercises": [
+    {
+      "title": "Temperature Struct with Conversion Method",
+      "prompt_md": "## Goal\nComplete a `Temperature` struct that stores a temperature in Celsius and provides member functions to retrieve it in both Celsius and Fahrenheit.\n\n## Input\n- Line 1: a single floating-point number representing a temperature in Celsius (e.g. `100.0`). The value is in the range -273.15 to 1000.0.\n\n## Output\nPrint exactly two lines:\n- Line 1: `Celsius: X` where X is the stored Celsius value printed with 2 decimal places.\n- Line 2: `Fahrenheit: Y` where Y is the converted Fahrenheit value printed with 2 decimal places.\n\nExample for input `100.0`:\n```\nCelsius: 100.00\nFahrenheit: 212.00\n```\n\n## Requirements\n1. Define a `struct` named `Temperature` with a public member variable `celsius` of type `double`, zero-initialized with a default member initializer (`double celsius{}`)..\n2. Provide a `const` member function `getCelsius()` that returns the stored value as a `double`.\n3. Provide a `const` member function `getFahrenheit()` that returns `celsius * 9.0 / 5.0 + 32.0` as a `double`.\n4. `main()` reads one `double` from stdin, constructs a `Temperature` object using aggregate initialization (`Temperature t{value};`), and prints both values with `std::fixed` and `std::setprecision(2)`.\n5. Hidden tests cover the freezing point (`0.0`), a negative value (`-40.0`, which equals -40 Fahrenheit), and the boiling point (`100.0`).\n",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define the Temperature struct here.\n// - Public member: double celsius{}\n// - const member function getCelsius() -> double\n// - const member function getFahrenheit() -> double (formula: celsius * 9.0 / 5.0 + 32.0)\n\nint main() {\n    double c;\n    std::cin >> c;\n\n    // TODO: Construct a Temperature object using aggregate initialization: Temperature t{c};\n    // Then print:\n    //   \"Celsius: \" followed by getCelsius() with 2 decimal places\n    //   \"Fahrenheit: \" followed by getFahrenheit() with 2 decimal places\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Temperature {\n    double celsius{};\n\n    double getCelsius() const {\n        return celsius;\n    }\n\n    double getFahrenheit() const {\n        return celsius * 9.0 / 5.0 + 32.0;\n    }\n};\n\nint main() {\n    double c;\n    std::cin >> c;\n\n    Temperature t{c};\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Boiling point",
+          "stdin": "100.0\n",
+          "expected_stdout": "Celsius: 100.00\nFahrenheit: 212.00\n",
+          "is_sample": true
+        },
+        {
+          "label": "Freezing point",
+          "stdin": "0.0\n",
+          "expected_stdout": "Celsius: 0.00\nFahrenheit: 32.00\n",
+          "is_sample": false
+        },
+        {
+          "label": "Negative equal point",
+          "stdin": "-40.0\n",
+          "expected_stdout": "Celsius: -40.00\nFahrenheit: -40.00\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Rectangle Struct with Area and Perimeter",
+      "prompt_md": "## Goal\nComplete a `Rectangle` struct that stores the dimensions of a rectangle and can report its area and perimeter. Then use it to process multiple rectangles read from stdin.\n\n## Input\n- Line 1: a single integer N (1 ≤ N ≤ 10), the number of rectangles.\n- Lines 2..N+1: each line contains two positive integers W and H (1 ≤ W, H ≤ 1000), separated by a space, representing the width and height of one rectangle.\n\n## Output\nFor each rectangle, print exactly one line in the format:\n`W x H -> Area: A, Perimeter: P`\n\nwhere W, H, A, and P are plain integers (no decimal point). Print N such lines total, in the same order as the input.\n\nExample for N=2, rectangles (3, 4) and (5, 5):\n```\n3 x 4 -> Area: 12, Perimeter: 14\n5 x 5 -> Area: 25, Perimeter: 20\n```\n\n## Requirements\n1. Define a `struct` named `Rectangle` with public member variables `width` and `height`, both of type `int`, zero-initialized with default member initializers.\n2. Provide a `const` member function `area()` that returns `width * height` as an `int`.\n3. Provide a `const` member function `perimeter()` that returns `2 * (width_ + height_)` as an `int`.\n4. `main()` reads N, then loops N times: each iteration reads W and H, constructs a `Rectangle` using aggregate initialization (`Rectangle r{w, h};`), and prints the required output line.\n5. Hidden tests cover N=1 with a square (e.g. `7 7`), and a case where W ≠ H (e.g. `1 1000`).\n",
+      "starter_code": "#include <iostream>\n\n// TODO: Define the Rectangle struct here.\n// - Public members: int width{}, int height{}\n// - const member function area()      -> int  (width * height)\n// - const member function perimeter() -> int  (2 * (width + height))\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n\n        // TODO: Construct a Rectangle using aggregate initialization: Rectangle r{w, h};\n        // Then print: \"W x H -> Area: A, Perimeter: P\"\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nstruct Rectangle {\n    int width{};\n    int height{};\n\n    int area() const      { return width * height; }\n    int perimeter() const { return 2 * (width + height); }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n\n        Rectangle r{w, h};\n        std::cout << r.width << \" x \" << r.height\n                  << \" -> Area: \" << r.area()\n                  << \", Perimeter: \" << r.perimeter() << '\\n';\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Two rectangles sample",
+          "stdin": "2\n3 4\n5 5\n",
+          "expected_stdout": "3 x 4 -> Area: 12, Perimeter: 14\n5 x 5 -> Area: 25, Perimeter: 20\n",
+          "is_sample": true
+        },
+        {
+          "label": "Single square",
+          "stdin": "1\n7 7\n",
+          "expected_stdout": "7 x 7 -> Area: 49, Perimeter: 28\n",
+          "is_sample": false
+        },
+        {
+          "label": "Extreme aspect ratio",
+          "stdin": "1\n1 1000\n",
+          "expected_stdout": "1 x 1000 -> Area: 1000, Perimeter: 2002\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -498,6 +498,37 @@ async function main(): Promise<void> {
   let totalFailed = 0;
   let totalSkipped = 0;
 
+  // Ch1 exercise-only fixes live in scripts/regenerated/1.X_exercises.json (no fixes/ subdir)
+  if (!CHAPTER_FILTER || CHAPTER_FILTER === "1") {
+    const regenDir = resolve(__dirname, "regenerated");
+    const ch1Files = readdirSync(regenDir).filter((f) =>
+      /^1\.\d+_exercises\.json$/.test(f)
+    );
+    if (ch1Files.length > 0) {
+      console.log(`\n${"=".repeat(60)}`);
+      console.log(`Chapter 1`);
+      console.log(`${"=".repeat(60)}`);
+      console.log(`  Found ${ch1Files.length} lesson exercise fixes`);
+
+      for (const f of ch1Files.sort()) {
+        const lessonNum = f.replace("_exercises.json", "");
+        const exercises: ExerciseData[] = JSON.parse(
+          readFileSync(join(regenDir, f), "utf-8")
+        );
+        const fix: LessonFix = { lessonNumber: lessonNum, exercises };
+        totalLessons++;
+        const result = await pushLessonFix(supabase, fix);
+        if (result.ok) {
+          console.log(`  ${fix.lessonNumber}: ✓ ${result.message}`);
+          totalSuccess++;
+        } else {
+          console.error(`  ${fix.lessonNumber}: ✗ ${result.message}`);
+          totalFailed++;
+        }
+      }
+    }
+  }
+
   for (const chDir of chapterDirs) {
     const chNum = chDir.replace("ch", "");
     if (CHAPTER_FILTER && chNum !== CHAPTER_FILTER) continue;

@@ -1,0 +1,60 @@
+{
+  "number": "14.3",
+  "title": "Member functions",
+  "sort_order": 185,
+  "summary_md": "## Member Functions\n\nA **member function** is a function declared inside a class body. It has direct access to the class's data members without needing them passed as arguments \u2014 the function operates implicitly on the object it was called through.\n\n```cpp\n#include <iostream>\n\nclass Circle {\npublic:\n    double radius {};\n\n    double area() const {\n        return 3.14159 * radius * radius;\n    }\n\n    void scale(double factor) {\n        radius *= factor;\n    }\n};\n\nint main() {\n    Circle c { .radius = 5.0 };\n    std::cout << \"Area: \" << c.area() << '\\n';\n    c.scale(2.0);\n    std::cout << \"Scaled area: \" << c.area() << '\\n';\n}\n```\n\n### Calling member functions\n\nMember functions are called with the dot operator on an object: `c.area()`. Inside the function body, any bare name like `radius` refers to the data member of the object the function was called on. This is the core idea introduced back in *Introduction to object-oriented programming*: data and behavior are bundled together.\n\n### The `const` qualifier\n\nAppending `const` after the parameter list marks a member function as read-only. A `const` member function promises not to modify the object's data members. Calling a non-`const` function on a `const` object is a compile error, so mark every member function that doesn't mutate state as `const`. It's a good habit from day one.\n\n- `double area() const` \u2014 read-only, safe to call on `const Circle`\n- `void scale(double factor)` \u2014 mutates `radius`, cannot be `const`\n\n### Declaration vs. definition\n\nMember functions can be defined inline inside the class body (as above) or declared inside and defined outside using the `ClassName::` scope resolution operator. For small classes, inline definitions are fine. Larger projects typically split declaration (header) from definition (source file) to reduce compile dependencies \u2014 a pattern covered in later chapters.\n\n### Why this matters\n\nWithout member functions, you'd write free functions that take a `Circle` by reference and manually access its fields \u2014 essentially what C does with structs. Member functions let the class own its own operations, enforce invariants (such as preventing a negative radius), and form the foundation for everything in *Introduction to classes* and beyond: constructors, access control, and operator overloading all build directly on this mechanism.",
+  "exercises": [
+    {
+      "title": "Rectangle Member Functions",
+      "prompt_md": "## Goal\nComplete the `Rectangle` class by implementing three member functions: `area()`, `perimeter()`, and `scale(double factor)`, then read a rectangle's dimensions and a scale factor from stdin and print the results.\n\n## Input\n- Line 1: two doubles separated by a space \u2014 the width and height of the rectangle (both between 0.1 and 1000.0)\n- Line 2: one double \u2014 the scale factor (between 0.1 and 10.0)\n\n## Output\nPrint exactly four lines in this order:\n- `Width: <w>` \u2014 the original width, two decimal places\n- `Height: <h>` \u2014 the original height, two decimal places\n- `Area: <a>` \u2014 area after scaling, two decimal places\n- `Perimeter: <p>` \u2014 perimeter after scaling, two decimal places\n\nExample for width=4.0, height=3.0, factor=2.0:\n```\nWidth: 8.00\nHeight: 6.00\nArea: 48.00\nPerimeter: 28.00\n```\n\n## Requirements\n1. The class must be named `Rectangle` with data members `double width` and `double height`.\n2. `double area() const` \u2014 returns `width * height`. Must be marked `const`.\n3. `double perimeter() const` \u2014 returns `2 * (width + height)`. Must be marked `const`.\n4. `void scale(double factor)` \u2014 multiplies both `width` and `height` by `factor`. Must NOT be `const`.\n5. Call `scale` before printing any output; print the scaled width, height, area, and perimeter.\n6. All floating-point output must use exactly two decimal places.\n7. Hidden tests cover: a scale factor of 1.0 (no change), a very small rectangle (0.1 \u00d7 0.1), and a large scale factor.\n\n## Notes\n- Use `#include <iostream>` and `std::fixed` / `std::setprecision(2)` for formatted output.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width {};\n    double height {};\n\n    // TODO: implement area() const\n    // returns width * height\n\n    // TODO: implement perimeter() const\n    // returns 2 * (width + height)\n\n    // TODO: implement scale(double factor)\n    // multiplies width and height by factor\n};\n\nint main() {\n    double w {}, h {}, factor {};\n    std::cin >> w >> h >> factor;\n\n    Rectangle r { .width = w, .height = h };\n\n    // TODO: call scale on r using factor\n\n    std::cout << std::fixed << std::setprecision(2);\n\n    // TODO: print Width, Height, Area, Perimeter\n    // (scaled values)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width {};\n    double height {};\n\n    double area() const {\n        return width * height;\n    }\n\n    double perimeter() const {\n        return 2.0 * (width + height);\n    }\n\n    void scale(double factor) {\n        width  *= factor;\n        height *= factor;\n    }\n};\n\nint main() {\n    double w {}, h {}, factor {};\n    std::cin >> w >> h >> factor;\n\n    Rectangle r { .width = w, .height = h };\n    r.scale(factor);\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Width: \"     << r.width       << '\\n';\n    std::cout << \"Height: \"    << r.height      << '\\n';\n    std::cout << \"Area: \"      << r.area()      << '\\n';\n    std::cout << \"Perimeter: \" << r.perimeter() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample \u2014 4\u00d73 scaled by 2",
+          "stdin": "4.0 3.0\n2.0\n",
+          "expected_stdout": "Width: 8.00\nHeight: 6.00\nArea: 48.00\nPerimeter: 28.00\n",
+          "is_sample": true
+        },
+        {
+          "label": "Scale factor 1.0 \u2014 no change",
+          "stdin": "5.0 2.5\n1.0\n",
+          "expected_stdout": "Width: 5.00\nHeight: 2.50\nArea: 12.50\nPerimeter: 15.00\n",
+          "is_sample": false
+        },
+        {
+          "label": "Tiny rectangle scaled up",
+          "stdin": "0.1 0.1\n10.0\n",
+          "expected_stdout": "Width: 1.00\nHeight: 1.00\nArea: 1.00\nPerimeter: 4.00\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Temperature Tracker with Min/Max Member Functions",
+      "prompt_md": "## Goal\nComplete the `TemperatureLog` class, which stores up to 10 temperature readings in a fixed-size array data member, and exposes member functions to add readings and query statistics.\n\n## Input\n- Line 1: integer N (1 \u2264 N \u2264 10) \u2014 number of temperature readings\n- Lines 2..N+1: one double per line \u2014 each temperature reading (between -50.0 and 150.0)\n\n## Output\nPrint exactly three lines:\n- `Min: <value>` \u2014 the minimum temperature, one decimal place\n- `Max: <value>` \u2014 the maximum temperature, one decimal place\n- `Average: <value>` \u2014 the average of all readings, two decimal places\n\nExample for readings 20.0, 35.5, 15.0:\n```\nMin: 15.0\nMax: 35.5\nAverage: 23.50\n```\n\n## Requirements\n1. The class must be named `TemperatureLog` with data members: `double readings[10]` and `int count` (initialized to 0).\n2. `void add(double temp)` \u2014 stores `temp` in the next slot of `readings` and increments `count`. Not `const`.\n3. `double minimum() const` \u2014 returns the smallest value among the first `count` elements. Must be marked `const`.\n4. `double maximum() const` \u2014 returns the largest value among the first `count` elements. Must be marked `const`.\n5. `double average() const` \u2014 returns the sum of the first `count` elements divided by `count`. Must be marked `const`.\n6. `min` and `max` labels use one decimal place; `Average` label uses two decimal places.\n7. Hidden tests cover: N=1 (single reading, where min == max == average), all identical values, and N=10 (maximum capacity).\n\n## Notes\n- Use `#include <iostream>` and `std::fixed` / `std::setprecision` for formatted output; you may change precision between lines.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass TemperatureLog {\npublic:\n    double readings[10] {};\n    int count {};\n\n    // TODO: implement add(double temp)\n    // stores temp in readings[count] and increments count\n\n    // TODO: implement minimum() const\n    // returns the smallest value in readings[0..count-1]\n\n    // TODO: implement maximum() const\n    // returns the largest value in readings[0..count-1]\n\n    // TODO: implement average() const\n    // returns the sum of readings[0..count-1] divided by count\n};\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    TemperatureLog log {};\n\n    for (int i {}; i < n; ++i) {\n        double t {};\n        std::cin >> t;\n        // TODO: call log.add(t)\n    }\n\n    std::cout << std::fixed;\n\n    // TODO: print Min (1 decimal), Max (1 decimal), Average (2 decimals)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass TemperatureLog {\npublic:\n    double readings[10] {};\n    int count {};\n\n    void add(double temp) {\n        readings[count] = temp;\n        ++count;\n    }\n\n    double minimum() const {\n        double min { readings[0] };\n        for (int i { 1 }; i < count; ++i)\n            if (readings[i] < min)\n                min = readings[i];\n        return min;\n    }\n\n    double maximum() const {\n        double max { readings[0] };\n        for (int i { 1 }; i < count; ++i)\n            if (readings[i] > max)\n                max = readings[i];\n        return max;\n    }\n\n    double average() const {\n        double sum {};\n        for (int i {}; i < count; ++i)\n            sum += readings[i];\n        return sum / count;\n    }\n};\n\nint main() {\n    int n {};\n    std::cin >> n;\n\n    TemperatureLog log {};\n\n    for (int i {}; i < n; ++i) {\n        double t {};\n        std::cin >> t;\n        log.add(t);\n    }\n\n    std::cout << std::fixed;\n    std::cout << std::setprecision(1) << \"Min: \"     << log.minimum() << '\\n';\n    std::cout << std::setprecision(1) << \"Max: \"     << log.maximum() << '\\n';\n    std::cout << std::setprecision(2) << \"Average: \" << log.average() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample \u2014 three readings",
+          "stdin": "3\n20.0\n35.5\n15.0\n",
+          "expected_stdout": "Min: 15.0\nMax: 35.5\nAverage: 23.50\n",
+          "is_sample": true
+        },
+        {
+          "label": "Single reading",
+          "stdin": "1\n42.0\n",
+          "expected_stdout": "Min: 42.0\nMax: 42.0\nAverage: 42.00\n",
+          "is_sample": false
+        },
+        {
+          "label": "Ten readings at maximum capacity",
+          "stdin": "10\n10.0\n20.0\n30.0\n40.0\n50.0\n60.0\n70.0\n80.0\n90.0\n100.0\n",
+          "expected_stdout": "Min: 10.0\nMax: 100.0\nAverage: 55.00\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

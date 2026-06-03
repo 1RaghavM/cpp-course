@@ -17,39 +17,27 @@
         "is_sample": false,
         "stdin": "",
         "expected_stdout": ""
-      },
-      {
-        "label": "Compiles cleanly with no warnings",
-        "is_sample": false,
-        "stdin": "",
-        "expected_stdout": ""
       }
     ]
   },
   {
-    "title": "Use statements to compute and return a value",
-    "prompt_md": "## Goal\n\nWrite a program that uses declaration statements and expression statements to perform a simple computation, then returns the result as the program's exit code.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code carries the result.\n\n## Requirements\n\n1. Declare an integer variable `a` and initialize it to `3`.\n2. Declare an integer variable `b` and initialize it to `4`.\n3. Declare an integer variable `result` with initial value `0`.\n4. Use an expression statement to assign `a + b` to `result`.\n5. Return `result` from `main`.\n\nThe program's exit code should be `7` (since 3 + 4 = 7).\n\nDo **not** use `#include`, `cout`, `cin`, or any library features.",
-    "starter_code": "int main()\n{\n    // TODO: Declare integer variable 'a' and initialize it to 3\n\n    // TODO: Declare integer variable 'b' and initialize it to 4\n\n    // TODO: Declare integer variable 'result' with initial value 0\n\n    // TODO: Assign a + b to result\n\n    // TODO: Return result from main\n    return 0;\n}\n",
-    "solution_code": "int main()\n{\n    int a = 3;\n    int b = 4;\n    int result = 0;\n\n    result = a + b;\n\n    return result;\n}\n",
+    "title": "Use statements to compute and print a value",
+    "prompt_md": "## Goal\n\nWrite a program that uses declaration statements and expression statements to perform a simple computation, then prints the result.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: the result of adding two numbers.\n\n## Requirements\n\n1. Declare an integer variable `a` and initialize it to `3`.\n2. Declare an integer variable `b` and initialize it to `4`.\n3. Declare an integer variable `result` with initial value `0`.\n4. Use an expression statement to assign `a + b` to `result`.\n5. Print `result` using the `std::cout` line provided in the starter code.\n6. Return `0` from `main`.\n\nThe output should be `7` (since 3 + 4 = 7).\n\n*Note:* You will learn about `std::cout` in detail in the next lesson. For now, the output line is provided for you — just make sure `result` holds the right value before that line runs.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: Declare integer variable 'a' and initialize it to 3\n\n    // TODO: Declare integer variable 'b' and initialize it to 4\n\n    // TODO: Declare integer variable 'result' with initial value 0\n\n    // TODO: Assign a + b to result\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 3;\n    int b = 4;\n    int result = 0;\n\n    result = a + b;\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Exit code is 7 (3 + 4)",
+        "label": "Prints 7 (3 + 4)",
         "is_sample": true,
         "stdin": "",
-        "expected_stdout": ""
+        "expected_stdout": "7\n"
       },
       {
-        "label": "No output produced",
+        "label": "Exactly one line of output",
         "is_sample": false,
         "stdin": "",
-        "expected_stdout": ""
-      },
-      {
-        "label": "Compiles cleanly with no warnings",
-        "is_sample": false,
-        "stdin": "",
-        "expected_stdout": ""
+        "expected_stdout": "7\n"
       }
     ]
   }

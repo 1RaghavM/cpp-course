@@ -1,0 +1,60 @@
+{
+  "number": "14.7",
+  "title": "Member functions returning references to data members",
+  "sort_order": 189,
+  "summary_md": "# Member Functions Returning References to Data Members\n\nA member function can return a reference to a data member, giving the caller direct access to that member without copying it. This is most useful for large objects like strings or containers where copying is expensive.\n\n```cpp\n#include <iostream>\n#include <string>\n\nclass Book {\n    std::string m_title{ \"Unknown\" };\n    int m_pages{ 0 };\n\npublic:\n    std::string& title()             { return m_title; }\n    const std::string& title() const { return m_title; }\n    int pages() const                { return m_pages; }\n};\n\nint main() {\n    Book b{};\n    b.title() = \"The C++ Programming Language\";  // assign through reference\n    std::cout << b.title() << '\\n';\n}\n```\n\n## Why Return a Reference?\n\nReturning by value copies the data member. For a `std::string` or other large type, that copy has real cost. Returning a reference hands back an alias to the original — no copy is made. The caller can read or modify the member directly through that alias.\n\n## The Const Overload Pattern\n\nNotice the two overloads of `title()` above. This pattern connects directly to the lesson *Const class objects and const member functions*: a `const` object can only call `const` member functions, so without the `const` overload, `const Book` objects could not access their title at all. With both overloads:\n\n- A non-`const` `Book` calls the non-`const` version and gets a mutable reference, allowing assignment.\n- A `const Book` calls the `const` version and gets a `const` reference, allowing reading only.\n\n## The Lifetime Trap\n\nA reference to a data member is only valid as long as the object itself lives. Storing a returned reference in a variable and then letting the object go out of scope produces a dangling reference — undefined behavior. Never do this:\n\n```cpp\nconst std::string& ref = Book{}.title();  // dangling immediately\n```\n\n## When to Avoid This\n\nReturning a non-`const` reference to a private data member largely bypasses encapsulation — the caller can modify it freely, defeating the purpose of *Public and private members and access specifiers*. Prefer returning `const` references for read access, and use dedicated setter functions (covered in *Access functions*) to control writes. Reserve mutable reference returns for cases where the design genuinely calls for it, such as index operators on container classes.",
+  "exercises": [
+    {
+      "title": "Temperature Sensor: Const and Mutable Reference Accessors",
+      "prompt_md": "## Goal\nComplete the `Sensor` class so that its `label()` member function returns a reference to the internal `std::string` label, following the const-overload pattern, and the program reads sensor data from stdin and prints it.\n\n## Input\n- Line 1: a single string (no spaces) representing the sensor label\n- Line 2: a floating-point number representing the temperature reading\n\n## Output\nPrint exactly two lines:\n- Line 1: `Label: <label>` where `<label>` is the sensor's label after it has been assigned through the mutable reference returned by `label()`\n- Line 2: `Temp: <temp>` where `<temp>` is printed with exactly 1 decimal place\n\nExample (matching sample test):\n```\nLabel: OutdoorA\nTemp: 23.5\n```\n\n## Requirements\n1. The `Sensor` class must have a private `std::string m_label` initialized to `\"Unknown\"` and a private `double m_temp` initialized to `0.0`.\n2. Provide two overloads of `label()`: `std::string& label()` (non-const) and `const std::string& label() const` (const). Both must return a reference to `m_label` — no copies.\n3. Provide a `const`-only accessor `double temp() const` that returns `m_temp` by value.\n4. Provide a setter `void setTemp(double t)` that assigns `m_temp`.\n5. In `main`, read the label string and assign it **through the reference returned by `label()`** (i.e., `sensor.label() = readValue;`). Do not add any other setter for the label.\n6. Demonstrate the `const` overload by storing a `const Sensor&` alias and using it to print the label on Line 1.\n7. Output must use `std::fixed` and `std::setprecision(1)` for the temperature.\n\n## Notes\n- Include `<iomanip>` for `std::fixed` / `std::setprecision`.\n- The hidden tests include a label that is a long string (20+ characters) to confirm no unnecessary copying occurs structurally.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Sensor {\n    // TODO: declare private data members m_label (std::string) and m_temp (double)\n\npublic:\n    // TODO: implement std::string& label()\n    // TODO: implement const std::string& label() const\n    // TODO: implement double temp() const\n    // TODO: implement void setTemp(double t)\n};\n\nint main() {\n    std::string inputLabel{};\n    double inputTemp{};\n    std::cin >> inputLabel >> inputTemp;\n\n    Sensor sensor{};\n\n    // TODO: assign inputLabel through the mutable reference returned by label()\n    // TODO: call setTemp with inputTemp\n\n    // TODO: create a const reference to sensor, then use it to print the label\n    // Print: \"Label: <label>\"\n    // Print: \"Temp: <temp>\" with 1 decimal place\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Sensor {\n    std::string m_label{ \"Unknown\" };\n    double m_temp{ 0.0 };\n\npublic:\n    std::string& label()             { return m_label; }\n    const std::string& label() const { return m_label; }\n    double temp() const              { return m_temp; }\n    void setTemp(double t)           { m_temp = t; }\n};\n\nint main() {\n    std::string inputLabel{};\n    double inputTemp{};\n    std::cin >> inputLabel >> inputTemp;\n\n    Sensor sensor{};\n    sensor.label() = inputLabel;   // assign through mutable reference\n    sensor.setTemp(inputTemp);\n\n    const Sensor& cref = sensor;   // const reference -> calls const overload\n    std::cout << \"Label: \" << cref.label() << \"\\n\";\n    std::cout << \"Temp: \" << std::fixed << std::setprecision(1) << sensor.temp() << \"\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample — basic label and temperature",
+          "stdin": "OutdoorA\n23.5\n",
+          "expected_stdout": "Label: OutdoorA\nTemp: 23.5\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — long label and negative temperature",
+          "stdin": "GreenhouseNorthWingZone3\n-4.2\n",
+          "expected_stdout": "Label: GreenhouseNorthWingZone3\nTemp: -4.2\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — default-like label overwrite and zero temperature",
+          "stdin": "Unknown\n0.0\n",
+          "expected_stdout": "Label: Unknown\nTemp: 0.0\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Player Profile: Reference Accessors with Fixed-Count Players",
+      "prompt_md": "## Goal\nComplete the `Player` class, which stores a player's name (`std::string`) and score (`int`). Use the const-overload reference pattern for `name()`, enforce private data through access specifiers, and expose score through a simple value accessor — then read a fixed number of players from stdin and print a summary.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of players\n- Lines 2..N+1: each line contains a single string (no spaces) followed by a space and an integer score (0 ≤ score ≤ 9999)\n\n## Output\nPrint N lines, one per player, in input order:\n```\n<name>: <score>\n```\nThen print one final line:\n```\nTop: <name>\n```\nwhere `<name>` is the name of the player with the highest score. If there is a tie, print the name of the **first** player who achieved that score.\n\n## Requirements\n1. The `Player` class must have private `std::string m_name` (initialized to `\"Anon\"`) and private `int m_score` (initialized to `0`).\n2. Provide `std::string& name()` (non-const) and `const std::string& name() const` (const) — both return references to `m_name`.\n3. Provide `int score() const` returning `m_score` by value, and `void setScore(int s)` setting `m_score`.\n4. In `main`, read each player's data and assign the name **through the mutable reference** (`player.name() = readName;`).\n5. Store all players in a fixed-size array `Player players[10]`. Use only the first N elements.\n6. Iterate the array using `const Player&` to print each line, confirming the `const` overload is exercised.\n7. The top-player search must also iterate using `const Player&`.\n8. N = 1 is a valid edge case (single player is both the only entry and the top player).\n9. All scores equal (tie): print the first player's name.\n\n## Notes\n- No `#include <vector>` is needed — use a plain array.\n- Prior concept combined: public/private access specifiers (all data members are private; all member functions are public).",
+      "starter_code": "#include <iostream>\n#include <string>\n\nclass Player {\n    // TODO: declare private std::string m_name and int m_score\n\npublic:\n    // TODO: implement std::string& name()\n    // TODO: implement const std::string& name() const\n    // TODO: implement int score() const\n    // TODO: implement void setScore(int s)\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    Player players[10];\n\n    for (int i = 0; i < n; ++i) {\n        std::string readName{};\n        int readScore{};\n        std::cin >> readName >> readScore;\n\n        // TODO: assign readName through the mutable reference returned by name()\n        // TODO: call setScore\n    }\n\n    // TODO: iterate using const Player& and print \"<name>: <score>\" for each player\n\n    // TODO: find the top player (highest score, first in case of tie)\n    // TODO: print \"Top: <name>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass Player {\n    std::string m_name{ \"Anon\" };\n    int m_score{ 0 };\n\npublic:\n    std::string& name()             { return m_name; }\n    const std::string& name() const { return m_name; }\n    int score() const               { return m_score; }\n    void setScore(int s)            { m_score = s; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    Player players[10];\n\n    for (int i = 0; i < n; ++i) {\n        std::string readName{};\n        int readScore{};\n        std::cin >> readName >> readScore;\n        players[i].name() = readName;   // assign through mutable reference\n        players[i].setScore(readScore);\n    }\n\n    for (int i = 0; i < n; ++i) {\n        const Player& p = players[i];\n        std::cout << p.name() << \": \" << p.score() << \"\\n\";\n    }\n\n    int topIdx = 0;\n    for (int i = 1; i < n; ++i) {\n        const Player& p = players[i];\n        if (p.score() > players[topIdx].score()) {\n            topIdx = i;\n        }\n    }\n\n    std::cout << \"Top: \" << players[topIdx].name() << \"\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample — three players, clear winner",
+          "stdin": "3\nAlice 1500\nBob 3200\nCarla 800\n",
+          "expected_stdout": "Alice: 1500\nBob: 3200\nCarla: 800\nTop: Bob\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — single player edge case",
+          "stdin": "1\nSolo 42\n",
+          "expected_stdout": "Solo: 42\nTop: Solo\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — tie goes to first player",
+          "stdin": "4\nDana 9999\nEli 9999\nFinn 500\nGia 9999\n",
+          "expected_stdout": "Dana: 9999\nEli: 9999\nFinn: 500\nGia: 9999\nTop: Dana\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "14.13",
+  "title": "Temporary class objects",
+  "sort_order": 195,
+  "summary_md": "# Temporary Class Objects\n\nA **temporary object** is an unnamed object created for the duration of a single expression. You've already seen temporaries with built-in types (`int{42}`); class types work the same way.\n\n## Creating Temporaries\n\nThere are two common ways to produce a temporary class object:\n\n- **Direct-list-initialization** \u2014 `Point{3, 4}` constructs and immediately uses the object.\n- **Functional cast / explicit constructor call** \u2014 `Point(3, 4)`, equivalent in most cases.\n\nThe temporary is destroyed at the end of the full expression containing it (usually the semicolon).\n\n## Why Temporaries Matter\n\nTemporaries are useful whenever you need an object only once and don't want to name it. Common situations:\n\n- Passing a value to a function that expects a class type.\n- Returning a freshly constructed value from a function.\n- Comparing or combining objects inline.\n\n```cpp\n#include <iostream>\n#include <cmath>\n\nstruct Point {\n    int x{}, y{};\n    double length() const {\n        return std::sqrt(static_cast<double>(x*x + y*y));\n    }\n};\n\nvoid print_length(Point p) {\n    std::cout << p.length() << '\\n';\n}\n\nint main() {\n    print_length(Point{3, 4});   // temporary, no named variable needed\n    std::cout << Point{6, 8}.length() << '\\n'; // chain directly\n}\n```\n\n`Point{3, 4}` constructs a temporary, passes it into `print_length` by value, and vanishes after the call returns. The second line constructs a temporary and calls a member function on it inline \u2014 no variable required.\n\n## Temporaries and `const` References\n\nA plain (non-`const`) lvalue reference cannot bind to a temporary. A `const` reference *can*, and doing so extends the temporary's lifetime to match the reference's scope. This was covered implicitly in **Member functions returning references to data members** \u2014 returning a reference to a member of a temporary is dangerous precisely because the temporary dies first.\n\n## Key Constraints\n\n- You cannot take the address of a temporary (it has no stable identity).\n- A non-`const` member function *can* be called on a temporary (the object just ceases to exist afterward).\n- Prefer `Type{args}` over `Type(args)` for temporaries; brace-initialization is unambiguous and consistent with the initialization style introduced in **Constructor member initializer lists**.\n\nTemporaries keep code concise by eliminating throwaway variables, but require care around lifetime \u2014 particularly when references or pointers are involved.",
+  "exercises": [
+    {
+      "title": "Print Rectangle Area and Perimeter via Temporaries",
+      "prompt_md": "## Goal\nComplete the `Rectangle` struct and a free function `print_stats` so that the program constructs temporary `Rectangle` objects, calls member functions on them directly, and prints area and perimeter \u2014 all without storing a named variable.\n\n## Input\n- Line 1: two positive integers `W` and `H` (1 \u2264 W, H \u2264 1000), separated by a space \u2014 the width and height of a rectangle.\n\n## Output\nPrint exactly two lines:\n- Line 1: `Area: X` where X is the integer area (W * H).\n- Line 2: `Perimeter: Y` where Y is the integer perimeter (2 * (W + H)).\n\nNo trailing blank lines. No extra spaces.\n\n## Requirements\n1. Define a struct `Rectangle` with integer member fields `width` and `height`, both zero-initialized by default.\n2. `Rectangle` must have a constructor that accepts two `int` arguments (width, height) and initializes the fields via a member initializer list.\n3. Add a `const` member function `area()` returning `int` (product of width and height).\n4. Add a `const` member function `perimeter()` returning `int` (2 * (width + height)).\n5. Define a free function `void print_stats(Rectangle r)` that prints the two output lines using `r.area()` and `r.perimeter()`.\n6. In `main`, call `print_stats` with a **temporary** `Rectangle` object constructed from the input values \u2014 do **not** declare a named `Rectangle` variable in `main`.\n7. Also call `.area()` on a temporary inline (the result may be discarded) to demonstrate direct member-function chaining on a temporary \u2014 this call must appear in `main` but does not affect output.\n8. Edge cases covered by hidden tests: W = 1 H = 1, W = 1000 H = 1000.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define struct Rectangle with:\n//   - int fields: width, height (zero-initialized defaults)\n//   - A constructor taking two ints, using a member initializer list\n//   - const member function area() -> int\n//   - const member function perimeter() -> int\n\n// TODO: Define free function print_stats(Rectangle r)\n//   that prints:\n//     Area: <value>\n//     Perimeter: <value>\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    // TODO: Call print_stats with a TEMPORARY Rectangle (no named variable).\n\n    // TODO: Call .area() directly on a TEMPORARY Rectangle inline\n    //       (result may be discarded \u2014 this demonstrates chaining on a temporary).\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nstruct Rectangle {\n    int width{};\n    int height{};\n\n    Rectangle(int w, int h) : width{w}, height{h} {}\n\n    int area() const {\n        return width * height;\n    }\n\n    int perimeter() const {\n        return 2 * (width + height);\n    }\n};\n\nvoid print_stats(Rectangle r) {\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n    std::cout << \"Perimeter: \" << r.perimeter() << \"\\n\";\n}\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    // Pass a temporary Rectangle to print_stats \u2014 no named variable.\n    print_stats(Rectangle{w, h});\n\n    // Call a member function directly on a temporary (result discarded).\n    (void)Rectangle{w, h}.area();\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample \u2014 3x5 rectangle",
+          "stdin": "3 5\n",
+          "expected_stdout": "Area: 15\nPerimeter: 16\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden \u2014 1x1 rectangle",
+          "stdin": "1 1\n",
+          "expected_stdout": "Area: 1\nPerimeter: 4\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden \u2014 1000x1000 rectangle",
+          "stdin": "1000 1000\n",
+          "expected_stdout": "Area: 1000000\nPerimeter: 4000\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Closest Point to Origin Using Temporaries",
+      "prompt_md": "## Goal\nComplete the `Point` struct and a free function `closest_to_origin` so the program reads a list of points, builds temporary `Point` objects, and returns the one with the smallest distance from the origin.\n\n## Input\n- Line 1: integer `N` (1 \u2264 N \u2264 100) \u2014 the number of points.\n- Lines 2..N+1: two integers `X` and `Y` (-1000 \u2264 X, Y \u2264 1000) separated by a space, one point per line.\n\n## Output\nPrint exactly one line: `Closest: (X, Y)` where X and Y are the coordinates of the point nearest to the origin (0, 0) by Euclidean distance. No trailing blank lines. No extra spaces.\n\nIf two points are equidistant from the origin, print the one that appears **first** in the input.\n\n## Requirements\n1. Define a struct `Point` with integer member fields `x` and `y`, both zero-initialized by default.\n2. `Point` must have a constructor taking two `int` arguments that initializes `x` and `y` via a member initializer list.\n3. Add a `const` member function `dist_sq()` returning `int` \u2014 the squared Euclidean distance from the origin (x*x + y*y). Using squared distance avoids floating-point and is sufficient for comparison.\n4. Define a free function `Point closest_to_origin(Point a, Point b)` that returns the point with the smaller `dist_sq()`; if equal, return `a`.\n5. In `main`, read all N coordinate pairs. For each pair, construct a **temporary** `Point{x, y}` and pass it directly to `closest_to_origin` \u2014 do not store named `Point` variables inside the reading loop.\n6. Accumulate the result of each `closest_to_origin` call in a single named `Point` variable declared before the loop (initialized to the first point); the loop processes points 2..N by passing temporaries.\n7. Print the result in the exact format `Closest: (X, Y)`.\n8. Edge cases covered by hidden tests: N = 1 (single point), a point at the origin (0 0), negative coordinates, two points equidistant from origin.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define struct Point with:\n//   - int fields: x, y (zero-initialized defaults)\n//   - A constructor taking two ints, using a member initializer list\n//   - const member function dist_sq() -> int  (returns x*x + y*y)\n\n// TODO: Define free function closest_to_origin(Point a, Point b) -> Point\n//   Returns the point with smaller dist_sq(); if equal, returns a.\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO:\n    // 1. Read the first point's x, y and initialize a named Point variable\n    //    (this is the running \"best\" candidate).\n    // 2. Loop over the remaining n-1 points; for each, read x and y, then\n    //    call closest_to_origin passing the current best and a TEMPORARY Point.\n    //    Update the running best with the returned value.\n    // 3. Print: Closest: (X, Y)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nstruct Point {\n    int x{};\n    int y{};\n\n    Point(int px, int py) : x{px}, y{py} {}\n\n    int dist_sq() const {\n        return x * x + y * y;\n    }\n};\n\nPoint closest_to_origin(Point a, Point b) {\n    return (b.dist_sq() < a.dist_sq()) ? b : a;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int fx{}, fy{};\n    std::cin >> fx >> fy;\n    Point best{fx, fy};  // named variable for the running best\n\n    for (int i{1}; i < n; ++i) {\n        int x{}, y{};\n        std::cin >> x >> y;\n        // Pass a temporary Point \u2014 no named variable inside the loop\n        best = closest_to_origin(best, Point{x, y});\n    }\n\n    std::cout << \"Closest: (\" << best.x << \", \" << best.y << \")\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample \u2014 four points",
+          "stdin": "4\n3 4\n1 1\n-5 0\n2 2\n",
+          "expected_stdout": "Closest: (1, 1)\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden \u2014 single point",
+          "stdin": "1\n7 -3\n",
+          "expected_stdout": "Closest: (7, -3)\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden \u2014 origin and equidistant tie",
+          "stdin": "3\n0 0\n3 4\n-4 3\n",
+          "expected_stdout": "Closest: (0, 0)\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

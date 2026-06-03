@@ -1,0 +1,60 @@
+{
+  "number": "14.4",
+  "title": "Const class objects and const member functions",
+  "sort_order": 186,
+  "summary_md": "## Const Class Objects and Const Member Functions\n\nA **const object** is an instance where the compiler prevents any modification to its data members after initialization. Declare one the same way you'd make any variable const:\n\n```cpp\nconst Date today { 2024, 6, 15 };\n```\n\nThis is useful whenever an object represents a fixed value \u2014 think configuration, mathematical constants, or function parameters you want to protect from accidental mutation.\n\n### The Problem: Calling Functions on Const Objects\n\nHere's the catch: the compiler won't let you call a member function on a const object unless that function *promises* not to modify the object. Without such a promise, the compiler conservatively assumes any member function might mutate state.\n\n### Const Member Functions\n\nMark a member function as **const** by appending the `const` keyword after the parameter list:\n\n```cpp\n#include <iostream>\n#include <format>\n\nstruct Date {\n    int year {};\n    int month {};\n    int day {};\n\n    std::string toString() const {\n        return std::format(\"{}-{:02}-{:02}\", year, month, day);\n    }\n};\n\nint main() {\n    const Date today { 2024, 6, 15 };\n    std::cout << today.toString() << '\\n'; // OK: toString is const\n}\n```\n\nA const member function receives the implicit `this` pointer as a pointer-to-const, so attempting to assign to any data member inside it is a compile error. Non-const member functions remain callable on non-const objects as normal.\n\n### Key Rules to Remember\n\n- A **const object** can only call **const member functions**.\n- A **non-const object** can call both const and non-const member functions.\n- Getters and any function that only reads state should almost always be marked `const` \u2014 it's a correctness guarantee, not optional style.\n- Forgetting `const` on a getter means you can't use that getter when the object is passed as `const&` to a function, which is a common real-world pain point.\n\n### Relationship to Earlier Lessons\n\nRecall from *Member functions* that every non-static member function receives an implicit `this` pointer. Marking a function const changes that pointer's type from `Date*` to `const Date*`, which is the mechanism that enforces the restriction.\n\nAs a general rule: if a member function doesn't need to modify the object, mark it `const`. This makes your classes usable in more contexts and communicates intent clearly to anyone reading the code.",
+  "exercises": [
+    {
+      "title": "Thermometer Const Member Functions",
+      "prompt_md": "## Goal\nComplete the `Thermometer` struct so that a `const Thermometer` object can report its temperature in both Celsius and Fahrenheit.\n\n## Input\n- Line 1: a single floating-point number representing a temperature in Celsius (e.g. `100.0`).\n\n## Output\nPrint exactly two lines:\n- Line 1: `Celsius: <value>` where `<value>` is the stored Celsius temperature printed with 2 decimal places.\n- Line 2: `Fahrenheit: <value>` where `<value>` is the converted Fahrenheit temperature printed with 2 decimal places.\n\nConversion formula: `F = C * 9.0 / 5.0 + 32.0`\n\n## Requirements\n1. Define a `Thermometer` struct with one data member: `double celsius`.\n2. Add a `const` member function `getCelsius()` that returns `celsius` as a `double`.\n3. Add a `const` member function `getFahrenheit()` that returns the Fahrenheit equivalent as a `double`.\n4. In `main`, read the temperature into a **`const Thermometer`** object (declared with `const`). Calling `getCelsius()` or `getFahrenheit()` on a non-const object must also compile.\n5. Both values must be printed with exactly 2 decimal places using `std::fixed` and `std::setprecision(2)`.\n6. Edge cases covered by hidden tests: `0.0` (freezing point), `-40.0` (where Celsius equals Fahrenheit).\n\n## Notes\n- You may use `<iostream>`, `<iomanip>`.\n- Do not add any member functions that modify `celsius`; only the two const getters are needed.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\nstruct Thermometer {\n    double celsius {};\n\n    // TODO: add a const member function getCelsius() that returns celsius\n\n    // TODO: add a const member function getFahrenheit() that returns\n    //       the Fahrenheit equivalent using F = C * 9.0 / 5.0 + 32.0\n};\n\nint main() {\n    double temp {};\n    std::cin >> temp;\n\n    // TODO: declare a const Thermometer object initialized with temp\n    //       then print Celsius and Fahrenheit using the const getters\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Thermometer {\n    double celsius {};\n\n    double getCelsius() const {\n        return celsius;\n    }\n\n    double getFahrenheit() const {\n        return celsius * 9.0 / 5.0 + 32.0;\n    }\n};\n\nint main() {\n    double temp {};\n    std::cin >> temp;\n\n    const Thermometer t { temp };\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Celsius: \" << t.getCelsius() << \"\\n\";\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << \"\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Boiling point",
+          "stdin": "100.0",
+          "expected_stdout": "Celsius: 100.00\nFahrenheit: 212.00\n",
+          "is_sample": true
+        },
+        {
+          "label": "Freezing point",
+          "stdin": "0.0",
+          "expected_stdout": "Celsius: 0.00\nFahrenheit: 32.00\n",
+          "is_sample": false
+        },
+        {
+          "label": "Equal point",
+          "stdin": "-40.0",
+          "expected_stdout": "Celsius: -40.00\nFahrenheit: -40.00\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Const Rectangle Inspector",
+      "prompt_md": "## Goal\nComplete the `Rectangle` struct with const-correct member functions, then write a free function `printInfo` that accepts a `const Rectangle&` and uses those member functions to report the rectangle's properties.\n\n## Input\n- Line 1: two positive integers `W` and `H` separated by a space, representing width and height (1 \u2264 W, H \u2264 1000).\n\n## Output\nPrint exactly four lines:\n- Line 1: `Width: <W>`\n- Line 2: `Height: <H>`\n- Line 3: `Area: <W*H>`\n- Line 4: `Perimeter: <2*(W+H)>`\n\nAll values are integers; print them with no decimal point.\n\n## Requirements\n1. Define a `Rectangle` struct with two `int` data members: `width` and `height`.\n2. Add four `const` member functions: `getWidth()`, `getHeight()`, `getArea()`, and `getPerimeter()`, each returning `int`.\n3. Write a **free function** `void printInfo(const Rectangle& r)` that calls all four const member functions and prints the four labeled lines shown above.\n4. In `main`, read `W` and `H`, construct a **`const Rectangle`** object, and call `printInfo` with it.\n5. Because `printInfo` takes a `const Rectangle&`, every member function it calls must be `const` \u2014 the code must not compile if any called getter is non-const.\n6. Edge cases covered by hidden tests: `W == H` (square), `W` or `H` equal to 1.\n\n## Notes\n- You may use `<iostream>` only.\n- `printInfo` must be a free (non-member) function, not a member of `Rectangle`.",
+      "starter_code": "#include <iostream>\n\nstruct Rectangle {\n    int width {};\n    int height {};\n\n    // TODO: add const member function getWidth()  -> int\n    // TODO: add const member function getHeight() -> int\n    // TODO: add const member function getArea()   -> int  (width * height)\n    // TODO: add const member function getPerimeter() -> int  (2 * (width + height))\n};\n\n// TODO: implement free function printInfo(const Rectangle& r)\n//       that prints the four labeled lines using the const getters\n\nint main() {\n    int w {}, h {};\n    std::cin >> w >> h;\n\n    // TODO: declare a const Rectangle object and call printInfo with it\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nstruct Rectangle {\n    int width {};\n    int height {};\n\n    int getWidth() const {\n        return width;\n    }\n\n    int getHeight() const {\n        return height;\n    }\n\n    int getArea() const {\n        return width * height;\n    }\n\n    int getPerimeter() const {\n        return 2 * (width + height);\n    }\n};\n\nvoid printInfo(const Rectangle& r) {\n    std::cout << \"Width: \"     << r.getWidth()     << \"\\n\";\n    std::cout << \"Height: \"    << r.getHeight()    << \"\\n\";\n    std::cout << \"Area: \"      << r.getArea()      << \"\\n\";\n    std::cout << \"Perimeter: \" << r.getPerimeter() << \"\\n\";\n}\n\nint main() {\n    int w {}, h {};\n    std::cin >> w >> h;\n\n    const Rectangle rect { w, h };\n    printInfo(rect);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Typical rectangle",
+          "stdin": "4 7",
+          "expected_stdout": "Width: 4\nHeight: 7\nArea: 28\nPerimeter: 22\n",
+          "is_sample": true
+        },
+        {
+          "label": "Square",
+          "stdin": "5 5",
+          "expected_stdout": "Width: 5\nHeight: 5\nArea: 25\nPerimeter: 20\n",
+          "is_sample": false
+        },
+        {
+          "label": "Unit height",
+          "stdin": "10 1",
+          "expected_stdout": "Width: 10\nHeight: 1\nArea: 10\nPerimeter: 22\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

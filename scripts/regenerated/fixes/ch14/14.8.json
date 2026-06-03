@@ -1,0 +1,60 @@
+{
+  "number": "14.8",
+  "title": "The benefits of data hiding (encapsulation)",
+  "sort_order": 190,
+  "summary_md": "## The Benefits of Data Hiding (Encapsulation)\n\nData hiding means restricting direct access to an object's internal state, forcing all interaction to go through a controlled public interface. It builds directly on the access specifiers covered in **Public and Private Members and Access Specifiers** — making members `private` is the mechanism, but data hiding is the *reason*.\n\n### Why it matters\n\nWhen internal data is private, the class author controls every read and write. This produces three concrete benefits:\n\n- **Invariant enforcement** — the class can reject invalid states. A `Temperature` object can refuse values below absolute zero; a raw `double` cannot.\n- **Implementation freedom** — internals can be restructured without breaking calling code. If a class stores a temperature in Celsius internally but later switches to Kelvin, the public interface stays identical.\n- **Reduced surface area for bugs** — code outside the class cannot accidentally corrupt internal state. The class itself becomes the only place to audit for logic errors involving that data.\n\n### Invariants are the core idea\n\nAn *invariant* is a condition that must always be true for an object to be valid. Encapsulation lets a class *guarantee* its invariants hold after every operation, because no outside code can write directly to private members. Access functions (discussed in **Access Functions**) expose only what is necessary, and mutators can validate before committing a change.\n\n```cpp\n#include <iostream>\n\nclass BoundedCounter {\n    int m_value{0};\n    int m_max;\npublic:\n    BoundedCounter(int max) : m_max{max} {}\n\n    void increment() {\n        if (m_value < m_max) ++m_value;\n    }\n\n    int value() const { return m_value; }\n};\n\nint main() {\n    BoundedCounter c{3};\n    for (int i{0}; i < 5; ++i) c.increment();\n    std::cout << \"Value: \" << c.value() << '\\n'; // always <= 3\n}\n```\n\n`m_value` can never exceed `m_max` because the only path to modify it runs through `increment()`. No caller can violate that rule.\n\n### The cost is minimal\n\nThe downside — slightly more verbose code — is almost always worth it. Member functions returning references to data members (covered in the previous lesson) can accidentally break encapsulation by handing out writable references to private data, so prefer returning by value or `const` reference when the invariant matters.",
+  "exercises": [
+    {
+      "title": "Clamped Percentage Class",
+      "prompt_md": "## Goal\nComplete the `Percentage` class so it stores a value that is always in the range [0, 100] and exposes a controlled public interface.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), the number of operations.\n- Lines 2..N+1: one operation per line, in one of two forms:\n  - `set X` where X is an integer (may be outside [0, 100])\n  - `get` — print the current value\n\nThe initial value is 0.\n\n## Output\nFor each `get` operation, print exactly one line: `Value: V` where V is the current stored integer value (always in [0, 100]).\n\n## Requirements\n1. `Percentage` must store its value in a `private` data member named `m_value` (type `int`).\n2. Provide a public member function `void set(int v)` that clamps the stored value: if `v < 0`, store 0; if `v > 100`, store 100; otherwise store `v`.\n3. Provide a public member function `int get() const` that returns the stored value.\n4. `main()` must not access `m_value` directly — all reads and writes go through `set` and `get`.\n5. The constructor initialises `m_value` to 0 (the default member initialiser is fine).\n6. Edge cases covered by hidden tests: `set` called with exactly 0, exactly 100, negative values, values above 100, and multiple `set`/`get` interleaved.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define the Percentage class with:\n//   - private int m_value initialised to 0\n//   - public void set(int v)  — clamps v to [0, 100] then stores it\n//   - public int  get() const — returns m_value\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Percentage p{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string op{};\n        std::cin >> op;\n\n        if (op == \"set\")\n        {\n            int v{};\n            std::cin >> v;\n            p.set(v);          // TODO: calls your set() mutator\n        }\n        else // \"get\"\n        {\n            std::cout << \"Value: \" << p.get() << '\\n';  // TODO: calls your get() accessor\n        }\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass Percentage\n{\n    int m_value{0};\npublic:\n    void set(int v)\n    {\n        if (v < 0)        m_value = 0;\n        else if (v > 100) m_value = 100;\n        else              m_value = v;\n    }\n\n    int get() const { return m_value; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Percentage p{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string op{};\n        std::cin >> op;\n\n        if (op == \"set\")\n        {\n            int v{};\n            std::cin >> v;\n            p.set(v);\n        }\n        else\n        {\n            std::cout << \"Value: \" << p.get() << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample — basic set and get",
+          "stdin": "5\nset 50\nget\nset 120\nget\nset -10\n",
+          "expected_stdout": "Value: 50\nValue: 100\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — boundary values 0 and 100",
+          "stdin": "6\nset 0\nget\nset 100\nget\nset 100\nget\n",
+          "expected_stdout": "Value: 0\nValue: 100\nValue: 100\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — interleaved operations with negative and over-max",
+          "stdin": "8\nget\nset -999\nget\nset 75\nget\nset 200\nget\nget\n",
+          "expected_stdout": "Value: 0\nValue: 0\nValue: 75\nValue: 100\nValue: 100\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Named Bounded Counter with Reset",
+      "prompt_md": "## Goal\nComplete the `BoundedCounter` class that enforces a maximum value invariant and tracks how many times the counter has been reset, then read multiple counter objects from stdin and report their final state.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of counters to process.\n- For each of the N counters, a block of lines:\n  - First line: `name max_val` — a string name (no spaces, length 1–12) and an integer max_val (1 ≤ max_val ≤ 100).\n  - Second line: integer I (0 ≤ I ≤ 200), the number of `increment` calls to make.\n  - Third line: integer R (0 ≤ R ≤ 10), the number of `reset` calls to make. Each reset sets the counter value back to 0 and increments an internal reset count.\n  - Fourth line: integer I2 (0 ≤ I2 ≤ 200), additional `increment` calls after the resets.\n\n## Output\nFor each counter, print exactly one line:\n`name: value=V resets=R`\nwhere V is the final clamped value, R is the total number of resets performed, and `name` is the counter's name string.\n\n## Requirements\n1. `BoundedCounter` must have **private** data members: `m_value` (int, starts at 0), `m_max` (int, set by constructor), `m_resets` (int, starts at 0), and `m_name` (std::string, set by constructor).\n2. The constructor signature must be `BoundedCounter(const std::string& name, int max)` and initialise all four members.\n3. Provide `void increment()` — adds 1 to `m_value` only if `m_value < m_max`; otherwise does nothing.\n4. Provide `void reset()` — sets `m_value` to 0 and increments `m_resets` by 1.\n5. Provide `int value() const`, `int resets() const`, and `std::string name() const` accessors.\n6. `main()` must construct each `BoundedCounter` and call only the public interface — no direct access to private members.\n7. Edge cases in hidden tests: I = 0 (no increments), R = 0 (no resets), incrementing exactly to max and then one more, multiple resets with increments in between.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define BoundedCounter with:\n//   Private members:\n//     std::string m_name\n//     int m_max\n//     int m_value  (start 0)\n//     int m_resets (start 0)\n//\n//   Constructor: BoundedCounter(const std::string& name, int max)\n//\n//   Public member functions:\n//     void increment() — increment m_value up to m_max, then clamp\n//     void reset()     — set m_value to 0, increment m_resets\n//     int         value()  const\n//     int         resets() const\n//     std::string name()   const\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string cname{};\n        int maxVal{};\n        std::cin >> cname >> maxVal;\n\n        // TODO: construct a BoundedCounter named cname with max maxVal\n\n        int inc1{};\n        std::cin >> inc1;\n        // TODO: call increment() inc1 times\n\n        int resetCount{};\n        std::cin >> resetCount;\n        // TODO: call reset() resetCount times\n\n        int inc2{};\n        std::cin >> inc2;\n        // TODO: call increment() inc2 times\n\n        // TODO: print \"cname: value=V resets=R\\n\"\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass BoundedCounter\n{\n    std::string m_name;\n    int m_max;\n    int m_value{0};\n    int m_resets{0};\npublic:\n    BoundedCounter(const std::string& name, int max)\n        : m_name{name}, m_max{max}\n    {}\n\n    void increment()\n    {\n        if (m_value < m_max)\n            ++m_value;\n    }\n\n    void reset()\n    {\n        m_value = 0;\n        ++m_resets;\n    }\n\n    int         value()  const { return m_value;  }\n    int         resets() const { return m_resets; }\n    std::string name()   const { return m_name;   }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string cname{};\n        int maxVal{};\n        std::cin >> cname >> maxVal;\n\n        BoundedCounter bc{cname, maxVal};\n\n        int inc1{};\n        std::cin >> inc1;\n        for (int j{0}; j < inc1; ++j)\n            bc.increment();\n\n        int resetCount{};\n        std::cin >> resetCount;\n        for (int j{0}; j < resetCount; ++j)\n            bc.reset();\n\n        int inc2{};\n        std::cin >> inc2;\n        for (int j{0}; j < inc2; ++j)\n            bc.increment();\n\n        std::cout << bc.name() << \": value=\" << bc.value()\n                  << \" resets=\" << bc.resets() << '\\n';\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample — two counters, basic use",
+          "stdin": "2\nclicks 5\n7\n1\n3\nhits 10\n10\n0\n4\n",
+          "expected_stdout": "clicks: value=3 resets=1\nhits: value=10 resets=0\n",
+          "is_sample": true
+        },
+        {
+          "label": "hidden — no increments and multiple resets",
+          "stdin": "1\ncounter 3\n0\n3\n0\n",
+          "expected_stdout": "counter: value=0 resets=3\n",
+          "is_sample": false
+        },
+        {
+          "label": "hidden — increment exactly to max then overshoot, then reset and increment again",
+          "stdin": "3\nalpha 4\n4\n0\n10\nbeta 1\n200\n2\n200\ngamma 10\n5\n1\n2\n",
+          "expected_stdout": "alpha: value=4 resets=0\nbeta: value=1 resets=2\ngamma: value=2 resets=1\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

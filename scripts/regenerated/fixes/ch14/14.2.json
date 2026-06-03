@@ -1,0 +1,60 @@
+{
+  "number": "14.2",
+  "title": "Introduction to classes",
+  "sort_order": 184,
+  "summary_md": "## Introduction to Classes\n\nA **class** is a user-defined type that bundles data and functions together. The data members describe what an object *is*; the member functions describe what it *can do*. This is the core mechanism behind the object-oriented programming ideas introduced in the previous lesson.\n\n### Defining a Class\n\n```cpp\n#include <iostream>\n#include <string>\n\nclass Cat {\npublic:\n    std::string name;\n    int age{};\n\n    void describe() const {\n        std::cout << name << \" is \" << age << \" year(s) old.\\n\";\n    }\n};\n\nint main() {\n    Cat c{\"Mochi\", 3};\n    c.describe();   // Mochi is 3 year(s) old.\n}\n```\n\nThe keyword `class` begins the definition. Everything listed under `public:` is accessible from outside the class. The trailing `{}` on `age` zero-initialises the member if no value is provided — a good habit covered in earlier chapters on variable initialisation.\n\n### Access Control\n\nC++ classes have three access specifiers:\n\n- `public` — accessible from anywhere\n- `private` — accessible only from within the class itself\n- `protected` — relevant once inheritance is introduced\n\nMembers declared before any specifier are **private by default** in a `class` (unlike `struct`, where they are public by default). Preferring `private` data and exposing behaviour through `public` functions is a foundational design principle called *encapsulation*.\n\n### Objects and Instantiation\n\nA **class** is the blueprint; an **object** (or *instance*) is the concrete thing created from it. Declaring `Cat c{\"Mochi\", 3};` allocates one object on the stack. Multiple objects can exist simultaneously, each with independent copies of the data members.\n\n### `const` Member Functions\n\nMarking a member function `const` (as `describe()` is above) tells the compiler that the function does not modify the object. This allows the function to be called on `const` objects and signals intent clearly to readers.\n\n### `struct` vs `class`\n\nIn C++ a `struct` and a `class` are almost identical — the only built-in difference is the default access level. Many codebases use `struct` for plain data aggregates and `class` for types with meaningful encapsulation, but this is a convention, not a language rule.\n\nClasses are the foundation of nearly every topic ahead: constructors, destructors, operator overloading, and inheritance all build directly on what is introduced here.",
+  "exercises": [
+    {
+      "title": "Book Class with Display Method",
+      "prompt_md": "## Goal\nDefine a class `Book` with two public data members and one `const` member function that prints a formatted description of a book.\n\n## Input\n- Line 1: a string (the book's title, no spaces)\n- Line 2: a string (the book's author, no spaces)\n- Line 3: an integer (the publication year, 1000 ≤ year ≤ 9999)\n\n## Output\nPrint exactly one line in the format:\n```\n\"TITLE\" by AUTHOR (YEAR)\n```\nwhere `TITLE` is the title in double quotes, `AUTHOR` is the author name, and `YEAR` is the publication year. No extra blank lines.\n\n## Requirements\n1. Define a `class Book` with `public:` members: `std::string title`, `std::string author`, and `int year{}` (zero-initialised with default member initialiser).\n2. Define a `const` member function `void display() const` inside `Book` that prints the formatted line described above.\n3. In `main()`, read the three inputs, construct one `Book` object using aggregate initialisation (e.g., `Book b{title, author, year};`), then call `b.display()`.\n4. The class must use the `class` keyword (not `struct`).\n5. All data members must be under the `public:` access specifier.\n\n## Notes\n- You may use `<iostream>` and `<string>`; you do not need `<format>` or `<print>`.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define class Book with:\n//   - public data members: std::string title, std::string author, int year{}\n//   - public const member function: void display() const\n//     that prints: \"TITLE\" by AUTHOR (YEAR)\n\nint main() {\n    std::string title, author;\n    int year;\n\n    std::cin >> title >> author >> year;\n\n    // TODO: Construct a Book object using aggregate initialisation\n    //       and call its display() member function\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass Book {\npublic:\n    std::string title;\n    std::string author;\n    int year{};\n\n    void display() const {\n        std::cout << '\"' << title << '\"' << \" by \" << author << \" (\" << year << \")\\n\";\n    }\n};\n\nint main() {\n    std::string title, author;\n    int year;\n\n    std::cin >> title >> author >> year;\n\n    Book b{title, author, year};\n    b.display();\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: typical book",
+          "stdin": "Dune\nHerbert\n1965",
+          "expected_stdout": "\"Dune\" by Herbert (1965)\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: single-word title and author, recent year",
+          "stdin": "Frankenstein\nShelley\n1818",
+          "expected_stdout": "\"Frankenstein\" by Shelley (1818)\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: year at boundary, short names",
+          "stdin": "It\nKing\n1986",
+          "expected_stdout": "\"It\" by King (1986)\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Rectangle Class with Area Display",
+      "prompt_md": "## Goal\nDefine a class `Rectangle` with public data members and public member functions, then create multiple `Rectangle` objects and print each one's area and perimeter.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of rectangles.\n- Lines 2..N+1: two positive integers per line separated by a space — the width and height of each rectangle (1 ≤ width, height ≤ 1000).\n\n## Output\nFor each rectangle, print exactly one line in the format:\n```\nRectangle W x H: area = A, perimeter = P\n```\nwhere `W` is the width, `H` is the height, `A` is the area (W × H), and `P` is the perimeter (2 × (W + H)). Print N such lines total, one per rectangle, in input order. No extra blank lines.\n\n## Requirements\n1. Define a `class Rectangle` using the `class` keyword.\n2. All data members and member functions must be under a `public:` access specifier.\n3. The data members `width` and `height` (both `int`, zero-initialised with default member initialisers) must be public.\n4. Provide two `const` member functions: `int area() const` returning `width * height`, and `int perimeter() const` returning `2 * (width + height)`.\n5. Provide a `const` member function `void display() const` that prints the formatted line described above (including the newline).\n6. In `main()`, read N, then loop N times: read width and height, construct a `Rectangle` object using aggregate initialization (`Rectangle r{w, h};`), and call `display()` on it.\n7. Hidden tests cover N = 1 (single rectangle) and rectangles where width equals height (square dimensions).\n\n## Notes\n- You may use `<iostream>`; no other special headers are needed.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define class Rectangle with:\n//   - public data members: int width{}, int height{}\n//   - public const member function: int area() const\n//   - public const member function: int perimeter() const\n//   - public const member function: void display() const\n//     that prints: Rectangle W x H: area = A, perimeter = P\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n\n        // TODO: Construct a Rectangle object using aggregate initialization\n        //       and call display()\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass Rectangle {\npublic:\n    int width{};\n    int height{};\n\n    int area() const {\n        return width * height;\n    }\n\n    int perimeter() const {\n        return 2 * (width + height);\n    }\n\n    void display() const {\n        std::cout << \"Rectangle \" << width << \" x \" << height\n                  << \": area = \" << area()\n                  << \", perimeter = \" << perimeter() << '\\n';\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n\n        Rectangle r{w, h};\n        r.display();\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: three rectangles",
+          "stdin": "3\n4 7\n10 2\n1 1",
+          "expected_stdout": "Rectangle 4 x 7: area = 28, perimeter = 22\nRectangle 10 x 2: area = 20, perimeter = 24\nRectangle 1 x 1: area = 1, perimeter = 4\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden: single rectangle",
+          "stdin": "1\n6 9",
+          "expected_stdout": "Rectangle 6 x 9: area = 54, perimeter = 30\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden: square dimensions and large values",
+          "stdin": "2\n5 5\n1000 1000",
+          "expected_stdout": "Rectangle 5 x 5: area = 25, perimeter = 20\nRectangle 1000 x 1000: area = 1000000, perimeter = 4000\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

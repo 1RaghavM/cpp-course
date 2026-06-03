@@ -1,0 +1,60 @@
+{
+  "number": "14.15",
+  "title": "Class initialization and copy elision",
+  "sort_order": 197,
+  "summary_md": "# Class Initialization and Copy Elision\n\n## How Objects Are Initialized\n\nWhen you initialize an object using a value of the same type, the compiler typically needs a **copy constructor** (covered in the previous lesson). But C++ has rules that allow—and sometimes require—the compiler to eliminate unnecessary copies entirely.\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Widget {\n    std::string name;\n    int value;\n\n    Widget(const std::string& n, int v) : name{n}, value{v} {\n        std::cout << \"Constructed: \" << name << '\\n';\n    }\n    Widget(const Widget& other) : name{other.name}, value{other.value} {\n        std::cout << \"Copied: \" << name << '\\n';\n    }\n};\n\nWidget make() { return Widget{\"Gadget\", 42}; }\n\nint main() {\n    Widget w = make();  // \"Constructed: Gadget\" — copy elided\n}\n```\n\nRunning this prints only the constructor message, never the copy constructor. The copy is eliminated, not just skipped silently—the object is constructed directly in its final location.\n\n## Named Return Value Optimization (NRVO) and Mandatory Elision\n\nThere are two distinct situations:\n\n- **Mandatory copy elision (C++17+):** When you initialize an object directly from a temporary (a *prvalue*), the copy is *guaranteed* to be elided. The temporary is never materialized as a separate object at all.\n- **NRVO:** When a function returns a named local variable of the return type, the compiler is *permitted* (but not required) to construct it directly in the caller's storage, skipping the copy.\n\n## Initialization Forms\n\nSeveral initialization syntaxes may invoke copy construction, but copy elision often removes the actual copy:\n\n- `Widget w = make();` — direct-initialization from a prvalue; copy elided (mandatory since C++17)\n- `Widget w = other;` — copy-initialization from an lvalue; copy constructor *is* called\n- `Widget w{other};` — direct-list-initialization; copy constructor called\n- `return localWidget;` — NRVO candidate; copy may be elided\n\n## Why This Matters\n\nBecause copy elision can eliminate calls to the copy constructor, you should not write logic with observable side effects inside the copy constructor and depend on it running a specific number of times. The *as-if* rule does not apply here—the standard explicitly permits (or mandates) elision even when the copy constructor has side effects.\n\nThis interacts with the *Constructor member initializer lists* and *Temporary class objects* lessons: temporaries created during construction are themselves subject to these same elision rules.",
+  "exercises": [
+    {
+      "title": "Track Constructor vs Copy Constructor Calls",
+      "prompt_md": "## Goal\nComplete the `Sensor` class so the program counts how many times the constructor and copy constructor are each called, then prints those counts after a series of initializations.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 10), the number of \"copy from lvalue\" operations to perform after the initial setup.\n\n## Output\nPrint exactly two lines:\n```\nConstructor calls: C\nCopy constructor calls: X\n```\nwhere `C` and `X` are the actual counts accumulated during the program (see Requirements for which initializations are performed).\n\n## Requirements\n1. Define `struct Sensor` with a `std::string label` field and two `int` counter references: `int& ctor_ref` and `int& copy_ref`, which refer to counters declared in `main`.\n2. The converting constructor `Sensor(const std::string& lbl, int& ctor_count, int& copy_count)` must increment `ctor_count` via the reference and store `lbl`.\n3. The copy constructor `Sensor(const Sensor& other)` must increment the counter via `copy_ref` and copy `label`.\n4. Before reading N, perform these three initializations in order:\n   - `Sensor a{\"alpha\", ctor_count, copy_count};` — direct initialization\n   - `Sensor b = make_sensor(ctor_count, copy_count);` — where `make_sensor()` returns `Sensor{\"beta\", ctor_count, copy_count}` by value (mandatory elision applies; only the constructor fires)\n   - `Sensor c = a;` — copy-initialization from lvalue; copy constructor fires\n5. After reading N, perform exactly N copy-initializations of the form `Sensor tmp = a;` in a loop (each fires the copy constructor).\n6. Print the two output lines using the final values of `ctor_count` and `copy_count`.\n7. For N = 0 the loop body never executes; for N = 5 the copy count is 6 (1 from step 4 + 5 from the loop).",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Sensor with:\n//   - std::string label\n//   - int& ctor_ref  (reference to external constructor counter)\n//   - int& copy_ref  (reference to external copy counter)\n//   - converting constructor Sensor(const std::string& lbl, int& ctor_count, int& copy_count)\n//   - copy constructor Sensor(const Sensor& other)\n\n// TODO: Define Sensor make_sensor(int& ctor_count, int& copy_count)\n//       that returns Sensor{\"beta\", ctor_count, copy_count} by value\n\nint main() {\n    int ctor_count{0};\n    int copy_count{0};\n\n    // TODO: Perform these three initializations (in order):\n    //   Sensor a{\"alpha\", ctor_count, copy_count};\n    //   Sensor b = make_sensor(ctor_count, copy_count);\n    //   Sensor c = a;\n\n    int n{};\n    std::cin >> n;\n\n    // TODO: Loop n times, each iteration doing: Sensor tmp = a;\n\n    std::cout << \"Constructor calls: \"    << ctor_count << '\\n';\n    std::cout << \"Copy constructor calls: \" << copy_count << '\\n';\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nstruct Sensor {\n    std::string label;\n    int& ctor_ref;\n    int& copy_ref;\n\n    Sensor(const std::string& lbl, int& ctor_count, int& copy_count)\n        : label{lbl}, ctor_ref{ctor_count}, copy_ref{copy_count} {\n        ++ctor_ref;\n    }\n\n    Sensor(const Sensor& other)\n        : label{other.label}, ctor_ref{other.ctor_ref}, copy_ref{other.copy_ref} {\n        ++copy_ref;\n    }\n};\n\nSensor make_sensor(int& ctor_count, int& copy_count) {\n    return Sensor{\"beta\", ctor_count, copy_count};\n}\n\nint main() {\n    int ctor_count{0};\n    int copy_count{0};\n\n    Sensor a{\"alpha\", ctor_count, copy_count};\n    Sensor b = make_sensor(ctor_count, copy_count);\n    Sensor c = a;\n\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i) {\n        Sensor tmp = a;\n    }\n\n    std::cout << \"Constructor calls: \"     << ctor_count << '\\n';\n    std::cout << \"Copy constructor calls: \" << copy_count << '\\n';\n}\n",
+      "test_cases": [
+        {
+          "label": "N=3 (sample)",
+          "stdin": "3\n",
+          "expected_stdout": "Constructor calls: 2\nCopy constructor calls: 4\n",
+          "is_sample": true
+        },
+        {
+          "label": "N=0 (no loop copies)",
+          "stdin": "0\n",
+          "expected_stdout": "Constructor calls: 2\nCopy constructor calls: 1\n",
+          "is_sample": false
+        },
+        {
+          "label": "N=5",
+          "stdin": "5\n",
+          "expected_stdout": "Constructor calls: 2\nCopy constructor calls: 6\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Point Factory with Elision Diagnostics",
+      "prompt_md": "## Goal\nComplete the `Point` class and a free function `midpoint(Point a, Point b)` so the program reads two 2-D points, constructs the midpoint via the factory function, prints diagnostics logged during construction and copying, then prints the result.\n\n## Input\n- Line 1: two integers `x1 y1` for the first point (−1000 ≤ each ≤ 1000).\n- Line 2: two integers `x2 y2` for the second point (same range).\n\n## Output\nPrint lines in this exact order:\n1. `Constructed (x1,y1)` — fired when `Point p{x1,y1}` is built.\n2. `Constructed (x2,y2)` — fired when `Point p{x2,y2}` is built.\n3. `Copied` — fired **twice** because `midpoint` takes both arguments **by value** (two copies from lvalues).\n4. `Constructed (mx,my)` — fired inside `midpoint` when the return value is built (mx and my are the integer midpoint coordinates, computed as `(x1+x2)/2` and `(y1+y2)/2` using integer division).\n5. `Midpoint: (mx,my)` — the final result printed in `main`.\n\nNo other lines. No blank lines.\n\n## Requirements\n1. `struct Point` must have `int x` and `int y` fields.\n2. The constructor `Point(int x, int y)` must print `Constructed (x,y)` (parentheses, comma, no spaces inside).\n3. The copy constructor `Point(const Point&)` must print `Copied` (no coordinates).\n4. `Point midpoint(Point a, Point b)` takes **both arguments by value**, computes `Point r{ (a.x+b.x)/2, (a.y+b.y)/2 }`, and returns it. Mandatory copy elision means this `return` fires only the constructor message, not an extra copy.\n5. In `main`, construct `p` and `q` from stdin, then call `Point m = midpoint(p, q);` and print `Midpoint: (mx,my)`.\n6. The two `Copied` lines appear before the `Constructed` line for the midpoint because the copies happen when arguments are passed.\n7. Edge case: when both inputs are identical, midpoint coordinates equal the input coordinates.",
+      "starter_code": "#include <iostream>\n#include <format>\n\n// TODO: Define struct Point with:\n//   - int x, y\n//   - constructor Point(int x, int y) that prints \"Constructed (x,y)\"\n//   - copy constructor Point(const Point&) that prints \"Copied\"\n\n// TODO: Define Point midpoint(Point a, Point b)\n//   - takes both parameters BY VALUE\n//   - constructs and returns Point{ (a.x+b.x)/2, (a.y+b.y)/2 }\n\nint main() {\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    // TODO: construct Point p{x1, y1} and Point q{x2, y2}\n    // TODO: Point m = midpoint(p, q);\n    // TODO: print \"Midpoint: (m.x,m.y)\"\n}\n",
+      "solution_code": "#include <iostream>\n#include <format>\n\nstruct Point {\n    int x{};\n    int y{};\n\n    Point(int px, int py) : x{px}, y{py} {\n        std::cout << std::format(\"Constructed ({},{})\\n\", x, y);\n    }\n\n    Point(const Point& other) : x{other.x}, y{other.y} {\n        std::cout << \"Copied\\n\";\n    }\n};\n\nPoint midpoint(Point a, Point b) {\n    return Point{ (a.x + b.x) / 2, (a.y + b.y) / 2 };\n}\n\nint main() {\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    Point p{x1, y1};\n    Point q{x2, y2};\n    Point m = midpoint(p, q);\n    std::cout << std::format(\"Midpoint: ({},{})\\n\", m.x, m.y);\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic midpoint (sample)",
+          "stdin": "0 0\n4 6\n",
+          "expected_stdout": "Constructed (0,0)\nConstructed (4,6)\nCopied\nCopied\nConstructed (2,3)\nMidpoint: (2,3)\n",
+          "is_sample": true
+        },
+        {
+          "label": "Both points identical",
+          "stdin": "5 5\n5 5\n",
+          "expected_stdout": "Constructed (5,5)\nConstructed (5,5)\nCopied\nCopied\nConstructed (5,5)\nMidpoint: (5,5)\n",
+          "is_sample": false
+        },
+        {
+          "label": "Negative coordinates with truncating division",
+          "stdin": "-3 -7\n2 4\n",
+          "expected_stdout": "Constructed (-3,-7)\nConstructed (2,4)\nCopied\nCopied\nConstructed (0,-1)\nMidpoint: (0,-1)\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

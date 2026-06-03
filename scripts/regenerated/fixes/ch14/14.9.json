@@ -1,0 +1,60 @@
+{
+  "number": "14.9",
+  "title": "Introduction to constructors",
+  "sort_order": 191,
+  "summary_md": "## Introduction to Constructors\n\nA **constructor** is a special member function that runs automatically when an object is created. Its job is to initialize the object's data members into a valid state before anything else can use them. Without a constructor, data members hold garbage values — a direct violation of the encapsulation principles covered in *The Benefits of Data Hiding*.\n\n### Syntax Rules\n\n- A constructor has the **same name as the class**.\n- It has **no return type** (not even `void`).\n- It can take parameters, just like any other function.\n\n```cpp\n#include <format>\n#include <iostream>\n#include <string>\n\nclass Player {\n    std::string m_name;\n    int m_health;\n\npublic:\n    Player(const std::string& name, int health)\n        : m_name{name}, m_health{health} {}\n\n    void print() const {\n        std::cout << std::format(\"{} has {} HP\\n\", m_name, m_health);\n    }\n};\n\nint main() {\n    Player hero{\"Aria\", 100};\n    hero.print();  // Aria has 100 HP\n}\n```\n\n### Member Initializer Lists\n\nThe `: m_name{...}, m_health{...}` syntax after the constructor's parameter list is a **member initializer list**. Prefer it over assigning inside the constructor body — members are initialized directly rather than default-initialized first and then overwritten. For types like `std::string`, this is both correct and efficient.\n\n### Default Constructors\n\nA constructor that can be called with no arguments is called a **default constructor**. If you define no constructors at all, the compiler generates one implicitly — but it leaves fundamental-type members uninitialized. Once you define *any* constructor yourself, the compiler stops generating that implicit default constructor.\n\n### Connecting to Access Specifiers\n\nConstructors follow the same `public`/`private` rules introduced in *Public and Private Members and Access Specifiers*. A `public` constructor lets outside code create objects; a `private` one prevents it (useful for factory patterns later).\n\n### Key Takeaways\n\n- Constructors guarantee objects start in a valid state.\n- Use member initializer lists rather than assignment in the body.\n- Defining any constructor suppresses the compiler-generated default constructor.\n- Constructor parameters are ordinary function parameters — they can have default values, enabling multiple creation patterns from a single constructor.",
+  "exercises": [
+    {
+      "title": "Book Constructor with Member Initializer List",
+      "prompt_md": "## Goal\nComplete the `Book` class so its constructor initializes all data members via a member initializer list, then prints book details in the required format.\n\n## Input\n- Line 1: a string — the book's title (no spaces; 1–30 characters)\n- Line 2: a string — the author's name (no spaces; 1–30 characters)\n- Line 3: an integer — the year published (1000 ≤ year ≤ 2025)\n\n## Output\nPrint exactly three lines:\n```\nTitle: <title>\nAuthor: <author>\nYear: <year>\n```\nUse the exact labels shown (capital first letter, colon, one space). No trailing blank lines.\n\n## Requirements\n1. Define a class named `Book` with three private data members: `m_title` (`std::string`), `m_author` (`std::string`), and `m_year` (`int`).\n2. Define a single public constructor `Book(const std::string& title, const std::string& author, int year)` that initializes all three members using a **member initializer list** (no assignments in the constructor body).\n3. Define a public `void print() const` member function that prints the three lines shown above.\n4. In `main()`, read the three inputs, construct one `Book` object, and call `print()`.\n5. The hidden tests cover: a title with digits in it, year at the boundary value 1000, and year 2025.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define class Book with:\n//   - private members: m_title (std::string), m_author (std::string), m_year (int)\n//   - public constructor Book(const std::string& title, const std::string& author, int year)\n//     that uses a member initializer list\n//   - public void print() const that prints Title, Author, Year\n\nint main() {\n    std::string title{};\n    std::string author{};\n    int year{};\n\n    std::cin >> title >> author >> year;\n\n    // TODO: Construct a Book object using title, author, year\n    // TODO: Call print() on the Book object\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass Book {\n    std::string m_title;\n    std::string m_author;\n    int m_year;\n\npublic:\n    Book(const std::string& title, const std::string& author, int year)\n        : m_title{title}, m_author{author}, m_year{year} {}\n\n    void print() const {\n        std::cout << \"Title: \"  << m_title  << '\\n';\n        std::cout << \"Author: \" << m_author << '\\n';\n        std::cout << \"Year: \"   << m_year   << '\\n';\n    }\n};\n\nint main() {\n    std::string title{};\n    std::string author{};\n    int year{};\n\n    std::cin >> title >> author >> year;\n\n    Book b{title, author, year};\n    b.print();\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — typical book",
+          "stdin": "Dune\nHerbert\n1965",
+          "expected_stdout": "Title: Dune\nAuthor: Herbert\nYear: 1965\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — title with digits, recent year",
+          "stdin": "Fahrenheit451\nBradbury\n2025",
+          "expected_stdout": "Title: Fahrenheit451\nAuthor: Bradbury\nYear: 2025\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — minimum year boundary",
+          "stdin": "Beowulf\nUnknown\n1000",
+          "expected_stdout": "Title: Beowulf\nAuthor: Unknown\nYear: 1000\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Temperature Sensor Class with Default Constructor",
+      "prompt_md": "## Goal\nComplete the `Sensor` class that uses both a parameterized constructor and a default constructor, then read a sequence of sensor readings and report statistics.\n\n## Input\n- Line 1: a string — the sensor's name (no spaces; 1–20 characters)\n- Line 2: an integer N (1 ≤ N ≤ 50) — number of temperature readings\n- Lines 3..N+2: one floating-point temperature per line (−100.0 ≤ temp ≤ 100.0)\n\n## Output\nPrint exactly three lines:\n```\nSensor: <name>\nReadings: <N>\nAverage: <avg>\n```\n- `<name>` is the sensor name passed to the constructor.\n- `<N>` is the total number of readings added.\n- `<avg>` is the average of all readings, printed with exactly **two decimal places**.\n\n## Requirements\n1. Define a class named `Sensor` with private data members: `m_name` (`std::string`), `m_count` (`int`), and `m_sum` (`double`).\n2. Define a public parameterized constructor `Sensor(const std::string& name)` that initializes `m_name` from its argument and sets `m_count` to `0` and `m_sum` to `0.0` using a **member initializer list**.\n3. Define a public default constructor `Sensor()` that initializes `m_name` to `\"Unknown\"`, `m_count` to `0`, and `m_sum` to `0.0` using a **member initializer list**.\n4. Define a public `void addReading(double temp)` method that adds `temp` to `m_sum` and increments `m_count` by 1.\n5. Define a public `void print() const` method that prints the three output lines with `m_count` readings and the average formatted to exactly two decimal places.\n6. In `main()`, read the sensor name and construct a `Sensor` with the parameterized constructor; then read N readings, call `addReading()` for each, and call `print()`.\n7. The hidden tests cover: N = 1 (single reading), all negative temperatures, and using the default constructor directly (average of a fresh default-constructed Sensor with one reading).",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: Define class Sensor with:\n//   - private members: m_name (std::string), m_count (int), m_sum (double)\n//   - public parameterized constructor Sensor(const std::string& name)\n//     initializing m_name from name, m_count to 0, m_sum to 0.0\n//     using a member initializer list\n//   - public default constructor Sensor()\n//     initializing m_name to \"Unknown\", m_count to 0, m_sum to 0.0\n//     using a member initializer list\n//   - public void addReading(double temp)\n//   - public void print() const  (average with 2 decimal places)\n\nint main() {\n    std::string name{};\n    int n{};\n\n    std::cin >> name >> n;\n\n    // TODO: Construct a Sensor using the parameterized constructor\n\n    for (int i = 0; i < n; ++i) {\n        double temp{};\n        std::cin >> temp;\n        // TODO: Call addReading(temp) on the Sensor object\n    }\n\n    // TODO: Call print() on the Sensor object\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Sensor {\n    std::string m_name;\n    int m_count;\n    double m_sum;\n\npublic:\n    Sensor(const std::string& name)\n        : m_name{name}, m_count{0}, m_sum{0.0} {}\n\n    Sensor()\n        : m_name{\"Unknown\"}, m_count{0}, m_sum{0.0} {}\n\n    void addReading(double temp) {\n        m_sum += temp;\n        ++m_count;\n    }\n\n    void print() const {\n        double avg = (m_count > 0) ? m_sum / m_count : 0.0;\n        std::cout << \"Sensor: \"   << m_name   << '\\n';\n        std::cout << \"Readings: \" << m_count  << '\\n';\n        std::cout << \"Average: \"  << std::fixed << std::setprecision(2) << avg << '\\n';\n    }\n};\n\nint main() {\n    std::string name{};\n    int n{};\n\n    std::cin >> name >> n;\n\n    Sensor s{name};\n\n    for (int i = 0; i < n; ++i) {\n        double temp{};\n        std::cin >> temp;\n        s.addReading(temp);\n    }\n\n    s.print();\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — three readings, mixed temperatures",
+          "stdin": "TempSensorA\n3\n20.0\n22.5\n19.5",
+          "expected_stdout": "Sensor: TempSensorA\nReadings: 3\nAverage: 20.67\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — single reading",
+          "stdin": "RoofSensor\n1\n37.0",
+          "expected_stdout": "Sensor: RoofSensor\nReadings: 1\nAverage: 37.00\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — all negative temperatures",
+          "stdin": "ArcticProbe\n4\n-10.0\n-20.0\n-30.0\n-40.0",
+          "expected_stdout": "Sensor: ArcticProbe\nReadings: 4\nAverage: -25.00\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}
