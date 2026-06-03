@@ -115,7 +115,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
   const router = useRouter();
   const editorRef = useRef<MonacoEditorHandle>(null);
 
-  const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
+  const [activeExerciseIndex] = useState(initialExerciseIndex);
   const [code, setCode] = useState(exercises[activeExerciseIndex]?.starterCode ?? "");
   const [languageStd, setLanguageStd] = useState<CppStandard>("c++20");
   const [isRunning, setIsRunning] = useState(false);
@@ -174,41 +174,6 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
     return () => window.removeEventListener("keydown", handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, languageStd, isRunning, isSubmitting, activeExercise]);
-
-  const handleExerciseSwitch = useCallback(
-    (newIndex: number) => {
-      if (newIndex === activeExerciseIndex || !exercises[newIndex]) return;
-
-      if (activeExercise) {
-        try {
-          localStorage.setItem(
-            `cpproad:editor:${activeExercise.id}`,
-            editorRef.current?.getValue() ?? code,
-          );
-        } catch {
-          // localStorage unavailable
-        }
-      }
-
-      setActiveExerciseIndex(newIndex);
-      setResult(null);
-      setError(null);
-
-      const newExercise = exercises[newIndex];
-      if (newExercise) {
-        let savedCode: string | null = null;
-        try {
-          savedCode = localStorage.getItem(`cpproad:editor:${newExercise.id}`);
-        } catch {
-          // localStorage unavailable
-        }
-        const newCode = savedCode ?? newExercise.starterCode;
-        setCode(newCode);
-        setStoreCode(newCode);
-      }
-    },
-    [activeExerciseIndex, activeExercise, exercises, code, setStoreCode],
-  );
 
   const handleSubmit = useCallback(
     async (mode: "run" | "submit") => {
@@ -419,27 +384,6 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                         <DifficultyBadge difficulty={activeExercise.difficulty} />
                       </div>
 
-                      {/* Exercise tabs if multiple */}
-                      {exercises.length > 1 && (
-                        <div className="flex gap-2 mb-4 pb-4 border-b border-border-subtle">
-                          {exercises.map((ex, idx) => (
-                            <Button
-                              key={ex.id}
-                              variant={idx === activeExerciseIndex ? "default" : "ghost"}
-                              size="xs"
-                              onClick={() => handleExerciseSwitch(idx)}
-                              className={
-                                idx === activeExerciseIndex
-                                  ? "bg-accent text-base hover:bg-accent/90"
-                                  : "bg-elevated text-muted-foreground"
-                              }
-                            >
-                              {ex.title}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
-
                       <div className="prose prose-base prose-invert max-w-none mb-6">
                         <SummaryView markdown={activeExercise.promptMd} />
                       </div>
@@ -468,25 +412,6 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
               {activeExercise?.solutionCode && (
                 <TabsContent value="solution" className="flex-1 overflow-y-auto p-4">
                   <div className="space-y-4">
-                    {exercises.length > 1 && (
-                      <div className="flex gap-2 pb-4 border-b border-border-subtle">
-                        {exercises.map((ex, idx) => (
-                          <Button
-                            key={ex.id}
-                            variant={idx === activeExerciseIndex ? "default" : "ghost"}
-                            size="xs"
-                            onClick={() => handleExerciseSwitch(idx)}
-                            className={
-                              idx === activeExerciseIndex
-                                ? "bg-accent text-base hover:bg-accent/90"
-                                : "bg-elevated text-muted-foreground"
-                            }
-                          >
-                            {ex.title}
-                          </Button>
-                        ))}
-                      </div>
-                    )}
                     <SolutionReveal code={activeExercise.solutionCode} />
                   </div>
                 </TabsContent>

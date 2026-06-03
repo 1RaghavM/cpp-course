@@ -99,26 +99,28 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
     }
   }
 
-  const exercisesForClient = exercises.map((ex) => {
-    const sampleTestCases = ex.testCases
-      .filter((tc) => tc.is_sample)
-      .sort((a, b) => a.sort_order - b.sort_order);
-
-    return {
-      id: ex.id,
-      title: ex.title,
-      promptMd: ex.prompt_md,
-      starterCode: ex.starter_code,
-      solutionCode: ex.solution_code ?? null,
-      difficulty: ex.difficulty,
-      sampleTestCases: sampleTestCases.map((tc) => ({
-        label: tc.label,
-        stdin: tc.stdin ?? "",
-        expectedStdout: tc.expected_stdout,
-      })),
-      lastPassingCode: lastPassingMap.get(ex.id) ?? null,
-    };
-  });
+  const firstExercise = exercises[0];
+  const exercisesForClient = firstExercise
+    ? [
+        {
+          id: firstExercise.id,
+          title: firstExercise.title,
+          promptMd: firstExercise.prompt_md,
+          starterCode: firstExercise.starter_code,
+          solutionCode: firstExercise.solution_code ?? null,
+          difficulty: firstExercise.difficulty,
+          sampleTestCases: firstExercise.testCases
+            .filter((tc) => tc.is_sample)
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .map((tc) => ({
+              label: tc.label,
+              stdin: tc.stdin ?? "",
+              expectedStdout: tc.expected_stdout,
+            })),
+          lastPassingCode: lastPassingMap.get(firstExercise.id) ?? null,
+        },
+      ]
+    : [];
 
   const title = lesson.my_title ?? lesson.learncpp_title;
 
