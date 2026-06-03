@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
 import "@/app/globals.css";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "cpproad",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NavigationProgress />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
