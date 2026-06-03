@@ -512,7 +512,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                     />
                     <div className="flex-1 min-h-0">
                       <MonacoEditor
-                        ref={editorRef}
+                        handleRef={editorRef}
                         defaultValue={activeExercise.starterCode}
                         onChange={(val) => {
                           setCode(val);

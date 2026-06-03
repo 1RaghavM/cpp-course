@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useImperativeHandle, useRef, forwardRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 
@@ -10,6 +10,7 @@ export interface MonacoEditorProps {
   language?: string;
   readOnly?: boolean;
   exerciseId?: string;
+  handleRef?: React.RefObject<MonacoEditorHandle | null>;
 }
 
 export interface MonacoEditorHandle {
@@ -39,16 +40,20 @@ function saveToStorage(exerciseId: string | undefined, value: string): void {
   }
 }
 
-const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(function MonacoEditor(
-  { defaultValue, onChange, language = "cpp", readOnly = false, exerciseId },
-  ref,
-) {
+function MonacoEditor({
+  defaultValue,
+  onChange,
+  language = "cpp",
+  readOnly = false,
+  exerciseId,
+  handleRef,
+}: MonacoEditorProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const initialValue = loadFromStorage(exerciseId) ?? defaultValue;
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(handleRef, () => ({
     getValue() {
       return editorRef.current?.getValue() ?? initialValue;
     },
@@ -168,6 +173,6 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(function 
       }
     />
   );
-});
+}
 
 export default MonacoEditor;

@@ -286,7 +286,7 @@ export default function PlaygroundClient({ savedState }: Props) {
               </div>
               <div className="flex-1 min-h-0">
                 <MonacoEditor
-                  ref={editorRef}
+                  handleRef={editorRef}
                   defaultValue={initialCode}
                   onChange={handleCodeChange}
                   language="cpp"
@@ -392,7 +392,7 @@ export default function PlaygroundClient({ savedState }: Props) {
               <ResizablePanel defaultSize="70" minSize="25" maxSize="85">
                 <div className="h-full min-h-0">
                   <MonacoEditor
-                    ref={editorRef}
+                    handleRef={editorRef}
                     defaultValue={initialCode}
                     onChange={handleCodeChange}
                     language="cpp"
