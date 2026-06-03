@@ -136,18 +136,20 @@ const columns: ColumnDef<ExerciseRow>[] = [
     header: "Difficulty",
     cell: ({ row }) => {
       const difficulty = row.original.difficulty
+      const badgeAnim =
+        "motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200 motion-safe:fill-mode-both"
       if (difficulty === "challenge") {
         return (
           <Badge
             variant="secondary"
-            className="bg-amber-500/15 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400"
+            className={`bg-amber-500/15 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 ${badgeAnim}`}
           >
             Challenge
           </Badge>
         )
       }
       return (
-        <Badge variant="outline" className="text-muted-foreground">
+        <Badge variant="outline" className={`text-muted-foreground ${badgeAnim}`}>
           Practice
         </Badge>
       )
@@ -158,11 +160,13 @@ const columns: ColumnDef<ExerciseRow>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.original.status
+      const badgeAnim =
+        "motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-200 motion-safe:fill-mode-both"
       if (status === "Done") {
         return (
           <Badge
             variant="secondary"
-            className="bg-green-500/15 text-green-600 dark:bg-green-500/20 dark:text-green-400"
+            className={`bg-green-500/15 text-green-600 dark:bg-green-500/20 dark:text-green-400 ${badgeAnim}`}
           >
             <CircleCheckIcon className="size-3" />
             Done
@@ -170,7 +174,7 @@ const columns: ColumnDef<ExerciseRow>[] = [
         )
       }
       return (
-        <Badge variant="outline" className="text-muted-foreground">
+        <Badge variant="outline" className={`text-muted-foreground ${badgeAnim}`}>
           Not Completed
         </Badge>
       )
@@ -187,9 +191,11 @@ type StatusFilter = "all" | "completed" | "not-completed"
 function ModuleTable({
   group,
   statusFilter,
+  groupIndex,
 }: {
   group: ExerciseModuleGroup
   statusFilter: StatusFilter
+  groupIndex: number
 }) {
   const [data, setData] = React.useState(() => group.exercises)
 
@@ -224,8 +230,15 @@ function ModuleTable({
 
   const completedCount = data.filter((d) => d.status === "Done").length
 
+  // Stagger module groups, then rows within. Capped to keep things snappy.
+  const headerDelay = Math.min(groupIndex, 5) * 80
+  const rowsBaseDelay = headerDelay + 120
+
   return (
-    <div className="space-y-3">
+    <div
+      className="space-y-3 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:fill-mode-both motion-safe:duration-300 motion-safe:ease-out"
+      style={{ animationDelay: `${headerDelay}ms` }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-base font-semibold text-foreground">{group.module}</h2>
@@ -251,8 +264,14 @@ function ModuleTable({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+              table.getRowModel().rows.map((row, rowIndex) => (
+                <TableRow
+                  key={row.id}
+                  className="transition-colors duration-150 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-1 motion-safe:fill-mode-both motion-safe:duration-300 motion-safe:ease-out"
+                  style={{
+                    animationDelay: `${rowsBaseDelay + Math.min(rowIndex, 12) * 30}ms`,
+                  }}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -423,8 +442,13 @@ export function ExercisesDataTable({ groups }: { groups: ExerciseModuleGroup[] }
         </Empty>
       ) : hasVisibleExercises ? (
         <div className="space-y-8">
-          {filteredGroups.map((group) => (
-            <ModuleTable key={group.module} group={group} statusFilter={statusFilter} />
+          {filteredGroups.map((group, groupIndex) => (
+            <ModuleTable
+              key={group.module}
+              group={group}
+              statusFilter={statusFilter}
+              groupIndex={groupIndex}
+            />
           ))}
         </div>
       ) : (

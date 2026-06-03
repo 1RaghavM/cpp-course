@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
 import { ArrowRightIcon } from "lucide-react";
 import {
   Card,
@@ -40,9 +39,9 @@ const variantConfig: Record<
 };
 
 const highlighterTheme: Record<string, React.CSSProperties> = {
-  ...atomOneDark,
-  hljs: {
-    ...atomOneDark["hljs"],
+  ...oneDark,
+  'pre[class*="language-"]': {
+    ...oneDark['pre[class*="language-"]'],
     background: "transparent",
     padding: "0",
   },

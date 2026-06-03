@@ -119,8 +119,8 @@ export function FloatingNotepad({ lessonId, onClose }: FloatingNotepadProps) {
         onPointerUp={handleDragEnd}
         style={{ cursor: "grab" }}
       >
-        <GripVertical className="h-4 w-4 text-muted" />
-        <span className="text-sm font-medium text-primary">Notes</span>
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <span className="text-sm font-medium text-foreground">Notes</span>
         <SaveStatus status={saveStatus} />
 
         <div className="ml-auto flex items-center gap-1">
@@ -145,7 +145,7 @@ export function FloatingNotepad({ lessonId, onClose }: FloatingNotepadProps) {
 
       {/* Editor */}
       {isLoading ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-muted">
+        <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
           Loading note…
         </div>
       ) : (
@@ -165,7 +165,7 @@ export function FloatingNotepad({ lessonId, onClose }: FloatingNotepadProps) {
         className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize"
         aria-hidden
       >
-        <svg viewBox="0 0 16 16" className="h-4 w-4 text-muted/50">
+        <svg viewBox="0 0 16 16" className="h-4 w-4 text-muted-foreground/50">
           <path d="M14 14L8 14L14 8Z" fill="currentColor" />
         </svg>
       </div>

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Enable with: git config core.hooksPath .githooks
+#
+# Blocks committing any .env / .env.local / .env.<anything> file.
+# Only .env.example is permitted to enter the repo.
+
+set -e
+
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+# Match files whose basename is .env, .env.local, or .env.<something>,
+# excluding .env.example.
+offenders="$(printf '%s\n' "$staged" | grep -E '(^|/)\.env(\.[^/]+)?$' | grep -Ev '(^|/)\.env\.example$' || true)"
+
+if [ -n "$offenders" ]; then
+  echo "ERROR: refusing to commit env file(s):" >&2
+  printf '  %s\n' $offenders >&2
+  echo "" >&2
+  echo "Only .env.example may be committed. If you really need to bypass this," >&2
+  echo "rerun with: git commit --no-verify (NOT recommended)." >&2
+  exit 1
+fi
+
+exit 0

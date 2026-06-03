@@ -58,7 +58,7 @@ export function StatsHeatmap({ activityData }: StatsHeatmapProps) {
   }, [activityData])
 
   return (
-    <Card>
+    <Card className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300 motion-safe:fill-mode-both">
       <CardHeader>
         <CardTitle className="text-2xl font-semibold">Activity</CardTitle>
         <p className="text-sm text-muted-foreground">
@@ -66,7 +66,11 @@ export function StatsHeatmap({ activityData }: StatsHeatmapProps) {
         </p>
       </CardHeader>
       <CardContent>
-        <div ref={containerRef}>
+        <div
+          ref={containerRef}
+          className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500 motion-safe:fill-mode-both"
+          style={{ animationDelay: "120ms" } as React.CSSProperties}
+        >
           {cellSize > 0 && (
             <Heatmap
             data={data}

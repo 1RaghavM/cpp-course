@@ -5,7 +5,7 @@ import { computeWeeklyCompleted } from "@/lib/dashboard/resume";
 export const dynamic = "force-dynamic";
 
 export default async function ProfileRoute() {
-  const { supabase, session } = await requireServerSession();
+  const { supabase, user } = await requireServerSession();
 
   const [statsResult, onboardingResult, progressResult] = await Promise.all([
     supabase.from("user_stats").select("display_name, streak_days, weekly_goal").single(),
@@ -40,7 +40,7 @@ export default async function ProfileRoute() {
     .map((r) => ({ completedAt: r.completed_at! }));
   const lessonsCompletedThisWeek = computeWeeklyCompleted(weeklyRecords, today);
 
-  const email = session.user.email ?? "";
+  const email = user.email ?? "";
   const userInitial = (email[0] ?? "?").toUpperCase();
 
   return (

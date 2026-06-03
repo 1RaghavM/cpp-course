@@ -56,7 +56,7 @@ export function Dashboard({
   const itemVariants = reducedMotion
     ? { hidden: {}, visible: {} }
     : {
-        hidden: { opacity: 0, y: 12 },
+        hidden: { opacity: 0, y: 8 },
         visible: {
           opacity: 1,
           y: 0,

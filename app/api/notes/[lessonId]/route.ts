@@ -4,6 +4,9 @@ import { requireAuth } from "@/lib/auth/require-auth";
 
 export const dynamic = "force-dynamic";
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const MAX_NOTE_BYTES = 50 * 1024;
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { lessonId: string } },
@@ -12,9 +15,13 @@ export async function PATCH(
 
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const { lessonId } = params;
+
+  if (!UUID_REGEX.test(lessonId)) {
+    return NextResponse.json({ error: "Invalid lessonId" }, { status: 400 });
+  }
 
   let body: unknown;
   try {
@@ -28,6 +35,13 @@ export async function PATCH(
     return NextResponse.json(
       { error: "content must be a string" },
       { status: 400 },
+    );
+  }
+
+  if (Buffer.byteLength(content, "utf-8") > MAX_NOTE_BYTES) {
+    return NextResponse.json(
+      { error: "content exceeds 50 KB limit" },
+      { status: 413 },
     );
   }
 

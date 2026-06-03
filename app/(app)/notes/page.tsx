@@ -55,9 +55,9 @@ export default async function NotesOverviewPage() {
 
   if (notes.length === 0) {
     return (
-      <div className="mx-auto max-w-[800px] px-6 py-8">
-        <h1 className="text-2xl font-bold text-primary mb-2">Notes</h1>
-        <p className="text-sm text-muted">
+      <div className="mx-auto max-w-[800px] px-6 py-8 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300 motion-safe:delay-200">
+        <h1 className="text-2xl font-bold text-foreground mb-2">Notes</h1>
+        <p className="text-sm text-muted-foreground">
           No notes yet. Open the notepad on any lesson to start.
         </p>
       </div>
@@ -88,9 +88,9 @@ export default async function NotesOverviewPage() {
 
   return (
     <div className="mx-auto max-w-[800px] px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-primary">Notes</h1>
-        <p className="mt-1 text-sm text-muted">
+      <div className="mb-6 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-1 motion-safe:duration-300">
+        <h1 className="text-2xl font-bold text-foreground">Notes</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           {notes.length} note{notes.length !== 1 ? "s" : ""} across{" "}
           {chapters.length} chapter{chapters.length !== 1 ? "s" : ""}
         </p>

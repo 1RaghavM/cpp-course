@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -15,7 +16,7 @@ export function Footer() {
             color: "var(--color-fg-subtle)",
           }}
         >
-          <img src="/fulllogo-Photoroom.png" alt="cpproad" style={{ height: "32px", width: "auto" }} />
+          <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={128} height={32} style={{ height: "32px", width: "auto" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <Link href="/login" style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}>
               Sign in

@@ -6,6 +6,7 @@ import { AuthAlert } from "@/components/auth/AuthAlert";
 const ERROR_MESSAGES: Record<string, string> = {
   auth_callback_failed:
     "Email link expired or is invalid. Try again or sign in with your password.",
+  oauth_failed: "Google sign-in failed. Please try again.",
 };
 
 type LoginPageProps = {

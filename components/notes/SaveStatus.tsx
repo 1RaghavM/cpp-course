@@ -10,7 +10,7 @@ export function SaveStatus({ status }: SaveStatusProps) {
   if (status === "idle") return null;
 
   return (
-    <span className="flex items-center gap-1 text-xs text-muted">
+    <span className="flex items-center gap-1 text-xs text-muted-foreground">
       {status === "saving" && (
         <>
           <Loader2 className="h-3 w-3 animate-spin" />

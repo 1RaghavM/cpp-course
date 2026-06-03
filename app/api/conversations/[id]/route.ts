@@ -13,6 +13,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
     .from("conversations")
     .select("id, lesson_id, title")
     .eq("id", params.id)
+    .eq("user_id", authResult.user.id)
     .single();
 
   if (convError || !conversation) {

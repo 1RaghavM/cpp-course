@@ -60,7 +60,7 @@ function statusBadgeColor(status: string): string {
     case "runtime_error":
       return "bg-error/20 text-error";
     default:
-      return "bg-muted/20 text-muted";
+      return "bg-muted/20 text-muted-foreground";
   }
 }
 
@@ -117,7 +117,7 @@ export function OutputPanel({
     <div className="flex flex-col h-full">
       {/* Header with actions */}
       <div className="flex items-center gap-2 px-4 py-2 bg-elevated border-b border-border">
-        <span className="text-xs font-medium text-secondary uppercase tracking-wider">Console</span>
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Console</span>
 
         <div className="flex-1" />
 
@@ -161,7 +161,7 @@ export function OutputPanel({
                   : result.status.replace(/_/g, " ")}
               </span>
               {result.wallTimeMs > 0 && (
-                <span className="text-xs text-muted">{result.wallTimeMs}ms</span>
+                <span className="text-xs text-muted-foreground">{result.wallTimeMs}ms</span>
               )}
             </div>
 
@@ -176,7 +176,7 @@ export function OutputPanel({
             {!result.testResults?.length && (
               <OutputSection title="Output" variant={result.stdout ? "success" : "neutral"}>
                 <pre className="whitespace-pre-wrap">
-                  {result.stdout || <span className="text-muted italic">(no output)</span>}
+                  {result.stdout || <span className="text-muted-foreground italic">(no output)</span>}
                 </pre>
               </OutputSection>
             )}
@@ -199,7 +199,7 @@ export function OutputPanel({
         )}
 
         {!error && !result && (
-          <div className="flex flex-col items-center justify-center h-full min-h-[150px] text-muted text-sm">
+          <div className="flex flex-col items-center justify-center h-full min-h-[150px] text-muted-foreground text-sm">
             <p>Press Run to execute your code</p>
             <p className="text-xs mt-1">or Submit to test against all cases</p>
           </div>
@@ -227,12 +227,12 @@ function OutputSection({ title, variant, children }: OutputSectionProps) {
     success: "text-success",
     error: "text-error",
     warning: "text-warning",
-    neutral: "text-primary",
+    neutral: "text-foreground",
   };
 
   return (
     <div>
-      <div className="text-xs font-medium text-secondary mb-2">{title}</div>
+      <div className="text-xs font-medium text-muted-foreground mb-2">{title}</div>
       <div
         className={`rounded-md border p-3 font-mono text-xs ${variantStyles[variant]} ${textStyles[variant]}`}
       >

@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { StreakCard } from "@/components/dashboard/StreakCard";
 
@@ -14,6 +17,8 @@ export function StatsStrip({
   totalLessonsCompleted,
   streakDays,
 }: StatsStripProps) {
+  const reducedMotion = useReducedMotion();
+
   const weeklyValue =
     weeklyGoal != null
       ? `${lessonsCompletedThisWeek} / ${weeklyGoal}`
@@ -22,15 +27,45 @@ export function StatsStrip({
   const weeklyZero =
     weeklyGoal != null ? `0 / ${weeklyGoal} — first one's the hardest` : "0 so far";
 
+  const containerVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.05 } },
+  };
+
+  const itemVariants = reducedMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0, y: 8 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            duration: 0.32,
+            ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+          },
+        },
+      };
+
   return (
-    <div className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1">
-      <StatCard
-        label="This week"
-        value={weeklyValue}
-        zeroText={lessonsCompletedThisWeek === 0 ? weeklyZero : undefined}
-      />
-      <StatCard label="Lessons done" value={totalLessonsCompleted} zeroText="Day 1" />
-      <StreakCard streakDays={streakDays} />
-    </div>
+    <motion.div
+      className="grid grid-cols-3 gap-3 max-[480px]:grid-cols-1"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div variants={itemVariants}>
+        <StatCard
+          label="This week"
+          value={weeklyValue}
+          zeroText={lessonsCompletedThisWeek === 0 ? weeklyZero : undefined}
+        />
+      </motion.div>
+      <motion.div variants={itemVariants}>
+        <StatCard label="Lessons done" value={totalLessonsCompleted} zeroText="Day 1" />
+      </motion.div>
+      <motion.div variants={itemVariants}>
+        <StreakCard streakDays={streakDays} />
+      </motion.div>
+    </motion.div>
   );
 }

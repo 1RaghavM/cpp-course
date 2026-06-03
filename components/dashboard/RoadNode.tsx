@@ -17,6 +17,7 @@ interface RoadNodeProps {
   state: StageState;
   title: string;
   targetLessonSlug: string;
+  index?: number;
 }
 
 const nodeStyles: Record<StageState["status"], { ring: string; bg: string; label: string }> = {
@@ -42,7 +43,7 @@ const nodeStyles: Record<StageState["status"], { ring: string; bg: string; label
   },
 };
 
-export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
+export function RoadNode({ state, title, targetLessonSlug, index = 0 }: RoadNodeProps) {
   const isLocked = state.status === "locked";
   const style = nodeStyles[state.status];
   const hint = getPrereqHint(state.stageId);
@@ -54,6 +55,13 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
         : state.status === "locked"
           ? "locked"
           : "available";
+
+  // Stagger node entrance: first node starts at 100ms (before road-fill 560ms completes),
+  // each subsequent node delayed by 80ms. Honors reduced-motion via motion-safe: prefix.
+  const enterDelay = `${100 + index * 80}ms`;
+  const enterStyle = { animationDelay: enterDelay } as React.CSSProperties;
+  const enterClasses =
+    "motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300 motion-safe:fill-mode-both";
 
   const nodeContent = (
     <>
@@ -81,7 +89,7 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
           {state.completed} / {state.total}
         </p>
         {state.status === "active" && (
-          <p className="mt-0.5 text-xs text-primary">you&apos;re here</p>
+          <p className="mt-0.5 text-xs text-foreground">you&apos;re here</p>
         )}
       </div>
     </>
@@ -89,10 +97,13 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
 
   if (isLocked && hint) {
     return (
-      <li className="relative flex flex-col items-center">
+      <li
+        className={`relative flex flex-col items-center ${enterClasses}`}
+        style={enterStyle}
+      >
         <Popover>
           <PopoverTrigger
-            className="flex flex-col items-center opacity-60 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="flex flex-col items-center opacity-60 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-safe:transition-transform motion-safe:hover:scale-105"
             onClick={() => trackDashboardEvent("locked_stage_clicked", { stage: state.stageId })}
             aria-label={`${title}, ${state.completed} of ${state.total} lessons, ${statusLabel}`}
           >
@@ -120,11 +131,11 @@ export function RoadNode({ state, title, targetLessonSlug }: RoadNodeProps) {
   }
 
   return (
-    <li className="flex flex-col items-center">
+    <li className={`flex flex-col items-center ${enterClasses}`} style={enterStyle}>
       <Link
         href={`/lessons/${targetLessonSlug}`}
         onClick={() => trackDashboardEvent("stage_clicked", { stage: state.stageId })}
-        className={`flex flex-col items-center transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isLocked ? "opacity-60" : ""}`}
+        className={`flex flex-col items-center transition-transform motion-safe:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isLocked ? "opacity-60" : ""}`}
         aria-label={`${title}, ${state.completed} of ${state.total} lessons, ${statusLabel}`}
       >
         {nodeContent}

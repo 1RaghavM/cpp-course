@@ -250,6 +250,32 @@ body {
   .road-fill-animate { animation: none !important; }
 }
 
+/* Module drawer slide + fade */
+.module-drawer-popup[data-slot="drawer-popup"] {
+  transition: transform 300ms var(--ease), opacity 250ms var(--ease), box-shadow 300ms var(--ease);
+}
+.module-drawer-popup[data-slot="drawer-popup"][data-starting-style] {
+  opacity: 0;
+}
+.module-drawer-popup[data-slot="drawer-popup"][data-ending-style] {
+  opacity: 0;
+  transition-duration: 200ms;
+}
+
+/* Module drawer content stagger */
+@keyframes module-item-enter {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.module-drawer-content {
+  animation: module-item-enter 300ms var(--ease) both;
+  animation-delay: calc(var(--stagger, 0) * 40ms + 100ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .module-drawer-content { animation: none !important; }
+  .module-drawer-popup[data-slot="drawer-popup"] { transition: none !important; }
+}
+
 /* React Flow theme integration */
 .react-flow__controls button {
   background-color: var(--card);

@@ -9,7 +9,7 @@ export async function GET() {
   const supabase = createRouteClient();
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
   const stats = await fetchStats(supabase, userId);
   return NextResponse.json(stats);
 }

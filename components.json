@@ -12,6 +12,8 @@
   },
   "iconLibrary": "lucide",
   "rtl": false,
+  "menuColor": "default",
+  "menuAccent": "subtle",
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils",
@@ -19,12 +21,12 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "menuColor": "default",
-  "menuAccent": "subtle",
   "registries": {
     "@8starlabs": "https://ui.8starlabs.com/r/{name}.json",
     "@ai-elements": "https://ai-sdk.dev/elements/api/registry/{name}.json",
     "@aicanvas": "https://aicanvas.me/r/{name}.json",
-    "@8starlabs-ui": "https://ui.8starlabs.com/r/{name}.json"
+    "@8starlabs-ui": "https://ui.8starlabs.com/r/{name}.json",
+    "@basecn": "https://basecn.dev/r/{name}.json",
+    "@abui": "https://www.abui.io/r/{name}.json"
   }
 }

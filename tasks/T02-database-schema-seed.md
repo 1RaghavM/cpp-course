@@ -37,16 +37,13 @@ Create these tables exactly as specified in `design.md` section 3.2:
 - `idx_messages_conv` on messages(conversation_id, created_at)
 - `idx_token_usage_day` on token_usage(date_trunc('day', created_at))
 
-### RLS (002_rls.sql)
+### RLS
 
-Enable RLS on every table except `chapters` (public read is fine). Create a single policy per table:
+Enable RLS on every table except `chapters` (public read is fine).
 
-```sql
-CREATE POLICY only_me ON <table> FOR ALL TO authenticated
-    USING (auth.jwt() ->> 'email' = current_setting('app.owner_email'));
-```
-
-Tables that need RLS: lessons, exercises, test_cases, submissions, progress, conversations, messages, token_usage.
+- **User-scoped tables** (progress, submissions, conversations, notes, etc.): `USING (user_id = auth.uid())`
+- **Shared content tables** (lessons, exercises, test_cases): `SELECT` open to all authenticated users; writes via service role only
+- **messages**: access gated through parent conversation's `user_id`
 
 ## Seed script (scripts/seed_db.ts)
 

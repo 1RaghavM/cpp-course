@@ -1,8 +1,7 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
 import type { Components } from "react-markdown";
 
 interface SummaryViewProps {
@@ -58,7 +57,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
   };
 
   return (
-    <div className="prose prose-invert prose-base max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-primary prose-p:text-secondary prose-strong:text-primary prose-a:text-brand-bright prose-a:no-underline hover:prose-a:underline prose-li:text-secondary prose-code:before:content-none prose-code:after:content-none">
+    <div className="prose prose-invert prose-base max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-brand-bright prose-a:no-underline hover:prose-a:underline prose-li:text-muted-foreground prose-code:before:content-none prose-code:after:content-none">
       <ReactMarkdown components={components}>{markdown}</ReactMarkdown>
     </div>
   );

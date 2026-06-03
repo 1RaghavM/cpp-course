@@ -164,7 +164,7 @@ const MonacoEditor = forwardRef<MonacoEditorHandle, MonacoEditorProps>(function 
         bracketPairColorization: { enabled: true },
       }}
       loading={
-        <div className="flex h-full items-center justify-center text-muted">Loading editor...</div>
+        <div className="flex h-full items-center justify-center text-muted-foreground">Loading editor...</div>
       }
     />
   );

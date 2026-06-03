@@ -58,7 +58,7 @@ export default async function DedicatedNotePage({ params }: Props) {
 
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-primary">
+          <h1 className="text-xl font-bold text-foreground">
             {lesson.number} — {lessonTitle}
           </h1>
         </div>

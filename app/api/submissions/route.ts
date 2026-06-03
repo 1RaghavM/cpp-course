@@ -31,9 +31,24 @@ export async function POST(request: NextRequest) {
   // ---- Auth guard -----------------------------------------------------------
   const authResult = await requireAuth(authClient);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.session.user.id;
+  const userId = authResult.user.id;
 
   const supabase = authClient;
+
+  // ---- Per-user rate limit (5 submissions per 60s) --------------------------
+  const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
+  const { count: recentSubmissionCount } = await supabase
+    .from("submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("created_at", oneMinuteAgo);
+
+  if ((recentSubmissionCount ?? 0) >= 5) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Max 5 submissions per minute." },
+      { status: 429 },
+    );
+  }
 
   // ---- Parse & validate request body ----------------------------------------
   let body: RequestBody;

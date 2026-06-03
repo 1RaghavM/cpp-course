@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
@@ -30,7 +31,7 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
               transition={{ delay: 0.15, duration: 0.35, type: "spring", stiffness: 200 }}
             >
               <Link href="/" className="mb-2 inline-block no-underline">
-                <img src="/fulllogo-Photoroom.png" alt="cpproad" className="h-12 w-auto" />
+                <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={192} height={48} className="h-12 w-auto" />
               </Link>
             </motion.div>
             <motion.h1
