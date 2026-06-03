@@ -24,7 +24,7 @@ interface ResumeHeroCardProps {
   lessonPosition: number
   moduleLessonCount: number
   moduleCompletedCount: number
-  variant: "start" | "resume" | "complete"
+  variant: "start" | "resume" | "complete" | "next-chapter"
 }
 
 const VARIANT_CONFIG = {
@@ -42,6 +42,11 @@ const VARIANT_CONFIG = {
     icon: CheckCircle2Icon,
     headline: "Curriculum complete!",
     buttonLabel: "Review",
+  },
+  "next-chapter": {
+    icon: RocketIcon,
+    headline: "Ready for the next chapter",
+    buttonLabel: "Start Next Chapter",
   },
 } as const
 
@@ -77,6 +82,11 @@ export function ResumeHeroCard({
           )}
           {variant === "resume" && (
             <span className="font-medium text-foreground">{resumeLesson.title}</span>
+          )}
+          {variant === "next-chapter" && (
+            <>
+              Up next: <span className="font-medium text-foreground">{moduleName}</span>
+            </>
           )}
           {variant === "complete" && (
             <>You&apos;ve completed the entire C++ curriculum. Revisit any lesson to reinforce your knowledge.</>

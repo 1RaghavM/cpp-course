@@ -33,11 +33,6 @@ const TutorPanel = dynamic(() => import("@/components/tutor/TutorPanel"), {
   ),
 });
 
-const FloatingNotepad = dynamic(
-  () => import("@/components/notes/FloatingNotepad").then((mod) => mod.FloatingNotepad),
-  { ssr: false }
-);
-
 const DEFAULT_CODE = `#include <iostream>
 
 int main() {
@@ -104,11 +99,11 @@ export default function PlaygroundClient({ savedState }: Props) {
   const [isRunning, setIsRunning] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [headerCollapsed, setHeaderCollapsed] = useState(false);
+
   const [stdinCollapsed, setStdinCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileTab, setMobileTab] = useState<"code" | "input" | "output" | "tutor">("code");
-  const [notepadOpen, setNotepadOpen] = useState(false);
+
 
   const setStoreCode = useTutorStore((s) => s.setCode);
   const setStoreContext = useTutorStore((s) => s.setContext);
@@ -257,12 +252,6 @@ export default function PlaygroundClient({ savedState }: Props) {
           <Link href="/dashboard" className="shrink-0">
             <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={96} height={24} className="h-6 w-auto" />
           </Link>
-          <Link
-            href="/dashboard"
-            className="p-1.5 hover:bg-hover rounded-md transition-colors text-muted-foreground hover:text-primary"
-          >
-            <MenuIcon />
-          </Link>
           <span className="text-sm font-semibold text-foreground">Playground</span>
           <div className="flex-1" />
           <select
@@ -349,71 +338,31 @@ export default function PlaygroundClient({ savedState }: Props) {
 
   return (
     <div className="flex flex-col h-full bg-base">
-      {/* Collapsible header */}
-      {!headerCollapsed && (
-        <div className="flex items-center gap-2 bg-elevated px-4 py-2 border-b border-border">
-          <Link href="/dashboard" className="shrink-0">
-            <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={112} height={28} className="h-7 w-auto" />
-          </Link>
-          <Link
-            href="/dashboard"
-            className="p-1.5 hover:bg-hover rounded-md transition-colors text-muted-foreground hover:text-primary"
-            title="Back to dashboard"
-          >
-            <MenuIcon />
-          </Link>
-          <div className="h-4 w-px bg-border mx-1" />
-          <span className="text-sm font-semibold text-foreground">Playground</span>
-          <div className="flex-1" />
+      <div className="flex items-center gap-2 bg-elevated px-4 py-2 border-b border-border">
+        <Link href="/dashboard" className="shrink-0">
+          <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={112} height={28} className="h-7 w-auto" />
+        </Link>
+        <div className="h-4 w-px bg-border mx-1" />
+        <span className="text-sm font-semibold text-foreground">Playground</span>
+        <div className="flex-1" />
 
-          <button
-            onClick={() => setNotepadOpen((prev) => !prev)}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              notepadOpen
-                ? "bg-brand-bright/15 text-brand-bright"
-                : "text-muted-foreground hover:text-primary hover:bg-hover"
-            }`}
-            title={notepadOpen ? "Hide notes" : "Show notes"}
-          >
-            <NotesIcon />
-            Notes
-          </button>
+        <ReportBugButton lessonId="playground" />
 
-          <div className="h-4 w-px bg-border mx-1" />
-          <ReportBugButton lessonId="playground" />
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleToggleTutor}
-            className={
-              tutorOpen
-                ? "bg-brand-bright/15 text-brand-bright hover:bg-brand-bright/25"
-                : "text-muted-foreground"
-            }
-            title={tutorOpen ? "Hide tutor" : "Show tutor"}
-          >
-            <TutorIcon />
-            Tutor
-          </Button>
-
-          <button
-            onClick={() => setHeaderCollapsed(true)}
-            className="p-1 rounded-md text-muted-foreground hover:text-primary hover:bg-hover transition-colors"
-            title="Collapse header"
-          >
-            <ChevronUpIcon />
-          </button>
-        </div>
-      )}
-
-      {headerCollapsed && (
-        <button
-          onClick={() => setHeaderCollapsed(false)}
-          className="h-1.5 bg-elevated hover:bg-hover border-b border-border transition-colors cursor-pointer"
-          title="Expand header"
-        />
-      )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleToggleTutor}
+          className={
+            tutorOpen
+              ? "bg-brand-bright/15 text-brand-bright hover:bg-brand-bright/25"
+              : "text-muted-foreground"
+          }
+          title={tutorOpen ? "Hide tutor" : "Show tutor"}
+        >
+          <TutorIcon />
+          Tutor
+        </Button>
+      </div>
 
       {/* Main content */}
       <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="flex-1 min-h-0">
@@ -532,9 +481,6 @@ export default function PlaygroundClient({ savedState }: Props) {
           </>
         )}
       </ResizablePanelGroup>
-      {notepadOpen && !isMobile && (
-        <FloatingNotepad lessonId="playground" onClose={() => setNotepadOpen(false)} />
-      )}
       {resetDialog}
     </div>
   );
@@ -633,17 +579,6 @@ function Spinner() {
   );
 }
 
-function ChevronUpIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-      <path
-        fillRule="evenodd"
-        d="M14.77 12.79a.75.75 0 01-1.06-.02L10 9.832l-3.71 3.938a.75.75 0 01-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
 
 function ChevronDownIcon() {
   return (
@@ -657,17 +592,6 @@ function ChevronDownIcon() {
   );
 }
 
-function MenuIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
-      <path
-        fillRule="evenodd"
-        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm0 5.25a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
 
 function TutorIcon() {
   return (
@@ -681,14 +605,3 @@ function TutorIcon() {
   );
 }
 
-function NotesIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-      <path
-        fillRule="evenodd"
-        d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm2.25 8.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zm0 3a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}

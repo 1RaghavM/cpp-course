@@ -88,7 +88,8 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
   }
 
   // Non-blocking: progress write must not delay HTML
-  touchLessonProgress(supabase, userId, lesson.id);
+  // Reading-only lessons auto-complete on visit; exercise-based stay in_progress.
+  touchLessonProgress(supabase, userId, lesson.id, exercises.length > 0);
 
   // Sample test cases already loaded by getOrGenerateLesson
   const lastPassingMap = new Map<string, string>();

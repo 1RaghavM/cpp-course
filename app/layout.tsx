@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "@/app/globals.css";
+import { NavigationProgress } from "@/components/ui/navigation-progress";
 
 export const metadata: Metadata = {
   title: "cpproad",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <body className="grain min-h-screen bg-background font-sans text-foreground antialiased">
+        <NavigationProgress />
         {children}
       </body>
     </html>

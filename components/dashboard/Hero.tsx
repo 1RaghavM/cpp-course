@@ -36,6 +36,7 @@ const variantConfig: Record<
   resume: { label: "PICK UP WHERE YOU LEFT OFF", buttonText: "Resume coding", showTitle: true },
   start: { label: "START HERE", buttonText: "Start lesson 1", showTitle: true },
   complete: { label: "PATH COMPLETE", buttonText: "Review a topic", showTitle: false },
+  "next-chapter": { label: "CHAPTER COMPLETE", buttonText: "Start Next Chapter", showTitle: true },
 };
 
 const highlighterTheme: Record<string, React.CSSProperties> = {

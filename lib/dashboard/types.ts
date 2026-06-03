@@ -6,7 +6,7 @@ export type LessonStatus = "not_started" | "in_progress" | "completed" | "skippe
 
 export type StageStatus = "done" | "active" | "locked";
 
-export type ResumeVariant = "resume" | "start" | "complete";
+export type ResumeVariant = "resume" | "start" | "complete" | "next-chapter";
 
 export interface Lesson {
   id: string;

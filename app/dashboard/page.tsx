@@ -124,7 +124,7 @@ export default async function Page() {
     lessonsCompletedThisWeek,
   }
   const resumeTarget = computeResumeTarget(curriculum, resumeProgress, lastActiveLessonId)
-  const resumeVariant = computeResumeVariant(curriculum, resumeProgress)
+  const resumeVariant = computeResumeVariant(curriculum, resumeProgress, resumeTarget)
 
   const resumeModule = curriculum.find((m) => m.id === resumeTarget.moduleId)!
   const moduleName = resumeModule.title

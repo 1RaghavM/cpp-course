@@ -101,6 +101,7 @@ interface SubmissionResponse {
   exitCode: number | null;
   wallTimeMs: number;
   testResults?: TestResult[];
+  lessonCompleted?: boolean;
 }
 
 interface Props {
@@ -112,6 +113,7 @@ interface Props {
 }
 
 export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav, exerciseOnly = false }: Props) {
+  const router = useRouter();
   const editorRef = useRef<MonacoEditorHandle>(null);
 
   const [activeExerciseIndex, setActiveExerciseIndex] = useState(initialExerciseIndex);
@@ -240,8 +242,12 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
           return;
         }
 
-        setResult(data as SubmissionResponse);
-        setStoreSubmission("", (data as SubmissionResponse).status);
+        const submission = data as SubmissionResponse;
+        setResult(submission);
+        setStoreSubmission("", submission.status);
+        if (submission.lessonCompleted) {
+          router.refresh();
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
       } finally {
@@ -249,7 +255,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
         setIsSubmitting(false);
       }
     },
-    [code, activeExercise, languageStd, isRunning, isSubmitting, setStoreSubmission],
+    [code, activeExercise, languageStd, isRunning, isSubmitting, setStoreSubmission, router],
   );
 
   const [resetDialogOpen, setResetDialogOpen] = useState(false);

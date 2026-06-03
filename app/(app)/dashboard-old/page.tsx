@@ -140,7 +140,7 @@ export default async function DashboardPage() {
 
   const lastActiveLessonId = findLastActiveLessonId(progressRows);
   const resumeTarget = computeResumeTarget(curriculum, dashboardProgress, lastActiveLessonId);
-  const resumeVariant = computeResumeVariant(curriculum, dashboardProgress);
+  const resumeVariant = computeResumeVariant(curriculum, dashboardProgress, resumeTarget);
   const pathPercent = computePathPercent(curriculum, dashboardProgress);
 
   const currentHour = new Date().getUTCHours();

@@ -87,16 +87,18 @@ describe("computeResumeTarget", () => {
 
 describe("computeResumeVariant", () => {
   const curriculum = makeCurriculum();
+  const firstLesson = curriculum[0]!.lessons[0]!;
 
   it("returns 'start' when no lessons completed", () => {
-    expect(computeResumeVariant(curriculum, emptyProgress())).toBe("start");
+    expect(computeResumeVariant(curriculum, emptyProgress(), firstLesson)).toBe("start");
   });
 
   it("returns 'resume' when partially completed", () => {
     const progress = emptyProgress();
     progress.lessonProgress["lesson-0"] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     progress.totalLessonsCompleted = 1;
-    expect(computeResumeVariant(curriculum, progress)).toBe("resume");
+    const target = curriculum[0]!.lessons[1]!;
+    expect(computeResumeVariant(curriculum, progress, target)).toBe("resume");
   });
 
   it("returns 'complete' when all done", () => {
@@ -106,7 +108,29 @@ describe("computeResumeVariant", () => {
       progress.lessonProgress[l.id] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     }
     progress.totalLessonsCompleted = allLessons.length;
-    expect(computeResumeVariant(curriculum, progress)).toBe("complete");
+    const lastLesson = allLessons[allLessons.length - 1]!;
+    expect(computeResumeVariant(curriculum, progress, lastLesson)).toBe("complete");
+  });
+
+  it("returns 'next-chapter' when previous module is fully completed and target is first lesson of next module", () => {
+    const progress = emptyProgress();
+    for (const l of curriculum[0]!.lessons) {
+      progress.lessonProgress[l.id] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
+    }
+    progress.totalLessonsCompleted = curriculum[0]!.lessons.length;
+    const nextModuleFirstLesson = curriculum[1]!.lessons[0]!;
+    expect(computeResumeVariant(curriculum, progress, nextModuleFirstLesson)).toBe("next-chapter");
+  });
+
+  it("returns 'resume' when target is first lesson of next module but already in-progress", () => {
+    const progress = emptyProgress();
+    for (const l of curriculum[0]!.lessons) {
+      progress.lessonProgress[l.id] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
+    }
+    progress.totalLessonsCompleted = curriculum[0]!.lessons.length;
+    const nextModuleFirstLesson = curriculum[1]!.lessons[0]!;
+    progress.lessonProgress[nextModuleFirstLesson.id] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
+    expect(computeResumeVariant(curriculum, progress, nextModuleFirstLesson)).toBe("resume");
   });
 });
 

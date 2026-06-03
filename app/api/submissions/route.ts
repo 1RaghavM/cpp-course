@@ -227,18 +227,45 @@ export async function POST(request: NextRequest) {
     .eq("lesson_id", exercise.lesson_id)
     .then(() => {});
 
-  // Auto-mark lesson completed if all tests pass
+  // Auto-mark lesson completed only when ALL exercises in the lesson have passing submissions
+  let lessonCompleted = false;
   if (verdict.overallStatus === "passed") {
-    await supabase.from("progress").upsert(
-      {
-        user_id: userId,
-        lesson_id: exercise.lesson_id,
-        state: "completed",
-        completed_at: new Date().toISOString(),
-        last_visit_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,lesson_id" },
-    );
+    const { data: lessonExercises } = await supabase
+      .from("exercises")
+      .select("id")
+      .eq("lesson_id", exercise.lesson_id);
+
+    const otherExerciseIds = (lessonExercises ?? [])
+      .map((e) => e.id)
+      .filter((id) => id !== exercise_id);
+
+    let allPassed = true;
+    if (otherExerciseIds.length > 0) {
+      const { data: passedSubs } = await supabase
+        .from("submissions")
+        .select("exercise_id")
+        .eq("user_id", userId)
+        .in("exercise_id", otherExerciseIds)
+        .eq("mode", "submit")
+        .eq("status", "passed");
+
+      const passedIds = new Set((passedSubs ?? []).map((s) => s.exercise_id));
+      allPassed = otherExerciseIds.every((id) => passedIds.has(id));
+    }
+
+    if (allPassed) {
+      lessonCompleted = true;
+      await supabase.from("progress").upsert(
+        {
+          user_id: userId,
+          lesson_id: exercise.lesson_id,
+          state: "completed",
+          completed_at: new Date().toISOString(),
+          last_visit_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,lesson_id" },
+      );
+    }
   }
 
   return NextResponse.json({
@@ -249,5 +276,6 @@ export async function POST(request: NextRequest) {
     exitCode: null,
     wallTimeMs: totalWallTimeMs,
     testResults: verdict.testResults,
+    lessonCompleted,
   });
 }

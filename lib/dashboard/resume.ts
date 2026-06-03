@@ -33,9 +33,34 @@ export function computeResumeTarget(
 export function computeResumeVariant(
   curriculum: Module[],
   progress: DashboardProgress,
+  resumeTarget: Lesson,
 ): ResumeVariant {
   if (progress.totalLessonsCompleted === 0) return "start";
   if (isPathComplete(curriculum, progress)) return "complete";
+
+  const targetModule = curriculum.find((m) => m.id === resumeTarget.moduleId);
+  if (targetModule) {
+    const sorted = [...targetModule.lessons].sort((a, b) => a.order - b.order);
+    const isFirstLesson = sorted[0]?.id === resumeTarget.id;
+    const targetStatus = progress.lessonProgress[resumeTarget.id]?.status;
+    const notStartedYet = !targetStatus || targetStatus === "not_started";
+
+    if (isFirstLesson && notStartedYet) {
+      const prevModule = curriculum
+        .filter((m) => m.order < targetModule.order)
+        .sort((a, b) => b.order - a.order)[0];
+      if (
+        prevModule &&
+        prevModule.lessons.every((l) => {
+          const s = progress.lessonProgress[l.id]?.status;
+          return s === "completed" || s === "skipped";
+        })
+      ) {
+        return "next-chapter";
+      }
+    }
+  }
+
   return "resume";
 }
 

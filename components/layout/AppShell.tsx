@@ -2,26 +2,20 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { TopBar } from "@/components/layout/TopBar";
 
 interface AppShellProps {
-  streakDays: number;
-  resumeLessonSlug: string | null;
-  userEmail: string;
-  userInitial: string;
+  /** Pre-rendered TopBar element (wrapped in Suspense by the layout) */
+  topBar: React.ReactNode;
   children: React.ReactNode;
 }
 
-export function AppShell({
-  streakDays,
-  resumeLessonSlug,
-  userEmail,
-  userInitial,
-  children,
-}: AppShellProps) {
+export function AppShell({ topBar, children }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const hideHeader = pathname.startsWith("/lessons/") || pathname.startsWith("/playground") || pathname.startsWith("/exercises/");
+  const hideHeader =
+    pathname.startsWith("/lessons/") ||
+    pathname.startsWith("/playground") ||
+    pathname.startsWith("/exercises/");
 
   useEffect(() => {
     async function syncOnboarding() {
@@ -72,14 +66,7 @@ export function AppShell({
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {hideHeader ? null : (
-        <TopBar
-          streakDays={streakDays}
-          resumeLessonSlug={resumeLessonSlug}
-          userEmail={userEmail}
-          userInitial={userInitial}
-        />
-      )}
+      {hideHeader ? null : topBar}
       <main
         className={
           hideHeader
