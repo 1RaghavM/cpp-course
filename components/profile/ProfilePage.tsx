@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -97,6 +98,7 @@ export function ProfilePage({
   const [savingGoal, setSavingGoal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [resettingProgress, setResettingProgress] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
   const nameIsDirty = displayName !== (initialDisplayName ?? "");
   const goalIsDirty = weeklyGoal !== (initialWeeklyGoal?.toString() ?? "");
@@ -142,6 +144,7 @@ export function ProfilePage({
     try {
       const res = await fetch("/api/progress/reset", { method: "POST" });
       if (!res.ok) throw new Error();
+      setResetDialogOpen(false);
       toast.success("All progress has been reset");
       router.refresh();
     } catch {
@@ -379,30 +382,42 @@ export function ProfilePage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <AlertDialog>
-                <AlertDialogTrigger
-                  render={<Button variant="destructive" disabled={resettingProgress} />}
-                >
-                  {resettingProgress ? "Resetting..." : "Reset all progress"}
+              <AlertDialog
+                open={resetDialogOpen}
+                onOpenChange={(open) => {
+                  if (!resettingProgress) setResetDialogOpen(open);
+                }}
+              >
+                <AlertDialogTrigger render={<Button variant="destructive" />}>
+                  Reset all progress
                 </AlertDialogTrigger>
                 <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Reset all progress?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will permanently erase all lesson completions, your current streak, and
-                      all visit history. Your account, notes, and preferences will not be affected.
-                      This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleResetProgress}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      Reset my progress
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
+                  {resettingProgress ? (
+                    <div className="flex flex-col items-center gap-3 py-6">
+                      <Spinner className="size-6" />
+                      <p className="text-sm text-muted-foreground">Resetting your progress...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Reset all progress?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently erase all lesson completions, your current streak,
+                          and all visit history. Your account, notes, and preferences will not be
+                          affected. This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleResetProgress}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Reset my progress
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </>
+                  )}
                 </AlertDialogContent>
               </AlertDialog>
             </CardContent>

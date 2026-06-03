@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import {
   CircleCheckIcon,
   LoaderIcon,
@@ -195,6 +196,9 @@ function LessonRowView({
 }
 
 export function LessonsBrowser({ chapters, resumeLessonSlug }: LessonsBrowserProps) {
+  const searchParams = useSearchParams()
+  const chapterParam = searchParams.get("chapter")
+
   const [activeTab, setActiveTab] = React.useState<TabValue>("all")
   const [search, setSearch] = React.useState("")
   const [chapterFilter, setChapterFilter] = React.useState<string>("all")
@@ -289,9 +293,12 @@ export function LessonsBrowser({ chapters, resumeLessonSlug }: LessonsBrowserPro
     [chaptersWithOverrides, firstUnfinishedId],
   )
 
-  const [openChapters, setOpenChapters] = React.useState<string[]>(() =>
-    computeOpen("all", "all"),
-  )
+  const [openChapters, setOpenChapters] = React.useState<string[]>(() => {
+    if (chapterParam && chapters.some((c) => c.id === chapterParam)) {
+      return [chapterParam]
+    }
+    return computeOpen("all", "all")
+  })
 
   const handleTabChange = (v: TabValue) => {
     setActiveTab(v)

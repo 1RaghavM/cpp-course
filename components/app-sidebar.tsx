@@ -23,7 +23,6 @@ import {
   LayoutDashboardIcon,
   Settings2Icon,
   CircleHelpIcon,
-  SearchIcon,
   NotebookPenIcon,
   TerminalSquareIcon,
   MapIcon,
@@ -72,18 +71,13 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "/dashboard",
+      url: "/dashboard/profile",
       icon: <Settings2Icon />,
     },
     {
       title: "Help",
       url: "/dashboard",
       icon: <CircleHelpIcon />,
-    },
-    {
-      title: "Search",
-      url: "/dashboard",
-      icon: <SearchIcon />,
     },
   ],
 }
