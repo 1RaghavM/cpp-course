@@ -365,10 +365,11 @@ export default function PlaygroundClient({ savedState }: Props) {
       </div>
 
       {/* Main content */}
-      <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 p-2">
+      <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="h-full gap-2">
         {/* Editor panel */}
         <ResizablePanel defaultSize={tutorOpen ? "75" : "100"} minSize="30">
-          <div className="flex flex-col h-full min-w-0 bg-base">
+          <div className="flex flex-col h-full min-w-0 bg-surface rounded-lg border border-border overflow-hidden">
             {/* Editor toolbar — matches lesson EditorToolbar */}
             <div className="flex items-center gap-3 px-4 py-2 bg-elevated border-b border-border">
               <div className="flex items-center gap-2">
@@ -472,15 +473,16 @@ export default function PlaygroundClient({ savedState }: Props) {
         {/* Tutor panel (toggled) */}
         {tutorOpen && (
           <>
-            <ResizableHandle withHandle />
+            <ResizableHandle className="bg-transparent w-0 hover:bg-border" />
             <ResizablePanel defaultSize="25" minSize="15" maxSize="50">
-              <div className="flex flex-col h-full min-w-0 border-l border-border">
+              <div className="flex flex-col h-full min-w-0 rounded-lg border border-border bg-surface overflow-hidden">
                 <TutorPanel />
               </div>
             </ResizablePanel>
           </>
         )}
       </ResizablePanelGroup>
+      </div>
       {resetDialog}
     </div>
   );

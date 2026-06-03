@@ -130,6 +130,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
   const tutorOpen = useTutorStore((s) => s.tutorOpen);
   const toggleTutor = useTutorStore((s) => s.toggleTutor);
   const [notepadOpen, setNotepadOpen] = useState(false);
+  const [consoleOpen, setConsoleOpen] = useState(false);
 
   const activeExercise = exercises[activeExerciseIndex];
 
@@ -141,6 +142,10 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
     setTutorOpen(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lesson.id, setStoreLessonId]);
+
+  useEffect(() => {
+    if (result || error) setConsoleOpen(true);
+  }, [result, error]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -318,41 +323,49 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
         />
       )}
 
-      <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 p-2">
+      <ResizablePanelGroup key={String(tutorOpen)} orientation="horizontal" className="h-full gap-2">
         {/* Lesson Panel */}
         <ResizablePanel defaultSize={tutorOpen ? "40" : "50"} minSize="20" maxSize="80">
-          <div className="flex flex-col h-full bg-surface border-r border-border">
-            {/* Header — hidden in exerciseOnly mode */}
-            {!exerciseOnly && (
-              <div className="px-4 py-4 border-b border-border">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-brand-bright/15 text-brand-bright text-xs font-bold">
-                    {lesson.number}
-                  </span>
-                  <div>
-                    <h1 className="text-lg font-semibold text-foreground">{lesson.title}</h1>
-                    {exercises.length > 0 && activeExercise && (
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {exercises.length} challenge{exercises.length > 1 ? "s" : ""} available
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
+          <div className="flex flex-col h-full bg-surface rounded-lg border border-border overflow-hidden">
             {/* Content Tabs */}
             <Tabs defaultValue={exerciseOnly ? "challenge" : "lesson"} className="flex-1 flex flex-col min-h-0">
               {exerciseOnly ? (
-                <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
-                  <TabsTrigger value="challenge" className="px-1 py-2.5 text-sm">Challenge</TabsTrigger>
-                  {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
+                <TabsList variant="line" className="h-11 w-full gap-0 px-4 justify-start">
+                  <TabsTrigger value="challenge" className="flex-none px-3 py-2.5 text-sm gap-2 border-none!">
+                    <TabDocumentIcon />
+                    Challenge
+                  </TabsTrigger>
+                  {activeExercise?.solutionCode && (
+                    <>
+                      <div className="h-4 w-px bg-border self-center" />
+                      <TabsTrigger value="solution" className="flex-none px-3 py-2.5 text-sm gap-2 border-none!">
+                        <TabLightbulbIcon />
+                        Solution
+                      </TabsTrigger>
+                    </>
+                  )}
                 </TabsList>
               ) : (
-                <TabsList variant="line" className="h-11 gap-4 px-4 border-b border-border">
-                  <TabsTrigger value="lesson" className="px-1 py-2.5 text-sm">Lesson</TabsTrigger>
-                  {activeExercise?.solutionCode && <TabsTrigger value="solution" className="px-1 py-2.5 text-sm">Solution</TabsTrigger>}
-                  <TabsTrigger value="resources" className="px-1 py-2.5 text-sm">Resources</TabsTrigger>
+                <TabsList variant="line" className="h-11 w-full gap-0 px-4 justify-start">
+                  <TabsTrigger value="lesson" className="flex-none px-3 py-2.5 text-sm gap-2 border-none!">
+                    <TabDocumentIcon />
+                    Lesson
+                  </TabsTrigger>
+                  {activeExercise?.solutionCode && (
+                    <>
+                      <div className="h-4 w-px bg-border self-center" />
+                      <TabsTrigger value="solution" className="flex-none px-3 py-2.5 text-sm gap-2 border-none!">
+                        <TabLightbulbIcon />
+                        Solution
+                      </TabsTrigger>
+                    </>
+                  )}
+                  <div className="h-4 w-px bg-border self-center" />
+                  <TabsTrigger value="resources" className="flex-none px-3 py-2.5 text-sm gap-2 border-none!">
+                    <TabResourcesIcon />
+                    Resources
+                  </TabsTrigger>
                 </TabsList>
               )}
 
@@ -493,24 +506,25 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
           </div>
         </ResizablePanel>
 
-        <ResizableHandle withHandle />
+        <ResizableHandle className="bg-transparent w-0 hover:bg-border" />
 
         {/* IDE Panel */}
         <ResizablePanel defaultSize={tutorOpen ? "30" : "50"} minSize="20">
-          <div className="flex flex-col h-full min-w-0 bg-base">
+          <div className="flex flex-col h-full min-w-0 bg-surface rounded-lg border border-border overflow-hidden">
             {activeExercise ? (
-              <ResizablePanelGroup orientation="vertical">
-                <ResizablePanel defaultSize="70" minSize="25" maxSize="85">
-                  <div className="flex flex-col h-full">
-                    <EditorToolbar
-                      languageStd={languageStd}
-                      onLanguageChange={setLanguageStd}
-                      disabled={busy}
-                      hasLastPassingCode={!!activeExercise.lastPassingCode}
-                      onRestorePassing={handleRestorePassingSub}
-                      onReset={handleReset}
-                    />
-                    <div className="flex-1 min-h-0">
+              <div className="flex flex-col h-full">
+                <EditorToolbar
+                  languageStd={languageStd}
+                  onLanguageChange={setLanguageStd}
+                  disabled={busy}
+                  hasLastPassingCode={!!activeExercise.lastPassingCode}
+                  onRestorePassing={handleRestorePassingSub}
+                  onReset={handleReset}
+                />
+
+                <ResizablePanelGroup orientation="vertical" className="flex-1 min-h-0">
+                  <ResizablePanel defaultSize={consoleOpen ? "65" : "100"} minSize="25">
+                    <div className="h-full min-h-0">
                       <MonacoEditor
                         handleRef={editorRef}
                         defaultValue={activeExercise.starterCode}
@@ -523,24 +537,50 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                         exerciseId={activeExercise.id}
                       />
                     </div>
-                  </div>
-                </ResizablePanel>
+                  </ResizablePanel>
 
-                <ResizableHandle withHandle />
+                  {consoleOpen && (
+                    <>
+                      <ResizableHandle withHandle />
+                      <ResizablePanel defaultSize="35" minSize="10" maxSize="70">
+                        <div className="h-full overflow-y-auto bg-base p-4">
+                          <ConsoleContent result={result} error={error} />
+                        </div>
+                      </ResizablePanel>
+                    </>
+                  )}
+                </ResizablePanelGroup>
 
-                <ResizablePanel defaultSize="30" minSize="15">
-                  <div className="h-full overflow-hidden">
-                    <OutputPanel
-                      result={result}
-                      error={error}
-                      isRunning={isRunning}
-                      isSubmitting={isSubmitting}
-                      onRun={() => handleSubmit("run")}
-                      onSubmit={() => handleSubmit("submit")}
-                    />
+                <div className="flex items-center px-4 py-2 border-t border-border bg-elevated">
+                  <button
+                    onClick={() => setConsoleOpen((prev) => !prev)}
+                    className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Console
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className={`size-4 transition-transform ${consoleOpen ? "rotate-180" : ""}`}
+                    >
+                      <path fillRule="evenodd" d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+
+                  <div className="flex-1" />
+
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleSubmit("run")} disabled={busy}>
+                      {isRunning && <ConsoleSpinner />}
+                      Run
+                    </Button>
+                    <Button size="sm" onClick={() => handleSubmit("submit")} disabled={busy}>
+                      {isSubmitting && <ConsoleSpinner />}
+                      Submit
+                    </Button>
                   </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
+                </div>
+              </div>
             ) : (
               <div className="flex-1 flex items-center justify-center text-muted-foreground">
                 No exercises available for this lesson.
@@ -552,15 +592,16 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
         {/* Tutor Panel (toggled) */}
         {tutorOpen && (
           <>
-            <ResizableHandle withHandle />
+            <ResizableHandle className="bg-transparent w-0 hover:bg-border" />
             <ResizablePanel defaultSize="30" minSize="15" maxSize="45">
-              <div className="flex flex-col h-full min-w-0 border-l border-border">
+              <div className="flex flex-col h-full min-w-0 rounded-lg border border-border bg-surface overflow-hidden">
                 <TutorPanel />
               </div>
             </ResizablePanel>
           </>
         )}
       </ResizablePanelGroup>
+      </div>
       {notepadOpen && !isMobile && (
         <FloatingNotepad lessonId={lesson.id} onClose={() => setNotepadOpen(false)} />
       )}
@@ -792,6 +833,112 @@ function LessonNav({
   );
 }
 
+function ConsoleContent({
+  result,
+  error,
+}: {
+  result: SubmissionResponse | null;
+  error: string | null;
+}) {
+  if (error) {
+    return (
+      <div className="rounded-md bg-error/10 border border-error/30 p-3 text-sm text-error">
+        {error}
+      </div>
+    );
+  }
+
+  if (!result) {
+    return (
+      <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+        <p>Press Run to execute your code, or Submit to test against all cases.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <span
+          className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-wide ${
+            result.status === "passed" || result.status === "accepted"
+              ? "bg-success/20 text-success"
+              : result.status === "compile_error" || result.status === "runtime_error"
+                ? "bg-error/20 text-error"
+                : "bg-warning/20 text-warning"
+          }`}
+        >
+          {!result.testResults?.length && result.status === "accepted"
+            ? "compiled successfully"
+            : result.status.replace(/_/g, " ")}
+        </span>
+        {result.wallTimeMs > 0 && (
+          <span className="text-xs text-muted-foreground">{result.wallTimeMs}ms</span>
+        )}
+      </div>
+
+      {result.compileOutput && (
+        <div>
+          <div className="text-xs font-medium text-muted-foreground mb-2">Compiler Output</div>
+          <div className="rounded-md border border-error/30 bg-error/5 p-3 font-mono text-xs text-error">
+            <pre className="whitespace-pre-wrap">{result.compileOutput}</pre>
+          </div>
+        </div>
+      )}
+
+      {!result.testResults?.length && (
+        <div>
+          <div className="text-xs font-medium text-muted-foreground mb-2">Output</div>
+          <div className={`rounded-md border p-3 font-mono text-xs ${result.stdout ? "border-success/30 bg-success/5 text-success" : "border-border bg-surface text-foreground"}`}>
+            <pre className="whitespace-pre-wrap">
+              {result.stdout || <span className="text-muted-foreground italic">(no output)</span>}
+            </pre>
+          </div>
+        </div>
+      )}
+
+      {result.stderr && (
+        <div>
+          <div className="text-xs font-medium text-muted-foreground mb-2">Stderr</div>
+          <div className="rounded-md border border-warning/30 bg-warning/5 p-3 font-mono text-xs text-warning">
+            <pre className="whitespace-pre-wrap">{result.stderr}</pre>
+          </div>
+        </div>
+      )}
+
+      {result.testResults && result.testResults.length > 0 && (
+        <div className="space-y-2">
+          {result.testResults.map((tr) => (
+            <div key={tr.label} className={`rounded-md border p-3 text-sm ${tr.passed ? "border-success/30 bg-success/5" : "border-error/30 bg-error/5"}`}>
+              <div className="flex items-center gap-2">
+                <span className={tr.passed ? "text-success" : "text-error"}>
+                  {tr.passed ? "✓" : "✗"}
+                </span>
+                <span className="font-medium text-foreground">{tr.label}</span>
+              </div>
+              {!tr.passed && (
+                <div className="mt-2 font-mono text-xs text-muted-foreground">
+                  <div>Expected: {tr.expected || "(empty)"}</div>
+                  <div>Actual: {tr.actual || "(empty)"}</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ConsoleSpinner() {
+  return (
+    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
+  );
+}
+
 function SolutionReveal({ code }: { code: string }) {
   const [revealed, setRevealed] = useState(false);
 
@@ -973,6 +1120,31 @@ function NotesIcon() {
         d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm2.25 8.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zm0 3a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z"
         clipRule="evenodd"
       />
+    </svg>
+  );
+}
+
+function TabDocumentIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-4">
+      <path fillRule="evenodd" d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm4.75 6.75a.75.75 0 00-1.5 0v2.546l-.943-1.048a.75.75 0 10-1.114 1.004l2.25 2.5a.75.75 0 001.114 0l2.25-2.5a.75.75 0 10-1.114-1.004l-.943 1.048V8.75z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function TabLightbulbIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-4">
+      <path d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 1zM5.05 3.05a.75.75 0 011.06 0l1.062 1.06A.75.75 0 116.11 5.173L5.05 4.11a.75.75 0 010-1.06zm9.9 0a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.062-1.061l1.061-1.06a.75.75 0 011.06 0zM3 8a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 013 8zm11 0a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 0114 8zm-6.828 2.828a.75.75 0 010 1.061L6.11 12.95a.75.75 0 01-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm7.778-1.06a.75.75 0 00-1.061 0l-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06a.75.75 0 000-1.06zM10 5a3 3 0 00-2.867 3.893l.135.503a3.75 3.75 0 01.166 1.094v.188c0 .414.336.75.75.75h3.632a.75.75 0 00.75-.75v-.188a3.75 3.75 0 01.166-1.094l.135-.503A3 3 0 0010 5zm-1.816 9.5a.75.75 0 01.75-.75h2.132a.75.75 0 010 1.5H8.934a.75.75 0 01-.75-.75zM8.75 16a.75.75 0 000 1.5h2.5a.75.75 0 000-1.5h-2.5z" />
+    </svg>
+  );
+}
+
+function TabResourcesIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-4">
+      <path d="M12.232 4.232a2.5 2.5 0 013.536 3.536l-1.225 1.224a.75.75 0 001.061 1.06l1.224-1.224a4 4 0 00-5.656-5.656l-3 3a4 4 0 00.225 5.865.75.75 0 00.977-1.138 2.5 2.5 0 01-.142-3.667l3-3z" />
+      <path d="M11.603 7.963a.75.75 0 00-.977 1.138 2.5 2.5 0 01.142 3.667l-3 3a2.5 2.5 0 01-3.536-3.536l1.225-1.224a.75.75 0 00-1.061-1.06l-1.224 1.224a4 4 0 105.656 5.656l3-3a4 4 0 00-.225-5.865z" />
     </svg>
   );
 }
