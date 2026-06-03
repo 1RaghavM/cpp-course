@@ -114,9 +114,9 @@ export function CurriculumProgressCard({
   ]
 
   return (
-    <Card>
+    <Card className="text-foreground">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Curriculum Progress</CardTitle>
+        <CardTitle className="text-lg font-semibold text-foreground">Curriculum Progress</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-6 md:grid-cols-[1fr_auto]">
@@ -129,9 +129,9 @@ export function CurriculumProgressCard({
               <AccordionItem key={stage.id} value={stage.id}>
                 <AccordionTrigger className="gap-3">
                   <div className="flex flex-1 items-center justify-between pr-2">
-                    <span>{stage.title}</span>
+                    <span className="text-foreground">{stage.title}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground tabular-nums">
+                      <span className="text-sm text-foreground/60 tabular-nums">
                         {stage.completed} / {stage.total}
                       </span>
                       <Badge
@@ -162,8 +162,8 @@ export function CurriculumProgressCard({
                           : 0
                       return (
                         <Progress key={ms.module.id} value={pct}>
-                          <ProgressLabel>{ms.module.title}</ProgressLabel>
-                          <ProgressValue>
+                          <ProgressLabel className="text-foreground">{ms.module.title}</ProgressLabel>
+                          <ProgressValue className="text-foreground/60">
                             {() => `${ms.completed} / ${ms.total}`}
                           </ProgressValue>
                         </Progress>
@@ -192,7 +192,7 @@ export function CurriculumProgressCard({
                   gridType="circle"
                   radialLines={false}
                   stroke="none"
-                  className="first:fill-muted last:fill-background"
+                  className="first:fill-muted last:fill-card"
                   polarRadius={[85, 70]}
                 />
                 <RadialBar dataKey="value" background cornerRadius={10} />
@@ -229,7 +229,7 @@ export function CurriculumProgressCard({
                 </PolarRadiusAxis>
               </RadialBarChart>
             </ChartContainer>
-            <p className="text-sm text-muted-foreground tabular-nums">
+            <p className="text-sm text-foreground/60 tabular-nums">
               {totalCompleted} of {totalLessons} lessons
             </p>
           </div>
