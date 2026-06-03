@@ -20,7 +20,7 @@ import {
 import {
   BookOpenIcon,
   CodeIcon,
-  BarChart3Icon,
+  LayoutDashboardIcon,
   Settings2Icon,
   CircleHelpIcon,
   SearchIcon,
@@ -37,19 +37,19 @@ const data = {
   },
   navMain: [
     {
-      title: "Lessons",
+      title: "Dashboard",
       url: "/dashboard",
+      icon: <LayoutDashboardIcon />,
+    },
+    {
+      title: "Lessons",
+      url: "/dashboard/lessons",
       icon: <BookOpenIcon />,
     },
     {
       title: "Exercises",
       url: "/dashboard/exercises",
       icon: <CodeIcon />,
-    },
-    {
-      title: "Stats",
-      url: "/dashboard/stats",
-      icon: <BarChart3Icon />,
     },
   ],
   documents: [

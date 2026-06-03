@@ -10,6 +10,8 @@ export function isAuthRoute(pathname: string): pathname is AuthRoute {
 }
 
 /** Redirect target after email confirmation or password reset. */
-export function authCallbackUrl(origin: string): string {
-  return `${origin}/auth/callback`;
+export function authCallbackUrl(origin: string, next?: string): string {
+  const base = `${origin}/auth/callback`;
+  if (!next) return base;
+  return `${base}?next=${encodeURIComponent(next)}`;
 }

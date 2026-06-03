@@ -14,7 +14,7 @@ export function GoogleAuthButton({ label = "Continue with Google" }: { label?: s
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: authCallbackUrl(window.location.origin),
+        redirectTo: authCallbackUrl(window.location.origin, "/dashboard"),
         queryParams: {
           access_type: "offline",
           prompt: "consent",

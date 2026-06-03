@@ -32,9 +32,10 @@ export function SectionCards({
     totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0
 
   const weeklyTarget = weeklyGoal ?? 5
+  const weeklyRemaining = Math.max(0, weeklyTarget - lessonsCompletedThisWeek)
 
   const estimatedMinutes = totalCompleted * 15
-  const totalEstimated = totalLessons * 15
+  const remainingLessons = totalLessons - totalCompleted - inProgressCount
 
   return (
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
@@ -47,17 +48,19 @@ export function SectionCards({
           <CardAction>
             <Badge variant="outline">
               <TrendingUpIcon />
-              +{lessonsCompletedThisWeek}
+              {lessonsCompletedThisWeek >= weeklyTarget ? "Goal met" : `${weeklyRemaining} to go`}
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {inProgressCount} lessons in progress
+            {lessonsCompletedThisWeek >= weeklyTarget
+              ? "Weekly goal reached!"
+              : `${weeklyRemaining} more to hit your goal`}
             <TrendingUpIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            Toward your weekly goal of {weeklyTarget}
+            Weekly goal: {weeklyTarget} lessons
           </div>
         </CardFooter>
       </Card>
@@ -76,11 +79,11 @@ export function SectionCards({
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {streakDays > 0 ? "Keep it going" : "Complete a lesson to start"}
+            {streakDays > 0 ? "Keep it going!" : "Complete a lesson to start"}
             <FlameIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">
-            {totalCompleted} of {totalLessons} lessons completed
+            Consecutive days of learning
           </div>
         </CardFooter>
       </Card>
@@ -99,7 +102,9 @@ export function SectionCards({
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {totalCompleted} of {totalLessons} total lessons
+            {inProgressCount > 0
+              ? `${inProgressCount} in progress, ${remainingLessons} not started`
+              : `${totalCompleted} of ${totalLessons} total lessons`}
             <TrendingUpIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">
@@ -111,18 +116,20 @@ export function SectionCards({
         <CardHeader>
           <CardDescription>Time Invested</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {estimatedMinutes} min
+            {estimatedMinutes >= 60
+              ? `${(estimatedMinutes / 60).toFixed(1)}h`
+              : `${estimatedMinutes} min`}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
               <ClockIcon />
-              ~{Math.round(estimatedMinutes / 60)}h
+              {totalCompleted} lessons
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            {totalEstimated} min estimated total
+            ~{Math.round((totalLessons * 15) / 60)}h estimated for full curriculum
             <TrendingUpIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">Based on ~15 min per lesson</div>

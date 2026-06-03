@@ -1,7 +1,7 @@
 const env = process.env;
 
 export const TUTOR_CONFIG = {
-  dailyMsgCap: Number(env.TUTOR_DAILY_MSG_CAP ?? 50),
+  dailyMsgCap: Number(env.TUTOR_DAILY_MSG_CAP ?? 20),
   perMinMsgCap: Number(env.TUTOR_PER_MIN_MSG_CAP ?? 8),
   monthlyHardCapMicro: Number(env.TUTOR_MONTHLY_HARD_CAP_USD ?? 50) * 1_000_000,
   monthlySoftCapMicro: Number(env.TUTOR_MONTHLY_SOFT_CAP_USD ?? 30) * 1_000_000,

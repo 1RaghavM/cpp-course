@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CodeCard } from "./CodeCard";
 
-export function Hero() {
+export function Hero({ isSignedIn = false }: { isSignedIn?: boolean } = {}) {
   return (
     <section
       className="hero-section"
@@ -54,12 +54,20 @@ export function Hero() {
             flexWrap: "wrap",
           }}
         >
-          <Link href="/onboarding" className="hp-btn hp-btn-primary hp-btn-lg">
-            Start learning C++
-          </Link>
-          <Link href="/login" className="hp-btn hp-btn-secondary hp-btn-lg">
-            Sign in
-          </Link>
+          {isSignedIn ? (
+            <Link href="/dashboard" className="hp-btn hp-btn-primary hp-btn-lg">
+              Go to Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link href="/onboarding" className="hp-btn hp-btn-primary hp-btn-lg">
+                Start learning C++
+              </Link>
+              <Link href="/login" className="hp-btn hp-btn-secondary hp-btn-lg">
+                Sign in
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="hp-reveal hp-reveal-d3" style={{ marginTop: "56px" }}>
