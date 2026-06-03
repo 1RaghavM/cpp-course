@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "@/app/globals.css";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "cpproad",
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="grain min-h-screen bg-background font-sans text-foreground antialiased">
         <NavigationProgress />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
