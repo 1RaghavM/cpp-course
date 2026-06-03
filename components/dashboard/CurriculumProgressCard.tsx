@@ -28,7 +28,6 @@ import {
 import {
   Progress,
   ProgressLabel,
-  ProgressValue,
 } from "@/components/ui/progress"
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
 import { STAGES } from "@/lib/dashboard/curriculum"
@@ -167,9 +166,6 @@ export function CurriculumProgressCard({
                         <div key={ms.module.id} className="flex items-center gap-2">
                           <Progress value={pct} className="flex-1">
                             <ProgressLabel className="text-foreground">{ms.module.title}</ProgressLabel>
-                            <ProgressValue className="text-foreground/60">
-                              {() => `${ms.completed} / ${ms.total}`}
-                            </ProgressValue>
                           </Progress>
                           <Button
                             variant="ghost"
@@ -242,9 +238,6 @@ export function CurriculumProgressCard({
                 </PolarRadiusAxis>
               </RadialBarChart>
             </ChartContainer>
-            <p className="text-sm text-foreground/60 tabular-nums">
-              {totalCompleted} of {totalLessons} lessons
-            </p>
           </div>
         </div>
       </CardContent>
