@@ -10,7 +10,6 @@ const SummaryView = dynamic(
   { loading: () => <div className="animate-pulse h-64 rounded-lg bg-muted" /> }
 );
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
-import { OutputPanel } from "@/components/lesson/OutputPanel";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress, ProgressLabel } from "@/components/ui/progress";
