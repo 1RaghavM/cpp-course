@@ -23,11 +23,20 @@ export function FloatingNotepad({ lessonId, onClose }: FloatingNotepadProps) {
   const isResizing = useRef(false);
 
   useEffect(() => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
     if (position.x === -1 && position.y === -1) {
       setPosition({
-        x: window.innerWidth - position.width - 24,
-        y: window.innerHeight - position.height - 24,
+        x: vw - position.width - 24,
+        y: vh - position.height - 24,
       });
+    } else {
+      const clampedX = Math.max(0, Math.min(position.x, vw - 100));
+      const clampedY = Math.max(0, Math.min(position.y, vh - 100));
+      if (clampedX !== position.x || clampedY !== position.y) {
+        setPosition({ x: clampedX, y: clampedY });
+      }
     }
   }, [position.x, position.y, position.width, position.height, setPosition]);
 
