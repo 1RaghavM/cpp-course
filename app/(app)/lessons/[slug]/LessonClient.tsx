@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -992,37 +991,6 @@ function GeneratingContent() {
         </Progress>
       </div>
     </div>
-  );
-}
-
-class NotepadErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { error: Error | null }
-> {
-  state = { error: null as Error | null };
-  static getDerivedStateFromError(error: Error) {
-    return { error };
-  }
-  render() {
-    if (this.state.error) {
-      return (
-        <div className="fixed bottom-6 right-6 z-[9000] max-w-sm rounded-lg bg-error/10 border border-error/30 p-4 shadow-lg">
-          <p className="text-sm font-medium text-error">Notes failed to load</p>
-          <p className="mt-1 text-xs text-error/70 break-all">{this.state.error.message}</p>
-        </div>
-      );
-    }
-    return this.state.error ? null : this.props.children;
-  }
-}
-
-function NotepadWrapper({ lessonId, onClose }: { lessonId: string; onClose: () => void }) {
-  if (typeof document === "undefined") return null;
-  return createPortal(
-    <NotepadErrorBoundary>
-      <FloatingNotepad lessonId={lessonId} onClose={onClose} />
-    </NotepadErrorBoundary>,
-    document.body,
   );
 }
 

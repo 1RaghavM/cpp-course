@@ -36,7 +36,9 @@ const ScrollRevealContentA = ({
   contentA,
   contentB,
   contentC,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   titleClass = defaultTitleClass,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   descriptionClass = defaultDescriptionClass,
   className,
   ...props
@@ -48,7 +50,7 @@ const ScrollRevealContentA = ({
     target: ref0,
   })
   useMotionValueEvent(scrollYProgress, "change", () => {
-    // @ts-ignore
+    // @ts-expect-error scrollYProgress.current is a MotionValue internal
     setScrollProgress(scrollYProgress.current)
   })
 
