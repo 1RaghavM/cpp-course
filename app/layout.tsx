@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Analytics } from "@vercel/analytics/next";
 import "@/app/globals.css";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="grain min-h-screen bg-background font-sans text-foreground antialiased">
         <NavigationProgress />
         {children}
+        <Analytics />
       </body>
     </html>
   );
