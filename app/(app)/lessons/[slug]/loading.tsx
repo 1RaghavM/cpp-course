@@ -6,7 +6,7 @@ export default function LessonLoading() {
           <div className="h-full w-3/4 rounded-full bg-primary animate-pulse" />
         </div>
         <p className="text-sm text-muted-foreground text-center">
-          Generating lesson content…
+          Loading content…
         </p>
       </div>
     </div>

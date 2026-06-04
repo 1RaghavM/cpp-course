@@ -15,21 +15,13 @@ export async function GET(_request: NextRequest, { params }: { params: { slug: s
   // Auth guard (uses user JWT)
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
-  const userId = authResult.user.id;
 
   const { slug } = params;
 
   try {
     const serviceClient = createServiceClient();
 
-    const { data: onboardingData } = await supabase
-      .from("onboarding")
-      .select("fast_track")
-      .eq("user_id", userId)
-      .single();
-    const fastTrack = onboardingData?.fast_track ?? false;
-
-    const { lesson, exercises } = await getOrGenerateLesson(serviceClient, slug, userId, fastTrack);
+    const { lesson, exercises } = await getOrGenerateLesson(serviceClient, slug);
 
     const { data: conversations } = (await supabase
       .from("conversations")

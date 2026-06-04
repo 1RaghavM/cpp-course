@@ -37,7 +37,7 @@ export default async function ExercisePage({ params }: Props) {
   let exercises: ExerciseWithTestCases[];
 
   try {
-    const result = await getOrGenerateLesson(serviceClient, lessonRow.slug, userId);
+    const result = await getOrGenerateLesson(serviceClient, lessonRow.slug);
     lesson = result.lesson;
     exercises = result.exercises;
   } catch (err) {

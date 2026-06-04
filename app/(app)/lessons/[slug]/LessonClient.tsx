@@ -12,7 +12,6 @@ const SummaryView = dynamic(
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Progress, ProgressLabel } from "@/components/ui/progress";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -373,7 +372,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                       <SummaryView markdown={lesson.summaryMd} />
                     </div>
                   ) : (
-                    <GeneratingContent />
+                    <ComingSoon />
                   )}
 
                   {/* Challenge prompt + samples */}
@@ -1073,25 +1072,18 @@ function TabResourcesIcon() {
   );
 }
 
-function GeneratingContent() {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setValue((prev) => (prev >= 90 ? 90 : prev + Math.random() * 12));
-    }, 400);
-    return () => clearInterval(interval);
-  }, []);
-
+function ComingSoon() {
   return (
-    <div className="flex items-center justify-center py-16">
-      <div className="w-64 space-y-3">
-        <Progress value={value}>
-          <ProgressLabel className="text-sm text-muted-foreground">
-            Generating lesson content…
-          </ProgressLabel>
-        </Progress>
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="rounded-full bg-muted p-4 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-8 text-muted-foreground">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
+        </svg>
       </div>
+      <h3 className="text-lg font-semibold text-foreground mb-1">Coming Soon</h3>
+      <p className="text-sm text-muted-foreground max-w-xs">
+        This lesson is not yet available. Check back later!
+      </p>
     </div>
   );
 }

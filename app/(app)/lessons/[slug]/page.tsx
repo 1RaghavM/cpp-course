@@ -34,7 +34,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
   let exercises: ExerciseWithTestCases[];
 
   try {
-    const result = await getOrGenerateLesson(serviceClient, slug, userId);
+    const result = await getOrGenerateLesson(serviceClient, slug);
     lesson = result.lesson;
     exercises = result.exercises;
   } catch (err) {
