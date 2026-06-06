@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Prefix Increment and Decrement",
+    "prompt_md": "## Goal\n\nImplement prefix `++` and `--` for a `Gauge` class that tracks an integer level, then use chaining to verify the operators return a reference to the modified object.\n\n## Input\n\n- Line 1: an integer `start` (-1000 <= start <= 1000), the initial gauge level.\n- Line 2: an integer `ups` (0 <= ups <= 50), the number of times to apply prefix `++`.\n- Line 3: an integer `downs` (0 <= downs <= 50), the number of times to apply prefix `--`.\n\n## Output\n\n- Line 1: the gauge level after all increments.\n- Line 2: the gauge level after the subsequent decrements.\n\n## Requirements\n\n- `Gauge` stores an `int m_level`.\n- Overload prefix `operator++` and prefix `operator--` as member functions. Both must return `Gauge&`.\n- Do not overload any postfix operators.\n- Apply the operators in loops in `main`.",
+    "starter_code": "#include <iostream>\n\nclass Gauge\n{\n    int m_level{};\n\npublic:\n    explicit Gauge(int level) : m_level{ level } {}\n\n    int level() const { return m_level; }\n\n    // TODO: Overload prefix operator++ (return Gauge&)\n\n    // TODO: Overload prefix operator-- (return Gauge&)\n};\n\nint main()\n{\n    int start{};\n    int ups{};\n    int downs{};\n    std::cin >> start >> ups >> downs;\n\n    Gauge g{ start };\n\n    // TODO: Apply prefix ++ to g, ups times\n\n    std::cout << g.level() << '\\n';\n\n    // TODO: Apply prefix -- to g, downs times\n\n    std::cout << g.level() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Gauge\n{\n    int m_level{};\n\npublic:\n    explicit Gauge(int level) : m_level{ level } {}\n\n    int level() const { return m_level; }\n\n    Gauge& operator++()\n    {\n        ++m_level;\n        return *this;\n    }\n\n    Gauge& operator--()\n    {\n        --m_level;\n        return *this;\n    }\n};\n\nint main()\n{\n    int start{};\n    int ups{};\n    int downs{};\n    std::cin >> start >> ups >> downs;\n\n    Gauge g{ start };\n\n    for (int i{ 0 }; i < ups; ++i)\n        ++g;\n\n    std::cout << g.level() << '\\n';\n\n    for (int i{ 0 }; i < downs; ++i)\n        --g;\n\n    std::cout << g.level() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- basic increment and decrement",
+        "is_sample": true,
+        "stdin": "10\n3\n5",
+        "expected_stdout": "13\n8\n"
+      },
+      {
+        "label": "Hidden -- start negative, no decrements",
+        "is_sample": false,
+        "stdin": "-7\n4\n0",
+        "expected_stdout": "-3\n-3\n"
+      },
+      {
+        "label": "Hidden -- zero start, only decrements",
+        "is_sample": false,
+        "stdin": "0\n0\n6",
+        "expected_stdout": "0\n-6\n"
+      }
+    ]
+  },
+  {
+    "title": "Postfix Increment via Prefix",
+    "prompt_md": "## Goal\n\nImplement both prefix and postfix `++` for a `Score` class. The postfix version must delegate to the prefix version and return the old value, following the canonical pattern.\n\n## Input\n\n- Line 1: an integer `initial` (-1000 <= initial <= 1000), the starting score.\n- Line 2: an integer `n` (1 <= n <= 50), the number of postfix increments to perform.\n\n## Output\n\nFor each postfix increment, print two space-separated values on one line: the value returned by the postfix `++` (the old value) and the object's value after the operation.\n\n## Requirements\n\n- `Score` stores an `int m_points`.\n- Overload prefix `operator++` returning `Score&`.\n- Overload postfix `operator++(int)` returning `Score` by value. It must create a copy, call prefix `++` on `*this`, then return the copy. Do not duplicate the increment logic.\n- In `main`, capture the return value of the postfix `++` in a local variable to print the old value.",
+    "starter_code": "#include <iostream>\n\nclass Score\n{\n    int m_points{};\n\npublic:\n    explicit Score(int p) : m_points{ p } {}\n\n    int points() const { return m_points; }\n\n    // TODO: Overload prefix operator++ (return Score&)\n\n    // TODO: Overload postfix operator++(int) (return Score by value)\n    //       Use the canonical pattern: copy, prefix-increment, return copy\n};\n\nint main()\n{\n    int initial{};\n    int n{};\n    std::cin >> initial >> n;\n\n    Score s{ initial };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        // TODO: Use postfix s++ and print: old_value current_value\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Score\n{\n    int m_points{};\n\npublic:\n    explicit Score(int p) : m_points{ p } {}\n\n    int points() const { return m_points; }\n\n    Score& operator++()\n    {\n        ++m_points;\n        return *this;\n    }\n\n    Score operator++(int)\n    {\n        Score old{ *this };\n        ++(*this);\n        return old;\n    }\n};\n\nint main()\n{\n    int initial{};\n    int n{};\n    std::cin >> initial >> n;\n\n    Score s{ initial };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        Score old{ s++ };\n        std::cout << old.points() << ' ' << s.points() << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- start at 0, three increments",
+        "is_sample": true,
+        "stdin": "0\n3",
+        "expected_stdout": "0 1\n1 2\n2 3\n"
+      },
+      {
+        "label": "Hidden -- negative start",
+        "is_sample": false,
+        "stdin": "-2\n4",
+        "expected_stdout": "-2 -1\n-1 0\n0 1\n1 2\n"
+      },
+      {
+        "label": "Hidden -- single increment from large value",
+        "is_sample": false,
+        "stdin": "999\n1",
+        "expected_stdout": "999 1000\n"
+      }
+    ]
+  }
+]

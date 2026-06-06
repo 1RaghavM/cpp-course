@@ -1,0 +1,60 @@
+{
+  "number": "17.11",
+  "title": "C-style string symbolic constants",
+  "sort_order": 10,
+  "summary_md": "## C-style String Symbolic Constants\n\nIn earlier lessons you used C-style strings as null-terminated `char` arrays. There is a second, more common way C-style strings appear in C++ code: as **string literals**, which are C-style string symbolic constants.\n\n### String literals are const char arrays\n\nWhen you write `\"hello\"`, the compiler creates a `const char[6]` (five characters plus the null terminator `'\\0'`) in a read-only section of the program's memory. This array persists for the entire lifetime of the program — it has **static storage duration**. Attempting to modify a character through a pointer to that memory is undefined behavior.\n\n### Pointing to a string literal\n\nBecause arrays decay to pointers, a string literal decays to a `const char*`. You should always use `const char*` (never `char*`) when pointing to a string literal:\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    const char* greeting{ \"hello\" };\n    std::cout << greeting << '\\n';  // prints: hello\n\n    greeting = \"world\";             // OK — pointer now aims at a different literal\n    std::cout << greeting << '\\n';  // prints: world\n}\n```\n\nThe pointer itself is not const, so you can reassign it to point at a different string literal. But the characters it points to are const and must not be modified.\n\n### const char* vs std::string_view\n\n`std::string_view` (Ch 5) is almost always a better choice than `const char*` for read-only string parameters. A `string_view` stores both a pointer and a length, so it does not need to scan for a null terminator and it can refer to substrings. Prefer `std::string_view` in new code; you will encounter `const char*` mainly when interfacing with C libraries or legacy APIs.\n\n### Arrays of string literals\n\nA useful pattern is an array of `const char*`, where each element points to a different string literal. This gives you a lightweight lookup table with no heap allocation:\n\n```cpp\nconst char* colors[]{ \"red\", \"green\", \"blue\" };\n```\n\nEach element is a pointer into the read-only data segment. The array itself lives on the stack, but the strings it points to live for the entire program.",
+  "exercises": [
+    {
+      "title": "Day Name Lookup",
+      "prompt_md": "## Goal\nBuild a lookup table of day names using an array of `const char*` pointers to string literals, then print the name corresponding to a given day number.\n\n## Input\n- A single integer `n` (0-6), where 0 = Sunday, 1 = Monday, ..., 6 = Saturday.\n\n## Output\n- If `n` is in range 0-6, print the corresponding day name on one line.\n- If `n` is out of range, print `invalid` on one line.\n\n## Requirements\n1. Declare a C-style array of `const char*` containing the seven day names: `\"Sunday\"`, `\"Monday\"`, `\"Tuesday\"`, `\"Wednesday\"`, `\"Thursday\"`, `\"Friday\"`, `\"Saturday\"` — in that order.\n2. Read `n` from `std::cin`.\n3. Check whether `n` is in the valid range (0 through 6 inclusive) before indexing into the array.\n4. Use `std::cout` to print the result followed by a newline.\n5. Do not use `std::string`, `std::string_view`, `std::array`, or `std::vector`.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: Declare a C-style array of const char* with the 7 day names\n    //       (Sunday through Saturday)\n\n    int n{};\n    std::cin >> n;\n\n    // TODO: If n is in range 0-6, print the day name\n    //       Otherwise print \"invalid\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    const char* days[]{ \"Sunday\", \"Monday\", \"Tuesday\",\n        \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\" };\n\n    int n{};\n    std::cin >> n;\n\n    if (n >= 0 && n <= 6)\n        std::cout << days[n] << '\\n';\n    else\n        std::cout << \"invalid\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- Wednesday lookup",
+          "is_sample": true,
+          "stdin": "3\n",
+          "expected_stdout": "Wednesday\n"
+        },
+        {
+          "label": "Hidden -- boundary Saturday",
+          "is_sample": false,
+          "stdin": "6\n",
+          "expected_stdout": "Saturday\n"
+        },
+        {
+          "label": "Hidden -- out of range",
+          "is_sample": false,
+          "stdin": "9\n",
+          "expected_stdout": "invalid\n"
+        }
+      ]
+    },
+    {
+      "title": "Longest String Literal in Array",
+      "prompt_md": "## Goal\nGiven a list of words entered by the user, store them in a fixed-size `const char*` array by pointing each element at one of several predefined string literals. Then find and print the longest string along with its length.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 5), the number of color queries.\n- Next `n` lines: each line contains a single integer `c` (0-4) representing a color index.\n\nThe color table maps indices to these string literals:\n- 0 = `\"red\"`, 1 = `\"orange\"`, 2 = `\"yellow\"`, 3 = `\"green\"`, 4 = `\"blue\"`\n\n## Output\n- Line 1: the longest color name among the queried colors\n- Line 2: its length (number of characters, not counting the null terminator)\n\nIf two queried colors have the same length, print the one that appeared first in the input.\n\n## Requirements\n1. Declare a `const char*` array of 5 elements containing the color string literals in the order listed above.\n2. Use `std::strlen` (from `<cstring>`) to measure each queried string's length.\n3. Track the longest string seen so far using a `const char*` variable and a `std::size_t` for the max length.\n4. Do not use `std::string`, `std::string_view`, `std::array`, or `std::vector`.\n5. You may assume all input indices are valid (0-4).",
+      "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const char* colors[]{ \"red\", \"orange\", \"yellow\", \"green\", \"blue\" };\n\n    int n{};\n    std::cin >> n;\n\n    // TODO: Declare a const char* variable to track the longest color (initialize to empty string \"\")\n    // TODO: Declare a std::size_t variable for the max length found so far (initialize to 0)\n\n    // TODO: Loop n times:\n    //       - Read a color index c\n    //       - Use std::strlen to get the length of colors[c]\n    //       - If it is strictly longer than the current max, update both tracking variables\n\n    // TODO: Print the longest color name on one line\n    // TODO: Print its length on the next line\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const char* colors[]{ \"red\", \"orange\", \"yellow\", \"green\", \"blue\" };\n\n    int n{};\n    std::cin >> n;\n\n    const char* longest{ \"\" };\n    std::size_t maxLen{ 0 };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int c{};\n        std::cin >> c;\n\n        std::size_t len{ std::strlen(colors[c]) };\n        if (len > maxLen)\n        {\n            maxLen = len;\n            longest = colors[c];\n        }\n    }\n\n    std::cout << longest << '\\n';\n    std::cout << maxLen << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- three colors",
+          "is_sample": true,
+          "stdin": "3\n0\n1\n4\n",
+          "expected_stdout": "orange\n6\n"
+        },
+        {
+          "label": "Hidden -- single color",
+          "is_sample": false,
+          "stdin": "1\n2\n",
+          "expected_stdout": "yellow\n6\n"
+        },
+        {
+          "label": "Hidden -- tie keeps first",
+          "is_sample": false,
+          "stdin": "2\n1\n2\n",
+          "expected_stdout": "orange\n6\n"
+        }
+      ]
+    }
+  ]
+}

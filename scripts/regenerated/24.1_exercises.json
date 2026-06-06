@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Basic Inheritance: Vehicle and Car",
+    "prompt_md": "## Goal\n\nCreate a class hierarchy where `Car` publicly inherits from `Vehicle`. Demonstrate that the derived class inherits the base class's data and behavior.\n\n## Input\n\n- Line 1: a string `brand` (no spaces, 1-50 characters).\n- Line 2: an integer `year`.\n- Line 3: an integer `doors`.\n\n## Output\n\nExactly two lines:\n1. `Vehicle: <brand> (<year>)`\n2. `Car: <brand> (<year>), <doors> doors`\n\n## Requirements\n\n- Define a class `Vehicle` with public members `std::string brand{}` and `int year{}`.\n- `Vehicle` has a public `void printInfo() const` that prints `Vehicle: <brand> (<year>)`.\n- Define a class `Car` that publicly inherits from `Vehicle`.\n- `Car` adds a public member `int doors{}`.\n- `Car` has a public `void printCarInfo() const` that prints `Car: <brand> (<year>), <doors> doors`. Access `brand` and `year` directly (they are inherited).\n- In `main`, read `brand`, `year`, and `doors` from stdin. Create a `Car`, assign all three fields, then call `printInfo()` followed by `printCarInfo()`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Vehicle\n{\npublic:\n    std::string brand{};\n    int year{};\n\n    void printInfo() const\n    {\n        // TODO: Print \"Vehicle: <brand> (<year>)\"\n    }\n};\n\nclass Car : public Vehicle\n{\npublic:\n    int doors{};\n\n    void printCarInfo() const\n    {\n        // TODO: Print \"Car: <brand> (<year>), <doors> doors\"\n    }\n};\n\nint main()\n{\n    std::string brand{};\n    int year{};\n    int doors{};\n    std::cin >> brand >> year >> doors;\n\n    // TODO: Create a Car, set its brand, year, and doors, then\n    //       call printInfo() and printCarInfo().\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Vehicle\n{\npublic:\n    std::string brand{};\n    int year{};\n\n    void printInfo() const\n    {\n        std::cout << \"Vehicle: \" << brand << \" (\" << year << \")\" << '\\n';\n    }\n};\n\nclass Car : public Vehicle\n{\npublic:\n    int doors{};\n\n    void printCarInfo() const\n    {\n        std::cout << \"Car: \" << brand << \" (\" << year << \"), \" << doors << \" doors\" << '\\n';\n    }\n};\n\nint main()\n{\n    std::string brand{};\n    int year{};\n    int doors{};\n    std::cin >> brand >> year >> doors;\n\n    Car car{};\n    car.brand = brand;\n    car.year = year;\n    car.doors = doors;\n\n    car.printInfo();\n    car.printCarInfo();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Toyota 2022 with 4 doors",
+        "is_sample": true,
+        "stdin": "Toyota\n2022\n4",
+        "expected_stdout": "Vehicle: Toyota (2022)\nCar: Toyota (2022), 4 doors\n"
+      },
+      {
+        "label": "BMW 2019 with 2 doors",
+        "is_sample": false,
+        "stdin": "BMW\n2019\n2",
+        "expected_stdout": "Vehicle: BMW (2019)\nCar: BMW (2019), 2 doors\n"
+      },
+      {
+        "label": "Tesla 2025 with 5 doors",
+        "is_sample": false,
+        "stdin": "Tesla\n2025\n5",
+        "expected_stdout": "Vehicle: Tesla (2025)\nCar: Tesla (2025), 5 doors\n"
+      }
+    ]
+  },
+  {
+    "title": "Inheritance hierarchy: Person, Student, GradStudent",
+    "prompt_md": "## Goal\n\nBuild a three-level inheritance chain: `GradStudent` inherits from `Student`, which inherits from `Person`. Each level adds one piece of data. Print a summary that uses fields from all three levels, demonstrating that inheritance is transitive.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters).\n- Line 2: an integer `age`.\n- Line 3: an integer `studentId`.\n- Line 4: a string `thesis` (no spaces, 1-100 characters, use underscores for spaces).\n\n## Output\n\nExactly three lines:\n1. `Person: <name>, age <age>`\n2. `Student: <name>, id <studentId>`\n3. `GradStudent: <name>, thesis: <thesis>`\n\n## Requirements\n\n- Define class `Person` with public members `std::string name{}` and `int age{}`. Add a public `void printPerson() const` that prints `Person: <name>, age <age>`.\n- Define class `Student` that publicly inherits from `Person`. Add a public member `int studentId{}`. Add a public `void printStudent() const` that prints `Student: <name>, id <studentId>`.\n- Define class `GradStudent` that publicly inherits from `Student`. Add a public member `std::string thesis{}`. Add a public `void printGrad() const` that prints `GradStudent: <name>, thesis: <thesis>`.\n- In `main`, read all four inputs, create a `GradStudent`, assign all fields, and call `printPerson()`, `printStudent()`, and `printGrad()` in that order.\n- Do not use constructors with parameters -- assign each field individually after default construction.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Person\n{\npublic:\n    std::string name{};\n    int age{};\n\n    void printPerson() const\n    {\n        // TODO: Print \"Person: <name>, age <age>\"\n    }\n};\n\nclass Student : public Person\n{\npublic:\n    int studentId{};\n\n    void printStudent() const\n    {\n        // TODO: Print \"Student: <name>, id <studentId>\"\n    }\n};\n\nclass GradStudent : public Student\n{\npublic:\n    std::string thesis{};\n\n    void printGrad() const\n    {\n        // TODO: Print \"GradStudent: <name>, thesis: <thesis>\"\n    }\n};\n\nint main()\n{\n    std::string name{};\n    int age{};\n    int studentId{};\n    std::string thesis{};\n\n    std::cin >> name >> age >> studentId >> thesis;\n\n    // TODO: Create a GradStudent, assign all four fields,\n    //       then call printPerson(), printStudent(), printGrad().\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Person\n{\npublic:\n    std::string name{};\n    int age{};\n\n    void printPerson() const\n    {\n        std::cout << \"Person: \" << name << \", age \" << age << '\\n';\n    }\n};\n\nclass Student : public Person\n{\npublic:\n    int studentId{};\n\n    void printStudent() const\n    {\n        std::cout << \"Student: \" << name << \", id \" << studentId << '\\n';\n    }\n};\n\nclass GradStudent : public Student\n{\npublic:\n    std::string thesis{};\n\n    void printGrad() const\n    {\n        std::cout << \"GradStudent: \" << name << \", thesis: \" << thesis << '\\n';\n    }\n};\n\nint main()\n{\n    std::string name{};\n    int age{};\n    int studentId{};\n    std::string thesis{};\n\n    std::cin >> name >> age >> studentId >> thesis;\n\n    GradStudent gs{};\n    gs.name = name;\n    gs.age = age;\n    gs.studentId = studentId;\n    gs.thesis = thesis;\n\n    gs.printPerson();\n    gs.printStudent();\n    gs.printGrad();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Alice, age 25, id 1001, thesis on compilers",
+        "is_sample": true,
+        "stdin": "Alice\n25\n1001\nCompiler_Optimization",
+        "expected_stdout": "Person: Alice, age 25\nStudent: Alice, id 1001\nGradStudent: Alice, thesis: Compiler_Optimization\n"
+      },
+      {
+        "label": "Bob, age 30, id 2050, thesis on robotics",
+        "is_sample": false,
+        "stdin": "Bob\n30\n2050\nRobotics_Navigation",
+        "expected_stdout": "Person: Bob, age 30\nStudent: Bob, id 2050\nGradStudent: Bob, thesis: Robotics_Navigation\n"
+      },
+      {
+        "label": "Zara, age 22, id 9999, thesis on networks",
+        "is_sample": false,
+        "stdin": "Zara\n22\n9999\nNetwork_Security",
+        "expected_stdout": "Person: Zara, age 22\nStudent: Zara, id 9999\nGradStudent: Zara, thesis: Network_Security\n"
+      }
+    ]
+  }
+]

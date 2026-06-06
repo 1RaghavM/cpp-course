@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Row Sum Calculator",
+    "prompt_md": "## Goal\nRead a 3x4 matrix of integers and print the sum of each row.\n\n## Input\n- 3 lines, each containing exactly 4 space-separated integers (one row per line).\n\n## Output\n- 3 lines, each containing the sum of the corresponding input row.\n\n## Requirements\n1. Declare a 2D C-style array `int matrix[3][4]` -- do not use `std::array` or `std::vector`.\n2. Use nested `for` loops with `std::size_t` loop variables to read the input.\n3. For each row, compute the sum using an inner loop and print it on its own line.\n4. Do not hard-code the row or column counts in loop conditions -- use `constexpr std::size_t` variables named `rows` and `cols`.\n5. Include `<iostream>` and `<cstddef>`.",
+    "starter_code": "#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    constexpr std::size_t rows{ 3 };\n    constexpr std::size_t cols{ 4 };\n    int matrix[rows][cols]{};\n\n    // TODO: Use nested for loops to read rows*cols integers into matrix\n\n    // TODO: For each row, compute the sum of its elements and print it\n\n    return 0;\n}\n",
+    "solution_code": "#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    constexpr std::size_t rows{ 3 };\n    constexpr std::size_t cols{ 4 };\n    int matrix[rows][cols]{};\n\n    for (std::size_t r{ 0 }; r < rows; ++r)\n        for (std::size_t c{ 0 }; c < cols; ++c)\n            std::cin >> matrix[r][c];\n\n    for (std::size_t r{ 0 }; r < rows; ++r)\n    {\n        int rowSum{ 0 };\n        for (std::size_t c{ 0 }; c < cols; ++c)\n            rowSum += matrix[r][c];\n        std::cout << rowSum << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- small positive values",
+        "is_sample": true,
+        "stdin": "1 2 3 4\n5 6 7 8\n9 10 11 12\n",
+        "expected_stdout": "10\n26\n42\n"
+      },
+      {
+        "label": "Hidden -- all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0\n0 0 0 0\n0 0 0 0\n",
+        "expected_stdout": "0\n0\n0\n"
+      },
+      {
+        "label": "Hidden -- mixed positive and negative",
+        "is_sample": false,
+        "stdin": "-1 5 -3 2\n10 -10 10 -10\n100 200 300 400\n",
+        "expected_stdout": "3\n0\n1000\n"
+      }
+    ]
+  },
+  {
+    "title": "Matrix Column Maximum",
+    "prompt_md": "## Goal\nRead a 3x5 matrix of integers and find the maximum value in each column.\n\n## Input\n- 3 lines, each containing exactly 5 space-separated integers.\n\n## Output\n- A single line containing 5 space-separated integers: the maximum value from each column (column 0 through column 4), separated by single spaces.\n\n## Requirements\n1. Declare `int matrix[3][5]` using `constexpr std::size_t` variables for the dimensions.\n2. Read the matrix using nested `for` loops.\n3. For each column, iterate over all rows to find the maximum value. Initialize your running maximum with the value in row 0 of that column.\n4. Print all 5 column maxima on one line, separated by spaces, followed by a newline.\n5. Do not use any standard library algorithm functions -- use only loops and comparisons.\n6. Include `<iostream>` and `<cstddef>`.",
+    "starter_code": "#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    constexpr std::size_t rows{ 3 };\n    constexpr std::size_t cols{ 5 };\n    int matrix[rows][cols]{};\n\n    // TODO: Read the matrix from stdin using nested for loops\n\n    // TODO: For each column, find the maximum value across all rows\n    //       and print it (space-separated on one line)\n\n    return 0;\n}\n",
+    "solution_code": "#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    constexpr std::size_t rows{ 3 };\n    constexpr std::size_t cols{ 5 };\n    int matrix[rows][cols]{};\n\n    for (std::size_t r{ 0 }; r < rows; ++r)\n        for (std::size_t c{ 0 }; c < cols; ++c)\n            std::cin >> matrix[r][c];\n\n    for (std::size_t c{ 0 }; c < cols; ++c)\n    {\n        int colMax{ matrix[0][c] };\n        for (std::size_t r{ 1 }; r < rows; ++r)\n        {\n            if (matrix[r][c] > colMax)\n                colMax = matrix[r][c];\n        }\n        if (c > 0)\n            std::cout << ' ';\n        std::cout << colMax;\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- ascending rows",
+        "is_sample": true,
+        "stdin": "1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15\n",
+        "expected_stdout": "11 12 13 14 15\n"
+      },
+      {
+        "label": "Hidden -- maximum in different rows",
+        "is_sample": false,
+        "stdin": "50 1 1 1 1\n1 50 1 1 1\n1 1 50 50 50\n",
+        "expected_stdout": "50 50 50 50 50\n"
+      },
+      {
+        "label": "Hidden -- negative values",
+        "is_sample": false,
+        "stdin": "-5 -10 -3 -20 -1\n-1 -20 -7 -4 -15\n-8 -6 -2 -9 -11\n",
+        "expected_stdout": "-1 -6 -2 -4 -1\n"
+      }
+    ]
+  }
+]

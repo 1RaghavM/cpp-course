@@ -1,26 +1,26 @@
 import type { ModuleDefinition, Module, Lesson, Stage } from "@/lib/dashboard/types";
 
 export const CURRICULUM: ModuleDefinition[] = [
-  // Stage: basics
-  { id: "variables",      stage: "basics",        title: "Variables & Types",           order: 1,  chapterIds: [0, 1, 4, 5] },
-  { id: "control-flow",   stage: "basics",        title: "Control Flow",               order: 2,  chapterIds: [9, 10] },
-  { id: "functions",      stage: "basics",        title: "Functions & Files",          order: 3,  chapterIds: [2, 8] },
-  { id: "arrays-strings", stage: "basics",        title: "Arrays & Strings",           order: 4,  chapterIds: [19] },
-  { id: "io-streams",     stage: "basics",        title: "I/O Streams",                order: 5,  chapterIds: [30] },
-  { id: "operators",      stage: "basics",        title: "Operators & Types",          order: 6,  chapterIds: [3, 6, 7, 11] },
-  // Stage: memory-oop
-  { id: "pointers",       stage: "memory-oop",    title: "Pointers & References",      order: 7,  chapterIds: [14] },
-  { id: "references",     stage: "memory-oop",    title: "Enums & Structs",            order: 8,  chapterIds: [15] },
-  { id: "classes",        stage: "memory-oop",    title: "Classes & OOP",              order: 9,  chapterIds: [16, 17] },
-  { id: "raii",           stage: "memory-oop",    title: "Scope & Dynamic Allocation", order: 10, chapterIds: [21, 22] },
-  // Stage: stl-templates
-  { id: "vectors-maps",   stage: "stl-templates", title: "Vectors & Containers",       order: 11, chapterIds: [18, 20] },
-  { id: "algorithms",     stage: "stl-templates", title: "Overloading & Functions",    order: 12, chapterIds: [12, 13, 23] },
-  { id: "templates",      stage: "stl-templates", title: "Templates",                  order: 13, chapterIds: [28] },
-  // Stage: advanced
-  { id: "move-semantics", stage: "advanced",      title: "Move Semantics & Smart Ptrs", order: 14, chapterIds: [24] },
-  { id: "smart-pointers", stage: "advanced",      title: "Inheritance & Polymorphism",  order: 15, chapterIds: [25, 26, 27] },
-  { id: "concurrency",    stage: "advanced",      title: "Exceptions & Advanced",       order: 16, chapterIds: [29, 31, 32, 33] },
+  // Stage: basics (chapters 0–10, following curriculum_seed.json order)
+  { id: "intro-basics",       stage: "basics",        title: "Introduction & C++ Basics",          order: 1,  chapterIds: [0, 1] },
+  { id: "functions-debugging", stage: "basics",        title: "Functions, Files & Debugging",       order: 2,  chapterIds: [2, 3] },
+  { id: "types-constants",    stage: "basics",        title: "Data Types, Constants & Strings",    order: 3,  chapterIds: [4, 5] },
+  { id: "operators",          stage: "basics",        title: "Operators & Bit Manipulation",       order: 4,  chapterIds: [6, 7] },
+  { id: "scope-control-flow", stage: "basics",        title: "Scope, Linkage & Control Flow",      order: 5,  chapterIds: [8, 9] },
+  { id: "errors-type-conv",   stage: "basics",        title: "Error Handling & Type Conversion",   order: 6,  chapterIds: [10, 11] },
+  // Stage: memory-oop (chapters 12–17)
+  { id: "overloading-constexpr", stage: "memory-oop", title: "Overloading, Templates & Constexpr", order: 7,  chapterIds: [12, 13] },
+  { id: "refs-pointers",      stage: "memory-oop",    title: "References & Pointers",              order: 8,  chapterIds: [14] },
+  { id: "enums-structs",      stage: "memory-oop",    title: "Enums & Structs",                    order: 9,  chapterIds: [15] },
+  { id: "classes",            stage: "memory-oop",    title: "Classes",                            order: 10, chapterIds: [16, 17] },
+  // Stage: stl-templates (chapters 18–23)
+  { id: "vectors-arrays",     stage: "stl-templates", title: "Vectors & Arrays",                   order: 11, chapterIds: [18, 19] },
+  { id: "algorithms-memory",  stage: "stl-templates", title: "Iterators, Algorithms & Memory",     order: 12, chapterIds: [20, 21] },
+  { id: "adv-functions",      stage: "stl-templates", title: "Functions & Operator Overloading",    order: 13, chapterIds: [22, 23] },
+  // Stage: advanced (chapters 24–33)
+  { id: "move-semantics",     stage: "advanced",      title: "Move Semantics & Smart Pointers",    order: 14, chapterIds: [24] },
+  { id: "inheritance-poly",   stage: "advanced",      title: "Inheritance & Polymorphism",          order: 15, chapterIds: [25, 26, 27] },
+  { id: "templates-exceptions-io", stage: "advanced", title: "Templates, Exceptions & I/O",        order: 16, chapterIds: [28, 29, 30, 31, 32, 33] },
 ];
 
 export const STAGES: { id: Stage; title: string; order: number }[] = [

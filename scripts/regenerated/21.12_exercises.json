@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Copy-Assign a Label",
+    "prompt_md": "## Goal\n\nImplement a `Label` class with a custom copy assignment operator. After assigning one label to another, both should print identically.\n\n## Input\n\n- Line 1: a string `text1` (the text for label `a`).\n- Line 2: an integer `id1` (the id for label `a`).\n- Line 3: a string `text2` (the text for label `b`).\n- Line 4: an integer `id2` (the id for label `b`).\n\n## Output\n\nFour lines. First, print `a` and `b` before assignment. Then assign `b` to `a` (`a = b`), and print `a` and `b` again.\n\nEach label prints as `[id] text` followed by a newline.\n\n## Requirements\n\n- `Label` has two private members: `std::string m_text` and `int m_id`.\n- Write a constructor `Label(const std::string& text, int id)`.\n- Overload `operator=` with a self-assignment check, returning `*this` by reference.\n- Write a `void print() const` member that outputs `[id] text\\n`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Label\n{\nprivate:\n    std::string m_text{};\n    int m_id{};\n\npublic:\n    Label(const std::string& text, int id)\n        : m_text{ text }, m_id{ id }\n    {\n    }\n\n    // TODO: Overload operator= with self-assignment check\n\n    void print() const\n    {\n        std::cout << '[' << m_id << \"] \" << m_text << '\\n';\n    }\n};\n\nint main()\n{\n    std::string text1{};\n    int id1{};\n    std::string text2{};\n    int id2{};\n\n    std::getline(std::cin, text1);\n    std::cin >> id1;\n    std::cin.ignore();\n    std::getline(std::cin, text2);\n    std::cin >> id2;\n\n    Label a{ text1, id1 };\n    Label b{ text2, id2 };\n\n    a.print();\n    b.print();\n\n    // TODO: Assign b to a, then print both again\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Label\n{\nprivate:\n    std::string m_text{};\n    int m_id{};\n\npublic:\n    Label(const std::string& text, int id)\n        : m_text{ text }, m_id{ id }\n    {\n    }\n\n    Label& operator=(const Label& other)\n    {\n        if (this == &other)\n            return *this;\n\n        m_text = other.m_text;\n        m_id = other.m_id;\n        return *this;\n    }\n\n    void print() const\n    {\n        std::cout << '[' << m_id << \"] \" << m_text << '\\n';\n    }\n};\n\nint main()\n{\n    std::string text1{};\n    int id1{};\n    std::string text2{};\n    int id2{};\n\n    std::getline(std::cin, text1);\n    std::cin >> id1;\n    std::cin.ignore();\n    std::getline(std::cin, text2);\n    std::cin >> id2;\n\n    Label a{ text1, id1 };\n    Label b{ text2, id2 };\n\n    a.print();\n    b.print();\n\n    a = b;\n\n    a.print();\n    b.print();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Basic assignment",
+        "is_sample": true,
+        "stdin": "Hello\n1\nWorld\n2",
+        "expected_stdout": "[1] Hello\n[2] World\n[2] World\n[2] World\n"
+      },
+      {
+        "label": "Same id different text",
+        "is_sample": false,
+        "stdin": "Alpha\n5\nBeta\n5",
+        "expected_stdout": "[5] Alpha\n[5] Beta\n[5] Beta\n[5] Beta\n"
+      },
+      {
+        "label": "Negative id",
+        "is_sample": false,
+        "stdin": "Error\n-1\nWarning\n0",
+        "expected_stdout": "[-1] Error\n[0] Warning\n[0] Warning\n[0] Warning\n"
+      }
+    ]
+  },
+  {
+    "title": "Chained Assignment",
+    "prompt_md": "## Goal\n\nDemonstrate that a correctly written `operator=` supports chained assignment. Given three `Counter` objects initialized from input, perform `a = b = c` and print all three.\n\n## Input\n\n- Three integers on a single line, space-separated: `va`, `vb`, `vc`.\n\n## Output\n\n- Three lines. First print `a`, `b`, and `c` before chained assignment (one per line, just the value). Then a blank line. Then print `a`, `b`, `c` after `a = b = c`.\n\nEach counter prints its value followed by a newline.\n\n## Requirements\n\n- `Counter` has one private member: `int m_value`.\n- Write a constructor `Counter(int v)`.\n- Overload `operator=` with a self-assignment check, returning `*this` by reference.\n- Write a `void print() const` member that outputs `m_value` followed by a newline.\n- In `main`, perform `a = b = c` as a single statement, then print all three.",
+    "starter_code": "#include <iostream>\n\nclass Counter\n{\nprivate:\n    int m_value{};\n\npublic:\n    Counter(int v) : m_value{ v } {}\n\n    // TODO: Overload operator= with self-assignment check\n\n    void print() const\n    {\n        std::cout << m_value << '\\n';\n    }\n};\n\nint main()\n{\n    int va{};\n    int vb{};\n    int vc{};\n    std::cin >> va >> vb >> vc;\n\n    Counter a{ va };\n    Counter b{ vb };\n    Counter c{ vc };\n\n    a.print();\n    b.print();\n    c.print();\n\n    std::cout << '\\n';\n\n    // TODO: Chained assignment a = b = c, then print all three\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Counter\n{\nprivate:\n    int m_value{};\n\npublic:\n    Counter(int v) : m_value{ v } {}\n\n    Counter& operator=(const Counter& other)\n    {\n        if (this == &other)\n            return *this;\n\n        m_value = other.m_value;\n        return *this;\n    }\n\n    void print() const\n    {\n        std::cout << m_value << '\\n';\n    }\n};\n\nint main()\n{\n    int va{};\n    int vb{};\n    int vc{};\n    std::cin >> va >> vb >> vc;\n\n    Counter a{ va };\n    Counter b{ vb };\n    Counter c{ vc };\n\n    a.print();\n    b.print();\n    c.print();\n\n    std::cout << '\\n';\n\n    a = b = c;\n\n    a.print();\n    b.print();\n    c.print();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Distinct values",
+        "is_sample": true,
+        "stdin": "10 20 30",
+        "expected_stdout": "10\n20\n30\n\n30\n30\n30\n"
+      },
+      {
+        "label": "Negative and zero",
+        "is_sample": false,
+        "stdin": "-5 0 7",
+        "expected_stdout": "-5\n0\n7\n\n7\n7\n7\n"
+      },
+      {
+        "label": "All same value",
+        "is_sample": false,
+        "stdin": "42 42 42",
+        "expected_stdout": "42\n42\n42\n\n42\n42\n42\n"
+      }
+    ]
+  }
+]

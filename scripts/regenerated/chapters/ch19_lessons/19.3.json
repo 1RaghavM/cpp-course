@@ -1,0 +1,60 @@
+{
+  "number": "19.3",
+  "title": "Destructors",
+  "sort_order": 2,
+  "summary_md": "## Destructors and Dynamic Memory\n\nIn Ch 15.4 you learned that a **destructor** is a special member function that runs automatically when an object is destroyed. With dynamic allocation in the picture, destructors become essential: they are where you `delete` memory that the class allocated with `new`, preventing leaks.\n\nThis pattern has a name: **RAII** (Resource Acquisition Is Initialization). The constructor acquires a resource (allocates memory), and the destructor releases it (deallocates memory). Because destructors run automatically when an object leaves scope, cleanup is guaranteed even if an early `return` or exception exits the function.\n\n```cpp\n#include <iostream>\n\nclass IntArray\n{\n    int* m_data{};\n    int m_size{};\npublic:\n    IntArray(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    ~IntArray()\n    {\n        delete[] m_data;\n        std::cout << \"Freed \" << m_size << \" ints\\n\";\n    }\n\n    int size() const { return m_size; }\n};\n```\n\nWhen an `IntArray` object goes out of scope, `~IntArray()` fires and calls `delete[]` on `m_data`. The caller never needs to remember to free anything.\n\n### Order of destruction\n\nLocal objects are destroyed in the **reverse order** of their construction. If you create `a` then `b`, the destructor for `b` runs first, then `a`. This reverse ordering ensures that if `b` depends on `a`, `b` is cleaned up while `a` is still valid.\n\nFor class members, destruction also happens in reverse declaration order, after the body of the destructor finishes executing.\n\n### Guidelines\n\n- If your class calls `new` in the constructor, it must call `delete` in the destructor (and `new[]` pairs with `delete[]`).\n- A destructor should never throw exceptions. If deallocation cannot fail, this is naturally satisfied.\n- Setting the pointer to `nullptr` after `delete` inside a destructor is unnecessary since the object is being destroyed anyway.\n- If you find yourself writing manual `delete` calls outside a destructor, consider whether RAII can handle it instead.",
+  "exercises": [
+    {
+      "title": "RAII String Wrapper",
+      "prompt_md": "## Goal\nImplement a class `DynString` that owns a dynamically allocated `char` array and cleans it up in its destructor, demonstrating the RAII pattern.\n\n## Input\n- Line 1: a single integer `N` (1 <= N <= 100), the number of characters to store.\n- Line 2: exactly `N` space-separated characters.\n\n## Output\n- Line 1: `Stored: ` followed by all N characters with no separators.\n- Line 2: `Destroyed N chars` where N is the count, printed by the destructor.\n\n## Requirements\n1. `DynString` has a constructor taking an `int` size that allocates a `char` array with `new char[size]`.\n2. `DynString` has a destructor that calls `delete[]` on the array and prints the destruction message.\n3. Provide a `void set(int index, char c)` member to set individual characters.\n4. Provide a `void print() const` member that prints all characters in order with no separators.\n5. Create the `DynString` as a local variable in `main` so the destructor runs automatically at the end of scope.\n6. Do not use `std::string` or smart pointers.",
+      "starter_code": "#include <iostream>\n\nclass DynString\n{\n    char* m_data{};\n    int m_size{};\n\npublic:\n    DynString(int size)\n        : m_data{ new char[size]{} }, m_size{ size }\n    {\n    }\n\n    // TODO: Write the destructor ~DynString()\n    //   - delete[] m_data\n    //   - print: Destroyed N chars  (where N is m_size)\n\n    void set(int index, char c)\n    {\n        m_data[index] = c;\n    }\n\n    void print() const\n    {\n        // TODO: output each character in m_data (no separators, no newline)\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynString ds(n);\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        char c{};\n        std::cin >> c;\n        ds.set(i, c);\n    }\n\n    std::cout << \"Stored: \";\n    ds.print();\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass DynString\n{\n    char* m_data{};\n    int m_size{};\n\npublic:\n    DynString(int size)\n        : m_data{ new char[size]{} }, m_size{ size }\n    {\n    }\n\n    ~DynString()\n    {\n        delete[] m_data;\n        std::cout << \"Destroyed \" << m_size << \" chars\\n\";\n    }\n\n    void set(int index, char c)\n    {\n        m_data[index] = c;\n    }\n\n    void print() const\n    {\n        for (int i{ 0 }; i < m_size; ++i)\n            std::cout << m_data[i];\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynString ds(n);\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        char c{};\n        std::cin >> c;\n        ds.set(i, c);\n    }\n\n    std::cout << \"Stored: \";\n    ds.print();\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- five characters",
+          "is_sample": true,
+          "stdin": "5\nH e l l o\n",
+          "expected_stdout": "Stored: Hello\nDestroyed 5 chars\n"
+        },
+        {
+          "label": "Hidden -- single character",
+          "is_sample": false,
+          "stdin": "1\nX\n",
+          "expected_stdout": "Stored: X\nDestroyed 1 chars\n"
+        },
+        {
+          "label": "Hidden -- digits as characters",
+          "is_sample": false,
+          "stdin": "4\n1 2 3 4\n",
+          "expected_stdout": "Stored: 1234\nDestroyed 4 chars\n"
+        }
+      ]
+    },
+    {
+      "title": "Reverse Destruction Order",
+      "prompt_md": "## Goal\nDemonstrate that local objects are destroyed in reverse order of construction by creating multiple RAII wrapper objects and observing destructor output.\n\n## Input\n- A single line containing exactly 3 space-separated integers representing sizes for three dynamic arrays.\n\n## Output\n- Lines 1-3: `Created pool 'X' (N ints)` for each pool in creation order, where X is A, B, C and N is the size.\n- Lines 4-6: `Destroyed pool 'X' (N ints)` for each pool in reverse creation order (C, B, A).\n\n## Requirements\n1. Implement a class `IntPool` with a constructor that takes a `char` label and an `int` size, allocates an `int` array with `new int[size]{}`, and prints the creation message.\n2. The destructor calls `delete[]` on the array and prints the destruction message.\n3. In `main`, create three `IntPool` objects named `a`, `b`, `c` (labels `'A'`, `'B'`, `'C'`) as local variables in that order.\n4. Do not explicitly call any destructor. Let scope exit handle cleanup.\n5. Do not use smart pointers or `std::vector`.",
+      "starter_code": "#include <iostream>\n\nclass IntPool\n{\n    char m_label{};\n    int* m_data{};\n    int m_size{};\n\npublic:\n    // TODO: Constructor taking (char label, int size)\n    //   - allocate m_data with new int[size]{}\n    //   - print: Created pool 'X' (N ints)\n\n    // TODO: Destructor\n    //   - delete[] m_data\n    //   - print: Destroyed pool 'X' (N ints)\n};\n\nint main()\n{\n    int sA{}, sB{}, sC{};\n    std::cin >> sA >> sB >> sC;\n\n    // TODO: Create three IntPool locals: a('A', sA), b('B', sB), c('C', sC)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass IntPool\n{\n    char m_label{};\n    int* m_data{};\n    int m_size{};\n\npublic:\n    IntPool(char label, int size)\n        : m_label{ label }, m_data{ new int[size]{} }, m_size{ size }\n    {\n        std::cout << \"Created pool '\" << m_label << \"' (\" << m_size << \" ints)\\n\";\n    }\n\n    ~IntPool()\n    {\n        delete[] m_data;\n        std::cout << \"Destroyed pool '\" << m_label << \"' (\" << m_size << \" ints)\\n\";\n    }\n};\n\nint main()\n{\n    int sA{}, sB{}, sC{};\n    std::cin >> sA >> sB >> sC;\n\n    IntPool a('A', sA);\n    IntPool b('B', sB);\n    IntPool c('C', sC);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- sizes 3 5 2",
+          "is_sample": true,
+          "stdin": "3 5 2\n",
+          "expected_stdout": "Created pool 'A' (3 ints)\nCreated pool 'B' (5 ints)\nCreated pool 'C' (2 ints)\nDestroyed pool 'C' (2 ints)\nDestroyed pool 'B' (5 ints)\nDestroyed pool 'A' (3 ints)\n"
+        },
+        {
+          "label": "Hidden -- all same size",
+          "is_sample": false,
+          "stdin": "10 10 10\n",
+          "expected_stdout": "Created pool 'A' (10 ints)\nCreated pool 'B' (10 ints)\nCreated pool 'C' (10 ints)\nDestroyed pool 'C' (10 ints)\nDestroyed pool 'B' (10 ints)\nDestroyed pool 'A' (10 ints)\n"
+        },
+        {
+          "label": "Hidden -- size one each",
+          "is_sample": false,
+          "stdin": "1 1 1\n",
+          "expected_stdout": "Created pool 'A' (1 ints)\nCreated pool 'B' (1 ints)\nCreated pool 'C' (1 ints)\nDestroyed pool 'C' (1 ints)\nDestroyed pool 'B' (1 ints)\nDestroyed pool 'A' (1 ints)\n"
+        }
+      ]
+    }
+  ]
+}

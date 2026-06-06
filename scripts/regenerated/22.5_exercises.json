@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Manage a single resource with unique_ptr",
+    "prompt_md": "## Goal\n\nWrite a program that creates a `Logger` object via `std::unique_ptr`, uses it, then transfers ownership to a second pointer and verifies the original is empty.\n\n## Input\n\n- A single line containing one integer `id` (1 <= id <= 9999) representing the logger ID.\n\n## Output\n\nPrint exactly five lines in this order:\n1. `Logger <id> created`\n2. `Logger <id> logging`\n3. `Transferred: original is null = true`\n4. `New owner has logger <id>`\n5. `Logger <id> destroyed`\n\nReplace `<id>` with the integer read from stdin.\n\n## Requirements\n\n- Define `struct Logger` with an `int id` member, a constructor that prints `Logger <id> created`, a member function `void log() const` that prints `Logger <id> logging`, and a destructor that prints `Logger <id> destroyed`.\n- In `main`, create the logger using `std::make_unique<Logger>(id)`. Do not use `new` or `delete`.\n- Call `log()` on the unique_ptr (use `->`).\n- Transfer ownership to a second `unique_ptr` using `std::move`.\n- Print line 3 using `std::boolalpha` and checking whether the original pointer equals `nullptr`.\n- Print line 4 by accessing `id` through the new owner.\n- The destructor message (line 5) must appear last when the owning pointer goes out of scope.",
+    "starter_code": "#include <iostream>\n#include <memory>\n\n// TODO: Define struct Logger with:\n//   - int id\n//   - constructor that prints \"Logger <id> created\"\n//   - void log() const that prints \"Logger <id> logging\"\n//   - destructor that prints \"Logger <id> destroyed\"\n\nint main() {\n    int id{};\n    std::cin >> id;\n\n    // TODO: create a unique_ptr<Logger> using make_unique\n    // TODO: call log() via the pointer\n    // TODO: transfer ownership to a new unique_ptr using std::move\n    // TODO: print whether original is null (use std::boolalpha)\n    // TODO: print the id from the new owner\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nstruct Logger {\n    int id;\n    Logger(int id) : id{id} {\n        std::cout << \"Logger \" << id << \" created\\n\";\n    }\n    void log() const {\n        std::cout << \"Logger \" << id << \" logging\\n\";\n    }\n    ~Logger() {\n        std::cout << \"Logger \" << id << \" destroyed\\n\";\n    }\n};\n\nint main() {\n    int id{};\n    std::cin >> id;\n\n    auto original = std::make_unique<Logger>(id);\n    original->log();\n\n    auto newOwner = std::move(original);\n    std::cout << \"Transferred: original is null = \"\n              << std::boolalpha << (original == nullptr) << '\\n';\n    std::cout << \"New owner has logger \" << newOwner->id << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "sample -- id 10",
+        "is_sample": true,
+        "stdin": "10\n",
+        "expected_stdout": "Logger 10 created\nLogger 10 logging\nTransferred: original is null = true\nNew owner has logger 10\nLogger 10 destroyed\n"
+      },
+      {
+        "label": "hidden -- id 1 (minimum)",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Logger 1 created\nLogger 1 logging\nTransferred: original is null = true\nNew owner has logger 1\nLogger 1 destroyed\n"
+      },
+      {
+        "label": "hidden -- id 9999 (maximum)",
+        "is_sample": false,
+        "stdin": "9999\n",
+        "expected_stdout": "Logger 9999 created\nLogger 9999 logging\nTransferred: original is null = true\nNew owner has logger 9999\nLogger 9999 destroyed\n"
+      }
+    ]
+  },
+  {
+    "title": "Build and transfer a unique_ptr collection",
+    "prompt_md": "## Goal\n\nWrite a program that creates multiple `Item` objects managed by `std::unique_ptr`, stores them in a `std::vector`, and then moves one item out of the vector to demonstrate ownership transfer with containers.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 10) representing the number of items to create.\n- Line 2: an integer `idx` (0 <= idx < n) representing the index of the item to extract from the vector.\n\n## Output\n\n1. For each item created (in order from 1 to n): `Item <i> created`\n2. `Vector size: <n>`\n3. `Extracted item <id>`\n4. `Vector size after extract: <n>` (size stays the same -- the slot becomes nullptr)\n5. Destruction messages as items go out of scope. The extracted item is destroyed first (end of main), then the vector's remaining items are destroyed in order of their index position. Items whose slot is nullptr produce no output.\n\n## Requirements\n\n- Define `struct Item` with an `int id` member, a constructor that prints `Item <id> created`, and a destructor that prints `Item <id> destroyed`.\n- In `main`, read `n` and `idx`. Create a `std::vector<std::unique_ptr<Item>>` and use a loop to `push_back` items with ids from 1 to n (use `std::make_unique`).\n- Print the vector size.\n- Move the element at index `idx` out of the vector into a local `unique_ptr` using `std::move`. This leaves `nullptr` in the vector slot.\n- Print the extracted item's id and the vector size after extraction.\n- Do not use `new`, `delete`, or `erase`. The vector size must remain `n` after extraction.",
+    "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\n// TODO: Define struct Item with:\n//   - int id\n//   - constructor that prints \"Item <id> created\"\n//   - destructor that prints \"Item <id> destroyed\"\n\nint main() {\n    int n{};\n    int idx{};\n    std::cin >> n >> idx;\n\n    std::vector<std::unique_ptr<Item>> items;\n\n    // TODO: loop from 1 to n, push_back make_unique<Item>(i)\n    // TODO: print \"Vector size: <n>\"\n    // TODO: move items[idx] into a local unique_ptr\n    // TODO: print \"Extracted item <id>\"\n    // TODO: print \"Vector size after extract: <n>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nstruct Item {\n    int id;\n    Item(int id) : id{id} {\n        std::cout << \"Item \" << id << \" created\\n\";\n    }\n    ~Item() {\n        std::cout << \"Item \" << id << \" destroyed\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    int idx{};\n    std::cin >> n >> idx;\n\n    std::vector<std::unique_ptr<Item>> items;\n    for (int i{1}; i <= n; ++i) {\n        items.push_back(std::make_unique<Item>(i));\n    }\n\n    std::cout << \"Vector size: \" << items.size() << '\\n';\n\n    auto extracted = std::move(items[static_cast<std::size_t>(idx)]);\n    std::cout << \"Extracted item \" << extracted->id << '\\n';\n    std::cout << \"Vector size after extract: \" << items.size() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "sample -- 3 items, extract index 1",
+        "is_sample": true,
+        "stdin": "3\n1\n",
+        "expected_stdout": "Item 1 created\nItem 2 created\nItem 3 created\nVector size: 3\nExtracted item 2\nVector size after extract: 3\nItem 2 destroyed\nItem 1 destroyed\nItem 3 destroyed\n"
+      },
+      {
+        "label": "hidden -- 1 item, extract index 0",
+        "is_sample": false,
+        "stdin": "1\n0\n",
+        "expected_stdout": "Item 1 created\nVector size: 1\nExtracted item 1\nVector size after extract: 1\nItem 1 destroyed\n"
+      },
+      {
+        "label": "hidden -- 5 items, extract index 4",
+        "is_sample": false,
+        "stdin": "5\n4\n",
+        "expected_stdout": "Item 1 created\nItem 2 created\nItem 3 created\nItem 4 created\nItem 5 created\nVector size: 5\nExtracted item 5\nVector size after extract: 5\nItem 5 destroyed\nItem 1 destroyed\nItem 2 destroyed\nItem 3 destroyed\nItem 4 destroyed\n"
+      }
+    ]
+  }
+]

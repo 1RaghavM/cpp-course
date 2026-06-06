@@ -1,0 +1,60 @@
+{
+  "number": "23.6",
+  "title": "Container classes",
+  "sort_order": 5,
+  "summary_md": "A **container class** is a class designed to hold and manage a collection of other objects (called **elements**). You use containers constantly in real programs -- any time you need a list of enemies, a stack of undo operations, or a collection of student records, a container is the right abstraction.\n\nContainers come in two flavors:\n\n- **Value containers** hold copies of the objects they store. When the container is destroyed, the elements are destroyed with it. Most containers you will use fall into this category (`std::vector`, `std::array`, and the custom classes below).\n- **Reference containers** hold pointers or references to objects that live elsewhere. The container does not manage the lifetime of the referenced objects. An array of `T*` is the simplest reference container.\n\nA good container class uses **composition** -- it owns a dynamically allocated array as a private member and exposes a clean public interface for adding, removing, and accessing elements. The user of the class never touches raw memory.\n\n```cpp\n#include <cassert>\n#include <iostream>\n\nclass IntStack {\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\npublic:\n    IntStack(int cap) : m_data{new int[cap]{}}, m_capacity{cap} {}\n    ~IntStack() { delete[] m_data; }\n    void push(int val) { assert(m_size < m_capacity); m_data[m_size++] = val; }\n    int pop() { assert(m_size > 0); return m_data[--m_size]; }\n    int size() const { return m_size; }\n};\n```\n\nThis `IntStack` demonstrates the key responsibilities of a container: it allocates storage in the constructor, deallocates in the destructor, and provides `push`, `pop`, and `size` operations that keep the internal state consistent. The caller never calls `new` or `delete`.\n\nNote the `assert` guards -- they catch misuse (pushing to a full stack, popping from an empty one) during development. A production container might throw an exception or resize, but assertions are appropriate for learning.\n\nBecause `IntStack` manages a resource, the Rule of Three applies. The class above would need a copy constructor and copy-assignment operator (or they should be deleted) to prevent double-delete bugs. For now, the exercises focus on the container interface itself -- resource-safe copying was covered in Chapter 21.\n\nThe standard library provides general-purpose containers (`std::vector`, `std::stack`, `std::map`, etc.) that handle all of these concerns. Writing your own teaches you what those containers do under the hood: allocate, track size vs. capacity, and clean up automatically.",
+  "exercises": [
+    {
+      "title": "IntArray container",
+      "prompt_md": "## Goal\n\nImplement a simple `IntArray` container class that manages a fixed-capacity dynamic array with `push_back`, `size`, and element access via `get`.\n\n## Input\n\n- Line 1: two integers `capacity` and `n` (1 <= n <= capacity <= 100), the array capacity and the number of elements to add.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000) to push into the array.\n\n## Output\n\n- Line 1: `size: <s>` where `<s>` is the number of elements after all pushes.\n- Lines 2 through s+1: each element on its own line, printed from index 0 to size-1.\n\n## Requirements\n\n- Define a class `IntArray` with private members: `int* m_data`, `int m_size`, and `int m_capacity`.\n- The constructor takes an `int capacity`, allocates a dynamic array of that size with `new int[capacity]{}`, and initializes `m_size` to 0.\n- The destructor calls `delete[]` on `m_data`.\n- `void push_back(int val)` adds `val` at index `m_size` and increments `m_size`. Use `assert(m_size < m_capacity)` to guard overflow.\n- `int get(int index) const` returns the element at `index`. Use `assert(index >= 0 && index < m_size)` to guard bounds.\n- `int size() const` returns `m_size`.\n- Include `<cassert>` for the assertions.\n- Do not implement copy constructor or copy assignment (the default is fine for this exercise since no copies are made).",
+      "starter_code": "#include <cassert>\n#include <iostream>\n\nclass IntArray\n{\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\n\npublic:\n    IntArray(int capacity)\n        : m_data{ new int[capacity]{} }\n        , m_size{ 0 }\n        , m_capacity{ capacity }\n    {\n    }\n\n    ~IntArray()\n    {\n        // TODO: deallocate m_data\n    }\n\n    void push_back(int val)\n    {\n        // TODO: assert not full, store val, increment size\n    }\n\n    int get(int index) const\n    {\n        // TODO: assert valid index, return element\n        return 0;\n    }\n\n    int size() const\n    {\n        // TODO: return current size\n        return 0;\n    }\n};\n\nint main()\n{\n    int capacity{};\n    int n{};\n    std::cin >> capacity >> n;\n\n    IntArray arr{ capacity };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        arr.push_back(val);\n    }\n\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i)\n        std::cout << arr.get(i) << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <cassert>\n#include <iostream>\n\nclass IntArray\n{\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\n\npublic:\n    IntArray(int capacity)\n        : m_data{ new int[capacity]{} }\n        , m_size{ 0 }\n        , m_capacity{ capacity }\n    {\n    }\n\n    ~IntArray()\n    {\n        delete[] m_data;\n    }\n\n    void push_back(int val)\n    {\n        assert(m_size < m_capacity);\n        m_data[m_size] = val;\n        ++m_size;\n    }\n\n    int get(int index) const\n    {\n        assert(index >= 0 && index < m_size);\n        return m_data[index];\n    }\n\n    int size() const\n    {\n        return m_size;\n    }\n};\n\nint main()\n{\n    int capacity{};\n    int n{};\n    std::cin >> capacity >> n;\n\n    IntArray arr{ capacity };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        arr.push_back(val);\n    }\n\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i)\n        std::cout << arr.get(i) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Three elements in capacity-5 array",
+          "is_sample": true,
+          "stdin": "5 3\n10 20 30",
+          "expected_stdout": "size: 3\n10\n20\n30\n"
+        },
+        {
+          "label": "Single element",
+          "is_sample": false,
+          "stdin": "1 1\n-999",
+          "expected_stdout": "size: 1\n-999\n"
+        },
+        {
+          "label": "Fill to capacity with mixed values",
+          "is_sample": false,
+          "stdin": "4 4\n7 -3 0 42",
+          "expected_stdout": "size: 4\n7\n-3\n0\n42\n"
+        }
+      ]
+    },
+    {
+      "title": "IntStack with push, pop, and top",
+      "prompt_md": "## Goal\n\nImplement an `IntStack` container class that supports `push`, `pop`, `top`, and `size` operations, then process a sequence of stack commands.\n\n## Input\n\n- Line 1: two integers `capacity` and `q` (1 <= capacity <= 100, 1 <= q <= 100).\n- Next `q` lines: each line is one of:\n  - `push <val>` where val is an integer (-10000 <= val <= 10000)\n  - `pop`\n  - `top`\n  - `size`\n\n## Output\n\n- For each `top` command: print the top element on its own line.\n- For each `size` command: print the current number of elements on its own line.\n- For each `pop` command: print the popped value on its own line.\n- `push` produces no output.\n\nThe input guarantees that `pop` and `top` are never called on an empty stack, and `push` is never called when the stack is full.\n\n## Requirements\n\n- Define a class `IntStack` with private members: `int* m_data`, `int m_size`, and `int m_capacity`.\n- Constructor takes `int capacity`, allocates with `new int[capacity]{}`, sets `m_size` to 0.\n- Destructor calls `delete[]` on `m_data`.\n- `void push(int val)`: asserts not full, stores `val` at `m_data[m_size]`, increments `m_size`.\n- `int pop()`: asserts not empty, decrements `m_size`, returns `m_data[m_size]`.\n- `int top() const`: asserts not empty, returns `m_data[m_size - 1]`.\n- `int size() const`: returns `m_size`.\n- Parse commands using `std::string` and `==` comparison.",
+      "starter_code": "#include <cassert>\n#include <iostream>\n#include <string>\n\nclass IntStack\n{\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\n\npublic:\n    IntStack(int capacity)\n        : m_data{ new int[capacity]{} }\n        , m_size{ 0 }\n        , m_capacity{ capacity }\n    {\n    }\n\n    ~IntStack()\n    {\n        // TODO: deallocate m_data\n    }\n\n    void push(int val)\n    {\n        // TODO: assert not full, store val, increment size\n    }\n\n    int pop()\n    {\n        // TODO: assert not empty, decrement size, return removed element\n        return 0;\n    }\n\n    int top() const\n    {\n        // TODO: assert not empty, return top element\n        return 0;\n    }\n\n    int size() const\n    {\n        // TODO: return current size\n        return 0;\n    }\n};\n\nint main()\n{\n    int capacity{};\n    int q{};\n    std::cin >> capacity >> q;\n\n    IntStack stack{ capacity };\n\n    for (int i{ 0 }; i < q; ++i)\n    {\n        std::string cmd{};\n        std::cin >> cmd;\n\n        // TODO: Handle \"push\", \"pop\", \"top\", and \"size\" commands\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <cassert>\n#include <iostream>\n#include <string>\n\nclass IntStack\n{\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\n\npublic:\n    IntStack(int capacity)\n        : m_data{ new int[capacity]{} }\n        , m_size{ 0 }\n        , m_capacity{ capacity }\n    {\n    }\n\n    ~IntStack()\n    {\n        delete[] m_data;\n    }\n\n    void push(int val)\n    {\n        assert(m_size < m_capacity);\n        m_data[m_size] = val;\n        ++m_size;\n    }\n\n    int pop()\n    {\n        assert(m_size > 0);\n        --m_size;\n        return m_data[m_size];\n    }\n\n    int top() const\n    {\n        assert(m_size > 0);\n        return m_data[m_size - 1];\n    }\n\n    int size() const\n    {\n        return m_size;\n    }\n};\n\nint main()\n{\n    int capacity{};\n    int q{};\n    std::cin >> capacity >> q;\n\n    IntStack stack{ capacity };\n\n    for (int i{ 0 }; i < q; ++i)\n    {\n        std::string cmd{};\n        std::cin >> cmd;\n\n        if (cmd == \"push\")\n        {\n            int val{};\n            std::cin >> val;\n            stack.push(val);\n        }\n        else if (cmd == \"pop\")\n        {\n            std::cout << stack.pop() << '\\n';\n        }\n        else if (cmd == \"top\")\n        {\n            std::cout << stack.top() << '\\n';\n        }\n        else if (cmd == \"size\")\n        {\n            std::cout << stack.size() << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic push, top, pop, size sequence",
+          "is_sample": true,
+          "stdin": "10 7\npush 5\npush 10\ntop\nsize\npop\npop\nsize",
+          "expected_stdout": "10\n2\n10\n5\n0\n"
+        },
+        {
+          "label": "Single push and pop",
+          "is_sample": false,
+          "stdin": "5 3\npush -42\ntop\npop",
+          "expected_stdout": "-42\n-42\n"
+        },
+        {
+          "label": "Interleaved operations with negatives",
+          "is_sample": false,
+          "stdin": "10 10\npush 1\npush -2\npush 3\npop\nsize\npush 99\ntop\npop\npop\npop",
+          "expected_stdout": "3\n2\n99\n99\n-2\n1\n"
+        }
+      ]
+    }
+  ]
+}

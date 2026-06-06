@@ -1,0 +1,60 @@
+{
+  "number": "13.5",
+  "title": "Introduction to overloading the I/O operators",
+  "sort_order": 4,
+  "summary_md": "## Introduction to Overloading the I/O Operators\n\nIn lesson 13.4 you wrote helper functions like `getColorName()` to convert enumerators to strings. That works, but it forces every print site to remember to call the helper: `std::cout << getColorName(shirt)`. Overloading `operator<<` lets you write `std::cout << shirt` directly — the compiler calls your function automatically.\n\n### Overloading `operator<<`\n\n`operator<<` is a binary operator. The left operand is `std::ostream&` (the stream) and the right operand is your type. Because the left operand is not your type, the overload must be a **free function** (not a member). It returns `std::ostream&` so calls can be chained (`std::cout << a << b`).\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nenum Color { red, green, blue };\n\nconstexpr std::string_view colorToStr(Color c) {\n    switch (c) {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n        default:    return \"unknown\";\n    }\n}\n\nstd::ostream& operator<<(std::ostream& out, Color c) {\n    out << colorToStr(c);\n    return out;\n}\n\nint main() {\n    Color shirt{ green };\n    std::cout << \"Shirt color: \" << shirt << '\\n';\n}\n```\n\nKey points: the return type is `std::ostream&`, the first parameter is `std::ostream& out` (not `std::cout` specifically — this works with any output stream), and you return `out` at the end.\n\n### Overloading `operator>>`\n\nThe same idea applies to input. `operator>>` takes `std::istream&` on the left and your type (by non-const reference) on the right. Typically you read a value the stream already understands (like an `int` or `std::string`), then map it to your enumerator:\n\nRead an integer, validate, and convert with `static_cast`. Return `in` so input calls can be chained. If the input is invalid, set the enumerator to a sensible default.\n\n### Why This Matters\n\nOnce both operators are overloaded, your enum works seamlessly with `std::cout` and `std::cin` — no special helper calls at the use site. This is the idiomatic C++ approach and the pattern you will reuse for structs and classes later.\n\n### Rules to Remember\n\n- The overload must be a free function (the left operand is a standard library type).\n- Always return the stream reference to support chaining.\n- Keep the conversion logic in a separate helper (`constexpr` string-view function or switch) so the overload stays thin.",
+  "exercises": [
+    {
+      "title": "Overload operator<< for a Season Enum",
+      "prompt_md": "## Goal\nOverload `operator<<` for an unscoped `Season` enum so that season values print as human-readable strings.\n\n## Input\n- A single integer on one line: `0` = Spring, `1` = Summer, `2` = Autumn, `3` = Winter.\n\n## Output\nPrint exactly one line in this format:\n```\nThe season is <SeasonName>\n```\nWhere `<SeasonName>` is one of `Spring`, `Summer`, `Autumn`, or `Winter`. No trailing blank lines.\n\n## Requirements\n1. Define an unscoped enum named `Season` with enumerators `spring = 0`, `summer = 1`, `autumn = 2`, `winter = 3`, at namespace scope.\n2. Write a function `constexpr std::string_view seasonToStr(Season s)` that uses a switch statement to return the capitalized name of each season. Return `\"Unknown\"` for any unrecognized value.\n3. Overload `operator<<` with the signature `std::ostream& operator<<(std::ostream& out, Season s)`. It must call `seasonToStr` and return the stream reference.\n4. In `main`, read an integer from `std::cin`, convert it to a `Season` using `static_cast`, and print using `std::cout` and your overloaded `operator<<` — do **not** call `seasonToStr` directly in `main`.\n5. The output must use operator chaining: `std::cout << \"The season is \" << s << '\\n';`\n\n## Notes\n- You may use `#include <iostream>` and `#include <string_view>`.",
+      "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Season with:\n//       spring = 0, summer = 1, autumn = 2, winter = 3\n\n// TODO: Write constexpr std::string_view seasonToStr(Season s)\n//       Return the capitalized name. Use a switch. Default: \"Unknown\".\n\n// TODO: Overload operator<< for Season\n//       Signature: std::ostream& operator<<(std::ostream& out, Season s)\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Convert input to Season using static_cast\n    // TODO: Print \"The season is <SeasonName>\" using operator<<\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Season\n{\n    spring = 0,\n    summer = 1,\n    autumn = 2,\n    winter = 3\n};\n\nconstexpr std::string_view seasonToStr(Season s)\n{\n    switch (s)\n    {\n        case spring: return \"Spring\";\n        case summer: return \"Summer\";\n        case autumn: return \"Autumn\";\n        case winter: return \"Winter\";\n        default:     return \"Unknown\";\n    }\n}\n\nstd::ostream& operator<<(std::ostream& out, Season s)\n{\n    out << seasonToStr(s);\n    return out;\n}\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    Season s{ static_cast<Season>(input) };\n    std::cout << \"The season is \" << s << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — Summer",
+          "stdin": "1\n",
+          "expected_stdout": "The season is Summer\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — Spring (first enumerator)",
+          "stdin": "0\n",
+          "expected_stdout": "The season is Spring\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — Winter (last enumerator)",
+          "stdin": "3\n",
+          "expected_stdout": "The season is Winter\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Overload Both I/O Operators for a Direction Enum",
+      "prompt_md": "## Goal\nOverload both `operator<<` and `operator>>` for an unscoped `Direction` enum, then use them to read directions and print them back.\n\n## Input\n- Line 1: an integer `N` (1 <= N <= 5) — the number of directions to process.\n- Next `N` lines: each line contains a single integer representing a direction: `0` = North, `1` = East, `2` = South, `3` = West.\n\n## Output\nPrint exactly `N` lines. Each line has the format:\n```\nHeading: <DirectionName>\n```\nWhere `<DirectionName>` is one of `North`, `East`, `South`, or `West`. If the input integer does not match any enumerator, print `Invalid` as the direction name. No trailing blank lines.\n\n## Requirements\n1. Define an unscoped enum named `Direction` with enumerators `north = 0`, `east = 1`, `south = 2`, `west = 3`, at namespace scope. Also add `maxDirections = 4` as a count enumerator.\n2. Write a function `constexpr std::string_view directionToStr(Direction d)` that uses a switch statement. Return `\"Invalid\"` for any value not matching the four cardinal directions (including `maxDirections`).\n3. Overload `operator<<` with signature `std::ostream& operator<<(std::ostream& out, Direction d)`. It must call `directionToStr` and return the stream reference.\n4. Overload `operator>>` with signature `std::istream& operator>>(std::istream& in, Direction& d)`. It must read an `int`, check if it is in range `[0, maxDirections)`, and if valid convert via `static_cast`. If out of range, set `d` to `maxDirections` (which will print as `Invalid`). Return the stream reference.\n5. In `main`, read `N`, then loop `N` times. Each iteration must use your overloaded `operator>>` to read a `Direction` and your overloaded `operator<<` to print it.\n6. Do **not** call `directionToStr` or `static_cast` directly in `main`.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string_view>`.",
+      "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Direction with:\n//       north = 0, east = 1, south = 2, west = 3, maxDirections = 4\n\n// TODO: Write constexpr std::string_view directionToStr(Direction d)\n//       Return capitalized name. Default/maxDirections: \"Invalid\".\n\n// TODO: Overload operator<< for Direction\n\n// TODO: Overload operator>> for Direction\n//       Read an int, validate range [0, maxDirections), static_cast if valid,\n//       set to maxDirections if invalid. Return the stream.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Loop n times, read a Direction with >>, print with <<\n    // Format per line: \"Heading: <DirectionName>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Direction\n{\n    north = 0,\n    east = 1,\n    south = 2,\n    west = 3,\n    maxDirections = 4\n};\n\nconstexpr std::string_view directionToStr(Direction d)\n{\n    switch (d)\n    {\n        case north: return \"North\";\n        case east:  return \"East\";\n        case south: return \"South\";\n        case west:  return \"West\";\n        default:    return \"Invalid\";\n    }\n}\n\nstd::ostream& operator<<(std::ostream& out, Direction d)\n{\n    out << directionToStr(d);\n    return out;\n}\n\nstd::istream& operator>>(std::istream& in, Direction& d)\n{\n    int input{};\n    in >> input;\n\n    if (input >= 0 && input < maxDirections)\n        d = static_cast<Direction>(input);\n    else\n        d = maxDirections;\n\n    return in;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        Direction d{};\n        std::cin >> d;\n        std::cout << \"Heading: \" << d << '\\n';\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — three valid directions",
+          "stdin": "3\n0\n2\n1\n",
+          "expected_stdout": "Heading: North\nHeading: South\nHeading: East\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — includes invalid direction code",
+          "stdin": "4\n3\n1\n7\n0\n",
+          "expected_stdout": "Heading: West\nHeading: East\nHeading: Invalid\nHeading: North\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — single direction, boundary value",
+          "stdin": "1\n3\n",
+          "expected_stdout": "Heading: West\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

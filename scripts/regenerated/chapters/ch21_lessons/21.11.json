@@ -1,0 +1,60 @@
+{
+  "number": "21.11",
+  "title": "Overloading typecasts",
+  "sort_order": 10,
+  "summary_md": "Sometimes you need a class object to behave like a built-in type in certain contexts. **Conversion operators** (also called user-defined type conversions) let you define how an object converts to another type. They are member functions whose name is `operator` followed by the target type, they take no parameters, and they have no explicit return type -- the target type *is* the return type.\n\n```cpp\n#include <iostream>\n\nclass Fraction\n{\n    int m_num{};\n    int m_den{ 1 };\npublic:\n    Fraction(int n, int d = 1) : m_num{n}, m_den{d} {}\n\n    explicit operator double() const\n    {\n        return static_cast<double>(m_num) / m_den;\n    }\n};\n\nint main()\n{\n    Fraction f{ 3, 4 };\n    std::cout << static_cast<double>(f); // 0.75\n}\n```\n\nYou can overload conversions to any type: `operator int()`, `operator bool()`, `operator std::string()`, and so on. Each must be a non-static member function with no parameters.\n\nWithout the `explicit` keyword a conversion operator is **implicit**, meaning the compiler will silently insert it wherever a conversion is needed -- function arguments, arithmetic expressions, conditionals. This is almost always dangerous. A class with `operator int()` (non-explicit) can accidentally participate in integer arithmetic and comparisons you never intended, producing confusing bugs with no compiler warning.\n\nThe fix is to mark conversion operators `explicit`. An explicit conversion operator is only invoked when you write an explicit cast (`static_cast`, C-style cast, or direct initialization with the target type). The one exception is `operator bool()`: even when declared `explicit`, it is still allowed in boolean contexts such as `if`, `while`, and logical operators (`!`, `&&`, `||`). This special rule exists because testing truthiness is so common that requiring a cast every time would be impractical. The standard library relies on this -- `std::optional`, `std::unique_ptr`, and stream objects all define `explicit operator bool()`.\n\nAs a rule of thumb: always make conversion operators `explicit` unless you have a strong reason not to. Prefer named functions (like `toInt()` or `toString()`) when the conversion is lossy or surprising; reserve conversion operators for cases where the target type is a natural, expected interpretation of the object.",
+  "exercises": [
+    {
+      "title": "Percentage to Double Conversion",
+      "prompt_md": "## Goal\n\nCreate a `Percentage` class that stores an integer percent value and provides an explicit conversion to `double` that returns the decimal form (e.g., 75 becomes 0.75).\n\n## Input\n\n- A single line containing one integer `P` (0 <= P <= 100).\n\n## Output\n\n- A single line containing the decimal equivalent printed with exactly 2 decimal places, followed by a newline.\n\n## Requirements\n\n- Define a class `Percentage` with a constructor that takes an `int`.\n- Overload `operator double()` as an `explicit` conversion operator.\n- In `main`, read the input, construct a `Percentage`, explicitly cast it to `double`, and print the result using `std::fixed` and `std::setprecision(2)`.\n- Do not use any global variables.",
+      "starter_code": "#include <iomanip>\n#include <iostream>\n\nclass Percentage\n{\n    int m_pct{};\npublic:\n    Percentage(int pct) : m_pct{ pct } {}\n\n    // TODO: Add an explicit operator double() that returns m_pct / 100.0\n};\n\nint main()\n{\n    int p{};\n    std::cin >> p;\n\n    Percentage pct{ p };\n\n    // TODO: Explicitly cast pct to double and print with 2 decimal places\n\n    return 0;\n}\n",
+      "solution_code": "#include <iomanip>\n#include <iostream>\n\nclass Percentage\n{\n    int m_pct{};\npublic:\n    Percentage(int pct) : m_pct{ pct } {}\n\n    explicit operator double() const\n    {\n        return m_pct / 100.0;\n    }\n};\n\nint main()\n{\n    int p{};\n    std::cin >> p;\n\n    Percentage pct{ p };\n\n    std::cout << std::fixed << std::setprecision(2)\n              << static_cast<double>(pct) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- 75 percent",
+          "is_sample": true,
+          "stdin": "75\n",
+          "expected_stdout": "0.75\n"
+        },
+        {
+          "label": "Hidden -- zero percent",
+          "is_sample": false,
+          "stdin": "0\n",
+          "expected_stdout": "0.00\n"
+        },
+        {
+          "label": "Hidden -- 100 percent",
+          "is_sample": false,
+          "stdin": "100\n",
+          "expected_stdout": "1.00\n"
+        }
+      ]
+    },
+    {
+      "title": "Boolean Validity Check",
+      "prompt_md": "## Goal\n\nCreate an `ID` class that stores an integer identifier and converts to `bool` -- an `ID` is valid (true) when its value is positive, and invalid (false) when it is zero or negative. Use the explicit `operator bool()` special rule to test objects directly in `if` statements.\n\n## Input\n\n- Line 1: a single integer `N` (1 <= N <= 50).\n- Line 2: `N` space-separated integers (-1000 <= each <= 1000).\n\n## Output\n\n- For each integer, print `valid` if the ID is valid or `invalid` otherwise, one per line.\n\n## Requirements\n\n- Define a class `ID` with a constructor that takes an `int`.\n- Overload `explicit operator bool()` that returns `true` when the stored value is greater than 0.\n- In the loop, construct an `ID` from each input value and use it directly in an `if` statement (do not cast or call any other method).\n- Do not use any global variables.",
+      "starter_code": "#include <iostream>\n\nclass ID\n{\n    int m_id{};\npublic:\n    ID(int id) : m_id{ id } {}\n\n    // TODO: Add explicit operator bool() returning true when m_id > 0\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        ID id{ val };\n\n        // TODO: Use id directly in an if-statement to print valid/invalid\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass ID\n{\n    int m_id{};\npublic:\n    ID(int id) : m_id{ id } {}\n\n    explicit operator bool() const\n    {\n        return m_id > 0;\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        ID id{ val };\n\n        if (id)\n            std::cout << \"valid\\n\";\n        else\n            std::cout << \"invalid\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- mixed values",
+          "is_sample": true,
+          "stdin": "4\n5 -1 0 42\n",
+          "expected_stdout": "valid\ninvalid\ninvalid\nvalid\n"
+        },
+        {
+          "label": "Hidden -- all invalid",
+          "is_sample": false,
+          "stdin": "3\n0 -5 -100\n",
+          "expected_stdout": "invalid\ninvalid\ninvalid\n"
+        },
+        {
+          "label": "Hidden -- single valid",
+          "is_sample": false,
+          "stdin": "1\n1\n",
+          "expected_stdout": "valid\n"
+        }
+      ]
+    }
+  ]
+}

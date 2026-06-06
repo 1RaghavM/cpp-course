@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Matching Elements",
+    "prompt_md": "## Goal\n\nUse `std::count_if` with a lambda to count how many integers in an array are strictly greater than a threshold.\n\n## Input\n\n- Line 1: two space-separated integers `N` (1 <= N <= 100) and `T` (the threshold, -10000 <= T <= 10000).\n- Line 2: `N` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- A single line containing the count of elements strictly greater than `T`.\n\n## Requirements\n\n- Read the integers into a `std::vector<int>`.\n- Use `std::count_if` with a lambda that has an empty capture clause `[]`.\n- Because the lambda cannot capture `T`, read the threshold but pass it through program logic: partition the work so the lambda only uses its parameter. **Hint:** `std::count_if` counts elements matching a predicate -- you can call it and the lambda only needs to test one element at a time. Since the lambda cannot capture `T`, find another approach: you can subtract `T` from each element first (storing results in a new vector), then use a lambda that checks `> 0`.\n- Do not use raw loops for the counting step.",
+    "starter_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    int t{};\n    std::cin >> n >> t;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    // TODO: Create a new vector where each element is (v[i] - t)\n    // TODO: Use std::count_if with a lambda [] to count elements > 0\n    // TODO: Print the count\n\n    return 0;\n}\n",
+    "solution_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    int t{};\n    std::cin >> n >> t;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    std::vector<int> diff(n);\n    for (int i{ 0 }; i < n; ++i)\n        diff[i] = v[i] - t;\n\n    auto count{ std::count_if(diff.begin(), diff.end(),\n        [](int x) { return x > 0; }) };\n\n    std::cout << count << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed values with threshold 4",
+        "is_sample": true,
+        "stdin": "6 4\n1 5 3 8 4 7\n",
+        "expected_stdout": "3\n"
+      },
+      {
+        "label": "Hidden -- all below threshold",
+        "is_sample": false,
+        "stdin": "4 100\n1 2 3 4\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden -- negative threshold",
+        "is_sample": false,
+        "stdin": "5 -3\n-5 -3 -1 0 2\n",
+        "expected_stdout": "3\n"
+      }
+    ]
+  },
+  {
+    "title": "Custom Sort with Lambdas",
+    "prompt_md": "## Goal\n\nRead a list of integers and sort them by **absolute value** in ascending order using `std::sort` with a lambda comparator. When two elements have the same absolute value, the negative one should come first.\n\n## Input\n\n- Line 1: a single integer `N` (1 <= N <= 100).\n- Line 2: `N` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- A single line containing the sorted integers separated by spaces, followed by a newline.\n\n## Requirements\n\n- Store the integers in a `std::vector<int>`.\n- Use `std::sort` with a lambda that has an empty capture clause `[]`.\n- The lambda should compare by absolute value first. For equal absolute values, treat the negative number as \"less than\" the positive one.\n- You may compute absolute value manually (with a conditional or ternary) or use a helper lambda stored in an `auto` variable. Do not `#include <cmath>`.\n- Print elements separated by single spaces with a trailing newline.",
+    "starter_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    // TODO: Define a lambda (or helper lambda) to compute absolute value\n    // TODO: Use std::sort with a lambda comparator that sorts by\n    //       absolute value ascending, negative before positive on ties\n    // TODO: Print the sorted elements separated by spaces\n\n    return 0;\n}\n",
+    "solution_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    std::sort(v.begin(), v.end(),\n        [](int a, int b)\n        {\n            auto absA{ a < 0 ? -a : a };\n            auto absB{ b < 0 ? -b : b };\n            if (absA != absB)\n                return absA < absB;\n            return a < b;\n        });\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << v[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed positives and negatives",
+        "is_sample": true,
+        "stdin": "6\n3 -1 -3 2 -2 1\n",
+        "expected_stdout": "-1 1 -2 2 -3 3\n"
+      },
+      {
+        "label": "Hidden -- all positive",
+        "is_sample": false,
+        "stdin": "4\n10 5 1 8\n",
+        "expected_stdout": "1 5 8 10\n"
+      },
+      {
+        "label": "Hidden -- zeros and duplicates",
+        "is_sample": false,
+        "stdin": "5\n0 -4 4 0 -1\n",
+        "expected_stdout": "0 0 -1 -4 4\n"
+      }
+    ]
+  }
+]

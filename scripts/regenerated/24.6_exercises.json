@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Extending a Vehicle Class",
+    "prompt_md": "## Goal\n\nGiven a `Vehicle` base class, create a `Truck` derived class that adds new functionality: a cargo capacity and the ability to load and query cargo.\n\n## Input\n\n- Line 1: a string (the truck's model name, no spaces).\n- Line 2: an integer (maximum cargo capacity in kg).\n- Line 3: an integer (amount of cargo to load in kg).\n\n## Output\n\nExactly three lines:\n- Line 1: `Model: <model>`\n- Line 2: `Capacity: <capacity>`\n- Line 3: `Loaded: <amount>` where `<amount>` is the lesser of the requested load and the capacity (do not exceed capacity).\n\n## Requirements\n\n1. A `Vehicle` base class is provided with a `std::string m_model` member and a `getModel()` accessor. Do not modify it.\n2. Create a `Truck` class that publicly inherits from `Vehicle`.\n3. `Truck` must add a `private` member `int m_capacity{}` and a `private` member `int m_loaded{ 0 }`.\n4. `Truck`'s constructor takes a `std::string_view model` and an `int capacity`, forwarding `model` to the `Vehicle` constructor.\n5. Add a `public` member function `int getCapacity() const` that returns `m_capacity`.\n6. Add a `public` member function `void load(int amount)` that adds `amount` to `m_loaded`, but clamps the total so it never exceeds `m_capacity`.\n7. Add a `public` member function `int getLoaded() const` that returns `m_loaded`.\n8. In `main`, read input, construct a `Truck`, call `load`, and print the output.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Vehicle\n{\nprivate:\n    std::string m_model{};\n\npublic:\n    Vehicle(std::string_view model)\n        : m_model{ model }\n    {\n    }\n\n    std::string_view getModel() const { return m_model; }\n};\n\n// TODO: Create class Truck that publicly inherits from Vehicle\n// Add members: int m_capacity{}, int m_loaded{ 0 }\n// Add constructor: Truck(std::string_view model, int capacity)\n// Add methods: getCapacity(), load(int amount), getLoaded()\n\nint main()\n{\n    std::string model{};\n    int capacity{};\n    int amount{};\n    std::cin >> model >> capacity >> amount;\n\n    // TODO: Create a Truck, load cargo, and print output\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Vehicle\n{\nprivate:\n    std::string m_model{};\n\npublic:\n    Vehicle(std::string_view model)\n        : m_model{ model }\n    {\n    }\n\n    std::string_view getModel() const { return m_model; }\n};\n\nclass Truck : public Vehicle\n{\nprivate:\n    int m_capacity{};\n    int m_loaded{ 0 };\n\npublic:\n    Truck(std::string_view model, int capacity)\n        : Vehicle{ model }, m_capacity{ capacity }\n    {\n    }\n\n    int getCapacity() const { return m_capacity; }\n\n    void load(int amount)\n    {\n        m_loaded += amount;\n        if (m_loaded > m_capacity)\n            m_loaded = m_capacity;\n    }\n\n    int getLoaded() const { return m_loaded; }\n};\n\nint main()\n{\n    std::string model{};\n    int capacity{};\n    int amount{};\n    std::cin >> model >> capacity >> amount;\n\n    Truck truck{ model, capacity };\n    truck.load(amount);\n\n    std::cout << \"Model: \" << truck.getModel() << '\\n';\n    std::cout << \"Capacity: \" << truck.getCapacity() << '\\n';\n    std::cout << \"Loaded: \" << truck.getLoaded() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Normal load within capacity",
+        "is_sample": true,
+        "stdin": "F150\n1000\n750",
+        "expected_stdout": "Model: F150\nCapacity: 1000\nLoaded: 750\n"
+      },
+      {
+        "label": "Load exceeds capacity -- clamped",
+        "is_sample": false,
+        "stdin": "Silverado\n500\n800",
+        "expected_stdout": "Model: Silverado\nCapacity: 500\nLoaded: 500\n"
+      },
+      {
+        "label": "Load exactly at capacity",
+        "is_sample": false,
+        "stdin": "Ram\n200\n200",
+        "expected_stdout": "Model: Ram\nCapacity: 200\nLoaded: 200\n"
+      }
+    ]
+  },
+  {
+    "title": "Bank Account with Interest",
+    "prompt_md": "## Goal\n\nGiven a `BankAccount` base class that tracks an owner name and balance, create a `SavingsAccount` derived class that adds an interest rate and the ability to apply interest.\n\n## Input\n\n- Line 1: a string (account owner name, no spaces).\n- Line 2: an integer (initial balance in cents).\n- Line 3: an integer (annual interest rate as a percentage, e.g. 5 means 5%).\n- Line 4: an integer `n` (number of times to apply interest, 1 <= n <= 3).\n\n## Output\n\nExactly two lines:\n- Line 1: `Owner: <name>`\n- Line 2: `Balance: <balance>` where `<balance>` is the balance after applying interest `n` times (integer arithmetic: each application adds `balance * rate / 100`, using integer division).\n\n## Requirements\n\n1. A `BankAccount` base class is provided. Do not modify it.\n2. Create a `SavingsAccount` class that publicly inherits from `BankAccount`.\n3. `SavingsAccount` adds a `private` member `int m_rate{}` (the interest percentage).\n4. Its constructor takes `std::string_view owner`, `int balance`, and `int rate`, forwarding the first two to the `BankAccount` constructor.\n5. Add a `public` method `void applyInterest()` that increases the balance by `getBalance() * m_rate / 100`. Use the inherited `deposit()` method to add the interest amount.\n6. Add a `public` method `int getRate() const` returning `m_rate`.\n7. In `main`, read input, construct a `SavingsAccount`, apply interest `n` times, and print the output.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass BankAccount\n{\nprivate:\n    std::string m_owner{};\n    int m_balance{};\n\npublic:\n    BankAccount(std::string_view owner, int balance)\n        : m_owner{ owner }, m_balance{ balance }\n    {\n    }\n\n    std::string_view getOwner() const { return m_owner; }\n    int getBalance() const { return m_balance; }\n    void deposit(int amount) { m_balance += amount; }\n};\n\n// TODO: Create class SavingsAccount that publicly inherits from BankAccount\n// Add member: int m_rate{}\n// Add constructor: SavingsAccount(std::string_view owner, int balance, int rate)\n// Add methods: applyInterest(), getRate()\n\nint main()\n{\n    std::string owner{};\n    int balance{};\n    int rate{};\n    int n{};\n    std::cin >> owner >> balance >> rate >> n;\n\n    // TODO: Create a SavingsAccount, apply interest n times, print output\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass BankAccount\n{\nprivate:\n    std::string m_owner{};\n    int m_balance{};\n\npublic:\n    BankAccount(std::string_view owner, int balance)\n        : m_owner{ owner }, m_balance{ balance }\n    {\n    }\n\n    std::string_view getOwner() const { return m_owner; }\n    int getBalance() const { return m_balance; }\n    void deposit(int amount) { m_balance += amount; }\n};\n\nclass SavingsAccount : public BankAccount\n{\nprivate:\n    int m_rate{};\n\npublic:\n    SavingsAccount(std::string_view owner, int balance, int rate)\n        : BankAccount{ owner, balance }, m_rate{ rate }\n    {\n    }\n\n    void applyInterest()\n    {\n        int interest{ getBalance() * m_rate / 100 };\n        deposit(interest);\n    }\n\n    int getRate() const { return m_rate; }\n};\n\nint main()\n{\n    std::string owner{};\n    int balance{};\n    int rate{};\n    int n{};\n    std::cin >> owner >> balance >> rate >> n;\n\n    SavingsAccount account{ owner, balance, rate };\n    for (int i{ 0 }; i < n; ++i)\n        account.applyInterest();\n\n    std::cout << \"Owner: \" << account.getOwner() << '\\n';\n    std::cout << \"Balance: \" << account.getBalance() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Single interest application",
+        "is_sample": true,
+        "stdin": "Alice\n10000\n5\n1",
+        "expected_stdout": "Owner: Alice\nBalance: 10500\n"
+      },
+      {
+        "label": "Compounding three times",
+        "is_sample": false,
+        "stdin": "Bob\n10000\n10\n3",
+        "expected_stdout": "Owner: Bob\nBalance: 13310\n"
+      },
+      {
+        "label": "Small balance with truncation",
+        "is_sample": false,
+        "stdin": "Carol\n33\n7\n2",
+        "expected_stdout": "Owner: Carol\nBalance: 37\n"
+      }
+    ]
+  }
+]

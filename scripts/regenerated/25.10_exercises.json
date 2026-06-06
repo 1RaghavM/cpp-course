@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe downcast with dynamic_cast",
+    "prompt_md": "## Goal\n\nUse `dynamic_cast<Derived*>` to safely determine the actual type of objects accessed through base pointers, and call a derived-only function when the cast succeeds.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 10) -- the number of objects.\n- Next `N` lines: either `base` or `derived`.\n\n## Output\n\nFor each object, print one line:\n- If the object is a `Base`, the `dynamic_cast` to `Derived*` fails. Print: `Cast failed: base object`\n- If the object is a `Derived`, the cast succeeds. Print: `Cast succeeded: <message>` where `<message>` is the return value of `Derived::special()`.\n\n`Derived::special()` returns `\"I am Derived\"`.\n\n## Requirements\n\n- Define a class `Base` with a virtual destructor (use `= default`).\n- Define a class `Derived` that publicly inherits from `Base`. Add a non-virtual member function `std::string special() const` that returns `\"I am Derived\"`.\n- In `main`, read `N`, then for each line create either a `Base` or `Derived` on the heap (via `new`), storing the result in a `Base*`.\n- For each `Base*`, use `dynamic_cast<Derived*>` to attempt a downcast. If the result is not `nullptr`, print `Cast succeeded: ` followed by calling `special()` on the resulting pointer. Otherwise print `Cast failed: base object`.\n- Delete each object after processing it.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Base\n{\npublic:\n    // TODO: add a virtual destructor (= default)\n};\n\nclass Derived : public Base\n{\npublic:\n    // TODO: add a non-virtual member function special() const\n    // that returns \"I am Derived\"\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        Base* ptr{nullptr};\n\n        if (type == \"derived\")\n            ptr = new Derived{};\n        else\n            ptr = new Base{};\n\n        // TODO: use dynamic_cast<Derived*>(ptr) to attempt a downcast\n        // If it succeeds, print \"Cast succeeded: \" + special()\n        // If it fails, print \"Cast failed: base object\"\n\n        delete ptr;\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Base\n{\npublic:\n    virtual ~Base() = default;\n};\n\nclass Derived : public Base\n{\npublic:\n    std::string special() const { return \"I am Derived\"; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        Base* ptr{nullptr};\n\n        if (type == \"derived\")\n            ptr = new Derived{};\n        else\n            ptr = new Base{};\n\n        Derived* dp{dynamic_cast<Derived*>(ptr)};\n        if (dp)\n            std::cout << \"Cast succeeded: \" << dp->special() << '\\n';\n        else\n            std::cout << \"Cast failed: base object\" << '\\n';\n\n        delete ptr;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Mixed base and derived",
+        "is_sample": true,
+        "stdin": "3\nbase\nderived\nbase\n",
+        "expected_stdout": "Cast failed: base object\nCast succeeded: I am Derived\nCast failed: base object\n"
+      },
+      {
+        "label": "All derived",
+        "is_sample": false,
+        "stdin": "2\nderived\nderived\n",
+        "expected_stdout": "Cast succeeded: I am Derived\nCast succeeded: I am Derived\n"
+      },
+      {
+        "label": "Single base",
+        "is_sample": false,
+        "stdin": "1\nbase\n",
+        "expected_stdout": "Cast failed: base object\n"
+      }
+    ]
+  },
+  {
+    "title": "Counting derived types in a polymorphic collection",
+    "prompt_md": "## Goal\n\nBuild a three-level hierarchy (`Animal` -> `Dog`, `Animal` -> `Cat`) and use `dynamic_cast` to count how many objects in a polymorphic collection are of a specific derived type. Then call a derived-only function on each successfully cast object.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 20) -- the number of animals.\n- Next `N` lines: either `dog <name>` or `cat <name>`, where `<name>` is a single word (1-50 characters, no spaces).\n- Last line: a string, either `dog` or `cat`, indicating which type to search for.\n\n## Output\n\n- For each animal that matches the search type (via `dynamic_cast`), print the result of calling the type-specific function:\n  - For `Dog`: `Dog: <name> says Woof`\n  - For `Cat`: `Cat: <name> says Meow`\n- After all matches, print: `Found: <count>` where `<count>` is the number of successful casts.\n\nIf no animals match, print only `Found: 0`.\n\n## Requirements\n\n- Define a class `Animal` with a `std::string m_name` member, a constructor taking `const std::string&`, a virtual destructor (`= default`), and a public accessor `const std::string& getName() const`.\n- Define a class `Dog` that publicly inherits from `Animal`. Its constructor forwards the name. Add a non-virtual member function `std::string bark() const` that returns `\"Dog: \" + getName() + \" says Woof\"`.\n- Define a class `Cat` that publicly inherits from `Animal`. Its constructor forwards the name. Add a non-virtual member function `std::string meow() const` that returns `\"Cat: \" + getName() + \" says Meow\"`.\n- In `main`, read all animals into a `std::vector<Animal*>` (allocated with `new`).\n- Read the search type. Loop over the vector and use `dynamic_cast` to attempt casting each `Animal*` to the target type. On success, call the appropriate function (`bark()` or `meow()`) and print the result. Count successes.\n- Print `Found: <count>` at the end.\n- Delete all animals before exiting.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name) : m_name{name} {}\n    virtual ~Animal() = default;\n    const std::string& getName() const { return m_name; }\n};\n\nclass Dog : public Animal\n{\npublic:\n    Dog(const std::string& name) : Animal{name} {}\n\n    // TODO: add bark() that returns \"Dog: <name> says Woof\"\n};\n\nclass Cat : public Animal\n{\npublic:\n    Cat(const std::string& name) : Animal{name} {}\n\n    // TODO: add meow() that returns \"Cat: <name> says Meow\"\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Animal*> animals{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::string name{};\n        std::cin >> type >> name;\n\n        if (type == \"dog\")\n            animals.push_back(new Dog{name});\n        else\n            animals.push_back(new Cat{name});\n    }\n\n    std::string search{};\n    std::cin >> search;\n\n    int count{0};\n\n    // TODO: loop over animals, dynamic_cast to the search type\n    // On success, print bark() or meow() and increment count\n\n    std::cout << \"Found: \" << count << '\\n';\n\n    // TODO: delete all animals\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Animal {\n    std::string m_name;\npublic:\n    Animal(const std::string& name) : m_name{name} {}\n    virtual ~Animal() = default;\n    const std::string& getName() const { return m_name; }\n};\n\nclass Dog : public Animal {\npublic:\n    Dog(const std::string& name) : Animal{name} {}\n    std::string bark() const { return \"Dog: \" + getName() + \" says Woof\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    Cat(const std::string& name) : Animal{name} {}\n    std::string meow() const { return \"Cat: \" + getName() + \" says Meow\"; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Animal*> animals{};\n    for (int i{0}; i < n; ++i) {\n        std::string type{}, name{};\n        std::cin >> type >> name;\n        if (type == \"dog\") animals.push_back(new Dog{name});\n        else animals.push_back(new Cat{name});\n    }\n    std::string search{};\n    std::cin >> search;\n    int count{0};\n    for (auto* animal : animals) {\n        if (search == \"dog\") {\n            Dog* dp{dynamic_cast<Dog*>(animal)};\n            if (dp) { std::cout << dp->bark() << '\\n'; ++count; }\n        } else {\n            Cat* cp{dynamic_cast<Cat*>(animal)};\n            if (cp) { std::cout << cp->meow() << '\\n'; ++count; }\n        }\n    }\n    std::cout << \"Found: \" << count << '\\n';\n    for (auto* animal : animals) delete animal;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Find dogs in mixed collection",
+        "is_sample": true,
+        "stdin": "4\ndog Rex\ncat Whiskers\ndog Buddy\ncat Luna\ndog\n",
+        "expected_stdout": "Dog: Rex says Woof\nDog: Buddy says Woof\nFound: 2\n"
+      },
+      {
+        "label": "Find cats when none exist",
+        "is_sample": false,
+        "stdin": "2\ndog Max\ndog Rocky\ncat\n",
+        "expected_stdout": "Found: 0\n"
+      },
+      {
+        "label": "Find cats in all-cat collection",
+        "is_sample": false,
+        "stdin": "3\ncat Milo\ncat Nala\ncat Simba\ncat\n",
+        "expected_stdout": "Cat: Milo says Meow\nCat: Nala says Meow\nCat: Simba says Meow\nFound: 3\n"
+      }
+    ]
+  }
+]

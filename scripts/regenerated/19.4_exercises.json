@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build and Print a Dynamic 2D Array",
+    "prompt_md": "## Goal\n\nDynamically allocate a 2D integer array, fill it with values read from input, and print it row by row. Properly deallocate all memory.\n\n## Input\n\n- Line 1: two integers `rows` and `cols` (1 <= rows, cols <= 10)\n- Next `rows` lines: `cols` space-separated integers per line\n\n## Output\n\n- Print the matrix row by row. Within each row, separate values with a single space. Print a newline after each row.\n\n## Requirements\n\n- Declare an `int**` and use `new` to allocate an array of `int*` pointers, then allocate each row with `new int[cols]`.\n- After printing, deallocate each row with `delete[]`, then deallocate the array of pointers with `delete[]`.\n- Do not use `std::vector` or any container class.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int rows{};\n    int cols{};\n    std::cin >> rows >> cols;\n\n    // TODO: Allocate a dynamic 2D array using int**\n    // Allocate the array of row pointers, then allocate each row\n\n    // TODO: Read rows*cols integers into the 2D array\n\n    // TODO: Print the matrix row by row (space-separated, newline after each row)\n\n    // TODO: Deallocate each row, then deallocate the array of pointers\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int rows{};\n    int cols{};\n    std::cin >> rows >> cols;\n\n    int** matrix{ new int*[rows] };\n    for (int r{ 0 }; r < rows; ++r)\n        matrix[r] = new int[cols]{};\n\n    for (int r{ 0 }; r < rows; ++r)\n        for (int c{ 0 }; c < cols; ++c)\n            std::cin >> matrix[r][c];\n\n    for (int r{ 0 }; r < rows; ++r)\n    {\n        for (int c{ 0 }; c < cols; ++c)\n        {\n            if (c > 0)\n                std::cout << ' ';\n            std::cout << matrix[r][c];\n        }\n        std::cout << '\\n';\n    }\n\n    for (int r{ 0 }; r < rows; ++r)\n        delete[] matrix[r];\n    delete[] matrix;\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- 2x3 matrix",
+        "is_sample": true,
+        "stdin": "2 3\n1 2 3\n4 5 6\n",
+        "expected_stdout": "1 2 3\n4 5 6\n"
+      },
+      {
+        "label": "Hidden -- single element",
+        "is_sample": false,
+        "stdin": "1 1\n42\n",
+        "expected_stdout": "42\n"
+      },
+      {
+        "label": "Hidden -- 3x4 matrix with negatives",
+        "is_sample": false,
+        "stdin": "3 4\n10 -20 30 -40\n5 15 -25 35\n0 0 0 1\n",
+        "expected_stdout": "10 -20 30 -40\n5 15 -25 35\n0 0 0 1\n"
+      }
+    ]
+  },
+  {
+    "title": "Transpose a Dynamic Matrix",
+    "prompt_md": "## Goal\n\nRead a matrix, build its **transpose** in a second dynamically allocated 2D array, and print the transposed matrix. The transpose of an `R x C` matrix is a `C x R` matrix where element `[r][c]` becomes element `[c][r]`.\n\n## Input\n\n- Line 1: two integers `R` and `C` (1 <= R, C <= 10)\n- Next `R` lines: `C` space-separated integers per line\n\n## Output\n\n- Print the transposed matrix (`C` rows, `R` columns). Within each row, separate values with a single space. Print a newline after each row.\n\n## Requirements\n\n- Allocate the original matrix as `int**` with `new`.\n- Allocate a second `int**` for the transpose (dimensions `C x R`).\n- Copy values so that `transposed[c][r] = original[r][c]`.\n- After printing, deallocate both matrices completely (rows first, then the pointer arrays).\n- Do not use `std::vector` or any container class.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int R{};\n    int C{};\n    std::cin >> R >> C;\n\n    // TODO: Allocate and read the original R x C matrix\n\n    // TODO: Allocate a transposed C x R matrix\n    // Copy values: transposed[c][r] = original[r][c]\n\n    // TODO: Print the transposed matrix (C rows, R cols per row)\n\n    // TODO: Deallocate both matrices (rows first, then pointer arrays)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int R{};\n    int C{};\n    std::cin >> R >> C;\n\n    int** original{ new int*[R] };\n    for (int r{ 0 }; r < R; ++r)\n        original[r] = new int[C]{};\n\n    for (int r{ 0 }; r < R; ++r)\n        for (int c{ 0 }; c < C; ++c)\n            std::cin >> original[r][c];\n\n    int** transposed{ new int*[C] };\n    for (int c{ 0 }; c < C; ++c)\n        transposed[c] = new int[R]{};\n\n    for (int r{ 0 }; r < R; ++r)\n        for (int c{ 0 }; c < C; ++c)\n            transposed[c][r] = original[r][c];\n\n    for (int c{ 0 }; c < C; ++c)\n    {\n        for (int r{ 0 }; r < R; ++r)\n        {\n            if (r > 0)\n                std::cout << ' ';\n            std::cout << transposed[c][r];\n        }\n        std::cout << '\\n';\n    }\n\n    for (int r{ 0 }; r < R; ++r)\n        delete[] original[r];\n    delete[] original;\n\n    for (int c{ 0 }; c < C; ++c)\n        delete[] transposed[c];\n    delete[] transposed;\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- 2x3 transpose",
+        "is_sample": true,
+        "stdin": "2 3\n1 2 3\n4 5 6\n",
+        "expected_stdout": "1 4\n2 5\n3 6\n"
+      },
+      {
+        "label": "Hidden -- square matrix",
+        "is_sample": false,
+        "stdin": "3 3\n1 0 0\n0 2 0\n0 0 3\n",
+        "expected_stdout": "1 0 0\n0 2 0\n0 0 3\n"
+      },
+      {
+        "label": "Hidden -- tall matrix becomes wide",
+        "is_sample": false,
+        "stdin": "4 2\n10 20\n30 40\n50 60\n70 80\n",
+        "expected_stdout": "10 30 50 70\n20 40 60 80\n"
+      }
+    ]
+  }
+]

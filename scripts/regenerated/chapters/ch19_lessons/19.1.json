@@ -1,0 +1,60 @@
+{
+  "number": "19.1",
+  "title": "Dynamic memory allocation with new and delete",
+  "sort_order": 0,
+  "summary_md": "So far, every variable you have created lives on the **stack** -- its lifetime is tied to the scope where it is defined, and the compiler handles cleanup automatically. **Dynamic memory allocation** lets you request memory from the **heap** (also called the free store) at runtime, giving you explicit control over when that memory is created and destroyed.\n\nUse the `new` keyword to allocate a single object on the heap. It returns a pointer to the newly created memory. Use `delete` to release that memory when you are done with it.\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int* ptr{ new int{ 42 } }; // allocate an int on the heap\n    std::cout << *ptr << '\\n'; // prints 42\n    delete ptr;                // free the heap memory\n    ptr = nullptr;             // prevent dangling pointer\n    return 0;\n}\n```\n\nThree critical mistakes to avoid:\n\n- **Memory leak:** If you lose the pointer to heap memory (e.g., the pointer goes out of scope or gets reassigned) without calling `delete`, that memory is never freed. The OS reclaims it when the program exits, but long-running programs will consume more and more memory.\n- **Dangling pointer:** After `delete`, the pointer still holds the old address. Dereferencing it is undefined behavior. Always set the pointer to `nullptr` immediately after `delete`.\n- **Double delete:** Calling `delete` on the same non-null pointer twice is undefined behavior. Setting the pointer to `nullptr` after delete also guards against this, because `delete nullptr` is a safe no-op.\n\nWhen should you use dynamic allocation? When the size or number of objects is not known at compile time, or when an object must outlive the scope that created it. Stack memory is faster and safer by default -- prefer it unless you have a concrete reason to allocate on the heap.\n\n`new` can fail if the system runs out of memory. By default it throws a `std::bad_alloc` exception. For now, assume allocations succeed in small programs.",
+  "exercises": [
+    {
+      "title": "Heap-Allocated Sum",
+      "prompt_md": "## Goal\n\nRead two integers from input, dynamically allocate an `int` on the heap to store their sum, print the result, and properly clean up the allocated memory.\n\n## Input\n\n- A single line containing two space-separated integers `a` and `b` (-10000 <= a, b <= 10000).\n\n## Output\n\n- Line 1: the value pointed to by the heap-allocated pointer (the sum of `a` and `b`).\n- Line 2: the literal text `nullptr` if the pointer is null after cleanup, or `dangling` otherwise.\n\n## Requirements\n\n- Use `new` to allocate a single `int` on the heap and initialize it with the sum.\n- Use `delete` to free the memory.\n- Set the pointer to `nullptr` after deleting.\n- Print whether the pointer is `nullptr` after cleanup to confirm correct practice.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Allocate an int on the heap initialized to (a + b)\n    // Print the dereferenced value\n    // Delete the allocated memory\n    // Set pointer to nullptr\n    // Print \"nullptr\" if the pointer is null, otherwise \"dangling\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int* ptr{ new int{ a + b } };\n    std::cout << *ptr << '\\n';\n\n    delete ptr;\n    ptr = nullptr;\n\n    std::cout << (ptr == nullptr ? \"nullptr\" : \"dangling\") << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic positive numbers",
+          "is_sample": true,
+          "stdin": "10 25",
+          "expected_stdout": "35\nnullptr\n"
+        },
+        {
+          "label": "Negative numbers",
+          "is_sample": false,
+          "stdin": "-7 3",
+          "expected_stdout": "-4\nnullptr\n"
+        },
+        {
+          "label": "Both zero",
+          "is_sample": false,
+          "stdin": "0 0",
+          "expected_stdout": "0\nnullptr\n"
+        }
+      ]
+    },
+    {
+      "title": "Dynamic Swap",
+      "prompt_md": "## Goal\n\nRead two integers, store each in a separately heap-allocated `int`, swap the values they point to, print the swapped values, and clean up all allocated memory.\n\n## Input\n\n- A single line containing two space-separated integers `x` and `y` (-10000 <= x, y <= 10000).\n\n## Output\n\n- Line 1: the value pointed to by the first pointer after swapping (originally `y`).\n- Line 2: the value pointed to by the second pointer after swapping (originally `x`).\n- Line 3: `clean` if both pointers are `nullptr` after cleanup.\n\n## Requirements\n\n- Use `new` to allocate two separate `int` objects on the heap, one initialized with `x` and one with `y`.\n- Swap the pointed-to values using a temporary variable (do not swap the pointers themselves).\n- After printing, `delete` both allocations and set both pointers to `nullptr`.\n- Print `clean` only if both pointers are `nullptr` after cleanup.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: Allocate two ints on the heap, initialized to x and y\n    // Swap the values they point to using a temporary variable\n    // Print the swapped values (one per line)\n    // Delete both allocations and set pointers to nullptr\n    // Print \"clean\" if both pointers are nullptr\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    int* ptrX{ new int{ x } };\n    int* ptrY{ new int{ y } };\n\n    int temp{ *ptrX };\n    *ptrX = *ptrY;\n    *ptrY = temp;\n\n    std::cout << *ptrX << '\\n';\n    std::cout << *ptrY << '\\n';\n\n    delete ptrX;\n    delete ptrY;\n    ptrX = nullptr;\n    ptrY = nullptr;\n\n    if (ptrX == nullptr && ptrY == nullptr)\n        std::cout << \"clean\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic swap",
+          "is_sample": true,
+          "stdin": "3 7",
+          "expected_stdout": "7\n3\nclean\n"
+        },
+        {
+          "label": "Negative and positive",
+          "is_sample": false,
+          "stdin": "-5 12",
+          "expected_stdout": "12\n-5\nclean\n"
+        },
+        {
+          "label": "Equal values",
+          "is_sample": false,
+          "stdin": "99 99",
+          "expected_stdout": "99\n99\nclean\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "13.11",
+  "title": "Struct miscellany",
+  "sort_order": 10,
+  "summary_md": "## Struct Miscellany\n\nThis lesson covers several practical struct topics that round out your working knowledge: nesting structs inside other structs, combining structs with enumerations, and understanding how much memory a struct actually occupies.\n\n### Nested Structs\n\nA struct member can itself be a struct. This lets you compose complex types from simpler building blocks without flattening everything into one level:\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Address {\n    std::string city;\n    int zip;\n};\n\nstruct Employee {\n    std::string name;\n    Address addr;\n};\n\nint main() {\n    Employee e{ \"Alice\", { \"Denver\", 80202 } };\n    std::cout << e.name << \" lives in \"\n              << e.addr.city << '\\n';\n}\n```\n\nWhen using aggregate initialization, nested members are initialized with their own set of braces. Access uses chained dot operators: `e.addr.city`.\n\n### Structs with Enums\n\nEnumerations and structs complement each other naturally. An enum defines a fixed set of states; a struct bundles that state with related data. For example, pairing a `Status` enum with a `Task` struct gives both type safety on the status field and a clean grouping of all task information.\n\n### Struct Size and the `sizeof` Operator\n\nYou can query the size of a struct in bytes with `sizeof(StructName)` or `sizeof(object)`. The result is always a compile-time constant.\n\nA struct's size is **at least** the sum of its members' sizes, but is often **larger** because of **padding**. The compiler inserts padding bytes between or after members so that each member sits at a memory address aligned to its type's alignment requirement (typically equal to the type's size). After the last member, the compiler may add **trailing padding** so the total struct size is a multiple of its largest member's alignment.\n\n### Minimizing Padding\n\nYou can reduce wasted space by ordering members from largest alignment requirement to smallest. For example, placing a `double` (8-byte alignment) before a `char` (1-byte alignment) wastes less space than the reverse order. However, only optimize layout when you have measured a real memory concern -- readability comes first.\n\n### Key Takeaways\n\n- Nest structs freely to model hierarchical data; initialize nested members with inner braces.\n- Pair enums with structs to get type-safe status or category fields.\n- `sizeof` on a struct returns the total bytes including padding -- it may be more than the sum of member sizes.\n- Member ordering affects padding and therefore struct size, but prefer logical grouping unless memory pressure demands otherwise.",
+  "exercises": [
+    {
+      "title": "Nested Struct Address Book",
+      "prompt_md": "## Goal\nCreate nested structs to represent a person with an address, then print formatted contact information.\n\n## Input\n- Line 1: a person's name (single word, no spaces)\n- Line 2: city name (single word, no spaces)\n- Line 3: zip code (integer)\n- Line 4: a second person's name (single word, no spaces)\n- Line 5: city name (single word, no spaces)\n- Line 6: zip code (integer)\n\n## Output\nPrint exactly two lines, one per person, in this format:\n```\n<name>: <city> <zip>\n```\nThen print a third line with the total size in bytes of one `Person` struct, in this format:\n```\nsizeof(Person) = <size>\n```\n\n## Requirements\n1. Define a struct named `Address` at namespace scope with exactly two members in this order: `std::string city`, `int zip`.\n2. Define a struct named `Person` at namespace scope with exactly two members in this order: `std::string name`, `Address address`.\n3. In `main`, read input and create two `Person` objects using aggregate initialization (brace initialization), including inner braces for the nested `Address`.\n4. Print each person on their own line using dot notation (including chained dots for nested members): `<name>: <city> <zip>`.\n5. Print the size of the `Person` struct using `sizeof(Person)` on the third line in the exact format shown above.\n6. Use `std::cout` for all output.\n\n## Notes\n- The exact value of `sizeof(Person)` is platform-dependent. The test cases use the expected output from a typical 64-bit platform (g++ on Linux, as used by the judge). Trust the judge output.\n- You may use `#include <iostream>` and `#include <string>`.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct named Address with fields: std::string city, int zip\n\n// TODO: Define a struct named Person with fields: std::string name, Address address\n\nint main()\n{\n    std::string name1, city1, name2, city2;\n    int zip1, zip2;\n\n    std::cin >> name1 >> city1 >> zip1;\n    std::cin >> name2 >> city2 >> zip2;\n\n    // TODO: Create two Person objects using aggregate initialization\n    //       with inner braces for the nested Address\n\n    // TODO: Print each person as: <name>: <city> <zip>\n\n    // TODO: Print sizeof(Person) = <size>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nstruct Address\n{\n    std::string city;\n    int zip;\n};\n\nstruct Person\n{\n    std::string name;\n    Address address;\n};\n\nint main()\n{\n    std::string name1, city1, name2, city2;\n    int zip1, zip2;\n\n    std::cin >> name1 >> city1 >> zip1;\n    std::cin >> name2 >> city2 >> zip2;\n\n    Person p1{ name1, { city1, zip1 } };\n    Person p2{ name2, { city2, zip2 } };\n\n    std::cout << p1.name << \": \" << p1.address.city << ' ' << p1.address.zip << '\\n';\n    std::cout << p2.name << \": \" << p2.address.city << ' ' << p2.address.zip << '\\n';\n    std::cout << \"sizeof(Person) = \" << sizeof(Person) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- two people with different cities",
+          "is_sample": true,
+          "stdin": "Alice\nDenver\n80202\nBob\nAustin\n73301\n",
+          "expected_stdout": "Alice: Denver 80202\nBob: Austin 73301\nsizeof(Person) = 72\n"
+        },
+        {
+          "label": "Hidden -- same city for both people",
+          "is_sample": false,
+          "stdin": "Carol\nSeattle\n98101\nDave\nSeattle\n98102\n",
+          "expected_stdout": "Carol: Seattle 98101\nDave: Seattle 98102\nsizeof(Person) = 72\n"
+        },
+        {
+          "label": "Hidden -- short names and small zip codes",
+          "is_sample": false,
+          "stdin": "Jo\nElk\n501\nAl\nAda\n74820\n",
+          "expected_stdout": "Jo: Elk 501\nAl: Ada 74820\nsizeof(Person) = 72\n"
+        }
+      ]
+    },
+    {
+      "title": "Sensor Report with Padding Discovery",
+      "prompt_md": "## Goal\nBuild a sensor reporting system using a struct with mixed-size fundamental types. Print each reading and then reveal how struct padding makes the struct larger than the sum of its members.\n\n## Input\n- Line 1: number of readings `N` (1 <= N <= 5)\n- Next `N` groups of 3 lines each:\n  - Line 1: a single character grade (`A`, `B`, or `C`)\n  - Line 2: a floating-point value (the sensor reading)\n  - Line 3: an integer sensor ID\n\n## Output\n- `N` lines, one per reading, in this format:\n  ```\n  Sensor <id>: <value> [Grade <grade>]\n  ```\n  Print `<value>` with exactly one decimal place (use `std::fixed` and `std::setprecision(1)`).\n- Then one blank line followed by three lines:\n  ```\n  sizeof(char) + sizeof(double) + sizeof(int) = <sum>\n  sizeof(Reading) = <actual>\n  Padding bytes = <actual - sum>\n  ```\n  Compute all three values in code using `sizeof` expressions -- do not hardcode numbers.\n\n## Requirements\n1. The struct `Reading` is provided in the starter code with members `char grade`, `double value`, `int id` (in that order). Do not change it.\n2. This member ordering is intentional -- it produces padding on 64-bit platforms because `double` requires 8-byte alignment but follows a 1-byte `char`.\n3. In `main`, read `N`, then read each reading's data. Store readings in the provided `Reading data[5]` array. Use aggregate initialization (brace init) for each `Reading`.\n4. Print each reading in the format shown above.\n5. After the readings, print the blank line and the three size lines. Compute the member sum as `sizeof(char) + sizeof(double) + sizeof(int)`. Compute actual size as `sizeof(Reading)`. Compute padding as the difference.\n6. Use `std::cout` with `std::fixed` and `std::setprecision(1)` for the value output.\n\n## Notes\n- On the judge (64-bit Linux, g++), `sizeof(char)=1`, `sizeof(double)=8`, `sizeof(int)=4`, so the member sum is 13. The actual struct size is 24 due to alignment padding. Your code should compute these values, not hardcode them.\n- You may use `#include <iostream>`, `#include <iomanip>`.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a struct named Reading with fields (in this order):\n//       char grade, double value, int id\nstruct Reading\n{\n    char grade;\n    double value;\n    int id;\n};\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    Reading data[5];\n\n    // TODO: Read n readings (grade, value, id) and store using brace init\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    // TODO: Print each reading as: Sensor <id>: <value> [Grade <grade>]\n\n    // TODO: Print a blank line, then:\n    //       sizeof(char) + sizeof(double) + sizeof(int) = <sum>\n    //       sizeof(Reading) = <actual>\n    //       Padding bytes = <difference>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Reading\n{\n    char grade;\n    double value;\n    int id;\n};\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    Reading data[5];\n\n    for (int i = 0; i < n; ++i)\n    {\n        char g;\n        double v;\n        int id;\n        std::cin >> g >> v >> id;\n        data[i] = Reading{ g, v, id };\n    }\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::cout << \"Sensor \" << data[i].id << \": \"\n                  << data[i].value << \" [Grade \"\n                  << data[i].grade << \"]\\n\";\n    }\n\n    std::size_t memberSum = sizeof(char) + sizeof(double) + sizeof(int);\n    std::size_t actual = sizeof(Reading);\n\n    std::cout << '\\n';\n    std::cout << \"sizeof(char) + sizeof(double) + sizeof(int) = \" << memberSum << '\\n';\n    std::cout << \"sizeof(Reading) = \" << actual << '\\n';\n    std::cout << \"Padding bytes = \" << actual - memberSum << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- three readings with mixed grades",
+          "is_sample": true,
+          "stdin": "3\nA\n98.6\n101\nB\n72.0\n202\nC\n55.3\n303\n",
+          "expected_stdout": "Sensor 101: 98.6 [Grade A]\nSensor 202: 72.0 [Grade B]\nSensor 303: 55.3 [Grade C]\n\nsizeof(char) + sizeof(double) + sizeof(int) = 13\nsizeof(Reading) = 24\nPadding bytes = 11\n"
+        },
+        {
+          "label": "Hidden -- single reading",
+          "is_sample": false,
+          "stdin": "1\nA\n100.0\n1\n",
+          "expected_stdout": "Sensor 1: 100.0 [Grade A]\n\nsizeof(char) + sizeof(double) + sizeof(int) = 13\nsizeof(Reading) = 24\nPadding bytes = 11\n"
+        },
+        {
+          "label": "Hidden -- five readings all grade B",
+          "is_sample": false,
+          "stdin": "5\nB\n10.5\n1\nB\n20.3\n2\nB\n30.7\n3\nB\n40.1\n4\nB\n50.9\n5\n",
+          "expected_stdout": "Sensor 1: 10.5 [Grade B]\nSensor 2: 20.3 [Grade B]\nSensor 3: 30.7 [Grade B]\nSensor 4: 40.1 [Grade B]\nSensor 5: 50.9 [Grade B]\n\nsizeof(char) + sizeof(double) + sizeof(int) = 13\nsizeof(Reading) = 24\nPadding bytes = 11\n"
+        }
+      ]
+    }
+  ]
+}

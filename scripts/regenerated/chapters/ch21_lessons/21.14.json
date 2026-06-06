@@ -1,0 +1,60 @@
+{
+  "number": "21.14",
+  "title": "Overloading operators and function templates",
+  "sort_order": 13,
+  "summary_md": "When you write a function template that uses operators like `+`, `<<`, or `==`, the compiler needs to find a matching operator overload for whatever type the template is instantiated with. If you have a class `Cents` with an overloaded `operator+`, calling a template function like `add(Cents{5}, Cents{10})` works -- the compiler instantiates the template with `Cents`, then resolves the `+` to your overload.\n\nThe tricky part is `operator<<`. If your overloaded `operator<<` is a non-member friend defined inside the class body, the compiler may fail to find it during template instantiation because of how name lookup works with templates. The fix is to ensure the operator is visible at namespace scope.\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT add(T a, T b) { return a + b; }\n\nclass Cents {\n    int m_cents{};\npublic:\n    Cents(int c) : m_cents{c} {}\n    Cents operator+(Cents rhs) const\n    { return Cents{m_cents + rhs.m_cents}; }\n    friend std::ostream& operator<<(\n        std::ostream& out, const Cents& c)\n    { out << c.m_cents; return out; }\n};\n```\n\nWith this setup, `add(Cents{5}, Cents{10})` returns a `Cents` and `std::cout << add(Cents{5}, Cents{10})` prints `15`. The `operator+` is found as a member function, and `operator<<` is found via argument-dependent lookup (ADL) because one of its arguments is of type `Cents`.\n\nFor templates with multiple type parameters, each operator must handle the exact types involved. A function template `template <typename T, typename U> T add(T a, U b)` would require that `operator+` accepts those two possibly-different types.\n\nWhen a class itself is a template (e.g., `Wrapper<T>`), declaring a friend `operator<<` requires extra syntax. You must either define the friend function inline inside the class body (the simplest approach), or forward-declare both the class template and the operator template before the class definition. The inline approach avoids the forward-declaration complexity and is preferred for most cases.\n\nThe key rule: if your class will be used with function templates, make sure every operator the template might invoke is either a public member or discoverable via ADL. Test with a simple template call early -- operator lookup failures produce notoriously long error messages.",
+  "exercises": [
+    {
+      "title": "Generic Maximum with Printable Types",
+      "prompt_md": "## Goal\n\nWrite a function template `maxOf` that returns the larger of two values using `operator>`, then use it with a custom `Score` class.\n\n## Input\n\n- Line 1: two space-separated integers representing two `Score` values.\n\n## Output\n\n- Line 1: the result of `maxOf` applied to the two `Score` objects, printed via `operator<<`.\n\n## Requirements\n\n1. Define a class `Score` with a private `int m_value{}` member.\n2. Provide a constructor `Score(int v)` that initializes `m_value`.\n3. Overload `operator>` as a member function: returns `true` if `this->m_value > rhs.m_value`.\n4. Overload `operator<<` as a friend function defined inside the class body, printing `m_value` to the stream.\n5. Write a function template `template <typename T> T maxOf(T a, T b)` that returns `a` if `a > b`, otherwise returns `b`.\n6. In `main`, read two integers, create two `Score` objects, and print `maxOf` applied to them.",
+      "starter_code": "#include <iostream>\n\n// TODO: Write a function template maxOf that returns the\n// larger of two values using operator>\n\n// TODO: Define a class Score with:\n// - private int m_value{}\n// - constructor Score(int v)\n// - member operator> that compares m_value\n// - friend operator<< defined inside the class body\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Create two Score objects and print maxOf result\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT maxOf(T a, T b)\n{\n    return (a > b) ? a : b;\n}\n\nclass Score\n{\n    int m_value{};\npublic:\n    Score(int v) : m_value{v} {}\n\n    bool operator>(const Score& rhs) const\n    {\n        return m_value > rhs.m_value;\n    }\n\n    friend std::ostream& operator<<(std::ostream& out, const Score& s)\n    {\n        out << s.m_value;\n        return out;\n    }\n};\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << maxOf(Score{a}, Score{b}) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "First score is larger",
+          "is_sample": true,
+          "stdin": "90 75\n",
+          "expected_stdout": "90\n"
+        },
+        {
+          "label": "Second score is larger",
+          "is_sample": false,
+          "stdin": "30 88\n",
+          "expected_stdout": "88\n"
+        },
+        {
+          "label": "Equal scores return second",
+          "is_sample": false,
+          "stdin": "50 50\n",
+          "expected_stdout": "50\n"
+        }
+      ]
+    },
+    {
+      "title": "Generic Accumulate with a Wrapper Class Template",
+      "prompt_md": "## Goal\n\nWrite a class template `Val<T>` that wraps a single value and supports addition and printing. Then write a function template `accumulate3` that adds three `Val<T>` objects together.\n\n## Input\n\n- Line 1: three space-separated integers.\n\n## Output\n\n- Line 1: the sum of the three values, printed via `operator<<` on a `Val<int>`.\n\n## Requirements\n\n1. Define `template <typename T> class Val` with a private member `T m_val{}`.\n2. Provide a constructor `Val(T v)` that initializes `m_val`.\n3. Overload `operator+` as a member function that returns a new `Val<T>` whose `m_val` is the sum of both operands.\n4. Overload `operator<<` as a friend defined inline inside the class body. It prints `m_val` to the stream.\n5. Write a function template `template <typename T> T accumulate3(T a, T b, T c)` that returns `a + b + c`.\n6. In `main`, read three integers, create three `Val<int>` objects, call `accumulate3`, and print the result.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define a class template Val<T> with:\n// - private T m_val{}\n// - constructor Val(T v)\n// - member operator+ returning Val<T>\n// - friend operator<< defined inline inside the class\n\n// TODO: Write function template accumulate3 that adds\n// three values using operator+ and returns the result\n\nint main()\n{\n    int a{};\n    int b{};\n    int c{};\n    std::cin >> a >> b >> c;\n\n    // TODO: Create three Val<int> objects and print\n    // the result of accumulate3\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Val\n{\n    T m_val{};\npublic:\n    Val(T v) : m_val{v} {}\n\n    Val<T> operator+(const Val<T>& rhs) const\n    {\n        return Val<T>{m_val + rhs.m_val};\n    }\n\n    friend std::ostream& operator<<(std::ostream& out, const Val<T>& v)\n    {\n        out << v.m_val;\n        return out;\n    }\n};\n\ntemplate <typename T>\nT accumulate3(T a, T b, T c)\n{\n    return a + b + c;\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    int c{};\n    std::cin >> a >> b >> c;\n\n    std::cout << accumulate3(Val<int>{a}, Val<int>{b}, Val<int>{c}) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Three positive values",
+          "is_sample": true,
+          "stdin": "10 20 30\n",
+          "expected_stdout": "60\n"
+        },
+        {
+          "label": "Mixed positive and negative",
+          "is_sample": false,
+          "stdin": "-5 15 -10\n",
+          "expected_stdout": "0\n"
+        },
+        {
+          "label": "All zeros",
+          "is_sample": false,
+          "stdin": "0 0 0\n",
+          "expected_stdout": "0\n"
+        }
+      ]
+    }
+  ]
+}

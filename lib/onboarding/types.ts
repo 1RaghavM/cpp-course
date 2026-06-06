@@ -9,22 +9,22 @@ export type Motivation =
   | "curious";
 
 export type ModuleId =
-  | "variables"
-  | "control-flow"
-  | "functions"
-  | "arrays-strings"
-  | "io-streams"
+  | "intro-basics"
+  | "functions-debugging"
+  | "types-constants"
   | "operators"
-  | "pointers"
-  | "references"
+  | "scope-control-flow"
+  | "errors-type-conv"
+  | "overloading-constexpr"
+  | "refs-pointers"
+  | "enums-structs"
   | "classes"
-  | "raii"
-  | "vectors-maps"
-  | "algorithms"
-  | "templates"
+  | "vectors-arrays"
+  | "algorithms-memory"
+  | "adv-functions"
   | "move-semantics"
-  | "smart-pointers"
-  | "concurrency";
+  | "inheritance-poly"
+  | "templates-exceptions-io";
 
 export type Step =
   | "background"

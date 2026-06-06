@@ -1,0 +1,60 @@
+{
+  "number": "13.9",
+  "title": "Default member initialization",
+  "sort_order": 8,
+  "summary_md": "## Default Member Initialization\n\nWhen you define a struct, each member can be given a **default member initializer** — a value written directly in the struct definition that applies whenever no explicit initializer is provided for that member.\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Config {\n    std::string name{ \"untitled\" };\n    int width{ 800 };\n    int height{ 600 };\n    bool fullscreen{ false };\n};\n\nint main() {\n    Config c1{};              // all defaults: \"untitled\", 800, 600, false\n    Config c2{ \"game\", 1920 }; // name=\"game\", width=1920, height=600, fullscreen=false\n    std::cout << c1.name << \" \" << c1.width << \"x\" << c1.height << '\\n';\n    std::cout << c2.name << \" \" << c2.width << \"x\" << c2.height << '\\n';\n}\n```\n\nWithout default member initializers, members of fundamental types (like `int` or `bool`) are left uninitialized when you create an object without explicitly setting every field — reading them is undefined behavior. Default member initializers eliminate that risk at the point of definition.\n\n### How Defaults Interact with Aggregate Initialization\n\nWhen you aggregate-initialize a struct, any value you explicitly provide **overrides** the default for that member. Members you omit use their default. If a member has no default member initializer and you omit it during aggregate initialization, it is value-initialized (zero for fundamental types). This means `Config c2{ \"game\", 1920 };` sets `name` and `width` from the braces, while `height` and `fullscreen` keep their defaults of `600` and `false`.\n\nDesignated initializers work the same way — `Config c3{ .fullscreen = true }` sets only `fullscreen` to `true` while `name`, `width`, and `height` retain their defaults.\n\n### Best Practice\n\nProvide a default member initializer for every member. This guarantees that no matter how an object is created — value-initialized with `{}`, partially initialized, or even default-initialized — every member holds a meaningful value. The explicit initializer in the struct definition serves as living documentation of the \"sensible default\" for each field, making the type safer and easier to use correctly.",
+  "exercises": [
+    {
+      "title": "Print Struct with Default Members",
+      "prompt_md": "## Goal\nDefine a `Settings` struct with default member initializers, then create objects that use those defaults and print their values.\n\n## Input\n- Line 1: an integer N (1 <= N <= 5), the number of settings objects to create.\n- For each of the next N lines: either the word `default` (create an object using all defaults) or two values separated by a space: a string (no spaces) and an integer (the volume level, 0-100).\n\n## Output\nFor each settings object, print one line in this format:\n```\n<label>: volume=<volume>\n```\n\n## Requirements\n1. Define a struct `Settings` at namespace scope with exactly two members in this order:\n   - `std::string label` with default member initializer `\"General\"`\n   - `int volume` with default member initializer `50`\n2. When the input line is `default`, create a `Settings` object using empty braces `{}` so all defaults apply.\n3. When the input line contains a string and an integer, create a `Settings` object using aggregate initialization with those values (overriding both defaults).\n4. Print each object's members using dot notation in the format shown above.\n5. Use `std::cout` for output.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Settings with:\n//   std::string label  (default: \"General\")\n//   int volume         (default: 50)\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        // TODO: If token is \"default\", create Settings with empty braces.\n        //       Otherwise, token is the label; read the volume and create\n        //       Settings with aggregate initialization.\n        // Print: <label>: volume=<volume>\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nstruct Settings\n{\n    std::string label{ \"General\" };\n    int volume{ 50 };\n};\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        if (token == \"default\")\n        {\n            Settings s{};\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n        else\n        {\n            int vol;\n            std::cin >> vol;\n            Settings s{ token, vol };\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — mix of default and custom",
+          "stdin": "3\ndefault\nMusic 80\ndefault\n",
+          "expected_stdout": "General: volume=50\nMusic: volume=80\nGeneral: volume=50\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — all defaults",
+          "stdin": "2\ndefault\ndefault\n",
+          "expected_stdout": "General: volume=50\nGeneral: volume=50\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — all custom with boundary values",
+          "stdin": "2\nAlarm 0\nMedia 100\n",
+          "expected_stdout": "Alarm: volume=0\nMedia: volume=100\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Partial Override with Default Member Initializers",
+      "prompt_md": "## Goal\nDefine a `Character` struct where some members have defaults, then create characters that partially override those defaults using designated initializers.\n\n## Input\n- Line 1: a string (no spaces) representing the character name.\n- Line 2: an integer representing the character's health (1-1000).\n\nThe character's `attack` and `defense` stats should always use their default values.\n\n## Output\nPrint exactly one line in this format:\n```\n<name>: hp=<health> atk=<attack> def=<defense>\n```\n\nThen print a second line showing what a completely default character looks like (created with `{}`):\n```\nDefault: hp=<health> atk=<attack> def=<defense>\n```\nwhere `Default` is the default name.\n\n## Requirements\n1. Define a struct `Character` at namespace scope with these four members in order:\n   - `std::string name` with default `\"Default\"`\n   - `int health` with default `100`\n   - `int attack` with default `15`\n   - `int defense` with default `10`\n2. Create the first `Character` using designated initializers: `.name` set from input, `.health` set from input. Do not specify `.attack` or `.defense` so they keep their defaults.\n3. Create the second `Character` using empty braces `{}` so all four defaults apply.\n4. Print both characters, each on its own line, in the format above.\n5. Use `std::cout` for output.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Character with:\n//   std::string name  (default: \"Default\")\n//   int health        (default: 100)\n//   int attack        (default: 15)\n//   int defense       (default: 10)\n\nint main()\n{\n    std::string inputName;\n    int inputHealth;\n    std::cin >> inputName >> inputHealth;\n\n    // TODO: Create a Character using designated initializers for name and health only.\n    //       .attack and .defense should retain their defaults.\n\n    // TODO: Create a default Character using empty braces.\n\n    // TODO: Print both characters in the format:\n    // <name>: hp=<health> atk=<attack> def=<defense>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nstruct Character\n{\n    std::string name{ \"Default\" };\n    int health{ 100 };\n    int attack{ 15 };\n    int defense{ 10 };\n};\n\nint main()\n{\n    std::string inputName;\n    int inputHealth;\n    std::cin >> inputName >> inputHealth;\n\n    Character hero{ .name = inputName, .health = inputHealth };\n    Character blank{};\n\n    std::cout << hero.name << \": hp=\" << hero.health\n              << \" atk=\" << hero.attack\n              << \" def=\" << hero.defense << '\\n';\n\n    std::cout << blank.name << \": hp=\" << blank.health\n              << \" atk=\" << blank.attack\n              << \" def=\" << blank.defense << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — hero with custom name and health",
+          "stdin": "Archer\n250\n",
+          "expected_stdout": "Archer: hp=250 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — minimum health",
+          "stdin": "Skeleton\n1\n",
+          "expected_stdout": "Skeleton: hp=1 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — high health value",
+          "stdin": "Dragon\n1000\n",
+          "expected_stdout": "Dragon: hp=1000 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

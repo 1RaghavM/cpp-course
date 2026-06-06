@@ -1,0 +1,62 @@
+{
+  "number": "23.3",
+  "title": "Aggregation",
+  "sort_order": 2,
+  "summary_md": "In the previous lesson, composition modeled a \"has-a\" relationship where the part cannot exist without the whole. **Aggregation** is the other flavor of \"has-a\": the whole *uses* its parts, but the parts have independent lifetimes. When the aggregate is destroyed, the parts continue to exist.\n\nConsider a university department. A `Department` has teachers, but those teachers were hired before the department object was created and will continue to exist after it is dissolved. The department does not create or destroy its teachers -- it merely references them. This is aggregation.\n\nThe implementation difference from composition is straightforward: where composition uses member variables (or owned pointers that the class `new`s and `delete`s), aggregation uses **references or pointers to objects that live elsewhere**. The aggregate receives its parts through the constructor or a setter, but never allocates or frees them.\n\n```cpp\n#include <iostream>\n#include <string>\nclass Teacher {\n    std::string m_name;\npublic:\n    Teacher(std::string name) : m_name{ name } {}\n    const std::string& getName() const { return m_name; }\n};\nclass Department {\n    const Teacher& m_lead; // reference, not owned\npublic:\n    Department(const Teacher& lead) : m_lead{ lead } {}\n    void print() const { std::cout << \"Lead: \" << m_lead.getName(); }\n};\n```\n\nHere `Department` stores a `const Teacher&`. It did not create the `Teacher`, and when the `Department` goes out of scope the `Teacher` is unaffected. The caller is responsible for ensuring the `Teacher` outlives the `Department`.\n\nKey properties that distinguish aggregation from composition:\n\n- The part can belong to **more than one aggregate** at the same time (a teacher can be in multiple departments).\n- The aggregate does **not manage the lifetime** of its parts -- no `new`, no `delete`, no ownership transfer.\n- The part has **no knowledge** of the aggregate. Removing the aggregate leaves the part intact.\n- Implementation typically uses references (when the part is mandatory and never changes) or raw pointers (when the part is optional or reassignable).\n\nBecause the aggregate does not own its parts, you must be careful about dangling references. If the referenced object is destroyed before the aggregate, the aggregate holds an invalid reference. The simplest rule: ensure every referenced part outlives the aggregate that uses it. Designing clear ownership boundaries prevents this class of bug.",
+  "exercises": [
+    {
+      "title": "Department lead lookup",
+      "prompt_md": "## Goal\n\nModel a simple aggregation: a `Department` that holds a reference to a `Teacher` it does not own. Print the department name and its lead teacher's name.\n\n## Input\n\n- Line 1: the teacher's name (a single word, no spaces).\n- Line 2: the department name (a single word, no spaces).\n\n## Output\n\n- A single line: `<department>: <teacher>`\n\nwhere `<department>` is the department name and `<teacher>` is the teacher name.\n\n## Requirements\n\n- Define a class `Teacher` with a `std::string` member set via the constructor and a `getName()` const accessor returning `const std::string&`.\n- Define a class `Department` that stores a `const Teacher&` (aggregation -- it does not create or destroy the teacher). It also stores a `std::string` name. Provide a `print()` const member function that outputs the required line.\n- In `main`, create the `Teacher` first, then the `Department`, then call `print()`. The teacher must outlive the department.",
+      "starter_code": "#include <iostream>\n#include <string>\n\nclass Teacher\n{\n    std::string m_name;\n\npublic:\n    Teacher(std::string name)\n        : m_name{ name }\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n};\n\nclass Department\n{\n    std::string m_name;\n    const Teacher& m_lead;\n\npublic:\n    Department(std::string name, const Teacher& lead)\n        : m_name{ name }\n        , m_lead{ lead }\n    {\n    }\n\n    // TODO: Implement print() const that outputs \"<dept>: <teacher>\\n\"\n};\n\nint main()\n{\n    std::string teacherName{};\n    std::string deptName{};\n    std::cin >> teacherName >> deptName;\n\n    Teacher t{ teacherName };\n    Department d{ deptName, t };\n\n    // TODO: Call d.print()\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass Teacher\n{\n    std::string m_name;\n\npublic:\n    Teacher(std::string name)\n        : m_name{ name }\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n};\n\nclass Department\n{\n    std::string m_name;\n    const Teacher& m_lead;\n\npublic:\n    Department(std::string name, const Teacher& lead)\n        : m_name{ name }\n        , m_lead{ lead }\n    {\n    }\n\n    void print() const\n    {\n        std::cout << m_name << \": \" << m_lead.getName() << '\\n';\n    }\n};\n\nint main()\n{\n    std::string teacherName{};\n    std::string deptName{};\n    std::cin >> teacherName >> deptName;\n\n    Teacher t{ teacherName };\n    Department d{ deptName, t };\n    d.print();\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Basic names",
+          "is_sample": true,
+          "stdin": "Smith Physics",
+          "expected_stdout": "Physics: Smith\n"
+        },
+        {
+          "label": "Different names",
+          "is_sample": false,
+          "stdin": "Tanaka Mathematics",
+          "expected_stdout": "Mathematics: Tanaka\n"
+        },
+        {
+          "label": "Short names",
+          "is_sample": false,
+          "stdin": "Li CS",
+          "expected_stdout": "CS: Li\n"
+        }
+      ]
+    },
+    {
+      "title": "Shared teacher across departments",
+      "prompt_md": "## Goal\n\nDemonstrate that a single `Teacher` can belong to multiple aggregates simultaneously. Create two departments that share the same teacher, print each department's info, then confirm the teacher still exists after both departments go out of scope.\n\n## Input\n\n- Line 1: the teacher's name (a single word).\n- Line 2: two department names separated by a space (single words, no spaces within names).\n\n## Output\n\n- Line 1: `<dept1> lead: <teacher>`\n- Line 2: `<dept2> lead: <teacher>`\n- Line 3: `<teacher> still exists`\n\n## Requirements\n\n- Reuse the `Teacher` class from Exercise 1 (constructor + `getName()`).\n- Define a `Department` class that stores a `std::string` name and a `const Teacher&`. Provide a `print()` const member function that outputs `<dept> lead: <teacher>`.\n- In `main`, create one `Teacher`. Inside an inner block scope, create two `Department` objects referencing that same teacher. Call `print()` on each. After the inner block ends (both departments destroyed), print `<teacher> still exists` to prove the teacher outlives the departments.",
+      "starter_code": "#include <iostream>\n#include <string>\n\nclass Teacher\n{\n    std::string m_name;\n\npublic:\n    Teacher(std::string name) : m_name{ name } {}\n    const std::string& getName() const { return m_name; }\n};\n\nclass Department\n{\n    std::string m_name;\n    const Teacher& m_lead;\n\npublic:\n    Department(std::string name, const Teacher& lead)\n        : m_name{ name }\n        , m_lead{ lead }\n    {\n    }\n\n    // TODO: Implement print() const that outputs \"<dept> lead: <teacher>\\n\"\n};\n\nint main()\n{\n    std::string teacherName{};\n    std::string dept1Name{};\n    std::string dept2Name{};\n    std::cin >> teacherName >> dept1Name >> dept2Name;\n\n    Teacher t{ teacherName };\n\n    // TODO: Create an inner block scope with two Departments\n    // referencing t, call print() on each\n\n    // TODO: After the block, print \"<teacher> still exists\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass Teacher\n{\n    std::string m_name;\n\npublic:\n    Teacher(std::string name) : m_name{ name } {}\n    const std::string& getName() const { return m_name; }\n};\n\nclass Department\n{\n    std::string m_name;\n    const Teacher& m_lead;\n\npublic:\n    Department(std::string name, const Teacher& lead)\n        : m_name{ name }\n        , m_lead{ lead }\n    {\n    }\n\n    void print() const\n    {\n        std::cout << m_name << \" lead: \" << m_lead.getName() << '\\n';\n    }\n};\n\nint main()\n{\n    std::string teacherName{};\n    std::string dept1Name{};\n    std::string dept2Name{};\n    std::cin >> teacherName >> dept1Name >> dept2Name;\n\n    Teacher t{ teacherName };\n\n    {\n        Department d1{ dept1Name, t };\n        Department d2{ dept2Name, t };\n        d1.print();\n        d2.print();\n    }\n\n    std::cout << t.getName() << \" still exists\" << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Teacher shared across two departments",
+          "is_sample": true,
+          "stdin": "Garcia Science Engineering",
+          "expected_stdout": "Science lead: Garcia\nEngineering lead: Garcia\nGarcia still exists\n"
+        },
+        {
+          "label": "Different names",
+          "is_sample": false,
+          "stdin": "Park Biology Chemistry",
+          "expected_stdout": "Biology lead: Park\nChemistry lead: Park\nPark still exists\n"
+        },
+        {
+          "label": "Short names",
+          "is_sample": false,
+          "stdin": "Wu AI ML",
+          "expected_stdout": "AI lead: Wu\nML lead: Wu\nWu still exists\n"
+        }
+      ]
+    }
+  ]
+}

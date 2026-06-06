@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Initialize and print a struct three ways",
+    "prompt_md": "## Goal\n\nPractice the three main forms of aggregate initialization: positional brace init, designated initializers (C++20), and value initialization.\n\n## Input\n\n- Line 1: a single-word name (no spaces)\n- Line 2: an integer age\n- Line 3: a double height (in meters, e.g. `1.75`)\n\n## Output\n\nPrint exactly three lines, one per `Person` object, in this format:\n\n```\n<name> <age> <height>\n```\n\nwhere `<height>` is printed with exactly one decimal place.\n\n- **Line 1:** the person created with positional brace initialization from the input values.\n- **Line 2:** the person created with designated initializers, using the same input values.\n- **Line 3:** a value-initialized person (empty braces), which should print an empty name, age 0, and height 0.0.\n\nFor line 3 the expected output starts with a single space (the separator after the empty name), then `0 0.0`.\n\n## Requirements\n\n1. Define a struct `Person` at namespace scope with three members in order: `std::string name`, `int age`, `double height`.\n2. In `main`, read the three input values.\n3. Create `p1` using positional brace initialization: `Person p1 { name, age, height };`.\n4. Create `p2` using C++20 designated initializers: `Person p2 { .name = ..., .age = ..., .height = ... };`.\n5. Create `p3` using value initialization: `Person p3 {};`.\n6. Use `std::cout << std::fixed << std::setprecision(1)` before printing to format doubles to one decimal place.\n7. Print each person on its own line as `<name> <age> <height>` separated by single spaces.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: Define struct Person with members: std::string name, int age, double height\n\nint main()\n{\n    std::string name;\n    int age{};\n    double height{};\n\n    std::cin >> name >> age >> height;\n\n    // TODO: Create p1 using positional brace initialization\n\n    // TODO: Create p2 using designated initializers (C++20)\n\n    // TODO: Create p3 using value initialization (empty braces)\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    // TODO: Print each person on its own line: <name> <age> <height>\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nstruct Person\n{\n    std::string name;\n    int age;\n    double height;\n};\n\nint main()\n{\n    std::string name;\n    int age{};\n    double height{};\n\n    std::cin >> name >> age >> height;\n\n    Person p1 { name, age, height };\n    Person p2 { .name = name, .age = age, .height = height };\n    Person p3 {};\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    std::cout << p1.name << ' ' << p1.age << ' ' << p1.height << '\\n';\n    std::cout << p2.name << ' ' << p2.age << ' ' << p2.height << '\\n';\n    std::cout << p3.name << ' ' << p3.age << ' ' << p3.height << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- standard input values",
+        "is_sample": true,
+        "stdin": "Alice\n30\n1.7\n",
+        "expected_stdout": "Alice 30 1.7\nAlice 30 1.7\n 0 0.0\n"
+      },
+      {
+        "label": "Hidden -- different name and large age",
+        "is_sample": false,
+        "stdin": "Zara\n99\n1.5\n",
+        "expected_stdout": "Zara 99 1.5\nZara 99 1.5\n 0 0.0\n"
+      },
+      {
+        "label": "Hidden -- zero age and small height",
+        "is_sample": false,
+        "stdin": "Bob\n0\n0.5\n",
+        "expected_stdout": "Bob 0 0.5\nBob 0 0.5\n 0 0.0\n"
+      }
+    ]
+  },
+  {
+    "title": "Build a color palette with designated initializers",
+    "prompt_md": "## Goal\n\nUse designated initializers and partial initialization to build RGB color structs, then print a palette summary.\n\n## Input\n\n- Line 1: three integers `r g b` (each 0-255) for a custom color\n- Line 2: a single-word label for the custom color (no spaces)\n\n## Output\n\nPrint exactly four lines in this format:\n\n```\n<label>: <r> <g> <b>\n```\n\nThe four colors, in order:\n1. The custom color read from input.\n2. A color named `Red` initialized with designated initializers setting only `.r = 255` (g and b should be value-initialized to 0).\n3. A color named `Green` initialized with designated initializers setting only `.g = 255` (r and b should be value-initialized to 0).\n4. A color named `Black` created with value initialization (empty braces), so all components are 0.\n\n## Requirements\n\n1. Define a struct `Color` at namespace scope with exactly four members in order: `std::string label`, `int r`, `int g`, `int b`.\n2. Read the custom color's r, g, b values and label from stdin.\n3. Create the custom color using positional brace initialization.\n4. Create `Red` using designated initializers with only `.label` and `.r` specified. The unspecified members `.g` and `.b` must be value-initialized to 0.\n5. Create `Green` using designated initializers with only `.label` and `.g` specified.\n6. Create `Black` using value initialization (empty braces), then assign its label using dot notation: `black.label = \"Black\";`.\n7. Print all four colors in the order listed above.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Color with members: std::string label, int r, int g, int b\n\nint main()\n{\n    int r{}, g{}, b{};\n    std::string label;\n\n    std::cin >> r >> g >> b >> label;\n\n    // TODO: Create custom color using positional brace initialization\n\n    // TODO: Create red using designated initializers (.label and .r only)\n\n    // TODO: Create green using designated initializers (.label and .g only)\n\n    // TODO: Create black using value initialization, then set black.label = \"Black\"\n\n    // TODO: Print all four colors, each on its own line as: <label>: <r> <g> <b>\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Color\n{\n    std::string label;\n    int r;\n    int g;\n    int b;\n};\n\nint main()\n{\n    int r{}, g{}, b{};\n    std::string label;\n\n    std::cin >> r >> g >> b >> label;\n\n    Color custom { label, r, g, b };\n    Color red { .label = \"Red\", .r = 255 };\n    Color green { .label = \"Green\", .g = 255 };\n    Color black {};\n    black.label = \"Black\";\n\n    std::cout << custom.label << \": \" << custom.r << ' ' << custom.g << ' ' << custom.b << '\\n';\n    std::cout << red.label << \": \" << red.r << ' ' << red.g << ' ' << red.b << '\\n';\n    std::cout << green.label << \": \" << green.r << ' ' << green.g << ' ' << green.b << '\\n';\n    std::cout << black.label << \": \" << black.r << ' ' << black.g << ' ' << black.b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- purple custom color",
+        "is_sample": true,
+        "stdin": "128 0 255\nPurple\n",
+        "expected_stdout": "Purple: 128 0 255\nRed: 255 0 0\nGreen: 0 255 0\nBlack: 0 0 0\n"
+      },
+      {
+        "label": "Hidden -- white custom color (all 255)",
+        "is_sample": false,
+        "stdin": "255 255 255\nWhite\n",
+        "expected_stdout": "White: 255 255 255\nRed: 255 0 0\nGreen: 0 255 0\nBlack: 0 0 0\n"
+      },
+      {
+        "label": "Hidden -- all zeros custom color",
+        "is_sample": false,
+        "stdin": "0 0 0\nVoid\n",
+        "expected_stdout": "Void: 0 0 0\nRed: 255 0 0\nGreen: 0 255 0\nBlack: 0 0 0\n"
+      }
+    ]
+  }
+]

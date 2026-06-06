@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Array Statistics Reporter",
+    "prompt_md": "## Goal\nDeclare a C-style array, fill it from standard input, and compute basic statistics.\n\n## Input\n- Line 1: an integer `n` (1 to 10) representing how many values follow.\n- Line 2: `n` space-separated integers.\n\n## Output\n- Line 1: the sum of all `n` values.\n- Line 2: the minimum value.\n- Line 3: the maximum value.\n\n## Requirements\n1. Declare a C-style array of `int` with a fixed capacity of 10 elements.\n2. Read `n`, then read exactly `n` integers into the array using a `for` loop.\n3. Compute the sum, minimum, and maximum by iterating over the first `n` elements.\n4. Print each result on its own line.\n5. Do not use `std::array`, `std::vector`, or any container from `<algorithm>`.\n6. You may use `#include <iostream>` and `#include <limits>`.\n\n## Notes\n- Values can be negative. Initialize your min/max tracking variables carefully.",
+    "starter_code": "#include <iostream>\n#include <limits>\n\nint main()\n{\n    int data[10]{}; // C-style array with capacity 10\n    int n{};\n    std::cin >> n;\n\n    // TODO: Read n integers into data[]\n\n    // TODO: Compute sum, min, and max over the first n elements\n\n    // TODO: Print sum, min, max each on its own line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <limits>\n\nint main()\n{\n    int data[10]{};\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cin >> data[i];\n    }\n\n    int sum{ 0 };\n    int min{ std::numeric_limits<int>::max() };\n    int max{ std::numeric_limits<int>::min() };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        sum += data[i];\n        if (data[i] < min)\n            min = data[i];\n        if (data[i] > max)\n            max = data[i];\n    }\n\n    std::cout << sum << '\\n';\n    std::cout << min << '\\n';\n    std::cout << max << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- basic positive values",
+        "is_sample": true,
+        "stdin": "4\n10 20 5 15\n",
+        "expected_stdout": "50\n5\n20\n"
+      },
+      {
+        "label": "Hidden -- single element",
+        "is_sample": false,
+        "stdin": "1\n-7\n",
+        "expected_stdout": "-7\n-7\n-7\n"
+      },
+      {
+        "label": "Hidden -- mixed positive and negative",
+        "is_sample": false,
+        "stdin": "5\n-3 8 0 -12 4\n",
+        "expected_stdout": "-3\n-12\n8\n"
+      }
+    ]
+  },
+  {
+    "title": "Reverse and Count",
+    "prompt_md": "## Goal\nRead values into a C-style array, print them in reverse order, and report the array's byte size.\n\n## Input\n- Line 1: an integer `n` (1 to 8) representing how many values follow.\n- Line 2: `n` space-separated integers.\n\n## Output\n- Line 1: the `n` values printed in reverse order, separated by spaces (no trailing space).\n- Line 2: the total byte size of the entire fixed array as reported by `sizeof`.\n- Line 3: the number of elements the fixed array can hold (computed using `sizeof`).\n\n## Requirements\n1. Declare a C-style array `int arr[8]{}` with a fixed capacity of 8.\n2. Read `n`, then read `n` values into the array.\n3. Print the first `n` elements in reverse order on one line, separated by single spaces with no trailing space.\n4. Print `sizeof(arr)` on the next line.\n5. Print `sizeof(arr) / sizeof(arr[0])` on the next line.\n6. Do not use `std::array`, `std::vector`, or `<algorithm>`.\n7. You may use `#include <iostream>`.\n\n## Notes\n- The byte size depends on `sizeof(int)` on the target platform. The Judge0 environment uses 4-byte `int`, so `sizeof(arr)` will be 32 and the element count will be 8.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int arr[8]{};\n    int n{};\n    std::cin >> n;\n\n    // TODO: Read n integers into arr[]\n\n    // TODO: Print the first n elements in reverse order,\n    //       separated by spaces (no trailing space)\n\n    // TODO: Print sizeof(arr)\n\n    // TODO: Print sizeof(arr) / sizeof(arr[0])\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int arr[8]{};\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cin >> arr[i];\n    }\n\n    for (int i{ n - 1 }; i >= 0; --i)\n    {\n        if (i < n - 1)\n            std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n\n    std::cout << sizeof(arr) << '\\n';\n    std::cout << sizeof(arr) / sizeof(arr[0]) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- three values reversed",
+        "is_sample": true,
+        "stdin": "3\n10 20 30\n",
+        "expected_stdout": "30 20 10\n32\n8\n"
+      },
+      {
+        "label": "Hidden -- single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42\n32\n8\n"
+      },
+      {
+        "label": "Hidden -- full capacity",
+        "is_sample": false,
+        "stdin": "8\n1 2 3 4 5 6 7 8\n",
+        "expected_stdout": "8 7 6 5 4 3 2 1\n32\n8\n"
+      }
+    ]
+  }
+]

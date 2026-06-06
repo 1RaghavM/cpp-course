@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Extending Base Greetings",
+    "prompt_md": "## Goal\n\nPractice redefining a base class function in a derived class and calling the base version explicitly using the `Base::function()` syntax.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters).\n\n## Output\n\n- Line 1: `Hello, <name>!` (produced by calling the base class version).\n- Line 2: `Welcome aboard, <name>!` (added by the derived class).\n\n## Requirements\n\n- Create a class `Greeter` with a public member function `void greet(const std::string& name)` that prints `Hello, <name>!` followed by a newline.\n- Create a class `FriendlyGreeter` that publicly inherits from `Greeter`.\n- In `FriendlyGreeter`, redefine `greet` so that it first calls `Greeter::greet(name)` to print the base greeting, then prints `Welcome aboard, <name>!` followed by a newline.\n- In `main`, read the name, create a `FriendlyGreeter` object, and call `greet` on it.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Greeter\n{\npublic:\n    void greet(const std::string& name)\n    {\n        // TODO: Print \"Hello, <name>!\\n\"\n    }\n};\n\nclass FriendlyGreeter : public Greeter\n{\npublic:\n    void greet(const std::string& name)\n    {\n        // TODO: Call Greeter::greet(name) then\n        // print \"Welcome aboard, <name>!\\n\"\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    // TODO: Create a FriendlyGreeter and call greet(name)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Greeter\n{\npublic:\n    void greet(const std::string& name)\n    {\n        std::cout << \"Hello, \" << name << \"!\\n\";\n    }\n};\n\nclass FriendlyGreeter : public Greeter\n{\npublic:\n    void greet(const std::string& name)\n    {\n        Greeter::greet(name);\n        std::cout << \"Welcome aboard, \" << name << \"!\\n\";\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    FriendlyGreeter fg{};\n    fg.greet(name);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Simple name",
+        "is_sample": true,
+        "stdin": "Alice",
+        "expected_stdout": "Hello, Alice!\nWelcome aboard, Alice!\n"
+      },
+      {
+        "label": "Single character name",
+        "is_sample": false,
+        "stdin": "X",
+        "expected_stdout": "Hello, X!\nWelcome aboard, X!\n"
+      },
+      {
+        "label": "Longer name",
+        "is_sample": false,
+        "stdin": "Developer",
+        "expected_stdout": "Hello, Developer!\nWelcome aboard, Developer!\n"
+      }
+    ]
+  },
+  {
+    "title": "Shape Area Reporter",
+    "prompt_md": "## Goal\n\nBuild a two-level class hierarchy where the derived class redefines a `report` function to include additional information while reusing the base class logic via explicit `Base::function()` calls.\n\n## Input\n\n- Line 1: two space-separated doubles `width` and `height` (0.1 <= each <= 1000.0) representing the dimensions of a rectangle.\n\n## Output\n\n- Line 1: `Shape area: <area>` where `<area>` is width * height, printed with exactly 1 decimal place.\n- Line 2: `Rectangle <width> x <height>` where width and height are printed with exactly 1 decimal place.\n\n## Requirements\n\n- Create a class `Shape` with:\n  - Protected member variables `double m_width` and `double m_height`.\n  - A public constructor that takes `double width` and `double height`.\n  - A public member function `double area() const` that returns `m_width * m_height`.\n  - A public member function `void report() const` that prints `Shape area: ` followed by the result of `area()` with 1 decimal place, then a newline.\n- Create a class `Rectangle` that publicly inherits from `Shape`.\n  - Its constructor takes `double width` and `double height` and forwards them to `Shape`.\n  - It redefines `report() const` to first call `Shape::report()`, then print `Rectangle <m_width> x <m_height>` (each with 1 decimal place) followed by a newline.\n- In `main`, read width and height, create a `Rectangle`, and call `report()` on it.\n- Use `std::fixed` and `std::setprecision(1)` from `<iomanip>` for formatting.",
+    "starter_code": "#include <iomanip>\n#include <iostream>\n\nclass Shape\n{\nprotected:\n    double m_width{};\n    double m_height{};\n\npublic:\n    Shape(double width, double height)\n        : m_width{ width }, m_height{ height }\n    {\n    }\n\n    double area() const { return m_width * m_height; }\n\n    void report() const\n    {\n        // TODO: Print \"Shape area: <area>\\n\" with 1 decimal place\n    }\n};\n\nclass Rectangle : public Shape\n{\npublic:\n    Rectangle(double width, double height)\n        : Shape{ width, height }\n    {\n    }\n\n    void report() const\n    {\n        // TODO: Call Shape::report(), then print\n        // \"Rectangle <m_width> x <m_height>\\n\" with 1 decimal place\n    }\n};\n\nint main()\n{\n    double width{};\n    double height{};\n    std::cin >> width >> height;\n\n    // TODO: Create a Rectangle and call report()\n\n    return 0;\n}\n",
+    "solution_code": "#include <iomanip>\n#include <iostream>\n\nclass Shape\n{\nprotected:\n    double m_width{};\n    double m_height{};\n\npublic:\n    Shape(double width, double height)\n        : m_width{ width }, m_height{ height }\n    {\n    }\n\n    double area() const { return m_width * m_height; }\n\n    void report() const\n    {\n        std::cout << std::fixed << std::setprecision(1);\n        std::cout << \"Shape area: \" << area() << '\\n';\n    }\n};\n\nclass Rectangle : public Shape\n{\npublic:\n    Rectangle(double width, double height)\n        : Shape{ width, height }\n    {\n    }\n\n    void report() const\n    {\n        Shape::report();\n        std::cout << std::fixed << std::setprecision(1);\n        std::cout << \"Rectangle \" << m_width << \" x \" << m_height << '\\n';\n    }\n};\n\nint main()\n{\n    double width{};\n    double height{};\n    std::cin >> width >> height;\n\n    Rectangle rect{ width, height };\n    rect.report();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Basic integer-like dimensions",
+        "is_sample": true,
+        "stdin": "5.0 3.0",
+        "expected_stdout": "Shape area: 15.0\nRectangle 5.0 x 3.0\n"
+      },
+      {
+        "label": "Fractional dimensions",
+        "is_sample": false,
+        "stdin": "2.5 4.2",
+        "expected_stdout": "Shape area: 10.5\nRectangle 2.5 x 4.2\n"
+      },
+      {
+        "label": "Large dimensions",
+        "is_sample": false,
+        "stdin": "100.0 7.5",
+        "expected_stdout": "Shape area: 750.0\nRectangle 100.0 x 7.5\n"
+      }
+    ]
+  }
+]

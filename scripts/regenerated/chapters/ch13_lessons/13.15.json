@@ -1,0 +1,60 @@
+{
+  "number": "13.15",
+  "title": "Alias templates",
+  "sort_order": 14,
+  "summary_md": "## Alias Templates\n\nIn lesson 10.7 you learned that a **type alias** gives an existing type a new name using `using`. But a regular type alias cannot be templated -- if you want an alias for `std::pair<int, double>` and another for `std::pair<int, std::string>`, you must write each one by hand. **Alias templates** solve this by letting you create a family of aliases parameterized by one or more types.\n\nAn alias template is declared with `template` followed by a `using` statement:\n\n```cpp\n#include <iostream>\n#include <utility>\n\ntemplate <typename T>\nusing IntPair = std::pair<int, T>;\n\nint main()\n{\n    IntPair<double> a { 1, 3.14 };\n    IntPair<std::string> b { 2, \"hello\" };\n    std::cout << a.first << ' ' << a.second << '\\n';\n    std::cout << b.first << ' ' << b.second << '\\n';\n}\n```\n\nHere `IntPair<T>` is not a type itself -- it is a template that produces a type when you supply a template argument. `IntPair<double>` becomes `std::pair<int, double>`, and `IntPair<std::string>` becomes `std::pair<int, std::string>`. The compiler substitutes the argument into the right-hand side, exactly like a function template substitutes into its body.\n\n### When Alias Templates Are Useful\n\nAlias templates shine when a class template has multiple parameters but you want to fix some of them. Instead of repeating `std::pair<int, Something>` everywhere, `IntPair<Something>` communicates intent and reduces duplication. If you later change the fixed parameter from `int` to `long`, you update a single line.\n\nThey also help when a template name is long or deeply nested. A short alias template keeps call sites readable without sacrificing generality.\n\n### Alias Templates vs. Regular Type Aliases\n\nA regular type alias (`using Coord = std::pair<int, int>;`) fixes every parameter -- it names exactly one concrete type. An alias template leaves at least one parameter open, so it names a family of types. Use a regular alias when the type is fully known; use an alias template when the type still depends on a parameter the caller provides.\n\n### Important Details\n\n- Alias templates are not new types; they are just shorthand. `IntPair<double>` and `std::pair<int, double>` are the exact same type.\n- CTAD (class template argument deduction) does not work through alias templates in C++17 or C++20. You must supply the template arguments explicitly.\n- Like other templates, alias templates are typically defined in header files so every translation unit that uses them can see the definition.",
+  "exercises": [
+    {
+      "title": "Fixed-First Pair Alias Template",
+      "prompt_md": "## Goal\nCreate an alias template that fixes the first element of a `std::pair` to `std::string`, then use it to store and print two different pairs.\n\n## Input\n- Line 1: a single word (no spaces) and an integer separated by a space\n- Line 2: a single word (no spaces) and a double separated by a space\n\n## Output\nPrint exactly two lines:\n```\n<word1> <integer>\n<word2> <double>\n```\nThe double must be printed with default `std::cout` precision (no formatting manipulators needed).\n\n## Requirements\n1. Define an alias template `template <typename T> using StringPair = std::pair<std::string, T>;` at namespace scope.\n2. In `main`, read the input and create a `StringPair<int>` for line 1 and a `StringPair<double>` for line 2. Use brace initialization.\n3. Write a function template `template <typename T> void printPair(const StringPair<T>& p)` that prints `p.first`, a space, and `p.second`, followed by a newline.\n4. Call `printPair` for each pair.\n5. Do not use `std::pair` directly anywhere in `main` -- use only `StringPair`.\n\n## Notes\n- You may use `#include <iostream>`, `#include <string>`, and `#include <utility>`.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <utility>\n\n// TODO: Define an alias template:\n// template <typename T>\n// using StringPair = std::pair<std::string, T>;\n\n// TODO: Write a function template:\n// template <typename T>\n// void printPair(const StringPair<T>& p)\n// that prints p.first, a space, p.second, then '\\n'.\n\nint main()\n{\n    std::string word1, word2;\n    int intVal{};\n    double dblVal{};\n\n    std::cin >> word1 >> intVal >> word2 >> dblVal;\n\n    // TODO: Create a StringPair<int> from word1 and intVal\n    // TODO: Create a StringPair<double> from word2 and dblVal\n    // TODO: Call printPair for each pair\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <utility>\n\ntemplate <typename T>\nusing StringPair = std::pair<std::string, T>;\n\ntemplate <typename T>\nvoid printPair(const StringPair<T>& p)\n{\n    std::cout << p.first << ' ' << p.second << '\\n';\n}\n\nint main()\n{\n    std::string word1, word2;\n    int intVal{};\n    double dblVal{};\n\n    std::cin >> word1 >> intVal >> word2 >> dblVal;\n\n    StringPair<int> a { word1, intVal };\n    StringPair<double> b { word2, dblVal };\n\n    printPair(a);\n    printPair(b);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- string-int and string-double pairs",
+          "is_sample": true,
+          "stdin": "apple 42\nbanana 3.14\n",
+          "expected_stdout": "apple 42\nbanana 3.14\n"
+        },
+        {
+          "label": "Hidden -- negative values",
+          "is_sample": false,
+          "stdin": "error -1\nwarn -0.5\n",
+          "expected_stdout": "error -1\nwarn -0.5\n"
+        },
+        {
+          "label": "Hidden -- zero values",
+          "is_sample": false,
+          "stdin": "origin 0\nzero 0\n",
+          "expected_stdout": "origin 0\nzero 0\n"
+        }
+      ]
+    },
+    {
+      "title": "Coordinate Alias Template with Struct",
+      "prompt_md": "## Goal\nDefine a struct template for a 2D coordinate and an alias template that fixes it to `int`, then compute and print the Manhattan distance between two points.\n\n## Input\n- Line 1: two integers `x1 y1` (the first point)\n- Line 2: two integers `x2 y2` (the second point)\n\nAll values are in the range -1000 to 1000.\n\n## Output\nPrint exactly three lines:\n```\nA: (<x1>, <y1>)\nB: (<x2>, <y2>)\nManhattan distance: <distance>\n```\nwhere `<distance>` is `|x1 - x2| + |y1 - y2|`.\n\n## Requirements\n1. Define a struct template `template <typename T> struct Coord` with two members `T x` and `T y`, at namespace scope.\n2. Define an alias template `template <typename T> using Point = Coord<T>;` at namespace scope.\n3. Define a regular type alias `using IntPoint = Point<int>;` at namespace scope.\n4. Write a function `int manhattan(const IntPoint& a, const IntPoint& b)` that returns the Manhattan distance. Use `std::abs` from `<cstdlib>`.\n5. In `main`, read the two points into `IntPoint` objects using brace initialization, print them in the format shown, then print the distance.\n6. Do not use `Coord<int>` directly in `main` -- use `IntPoint` everywhere.\n\n## Notes\n- You may use `#include <iostream>`, `#include <cstdlib>` (for `std::abs`).",
+      "starter_code": "#include <iostream>\n#include <cstdlib>\n\n// TODO: Define a struct template:\n// template <typename T>\n// struct Coord { T x; T y; };\n\n// TODO: Define an alias template:\n// template <typename T>\n// using Point = Coord<T>;\n\n// TODO: Define a regular type alias:\n// using IntPoint = Point<int>;\n\n// TODO: Write a function:\n// int manhattan(const IntPoint& a, const IntPoint& b)\n// Return |a.x - b.x| + |a.y - b.y| using std::abs.\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    // TODO: Create two IntPoint objects using brace initialization\n    // TODO: Print each point as \"A: (<x>, <y>)\" and \"B: (<x>, <y>)\"\n    // TODO: Print \"Manhattan distance: <result>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <cstdlib>\n\ntemplate <typename T>\nstruct Coord\n{\n    T x;\n    T y;\n};\n\ntemplate <typename T>\nusing Point = Coord<T>;\n\nusing IntPoint = Point<int>;\n\nint manhattan(const IntPoint& a, const IntPoint& b)\n{\n    return std::abs(a.x - b.x) + std::abs(a.y - b.y);\n}\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    IntPoint a { x1, y1 };\n    IntPoint b { x2, y2 };\n\n    std::cout << \"A: (\" << a.x << \", \" << a.y << \")\\n\";\n    std::cout << \"B: (\" << b.x << \", \" << b.y << \")\\n\";\n    std::cout << \"Manhattan distance: \" << manhattan(a, b) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- simple positive coordinates",
+          "is_sample": true,
+          "stdin": "1 2\n4 6\n",
+          "expected_stdout": "A: (1, 2)\nB: (4, 6)\nManhattan distance: 7\n"
+        },
+        {
+          "label": "Hidden -- negative coordinates",
+          "is_sample": false,
+          "stdin": "-3 -5\n2 7\n",
+          "expected_stdout": "A: (-3, -5)\nB: (2, 7)\nManhattan distance: 17\n"
+        },
+        {
+          "label": "Hidden -- same point gives distance zero",
+          "is_sample": false,
+          "stdin": "100 -200\n100 -200\n",
+          "expected_stdout": "A: (100, -200)\nB: (100, -200)\nManhattan distance: 0\n"
+        }
+      ]
+    }
+  ]
+}

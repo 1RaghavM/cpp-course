@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print a 2D Grid with Row and Column Sums",
+    "prompt_md": "## Goal\nRead a 3x4 grid of integers into a multidimensional `std::array`, print each row followed by its row sum, then print the column sums on the last line.\n\n## Input\n- 3 lines, each containing exactly 4 space-separated integers.\n\n## Output\n- 3 lines, each containing the 4 original integers followed by the row sum, all separated by single spaces.\n- A 4th line containing the 4 column sums, separated by single spaces.\n\nExample for input:\n```\n1 2 3 4\n5 6 7 8\n9 10 11 12\n```\nOutput:\n```\n1 2 3 4 10\n5 6 7 8 26\n9 10 11 12 42\n15 18 21 24\n```\n\n## Requirements\n1. Declare a `std::array<std::array<int, 4>, 3>` to hold the grid.\n2. Use nested loops with `std::size_t` indices and `.size()` to read the input.\n3. For each row, compute the row sum and print all 4 values plus the sum separated by spaces, followed by `'\\n'`.\n4. After all rows, compute each column sum and print all 4 column sums on one line separated by spaces, followed by `'\\n'`.\n5. Do not use any containers other than `std::array`. Include `<array>`, `<cstddef>`, and `<iostream>`.",
+    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<std::array<int, 4>, 3> grid{};\n\n    // TODO: Read 3 rows of 4 integers into grid\n\n    // TODO: Print each row's values followed by the row sum\n\n    // TODO: Print the 4 column sums on one line\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<std::array<int, 4>, 3> grid{};\n\n    for (std::size_t r{ 0 }; r < grid.size(); ++r)\n        for (std::size_t c{ 0 }; c < grid[0].size(); ++c)\n            std::cin >> grid[r][c];\n\n    for (std::size_t r{ 0 }; r < grid.size(); ++r)\n    {\n        int rowSum{ 0 };\n        for (std::size_t c{ 0 }; c < grid[0].size(); ++c)\n        {\n            if (c > 0)\n                std::cout << ' ';\n            std::cout << grid[r][c];\n            rowSum += grid[r][c];\n        }\n        std::cout << ' ' << rowSum << '\\n';\n    }\n\n    for (std::size_t c{ 0 }; c < grid[0].size(); ++c)\n    {\n        int colSum{ 0 };\n        for (std::size_t r{ 0 }; r < grid.size(); ++r)\n            colSum += grid[r][c];\n        if (c > 0)\n            std::cout << ' ';\n        std::cout << colSum;\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- simple grid",
+        "is_sample": true,
+        "stdin": "1 2 3 4\n5 6 7 8\n9 10 11 12\n",
+        "expected_stdout": "1 2 3 4 10\n5 6 7 8 26\n9 10 11 12 42\n15 18 21 24\n"
+      },
+      {
+        "label": "Hidden -- all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0\n0 0 0 0\n0 0 0 0\n",
+        "expected_stdout": "0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0\n"
+      },
+      {
+        "label": "Hidden -- negative values",
+        "is_sample": false,
+        "stdin": "-1 2 -3 4\n5 -6 7 -8\n0 1 0 1\n",
+        "expected_stdout": "-1 2 -3 4 2\n5 -6 7 -8 -2\n0 1 0 1 2\n4 -3 4 -3\n"
+      }
+    ]
+  },
+  {
+    "title": "Transpose a Matrix Using an Alias Template",
+    "prompt_md": "## Goal\nRead a 2x3 matrix, transpose it into a 3x2 matrix using a type alias template, and print the result.\n\n## Input\n- 2 lines, each containing exactly 3 space-separated integers.\n\n## Output\n- 3 lines, each containing exactly 2 space-separated integers -- the transposed matrix.\n\nExample for input:\n```\n1 2 3\n4 5 6\n```\nOutput:\n```\n1 4\n2 5\n3 6\n```\n\n## Requirements\n1. Define an alias template:\n   ```cpp\n   template <typename T, std::size_t Rows, std::size_t Cols>\n   using Array2d = std::array<std::array<T, Cols>, Rows>;\n   ```\n2. Declare the input matrix as `Array2d<int, 2, 3>` and the output matrix as `Array2d<int, 3, 2>`.\n3. Read the input matrix using nested index-based loops with `.size()`.\n4. Build the transposed matrix so that `result[c][r] = input[r][c]`.\n5. Print the transposed matrix, each row on its own line with values separated by single spaces, no trailing space.\n6. Include `<array>`, `<cstddef>`, and `<iostream>`.",
+    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\ntemplate <typename T, std::size_t Rows, std::size_t Cols>\nusing Array2d = std::array<std::array<T, Cols>, Rows>;\n\nint main()\n{\n    Array2d<int, 2, 3> input{};\n    Array2d<int, 3, 2> result{};\n\n    // TODO: Read 2 rows of 3 integers into input\n\n    // TODO: Transpose: result[c][r] = input[r][c]\n\n    // TODO: Print the 3x2 result matrix\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\ntemplate <typename T, std::size_t Rows, std::size_t Cols>\nusing Array2d = std::array<std::array<T, Cols>, Rows>;\n\nint main()\n{\n    Array2d<int, 2, 3> input{};\n    Array2d<int, 3, 2> result{};\n\n    for (std::size_t r{ 0 }; r < input.size(); ++r)\n        for (std::size_t c{ 0 }; c < input[0].size(); ++c)\n            std::cin >> input[r][c];\n\n    for (std::size_t r{ 0 }; r < input.size(); ++r)\n        for (std::size_t c{ 0 }; c < input[0].size(); ++c)\n            result[c][r] = input[r][c];\n\n    for (std::size_t r{ 0 }; r < result.size(); ++r)\n    {\n        for (std::size_t c{ 0 }; c < result[0].size(); ++c)\n        {\n            if (c > 0)\n                std::cout << ' ';\n            std::cout << result[r][c];\n        }\n        std::cout << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- simple 2x3 matrix",
+        "is_sample": true,
+        "stdin": "1 2 3\n4 5 6\n",
+        "expected_stdout": "1 4\n2 5\n3 6\n"
+      },
+      {
+        "label": "Hidden -- negative values",
+        "is_sample": false,
+        "stdin": "-1 0 1\n2 -3 4\n",
+        "expected_stdout": "-1 2\n0 -3\n1 4\n"
+      },
+      {
+        "label": "Hidden -- identical rows",
+        "is_sample": false,
+        "stdin": "7 7 7\n7 7 7\n",
+        "expected_stdout": "7 7\n7 7\n7 7\n"
+      }
+    ]
+  }
+]

@@ -10,7 +10,7 @@ import {
 } from "@/lib/dashboard/resume";
 import type { Module, Lesson, DashboardProgress } from "@/lib/dashboard/types";
 
-function makeLessons(count: number, moduleId: string = "variables"): Lesson[] {
+function makeLessons(count: number, moduleId: string = "intro-basics"): Lesson[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `lesson-${i}`,
     moduleId: moduleId as any,
@@ -22,11 +22,11 @@ function makeLessons(count: number, moduleId: string = "variables"): Lesson[] {
 
 function makeCurriculum(): Module[] {
   return [
-    { id: "variables", stage: "basics", title: "Variables", order: 1, lessons: makeLessons(3, "variables") },
-    { id: "control-flow", stage: "basics", title: "Control Flow", order: 2, lessons: makeLessons(2, "control-flow").map((l, i) => ({ ...l, id: `cf-${i}`, slug: `cf-${i}` })) },
-    { id: "pointers", stage: "memory-oop", title: "Pointers", order: 3, lessons: makeLessons(2, "pointers").map((l, i) => ({ ...l, id: `ptr-${i}`, slug: `ptr-${i}` })) },
-    { id: "templates", stage: "stl-templates", title: "Templates", order: 4, lessons: makeLessons(2, "templates").map((l, i) => ({ ...l, id: `tpl-${i}`, slug: `tpl-${i}` })) },
-    { id: "concurrency", stage: "advanced", title: "Concurrency", order: 5, lessons: makeLessons(1, "concurrency").map((l, i) => ({ ...l, id: `conc-${i}`, slug: `conc-${i}` })) },
+    { id: "intro-basics", stage: "basics", title: "Intro & Basics", order: 1, lessons: makeLessons(3, "intro-basics") },
+    { id: "functions-debugging", stage: "basics", title: "Functions & Debugging", order: 2, lessons: makeLessons(2, "functions-debugging").map((l, i) => ({ ...l, id: `cf-${i}`, slug: `cf-${i}` })) },
+    { id: "refs-pointers", stage: "memory-oop", title: "References & Pointers", order: 3, lessons: makeLessons(2, "refs-pointers").map((l, i) => ({ ...l, id: `ptr-${i}`, slug: `ptr-${i}` })) },
+    { id: "vectors-arrays", stage: "stl-templates", title: "Vectors & Arrays", order: 4, lessons: makeLessons(2, "vectors-arrays").map((l, i) => ({ ...l, id: `tpl-${i}`, slug: `tpl-${i}` })) },
+    { id: "templates-exceptions-io", stage: "advanced", title: "Templates, Exceptions & I/O", order: 5, lessons: makeLessons(1, "templates-exceptions-io").map((l, i) => ({ ...l, id: `conc-${i}`, slug: `conc-${i}` })) },
   ];
 }
 

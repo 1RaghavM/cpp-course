@@ -1,0 +1,60 @@
+{
+  "number": "22.6",
+  "title": "std::shared_ptr",
+  "sort_order": 5,
+  "summary_md": "A `std::unique_ptr` enforces single ownership -- exactly one pointer owns the resource at any time. But sometimes a resource legitimately has **multiple owners**. For example, several data structures might hold a pointer to the same configuration object, and the object should only be destroyed when the last owner is done with it. This is the problem `std::shared_ptr` solves.\n\n`std::shared_ptr` uses **reference counting**. Internally it maintains a control block that tracks how many `shared_ptr` instances point to the same object. Every time you copy a `shared_ptr`, the count increments. Every time a `shared_ptr` is destroyed or reassigned, the count decrements. When the count reaches zero, the managed object is deleted. You can inspect the current count with `use_count()`.\n\nCreate a `shared_ptr` with `std::make_shared<T>(args...)`, which allocates the object and the control block in a single memory allocation (more efficient than using `new` directly):\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main()\n{\n    auto ptr1{ std::make_shared<int>(42) };\n    std::cout << ptr1.use_count() << '\\n'; // 1\n\n    auto ptr2{ ptr1 }; // copy: count goes to 2\n    std::cout << ptr1.use_count() << '\\n'; // 2\n\n    ptr2.reset(); // ptr2 releases ownership: count back to 1\n    std::cout << ptr1.use_count() << '\\n'; // 1\n}\n```\n\nKey differences from `std::unique_ptr`: shared pointers **can be copied** (unique pointers cannot), shared pointers carry the overhead of the control block and atomic reference count operations, and shared pointers use `std::make_shared` instead of `std::make_unique`. Like `unique_ptr`, `shared_ptr` overloads `operator*` and `operator->` so you can use it like a raw pointer, and a default-constructed `shared_ptr` is null.\n\nPrefer `std::unique_ptr` when single ownership is sufficient -- it is cheaper and expresses intent more clearly. Reach for `std::shared_ptr` only when you genuinely need shared ownership. Avoid creating a `shared_ptr` from a raw pointer that is already managed by another `shared_ptr`; always copy from an existing `shared_ptr` or use `make_shared` to prevent double-deletion.",
+  "exercises": [
+    {
+      "title": "Trace the reference count",
+      "prompt_md": "## Goal\n\nWrite a program that creates a `std::shared_ptr<int>`, copies it a given number of times into a `std::vector`, then removes elements one by one, printing the reference count at each step.\n\n## Input\n\n- A single integer `n` (1 <= n <= 20): the number of copies to place in the vector.\n\n## Output\n\n- First, print the use count after creating the original `shared_ptr` (before any copies): `1`\n- Then print the use count after all `n` copies have been pushed into the vector (this will be `n + 1`).\n- Then, for each element removed from the back of the vector (n removals), print the use count of the original pointer after that removal.\n- Each value on its own line.\n\n## Requirements\n\n- Create the `shared_ptr` with `std::make_shared<int>(0)`.\n- Store copies in a `std::vector<std::shared_ptr<int>>`.\n- Use `push_back` to add copies and `pop_back` to remove them.\n- Print `use_count()` of the **original** `shared_ptr` at each required point.\n- Do not use `new` or `delete`.",
+      "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create a shared_ptr<int> with make_shared\n    // Print its initial use_count\n\n    // TODO: Push n copies into a vector\n    // Print the use_count after all copies\n\n    // TODO: Pop elements one by one, printing use_count after each pop\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    auto ptr{ std::make_shared<int>(0) };\n    std::cout << ptr.use_count() << '\\n';\n\n    std::vector<std::shared_ptr<int>> vec{};\n    for (int i{ 0 }; i < n; ++i)\n        vec.push_back(ptr);\n\n    std::cout << ptr.use_count() << '\\n';\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        vec.pop_back();\n        std::cout << ptr.use_count() << '\\n';\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Three copies",
+          "is_sample": true,
+          "stdin": "3",
+          "expected_stdout": "1\n4\n3\n2\n1\n"
+        },
+        {
+          "label": "Single copy",
+          "is_sample": false,
+          "stdin": "1",
+          "expected_stdout": "1\n2\n1\n"
+        },
+        {
+          "label": "Five copies",
+          "is_sample": false,
+          "stdin": "5",
+          "expected_stdout": "1\n6\n5\n4\n3\n2\n1\n"
+        }
+      ]
+    },
+    {
+      "title": "Shared vs unique ownership report",
+      "prompt_md": "## Goal\n\nWrite a program that manages a dynamically allocated integer through both `std::unique_ptr` and `std::shared_ptr`, and reports their ownership characteristics.\n\n## Input\n\n- A single integer `value` (-100000 <= value <= 100000).\n\n## Output\n\nPrint exactly 5 lines:\n\n1. `unique: <value>` -- the value held by a `unique_ptr`.\n2. `shared: <value> count:<N>` -- the value and use count of a `shared_ptr` right after creation.\n3. `after copy: count:<N>` -- the use count after copying the `shared_ptr` to a second `shared_ptr`.\n4. `after reset: count:<N>` -- the use count of the original after the copy is reset.\n5. `equal: true` or `equal: false` -- whether both pointers (before the copy was reset) pointed to the same value.\n\n## Requirements\n\n- Create the `unique_ptr` with `std::make_unique<int>(value)` and the `shared_ptr` with `std::make_shared<int>(value)`.\n- For line 5, compare the **dereferenced values** of the original shared_ptr and the copy **before** resetting the copy. Store this comparison result in a `bool` before the reset.\n- Use `.use_count()` for the count.\n- Do not use `new` or `delete`.",
+      "starter_code": "#include <iostream>\n#include <memory>\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    // TODO: Create a unique_ptr<int> and print its value\n\n    // TODO: Create a shared_ptr<int> and print its value and use_count\n\n    // TODO: Copy the shared_ptr, print the new use_count\n\n    // TODO: Check if both shared_ptrs hold equal values (store result)\n\n    // TODO: Reset the copy, print use_count, then print the equality result\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <memory>\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    auto uptr{ std::make_unique<int>(value) };\n    std::cout << \"unique: \" << *uptr << '\\n';\n\n    auto sptr1{ std::make_shared<int>(value) };\n    std::cout << \"shared: \" << *sptr1 << \" count:\" << sptr1.use_count() << '\\n';\n\n    auto sptr2{ sptr1 };\n    std::cout << \"after copy: count:\" << sptr1.use_count() << '\\n';\n\n    bool equal{ *sptr1 == *sptr2 };\n\n    sptr2.reset();\n    std::cout << \"after reset: count:\" << sptr1.use_count() << '\\n';\n\n    std::cout << \"equal: \" << (equal ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Positive value",
+          "is_sample": true,
+          "stdin": "42",
+          "expected_stdout": "unique: 42\nshared: 42 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+        },
+        {
+          "label": "Zero value",
+          "is_sample": false,
+          "stdin": "0",
+          "expected_stdout": "unique: 0\nshared: 0 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+        },
+        {
+          "label": "Negative value",
+          "is_sample": false,
+          "stdin": "-9999",
+          "expected_stdout": "unique: -9999\nshared: -9999 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+        }
+      ]
+    }
+  ]
+}

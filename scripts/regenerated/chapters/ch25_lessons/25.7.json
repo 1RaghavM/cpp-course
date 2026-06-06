@@ -1,0 +1,62 @@
+{
+  "number": "25.7",
+  "title": "Pure virtual functions, abstract base classes, and interface classes",
+  "sort_order": 6,
+  "summary_md": "In previous lessons every virtual function had a body -- a default implementation the base class provided. But sometimes a base class exists only to define an interface, and there is no sensible default. A `Shape` base class cannot compute a meaningful `area()` because \"shape\" is not a concrete thing. C++ handles this with **pure virtual functions**.\n\nYou declare a pure virtual function by adding `= 0` to the declaration:\n\n```cpp\nclass Shape {\npublic:\n    virtual double area() const = 0; // pure virtual\n    virtual ~Shape() = default;\n};\nclass Circle : public Shape {\n    double m_r{};\npublic:\n    Circle(double r) : m_r{r} {}\n    double area() const override { return 3.14159 * m_r * m_r; }\n};\nvoid printArea(const Shape& s) {\n    std::cout << s.area() << '\\n'; // calls Circle::area()\n}\nint main() { Circle c{5.0}; printArea(c); } // prints 78.5398\n```\n\nA class that contains at least one pure virtual function is an **abstract base class** (ABC). You cannot create an instance of an abstract class -- `Shape s{};` is a compiler error. The only purpose of an ABC is to serve as a base that derived classes inherit from. Every concrete derived class **must** override all inherited pure virtual functions; if it fails to override even one, it too becomes abstract and cannot be instantiated.\n\nThis gives you a powerful design tool: the base class defines a **contract** (which functions must exist and what signatures they must have), and the compiler enforces that every concrete derived class fulfills that contract. Code that accepts a `Shape&` or `Shape*` can call `area()` with confidence that a real implementation exists.\n\nAn **interface class** is an abstract class that has no member variables, no non-pure-virtual functions (except the destructor), and a virtual destructor. It defines pure behavior with zero state. Interface classes are the C++ equivalent of interfaces in languages like Java. A typical interface class contains only pure virtual functions and a virtual destructor defaulted or with an empty body.\n\nBest practices: always give your abstract base class a **virtual destructor** so that deleting through a base pointer correctly destroys derived objects. Use `override` on every derived implementation. Prefer an interface class when you only need to specify behavior, and use an ABC with some shared implementation when derived classes share common code.",
+  "exercises": [
+    {
+      "title": "Shape area via abstract base class",
+      "prompt_md": "## Goal\n\nBuild a `Shape` abstract base class with a pure virtual `area()` function, then implement two concrete derived classes (`Circle` and `Rectangle`) that override it. Demonstrate polymorphism by calling `area()` through base-class pointers.\n\n## Input\n\n- Line 1: a string, either `circle` or `rectangle`.\n- Line 2: if `circle`, a single double `r` (the radius). If `rectangle`, two doubles `w` and `h` (width and height), space-separated.\n\n## Output\n\nA single line: `Area: ` followed by the computed area with exactly 2 decimal places.\n\nFor input `circle` / `5.0`:\n```\nArea: 78.54\n```\n\nFor input `rectangle` / `3.0 4.0`:\n```\nArea: 12.00\n```\n\n## Requirements\n\n- Define a class `Shape` with a public pure virtual function `double area() const = 0` and a public `virtual ~Shape() = default`.\n- Define a class `Circle` that publicly inherits from `Shape`. It stores a `double m_radius` and overrides `area()` using `override`. Compute area as `3.14159265 * r * r`.\n- Define a class `Rectangle` that publicly inherits from `Shape`. It stores `double m_width` and `double m_height` and overrides `area()` using `override`. Compute area as `w * h`.\n- In `main`, read the shape type and its parameters. Create the appropriate derived object with `new`, store it in a `Shape*`, print the area formatted to 2 decimal places using `std::fixed` and `std::setprecision(2)`, then `delete` the object.\n- You must call `area()` through the `Shape*` pointer, not directly on the derived type.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    // TODO: Declare area() as a pure virtual function\n    // TODO: Declare a virtual destructor\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius) : m_radius{radius} {}\n\n    // TODO: Override area() to return 3.14159265 * m_radius * m_radius\n};\n\nclass Rectangle : public Shape\n{\n    double m_width{};\n    double m_height{};\n\npublic:\n    Rectangle(double width, double height) : m_width{width}, m_height{height} {}\n\n    // TODO: Override area() to return m_width * m_height\n};\n\nint main()\n{\n    std::string type{};\n    std::cin >> type;\n\n    Shape* shape{nullptr};\n\n    // TODO: Read parameters based on type, create the right derived object\n    // Print \"Area: \" followed by shape->area() with 2 decimal places\n    // Delete the object\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual double area() const = 0;\n    virtual ~Shape() = default;\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\npublic:\n    Circle(double radius) : m_radius{radius} {}\n    double area() const override { return 3.14159265 * m_radius * m_radius; }\n};\n\nclass Rectangle : public Shape\n{\n    double m_width{};\n    double m_height{};\npublic:\n    Rectangle(double w, double h) : m_width{w}, m_height{h} {}\n    double area() const override { return m_width * m_height; }\n};\n\nint main()\n{\n    std::string type{};\n    std::cin >> type;\n\n    Shape* shape{nullptr};\n\n    if (type == \"circle\")\n    {\n        double r{};\n        std::cin >> r;\n        shape = new Circle{r};\n    }\n    else\n    {\n        double w{}, h{};\n        std::cin >> w >> h;\n        shape = new Rectangle{w, h};\n    }\n\n    std::cout << \"Area: \" << std::fixed << std::setprecision(2) << shape->area() << '\\n';\n    delete shape;\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Circle with radius 5",
+          "is_sample": true,
+          "stdin": "circle\n5.0",
+          "expected_stdout": "Area: 78.54\n"
+        },
+        {
+          "label": "Rectangle 3 by 4",
+          "is_sample": false,
+          "stdin": "rectangle\n3.0 4.0",
+          "expected_stdout": "Area: 12.00\n"
+        },
+        {
+          "label": "Circle with radius 1",
+          "is_sample": false,
+          "stdin": "circle\n1.0",
+          "expected_stdout": "Area: 3.14\n"
+        }
+      ]
+    },
+    {
+      "title": "Interface class for printable objects",
+      "prompt_md": "## Goal\n\nDefine an **interface class** `IPrintable` with a single pure virtual function, then implement it in two unrelated classes. Demonstrate that both can be used polymorphically through the interface.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 5), the number of objects.\n- Next `N` lines: each line starts with a word (`book` or `invoice`), followed by parameters:\n  - `book <title>` -- a single-word title (no spaces).\n  - `invoice <amount>` -- a double representing the total.\n\n## Output\n\nFor each object, print the result of calling `print()` through an `IPrintable*`:\n- A `Book` prints: `Book: <title>`\n- An `Invoice` prints: `Invoice: $<amount>` with exactly 2 decimal places.\n\nFor input:\n```\n3\nbook Algorithms\ninvoice 49.99\nbook Compilers\n```\nOutput:\n```\nBook: Algorithms\nInvoice: $49.99\nBook: Compilers\n```\n\n## Requirements\n\n- Define a class `IPrintable` with a public pure virtual function `std::string getDescription() const = 0` and a public `virtual ~IPrintable() = default`. It must have no member variables and no other functions -- this is an interface class.\n- Define a class `Book` that publicly inherits from `IPrintable`. It stores a `std::string m_title` and overrides `getDescription()` with `override` to return `\"Book: <title>\"`.\n- Define a class `Invoice` that publicly inherits from `IPrintable`. It stores a `double m_amount` and overrides `getDescription()` with `override` to return `\"Invoice: $<amount>\"` with 2 decimal places.\n- In `main`, read `N` objects. For each, create the appropriate derived object with `new`, store it in an `IPrintable*`, print `getDescription()`, and `delete` it.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n#include <sstream>\n#include <string>\n\nclass IPrintable\n{\npublic:\n    // TODO: Declare getDescription() as a pure virtual function\n    // TODO: Declare a virtual destructor\n};\n\nclass Book : public IPrintable\n{\n    std::string m_title{};\n\npublic:\n    Book(const std::string& title) : m_title{title} {}\n\n    // TODO: Override getDescription() to return \"Book: <title>\"\n};\n\nclass Invoice : public IPrintable\n{\n    double m_amount{};\n\npublic:\n    Invoice(double amount) : m_amount{amount} {}\n\n    // TODO: Override getDescription() to return \"Invoice: $<amount>\"\n    // with 2 decimal places\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        IPrintable* obj{nullptr};\n\n        // TODO: Read parameters, create the right object, print, and delete\n    }\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n#include <sstream>\n#include <string>\n\nclass IPrintable\n{\npublic:\n    virtual std::string getDescription() const = 0;\n    virtual ~IPrintable() = default;\n};\n\nclass Book : public IPrintable\n{\n    std::string m_title{};\npublic:\n    Book(const std::string& title) : m_title{title} {}\n    std::string getDescription() const override { return \"Book: \" + m_title; }\n};\n\nclass Invoice : public IPrintable\n{\n    double m_amount{};\npublic:\n    Invoice(double amount) : m_amount{amount} {}\n    std::string getDescription() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Invoice: $\" << std::fixed << std::setprecision(2) << m_amount;\n        return oss.str();\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        IPrintable* obj{nullptr};\n        if (type == \"book\")\n        {\n            std::string title{};\n            std::cin >> title;\n            obj = new Book{title};\n        }\n        else\n        {\n            double amount{};\n            std::cin >> amount;\n            obj = new Invoice{amount};\n        }\n        std::cout << obj->getDescription() << '\\n';\n        delete obj;\n    }\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Mixed books and invoices",
+          "is_sample": true,
+          "stdin": "3\nbook Algorithms\ninvoice 49.99\nbook Compilers\n",
+          "expected_stdout": "Book: Algorithms\nInvoice: $49.99\nBook: Compilers\n"
+        },
+        {
+          "label": "Single invoice",
+          "is_sample": false,
+          "stdin": "1\ninvoice 100.00\n",
+          "expected_stdout": "Invoice: $100.00\n"
+        },
+        {
+          "label": "Multiple books",
+          "is_sample": false,
+          "stdin": "2\nbook CPP\nbook Patterns\n",
+          "expected_stdout": "Book: CPP\nBook: Patterns\n"
+        }
+      ]
+    }
+  ]
+}

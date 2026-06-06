@@ -1,0 +1,60 @@
+{
+  "number": "13.3",
+  "title": "Unscoped enumerator integral conversions",
+  "sort_order": 2,
+  "summary_md": "## Unscoped Enumerator Integral Conversions\n\nUnscoped enumerators implicitly convert to integral values. When you use an unscoped enumerator where an integer is expected, the compiler silently promotes it. This is called an **implicit integral conversion**, and it happens automatically — no cast required.\n\nBy default, the first enumerator has value `0`, the next `1`, and so on (unless you assign explicit values). Because of implicit conversion, you can pass an enumerator directly to `std::cout`, use it in arithmetic, or compare it to an integer:\n\n```cpp\n#include <iostream>\n\nenum Color { red, green, blue };\n\nint main()\n{\n    Color c{ green };\n    std::cout << c << '\\n';        // prints 1\n    std::cout << c + 10 << '\\n';   // prints 11\n    if (c == 1)\n        std::cout << \"green\\n\";\n    return 0;\n}\n```\n\nThe output is `1`, then `11`, then `green`. The enumerator `green` converts to `1` wherever an integer is needed.\n\n### Converting Integers Back to Enumerators\n\nThe reverse direction does **not** happen implicitly. You cannot assign an integer to an enum variable without an explicit cast. Use `static_cast` to convert an integer to an enumerator:\n\n```cpp\nColor c2{ static_cast<Color>(2) }; // c2 is blue\n```\n\nThis is the same `static_cast` you learned in lesson 4.12. The compiler trusts you that the integer corresponds to a valid enumerator — if you pass a value outside the defined range, the behavior is implementation-defined. Always validate user input before casting to an enum.\n\n### Why This Matters\n\n- **Reading input:** `std::cin` cannot read directly into an unscoped enum. You read into an `int`, validate it, then `static_cast` to the enum type.\n- **Indexing and arithmetic:** Enumerators that implicitly convert to integers can be used as array indices or in math expressions without casts.\n- **Comparisons:** You can compare enumerators to integers directly, but comparing two different enum types is a compiler error.\n\n### Pitfalls\n\n- Implicit conversion can hide bugs when you accidentally use an enumerator where an integer was intended. Scoped enums (covered in a later lesson) prevent this.\n- Casting an out-of-range integer to an enum does not produce a compiler error — it silently gives you an invalid enumerator.",
+  "exercises": [
+    {
+      "title": "Print Enumerator Values",
+      "prompt_md": "## Goal\n\nDefine an unscoped enum representing days of the work week and print the integral value of a day selected by the user.\n\n## Input\n\n- A single integer on one line (0 through 4 inclusive), representing a day of the work week.\n\n## Output\n\n- If the input is in range 0-4, print a single line in this format:\n\n```\nDay <enumerator_value> selected\n```\n\nwhere `<enumerator_value>` is the integral value of the enumerator.\n\n- If the input is outside the range 0-4, print:\n\n```\nInvalid day\n```\n\n## Requirements\n\n1. Define an unscoped enum `Day` at namespace scope with enumerators: `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday` (using default values starting from 0).\n2. Read an integer from `std::cin`.\n3. Validate that the integer is in range 0-4 inclusive. If not, print `Invalid day` and return 0.\n4. Use `static_cast<Day>` to convert the integer to a `Day` enumerator.\n5. Print the enumerator by relying on its implicit conversion to `int` in the output expression — do not cast it back to `int` explicitly for printing.\n6. Do not use arrays, strings, or any concepts beyond unscoped enums and `static_cast`.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define an unscoped enum Day with Monday through Friday (default values)\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Validate input is in range 0-4\n    // If invalid, print \"Invalid day\" and return 0\n\n    // TODO: static_cast the integer to a Day enumerator\n\n    // TODO: Print \"Day <value> selected\" using the enumerator's implicit int conversion\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nenum Day\n{\n    Monday,\n    Tuesday,\n    Wednesday,\n    Thursday,\n    Friday\n};\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    if (input < 0 || input > 4)\n    {\n        std::cout << \"Invalid day\" << '\\n';\n        return 0;\n    }\n\n    Day day{ static_cast<Day>(input) };\n\n    std::cout << \"Day \" << day << \" selected\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — select Wednesday (2)",
+          "is_sample": true,
+          "stdin": "2\n",
+          "expected_stdout": "Day 2 selected\n"
+        },
+        {
+          "label": "Hidden — select Monday (0, boundary)",
+          "is_sample": false,
+          "stdin": "0\n",
+          "expected_stdout": "Day 0 selected\n"
+        },
+        {
+          "label": "Hidden — out of range input (7)",
+          "is_sample": false,
+          "stdin": "7\n",
+          "expected_stdout": "Invalid day\n"
+        }
+      ]
+    },
+    {
+      "title": "Enum-Based Scoring Calculator",
+      "prompt_md": "## Goal\n\nBuild a scoring calculator that reads a sequence of actions, converts them to enum values via `static_cast`, computes a total score using the enumerators' implicit integral conversions, and prints the result.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 20), the number of actions.\n- Next `n` lines: each line contains a single integer (0, 1, or 2) representing an action code.\n\nAction codes map to an enum:\n- `0` = `Miss` (worth 0 points)\n- `1` = `Hit` (worth 1 point)\n- `2` = `CriticalHit` (worth 2 points)\n\n## Output\n\nPrint exactly two lines:\n- Line 1: `Hits: <count>` where `<count>` is the number of actions that were `Hit` or `CriticalHit` (not `Miss`).\n- Line 2: `Score: <total>` where `<total>` is the sum of all enumerator values (using their implicit integral conversion).\n\n## Requirements\n\n1. Define an unscoped enum `Action` at namespace scope with `Miss = 0`, `Hit = 1`, `CriticalHit = 2`.\n2. Write a function `int scoreValue(Action a)` that returns the enumerator's integral value by relying on implicit conversion (simply `return a;`).\n3. Read `n`, then loop `n` times reading each action code as an `int`.\n4. Use `static_cast<Action>` to convert each integer to an `Action`. You may assume all input values are 0, 1, or 2.\n5. Use the enumerator's implicit conversion to int (via `scoreValue`) to accumulate the total score.\n6. Count the number of non-`Miss` actions by comparing each `Action` enumerator to `Miss`.\n7. Print the results in the format shown above.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define enum Action with Miss = 0, Hit = 1, CriticalHit = 2\n\n// TODO: Write function: int scoreValue(Action a)\n//       Return the enumerator's integral value using implicit conversion\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int totalScore{ 0 };\n    int hitCount{ 0 };\n\n    // TODO: Loop n times:\n    //   - Read an int action code\n    //   - static_cast it to Action\n    //   - Add its score value to totalScore\n    //   - If it is not Miss, increment hitCount\n\n    // TODO: Print \"Hits: <hitCount>\"\n    // TODO: Print \"Score: <totalScore>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nenum Action\n{\n    Miss = 0,\n    Hit = 1,\n    CriticalHit = 2\n};\n\nint scoreValue(Action a)\n{\n    return a;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int totalScore{ 0 };\n    int hitCount{ 0 };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int code{};\n        std::cin >> code;\n\n        Action action{ static_cast<Action>(code) };\n\n        totalScore += scoreValue(action);\n\n        if (action != Miss)\n            ++hitCount;\n    }\n\n    std::cout << \"Hits: \" << hitCount << '\\n';\n    std::cout << \"Score: \" << totalScore << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — mixed actions",
+          "is_sample": true,
+          "stdin": "5\n1\n0\n2\n1\n0\n",
+          "expected_stdout": "Hits: 3\nScore: 4\n"
+        },
+        {
+          "label": "Hidden — all misses",
+          "is_sample": false,
+          "stdin": "3\n0\n0\n0\n",
+          "expected_stdout": "Hits: 0\nScore: 0\n"
+        },
+        {
+          "label": "Hidden — all critical hits",
+          "is_sample": false,
+          "stdin": "4\n2\n2\n2\n2\n",
+          "expected_stdout": "Hits: 4\nScore: 8\n"
+        }
+      ]
+    }
+  ]
+}

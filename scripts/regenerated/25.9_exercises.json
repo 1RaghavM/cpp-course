@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Spot the slice",
+    "prompt_md": "## Goal\n\nDemonstrate object slicing by showing the difference between calling a virtual function through a by-value copy versus through a reference.\n\n## Input\n\n- Line 1: a string `name` (1-50 characters, no spaces).\n\n## Output\n\nExactly four lines:\n1. `Direct: <name> is a Cat`\n2. `Ref: <name> is a Cat`\n3. `Sliced: <name> is an Animal`\n4. `Legs after slice: 0`\n\n## Requirements\n\n- Define a class `Animal` with a `std::string m_name` member, a constructor taking `const std::string&`, a public `const std::string& getName() const` accessor, and a public `virtual std::string describe() const` that returns `getName() + \" is an Animal\"`.\n- Define a class `Cat` that publicly inherits from `Animal`. It has an additional `int m_legs{4}` member. Its constructor takes `const std::string&` and forwards it to `Animal`. Override `describe()` (use `override`) to return `getName() + \" is a Cat\"`. Add a public `int getLegs() const` that returns `m_legs`.\n- In `main`, read the name and create a `Cat` object.\n- Print `Direct: ` followed by calling `describe()` directly on the `Cat`.\n- Create a `const Animal&` reference to the `Cat` and print `Ref: ` followed by calling `describe()` through the reference.\n- Create an `Animal` variable (by value) initialized from the `Cat`. Print `Sliced: ` followed by calling `describe()` on this sliced copy.\n- Print `Legs after slice: 0` (since the sliced `Animal` has no `m_legs` member, the derived data is gone -- print the literal `0`).",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    // TODO: Declare virtual describe() const returning std::string\n    //       Return getName() + \" is an Animal\"\n    virtual std::string describe() const\n    {\n        return \"\";\n    }\n};\n\nclass Cat : public Animal\n{\n    int m_legs{4};\n\npublic:\n    Cat(const std::string& name)\n        : Animal{name}\n    {\n    }\n\n    // TODO: Override describe() to return getName() + \" is a Cat\"\n    std::string describe() const override\n    {\n        return \"\";\n    }\n\n    int getLegs() const { return m_legs; }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Cat cat{name};\n\n    // TODO: Print \"Direct: \" + cat.describe()\n\n    // TODO: Create const Animal& ref to cat, print \"Ref: \" + ref.describe()\n\n    // TODO: Create Animal by value from cat (this slices!), print \"Sliced: \" + sliced.describe()\n\n    // TODO: Print \"Legs after slice: 0\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    virtual std::string describe() const\n    {\n        return getName() + \" is an Animal\";\n    }\n};\n\nclass Cat : public Animal\n{\n    int m_legs{4};\n\npublic:\n    Cat(const std::string& name)\n        : Animal{name}\n    {\n    }\n\n    std::string describe() const override\n    {\n        return getName() + \" is a Cat\";\n    }\n\n    int getLegs() const { return m_legs; }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Cat cat{name};\n\n    std::cout << \"Direct: \" << cat.describe() << '\\n';\n\n    const Animal& ref{cat};\n    std::cout << \"Ref: \" << ref.describe() << '\\n';\n\n    Animal sliced{cat};\n    std::cout << \"Sliced: \" << sliced.describe() << '\\n';\n\n    std::cout << \"Legs after slice: 0\" << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Cat named Whiskers",
+        "is_sample": true,
+        "stdin": "Whiskers",
+        "expected_stdout": "Direct: Whiskers is a Cat\nRef: Whiskers is a Cat\nSliced: Whiskers is an Animal\nLegs after slice: 0\n"
+      },
+      {
+        "label": "Cat named Luna",
+        "is_sample": false,
+        "stdin": "Luna",
+        "expected_stdout": "Direct: Luna is a Cat\nRef: Luna is a Cat\nSliced: Luna is an Animal\nLegs after slice: 0\n"
+      },
+      {
+        "label": "Cat named Milo",
+        "is_sample": false,
+        "stdin": "Milo",
+        "expected_stdout": "Direct: Milo is a Cat\nRef: Milo is a Cat\nSliced: Milo is an Animal\nLegs after slice: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the slicing bug",
+    "prompt_md": "## Goal\n\nYou are given a program that stores shapes in a `std::vector` and prints their areas. The original code uses `std::vector<Shape>`, which causes object slicing -- every derived shape is sliced to a plain `Shape` with area `0`. Fix the code to use `std::vector<Shape*>` so virtual dispatch works correctly.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 10) -- the number of shapes.\n- Next `N` lines: either `circle <radius>` or `rect <width> <height>`, where all values are positive integers (1 <= value <= 100).\n\n## Output\n\nFor each shape, print one line:\n- `Circle: <area>` for circles\n- `Rect: <area>` for rectangles\n\nwhere `<area>` is the area as a **truncated integer** (`static_cast<int>(area)`).\n\nUse `pi = 3.14159265` for circle area.\n\n## Requirements\n\n- A base class `Shape` with `virtual std::string label() const` returning `\"Shape\"` and `virtual double area() const` returning `0.0`.\n- A `Circle` class (derived from `Shape`) with `int m_radius`. Override `label()` to return `\"Circle\"` and `area()` to return `pi * m_radius * m_radius`. Both use `override`.\n- A `Rectangle` class (derived from `Shape`) with `int m_width` and `int m_height`. Override `label()` to return `\"Rect\"` and `area()` to return `static_cast<double>(m_width) * m_height`. Both use `override`.\n- Store shapes in a `std::vector<Shape*>` (allocate with `new`).\n- Loop over the vector printing `<label>: <truncated_area>` for each shape.\n- Delete all dynamically allocated shapes before the program ends.\n- Do NOT use `std::vector<Shape>` -- that causes slicing and is the bug you are fixing.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nconstexpr double pi{3.14159265};\n\nclass Shape\n{\npublic:\n    virtual std::string label() const { return \"Shape\"; }\n    virtual double area() const { return 0.0; }\n};\n\nclass Circle : public Shape\n{\n    int m_radius{};\n\npublic:\n    Circle(int radius)\n        : m_radius{radius}\n    {\n    }\n\n    // TODO: Override label() to return \"Circle\"\n    // TODO: Override area() to return pi * m_radius * m_radius\n};\n\nclass Rectangle : public Shape\n{\n    int m_width{};\n    int m_height{};\n\npublic:\n    Rectangle(int width, int height)\n        : m_width{width}, m_height{height}\n    {\n    }\n\n    // TODO: Override label() to return \"Rect\"\n    // TODO: Override area() to return width * height as double\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // BUG: std::vector<Shape> causes slicing!\n    // TODO: Change to std::vector<Shape*> and allocate with new\n    std::vector<Shape*> shapes{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"circle\")\n        {\n            int r{};\n            std::cin >> r;\n            // TODO: Allocate a Circle and push_back\n        }\n        else\n        {\n            int w{}, h{};\n            std::cin >> w >> h;\n            // TODO: Allocate a Rectangle and push_back\n        }\n    }\n\n    // TODO: Loop over shapes, print \"<label>: <truncated_area>\" for each\n\n    // TODO: Delete all shapes\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nconstexpr double pi{3.14159265};\n\nclass Shape\n{\npublic:\n    virtual std::string label() const { return \"Shape\"; }\n    virtual double area() const { return 0.0; }\n};\n\nclass Circle : public Shape\n{\n    int m_radius{};\n\npublic:\n    Circle(int radius)\n        : m_radius{radius}\n    {\n    }\n\n    std::string label() const override { return \"Circle\"; }\n    double area() const override { return pi * m_radius * m_radius; }\n};\n\nclass Rectangle : public Shape\n{\n    int m_width{};\n    int m_height{};\n\npublic:\n    Rectangle(int width, int height)\n        : m_width{width}, m_height{height}\n    {\n    }\n\n    std::string label() const override { return \"Rect\"; }\n    double area() const override { return static_cast<double>(m_width) * m_height; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Shape*> shapes{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"circle\")\n        {\n            int r{};\n            std::cin >> r;\n            shapes.push_back(new Circle{r});\n        }\n        else\n        {\n            int w{}, h{};\n            std::cin >> w >> h;\n            shapes.push_back(new Rectangle{w, h});\n        }\n    }\n\n    for (const auto* s : shapes)\n    {\n        std::cout << s->label() << \": \" << static_cast<int>(s->area()) << '\\n';\n    }\n\n    for (auto* s : shapes)\n    {\n        delete s;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Mixed shapes",
+        "is_sample": true,
+        "stdin": "3\ncircle 5\nrect 4 6\ncircle 1\n",
+        "expected_stdout": "Circle: 78\nRect: 24\nCircle: 3\n"
+      },
+      {
+        "label": "All rectangles",
+        "is_sample": false,
+        "stdin": "2\nrect 10 10\nrect 3 7\n",
+        "expected_stdout": "Rect: 100\nRect: 21\n"
+      },
+      {
+        "label": "Single large circle",
+        "is_sample": false,
+        "stdin": "1\ncircle 100\n",
+        "expected_stdout": "Circle: 31415\n"
+      }
+    ]
+  }
+]

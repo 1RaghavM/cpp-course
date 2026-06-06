@@ -1,0 +1,60 @@
+{
+  "number": "21.3",
+  "title": "Overloading operators using normal functions",
+  "sort_order": 2,
+  "summary_md": "In lesson 21.2 you learned to overload operators as friend functions, which grants direct access to private members. But friendship is not always necessary -- if a class already exposes public getters for the data an operator needs, you can overload that operator as an ordinary non-member, non-friend function. This keeps the class interface tighter because fewer functions can touch its internals.\n\nA normal-function overload looks identical to a friend overload except that the declaration does not appear inside the class and is not prefixed with `friend`. Because it has no special access, the implementation must use the class's public interface.\n\n```cpp\n#include <iostream>\n\nclass Cents {\n    int m_cents{};\npublic:\n    Cents(int cents) : m_cents{ cents } {}\n    int getCents() const { return m_cents; }\n};\n\nCents operator+(const Cents& a, const Cents& b) {\n    return Cents{ a.getCents() + b.getCents() };\n}\n\nint main() {\n    Cents sum{ Cents{6} + Cents{4} };\n    std::cout << sum.getCents() << '\\n'; // 10\n}\n```\n\nThe `operator+` above is a free function in the global namespace. It accesses each operand through `getCents()`, so no friendship is required. The compiler finds it through argument-dependent lookup (ADL) because at least one parameter is of type `Cents`.\n\nSo when should you prefer a normal function over a friend? Use the normal form when the class already provides sufficient public access. Use `friend` only when the operator genuinely needs to reach private or protected members that no getter exposes. This follows the general principle of granting the least privilege necessary -- the fewer functions that can see private state, the easier the class is to maintain and reason about.\n\nOne practical consequence: if you later change the class's internal representation, only the member functions and friends need updating. Normal-function overloads, which depend only on the public API, remain untouched. This makes the normal-function approach more resilient to refactoring.\n\nNote that not every operator can be overloaded as a non-member. The assignment (`=`), subscript (`[]`), function-call (`()`), and member-access (`->`) operators must be member functions. For the symmetric binary operators like `+`, `-`, `*`, and `==`, non-member overloads are usually the better default because they allow implicit conversion on both operands equally.",
+  "exercises": [
+    {
+      "title": "Add and Subtract Fractions",
+      "prompt_md": "## Goal\n\nOverload `operator+` and `operator-` as normal (non-friend, non-member) functions for a `Fraction` class that exposes public getters.\n\n## Input\n\n- Line 1: four integers `n1 d1 n2 d2` representing two fractions n1/d1 and n2/d2 (1 <= d1, d2 <= 100, -100 <= n1, n2 <= 100).\n\n## Output\n\n- Line 1: the sum fraction as `numerator/denominator`.\n- Line 2: the difference fraction as `numerator/denominator`.\n\nFractions do **not** need to be reduced to lowest terms.\n\n## Requirements\n\n- Define a `Fraction` class with private members `m_numerator` and `m_denominator`, a constructor, and public getters `getNumerator()` and `getDenominator()`.\n- Overload `operator+` and `operator-` as normal free functions (not friends, not members). Use only the public getters.\n- Addition: a/b + c/d = (a*d + c*b) / (b*d).\n- Subtraction: a/b - c/d = (a*d - c*b) / (b*d).\n- Print each result fraction as `numerator/denominator` followed by a newline.",
+      "starter_code": "#include <iostream>\n\nclass Fraction {\n    int m_numerator{};\n    int m_denominator{ 1 };\npublic:\n    Fraction(int num, int den) : m_numerator{ num }, m_denominator{ den } {}\n    int getNumerator() const { return m_numerator; }\n    int getDenominator() const { return m_denominator; }\n};\n\n// TODO: Overload operator+ as a normal free function\n\n// TODO: Overload operator- as a normal free function\n\nint main()\n{\n    int n1{}, d1{}, n2{}, d2{};\n    std::cin >> n1 >> d1 >> n2 >> d2;\n\n    Fraction a{ n1, d1 };\n    Fraction b{ n2, d2 };\n\n    Fraction sum{ a + b };\n    Fraction diff{ a - b };\n\n    std::cout << sum.getNumerator() << '/' << sum.getDenominator() << '\\n';\n    std::cout << diff.getNumerator() << '/' << diff.getDenominator() << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass Fraction {\n    int m_numerator{};\n    int m_denominator{ 1 };\npublic:\n    Fraction(int num, int den) : m_numerator{ num }, m_denominator{ den } {}\n    int getNumerator() const { return m_numerator; }\n    int getDenominator() const { return m_denominator; }\n};\n\nFraction operator+(const Fraction& a, const Fraction& b)\n{\n    return Fraction{\n        a.getNumerator() * b.getDenominator() + b.getNumerator() * a.getDenominator(),\n        a.getDenominator() * b.getDenominator()\n    };\n}\n\nFraction operator-(const Fraction& a, const Fraction& b)\n{\n    return Fraction{\n        a.getNumerator() * b.getDenominator() - b.getNumerator() * a.getDenominator(),\n        a.getDenominator() * b.getDenominator()\n    };\n}\n\nint main()\n{\n    int n1{}, d1{}, n2{}, d2{};\n    std::cin >> n1 >> d1 >> n2 >> d2;\n\n    Fraction a{ n1, d1 };\n    Fraction b{ n2, d2 };\n\n    Fraction sum{ a + b };\n    Fraction diff{ a - b };\n\n    std::cout << sum.getNumerator() << '/' << sum.getDenominator() << '\\n';\n    std::cout << diff.getNumerator() << '/' << diff.getDenominator() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Simple positive fractions",
+          "is_sample": true,
+          "stdin": "1 2 1 3",
+          "expected_stdout": "5/6\n1/6\n"
+        },
+        {
+          "label": "Negative numerator",
+          "is_sample": false,
+          "stdin": "-3 4 1 4",
+          "expected_stdout": "-8/16\n-16/16\n"
+        },
+        {
+          "label": "Same denominator",
+          "is_sample": false,
+          "stdin": "7 5 2 5",
+          "expected_stdout": "45/25\n25/25\n"
+        }
+      ]
+    },
+    {
+      "title": "Scale a Point",
+      "prompt_md": "## Goal\n\nOverload `operator*` as a normal (non-friend, non-member) function so that a `Point2D` can be multiplied by an integer scalar in both orders: `point * scalar` and `scalar * point`.\n\n## Input\n\n- Line 1: three integers `x y s` where (x, y) is the point and s is the scalar (-1000 <= x, y, s <= 1000).\n\n## Output\n\n- Line 1: the result of `point * scalar` printed as `(x, y)`.\n- Line 2: the result of `scalar * point` printed as `(x, y)`.\n\n## Requirements\n\n- Define a `Point2D` class with private members `m_x` and `m_y`, a constructor, and public getters `getX()` and `getY()`.\n- Overload two versions of `operator*` as normal free functions (not friends, not members):\n  1. `Point2D operator*(const Point2D& p, int s)` -- point on the left.\n  2. `Point2D operator*(int s, const Point2D& p)` -- scalar on the left. This must delegate to the first overload.\n- Both results should be identical.\n- Output format: `(x, y)` with no extra spaces beyond those shown.",
+      "starter_code": "#include <iostream>\n\nclass Point2D {\n    int m_x{};\n    int m_y{};\npublic:\n    Point2D(int x, int y) : m_x{ x }, m_y{ y } {}\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\n// TODO: Overload operator*(Point2D, int) as a normal free function\n\n// TODO: Overload operator*(int, Point2D) that delegates to the above\n\nint main()\n{\n    int x{}, y{}, s{};\n    std::cin >> x >> y >> s;\n\n    Point2D p{ x, y };\n\n    Point2D r1{ p * s };\n    Point2D r2{ s * p };\n\n    std::cout << '(' << r1.getX() << \", \" << r1.getY() << \")\\n\";\n    std::cout << '(' << r2.getX() << \", \" << r2.getY() << \")\\n\";\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass Point2D {\n    int m_x{};\n    int m_y{};\npublic:\n    Point2D(int x, int y) : m_x{ x }, m_y{ y } {}\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nPoint2D operator*(const Point2D& p, int s)\n{\n    return Point2D{ p.getX() * s, p.getY() * s };\n}\n\nPoint2D operator*(int s, const Point2D& p)\n{\n    return p * s;\n}\n\nint main()\n{\n    int x{}, y{}, s{};\n    std::cin >> x >> y >> s;\n\n    Point2D p{ x, y };\n\n    Point2D r1{ p * s };\n    Point2D r2{ s * p };\n\n    std::cout << '(' << r1.getX() << \", \" << r1.getY() << \")\\n\";\n    std::cout << '(' << r2.getX() << \", \" << r2.getY() << \")\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Positive point and scalar",
+          "is_sample": true,
+          "stdin": "3 4 2",
+          "expected_stdout": "(6, 8)\n(6, 8)\n"
+        },
+        {
+          "label": "Negative scalar",
+          "is_sample": false,
+          "stdin": "5 -7 -3",
+          "expected_stdout": "(-15, 21)\n(-15, 21)\n"
+        },
+        {
+          "label": "Zero scalar",
+          "is_sample": false,
+          "stdin": "100 -50 0",
+          "expected_stdout": "(0, 0)\n(0, 0)\n"
+        }
+      ]
+    }
+  ]
+}

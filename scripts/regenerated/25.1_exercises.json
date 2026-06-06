@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Base reference calls Base version",
+    "prompt_md": "## Goal\n\nDemonstrate that calling a member function through a `Base&` reference invokes the base-class version, even when the actual object is a derived type.\n\n## Input\n\n- A single line containing a string `name` (1-50 characters, no spaces).\n\n## Output\n\nExactly three lines:\n1. `Direct: <name> says Woof`\n2. `Via ref: <name> says ...`\n3. `Via ptr: <name> says ...`\n\nwhere `<name>` is the name read from input.\n\n## Requirements\n\n- Define a class `Animal` with a `std::string` member `m_name`, a constructor taking `const std::string&`, a public `const std::string& getName() const` accessor, and a public `std::string_view speak() const` that returns `\"...\"`.\n- Define a class `Dog` that publicly inherits from `Animal`. `Dog`'s constructor takes `const std::string&` and forwards it to `Animal`. `Dog` has its own `std::string_view speak() const` that returns `\"Woof\"`.\n- In `main`, read the name and create a `Dog` object.\n- Print `Direct: <name> says <speak>` by calling `speak()` directly on the `Dog` object.\n- Create a `const Animal&` reference to the `Dog` and print `Via ref: <name> says <speak>` using the reference.\n- Create a `const Animal*` pointer to the `Dog` and print `Via ptr: <name> says <speak>` using the pointer.\n- The reference and pointer calls must demonstrate that the `Animal` version of `speak()` is invoked.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    std::string_view speak() const\n    {\n        // TODO: Return \"...\"\n        return \"\";\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    Dog(const std::string& name)\n        : Animal{name}\n    {\n    }\n\n    std::string_view speak() const\n    {\n        // TODO: Return \"Woof\"\n        return \"\";\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Dog dog{name};\n\n    // TODO: Print \"Direct: <name> says <speak>\" using the Dog object directly\n\n    // TODO: Create a const Animal& ref to dog, print \"Via ref: <name> says <speak>\"\n\n    // TODO: Create a const Animal* ptr to dog, print \"Via ptr: <name> says <speak>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    std::string_view speak() const\n    {\n        return \"...\";\n    }\n};\n\nclass Dog : public Animal\n{\npublic:\n    Dog(const std::string& name)\n        : Animal{name}\n    {\n    }\n\n    std::string_view speak() const\n    {\n        return \"Woof\";\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Dog dog{name};\n\n    std::cout << \"Direct: \" << dog.getName() << \" says \" << dog.speak() << '\\n';\n\n    const Animal& ref{dog};\n    std::cout << \"Via ref: \" << ref.getName() << \" says \" << ref.speak() << '\\n';\n\n    const Animal* ptr{&dog};\n    std::cout << \"Via ptr: \" << ptr->getName() << \" says \" << ptr->speak() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Dog named Rex",
+        "is_sample": true,
+        "stdin": "Rex",
+        "expected_stdout": "Direct: Rex says Woof\nVia ref: Rex says ...\nVia ptr: Rex says ...\n"
+      },
+      {
+        "label": "Dog named Buddy",
+        "is_sample": false,
+        "stdin": "Buddy",
+        "expected_stdout": "Direct: Buddy says Woof\nVia ref: Buddy says ...\nVia ptr: Buddy says ...\n"
+      },
+      {
+        "label": "Dog named Max",
+        "is_sample": false,
+        "stdin": "Max",
+        "expected_stdout": "Direct: Max says Woof\nVia ref: Max says ...\nVia ptr: Max says ...\n"
+      }
+    ]
+  },
+  {
+    "title": "Function taking Base& hides derived behavior",
+    "prompt_md": "## Goal\n\nWrite a `report` function that accepts a `const Shape&` and prints the shape's description. Show that when a `Circle` is passed, the base `Shape` description is printed instead of the `Circle` description, because the function parameter is a base reference.\n\n## Input\n\n- Line 1: a string `shapeName` (1-50 characters, no spaces).\n- Line 2: a double `radius` (0.1 to 1000.0).\n\n## Output\n\nExactly three lines:\n1. `Circle: <shapeName> r=<radius>` (direct call on the Circle)\n2. `Report: <shapeName>: generic shape` (via the report function taking const Shape&)\n3. `Direct: <shapeName> r=<radius>` (direct call on Circle again, proving the object itself is fine)\n\nThe radius is printed with default `std::cout` formatting (no fixed precision).\n\n## Requirements\n\n- Define a class `Shape` with a `std::string` member `m_name`, a constructor taking `const std::string&`, a public `const std::string& getName() const` accessor, and a public `std::string describe() const` that returns `\"<name>: generic shape\"`.\n- Define a class `Circle` that publicly inherits from `Shape`. It has an additional `double m_radius` member. Its constructor takes `const std::string&` and `double`. It has its own `std::string describe() const` that returns `\"<name> r=<radius>\"` (use `std::to_string` for the radius).\n- Define a free function `void report(const Shape& s)` that prints `Report: ` followed by the result of calling `describe()` on `s`.\n- In `main`, read the name and radius, create a `Circle`, print `Circle: ` followed by calling `describe()` directly on the circle, then call `report(circle)`, then print `Direct: ` followed by calling `describe()` directly on the circle again.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Shape\n{\n    std::string m_name;\n\npublic:\n    Shape(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    std::string describe() const\n    {\n        // TODO: Return \"<name>: generic shape\"\n        return \"\";\n    }\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(const std::string& name, double radius)\n        : Shape{name}\n        , m_radius{radius}\n    {\n    }\n\n    std::string describe() const\n    {\n        // TODO: Return \"<name> r=<radius>\" using std::to_string for radius\n        return \"\";\n    }\n};\n\nvoid report(const Shape& s)\n{\n    // TODO: Print \"Report: \" followed by s.describe()\n}\n\nint main()\n{\n    std::string name{};\n    double radius{};\n    std::cin >> name >> radius;\n\n    Circle circle{name, radius};\n\n    // TODO: Print \"Circle: \" + circle.describe()\n    // TODO: Call report(circle)\n    // TODO: Print \"Direct: \" + circle.describe()\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Shape\n{\n    std::string m_name;\n\npublic:\n    Shape(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    std::string describe() const\n    {\n        return m_name + \": generic shape\";\n    }\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(const std::string& name, double radius)\n        : Shape{name}\n        , m_radius{radius}\n    {\n    }\n\n    std::string describe() const\n    {\n        return getName() + \" r=\" + std::to_string(m_radius);\n    }\n};\n\nvoid report(const Shape& s)\n{\n    std::cout << \"Report: \" << s.describe() << '\\n';\n}\n\nint main()\n{\n    std::string name{};\n    double radius{};\n    std::cin >> name >> radius;\n\n    Circle circle{name, radius};\n\n    std::cout << \"Circle: \" << circle.describe() << '\\n';\n    report(circle);\n    std::cout << \"Direct: \" << circle.describe() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Disk with radius 5",
+        "is_sample": true,
+        "stdin": "Disk 5",
+        "expected_stdout": "Circle: Disk r=5.000000\nReport: Disk: generic shape\nDirect: Disk r=5.000000\n"
+      },
+      {
+        "label": "Ring with radius 2.5",
+        "is_sample": false,
+        "stdin": "Ring 2.5",
+        "expected_stdout": "Circle: Ring r=2.500000\nReport: Ring: generic shape\nDirect: Ring r=2.500000\n"
+      },
+      {
+        "label": "Wheel with radius 10",
+        "is_sample": false,
+        "stdin": "Wheel 10",
+        "expected_stdout": "Circle: Wheel r=10.000000\nReport: Wheel: generic shape\nDirect: Wheel r=10.000000\n"
+      }
+    ]
+  }
+]

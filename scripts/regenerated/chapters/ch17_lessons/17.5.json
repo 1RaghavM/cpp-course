@@ -1,0 +1,60 @@
+{
+  "number": "17.5",
+  "title": "Arrays of references via std::reference_wrapper",
+  "sort_order": 4,
+  "summary_md": "## Arrays of References via std::reference_wrapper\n\nYou might want to create a `std::array` of references — for example, to iterate over a set of existing variables and modify them in a loop. But `std::array<int&, 3>` won't compile. References are not objects: they have no address of their own, and containers like `std::array` require element types that are copyable and assignable. References satisfy neither requirement.\n\n### The solution: std::reference_wrapper\n\n`std::reference_wrapper<T>` (defined in `<functional>`) is a lightweight class that wraps a reference inside a copyable, assignable object. It behaves like a `T&` in most contexts but can be stored in arrays and other containers.\n\nUse the helper functions `std::ref(x)` to create a `std::reference_wrapper<T>` and `std::cref(x)` to create a `std::reference_wrapper<const T>` (a read-only wrapper).\n\n```cpp\n#include <array>\n#include <functional>\n#include <iostream>\n\nint main()\n{\n    int a{ 1 }, b{ 2 }, c{ 3 };\n    std::array<std::reference_wrapper<int>, 3> refs{ std::ref(a), std::ref(b), std::ref(c) };\n\n    for (auto& r : refs)\n        r.get() *= 2;          // doubles each original variable\n\n    std::cout << a << ' ' << b << ' ' << c << '\\n'; // 2 4 6\n}\n```\n\n### Accessing the underlying reference\n\nCall `.get()` on a `std::reference_wrapper` to obtain the underlying `T&`. You need `.get()` when the compiler cannot implicitly convert — for example, when calling a member function or using compound assignment. In contexts that expect a `T&` (such as passing to a function taking `int&`), the implicit conversion kicks in automatically.\n\n### std::ref vs std::cref\n\n`std::ref(x)` produces a mutable wrapper — changes through it modify the original. `std::cref(x)` produces a `const` wrapper — the original can be read but not written. Choose `std::cref` when you only need to observe values, following the same const-correctness principle you apply to regular references.\n\n### Key takeaways\n\n- `std::array` cannot hold plain references; use `std::reference_wrapper<T>` instead.\n- Create wrappers with `std::ref()` (mutable) or `std::cref()` (read-only).\n- Use `.get()` when implicit conversion to `T&` does not apply.",
+  "exercises": [
+    {
+      "title": "Double Selected Values via Reference Array",
+      "prompt_md": "## Goal\nUse a `std::array` of `std::reference_wrapper<int>` to double specific variables through the array.\n\n## Input\n- Line 1: three integers `a`, `b`, `c` separated by spaces.\n- Line 2: an integer `k` (1 <= k <= 3) indicating how many of the three values to double, starting from `a`.\n\n## Output\nPrint one line with three space-separated integers: the final values of `a`, `b`, and `c`. The first `k` values should be doubled; the rest unchanged.\n\n## Requirements\n1. Declare three `int` variables `a`, `b`, `c` and read them from input.\n2. Create a `std::array<std::reference_wrapper<int>, 3>` named `refs` that wraps `a`, `b`, `c` using `std::ref()`.\n3. Read `k`, then loop `k` times using an index. In each iteration, use `refs[i].get()` to double the value (multiply by 2).\n4. Print `a`, `b`, and `c` separated by spaces, followed by a newline.\n5. Include `<iostream>`, `<functional>`, and `<array>`.",
+      "starter_code": "#include <iostream>\n#include <functional>\n#include <array>\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // TODO: Create std::array<std::reference_wrapper<int>, 3> named refs\n    //       wrapping a, b, c using std::ref()\n\n    int k{};\n    std::cin >> k;\n\n    // TODO: Loop k times, doubling refs[i].get() each iteration\n\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <functional>\n#include <array>\n\nint main()\n{\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    std::array<std::reference_wrapper<int>, 3> refs{ std::ref(a), std::ref(b), std::ref(c) };\n\n    int k{};\n    std::cin >> k;\n\n    for (int i{ 0 }; i < k; ++i)\n    {\n        refs[static_cast<std::size_t>(i)].get() *= 2;\n    }\n\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — double first two of three",
+          "stdin": "5 10 15\n2\n",
+          "expected_stdout": "10 20 15\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — double all three",
+          "stdin": "3 7 1\n3\n",
+          "expected_stdout": "6 14 2\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — double only the first",
+          "stdin": "100 200 300\n1\n",
+          "expected_stdout": "200 200 300\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Sort Three Variables via Reference Wrappers",
+      "prompt_md": "## Goal\nRead three integers into separate variables, place `std::reference_wrapper`s to them in a `std::array`, sort the array using a simple loop, and print the variables in their original declaration order to show they were modified in place.\n\n## Input\n- One line with three integers `x`, `y`, `z` separated by spaces (each in range -1000 to 1000).\n\n## Output\nPrint two lines:\n1. `Sorted: <smallest> <middle> <largest>` — the values in ascending order (read from the sorted reference array).\n2. `Vars: <x> <y> <z>` — the values of `x`, `y`, `z` printed in declaration order, showing they were swapped in place.\n\n## Requirements\n1. Declare three `int` variables `x`, `y`, `z` and read them from input.\n2. Create a `std::array<std::reference_wrapper<int>, 3>` named `refs` wrapping `x`, `y`, `z` using `std::ref()`.\n3. Sort the referenced values in ascending order using a nested loop (selection sort or bubble sort). When comparing, use `.get()` on each element. When swapping, swap the **underlying values** via `.get()` using a temporary `int` variable — do not swap the wrappers themselves.\n4. After sorting, print the `Sorted:` line by reading values through `refs[0].get()`, `refs[1].get()`, `refs[2].get()`.\n5. Print the `Vars:` line using `x`, `y`, `z` directly — these should now hold sorted values because the sort modified them through the reference wrappers.\n6. Include `<iostream>`, `<functional>`, and `<array>`.",
+      "starter_code": "#include <iostream>\n#include <functional>\n#include <array>\n\nint main()\n{\n    int x{}, y{}, z{};\n    std::cin >> x >> y >> z;\n\n    // TODO: Create std::array<std::reference_wrapper<int>, 3> named refs\n    //       wrapping x, y, z using std::ref()\n\n    // TODO: Sort the values in ascending order using a nested loop.\n    //       Compare with refs[i].get() and refs[j].get().\n    //       Swap the underlying values via .get() using a temp int.\n\n    // TODO: Print \"Sorted: \" followed by refs[0].get(), refs[1].get(), refs[2].get()\n    // TODO: Print \"Vars: \" followed by x, y, z\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <functional>\n#include <array>\n\nint main()\n{\n    int x{}, y{}, z{};\n    std::cin >> x >> y >> z;\n\n    std::array<std::reference_wrapper<int>, 3> refs{ std::ref(x), std::ref(y), std::ref(z) };\n\n    // Bubble sort the underlying values through .get()\n    for (std::size_t i{ 0 }; i < refs.size() - 1; ++i)\n    {\n        for (std::size_t j{ 0 }; j < refs.size() - 1 - i; ++j)\n        {\n            if (refs[j].get() > refs[j + 1].get())\n            {\n                int temp{ refs[j].get() };\n                refs[j].get() = refs[j + 1].get();\n                refs[j + 1].get() = temp;\n            }\n        }\n    }\n\n    std::cout << \"Sorted: \" << refs[0].get() << ' ' << refs[1].get() << ' ' << refs[2].get() << '\\n';\n    std::cout << \"Vars: \" << x << ' ' << y << ' ' << z << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — reverse order input",
+          "stdin": "30 20 10\n",
+          "expected_stdout": "Sorted: 10 20 30\nVars: 10 20 30\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — already sorted",
+          "stdin": "1 2 3\n",
+          "expected_stdout": "Sorted: 1 2 3\nVars: 1 2 3\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — negative values with duplicates",
+          "stdin": "5 -3 5\n",
+          "expected_stdout": "Sorted: -3 5 5\nVars: -3 5 5\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

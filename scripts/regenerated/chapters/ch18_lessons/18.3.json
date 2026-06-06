@@ -1,0 +1,60 @@
+{
+  "number": "18.3",
+  "title": "Introduction to standard library algorithms",
+  "sort_order": 2,
+  "summary_md": "## Introduction to Standard Library Algorithms\n\nThe `<algorithm>` and `<numeric>` headers provide dozens of ready-made functions that operate on iterator ranges. Instead of writing manual loops, you pass a pair of iterators (begin, end) and the library does the rest. This produces shorter, less error-prone code that clearly communicates intent.\n\n```cpp\n#include <algorithm>\n#include <array>\n#include <iostream>\n#include <numeric>\n\nint main()\n{\n    std::array data{ 7, 2, 9, 4, 1 };\n    std::sort(data.begin(), data.end());\n    auto it{ std::find(data.begin(), data.end(), 4) };\n    int total{ std::accumulate(data.begin(), data.end(), 0) };\n\n    std::cout << \"Found 4 at index \" << (it - data.begin()) << '\\n';\n    std::cout << \"Sum: \" << total << '\\n';\n}\n```\n\n### Commonly Used Algorithms\n\n**`std::sort(begin, end)`** sorts the range in ascending order. For descending order you can pass a custom comparator function as a third argument.\n\n**`std::find(begin, end, value)`** performs a linear search and returns an iterator to the first match, or `end` if the value is not found. Always compare the result against `end` before dereferencing.\n\n**`std::count(begin, end, value)`** returns the number of elements equal to `value`.\n\n**`std::min_element(begin, end)`** and **`std::max_element(begin, end)`** return iterators to the smallest and largest elements respectively. Dereference the returned iterator to get the actual value.\n\n**`std::for_each(begin, end, func)`** calls `func` on every element in the range. You pass a named function (or function pointer) as the third argument.\n\n**`std::accumulate(begin, end, init)`** lives in `<numeric>`, not `<algorithm>`. It returns the sum of `init` plus every element in the range. The type of `init` determines the return type, so use `0` for `int` sums and `0.0` for `double` sums.\n\n### Why Prefer Algorithms Over Raw Loops\n\nAlgorithms eliminate common loop bugs (off-by-one errors, wrong comparison operators). They also convey meaning at a glance -- `std::sort` is immediately clear, while a hand-written sort loop requires the reader to verify correctness. As a guideline, reach for a standard algorithm before writing a manual loop.",
+  "exercises": [
+    {
+      "title": "Sort, Search, and Summarize",
+      "prompt_md": "## Goal\nRead a list of integers, sort them, search for a target value, and print summary statistics using standard library algorithms.\n\n## Input\n- Line 1: an integer `N` (1 <= N <= 20) -- the number of elements.\n- Line 2: `N` integers separated by spaces.\n- Line 3: a single integer `T` -- the target value to search for.\n\n## Output\nExactly four lines:\n1. `Sorted:` followed by a space, then all elements in ascending order separated by spaces.\n2. `Min: <value>` -- the smallest element.\n3. `Sum: <value>` -- the sum of all elements.\n4. `Found <T>: yes` if `T` exists in the array, or `Found <T>: no` if it does not.\n\nExample for input `5`, `3 1 4 1 5`, `4`:\n```\nSorted: 1 1 3 4 5\nMin: 1\nSum: 14\nFound 4: yes\n```\n\n## Requirements\n1. Store the elements in a `std::vector<int>`.\n2. Use `std::sort` to sort the vector.\n3. Use `std::min_element` to find the minimum value.\n4. Use `std::accumulate` (from `<numeric>`) to compute the sum.\n5. Use `std::find` to search for the target. Compare the returned iterator against `end()` to determine if the target was found.\n6. Do **not** use lambdas.",
+      "starter_code": "#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int target{};\n    std::cin >> target;\n\n    // TODO: Sort v using std::sort\n\n    // TODO: Print \"Sorted: \" followed by all elements separated by spaces\n\n    // TODO: Use std::min_element, dereference to print \"Min: <value>\"\n\n    // TODO: Use std::accumulate to print \"Sum: <value>\"\n\n    // TODO: Use std::find to print \"Found <target>: yes\" or \"Found <target>: no\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int target{};\n    std::cin >> target;\n\n    std::sort(v.begin(), v.end());\n\n    std::cout << \"Sorted:\";\n    for (int val : v)\n        std::cout << ' ' << val;\n    std::cout << '\\n';\n\n    std::cout << \"Min: \" << *std::min_element(v.begin(), v.end()) << '\\n';\n\n    std::cout << \"Sum: \" << std::accumulate(v.begin(), v.end(), 0) << '\\n';\n\n    auto it{ std::find(v.begin(), v.end(), target) };\n    std::cout << \"Found \" << target << \": \";\n    if (it != v.end())\n        std::cout << \"yes\\n\";\n    else\n        std::cout << \"no\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- five elements, target found",
+          "is_sample": true,
+          "stdin": "5\n3 1 4 1 5\n4\n",
+          "expected_stdout": "Sorted: 1 1 3 4 5\nMin: 1\nSum: 14\nFound 4: yes\n"
+        },
+        {
+          "label": "Hidden -- target not found",
+          "is_sample": false,
+          "stdin": "4\n10 30 20 40\n25\n",
+          "expected_stdout": "Sorted: 10 20 30 40\nMin: 10\nSum: 100\nFound 25: no\n"
+        },
+        {
+          "label": "Hidden -- single element",
+          "is_sample": false,
+          "stdin": "1\n7\n7\n",
+          "expected_stdout": "Sorted: 7\nMin: 7\nSum: 7\nFound 7: yes\n"
+        }
+      ]
+    },
+    {
+      "title": "Count and Extremes Report",
+      "prompt_md": "## Goal\nRead a list of integers and produce a report using `std::count`, `std::max_element`, `std::for_each`, and `std::accumulate`.\n\n## Input\n- Line 1: two integers `N` (1 <= N <= 20) and `Q` separated by a space -- `N` is the element count and `Q` is the value to count.\n- Line 2: `N` integers separated by spaces.\n\n## Output\nExactly three lines:\n1. `Max: <value>` -- the largest element in the list.\n2. `Count of <Q>: <c>` -- how many times `Q` appears.\n3. `Double sum: <value>` -- the sum of every element after doubling. Use `std::for_each` with a named function to double each element in place, then use `std::accumulate` to compute the sum.\n\nExample for input `6 3` and `3 1 3 2 3 4`:\n```\nMax: 4\nCount of 3: 3\nDouble sum: 32\n```\n(Elements doubled: 6 2 6 4 6 8 -> sum = 32)\n\n## Requirements\n1. Store the elements in a `std::vector<int>`.\n2. Use `std::max_element` (dereference the result) to find the maximum.\n3. Use `std::count` to count occurrences of `Q`.\n4. Write a named function `void doubleValue(int& x)` that multiplies `x` by 2.\n5. Use `std::for_each` with `doubleValue` to double every element in the vector.\n6. Use `std::accumulate` to sum the doubled elements.\n7. Do **not** use lambdas.",
+      "starter_code": "#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nvoid doubleValue(int& x)\n{\n    // TODO: multiply x by 2\n}\n\nint main()\n{\n    int n{};\n    int q{};\n    std::cin >> n >> q;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    // TODO: Use std::max_element to print \"Max: <value>\"\n\n    // TODO: Use std::count to print \"Count of <Q>: <c>\"\n\n    // TODO: Use std::for_each with doubleValue to double every element\n\n    // TODO: Use std::accumulate to print \"Double sum: <value>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <algorithm>\n#include <iostream>\n#include <numeric>\n#include <vector>\n\nvoid doubleValue(int& x)\n{\n    x *= 2;\n}\n\nint main()\n{\n    int n{};\n    int q{};\n    std::cin >> n >> q;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    std::cout << \"Max: \" << *std::max_element(v.begin(), v.end()) << '\\n';\n\n    std::cout << \"Count of \" << q << \": \" << std::count(v.begin(), v.end(), q) << '\\n';\n\n    std::for_each(v.begin(), v.end(), doubleValue);\n\n    std::cout << \"Double sum: \" << std::accumulate(v.begin(), v.end(), 0) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- six elements, count 3",
+          "is_sample": true,
+          "stdin": "6 3\n3 1 3 2 3 4\n",
+          "expected_stdout": "Max: 4\nCount of 3: 3\nDouble sum: 32\n"
+        },
+        {
+          "label": "Hidden -- value not present",
+          "is_sample": false,
+          "stdin": "5 99\n10 20 30 40 50\n",
+          "expected_stdout": "Max: 50\nCount of 99: 0\nDouble sum: 300\n"
+        },
+        {
+          "label": "Hidden -- all same elements",
+          "is_sample": false,
+          "stdin": "3 5\n5 5 5\n",
+          "expected_stdout": "Max: 5\nCount of 5: 3\nDouble sum: 30\n"
+        }
+      ]
+    }
+  ]
+}

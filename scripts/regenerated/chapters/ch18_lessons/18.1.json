@@ -1,0 +1,60 @@
+{
+  "number": "18.1",
+  "title": "Sorting an array using selection sort",
+  "sort_order": 0,
+  "summary_md": "Sorting means arranging elements in order (ascending or descending). **Selection sort** is one of the simplest sorting algorithms to understand and implement. It works by repeatedly finding the smallest unsorted element and moving it to its correct position.\n\nThe algorithm divides the array into two regions: sorted (on the left) and unsorted (on the right). On each pass, it scans the unsorted region, finds the index of the smallest element, and swaps that element with the first unsorted element. After each pass, the sorted region grows by one.\n\nFor an array of size `n`, selection sort performs `n - 1` passes. On the first pass it examines all `n` elements, on the second pass `n - 1` elements, and so on. This gives roughly `n * (n - 1) / 2` comparisons total, making selection sort an **O(n²)** algorithm. It works fine for small arrays but becomes slow for large datasets.\n\nHere is a complete example that sorts an array of integers in ascending order:\n\n```cpp\n#include <iostream>\n#include <utility> // std::swap\n\nint main()\n{\n    int arr[]{ 30, 50, 20, 10, 40 };\n    int length{ 5 };\n\n    for (int start{ 0 }; start < length - 1; ++start)\n    {\n        int minIndex{ start };\n        for (int cur{ start + 1 }; cur < length; ++cur)\n        {\n            if (arr[cur] < arr[minIndex])\n                minIndex = cur;\n        }\n        std::swap(arr[start], arr[minIndex]);\n    }\n\n    for (int i{ 0 }; i < length; ++i)\n        std::cout << arr[i] << ' ';\n}\n```\n\nKey points to remember:\n\n- The outer loop tracks where the sorted region ends. It runs from index `0` to `length - 2` (the last element is automatically in place).\n- The inner loop searches for the minimum value in the unsorted portion by comparing each element against the current minimum.\n- `std::swap` (from `<utility>`) exchanges two values. You could write a manual swap with a temporary variable, but `std::swap` is cleaner.\n- Selection sort is **not stable** — equal elements may change their relative order after sorting.\n- This same pattern works with `std::array` or `std::vector`. Just replace the C-style array and use `.size()` for the length.",
+  "exercises": [
+    {
+      "title": "Selection Sort on Integer Array",
+      "prompt_md": "## Goal\n\nImplement selection sort to sort an array of integers in **ascending** order and print the result.\n\n## Input\n\n- Line 1: an integer `n` (the number of elements, 1 <= n <= 20)\n- Line 2: `n` space-separated integers\n\n## Output\n\n- A single line containing the sorted integers, each separated by a space, with a trailing space after the last element.\n\n## Requirements\n\n- Use a C-style array or `std::array` to store the elements.\n- Implement selection sort yourself with nested loops — do not use any library sorting function.\n- Use `std::swap` from `<utility>` to swap elements.\n\n## Notes\n\n- The outer loop should iterate from the first element to the second-to-last element.\n- The inner loop finds the index of the minimum value in the unsorted portion.",
+      "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[20]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Implement selection sort on arr[0..n-1]\n    // Outer loop: iterate start from 0 to n-2\n    //   Track the index of the minimum element (minIndex)\n    //   Inner loop: find the smallest element in the unsorted region\n    //   Swap arr[start] with arr[minIndex]\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << arr[i] << ' ';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[20]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    for (int start{ 0 }; start < n - 1; ++start)\n    {\n        int minIndex{ start };\n        for (int cur{ start + 1 }; cur < n; ++cur)\n        {\n            if (arr[cur] < arr[minIndex])\n                minIndex = cur;\n        }\n        std::swap(arr[start], arr[minIndex]);\n    }\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << arr[i] << ' ';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic unsorted array",
+          "is_sample": true,
+          "stdin": "5\n30 50 20 10 40",
+          "expected_stdout": "10 20 30 40 50 "
+        },
+        {
+          "label": "Already sorted array",
+          "is_sample": false,
+          "stdin": "4\n1 2 3 4",
+          "expected_stdout": "1 2 3 4 "
+        },
+        {
+          "label": "Reverse sorted with duplicates",
+          "is_sample": false,
+          "stdin": "6\n9 7 5 5 3 1",
+          "expected_stdout": "1 3 5 5 7 9 "
+        }
+      ]
+    },
+    {
+      "title": "Selection Sort a Vector of Structs by Field",
+      "prompt_md": "## Goal\n\nRead a list of students (name and score), then use selection sort to sort them by score in **descending** order (highest score first). Print the sorted list.\n\n## Input\n\n- Line 1: an integer `n` (number of students, 1 <= n <= 15)\n- Next `n` lines: a string (name, no spaces) followed by an integer (score)\n\n## Output\n\n- `n` lines, each containing the name and score separated by a space, sorted from highest to lowest score.\n\n## Requirements\n\n- Define a `struct Student` with `std::string name` and `int score` members.\n- Store the students in a `std::vector<Student>`.\n- Implement selection sort yourself — do not use any library sorting function.\n- When comparing, sort by score descending. If two students have the same score, their relative order does not matter (any order is accepted).\n\n## Notes\n\n- This is the same selection sort algorithm from the lesson, but you are sorting structs by a specific field and in descending order.\n- To sort descending, find the **maximum** in the unsorted region instead of the minimum.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <utility>\n#include <vector>\n\nstruct Student\n{\n    std::string name{};\n    int score{};\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Student> students(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> students[i].name >> students[i].score;\n\n    // TODO: Implement selection sort on students, sorted by score DESCENDING\n    // Outer loop: iterate start from 0 to n-2\n    //   Track the index of the maximum score (maxIndex)\n    //   Inner loop: find the student with the highest score in the unsorted region\n    //   Swap students[start] with students[maxIndex]\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << students[i].name << ' ' << students[i].score << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <utility>\n#include <vector>\n\nstruct Student\n{\n    std::string name{};\n    int score{};\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Student> students(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> students[i].name >> students[i].score;\n\n    for (int start{ 0 }; start < n - 1; ++start)\n    {\n        int maxIndex{ start };\n        for (int cur{ start + 1 }; cur < n; ++cur)\n        {\n            if (students[cur].score > students[maxIndex].score)\n                maxIndex = cur;\n        }\n        std::swap(students[start], students[maxIndex]);\n    }\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << students[i].name << ' ' << students[i].score << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic student list",
+          "is_sample": true,
+          "stdin": "3\nAlice 85\nBob 92\nCarla 78",
+          "expected_stdout": "Bob 92\nAlice 85\nCarla 78\n"
+        },
+        {
+          "label": "Single student",
+          "is_sample": false,
+          "stdin": "1\nZara 100",
+          "expected_stdout": "Zara 100\n"
+        },
+        {
+          "label": "Already in descending order",
+          "is_sample": false,
+          "stdin": "4\nEve 99\nDan 75\nCal 60\nAmy 42",
+          "expected_stdout": "Eve 99\nDan 75\nCal 60\nAmy 42\n"
+        }
+      ]
+    }
+  ]
+}

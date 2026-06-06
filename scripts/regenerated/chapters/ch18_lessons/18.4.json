@@ -1,0 +1,60 @@
+{
+  "number": "18.4",
+  "title": "Timing your code",
+  "sort_order": 3,
+  "summary_md": "## Timing Your Code\n\nWhen comparing algorithms (e.g., selection sort vs. `std::sort`), you need a way to measure how long each one takes. The `<chrono>` library provides type-safe clocks and duration types for exactly this purpose.\n\n```cpp\n#include <chrono>\n#include <iostream>\n\nint main()\n{\n    auto start{ std::chrono::steady_clock::now() };\n\n    // ... code you want to time ...\n\n    auto end{ std::chrono::steady_clock::now() };\n    auto elapsed{ end - start };\n    auto ms{ std::chrono::duration_cast<std::chrono::milliseconds>(elapsed) };\n    std::cout << \"Took \" << ms.count() << \" ms\\n\";\n}\n```\n\n### Clocks\n\n`std::chrono::steady_clock` is the best choice for benchmarking because it is guaranteed to never go backwards (it is monotonic). `std::chrono::high_resolution_clock` may or may not be monotonic depending on the implementation, and `std::chrono::system_clock` can jump when the OS adjusts the system time. For measuring elapsed time, always prefer `steady_clock`.\n\n### Time Points and Durations\n\nCalling `steady_clock::now()` returns a `std::chrono::time_point`. Subtracting two time points produces a `std::chrono::duration`, which represents a span of time. A duration is parameterized by its tick period -- for example, `std::chrono::milliseconds` uses a period of 1/1000 of a second, and `std::chrono::microseconds` uses 1/1000000.\n\n### duration_cast\n\nConverting from a finer duration to a coarser one (e.g., microseconds to milliseconds) loses precision, so C++ requires an explicit `std::chrono::duration_cast`. Converting the other direction (coarser to finer) is implicit because no precision is lost. The `.count()` member function extracts the raw numeric value from any duration.\n\n### Benchmarking Tips\n\nBuild in release mode (optimizations on) when benchmarking -- debug builds are dramatically slower. Run the timed section several times and look at the average. Avoid printing inside the timed section, since I/O is slow and variable. Be aware that the optimizer may remove code whose result is never used; make sure you use the computed result (e.g., print it after timing stops).",
+  "exercises": [
+    {
+      "title": "Duration Conversion Calculator",
+      "prompt_md": "## Goal\nWrite a program that reads a number of microseconds and converts it to milliseconds and seconds using `std::chrono` duration types.\n\n## Input\n- A single integer on one line representing a count of microseconds.\n\n## Output\nExactly three lines:\n```\n<N> us\n<M> ms\n<S> s\n```\nWhere `<N>` is the original microsecond value, `<M>` is the truncated millisecond value, and `<S>` is the truncated seconds value. All values are integers.\n\n## Requirements\n1. Read the integer input into a `std::chrono::microseconds` duration using its constructor.\n2. Use `std::chrono::duration_cast` to convert to `std::chrono::milliseconds` and `std::chrono::seconds`.\n3. Use `.count()` to extract the numeric value from each duration for printing.\n4. The conversions truncate toward zero (this is the default behavior of `duration_cast`).\n5. You may use `#include <chrono>` and `#include <iostream>`.",
+      "starter_code": "#include <chrono>\n#include <iostream>\n\nint main()\n{\n    long long input{};\n    std::cin >> input;\n\n    // TODO: Create a std::chrono::microseconds from input\n\n    // TODO: Use duration_cast to convert to milliseconds and seconds\n\n    // TODO: Print all three values using .count()\n    //       Format: \"<N> us\", \"<M> ms\", \"<S> s\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <chrono>\n#include <iostream>\n\nint main()\n{\n    long long input{};\n    std::cin >> input;\n\n    std::chrono::microseconds us{ input };\n    auto ms{ std::chrono::duration_cast<std::chrono::milliseconds>(us) };\n    auto s{ std::chrono::duration_cast<std::chrono::seconds>(us) };\n\n    std::cout << us.count() << \" us\" << '\\n';\n    std::cout << ms.count() << \" ms\" << '\\n';\n    std::cout << s.count() << \" s\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- 3500000 microseconds",
+          "is_sample": true,
+          "stdin": "3500000\n",
+          "expected_stdout": "3500000 us\n3500 ms\n3 s\n"
+        },
+        {
+          "label": "Hidden -- 123456789 microseconds",
+          "is_sample": false,
+          "stdin": "123456789\n",
+          "expected_stdout": "123456789 us\n123456 ms\n123 s\n"
+        },
+        {
+          "label": "Hidden -- 999 microseconds (less than 1 ms)",
+          "is_sample": false,
+          "stdin": "999\n",
+          "expected_stdout": "999 us\n0 ms\n0 s\n"
+        }
+      ]
+    },
+    {
+      "title": "Time Difference from Timestamps",
+      "prompt_md": "## Goal\nSimulate computing elapsed time between two timestamps. Read two integer values representing \"start\" and \"end\" times in milliseconds, compute the difference using `std::chrono` duration arithmetic, and report the result in multiple units.\n\n## Input\n- Line 1: an integer representing the start time in milliseconds.\n- Line 2: an integer representing the end time in milliseconds. The end time is always >= the start time.\n\n## Output\nExactly three lines:\n```\nElapsed: <D> ms\nElapsed: <U> us\nElapsed: <S> s\n```\nWhere `<D>` is the difference in milliseconds, `<U>` is that difference converted to microseconds, and `<S>` is the difference truncated to whole seconds.\n\n## Requirements\n1. Read both integers and construct `std::chrono::milliseconds` durations from each.\n2. Compute the elapsed duration by subtracting the start duration from the end duration (duration arithmetic).\n3. Convert the elapsed duration to `std::chrono::microseconds` -- this conversion is implicit (finer precision, no cast needed).\n4. Convert the elapsed duration to `std::chrono::seconds` using `std::chrono::duration_cast` (coarser precision requires explicit cast).\n5. Print all three results using `.count()` in the exact format shown.\n6. You may use `#include <chrono>` and `#include <iostream>`.",
+      "starter_code": "#include <chrono>\n#include <iostream>\n\nint main()\n{\n    long long startVal{};\n    long long endVal{};\n    std::cin >> startVal >> endVal;\n\n    // TODO: Create std::chrono::milliseconds from startVal and endVal\n\n    // TODO: Compute elapsed = end - start\n\n    // TODO: Convert elapsed to microseconds (implicit)\n    // TODO: Convert elapsed to seconds (duration_cast)\n\n    // TODO: Print all three lines using .count()\n    //       \"Elapsed: <D> ms\"\n    //       \"Elapsed: <U> us\"\n    //       \"Elapsed: <S> s\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <chrono>\n#include <iostream>\n\nint main()\n{\n    long long startVal{};\n    long long endVal{};\n    std::cin >> startVal >> endVal;\n\n    std::chrono::milliseconds startMs{ startVal };\n    std::chrono::milliseconds endMs{ endVal };\n    auto elapsed{ endMs - startMs };\n\n    std::chrono::microseconds elapsedUs{ elapsed };\n    auto elapsedS{ std::chrono::duration_cast<std::chrono::seconds>(elapsed) };\n\n    std::cout << \"Elapsed: \" << elapsed.count() << \" ms\" << '\\n';\n    std::cout << \"Elapsed: \" << elapsedUs.count() << \" us\" << '\\n';\n    std::cout << \"Elapsed: \" << elapsedS.count() << \" s\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- 1000 to 4500 ms",
+          "is_sample": true,
+          "stdin": "1000\n4500\n",
+          "expected_stdout": "Elapsed: 3500 ms\nElapsed: 3500000 us\nElapsed: 3 s\n"
+        },
+        {
+          "label": "Hidden -- 0 to 750 ms (less than 1 second)",
+          "is_sample": false,
+          "stdin": "0\n750\n",
+          "expected_stdout": "Elapsed: 750 ms\nElapsed: 750000 us\nElapsed: 0 s\n"
+        },
+        {
+          "label": "Hidden -- same start and end",
+          "is_sample": false,
+          "stdin": "5000\n5000\n",
+          "expected_stdout": "Elapsed: 0 ms\nElapsed: 0 us\nElapsed: 0 s\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "22.7",
+  "title": "Circular dependency issues with std::shared_ptr, and std::weak_ptr",
+  "sort_order": 6,
+  "summary_md": "When two objects hold `std::shared_ptr` references to each other, neither object's reference count ever reaches zero. Both stay alive forever -- a **circular dependency** (also called a reference cycle). This is the most common way `shared_ptr` leaks memory.\n\nConsider two classes, `Person`, each storing a `std::shared_ptr` to a partner. When you write `alice->partner = bob; bob->partner = alice;`, the reference count for each object reaches 2 (one from `main`, one from the partner pointer). When the `shared_ptr` variables in `main` go out of scope, each count drops to 1 -- but never to 0. Neither destructor runs, and memory leaks silently.\n\n**`std::weak_ptr`** breaks the cycle. A `weak_ptr` observes a `shared_ptr`-managed object without incrementing the reference count. If the partner pointer is a `weak_ptr` instead of a `shared_ptr`, the mutual reference does not keep the objects alive. When the last owning `shared_ptr` goes away, the object is destroyed normally.\n\nBecause a `weak_ptr` does not own the object, the object might be destroyed while you still hold the `weak_ptr`. Two member functions let you check:\n\n- **`expired()`** returns `true` if the managed object has been destroyed.\n- **`lock()`** returns a `std::shared_ptr` to the object if it still exists, or an empty `shared_ptr` if it has been destroyed. Always use `lock()` before accessing the object -- never dereference a `weak_ptr` directly (it has no `operator*` or `operator->`).\n\n```cpp\n#include <iostream>\n#include <memory>\n\nstruct Node {\n    int id;\n    std::weak_ptr<Node> next;  // weak, not shared -- breaks cycle\n    Node(int id) : id{id} {}\n    ~Node() { std::cout << \"Node \" << id << \" destroyed\\n\"; }\n};\n\nint main() {\n    auto a = std::make_shared<Node>(1);\n    auto b = std::make_shared<Node>(2);\n    a->next = b;  // weak_ptr assigned from shared_ptr\n    b->next = a;\n    // Both nodes are destroyed when a and b leave scope\n}\n```\n\nThe design rule is straightforward: in any relationship where two objects point at each other, make one direction a `weak_ptr`. The owning direction keeps a `shared_ptr`; the back-pointer uses `weak_ptr`. This preserves the reference-count cleanup that makes `shared_ptr` useful in the first place.",
+  "exercises": [
+    {
+      "title": "Detect a circular dependency with use_count",
+      "prompt_md": "## Goal\n\nDemonstrate the circular dependency problem by building two objects that reference each other via `std::shared_ptr`, then show how switching to `std::weak_ptr` fixes the leak. You will use `use_count()` to observe the reference counts at each stage.\n\n## Input\n\n- Line 1: two space-separated integers `idA` and `idB` (1 <= each <= 9999), the IDs for two nodes.\n\n## Output\n\nPrint exactly five lines:\n1. `Circular: A count = <countA>, B count = <countB>` -- the reference counts of `a` and `b` after cross-linking with `shared_ptr` members (before any cleanup).\n2. `Circular after reset: A count = <countA>, B count = <countB>` -- the counts after calling `a.reset()` and `b.reset()` (the cycle keeps both alive, so counts will be 1 each).\n3. `Fixed: A count = <countA>, B count = <countB>` -- the counts after cross-linking with `weak_ptr` members (weak_ptr does not increase count).\n4. `A expired: false` -- check `weak_ptr` on node A's `next` member before cleanup.\n5. `A expired: true` -- check the same `weak_ptr` after calling `b.reset()` (node B is destroyed).\n\nReplace each `<countA>` and `<countB>` with the actual integer from `use_count()`.\n\n## Requirements\n\n1. Define `struct BadNode` with `int id` and `std::shared_ptr<BadNode> next`.\n2. Define `struct GoodNode` with `int id` and `std::weak_ptr<GoodNode> next`.\n3. For the circular test: create `a` and `b` as `shared_ptr<BadNode>`, assign `a->next = b` and `b->next = a`, print line 1, call `a.reset()` then `b.reset()`, print line 2.\n4. For the fixed test: create new `a` and `b` as `shared_ptr<GoodNode>`, assign `a->next = b` and `b->next = a`, print line 3. Store `a->next` in a local `std::weak_ptr<GoodNode> obs` before any reset. Print line 4 using `obs.expired()`. Call `b.reset()`, then print line 5 using `obs.expired()`.\n5. Print `false`/`true` as literal text (use `std::boolalpha`).\n6. Do **not** rely on destructor output for correctness.",
+      "starter_code": "#include <iostream>\n#include <memory>\n\nstruct BadNode {\n    int id;\n    std::shared_ptr<BadNode> next;\n    BadNode(int id) : id{id} {}\n};\n\nstruct GoodNode {\n    int id;\n    std::weak_ptr<GoodNode> next;\n    GoodNode(int id) : id{id} {}\n};\n\nint main() {\n    int idA{}, idB{};\n    std::cin >> idA >> idB;\n\n    // --- Part 1: Circular dependency (BadNode) ---\n    // TODO: create shared_ptr<BadNode> a and b, cross-link, print counts,\n    //       reset both, print counts again\n\n    // --- Part 2: Fixed with weak_ptr (GoodNode) ---\n    // TODO: create shared_ptr<GoodNode> a2 and b2, cross-link, print counts,\n    //       store a2->next in a weak_ptr, print expired before and after b2.reset()\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <memory>\n\nstruct BadNode {\n    int id;\n    std::shared_ptr<BadNode> next;\n    BadNode(int id) : id{id} {}\n};\n\nstruct GoodNode {\n    int id;\n    std::weak_ptr<GoodNode> next;\n    GoodNode(int id) : id{id} {}\n};\n\nint main() {\n    int idA{}, idB{};\n    std::cin >> idA >> idB;\n\n    // Part 1: Circular dependency\n    {\n        auto a = std::make_shared<BadNode>(idA);\n        auto b = std::make_shared<BadNode>(idB);\n        a->next = b;\n        b->next = a;\n        std::cout << \"Circular: A count = \" << a.use_count()\n                  << \", B count = \" << b.use_count() << \"\\n\";\n        a.reset();\n        b.reset();\n        std::cout << \"Circular after reset: A count = \"\n                  << a.use_count() << \", B count = \" << b.use_count() << \"\\n\";\n    }\n\n    // Part 2: Fixed with weak_ptr\n    {\n        auto a2 = std::make_shared<GoodNode>(idA);\n        auto b2 = std::make_shared<GoodNode>(idB);\n        a2->next = b2;\n        b2->next = a2;\n        std::cout << \"Fixed: A count = \" << a2.use_count()\n                  << \", B count = \" << b2.use_count() << \"\\n\";\n\n        std::weak_ptr<GoodNode> obs = a2->next;\n        std::cout << std::boolalpha;\n        std::cout << \"A expired: \" << obs.expired() << \"\\n\";\n        b2.reset();\n        std::cout << \"A expired: \" << obs.expired() << \"\\n\";\n    }\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample -- ids 1 and 2",
+          "is_sample": true,
+          "stdin": "1 2\n",
+          "expected_stdout": "Circular: A count = 2, B count = 2\nCircular after reset: A count = 0, B count = 0\nFixed: A count = 1, B count = 1\nA expired: false\nA expired: true\n"
+        },
+        {
+          "label": "hidden -- ids 100 and 200",
+          "is_sample": false,
+          "stdin": "100 200\n",
+          "expected_stdout": "Circular: A count = 2, B count = 2\nCircular after reset: A count = 0, B count = 0\nFixed: A count = 1, B count = 1\nA expired: false\nA expired: true\n"
+        },
+        {
+          "label": "hidden -- ids 9999 and 1",
+          "is_sample": false,
+          "stdin": "9999 1\n",
+          "expected_stdout": "Circular: A count = 2, B count = 2\nCircular after reset: A count = 0, B count = 0\nFixed: A count = 1, B count = 1\nA expired: false\nA expired: true\n"
+        }
+      ]
+    },
+    {
+      "title": "Safe observer with weak_ptr::lock",
+      "prompt_md": "## Goal\n\nBuild a `Registry` that hands out `std::shared_ptr<Item>` objects and an `Observer` that watches a single item via `std::weak_ptr<Item>`. The observer must safely report the item's value using `lock()`, and correctly detect when the item has been destroyed.\n\n## Input\n\n- Line 1: a single integer `value` (1 <= value <= 99999) representing the item's stored value.\n\n## Output\n\nPrint exactly five lines:\n1. `Observer lock: <value>` -- the observer successfully locks and reads the item's value.\n2. `Owner count: <count>` -- the use_count of the shared_ptr returned by lock() (printed while the locked pointer is still alive).\n3. `After unlock owner count: <count>` -- the use_count of the original shared_ptr after the locked pointer is destroyed.\n4. `Item alive: true` -- check expired() on the observer while the original shared_ptr still exists.\n5. `Item alive: false` -- check expired() on the observer after the original shared_ptr is reset.\n\n## Requirements\n\n1. Define `struct Item` with a single `int value` member and a constructor `Item(int v)`.\n2. In `main`, create a `std::shared_ptr<Item>` called `owner` using `std::make_shared`.\n3. Create a `std::weak_ptr<Item>` called `observer` from `owner`.\n4. Call `observer.lock()` to obtain a temporary `std::shared_ptr<Item>` called `locked`. If `locked` is non-null, print line 1 with `locked->value`. Print line 2 with `owner.use_count()` (which reflects both `owner` and `locked`).\n5. Destroy `locked` (e.g., by ending its scope or calling `reset()`). Print line 3 with `owner.use_count()`.\n6. Print line 4: `Item alive: ` followed by `!observer.expired()` (use `std::boolalpha`).\n7. Call `owner.reset()`. Print line 5: `Item alive: ` followed by `!observer.expired()`.\n8. Do **not** use `new`/`delete`. Do **not** rely on destructor output for correctness.",
+      "starter_code": "#include <iostream>\n#include <memory>\n\nstruct Item {\n    int value;\n    Item(int v) : value{v} {}\n};\n\nint main() {\n    int value{};\n    std::cin >> value;\n\n    // TODO: create shared_ptr<Item> owner with make_shared\n\n    // TODO: create weak_ptr<Item> observer from owner\n\n    // TODO: lock the observer to get a temporary shared_ptr\n    //       print the value and use_count while locked\n\n    // TODO: release the lock, print use_count again\n\n    // TODO: print whether the item is alive (use boolalpha and !expired())\n\n    // TODO: reset owner, print whether the item is alive\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <memory>\n\nstruct Item {\n    int value;\n    Item(int v) : value{v} {}\n};\n\nint main() {\n    int value{};\n    std::cin >> value;\n\n    auto owner = std::make_shared<Item>(value);\n    std::weak_ptr<Item> observer = owner;\n\n    {\n        auto locked = observer.lock();\n        if (locked) {\n            std::cout << \"Observer lock: \" << locked->value << \"\\n\";\n            std::cout << \"Owner count: \" << owner.use_count() << \"\\n\";\n        }\n    }\n\n    std::cout << \"After unlock owner count: \" << owner.use_count() << \"\\n\";\n\n    std::cout << std::boolalpha;\n    std::cout << \"Item alive: \" << !observer.expired() << \"\\n\";\n\n    owner.reset();\n    std::cout << \"Item alive: \" << !observer.expired() << \"\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "sample -- value 42",
+          "is_sample": true,
+          "stdin": "42\n",
+          "expected_stdout": "Observer lock: 42\nOwner count: 2\nAfter unlock owner count: 1\nItem alive: true\nItem alive: false\n"
+        },
+        {
+          "label": "hidden -- value 1 (minimum)",
+          "is_sample": false,
+          "stdin": "1\n",
+          "expected_stdout": "Observer lock: 1\nOwner count: 2\nAfter unlock owner count: 1\nItem alive: true\nItem alive: false\n"
+        },
+        {
+          "label": "hidden -- value 99999 (maximum)",
+          "is_sample": false,
+          "stdin": "99999\n",
+          "expected_stdout": "Observer lock: 99999\nOwner count: 2\nAfter unlock owner count: 1\nItem alive: true\nItem alive: false\n"
+        }
+      ]
+    }
+  ]
+}

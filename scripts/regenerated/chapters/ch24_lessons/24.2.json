@@ -1,0 +1,62 @@
+{
+  "number": "24.2",
+  "title": "Basic inheritance in C++",
+  "sort_order": 1,
+  "summary_md": "Now that you understand why inheritance exists (lesson 24.1), let us look at how to write it in C++. You create a derived class by placing a colon after its name, followed by the keyword `public` and the base class name: `class Derived : public Base`. This tells the compiler that `Derived` inherits every non-private member variable and member function that `Base` defines.\n\nHere is a minimal example:\n\n```cpp\n#include <iostream>\n#include <string>\n\nclass Animal {\n    std::string m_name;\n    int m_legs{};\npublic:\n    Animal(std::string_view name, int legs)\n        : m_name{name}, m_legs{legs} {}\n    std::string_view getName() const { return m_name; }\n    int getLegs() const { return m_legs; }\n};\n\nclass Dog : public Animal {\npublic:\n    Dog(std::string_view name)\n        : Animal{name, 4} {}\n    void bark() const { std::cout << \"Woof!\\n\"; }\n};\n```\n\n`Dog` publicly inherits from `Animal`. That means every `Dog` object contains the `m_name` and `m_legs` members defined by `Animal`, and the public functions `getName()` and `getLegs()` are callable through a `Dog` object, even though `Dog` never declared them. `Dog` also adds its own member function `bark()`, which only `Dog` (and its future descendants) can use. A plain `Animal` object has no `bark()` function.\n\nNotice that `Dog`'s constructor calls `Animal`'s constructor in its member initializer list: `Animal{name, 4}`. This is necessary because a derived class does **not** inherit the base class's constructors. The derived constructor must explicitly delegate to a base constructor so that the base portion of the object is properly initialized. Destructors and copy/move assignment operators are likewise not inherited.\n\nTo summarize what a derived class inherits and what it does not:\n\n- **Inherited:** public (and protected) member variables and member functions of the base class.\n- **Not inherited:** constructors, destructors, and assignment operators. The derived class must provide its own (or the compiler generates defaults).\n\nBecause `Dog` inherits `Animal`'s public interface, you can call `getName()` and `getLegs()` on a `Dog` exactly as you would on an `Animal`. The derived class reuses the base class's implementation without duplicating code -- this is the central benefit of inheritance.",
+  "exercises": [
+    {
+      "title": "Derive a Student from Person",
+      "prompt_md": "## Goal\n\nCreate a base class `Person` and a derived class `Student` that inherits from `Person` using public inheritance. This exercise practices the basic `class Derived : public Base` syntax and calling the base constructor from the derived constructor.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters) and an integer `age` (1 <= age <= 120).\n- Line 2: an integer `studentId` (1 <= studentId <= 99999).\n\n## Output\n\n- Line 1: `Name: <name>`\n- Line 2: `Age: <age>`\n- Line 3: `Student ID: <studentId>`\n\nAll values come from calling member functions on a single `Student` object.\n\n## Requirements\n\n- Define a class `Person` with private members `std::string m_name` and `int m_age`. Its constructor takes `std::string_view name` and `int age`.\n- `Person` has public const getters `getName()` (returns `std::string_view`) and `getAge()` (returns `int`).\n- Define a class `Student` that publicly inherits from `Person`. It adds a private member `int m_studentId`.\n- `Student`'s constructor takes `std::string_view name`, `int age`, and `int studentId`. It must delegate to `Person`'s constructor for the name and age.\n- `Student` has a public const getter `getStudentId()` (returns `int`).\n- In `main`, read input, construct a `Student`, and print the three output lines using only the `Student` object and its inherited + own getters.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Person\n{\n    std::string m_name;\n    int m_age{};\n\npublic:\n    Person(std::string_view name, int age)\n        : m_name{ name }, m_age{ age }\n    {\n    }\n\n    // TODO: Add getName() and getAge() const getters\n};\n\nclass Student : public Person\n{\n    int m_studentId{};\n\npublic:\n    // TODO: Constructor taking name, age, and studentId\n    //       Must call Person's constructor for name and age\n\n    // TODO: Add getStudentId() const getter\n};\n\nint main()\n{\n    std::string name{};\n    int age{};\n    std::cin >> name >> age;\n\n    int studentId{};\n    std::cin >> studentId;\n\n    // TODO: Create a Student and print:\n    //   Name: <name>\n    //   Age: <age>\n    //   Student ID: <studentId>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Person\n{\n    std::string m_name;\n    int m_age{};\n\npublic:\n    Person(std::string_view name, int age)\n        : m_name{ name }, m_age{ age }\n    {\n    }\n\n    std::string_view getName() const { return m_name; }\n    int getAge() const { return m_age; }\n};\n\nclass Student : public Person\n{\n    int m_studentId{};\n\npublic:\n    Student(std::string_view name, int age, int studentId)\n        : Person{ name, age }, m_studentId{ studentId }\n    {\n    }\n\n    int getStudentId() const { return m_studentId; }\n};\n\nint main()\n{\n    std::string name{};\n    int age{};\n    std::cin >> name >> age;\n\n    int studentId{};\n    std::cin >> studentId;\n\n    Student s{ name, age, studentId };\n    std::cout << \"Name: \" << s.getName() << '\\n';\n    std::cout << \"Age: \" << s.getAge() << '\\n';\n    std::cout << \"Student ID: \" << s.getStudentId() << '\\n';\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Typical student",
+          "is_sample": true,
+          "stdin": "Alice 20\n12345",
+          "expected_stdout": "Name: Alice\nAge: 20\nStudent ID: 12345\n"
+        },
+        {
+          "label": "Young student",
+          "is_sample": false,
+          "stdin": "Bob 6\n1",
+          "expected_stdout": "Name: Bob\nAge: 6\nStudent ID: 1\n"
+        },
+        {
+          "label": "Large ID",
+          "is_sample": false,
+          "stdin": "Zara 35\n99999",
+          "expected_stdout": "Name: Zara\nAge: 35\nStudent ID: 99999\n"
+        }
+      ]
+    },
+    {
+      "title": "Vehicle hierarchy with inherited behavior",
+      "prompt_md": "## Goal\n\nBuild a small vehicle hierarchy where a `Vehicle` base class provides shared state and behavior, and two derived classes (`Car` and `Truck`) each add their own specialized member. This reinforces that derived classes inherit base members and functions while extending the class with new data.\n\n## Input\n\n- Line 1: a string `carMake` (no spaces, 1-50 characters), an integer `carYear` (1900 <= carYear <= 2100), and an integer `numDoors` (2 <= numDoors <= 6).\n- Line 2: a string `truckMake` (no spaces, 1-50 characters), an integer `truckYear` (1900 <= truckYear <= 2100), and a double `payloadTons` (0.1 <= payloadTons <= 100.0).\n\n## Output\n\n- Line 1: `Car: <carMake> (<carYear>), <numDoors> doors`\n- Line 2: `Truck: <truckMake> (<truckYear>), <payloadTons>t payload`\n\n`payloadTons` is printed with exactly one decimal place.\n\n## Requirements\n\n- Define a class `Vehicle` with private members `std::string m_make` and `int m_year`. Its constructor takes `std::string_view make` and `int year`.\n- `Vehicle` has public const getters `getMake()` (returns `std::string_view`) and `getYear()` (returns `int`).\n- Define a class `Car` that publicly inherits from `Vehicle`. It adds a private member `int m_numDoors`. Its constructor takes `std::string_view make`, `int year`, and `int numDoors`, delegating to `Vehicle`'s constructor.\n- `Car` has a public const getter `getNumDoors()` (returns `int`).\n- Define a class `Truck` that publicly inherits from `Vehicle`. It adds a private member `double m_payloadTons`. Its constructor takes `std::string_view make`, `int year`, and `double payloadTons`, delegating to `Vehicle`'s constructor.\n- `Truck` has a public const getter `getPayloadTons()` (returns `double`).\n- In `main`, read input, construct one `Car` and one `Truck`, and print the output using inherited and own getters. Use `std::fixed` and `std::setprecision(1)` for the payload.",
+      "starter_code": "#include <iomanip>\n#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Vehicle\n{\n    std::string m_make;\n    int m_year{};\n\npublic:\n    Vehicle(std::string_view make, int year)\n        : m_make{ make }, m_year{ year }\n    {\n    }\n\n    // TODO: Add getMake() and getYear() const getters\n};\n\nclass Car : public Vehicle\n{\n    int m_numDoors{};\n\npublic:\n    // TODO: Constructor delegating to Vehicle, plus numDoors\n\n    // TODO: Add getNumDoors() const getter\n};\n\nclass Truck : public Vehicle\n{\n    double m_payloadTons{};\n\npublic:\n    // TODO: Constructor delegating to Vehicle, plus payloadTons\n\n    // TODO: Add getPayloadTons() const getter\n};\n\nint main()\n{\n    std::string carMake{};\n    int carYear{};\n    int numDoors{};\n    std::cin >> carMake >> carYear >> numDoors;\n\n    std::string truckMake{};\n    int truckYear{};\n    double payloadTons{};\n    std::cin >> truckMake >> truckYear >> payloadTons;\n\n    // TODO: Create Car and Truck, then print:\n    //   Car: <make> (<year>), <doors> doors\n    //   Truck: <make> (<year>), <payload>t payload\n    // Use std::fixed and std::setprecision(1) for payload\n\n    return 0;\n}\n",
+      "solution_code": "#include <iomanip>\n#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Vehicle\n{\n    std::string m_make;\n    int m_year{};\n\npublic:\n    Vehicle(std::string_view make, int year)\n        : m_make{ make }, m_year{ year }\n    {\n    }\n\n    std::string_view getMake() const { return m_make; }\n    int getYear() const { return m_year; }\n};\n\nclass Car : public Vehicle\n{\n    int m_numDoors{};\n\npublic:\n    Car(std::string_view make, int year, int numDoors)\n        : Vehicle{ make, year }, m_numDoors{ numDoors }\n    {\n    }\n\n    int getNumDoors() const { return m_numDoors; }\n};\n\nclass Truck : public Vehicle\n{\n    double m_payloadTons{};\n\npublic:\n    Truck(std::string_view make, int year, double payloadTons)\n        : Vehicle{ make, year }, m_payloadTons{ payloadTons }\n    {\n    }\n\n    double getPayloadTons() const { return m_payloadTons; }\n};\n\nint main()\n{\n    std::string carMake{};\n    int carYear{};\n    int numDoors{};\n    std::cin >> carMake >> carYear >> numDoors;\n\n    std::string truckMake{};\n    int truckYear{};\n    double payloadTons{};\n    std::cin >> truckMake >> truckYear >> payloadTons;\n\n    Car car{ carMake, carYear, numDoors };\n    Truck truck{ truckMake, truckYear, payloadTons };\n\n    std::cout << \"Car: \" << car.getMake() << \" (\" << car.getYear()\n              << \"), \" << car.getNumDoors() << \" doors\\n\";\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Truck: \" << truck.getMake() << \" (\" << truck.getYear()\n              << \"), \" << truck.getPayloadTons() << \"t payload\\n\";\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Common vehicles",
+          "is_sample": true,
+          "stdin": "Toyota 2022 4\nFord 2020 5.5",
+          "expected_stdout": "Car: Toyota (2022), 4 doors\nTruck: Ford (2020), 5.5t payload\n"
+        },
+        {
+          "label": "Sports car and heavy truck",
+          "is_sample": false,
+          "stdin": "Porsche 2024 2\nVolvo 2019 18.0",
+          "expected_stdout": "Car: Porsche (2024), 2 doors\nTruck: Volvo (2019), 18.0t payload\n"
+        },
+        {
+          "label": "Edge values",
+          "is_sample": false,
+          "stdin": "Mini 1960 2\nMack 2100 100.0",
+          "expected_stdout": "Car: Mini (1960), 2 doors\nTruck: Mack (2100), 100.0t payload\n"
+        }
+      ]
+    }
+  ]
+}

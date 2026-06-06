@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Greeting by name",
+    "prompt_md": "**Goal:** Write a program that simulates processing command line arguments. Given a list of names, print a personalized greeting for each one.\n\n**Why stdin?** Our sandbox cannot pass real command line arguments, so you will read input that *simulates* `argc` and `argv`.\n\n**Input format:**\n- Line 1: an integer `N` (the number of names, simulating `argc - 1`)\n- Next `N` lines: one name per line (simulating `argv[1]` through `argv[N]`)\n\n**Output:** For each name, print exactly:\n```\nHello, <name>!\n```\nIf `N` is `0`, print exactly:\n```\nNo names provided.\n```\n\n**Requirements:**\n- Use `std::string` to store each name.\n- Validate that `N >= 0` before processing (you may assume input is well-formed).\n- Print one greeting per line, in the order the names are given.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    // Read the simulated argument count\n    int n{};\n    std::cin >> n;\n    std::cin.ignore(); // discard the newline after the number\n\n    // TODO: if n is 0, print \"No names provided.\"\n    // Otherwise, read each name and print \"Hello, <name>!\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    if (n == 0)\n    {\n        std::cout << \"No names provided.\" << '\\n';\n        return 0;\n    }\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string name{};\n        std::getline(std::cin, name);\n        std::cout << \"Hello, \" << name << \"!\" << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Two names",
+        "is_sample": true,
+        "stdin": "2\nAlice\nBob\n",
+        "expected_stdout": "Hello, Alice!\nHello, Bob!\n"
+      },
+      {
+        "label": "No names",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "No names provided.\n"
+      },
+      {
+        "label": "Single name",
+        "is_sample": false,
+        "stdin": "1\nCharlie\n",
+        "expected_stdout": "Hello, Charlie!\n"
+      }
+    ]
+  },
+  {
+    "title": "Sum of numeric arguments",
+    "prompt_md": "**Goal:** Write a program that simulates receiving numeric command line arguments, converts them to integers, and computes their sum — just as you would if parsing `argv` in a real CLI tool.\n\n**Why stdin?** Our sandbox cannot pass real command line arguments, so you will read input that *simulates* `argc` and `argv`.\n\n**Input format:**\n- Line 1: an integer `N` (the count of numeric arguments, simulating `argc - 1`)\n- Next `N` lines: one integer string per line (simulating `argv[1]` through `argv[N]`)\n\n**Output:** Print exactly:\n```\nSum: <total>\n```\nwhere `<total>` is the sum of all `N` integers. If `N` is `0`, the sum is `0`.\n\n**Requirements:**\n- Convert each string argument to an `int` using `std::stoi`.\n- Accumulate the running total in a variable.\n- Handle negative numbers correctly (e.g., `\"-5\"` should convert to `-5`).",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    int sum{ 0 };\n\n    // TODO: read n string arguments, convert each to int with\n    // std::stoi, and add to sum\n\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    int sum{ 0 };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string arg{};\n        std::getline(std::cin, arg);\n        sum += std::stoi(arg);\n    }\n\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Three positive numbers",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "Sum: 60\n"
+      },
+      {
+        "label": "Mixed positive and negative",
+        "is_sample": false,
+        "stdin": "4\n5\n-3\n8\n-10\n",
+        "expected_stdout": "Sum: 0\n"
+      },
+      {
+        "label": "No arguments",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Sum: 0\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Extract a Substring Using the Reference",
+    "prompt_md": "## Goal\nYou are given the following reference description for `std::string::substr`:\n\n```\nbasic_string substr( size_type pos = 0, size_type count = npos ) const;\n```\n\n**Returns:** A new string containing `count` characters starting at position `pos`. If `count` extends past the end of the string, the returned string goes up to (but not including) the end.\n\nUse this signature to extract specific parts of an input string.\n\n## Input\n- Line 1: a single word (no spaces, 1 to 100 characters)\n- Line 2: two integers separated by a space — `start` (0-based position) and `length` (number of characters to extract)\n\n## Output\n- Line 1: the extracted substring\n- Line 2: the number of characters in the extracted substring\n\n## Requirements\n1. Read the word into a `std::string`.\n2. Read the two integers `start` and `length`.\n3. Call `substr` on the string with the given `start` and `length` to produce the extracted substring.\n4. Print the substring on the first line.\n5. Print the size of the substring (using `.length()` or `.size()`) as an integer on the second line.\n6. You may assume `start` is always a valid index within the string. `length` may extend past the end — `substr` handles that automatically by returning only the available characters.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string word{};\n    std::cin >> word;\n\n    int start{};\n    int length{};\n    std::cin >> start >> length;\n\n    // TODO: Use word.substr(start, length) to extract the substring\n    // TODO: Print the substring on one line\n    // TODO: Print the length of the substring on the next line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string word{};\n    std::cin >> word;\n\n    int start{};\n    int length{};\n    std::cin >> start >> length;\n\n    std::string sub{ word.substr(static_cast<std::size_t>(start),\n                                 static_cast<std::size_t>(length)) };\n    std::cout << sub << '\\n';\n    std::cout << sub.length() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample — middle of a word",
+        "is_sample": true,
+        "stdin": "programming\n3 4\n",
+        "expected_stdout": "gram\n4\n"
+      },
+      {
+        "label": "Hidden — length extends past end of string",
+        "is_sample": false,
+        "stdin": "hello\n2 100\n",
+        "expected_stdout": "llo\n3\n"
+      },
+      {
+        "label": "Hidden — extract from position 0",
+        "is_sample": false,
+        "stdin": "cppreference\n0 3\n",
+        "expected_stdout": "cpp\n3\n"
+      }
+    ]
+  },
+  {
+    "title": "Look Up and Use std::string::find",
+    "prompt_md": "## Goal\nHere is a reference description for a function you may not have used before:\n\n```\nsize_type find( const basic_string& str, size_type pos = 0 ) const;\n```\n\n**Returns:** The index of the first occurrence of `str` within this string, starting the search at position `pos`. If the substring is not found, returns `std::string::npos`.\n\n`std::string::npos` is a special constant (equal to the largest possible `size_type` value) that signals \"not found\".\n\nUse this function to search for a target word inside a larger string.\n\n## Input\n- Line 1: a single word to search within (the haystack, no spaces, 1 to 200 characters)\n- Line 2: a single word to search for (the needle, no spaces, 1 to 50 characters)\n\n## Output\n- If the needle is found inside the haystack, print:\n  ```\n  Found at position <index>\n  ```\n  where `<index>` is the 0-based position returned by `find`.\n\n- If the needle is not found, print:\n  ```\n  Not found\n  ```\n\n## Requirements\n1. Read both strings from stdin.\n2. Call the `find` member function on the haystack, passing the needle as the argument.\n3. Compare the result to `std::string::npos` to determine whether the needle was found.\n4. Print the appropriate output as described above.\n5. Do not use any loops or manual character-by-character searching — use `find` directly.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.\n- `std::string::npos` is accessible as a constant — you can compare directly: `if (result == std::string::npos)`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string haystack{};\n    std::string needle{};\n    std::cin >> haystack >> needle;\n\n    // TODO: Call haystack.find(needle) and store the result\n    // TODO: Check if the result equals std::string::npos\n    // TODO: Print \"Found at position <index>\" or \"Not found\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string haystack{};\n    std::string needle{};\n    std::cin >> haystack >> needle;\n\n    std::size_t pos{ haystack.find(needle) };\n\n    if (pos == std::string::npos)\n    {\n        std::cout << \"Not found\" << '\\n';\n    }\n    else\n    {\n        std::cout << \"Found at position \" << pos << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample — needle found in middle",
+        "is_sample": true,
+        "stdin": "encyclopedia\ncyclo\n",
+        "expected_stdout": "Found at position 2\n"
+      },
+      {
+        "label": "Hidden — needle not present",
+        "is_sample": false,
+        "stdin": "abcdef\nxyz\n",
+        "expected_stdout": "Not found\n"
+      },
+      {
+        "label": "Hidden — needle found at position 0",
+        "is_sample": false,
+        "stdin": "structure\nstruct\n",
+        "expected_stdout": "Found at position 0\n"
+      }
+    ]
+  }
+]

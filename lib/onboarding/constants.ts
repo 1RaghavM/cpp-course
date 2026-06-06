@@ -1,11 +1,11 @@
 import type { Motivation } from "./types";
 
 export const MODULE_TITLES: Record<string, string> = {
-  variables: "Variables & Basics",
-  pointers: "Memory & Pointers",
-  classes: "Classes & RAII",
-  "vectors-maps": "STL & Containers",
-  templates: "Templates & Generics",
+  "intro-basics": "Introduction & C++ Basics",
+  "refs-pointers": "References & Pointers",
+  classes: "Classes",
+  "vectors-arrays": "Vectors & Arrays",
+  "adv-functions": "Functions & Operator Overloading",
 };
 
 export const MOTIVATION_LINES: Record<Motivation, string> = {
@@ -18,9 +18,9 @@ export const MOTIVATION_LINES: Record<Motivation, string> = {
 };
 
 export const MODULE_FIRST_LESSON: Record<string, string> = {
-  variables: "1-1",
-  pointers: "12-1",
+  "intro-basics": "0-1",
+  "refs-pointers": "12-1",
   classes: "14-1",
-  "vectors-maps": "16-1",
-  templates: "19-1",
+  "vectors-arrays": "16-1",
+  "adv-functions": "20-1",
 };

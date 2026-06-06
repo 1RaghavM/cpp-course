@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Observe early vs late binding",
+    "prompt_md": "## Goal\n\nDemonstrate the behavioral difference between early binding and late binding. A non-virtual function is resolved at compile time (early binding), while a virtual function is resolved at runtime (late binding). Both functions exist on the same class hierarchy.\n\n## Input\n\n- A single integer `n` (1 <= n <= 5), the number of objects to create.\n\n## Output\n\nFor each object, print two lines:\n1. `Early: Base` (the non-virtual call through `Base&` always resolves to `Base`)\n2. `Late: Derived` (the virtual call through `Base&` resolves to `Derived` at runtime)\n\nAfter all objects, print one final line:\n```\nDone\n```\n\nFor input `2`:\n```\nEarly: Base\nLate: Derived\nEarly: Base\nLate: Derived\nDone\n```\n\n## Requirements\n\n- Define a class `Base` with two public const member functions:\n  - `std::string_view earlyBound() const` (non-virtual) that returns `\"Base\"`.\n  - `virtual std::string_view lateBound() const` that returns `\"Base\"`.\n- Define a class `Derived` that publicly inherits from `Base` with:\n  - `std::string_view earlyBound() const` (non-virtual, hides the base version) that returns `\"Derived\"`.\n  - `std::string_view lateBound() const override` that returns `\"Derived\"`.\n- In `main`, read `n`. For each iteration, create a `Derived` object on the stack. Create a `const Base&` reference to it. Print `Early: ` followed by calling `earlyBound()` through the reference. Print `Late: ` followed by calling `lateBound()` through the reference.\n- After the loop, print `Done`.",
+    "starter_code": "#include <iostream>\n#include <string_view>\n\nclass Base\n{\npublic:\n    // TODO: non-virtual earlyBound() returning \"Base\"\n    std::string_view earlyBound() const\n    {\n        return \"\";\n    }\n\n    // TODO: virtual lateBound() returning \"Base\"\n    virtual std::string_view lateBound() const\n    {\n        return \"\";\n    }\n};\n\nclass Derived : public Base\n{\npublic:\n    // TODO: non-virtual earlyBound() returning \"Derived\" (hides Base version)\n    std::string_view earlyBound() const\n    {\n        return \"\";\n    }\n\n    // TODO: lateBound() override returning \"Derived\"\n    std::string_view lateBound() const override\n    {\n        return \"\";\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: For each iteration, create a Derived, bind a const Base& to it,\n    // call earlyBound() and lateBound() through the reference, print results.\n    // After the loop, print \"Done\".\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string_view>\n\nclass Base\n{\npublic:\n    std::string_view earlyBound() const\n    {\n        return \"Base\";\n    }\n\n    virtual std::string_view lateBound() const\n    {\n        return \"Base\";\n    }\n};\n\nclass Derived : public Base\n{\npublic:\n    std::string_view earlyBound() const\n    {\n        return \"Derived\";\n    }\n\n    std::string_view lateBound() const override\n    {\n        return \"Derived\";\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        Derived d{};\n        const Base& ref{d};\n        std::cout << \"Early: \" << ref.earlyBound() << '\\n';\n        std::cout << \"Late: \" << ref.lateBound() << '\\n';\n    }\n\n    std::cout << \"Done\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Two objects",
+        "is_sample": true,
+        "stdin": "2",
+        "expected_stdout": "Early: Base\nLate: Derived\nEarly: Base\nLate: Derived\nDone\n"
+      },
+      {
+        "label": "One object",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Early: Base\nLate: Derived\nDone\n"
+      },
+      {
+        "label": "Five objects",
+        "is_sample": false,
+        "stdin": "5",
+        "expected_stdout": "Early: Base\nLate: Derived\nEarly: Base\nLate: Derived\nEarly: Base\nLate: Derived\nEarly: Base\nLate: Derived\nEarly: Base\nLate: Derived\nDone\n"
+      }
+    ]
+  },
+  {
+    "title": "Polymorphic dispatch with mixed types",
+    "prompt_md": "## Goal\n\nBuild a small hierarchy with `Instrument` as the base class and two derived classes, `Piano` and `Drum`. Store mixed instruments in an array of base pointers and observe that virtual calls (late binding) dispatch to the correct derived function while non-virtual calls (early binding) always call the base version.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 6), the number of instruments.\n- Next `N` lines: a single word, either `piano` or `drum`.\n\n## Output\n\nFor each instrument, print two lines:\n1. `Binding: static` (the non-virtual `bindingType()` through `Instrument*` always returns the base version)\n2. `Sound: <sound>` (the virtual `play()` through `Instrument*` returns the derived version)\n\nwhere `<sound>` is `Plink` for piano and `Boom` for drum.\n\nAfter all instruments, print:\n```\nTotal: <N>\n```\n\nFor input `3` / `piano` / `drum` / `piano`:\n```\nBinding: static\nSound: Plink\nBinding: static\nSound: Boom\nBinding: static\nSound: Plink\nTotal: 3\n```\n\n## Requirements\n\n- Define a class `Instrument` with:\n  - A non-virtual public function `std::string_view bindingType() const` that returns `\"static\"`.\n  - A `virtual` public function `std::string_view play() const` that returns `\"...\"`. \n  - A `virtual` destructor (use `virtual ~Instrument() = default;`).\n- Define `Piano` (publicly derived from `Instrument`) that overrides `play()` to return `\"Plink\"`. It also has its own non-virtual `bindingType()` that returns `\"dynamic\"` (this version will never be called through the base pointer, proving early binding).\n- Define `Drum` (publicly derived from `Instrument`) that overrides `play()` to return `\"Boom\"`. It also has its own non-virtual `bindingType()` that returns `\"dynamic\"`.\n- In `main`, read `N`. Use a `std::vector<Instrument*>` to store `N` dynamically allocated instruments. Loop over the vector, calling `bindingType()` and `play()` through the `Instrument*`. Print `Total: <N>`. Delete all instruments.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <vector>\n\nclass Instrument\n{\npublic:\n    virtual ~Instrument() = default;\n\n    // TODO: non-virtual bindingType() returning \"static\"\n    std::string_view bindingType() const\n    {\n        return \"\";\n    }\n\n    // TODO: virtual play() returning \"...\"\n    virtual std::string_view play() const\n    {\n        return \"\";\n    }\n};\n\nclass Piano : public Instrument\n{\npublic:\n    // TODO: non-virtual bindingType() returning \"dynamic\" (hides base)\n    std::string_view bindingType() const\n    {\n        return \"\";\n    }\n\n    // TODO: override play() to return \"Plink\"\n    std::string_view play() const override\n    {\n        return \"\";\n    }\n};\n\nclass Drum : public Instrument\n{\npublic:\n    // TODO: non-virtual bindingType() returning \"dynamic\" (hides base)\n    std::string_view bindingType() const\n    {\n        return \"\";\n    }\n\n    // TODO: override play() to return \"Boom\"\n    std::string_view play() const override\n    {\n        return \"\";\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Instrument*> instruments{};\n\n    // TODO: Read n instrument types, allocate the right derived object,\n    // push to vector. Then loop: print bindingType() and play() for each.\n    // Print total. Delete all.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <vector>\n\nclass Instrument\n{\npublic:\n    virtual ~Instrument() = default;\n    std::string_view bindingType() const { return \"static\"; }\n    virtual std::string_view play() const { return \"...\"; }\n};\n\nclass Piano : public Instrument\n{\npublic:\n    std::string_view bindingType() const { return \"dynamic\"; }\n    std::string_view play() const override { return \"Plink\"; }\n};\n\nclass Drum : public Instrument\n{\npublic:\n    std::string_view bindingType() const { return \"dynamic\"; }\n    std::string_view play() const override { return \"Boom\"; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::vector<Instrument*> instruments{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        if (type == \"piano\")\n            instruments.push_back(new Piano{});\n        else\n            instruments.push_back(new Drum{});\n    }\n\n    for (const auto* inst : instruments)\n    {\n        std::cout << \"Binding: \" << inst->bindingType() << '\\n';\n        std::cout << \"Sound: \" << inst->play() << '\\n';\n    }\n\n    std::cout << \"Total: \" << n << '\\n';\n\n    for (auto* inst : instruments)\n        delete inst;\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Mixed piano and drum",
+        "is_sample": true,
+        "stdin": "3\npiano\ndrum\npiano\n",
+        "expected_stdout": "Binding: static\nSound: Plink\nBinding: static\nSound: Boom\nBinding: static\nSound: Plink\nTotal: 3\n"
+      },
+      {
+        "label": "All drums",
+        "is_sample": false,
+        "stdin": "2\ndrum\ndrum\n",
+        "expected_stdout": "Binding: static\nSound: Boom\nBinding: static\nSound: Boom\nTotal: 2\n"
+      },
+      {
+        "label": "Single piano",
+        "is_sample": false,
+        "stdin": "1\npiano\n",
+        "expected_stdout": "Binding: static\nSound: Plink\nTotal: 1\n"
+      }
+    ]
+  }
+]

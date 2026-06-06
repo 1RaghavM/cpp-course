@@ -170,13 +170,13 @@
       "number": "13.1",
       "title": "Introduction to program-defined (user-defined) types",
       "sort_order": 166,
-      "summary_md": "## Introduction to Program-Defined Types\n\nC++ ships with fundamental types like `int` and `double`, but real programs need types that model actual concepts — a color, a player, a coordinate pair. **Program-defined types** (also called user-defined types) let you create new types tailored to your problem.\n\nC++ offers three main mechanisms for defining new types:\n\n- **Enumerations** (`enum`, `enum class`) — represent a value from a fixed set of named options\n- **Structs** — group related data under one name, with all members public by default\n- **Classes** — like structs, but designed around encapsulation (covered in later chapters)\n\nThis chapter focuses on enumerations and structs.\n\n### Why This Matters\n\nWithout program-defined types, you end up juggling unrelated variables that logically belong together, or using bare integers to represent things like directions or status codes — losing all meaning at the call site. A well-named type makes code self-documenting and harder to misuse.\n\n### Defining vs. Instantiating\n\nDefining a type creates a *blueprint*. No memory is allocated at the point of definition. You then *instantiate* the type to create an actual object:\n\n```cpp\n#include <format>\n#include <print>\n\nstruct Point {\n    double x;\n    double y;\n};\n\nint main() {\n    Point origin { 0.0, 0.0 };\n    Point target { 3.0, 4.0 };\n\n    auto [tx, ty] = target;   // structured binding — decompose members\n    std::println(\"{}\", std::format(\"Target is at ({}, {})\", tx, ty));\n}\n```\n\nThe structured binding `auto [tx, ty] = target` pulls the members out by position — a clean C++17 feature you will use regularly with structs.\n\n### Naming Conventions\n\nType names are conventionally written in **PascalCase** (`Point`, `PlayerStats`, `Direction`) to distinguish them visually from variable names and functions. This is a near-universal C++ convention worth adopting immediately.\n\n### Scope of Type Definitions\n\nTypes obey the same scope rules as variables. A type defined inside a function is local to that function. Types intended for broad use are typically defined in a header file or at namespace scope — both topics covered in later chapters.\n\nThe upcoming lessons in this chapter build directly on this foundation: enumerations first, then structs in more depth, including member access and aggregate initialization.",
+      "summary_md": "## Introduction to Program-Defined Types\n\nC++ ships with fundamental types like `int` and `double`, but real programs need types that model actual concepts — a color, a player, a coordinate pair. **Program-defined types** (also called user-defined types) let you create new types tailored to your problem.\n\nC++ offers three main mechanisms for defining new types:\n\n- **Enumerations** (`enum`, `enum class`) — represent a value from a fixed set of named options\n- **Structs** — group related data under one name, with all members public by default\n- **Classes** — like structs, but designed around encapsulation (covered in later chapters)\n\nThis chapter focuses on enumerations and structs.\n\n### Why This Matters\n\nWithout program-defined types, you end up juggling unrelated variables that logically belong together, or using bare integers to represent things like directions or status codes — losing all meaning at the call site. A well-named type makes code self-documenting and harder to misuse.\n\n### Defining vs. Instantiating\n\nDefining a type creates a *blueprint*. No memory is allocated at the point of definition. You then *instantiate* the type to create an actual object:\n\n```cpp\n#include <iostream>\n\nstruct Point {\n    double x;\n    double y;\n};\n\nint main() {\n    Point origin { 0.0, 0.0 };\n    Point target { 3.0, 4.0 };\n\n    std::cout << \"Target is at (\" << target.x << \", \" << target.y << \")\\n\";\n}\n```\n\nAccess each member using the dot operator (`.`) — `target.x` gives you the `x` member of the `target` object.\n\n### Naming Conventions\n\nType names are conventionally written in **PascalCase** (`Point`, `PlayerStats`, `Direction`) to distinguish them visually from variable names and functions. This is a near-universal C++ convention worth adopting immediately.\n\n### Scope of Type Definitions\n\nTypes obey the same scope rules as variables. A type defined inside a function is local to that function. Types intended for broad use are typically defined in a header file or at namespace scope — both topics covered in later chapters.\n\nThe upcoming lessons in this chapter build directly on this foundation: enumerations first, then structs in more depth, including member access and aggregate initialization.",
       "exercises": [
         {
           "title": "Define and Instantiate a Book Struct",
-          "prompt_md": "## Goal\nDefine a `Book` struct and instantiate two objects from it, printing a formatted summary for each.\n\n## Input\n- Line 1: the title of the first book (a single string with no spaces)\n- Line 2: the year the first book was published (integer, 1000 ≤ year ≤ 2100)\n- Line 3: the title of the second book (a single string with no spaces)\n- Line 4: the year the second book was published (integer, 1000 ≤ year ≤ 2100)\n\n## Output\nPrint exactly two lines, one per book, in this format:\n```\n\"<title>\" published in <year>\n```\nInclude the double-quote characters around the title. No trailing blank lines.\n\n## Requirements\n1. Define a struct named `Book` with exactly two fields: `std::string title` and `int year`, in that order.\n2. In `main`, read the four input values and create two `Book` objects using aggregate initialization (brace initialization).\n3. Use a structured binding (`auto [t, y] = book;`) to decompose each `Book` before printing — do not access fields via dot notation.\n4. Print each book on its own line using `std::cout` in the format shown above.\n5. The struct definition must appear at namespace scope (outside `main`).\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
-          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct named Book with fields: std::string title, int year\n\nint main()\n{\n    std::string title1, title2;\n    int year1, year2;\n\n    std::cin >> title1 >> year1 >> title2 >> year2;\n\n    // TODO: Create two Book objects using aggregate (brace) initialization\n\n    // TODO: Use a structured binding to decompose each Book and print it\n    // Format: \"<title>\" published in <year>\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Book\n{\n    std::string title;\n    int year;\n};\n\nint main()\n{\n    std::string title1, title2;\n    int year1, year2;\n\n    std::cin >> title1 >> year1 >> title2 >> year2;\n\n    Book b1 { title1, year1 };\n    Book b2 { title2, year2 };\n\n    auto [t1, y1] = b1;\n    std::cout << '\"' << t1 << '\"' << \" published in \" << y1 << '\\n';\n\n    auto [t2, y2] = b2;\n    std::cout << '\"' << t2 << '\"' << \" published in \" << y2 << '\\n';\n\n    return 0;\n}\n",
+          "prompt_md": "## Goal\nDefine a `Book` struct and instantiate two objects from it, printing a formatted summary for each.\n\n## Input\n- Line 1: the title of the first book (a single string with no spaces)\n- Line 2: the year the first book was published (integer, 1000 ≤ year ≤ 2100)\n- Line 3: the title of the second book (a single string with no spaces)\n- Line 4: the year the second book was published (integer, 1000 ≤ year ≤ 2100)\n\n## Output\nPrint exactly two lines, one per book, in this format:\n```\n\"<title>\" published in <year>\n```\nInclude the double-quote characters around the title. No trailing blank lines.\n\n## Requirements\n1. Define a struct named `Book` with exactly two fields: `std::string title` and `int year`, in that order.\n2. In `main`, read the four input values and create two `Book` objects using aggregate initialization (brace initialization).\n3. Access each `Book`'s fields using the dot operator (e.g., `b1.title`, `b1.year`) when printing.\n4. Print each book on its own line using `std::cout` in the format shown above.\n5. The struct definition must appear at namespace scope (outside `main`).\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct named Book with fields: std::string title, int year\n\nint main()\n{\n    std::string title1, title2;\n    int year1, year2;\n\n    std::cin >> title1 >> year1 >> title2 >> year2;\n\n    // TODO: Create two Book objects using aggregate (brace) initialization\n\n    // TODO: Use the dot operator to access each Book's fields and print it\n    // Format: \"<title>\" published in <year>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Book\n{\n    std::string title;\n    int year;\n};\n\nint main()\n{\n    std::string title1, title2;\n    int year1, year2;\n\n    std::cin >> title1 >> year1 >> title2 >> year2;\n\n    Book b1 { title1, year1 };\n    Book b2 { title2, year2 };\n\n    std::cout << '\"' << b1.title << '\"' << \" published in \" << b1.year << '\\n';\n    std::cout << '\"' << b2.title << '\"' << \" published in \" << b2.year << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "Sample — two classic books",
@@ -199,28 +199,988 @@
           ]
         },
         {
-          "title": "Catalog Three Products Using a Struct and an Enum",
-          "prompt_md": "## Goal\nDefine a `Category` enum and a `Product` struct, read three products from stdin, then print each one with its category label.\n\n## Input\n- The input contains exactly 3 groups of lines, one per product.\n- Each group is two lines:\n  - Line 1: the product name (a single word, no spaces)\n  - Line 2: an integer category code: `0` = Electronics, `1` = Clothing, `2` = Food\n\nSo the input is 6 lines total.\n\n## Output\nPrint exactly 3 lines, one per product, in this format:\n```\n<name>: <CategoryLabel>\n```\nWhere `<CategoryLabel>` is one of `Electronics`, `Clothing`, or `Food` depending on the category code. No trailing blank lines.\n\n## Requirements\n1. Define an unscoped enum named `Category` with enumerators `Electronics = 0`, `Clothing = 1`, `Food = 2`, at namespace scope.\n2. Define a struct named `Product` with exactly two fields: `std::string name` and `Category category`, in that order, at namespace scope.\n3. Store all three products in an array of type `Product` (use `Product catalog[3]`) and fill it using aggregate initialization inside a loop or explicitly — brace initialization must be used for each `Product`.\n4. Write a function with signature `std::string categoryName(Category c)` that returns the string label for each enumerator. It must use a switch statement and return `\"Unknown\"` for any value not listed above.\n5. Print each product using a structured binding (`auto [n, c] = catalog[i];`) inside a loop — do not access struct fields via dot notation during printing.\n6. The hidden tests include a product with category code `1` (Clothing) appearing first, and all three category codes appearing across the three products.\n\n## Notes\n- You may use `#include <iostream>`, `#include <string>`, and `#include <array>` or a plain C-style array.",
-          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define an unscoped enum named Category with:\n//       Electronics = 0, Clothing = 1, Food = 2\n\n// TODO: Define a struct named Product with fields:\n//       std::string name, Category category\n\n// TODO: Write a function: std::string categoryName(Category c)\n//       Use a switch statement. Return \"Unknown\" for unrecognized values.\n\nint main()\n{\n    // TODO: Declare Product catalog[3];\n    // TODO: Read 3 products from stdin (name then category code per product)\n    //       and store them in catalog using brace initialization.\n\n    // TODO: Loop over catalog, use a structured binding to decompose each Product,\n    //       and print: <name>: <CategoryLabel>\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <string>\n\nenum Category\n{\n    Electronics = 0,\n    Clothing    = 1,\n    Food        = 2\n};\n\nstruct Product\n{\n    std::string name;\n    Category    category;\n};\n\nstd::string categoryName(Category c)\n{\n    switch (c)\n    {\n        case Electronics: return \"Electronics\";\n        case Clothing:    return \"Clothing\";\n        case Food:        return \"Food\";\n        default:          return \"Unknown\";\n    }\n}\n\nint main()\n{\n    Product catalog[3];\n\n    for (int i = 0; i < 3; ++i)\n    {\n        std::string name;\n        int code;\n        std::cin >> name >> code;\n        catalog[i] = Product{ name, static_cast<Category>(code) };\n    }\n\n    for (int i = 0; i < 3; ++i)\n    {\n        auto [n, c] = catalog[i];\n        std::cout << n << \": \" << categoryName(c) << '\\n';\n    }\n\n    return 0;\n}\n",
+          "title": "Define and Compare Two Point Structs",
+          "prompt_md": "## Goal\nDefine a `Point` struct, create two points from user input, and print which one is farther from the origin.\n\n## Input\n- Line 1: two space-separated doubles `x1` and `y1` (the first point)\n- Line 2: two space-separated doubles `x2` and `y2` (the second point)\n\nAll values are in the range -1000.0 to 1000.0.\n\n## Output\nPrint exactly three lines:\n```\nP1: (<x1>, <y1>)\nP2: (<x2>, <y2>)\nFarther from origin: P<N>\n```\nWhere `<N>` is `1` or `2` depending on which point has the greater squared distance from the origin (`x*x + y*y`). If both squared distances are equal, print `P1`.\n\nAll coordinate values must be printed with exactly one decimal place.\n\n## Requirements\n1. Define a struct named `Point` at namespace scope with exactly two fields: `double x` and `double y`, in that order.\n2. Write a function `double squaredDistance(const Point& p)` that returns `p.x * p.x + p.y * p.y`. Pass the struct by const reference.\n3. In `main`, read input and create two `Point` objects (`p1` and `p2`) using aggregate initialization.\n4. Use the dot operator (`.`) to access struct fields — do not use structured bindings.\n5. Call `squaredDistance` on both points to determine which is farther. Print the result.\n6. Use `std::fixed` and `std::setprecision(1)` for formatted output.\n\n## Notes\n- You may use `#include <iostream>` and `#include <iomanip>`.\n- Use squared distance to avoid needing `<cmath>` — comparing squared distances gives the same ordering as comparing actual distances.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a struct named Point with fields: double x, double y\n\n// TODO: Write a function: double squaredDistance(const Point& p)\n//       Return p.x * p.x + p.y * p.y\n\nint main()\n{\n    double x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    // TODO: Create two Point objects using aggregate initialization\n\n    // TODO: Print P1 and P2 coordinates with 1 decimal place\n    // TODO: Compare squared distances and print which is farther\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Point\n{\n    double x;\n    double y;\n};\n\ndouble squaredDistance(const Point& p)\n{\n    return p.x * p.x + p.y * p.y;\n}\n\nint main()\n{\n    double x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    Point p1 { x1, y1 };\n    Point p2 { x2, y2 };\n\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"P1: (\" << p1.x << \", \" << p1.y << \")\\n\";\n    std::cout << \"P2: (\" << p2.x << \", \" << p2.y << \")\\n\";\n\n    if (squaredDistance(p1) >= squaredDistance(p2))\n        std::cout << \"Farther from origin: P1\\n\";\n    else\n        std::cout << \"Farther from origin: P2\\n\";\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample — one of each category",
-              "stdin": "Laptop\n0\nJacket\n1\nApple\n2\n",
-              "expected_stdout": "Laptop: Electronics\nJacket: Clothing\nApple: Food\n",
+              "label": "Sample — P2 is farther",
+              "stdin": "1.0 2.0\n3.0 4.0\n",
+              "expected_stdout": "P1: (1.0, 2.0)\nP2: (3.0, 4.0)\nFarther from origin: P2\n",
               "is_sample": true
             },
             {
-              "label": "Hidden — Clothing appears first, duplicate category",
-              "stdin": "Scarf\n1\nBread\n2\nHeadphones\n0\n",
-              "expected_stdout": "Scarf: Clothing\nBread: Food\nHeadphones: Electronics\n",
+              "label": "Hidden — P1 is farther (negative coordinates)",
+              "stdin": "-5.0 -5.0\n1.0 1.0\n",
+              "expected_stdout": "P1: (-5.0, -5.0)\nP2: (1.0, 1.0)\nFarther from origin: P1\n",
               "is_sample": false
             },
             {
-              "label": "Hidden — all three products share the same category",
-              "stdin": "Rice\n2\nPasta\n2\nBeans\n2\n",
-              "expected_stdout": "Rice: Food\nPasta: Food\nBeans: Food\n",
+              "label": "Hidden — equal distances, prints P1",
+              "stdin": "3.0 4.0\n4.0 3.0\n",
+              "expected_stdout": "P1: (3.0, 4.0)\nP2: (4.0, 3.0)\nFarther from origin: P1\n",
               "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.2",
+      "title": "Unscoped enumerations",
+      "sort_order": 1,
+      "summary_md": "## Unscoped Enumerations\n\nAn **unscoped enumeration** (defined with the `enum` keyword) creates a distinct type whose values are restricted to a set of named constants called **enumerators**. Each enumerator is an integral constant, and by default the compiler assigns values starting at `0` and incrementing by one.\n\n```cpp\n#include <iostream>\n\nenum Color\n{\n    red,    // 0\n    green,  // 1\n    blue    // 2\n};\n\nint main()\n{\n    Color shirt{ green };\n    std::cout << shirt << '\\n'; // prints 1\n}\n```\n\nThe name `Color` is the **enumerated type**, and `red`, `green`, `blue` are its enumerators. Because `Color` is a distinct type, you cannot assign a raw integer to it directly: `Color c{ 5 };` is a compile error.\n\n### Explicit Values\n\nYou can assign specific integer values to any enumerator with `= value`. Enumerators without an explicit value receive the prior enumerator's value plus one. For example, if you write `fileNotFound = 10`, the next enumerator without an explicit value would be `11`. Duplicate values are legal but usually a sign of poor design.\n\n### Implicit Conversion to int\n\nUnscoped enumerators **implicitly convert** to their underlying integer type. That is why `std::cout << shirt` prints `1` rather than `green`. This implicit conversion is convenient but can mask bugs -- you can accidentally pass an enumerator where a plain `int` is expected and the compiler will not warn you.\n\n### Naming Conventions\n\n- The enum type name uses PascalCase (`Color`, `Direction`).\n- Enumerator names typically use camelCase or snake_case starting with a lowercase letter. Some codebases prefix enumerators with the type name (e.g., `color_red`) to avoid name collisions, since unscoped enumerators are placed into the same scope as the enum itself.\n\n### Scope Behavior\n\nThe word \"unscoped\" matters: the enumerators are injected into the **surrounding scope**, not confined inside the enum type. If two unscoped enums in the same scope both define an enumerator named `red`, you get a naming collision. This is the primary drawback of unscoped enums and the motivation for scoped enums (`enum class`), covered in a later lesson.\n\n### When to Use Unscoped Enums\n\nUse them when you have a small, fixed set of related named constants and you want the convenience of implicit integer conversion -- for example, representing cardinal directions, simple status codes, or menu options.",
+      "exercises": [
+        {
+          "title": "Traffic Light State Machine",
+          "prompt_md": "## Goal\nDefine an unscoped enumeration for traffic light colors and write a function that returns the next state in the cycle.\n\n## Input\n- A single integer on one line: `0` for red, `1` for yellow, `2` for green.\n\n## Output\n- Two lines:\n  - Line 1: the name of the current light (e.g. `red`, `yellow`, or `green`)\n  - Line 2: the name of the next light in the cycle\n\nThe cycle is: red -> green -> yellow -> red.\n\n## Requirements\n1. Define an unscoped enum named `Light` at namespace scope with enumerators `red = 0`, `yellow = 1`, `green = 2`.\n2. Write a function `Light nextLight(Light current)` that returns the next light in the cycle: red -> green, green -> yellow, yellow -> red.\n3. Write a function `std::string lightName(Light l)` that returns the lowercase string name of the given enumerator using a switch statement. Return `\"unknown\"` for any value not in the enum.\n4. In `main`, read the integer from stdin, convert it to a `Light` using `static_cast`, then print the current and next light names.\n5. Do not use any if/else chains -- use switch statements in both functions.\n\n## Notes\n- The cycle order is red -> green -> yellow -> red (green follows red, not yellow).\n- You may use `#include <iostream>` and `#include <string>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define an unscoped enum named Light with:\n//       red = 0, yellow = 1, green = 2\n\n// TODO: Write a function: std::string lightName(Light l)\n//       Return the lowercase name of the light. Use a switch statement.\n//       Return \"unknown\" for unrecognized values.\n\n// TODO: Write a function: Light nextLight(Light current)\n//       Return the next light in the cycle: red->green, green->yellow, yellow->red.\n//       Use a switch statement.\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Convert input to a Light using static_cast\n    // TODO: Print the current light name on one line\n    // TODO: Print the next light name on the next line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nenum Light\n{\n    red = 0,\n    yellow = 1,\n    green = 2\n};\n\nstd::string lightName(Light l)\n{\n    switch (l)\n    {\n        case red:    return \"red\";\n        case yellow: return \"yellow\";\n        case green:  return \"green\";\n        default:     return \"unknown\";\n    }\n}\n\nLight nextLight(Light current)\n{\n    switch (current)\n    {\n        case red:    return green;\n        case green:  return yellow;\n        case yellow: return red;\n        default:     return red;\n    }\n}\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    Light current{ static_cast<Light>(input) };\n    std::cout << lightName(current) << '\\n';\n    std::cout << lightName(nextLight(current)) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- red goes to green",
+              "is_sample": true,
+              "stdin": "0\n",
+              "expected_stdout": "red\ngreen\n"
+            },
+            {
+              "label": "Hidden -- green goes to yellow",
+              "is_sample": false,
+              "stdin": "2\n",
+              "expected_stdout": "green\nyellow\n"
+            },
+            {
+              "label": "Hidden -- yellow goes to red",
+              "is_sample": false,
+              "stdin": "1\n",
+              "expected_stdout": "yellow\nred\n"
+            }
+          ]
+        },
+        {
+          "title": "Day of Week Offset Calculator",
+          "prompt_md": "## Goal\nDefine an unscoped enumeration for the days of the week and use integer arithmetic on enumerator values to calculate a future day.\n\n## Input\n- Line 1: an integer representing the starting day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)\n- Line 2: a non-negative integer representing the number of days to add (0 to 1000)\n\n## Output\n- Two lines:\n  - Line 1: the name of the starting day (e.g. `Sunday`, `Monday`, etc.)\n  - Line 2: the name of the day after adding the offset\n\n## Requirements\n1. Define an unscoped enum named `Day` at namespace scope with enumerators: `Sunday = 0`, `Monday = 1`, `Tuesday = 2`, `Wednesday = 3`, `Thursday = 4`, `Friday = 5`, `Saturday = 6`.\n2. Write a function `std::string dayName(Day d)` that returns the capitalized name of the day using a switch statement. Return `\"Unknown\"` for any value not in the enum.\n3. To compute the future day: use the implicit conversion of the starting `Day` to `int`, add the offset, take the result modulo 7, and convert back to `Day` with `static_cast`.\n4. Read both values from stdin and print the two day names, each on its own line.\n5. Do not use arrays or if/else chains for the name lookup.\n\n## Notes\n- This exercise combines enumerator-to-int implicit conversion (this lesson) with `static_cast` (from lesson 4.12) and the remainder operator (from lesson 6.3).",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define an unscoped enum named Day with:\n//       Sunday = 0, Monday = 1, ..., Saturday = 6\n\n// TODO: Write a function: std::string dayName(Day d)\n//       Return the capitalized day name using a switch statement.\n//       Return \"Unknown\" for unrecognized values.\n\nint main()\n{\n    int startDay{};\n    int offset{};\n    std::cin >> startDay >> offset;\n\n    // TODO: Convert startDay to a Day using static_cast\n    // TODO: Compute the future day using implicit int conversion,\n    //       addition, modulo 7, and static_cast back to Day\n    // TODO: Print the starting day name on one line\n    // TODO: Print the future day name on the next line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nenum Day\n{\n    Sunday = 0,\n    Monday = 1,\n    Tuesday = 2,\n    Wednesday = 3,\n    Thursday = 4,\n    Friday = 5,\n    Saturday = 6\n};\n\nstd::string dayName(Day d)\n{\n    switch (d)\n    {\n        case Sunday:    return \"Sunday\";\n        case Monday:    return \"Monday\";\n        case Tuesday:   return \"Tuesday\";\n        case Wednesday: return \"Wednesday\";\n        case Thursday:  return \"Thursday\";\n        case Friday:    return \"Friday\";\n        case Saturday:  return \"Saturday\";\n        default:        return \"Unknown\";\n    }\n}\n\nint main()\n{\n    int startDay{};\n    int offset{};\n    std::cin >> startDay >> offset;\n\n    Day start{ static_cast<Day>(startDay) };\n    Day future{ static_cast<Day>((start + offset) % 7) };\n\n    std::cout << dayName(start) << '\\n';\n    std::cout << dayName(future) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- Monday plus 3 is Thursday",
+              "is_sample": true,
+              "stdin": "1\n3\n",
+              "expected_stdout": "Monday\nThursday\n"
+            },
+            {
+              "label": "Hidden -- Saturday plus 1 wraps to Sunday",
+              "is_sample": false,
+              "stdin": "6\n1\n",
+              "expected_stdout": "Saturday\nSunday\n"
+            },
+            {
+              "label": "Hidden -- Wednesday plus 1000 days",
+              "is_sample": false,
+              "stdin": "3\n1000\n",
+              "expected_stdout": "Wednesday\nTuesday\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.3",
+      "title": "Unscoped enumerator integral conversions",
+      "sort_order": 2,
+      "summary_md": "## Unscoped Enumerator Integral Conversions\n\nUnscoped enumerators implicitly convert to integral values. When you use an unscoped enumerator where an integer is expected, the compiler silently promotes it. This is called an **implicit integral conversion**, and it happens automatically — no cast required.\n\nBy default, the first enumerator has value `0`, the next `1`, and so on (unless you assign explicit values). Because of implicit conversion, you can pass an enumerator directly to `std::cout`, use it in arithmetic, or compare it to an integer:\n\n```cpp\n#include <iostream>\n\nenum Color { red, green, blue };\n\nint main()\n{\n    Color c{ green };\n    std::cout << c << '\\n';        // prints 1\n    std::cout << c + 10 << '\\n';   // prints 11\n    if (c == 1)\n        std::cout << \"green\\n\";\n    return 0;\n}\n```\n\nThe output is `1`, then `11`, then `green`. The enumerator `green` converts to `1` wherever an integer is needed.\n\n### Converting Integers Back to Enumerators\n\nThe reverse direction does **not** happen implicitly. You cannot assign an integer to an enum variable without an explicit cast. Use `static_cast` to convert an integer to an enumerator:\n\n```cpp\nColor c2{ static_cast<Color>(2) }; // c2 is blue\n```\n\nThis is the same `static_cast` you learned in lesson 4.12. The compiler trusts you that the integer corresponds to a valid enumerator — if you pass a value outside the defined range, the behavior is implementation-defined. Always validate user input before casting to an enum.\n\n### Why This Matters\n\n- **Reading input:** `std::cin` cannot read directly into an unscoped enum. You read into an `int`, validate it, then `static_cast` to the enum type.\n- **Indexing and arithmetic:** Enumerators that implicitly convert to integers can be used as array indices or in math expressions without casts.\n- **Comparisons:** You can compare enumerators to integers directly, but comparing two different enum types is a compiler error.\n\n### Pitfalls\n\n- Implicit conversion can hide bugs when you accidentally use an enumerator where an integer was intended. Scoped enums (covered in a later lesson) prevent this.\n- Casting an out-of-range integer to an enum does not produce a compiler error — it silently gives you an invalid enumerator.",
+      "exercises": [
+        {
+          "title": "Print Enumerator Values",
+          "prompt_md": "## Goal\n\nDefine an unscoped enum representing days of the work week and print the integral value of a day selected by the user.\n\n## Input\n\n- A single integer on one line (0 through 4 inclusive), representing a day of the work week.\n\n## Output\n\n- If the input is in range 0-4, print a single line in this format:\n\n```\nDay <enumerator_value> selected\n```\n\nwhere `<enumerator_value>` is the integral value of the enumerator.\n\n- If the input is outside the range 0-4, print:\n\n```\nInvalid day\n```\n\n## Requirements\n\n1. Define an unscoped enum `Day` at namespace scope with enumerators: `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday` (using default values starting from 0).\n2. Read an integer from `std::cin`.\n3. Validate that the integer is in range 0-4 inclusive. If not, print `Invalid day` and return 0.\n4. Use `static_cast<Day>` to convert the integer to a `Day` enumerator.\n5. Print the enumerator by relying on its implicit conversion to `int` in the output expression — do not cast it back to `int` explicitly for printing.\n6. Do not use arrays, strings, or any concepts beyond unscoped enums and `static_cast`.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define an unscoped enum Day with Monday through Friday (default values)\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Validate input is in range 0-4\n    // If invalid, print \"Invalid day\" and return 0\n\n    // TODO: static_cast the integer to a Day enumerator\n\n    // TODO: Print \"Day <value> selected\" using the enumerator's implicit int conversion\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nenum Day\n{\n    Monday,\n    Tuesday,\n    Wednesday,\n    Thursday,\n    Friday\n};\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    if (input < 0 || input > 4)\n    {\n        std::cout << \"Invalid day\" << '\\n';\n        return 0;\n    }\n\n    Day day{ static_cast<Day>(input) };\n\n    std::cout << \"Day \" << day << \" selected\" << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — select Wednesday (2)",
+              "is_sample": true,
+              "stdin": "2\n",
+              "expected_stdout": "Day 2 selected\n"
+            },
+            {
+              "label": "Hidden — select Monday (0, boundary)",
+              "is_sample": false,
+              "stdin": "0\n",
+              "expected_stdout": "Day 0 selected\n"
+            },
+            {
+              "label": "Hidden — out of range input (7)",
+              "is_sample": false,
+              "stdin": "7\n",
+              "expected_stdout": "Invalid day\n"
+            }
+          ]
+        },
+        {
+          "title": "Enum-Based Scoring Calculator",
+          "prompt_md": "## Goal\n\nBuild a scoring calculator that reads a sequence of actions, converts them to enum values via `static_cast`, computes a total score using the enumerators' implicit integral conversions, and prints the result.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 20), the number of actions.\n- Next `n` lines: each line contains a single integer (0, 1, or 2) representing an action code.\n\nAction codes map to an enum:\n- `0` = `Miss` (worth 0 points)\n- `1` = `Hit` (worth 1 point)\n- `2` = `CriticalHit` (worth 2 points)\n\n## Output\n\nPrint exactly two lines:\n- Line 1: `Hits: <count>` where `<count>` is the number of actions that were `Hit` or `CriticalHit` (not `Miss`).\n- Line 2: `Score: <total>` where `<total>` is the sum of all enumerator values (using their implicit integral conversion).\n\n## Requirements\n\n1. Define an unscoped enum `Action` at namespace scope with `Miss = 0`, `Hit = 1`, `CriticalHit = 2`.\n2. Write a function `int scoreValue(Action a)` that returns the enumerator's integral value by relying on implicit conversion (simply `return a;`).\n3. Read `n`, then loop `n` times reading each action code as an `int`.\n4. Use `static_cast<Action>` to convert each integer to an `Action`. You may assume all input values are 0, 1, or 2.\n5. Use the enumerator's implicit conversion to int (via `scoreValue`) to accumulate the total score.\n6. Count the number of non-`Miss` actions by comparing each `Action` enumerator to `Miss`.\n7. Print the results in the format shown above.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define enum Action with Miss = 0, Hit = 1, CriticalHit = 2\n\n// TODO: Write function: int scoreValue(Action a)\n//       Return the enumerator's integral value using implicit conversion\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int totalScore{ 0 };\n    int hitCount{ 0 };\n\n    // TODO: Loop n times:\n    //   - Read an int action code\n    //   - static_cast it to Action\n    //   - Add its score value to totalScore\n    //   - If it is not Miss, increment hitCount\n\n    // TODO: Print \"Hits: <hitCount>\"\n    // TODO: Print \"Score: <totalScore>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nenum Action\n{\n    Miss = 0,\n    Hit = 1,\n    CriticalHit = 2\n};\n\nint scoreValue(Action a)\n{\n    return a;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int totalScore{ 0 };\n    int hitCount{ 0 };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int code{};\n        std::cin >> code;\n\n        Action action{ static_cast<Action>(code) };\n\n        totalScore += scoreValue(action);\n\n        if (action != Miss)\n            ++hitCount;\n    }\n\n    std::cout << \"Hits: \" << hitCount << '\\n';\n    std::cout << \"Score: \" << totalScore << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mixed actions",
+              "is_sample": true,
+              "stdin": "5\n1\n0\n2\n1\n0\n",
+              "expected_stdout": "Hits: 3\nScore: 4\n"
+            },
+            {
+              "label": "Hidden — all misses",
+              "is_sample": false,
+              "stdin": "3\n0\n0\n0\n",
+              "expected_stdout": "Hits: 0\nScore: 0\n"
+            },
+            {
+              "label": "Hidden — all critical hits",
+              "is_sample": false,
+              "stdin": "4\n2\n2\n2\n2\n",
+              "expected_stdout": "Hits: 4\nScore: 8\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.4",
+      "title": "Converting an enumeration to and from a string",
+      "sort_order": 3,
+      "summary_md": "## Converting an Enumeration to and from a String\n\nEnumerators like `Color::red` are meaningful in code, but they cannot be printed directly as text. When you output an unscoped enumerator, the compiler converts it to its underlying integer — not the name you wrote. To display `\"red\"` instead of `0`, you need an explicit conversion function.\n\n### Enum-to-String with a Switch\n\nThe standard approach is a function that maps each enumerator to a `std::string_view` using a `switch` statement:\n\n```cpp\n#include <iostream>\n#include <string_view>\nenum Color { red, green, blue };\n\nconstexpr std::string_view colorToString(Color c) {\n    switch (c) {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n        default:    return \"unknown\";\n    }\n}\nint main() {\n    std::cout << colorToString(green) << '\\n'; // prints: green\n}\n```\n\nReturning `std::string_view` rather than `std::string` avoids a heap allocation on every call — the string literals already live in static storage. Marking the function `constexpr` lets the compiler resolve the conversion at compile time when the argument is a constant expression.\n\n### String-to-Enum\n\nThe reverse direction takes a `std::string_view` and returns the matching enumerator. Because the input might not match any enumerator, a common pattern is to return a sentinel value (e.g. an `unknown` enumerator) or use `std::optional` (covered in 12.15). A simple approach with a sentinel:\n\nWrite a function that compares the input against each known string using `if`/`else if` and returns the corresponding enumerator, or returns a designated \"invalid\" enumerator when nothing matches.\n\n### Why `constexpr` Matters Here\n\nBecause the switch body contains only `return` statements with literal values, the compiler can evaluate the entire function at compile time when called with a `constexpr` argument. This is free performance — no runtime cost, no branch mispredictions — and it works today with every major compiler under C++17 or later.\n\n### Keep Them in Sync\n\nThe biggest maintenance risk is adding a new enumerator but forgetting to update the conversion functions. A practical guard: compile with `-Wall -Wswitch` (enabled by `-Wall`). The compiler will warn if a `switch` on an enum type is missing a case, catching the mismatch before it becomes a bug.",
+      "exercises": [
+        {
+          "title": "Color Enum to String Converter",
+          "prompt_md": "## Goal\nWrite a program that reads color codes from stdin and prints their string names using a `constexpr` conversion function.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of color codes to convert.\n- Next `n` lines: each contains a single integer color code.\n  - `0` = red, `1` = green, `2` = blue. Any other value is unknown.\n\n## Output\nPrint exactly `n` lines. Each line is the string name of the color (`red`, `green`, `blue`, or `unknown`).\n\n## Requirements\n1. Define an unscoped enum named `Color` with enumerators `red = 0`, `green = 1`, `blue = 2` at namespace scope.\n2. Write a function with signature `constexpr std::string_view colorToString(Color c)` that uses a `switch` statement to return the lowercase name of each color. Return `\"unknown\"` in the `default` case.\n3. In `main`, read `n`, then loop `n` times: read an integer, `static_cast` it to `Color`, call `colorToString`, and print the result on its own line.\n4. Use `std::string_view` (from `<string_view>`) as the return type — do not return `std::string`.\n5. Do not use any `if`/`else` chains for the conversion.",
+          "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Color with: red = 0, green = 1, blue = 2\n\n// TODO: Write constexpr std::string_view colorToString(Color c)\n//       Use a switch statement. Return \"unknown\" for the default case.\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    // TODO: Loop n times, read an integer code, cast to Color,\n    //       call colorToString, and print the result.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Color\n{\n    red   = 0,\n    green = 1,\n    blue  = 2\n};\n\nconstexpr std::string_view colorToString(Color c)\n{\n    switch (c)\n    {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n        default:    return \"unknown\";\n    }\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int code;\n        std::cin >> code;\n        std::cout << colorToString(static_cast<Color>(code)) << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — all three colors",
+              "stdin": "3\n0\n1\n2\n",
+              "expected_stdout": "red\ngreen\nblue\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — unknown codes mixed in",
+              "stdin": "5\n2\n7\n0\n-1\n1\n",
+              "expected_stdout": "blue\nunknown\nred\nunknown\ngreen\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — single unknown code",
+              "stdin": "1\n99\n",
+              "expected_stdout": "unknown\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Day-of-Week Round Trip Converter",
+          "prompt_md": "## Goal\nBuild a program that converts day-of-week names to enum values and back, demonstrating both string-to-enum and enum-to-string conversion.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of queries.\n- Next `n` lines: each contains a single day name (all lowercase). Valid names are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`. Any other string is invalid.\n\n## Output\nFor each query, print one line in this format:\n```\n<day_name> = <integer_value>\n```\nwhere `<day_name>` is the enum-to-string result and `<integer_value>` is the underlying integer (monday = 0, tuesday = 1, ..., sunday = 6).\n\nIf the input string is invalid, print:\n```\ninvalid = -1\n```\n\n## Requirements\n1. Define an unscoped enum named `Day` with enumerators `monday = 0` through `sunday = 6` at namespace scope.\n2. Write a function `constexpr std::string_view dayToString(Day d)` that uses a `switch` to return the lowercase day name. Return `\"invalid\"` in the `default` case.\n3. Write a function `int stringToDay(std::string_view s)` that takes a string and returns the matching enumerator's integer value. If the string does not match any day, return `-1`. Use `if`/`else if` comparisons against each day name string.\n4. In `main`, for each query: call `stringToDay` to get the integer. If the result is `-1`, print `invalid = -1`. Otherwise, cast the integer to `Day`, call `dayToString` on it, and print `<day_name> = <integer_value>`.\n5. Do not use arrays, maps, or any container to store the mapping.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: Define an unscoped enum Day with:\n//       monday = 0, tuesday = 1, wednesday = 2, thursday = 3,\n//       friday = 4, saturday = 5, sunday = 6\n\n// TODO: Write constexpr std::string_view dayToString(Day d)\n//       Use a switch statement. Return \"invalid\" for the default case.\n\n// TODO: Write int stringToDay(std::string_view s)\n//       Return the integer value of the matching enumerator,\n//       or -1 if no match. Use if/else if comparisons.\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    // TODO: For each query, read a string, convert to Day integer,\n    //       then print: <day_name> = <integer_value>\n    //       or: invalid = -1\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nenum Day { monday = 0, tuesday, wednesday, thursday, friday, saturday, sunday };\n\nconstexpr std::string_view dayToString(Day d) {\n    switch (d) {\n        case monday:    return \"monday\";\n        case tuesday:   return \"tuesday\";\n        case wednesday: return \"wednesday\";\n        case thursday:  return \"thursday\";\n        case friday:    return \"friday\";\n        case saturday:  return \"saturday\";\n        case sunday:    return \"sunday\";\n        default:        return \"invalid\";\n    }\n}\n\nint stringToDay(std::string_view s) {\n    if (s == \"monday\")         return monday;\n    else if (s == \"tuesday\")   return tuesday;\n    else if (s == \"wednesday\") return wednesday;\n    else if (s == \"thursday\")  return thursday;\n    else if (s == \"friday\")    return friday;\n    else if (s == \"saturday\")  return saturday;\n    else if (s == \"sunday\")    return sunday;\n    else return -1;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string input;\n        std::cin >> input;\n        int val = stringToDay(input);\n        if (val == -1) {\n            std::cout << \"invalid = -1\\n\";\n        } else {\n            Day d = static_cast<Day>(val);\n            std::cout << dayToString(d) << \" = \" << val << '\\n';\n        }\n    }\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — weekdays and a weekend day",
+              "stdin": "3\nmonday\nfriday\nsunday\n",
+              "expected_stdout": "monday = 0\nfriday = 4\nsunday = 6\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — invalid input mixed with valid",
+              "stdin": "4\ntuesday\nhelloworld\nsaturday\nwednesday\n",
+              "expected_stdout": "tuesday = 1\ninvalid = -1\nsaturday = 5\nwednesday = 2\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — all invalid inputs",
+              "stdin": "2\nfunday\nnotaday\n",
+              "expected_stdout": "invalid = -1\ninvalid = -1\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.5",
+      "title": "Introduction to overloading the I/O operators",
+      "sort_order": 4,
+      "summary_md": "## Introduction to Overloading the I/O Operators\n\nIn lesson 13.4 you wrote helper functions like `getColorName()` to convert enumerators to strings. That works, but it forces every print site to remember to call the helper: `std::cout << getColorName(shirt)`. Overloading `operator<<` lets you write `std::cout << shirt` directly — the compiler calls your function automatically.\n\n### Overloading `operator<<`\n\n`operator<<` is a binary operator. The left operand is `std::ostream&` (the stream) and the right operand is your type. Because the left operand is not your type, the overload must be a **free function** (not a member). It returns `std::ostream&` so calls can be chained (`std::cout << a << b`).\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nenum Color { red, green, blue };\n\nconstexpr std::string_view colorToStr(Color c) {\n    switch (c) {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n        default:    return \"unknown\";\n    }\n}\n\nstd::ostream& operator<<(std::ostream& out, Color c) {\n    out << colorToStr(c);\n    return out;\n}\n\nint main() {\n    Color shirt{ green };\n    std::cout << \"Shirt color: \" << shirt << '\\n';\n}\n```\n\nKey points: the return type is `std::ostream&`, the first parameter is `std::ostream& out` (not `std::cout` specifically — this works with any output stream), and you return `out` at the end.\n\n### Overloading `operator>>`\n\nThe same idea applies to input. `operator>>` takes `std::istream&` on the left and your type (by non-const reference) on the right. Typically you read a value the stream already understands (like an `int` or `std::string`), then map it to your enumerator:\n\nRead an integer, validate, and convert with `static_cast`. Return `in` so input calls can be chained. If the input is invalid, set the enumerator to a sensible default.\n\n### Why This Matters\n\nOnce both operators are overloaded, your enum works seamlessly with `std::cout` and `std::cin` — no special helper calls at the use site. This is the idiomatic C++ approach and the pattern you will reuse for structs and classes later.\n\n### Rules to Remember\n\n- The overload must be a free function (the left operand is a standard library type).\n- Always return the stream reference to support chaining.\n- Keep the conversion logic in a separate helper (`constexpr` string-view function or switch) so the overload stays thin.",
+      "exercises": [
+        {
+          "title": "Overload operator<< for a Season Enum",
+          "prompt_md": "## Goal\nOverload `operator<<` for an unscoped `Season` enum so that season values print as human-readable strings.\n\n## Input\n- A single integer on one line: `0` = Spring, `1` = Summer, `2` = Autumn, `3` = Winter.\n\n## Output\nPrint exactly one line in this format:\n```\nThe season is <SeasonName>\n```\nWhere `<SeasonName>` is one of `Spring`, `Summer`, `Autumn`, or `Winter`. No trailing blank lines.\n\n## Requirements\n1. Define an unscoped enum named `Season` with enumerators `spring = 0`, `summer = 1`, `autumn = 2`, `winter = 3`, at namespace scope.\n2. Write a function `constexpr std::string_view seasonToStr(Season s)` that uses a switch statement to return the capitalized name of each season. Return `\"Unknown\"` for any unrecognized value.\n3. Overload `operator<<` with the signature `std::ostream& operator<<(std::ostream& out, Season s)`. It must call `seasonToStr` and return the stream reference.\n4. In `main`, read an integer from `std::cin`, convert it to a `Season` using `static_cast`, and print using `std::cout` and your overloaded `operator<<` — do **not** call `seasonToStr` directly in `main`.\n5. The output must use operator chaining: `std::cout << \"The season is \" << s << '\\n';`\n\n## Notes\n- You may use `#include <iostream>` and `#include <string_view>`.",
+          "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Season with:\n//       spring = 0, summer = 1, autumn = 2, winter = 3\n\n// TODO: Write constexpr std::string_view seasonToStr(Season s)\n//       Return the capitalized name. Use a switch. Default: \"Unknown\".\n\n// TODO: Overload operator<< for Season\n//       Signature: std::ostream& operator<<(std::ostream& out, Season s)\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Convert input to Season using static_cast\n    // TODO: Print \"The season is <SeasonName>\" using operator<<\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Season\n{\n    spring = 0,\n    summer = 1,\n    autumn = 2,\n    winter = 3\n};\n\nconstexpr std::string_view seasonToStr(Season s)\n{\n    switch (s)\n    {\n        case spring: return \"Spring\";\n        case summer: return \"Summer\";\n        case autumn: return \"Autumn\";\n        case winter: return \"Winter\";\n        default:     return \"Unknown\";\n    }\n}\n\nstd::ostream& operator<<(std::ostream& out, Season s)\n{\n    out << seasonToStr(s);\n    return out;\n}\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    Season s{ static_cast<Season>(input) };\n    std::cout << \"The season is \" << s << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — Summer",
+              "stdin": "1\n",
+              "expected_stdout": "The season is Summer\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — Spring (first enumerator)",
+              "stdin": "0\n",
+              "expected_stdout": "The season is Spring\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — Winter (last enumerator)",
+              "stdin": "3\n",
+              "expected_stdout": "The season is Winter\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Overload Both I/O Operators for a Direction Enum",
+          "prompt_md": "## Goal\nOverload both `operator<<` and `operator>>` for an unscoped `Direction` enum, then use them to read directions and print them back.\n\n## Input\n- Line 1: an integer `N` (1 <= N <= 5) — the number of directions to process.\n- Next `N` lines: each line contains a single integer representing a direction: `0` = North, `1` = East, `2` = South, `3` = West.\n\n## Output\nPrint exactly `N` lines. Each line has the format:\n```\nHeading: <DirectionName>\n```\nWhere `<DirectionName>` is one of `North`, `East`, `South`, or `West`. If the input integer does not match any enumerator, print `Invalid` as the direction name. No trailing blank lines.\n\n## Requirements\n1. Define an unscoped enum named `Direction` with enumerators `north = 0`, `east = 1`, `south = 2`, `west = 3`, at namespace scope. Also add `maxDirections = 4` as a count enumerator.\n2. Write a function `constexpr std::string_view directionToStr(Direction d)` that uses a switch statement. Return `\"Invalid\"` for any value not matching the four cardinal directions (including `maxDirections`).\n3. Overload `operator<<` with signature `std::ostream& operator<<(std::ostream& out, Direction d)`. It must call `directionToStr` and return the stream reference.\n4. Overload `operator>>` with signature `std::istream& operator>>(std::istream& in, Direction& d)`. It must read an `int`, check if it is in range `[0, maxDirections)`, and if valid convert via `static_cast`. If out of range, set `d` to `maxDirections` (which will print as `Invalid`). Return the stream reference.\n5. In `main`, read `N`, then loop `N` times. Each iteration must use your overloaded `operator>>` to read a `Direction` and your overloaded `operator<<` to print it.\n6. Do **not** call `directionToStr` or `static_cast` directly in `main`.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string_view>`.",
+          "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Direction with:\n//       north = 0, east = 1, south = 2, west = 3, maxDirections = 4\n\n// TODO: Write constexpr std::string_view directionToStr(Direction d)\n//       Return capitalized name. Default/maxDirections: \"Invalid\".\n\n// TODO: Overload operator<< for Direction\n\n// TODO: Overload operator>> for Direction\n//       Read an int, validate range [0, maxDirections), static_cast if valid,\n//       set to maxDirections if invalid. Return the stream.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Loop n times, read a Direction with >>, print with <<\n    // Format per line: \"Heading: <DirectionName>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Direction\n{\n    north = 0,\n    east = 1,\n    south = 2,\n    west = 3,\n    maxDirections = 4\n};\n\nconstexpr std::string_view directionToStr(Direction d)\n{\n    switch (d)\n    {\n        case north: return \"North\";\n        case east:  return \"East\";\n        case south: return \"South\";\n        case west:  return \"West\";\n        default:    return \"Invalid\";\n    }\n}\n\nstd::ostream& operator<<(std::ostream& out, Direction d)\n{\n    out << directionToStr(d);\n    return out;\n}\n\nstd::istream& operator>>(std::istream& in, Direction& d)\n{\n    int input{};\n    in >> input;\n\n    if (input >= 0 && input < maxDirections)\n        d = static_cast<Direction>(input);\n    else\n        d = maxDirections;\n\n    return in;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        Direction d{};\n        std::cin >> d;\n        std::cout << \"Heading: \" << d << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — three valid directions",
+              "stdin": "3\n0\n2\n1\n",
+              "expected_stdout": "Heading: North\nHeading: South\nHeading: East\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — includes invalid direction code",
+              "stdin": "4\n3\n1\n7\n0\n",
+              "expected_stdout": "Heading: West\nHeading: East\nHeading: Invalid\nHeading: North\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — single direction, boundary value",
+              "stdin": "1\n3\n",
+              "expected_stdout": "Heading: West\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.6",
+      "title": "Scoped enumerations (enum classes)",
+      "sort_order": 5,
+      "summary_md": "## Scoped Enumerations (enum classes)\n\nUnscoped enumerations (`enum`) place their enumerators in the surrounding scope and implicitly convert to integers. This causes two recurring problems: name collisions between enums that share an enumerator name, and accidental arithmetic on values that should not behave like numbers. **Scoped enumerations** (`enum class`) fix both.\n\n### Declaration and Access\n\nDeclare with `enum class` instead of `enum`. Enumerators are accessed through the enum name using the scope resolution operator:\n\n```cpp\n#include <iostream>\n#include <string>\n\nenum class Color { red, green, blue };\nenum class Fruit { red, green, blue };  // no collision with Color::red\n\nstd::string colorToString(Color c) {\n    switch (c) {\n        case Color::red:   return \"red\";\n        case Color::green: return \"green\";\n        case Color::blue:  return \"blue\";\n        default:           return \"unknown\";\n    }\n}\n```\n\nBoth `Color` and `Fruit` define `red`, `green`, `blue` without conflict because each enumerator lives inside its own scope.\n\n### No Implicit Conversion to int\n\nUnlike unscoped enums, a scoped enumerator does **not** implicitly convert to an integer. Passing `Color::red` where an `int` is expected is a compile error. When you genuinely need the underlying integer, use `static_cast`:\n\n```cpp\nint index = static_cast<int>(Color::green); // 1\n```\n\nThis forces every int conversion to be explicit, making accidental misuse visible in code review.\n\n### Specifying the Underlying Type\n\nBy default the underlying type is `int`. You can choose a different integral type after a colon:\n\n```cpp\nenum class Permission : std::uint8_t { read = 1, write = 2, execute = 4 };\n```\n\nThis is useful when memory matters or when you need a specific width for serialization.\n\n### When to Use enum class vs. enum\n\nPrefer `enum class` in new code. The scoping and type safety it provides eliminate entire categories of bugs. Use unscoped `enum` only when you have a deliberate need for implicit integer conversion (rare in modern C++).\n\n### Key Takeaways\n\n- `enum class` enumerators require scope resolution (`Color::red`, not just `red`)\n- No implicit conversion to `int` — use `static_cast` when needed\n- Two `enum class` types can share enumerator names without conflict\n- You can specify the underlying type with `: <type>` after the enum name",
+      "exercises": [
+        {
+          "title": "Traffic Light with Scoped Enum",
+          "prompt_md": "## Goal\nModel a traffic light using a scoped enumeration and print the action a driver should take for each light color.\n\n## Input\n- A single line containing an integer: `0` for red, `1` for yellow, `2` for green.\n\n## Output\nPrint exactly one line in this format:\n```\n<Color>: <Action>\n```\nWhere `<Color>` is `Red`, `Yellow`, or `Green`, and `<Action>` is `Stop`, `Caution`, or `Go` respectively.\n\nIf the input is not 0, 1, or 2, print:\n```\nUnknown: Invalid\n```\n\n## Requirements\n1. Define a scoped enumeration `enum class Light` with enumerators `red`, `yellow`, `green` (in that order, starting from default value 0).\n2. Write a function `std::string lightToString(Light l)` that returns the capitalized color name (`\"Red\"`, `\"Yellow\"`, `\"Green\"`). Use a `switch` statement. Return `\"Unknown\"` for any unrecognized value.\n3. Write a function `std::string lightToAction(Light l)` that returns the action (`\"Stop\"`, `\"Caution\"`, `\"Go\"`). Use a `switch` statement. Return `\"Invalid\"` for any unrecognized value.\n4. In `main`, read an integer from `std::cin`, convert it to a `Light` using `static_cast`, then print the result using the two functions.\n5. All enumerator access must use scope resolution (e.g., `Light::red`). Do not use unscoped enums.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define enum class Light with enumerators: red, yellow, green\n\n// TODO: Write std::string lightToString(Light l)\n//       Return \"Red\", \"Yellow\", \"Green\", or \"Unknown\"\n\n// TODO: Write std::string lightToAction(Light l)\n//       Return \"Stop\", \"Caution\", \"Go\", or \"Invalid\"\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    // TODO: Convert code to Light using static_cast\n    // TODO: Print \"<Color>: <Action>\" using the two functions\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nenum class Light\n{\n    red,\n    yellow,\n    green\n};\n\nstd::string lightToString(Light l)\n{\n    switch (l)\n    {\n        case Light::red:    return \"Red\";\n        case Light::yellow: return \"Yellow\";\n        case Light::green:  return \"Green\";\n        default:            return \"Unknown\";\n    }\n}\n\nstd::string lightToAction(Light l)\n{\n    switch (l)\n    {\n        case Light::red:    return \"Stop\";\n        case Light::yellow: return \"Caution\";\n        case Light::green:  return \"Go\";\n        default:            return \"Invalid\";\n    }\n}\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    Light light { static_cast<Light>(code) };\n    std::cout << lightToString(light) << \": \" << lightToAction(light) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — green light",
+              "stdin": "2\n",
+              "expected_stdout": "Green: Go\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — red light",
+              "stdin": "0\n",
+              "expected_stdout": "Red: Stop\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — invalid code",
+              "stdin": "5\n",
+              "expected_stdout": "Unknown: Invalid\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Role-Based Access Checker with Explicit Underlying Type",
+          "prompt_md": "## Goal\nUse a scoped enumeration with an explicit underlying type to model user access levels, then determine what actions a user can perform based on their role.\n\n## Input\n- Line 1: a single integer representing a role code:\n  - `0` = Guest, `1` = Viewer, `2` = Editor, `3` = Admin\n\n## Output\nPrint exactly three lines, one per action, in this order:\n```\nCan view: <yes/no>\nCan edit: <yes/no>\nCan delete: <yes/no>\n```\n- Guest: no permissions\n- Viewer: can view only\n- Editor: can view and edit\n- Admin: can view, edit, and delete\n\n## Requirements\n1. Define `enum class Role : int` with enumerators `guest = 0`, `viewer = 1`, `editor = 2`, `admin = 3`.\n2. Write three functions that each take a `Role` parameter and return `bool`:\n   - `bool canView(Role r)` — returns `true` if `r` is `viewer`, `editor`, or `admin`.\n   - `bool canEdit(Role r)` — returns `true` if `r` is `editor` or `admin`.\n   - `bool canDelete(Role r)` — returns `true` only if `r` is `admin`.\n3. Each function must use `static_cast<int>(r)` to compare the role's underlying value against the minimum required level. For example, `canView` returns `true` when the underlying value is >= `static_cast<int>(Role::viewer)`.\n4. In `main`, read the integer code from `std::cin`, convert it to a `Role` using `static_cast`, then call each function and print the result.\n5. All enumerator access must use scope resolution (e.g., `Role::admin`).\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.\n- The input will always be an integer in the range 0-3.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define enum class Role : int\n//       with enumerators: guest = 0, viewer = 1, editor = 2, admin = 3\n\n// TODO: Write bool canView(Role r)\n//       Return true if the underlying value >= viewer's value\n\n// TODO: Write bool canEdit(Role r)\n//       Return true if the underlying value >= editor's value\n\n// TODO: Write bool canDelete(Role r)\n//       Return true if the underlying value >= admin's value\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    // TODO: Convert code to Role using static_cast\n    // TODO: Check each action and print:\n    //   Can view: yes/no\n    //   Can edit: yes/no\n    //   Can delete: yes/no\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nenum class Role : int\n{\n    guest  = 0,\n    viewer = 1,\n    editor = 2,\n    admin  = 3\n};\n\nbool canView(Role r)\n{\n    return static_cast<int>(r) >= static_cast<int>(Role::viewer);\n}\n\nbool canEdit(Role r)\n{\n    return static_cast<int>(r) >= static_cast<int>(Role::editor);\n}\n\nbool canDelete(Role r)\n{\n    return static_cast<int>(r) >= static_cast<int>(Role::admin);\n}\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    Role role{ static_cast<Role>(code) };\n\n    std::cout << \"Can view: \"   << (canView(role)   ? \"yes\" : \"no\") << '\\n';\n    std::cout << \"Can edit: \"   << (canEdit(role)   ? \"yes\" : \"no\") << '\\n';\n    std::cout << \"Can delete: \" << (canDelete(role) ? \"yes\" : \"no\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — admin has all permissions",
+              "stdin": "3\n",
+              "expected_stdout": "Can view: yes\nCan edit: yes\nCan delete: yes\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — viewer can only view",
+              "stdin": "1\n",
+              "expected_stdout": "Can view: yes\nCan edit: no\nCan delete: no\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — guest has no permissions",
+              "stdin": "0\n",
+              "expected_stdout": "Can view: no\nCan edit: no\nCan delete: no\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.7",
+      "title": "Introduction to structs, members, and member selection",
+      "sort_order": 6,
+      "summary_md": "## Introduction to Structs, Members, and Member Selection\n\nIn lesson 13.1 you saw that program-defined types let you model real concepts. A **struct** is the most common way to bundle related variables into a single type. Each variable inside a struct is called a **member** (or **data member**, or **member variable**).\n\n### Defining a Struct\n\nA struct definition begins with the `struct` keyword, followed by the type name (PascalCase by convention), then the member declarations inside braces. A semicolon after the closing brace is required — forgetting it is a classic compiler error.\n\nThis definition creates a new type. No object exists yet — you have only described what an object of that type looks like. Each object you later create will contain its own independent copy of every member.\n\n### The Member Selection Operator (dot operator)\n\nTo access a specific member of a struct object, use the **member selection operator** (`.`), also called the **dot operator**. The left operand is the struct object and the right operand is the member name:\n\n```cpp\n#include <iostream>\n\nstruct Employee {\n    int id;\n    double salary;\n}; // semicolon required after closing brace\n\nint main() {\n    Employee alice; // creates an Employee object\n    alice.id = 1;\n    alice.salary = 75000.0;\n    std::cout << alice.id << \" earns \"\n              << alice.salary << '\\n';\n}\n```\n\nThe dot operator is one of the highest-precedence operators in C++, so expressions like `alice.salary * 0.1` work without extra parentheses.\n\n### Members Are Ordinary Variables\n\nOnce selected via the dot operator, a member behaves exactly like any standalone variable of the same type. You can assign to it, pass it to functions, use it in expressions, and read from it. The struct simply provides organizational grouping — it does not change how the underlying types work.\n\n### Each Object Gets Its Own Members\n\nWhen you create two `Employee` objects, each has its own `id` and `salary` in memory. Modifying one object's members has no effect on the other. This is no different from how two `int` variables are independent — structs just let you group several related values under one name.\n\n### Why Structs Over Separate Variables\n\nWithout structs, representing an employee means juggling separate `id` and `salary` variables that have no formal relationship. Passing them to a function requires two parameters instead of one. Structs solve this: one object, one parameter, one return value — and the compiler enforces that `id` and `salary` always travel together.",
+      "exercises": [
+        {
+          "title": "Build and Display a Rectangle Struct",
+          "prompt_md": "## Goal\nDefine a `Rectangle` struct and use the dot operator to set its members, compute its area, and print a summary.\n\n## Input\n- Line 1: two space-separated positive doubles — the width and height of rectangle 1\n- Line 2: two space-separated positive doubles — the width and height of rectangle 2\n\n## Output\nPrint exactly two lines, one per rectangle, in this format:\n```\nRectangle <N>: <width> x <height>, area = <area>\n```\nWhere `<N>` is the rectangle number (1 or 2) and all numeric values are printed with exactly 1 decimal place. No trailing blank lines.\n\n## Requirements\n1. Define a struct named `Rectangle` at namespace scope with exactly two members: `double width` and `double height`, in that order.\n2. In `main`, create two `Rectangle` objects.\n3. Use the dot operator (`.`) to assign the input values to each object's members.\n4. Write a function `double area(Rectangle r)` that returns `r.width * r.height`, using the dot operator to access the members.\n5. Use `std::cout` with `std::fixed` and `std::setprecision(1)` for all output.\n6. Do **not** use structured bindings or aggregate initialization for this exercise — practice the dot operator for both reading and writing members.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a struct named Rectangle with members: double width, double height\n\n// TODO: Write a function: double area(Rectangle r)\n//       Return r.width * r.height\n\nint main()\n{\n    // TODO: Create two Rectangle objects\n\n    // TODO: Read width and height for each rectangle from stdin\n    //       and assign them using the dot operator\n\n    // TODO: Print each rectangle in the format:\n    //       Rectangle <N>: <width> x <height>, area = <area>\n    //       Use std::fixed and std::setprecision(1)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Rectangle\n{\n    double width;\n    double height;\n};\n\ndouble area(Rectangle r)\n{\n    return r.width * r.height;\n}\n\nint main()\n{\n    Rectangle r1;\n    Rectangle r2;\n\n    std::cin >> r1.width >> r1.height;\n    std::cin >> r2.width >> r2.height;\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    std::cout << \"Rectangle 1: \" << r1.width << \" x \" << r1.height\n              << \", area = \" << area(r1) << '\\n';\n    std::cout << \"Rectangle 2: \" << r2.width << \" x \" << r2.height\n              << \", area = \" << area(r2) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- basic rectangles",
+              "stdin": "3.0 4.0\n5.5 2.0\n",
+              "expected_stdout": "Rectangle 1: 3.0 x 4.0, area = 12.0\nRectangle 2: 5.5 x 2.0, area = 11.0\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden -- square and thin rectangle",
+              "stdin": "8.0 7.0\n0.5 20.0\n",
+              "expected_stdout": "Rectangle 1: 8.0 x 7.0, area = 56.0\nRectangle 2: 0.5 x 20.0, area = 10.0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden -- fractional dimensions",
+              "stdin": "1.1 2.3\n9.9 0.1\n",
+              "expected_stdout": "Rectangle 1: 1.1 x 2.3, area = 2.5\nRectangle 2: 9.9 x 0.1, area = 1.0\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Student Grade Report Using Structs",
+          "prompt_md": "## Goal\nDefine a `Student` struct and a helper function to compute a letter grade. Read two students, then print a grade report for each.\n\n## Input\n- Line 1: a single-word name and three integer scores (0-100) for student 1, all space-separated\n- Line 2: a single-word name and three integer scores (0-100) for student 2, all space-separated\n\n## Output\nFor each student, print exactly one line in this format:\n```\n<name>: avg = <average>, grade = <letter>\n```\nWhere `<average>` is the integer average of the three scores (use integer division, truncating toward zero), and `<letter>` is determined by:\n- 90 and above: `A`\n- 80-89: `B`\n- 70-79: `C`\n- 60-69: `D`\n- Below 60: `F`\n\nNo trailing blank lines.\n\n## Requirements\n1. Define a struct named `Student` at namespace scope with exactly four members in this order: `std::string name`, `int score1`, `int score2`, `int score3`.\n2. Write a function `char letterGrade(int avg)` that returns the grade letter based on the rules above. Use if/else-if logic.\n3. In `main`, create two `Student` objects. Read input and assign all member values using the dot operator.\n4. Compute each student's average as `(s.score1 + s.score2 + s.score3) / 3` (integer division).\n5. Use the dot operator for all member access -- do not use structured bindings.\n6. Print each student on its own line using `std::cout`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct named Student with members:\n//       std::string name, int score1, int score2, int score3\n\n// TODO: Write a function: char letterGrade(int avg)\n//       Return 'A' for 90+, 'B' for 80-89, 'C' for 70-79,\n//       'D' for 60-69, 'F' for below 60\n\nint main()\n{\n    // TODO: Create two Student objects\n\n    // TODO: Read name and three scores for each student\n    //       using the dot operator to assign members\n\n    // TODO: Compute integer average for each student\n\n    // TODO: Print each student in the format:\n    //       <name>: avg = <average>, grade = <letter>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Student\n{\n    std::string name;\n    int score1;\n    int score2;\n    int score3;\n};\n\nchar letterGrade(int avg)\n{\n    if (avg >= 90)\n        return 'A';\n    else if (avg >= 80)\n        return 'B';\n    else if (avg >= 70)\n        return 'C';\n    else if (avg >= 60)\n        return 'D';\n    else\n        return 'F';\n}\n\nint main()\n{\n    Student s1;\n    Student s2;\n\n    std::cin >> s1.name >> s1.score1 >> s1.score2 >> s1.score3;\n    std::cin >> s2.name >> s2.score1 >> s2.score2 >> s2.score3;\n\n    int avg1 = (s1.score1 + s1.score2 + s1.score3) / 3;\n    int avg2 = (s2.score1 + s2.score2 + s2.score3) / 3;\n\n    std::cout << s1.name << \": avg = \" << avg1\n              << \", grade = \" << letterGrade(avg1) << '\\n';\n    std::cout << s2.name << \": avg = \" << avg2\n              << \", grade = \" << letterGrade(avg2) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- one A student and one C student",
+              "stdin": "Alice 95 88 92\nBob 70 65 78\n",
+              "expected_stdout": "Alice: avg = 91, grade = A\nBob: avg = 71, grade = C\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden -- boundary grades B and D",
+              "stdin": "Carlos 80 80 80\nDiana 60 62 58\n",
+              "expected_stdout": "Carlos: avg = 80, grade = B\nDiana: avg = 60, grade = D\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden -- perfect scores and failing scores",
+              "stdin": "Eve 100 100 100\nFrank 20 30 25\n",
+              "expected_stdout": "Eve: avg = 100, grade = A\nFrank: avg = 25, grade = F\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.8",
+      "title": "Struct aggregate initialization",
+      "sort_order": 7,
+      "summary_md": "## Struct Aggregate Initialization\n\nA struct with all public members and no user-declared constructors is an **aggregate**. C++ gives you three clean ways to initialize one, and choosing correctly avoids both bugs and verbosity.\n\n### Brace initialization (list init)\n\nProvide values inside braces in the same order the members are declared. Each value initializes the corresponding member positionally:\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Employee {\n    std::string name;\n    int id;\n    double salary;\n};\n\nint main() {\n    Employee e1 { \"Alice\", 101, 75000.0 };\n    Employee e2 { \"Bob\", 102 };  // salary value-initialized to 0.0\n    Employee e3 {};               // all members value-initialized\n\n    std::cout << e1.name << ' ' << e1.salary << '\\n';\n    std::cout << e3.name.size() << ' ' << e3.id << '\\n';\n}\n```\n\nIf you supply fewer values than there are members, the remaining members are **value-initialized** (zero for numeric types, empty for `std::string`). Supplying more values than members is a compile error.\n\n### Designated initializers (C++20)\n\nYou can name the members you want to set using `.member =` syntax. This makes the initialization self-documenting and resilient to reading errors when a struct has many fields:\n\n```cpp\nEmployee e4 { .name = \"Carol\", .id = 103, .salary = 88000.0 };\n```\n\nDesignated initializers must appear in the same order the members are declared in the struct. You may skip members, and skipped ones are value-initialized. Mixing positional and designated initializers in the same braces is not allowed.\n\n### Value initialization vs. default initialization\n\nUsing empty braces `Employee e{};` value-initializes every member: ints become 0, doubles become 0.0, strings become empty. Declaring without braces (`Employee e;`) **default-initializes**, which leaves fundamental types indeterminate. Always prefer braces to avoid reading garbage values.\n\n### Copy-list initialization with `=`\n\nYou can also write `Employee e = { \"Dana\", 104, 62000.0 };`. The `=` is optional for aggregates. Both forms produce identical code. Prefer the shorter form without `=` for consistency.\n\n### Assignment after creation\n\nYou can assign a new aggregate value to an existing struct variable using brace syntax: `e1 = { \"Eve\", 105, 91000.0 };`. This constructs a temporary and assigns it, replacing all members at once.",
+      "exercises": [
+        {
+          "title": "Initialize and print a struct three ways",
+          "prompt_md": "## Goal\n\nPractice the three main forms of aggregate initialization: positional brace init, designated initializers (C++20), and value initialization.\n\n## Input\n\n- Line 1: a single-word name (no spaces)\n- Line 2: an integer age\n- Line 3: a double height (in meters, e.g. `1.75`)\n\n## Output\n\nPrint exactly three lines, one per `Person` object, in this format:\n\n```\n<name> <age> <height>\n```\n\nwhere `<height>` is printed with exactly one decimal place.\n\n- **Line 1:** the person created with positional brace initialization from the input values.\n- **Line 2:** the person created with designated initializers, using the same input values.\n- **Line 3:** a value-initialized person (empty braces), which should print an empty name, age 0, and height 0.0.\n\nFor line 3 the expected output starts with a single space (the separator after the empty name), then `0 0.0`.\n\n## Requirements\n\n1. Define a struct `Person` at namespace scope with three members in order: `std::string name`, `int age`, `double height`.\n2. In `main`, read the three input values.\n3. Create `p1` using positional brace initialization: `Person p1 { name, age, height };`.\n4. Create `p2` using C++20 designated initializers: `Person p2 { .name = ..., .age = ..., .height = ... };`.\n5. Create `p3` using value initialization: `Person p3 {};`.\n6. Use `std::cout << std::fixed << std::setprecision(1)` before printing to format doubles to one decimal place.\n7. Print each person on its own line as `<name> <age> <height>` separated by single spaces.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: Define struct Person with members: std::string name, int age, double height\n\nint main()\n{\n    std::string name;\n    int age{};\n    double height{};\n\n    std::cin >> name >> age >> height;\n\n    // TODO: Create p1 using positional brace initialization\n\n    // TODO: Create p2 using designated initializers (C++20)\n\n    // TODO: Create p3 using value initialization (empty braces)\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    // TODO: Print each person on its own line: <name> <age> <height>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nstruct Person\n{\n    std::string name;\n    int age;\n    double height;\n};\n\nint main()\n{\n    std::string name;\n    int age{};\n    double height{};\n\n    std::cin >> name >> age >> height;\n\n    Person p1 { name, age, height };\n    Person p2 { .name = name, .age = age, .height = height };\n    Person p3 {};\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    std::cout << p1.name << ' ' << p1.age << ' ' << p1.height << '\\n';\n    std::cout << p2.name << ' ' << p2.age << ' ' << p2.height << '\\n';\n    std::cout << p3.name << ' ' << p3.age << ' ' << p3.height << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- standard input values",
+              "is_sample": true,
+              "stdin": "Alice\n30\n1.7\n",
+              "expected_stdout": "Alice 30 1.7\nAlice 30 1.7\n 0 0.0\n"
+            },
+            {
+              "label": "Hidden -- different name and large age",
+              "is_sample": false,
+              "stdin": "Zara\n99\n1.5\n",
+              "expected_stdout": "Zara 99 1.5\nZara 99 1.5\n 0 0.0\n"
+            },
+            {
+              "label": "Hidden -- zero age and small height",
+              "is_sample": false,
+              "stdin": "Bob\n0\n0.5\n",
+              "expected_stdout": "Bob 0 0.5\nBob 0 0.5\n 0 0.0\n"
+            }
+          ]
+        },
+        {
+          "title": "Build a color palette with designated initializers",
+          "prompt_md": "## Goal\n\nUse designated initializers and partial initialization to build RGB color structs, then print a palette summary.\n\n## Input\n\n- Line 1: three integers `r g b` (each 0-255) for a custom color\n- Line 2: a single-word label for the custom color (no spaces)\n\n## Output\n\nPrint exactly four lines in this format:\n\n```\n<label>: <r> <g> <b>\n```\n\nThe four colors, in order:\n1. The custom color read from input.\n2. A color named `Red` initialized with designated initializers setting only `.r = 255` (g and b should be value-initialized to 0).\n3. A color named `Green` initialized with designated initializers setting only `.g = 255` (r and b should be value-initialized to 0).\n4. A color named `Black` created with value initialization (empty braces), so all components are 0.\n\n## Requirements\n\n1. Define a struct `Color` at namespace scope with exactly four members in order: `std::string label`, `int r`, `int g`, `int b`.\n2. Read the custom color's r, g, b values and label from stdin.\n3. Create the custom color using positional brace initialization.\n4. Create `Red` using designated initializers with only `.label` and `.r` specified. The unspecified members `.g` and `.b` must be value-initialized to 0.\n5. Create `Green` using designated initializers with only `.label` and `.g` specified.\n6. Create `Black` using value initialization (empty braces), then assign its label using dot notation: `black.label = \"Black\";`.\n7. Print all four colors in the order listed above.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Color with members: std::string label, int r, int g, int b\n\nint main()\n{\n    int r{}, g{}, b{};\n    std::string label;\n\n    std::cin >> r >> g >> b >> label;\n\n    // TODO: Create custom color using positional brace initialization\n\n    // TODO: Create red using designated initializers (.label and .r only)\n\n    // TODO: Create green using designated initializers (.label and .g only)\n\n    // TODO: Create black using value initialization, then set black.label = \"Black\"\n\n    // TODO: Print all four colors, each on its own line as: <label>: <r> <g> <b>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Color\n{\n    std::string label;\n    int r;\n    int g;\n    int b;\n};\n\nint main()\n{\n    int r{}, g{}, b{};\n    std::string label;\n\n    std::cin >> r >> g >> b >> label;\n\n    Color custom { label, r, g, b };\n    Color red { .label = \"Red\", .r = 255 };\n    Color green { .label = \"Green\", .g = 255 };\n    Color black {};\n    black.label = \"Black\";\n\n    std::cout << custom.label << \": \" << custom.r << ' ' << custom.g << ' ' << custom.b << '\\n';\n    std::cout << red.label << \": \" << red.r << ' ' << red.g << ' ' << red.b << '\\n';\n    std::cout << green.label << \": \" << green.r << ' ' << green.g << ' ' << green.b << '\\n';\n    std::cout << black.label << \": \" << black.r << ' ' << black.g << ' ' << black.b << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- purple custom color",
+              "is_sample": true,
+              "stdin": "128 0 255\nPurple\n",
+              "expected_stdout": "Purple: 128 0 255\nRed: 255 0 0\nGreen: 0 255 0\nBlack: 0 0 0\n"
+            },
+            {
+              "label": "Hidden -- white custom color (all 255)",
+              "is_sample": false,
+              "stdin": "255 255 255\nWhite\n",
+              "expected_stdout": "White: 255 255 255\nRed: 255 0 0\nGreen: 0 255 0\nBlack: 0 0 0\n"
+            },
+            {
+              "label": "Hidden -- all zeros custom color",
+              "is_sample": false,
+              "stdin": "0 0 0\nVoid\n",
+              "expected_stdout": "Void: 0 0 0\nRed: 255 0 0\nGreen: 0 255 0\nBlack: 0 0 0\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.9",
+      "title": "Default member initialization",
+      "sort_order": 8,
+      "summary_md": "## Default Member Initialization\n\nWhen you define a struct, each member can be given a **default member initializer** — a value written directly in the struct definition that applies whenever no explicit initializer is provided for that member.\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Config {\n    std::string name{ \"untitled\" };\n    int width{ 800 };\n    int height{ 600 };\n    bool fullscreen{ false };\n};\n\nint main() {\n    Config c1{};              // all defaults: \"untitled\", 800, 600, false\n    Config c2{ \"game\", 1920 }; // name=\"game\", width=1920, height=600, fullscreen=false\n    std::cout << c1.name << \" \" << c1.width << \"x\" << c1.height << '\\n';\n    std::cout << c2.name << \" \" << c2.width << \"x\" << c2.height << '\\n';\n}\n```\n\nWithout default member initializers, members of fundamental types (like `int` or `bool`) are left uninitialized when you create an object without explicitly setting every field — reading them is undefined behavior. Default member initializers eliminate that risk at the point of definition.\n\n### How Defaults Interact with Aggregate Initialization\n\nWhen you aggregate-initialize a struct, any value you explicitly provide **overrides** the default for that member. Members you omit use their default. If a member has no default member initializer and you omit it during aggregate initialization, it is value-initialized (zero for fundamental types). This means `Config c2{ \"game\", 1920 };` sets `name` and `width` from the braces, while `height` and `fullscreen` keep their defaults of `600` and `false`.\n\nDesignated initializers work the same way — `Config c3{ .fullscreen = true }` sets only `fullscreen` to `true` while `name`, `width`, and `height` retain their defaults.\n\n### Best Practice\n\nProvide a default member initializer for every member. This guarantees that no matter how an object is created — value-initialized with `{}`, partially initialized, or even default-initialized — every member holds a meaningful value. The explicit initializer in the struct definition serves as living documentation of the \"sensible default\" for each field, making the type safer and easier to use correctly.",
+      "exercises": [
+        {
+          "title": "Print Struct with Default Members",
+          "prompt_md": "## Goal\nDefine a `Settings` struct with default member initializers, then create objects that use those defaults and print their values.\n\n## Input\n- Line 1: an integer N (1 <= N <= 5), the number of settings objects to create.\n- For each of the next N lines: either the word `default` (create an object using all defaults) or two values separated by a space: a string (no spaces) and an integer (the volume level, 0-100).\n\n## Output\nFor each settings object, print one line in this format:\n```\n<label>: volume=<volume>\n```\n\n## Requirements\n1. Define a struct `Settings` at namespace scope with exactly two members in this order:\n   - `std::string label` with default member initializer `\"General\"`\n   - `int volume` with default member initializer `50`\n2. When the input line is `default`, create a `Settings` object using empty braces `{}` so all defaults apply.\n3. When the input line contains a string and an integer, create a `Settings` object using aggregate initialization with those values (overriding both defaults).\n4. Print each object's members using dot notation in the format shown above.\n5. Use `std::cout` for output.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Settings with:\n//   std::string label  (default: \"General\")\n//   int volume         (default: 50)\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        // TODO: If token is \"default\", create Settings with empty braces.\n        //       Otherwise, token is the label; read the volume and create\n        //       Settings with aggregate initialization.\n        // Print: <label>: volume=<volume>\n    }\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Settings\n{\n    std::string label{ \"General\" };\n    int volume{ 50 };\n};\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        if (token == \"default\")\n        {\n            Settings s{};\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n        else\n        {\n            int vol;\n            std::cin >> vol;\n            Settings s{ token, vol };\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — mix of default and custom",
+              "stdin": "3\ndefault\nMusic 80\ndefault\n",
+              "expected_stdout": "General: volume=50\nMusic: volume=80\nGeneral: volume=50\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — all defaults",
+              "stdin": "2\ndefault\ndefault\n",
+              "expected_stdout": "General: volume=50\nGeneral: volume=50\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — all custom with boundary values",
+              "stdin": "2\nAlarm 0\nMedia 100\n",
+              "expected_stdout": "Alarm: volume=0\nMedia: volume=100\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Partial Override with Default Member Initializers",
+          "prompt_md": "## Goal\nDefine a `Character` struct where some members have defaults, then create characters that partially override those defaults using designated initializers.\n\n## Input\n- Line 1: a string (no spaces) representing the character name.\n- Line 2: an integer representing the character's health (1-1000).\n\nThe character's `attack` and `defense` stats should always use their default values.\n\n## Output\nPrint exactly one line in this format:\n```\n<name>: hp=<health> atk=<attack> def=<defense>\n```\n\nThen print a second line showing what a completely default character looks like (created with `{}`):\n```\nDefault: hp=<health> atk=<attack> def=<defense>\n```\nwhere `Default` is the default name.\n\n## Requirements\n1. Define a struct `Character` at namespace scope with these four members in order:\n   - `std::string name` with default `\"Default\"`\n   - `int health` with default `100`\n   - `int attack` with default `15`\n   - `int defense` with default `10`\n2. Create the first `Character` using designated initializers: `.name` set from input, `.health` set from input. Do not specify `.attack` or `.defense` so they keep their defaults.\n3. Create the second `Character` using empty braces `{}` so all four defaults apply.\n4. Print both characters, each on its own line, in the format above.\n5. Use `std::cout` for output.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Character with:\n//   std::string name  (default: \"Default\")\n//   int health        (default: 100)\n//   int attack        (default: 15)\n//   int defense       (default: 10)\n\nint main()\n{\n    std::string inputName;\n    int inputHealth;\n    std::cin >> inputName >> inputHealth;\n\n    // TODO: Create a Character using designated initializers for name and health only.\n    //       .attack and .defense should retain their defaults.\n\n    // TODO: Create a default Character using empty braces.\n\n    // TODO: Print both characters in the format:\n    // <name>: hp=<health> atk=<attack> def=<defense>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Character\n{\n    std::string name{ \"Default\" };\n    int health{ 100 };\n    int attack{ 15 };\n    int defense{ 10 };\n};\n\nint main()\n{\n    std::string inputName;\n    int inputHealth;\n    std::cin >> inputName >> inputHealth;\n\n    Character hero{ .name = inputName, .health = inputHealth };\n    Character blank{};\n\n    std::cout << hero.name << \": hp=\" << hero.health\n              << \" atk=\" << hero.attack\n              << \" def=\" << hero.defense << '\\n';\n\n    std::cout << blank.name << \": hp=\" << blank.health\n              << \" atk=\" << blank.attack\n              << \" def=\" << blank.defense << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — hero with custom name and health",
+              "stdin": "Archer\n250\n",
+              "expected_stdout": "Archer: hp=250 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — minimum health",
+              "stdin": "Skeleton\n1\n",
+              "expected_stdout": "Skeleton: hp=1 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — high health value",
+              "stdin": "Dragon\n1000\n",
+              "expected_stdout": "Dragon: hp=1000 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.10",
+      "title": "Passing and returning structs",
+      "sort_order": 9,
+      "summary_md": "## Passing and Returning Structs\n\nStructs often contain multiple members, making them larger than fundamental types. How you pass and return them affects both correctness and performance.\n\n### Passing structs by value\n\nWhen you pass a struct by value, the entire struct is copied into the function parameter. For small structs this is fine, but for structs containing strings or many members the copy becomes expensive.\n\n### Passing structs by const reference\n\nThe preferred approach is to pass structs by `const` lvalue reference. This avoids the copy while preventing the function from modifying the original. Use this as your default for any struct parameter that the function only needs to read:\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Employee {\n    std::string name;\n    int id;\n};\n\nvoid printEmployee(const Employee& e) {\n    std::cout << e.name << \" (#\" << e.id << \")\\n\";\n}\n\nint main() {\n    Employee emp{ \"Kai\", 42 };\n    printEmployee(emp);\n}\n```\n\nPass by non-const reference only when the function needs to modify the caller's struct.\n\n### Returning structs by value\n\nReturn structs by value. The compiler applies **named return value optimization (NRVO)** in most cases, constructing the return value directly in the caller's memory and eliminating the copy entirely. This means returning even a large struct by value is typically free.\n\nDo not return structs by reference to a local variable — the local is destroyed when the function ends, leaving a dangling reference.\n\n### Guidelines\n\n- **Read-only parameter:** pass by `const&`.\n- **Function needs to modify caller's struct:** pass by non-const `&`.\n- **Returning a struct you built inside the function:** return by value (NRVO handles it).\n\nThese rules mirror what you learned for fundamental types and references in Chapter 12, but they matter more for structs because copies are more expensive.",
+      "exercises": [
+        {
+          "title": "Print a Scaled Rectangle",
+          "prompt_md": "## Goal\nWrite a function that takes a `Rectangle` struct by const reference, scales it by an integer factor, and returns a new `Rectangle` by value. Then print the result.\n\n## Input\n- Line 1: two integers `width` and `height` of the original rectangle (1 <= width, height <= 1000)\n- Line 2: one integer `factor` to scale by (1 <= factor <= 100)\n\n## Output\nPrint exactly one line in this format:\n```\n<scaled_width> x <scaled_height>\n```\nwhere `scaled_width` is `width * factor` and `scaled_height` is `height * factor`. Note the spaces around `x`.\n\n## Requirements\n1. Define a struct named `Rectangle` with two `int` members: `width` and `height`, in that order, at namespace scope.\n2. Write a function `Rectangle scale(const Rectangle& rect, int factor)` that returns a new `Rectangle` whose members are the original members multiplied by `factor`. The parameter must be `const Rectangle&` (pass by const reference).\n3. In `main`, read input, create a `Rectangle` using aggregate initialization, call `scale`, and print the result using dot notation.\n4. Do not modify the original rectangle. The function must return by value.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define struct Rectangle with int width and int height\n\n// TODO: Write Rectangle scale(const Rectangle& rect, int factor)\n//       Return a new Rectangle with each dimension multiplied by factor.\n\nint main()\n{\n    int w, h, factor;\n    std::cin >> w >> h >> factor;\n\n    // TODO: Create a Rectangle from w and h using aggregate initialization\n    // TODO: Call scale() and store the result\n    // TODO: Print: <scaled_width> x <scaled_height>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nstruct Rectangle\n{\n    int width;\n    int height;\n};\n\nRectangle scale(const Rectangle& rect, int factor)\n{\n    return Rectangle{ rect.width * factor, rect.height * factor };\n}\n\nint main()\n{\n    int w, h, factor;\n    std::cin >> w >> h >> factor;\n\n    Rectangle original{ w, h };\n    Rectangle scaled = scale(original, factor);\n\n    std::cout << scaled.width << \" x \" << scaled.height << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — basic scaling",
+              "stdin": "3 4\n2\n",
+              "expected_stdout": "6 x 8\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — scale factor of 1",
+              "stdin": "10 20\n1\n",
+              "expected_stdout": "10 x 20\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — large values",
+              "stdin": "1000 500\n100\n",
+              "expected_stdout": "100000 x 50000\n",
+              "is_sample": false
+            }
+          ]
+        },
+        {
+          "title": "Student Grade Report via Struct Functions",
+          "prompt_md": "## Goal\nBuild a small grade-report system using a `Student` struct. Read student data, compute an average using a function that takes the struct by const reference, and update the student's letter grade using a function that takes the struct by non-const reference.\n\n## Input\n- Line 1: a single-word student name (no spaces)\n- Line 2: three integer scores separated by spaces (0 <= each score <= 100)\n\n## Output\nPrint exactly two lines:\n```\n<name>: avg <average>\n<name>: grade <letter>\n```\n- `<average>` is the integer average of the three scores (use integer division, truncating toward zero).\n- `<letter>` is determined by the average: `'A'` if average >= 90, `'B'` if >= 80, `'C'` if >= 70, `'D'` if >= 60, `'F'` otherwise.\n\n## Requirements\n1. Define a struct `Student` at namespace scope with three members in order: `std::string name`, `int totalScore` (sum of the three scores), `char grade` (default initialized to `'F'`).\n2. Write `int computeAverage(const Student& s)` — returns `s.totalScore / 3`. The parameter must be `const Student&`.\n3. Write `void assignGrade(Student& s)` — computes the average by calling `computeAverage(s)`, then sets `s.grade` based on the thresholds above. The parameter must be non-const `Student&` because it modifies `grade`.\n4. In `main`, read input, create a `Student` with aggregate initialization (set `totalScore` to the sum of the three scores, leave `grade` at its default), call `assignGrade`, then print the two output lines.\n5. Do not use any global variables.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Student with:\n//       std::string name, int totalScore, char grade (default 'F')\n\n// TODO: int computeAverage(const Student& s)\n//       Return s.totalScore / 3\n\n// TODO: void assignGrade(Student& s)\n//       Compute average via computeAverage, then set s.grade:\n//       'A' >= 90, 'B' >= 80, 'C' >= 70, 'D' >= 60, else 'F'\n\nint main()\n{\n    std::string name;\n    int s1, s2, s3;\n    std::cin >> name >> s1 >> s2 >> s3;\n\n    // TODO: Create Student with aggregate init (name, sum of scores, default grade)\n    // TODO: Call assignGrade\n    // TODO: Print: <name>: avg <average>\n    // TODO: Print: <name>: grade <letter>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Student\n{\n    std::string name;\n    int totalScore;\n    char grade{ 'F' };\n};\n\nint computeAverage(const Student& s)\n{\n    return s.totalScore / 3;\n}\n\nvoid assignGrade(Student& s)\n{\n    int avg = computeAverage(s);\n    if (avg >= 90)\n        s.grade = 'A';\n    else if (avg >= 80)\n        s.grade = 'B';\n    else if (avg >= 70)\n        s.grade = 'C';\n    else if (avg >= 60)\n        s.grade = 'D';\n    else\n        s.grade = 'F';\n}\n\nint main()\n{\n    std::string name;\n    int s1, s2, s3;\n    std::cin >> name >> s1 >> s2 >> s3;\n\n    Student student{ name, s1 + s2 + s3 };\n    assignGrade(student);\n\n    std::cout << student.name << \": avg \" << computeAverage(student) << '\\n';\n    std::cout << student.name << \": grade \" << student.grade << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — B grade student",
+              "stdin": "Alice\n85 90 80\n",
+              "expected_stdout": "Alice: avg 85\nAlice: grade B\n",
+              "is_sample": true
+            },
+            {
+              "label": "Hidden — failing student",
+              "stdin": "Bob\n40 50 30\n",
+              "expected_stdout": "Bob: avg 40\nBob: grade F\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden — exact boundary at 90",
+              "stdin": "Zara\n90 90 90\n",
+              "expected_stdout": "Zara: avg 90\nZara: grade A\n",
+              "is_sample": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.11",
+      "title": "Struct miscellany",
+      "sort_order": 10,
+      "summary_md": "## Struct Miscellany\n\nThis lesson covers several practical struct topics that round out your working knowledge: nesting structs inside other structs, combining structs with enumerations, and understanding how much memory a struct actually occupies.\n\n### Nested Structs\n\nA struct member can itself be a struct. This lets you compose complex types from simpler building blocks without flattening everything into one level:\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Address {\n    std::string city;\n    int zip;\n};\n\nstruct Employee {\n    std::string name;\n    Address addr;\n};\n\nint main() {\n    Employee e{ \"Alice\", { \"Denver\", 80202 } };\n    std::cout << e.name << \" lives in \"\n              << e.addr.city << '\\n';\n}\n```\n\nWhen using aggregate initialization, nested members are initialized with their own set of braces. Access uses chained dot operators: `e.addr.city`.\n\n### Structs with Enums\n\nEnumerations and structs complement each other naturally. An enum defines a fixed set of states; a struct bundles that state with related data. For example, pairing a `Status` enum with a `Task` struct gives both type safety on the status field and a clean grouping of all task information.\n\n### Struct Size and the `sizeof` Operator\n\nYou can query the size of a struct in bytes with `sizeof(StructName)` or `sizeof(object)`. The result is always a compile-time constant.\n\nA struct's size is **at least** the sum of its members' sizes, but is often **larger** because of **padding**. The compiler inserts padding bytes between or after members so that each member sits at a memory address aligned to its type's alignment requirement (typically equal to the type's size). After the last member, the compiler may add **trailing padding** so the total struct size is a multiple of its largest member's alignment.\n\n### Minimizing Padding\n\nYou can reduce wasted space by ordering members from largest alignment requirement to smallest. For example, placing a `double` (8-byte alignment) before a `char` (1-byte alignment) wastes less space than the reverse order. However, only optimize layout when you have measured a real memory concern -- readability comes first.\n\n### Key Takeaways\n\n- Nest structs freely to model hierarchical data; initialize nested members with inner braces.\n- Pair enums with structs to get type-safe status or category fields.\n- `sizeof` on a struct returns the total bytes including padding -- it may be more than the sum of member sizes.\n- Member ordering affects padding and therefore struct size, but prefer logical grouping unless memory pressure demands otherwise.",
+      "exercises": [
+        {
+          "title": "Nested Struct Address Book",
+          "prompt_md": "## Goal\nCreate nested structs to represent a person with an address, then print formatted contact information.\n\n## Input\n- Line 1: a person's name (single word, no spaces)\n- Line 2: city name (single word, no spaces)\n- Line 3: zip code (integer)\n- Line 4: a second person's name (single word, no spaces)\n- Line 5: city name (single word, no spaces)\n- Line 6: zip code (integer)\n\n## Output\nPrint exactly two lines, one per person, in this format:\n```\n<name>: <city> <zip>\n```\nNo trailing blank lines.\n\n## Requirements\n1. Define a struct named `Address` at namespace scope with exactly two members in this order: `std::string city`, `int zip`.\n2. Define a struct named `Person` at namespace scope with exactly two members in this order: `std::string name`, `Address address`.\n3. In `main`, read input and create two `Person` objects using aggregate initialization (brace initialization), including inner braces for the nested `Address`.\n4. Print each person on their own line using dot notation (including chained dots for nested members): `<name>: <city> <zip>`.\n5. Use `std::cout` for all output.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct named Address with fields: std::string city, int zip\n\n// TODO: Define a struct named Person with fields: std::string name, Address address\n\nint main()\n{\n    std::string name1, city1, name2, city2;\n    int zip1, zip2;\n\n    std::cin >> name1 >> city1 >> zip1;\n    std::cin >> name2 >> city2 >> zip2;\n\n    // TODO: Create two Person objects using aggregate initialization\n    //       with inner braces for the nested Address\n\n    // TODO: Print each person as: <name>: <city> <zip>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Address\n{\n    std::string city;\n    int zip;\n};\n\nstruct Person\n{\n    std::string name;\n    Address address;\n};\n\nint main()\n{\n    std::string name1, city1, name2, city2;\n    int zip1, zip2;\n\n    std::cin >> name1 >> city1 >> zip1;\n    std::cin >> name2 >> city2 >> zip2;\n\n    Person p1{ name1, { city1, zip1 } };\n    Person p2{ name2, { city2, zip2 } };\n\n    std::cout << p1.name << \": \" << p1.address.city << ' ' << p1.address.zip << '\\n';\n    std::cout << p2.name << \": \" << p2.address.city << ' ' << p2.address.zip << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- two people with different cities",
+              "is_sample": true,
+              "stdin": "Alice\nDenver\n80202\nBob\nAustin\n73301\n",
+              "expected_stdout": "Alice: Denver 80202\nBob: Austin 73301\n"
+            },
+            {
+              "label": "Hidden -- same city for both people",
+              "is_sample": false,
+              "stdin": "Carol\nSeattle\n98101\nDave\nSeattle\n98102\n",
+              "expected_stdout": "Carol: Seattle 98101\nDave: Seattle 98102\n"
+            },
+            {
+              "label": "Hidden -- short names and small zip codes",
+              "is_sample": false,
+              "stdin": "Jo\nElk\n501\nAl\nAda\n74820\n",
+              "expected_stdout": "Jo: Elk 501\nAl: Ada 74820\n"
+            }
+          ]
+        },
+        {
+          "title": "Sensor Report with Padding Discovery",
+          "prompt_md": "## Goal\nBuild a sensor reporting system using a struct with mixed-size fundamental types. Print two readings and then reveal how struct padding makes the struct larger than the sum of its members.\n\n## Input\n- Two groups of 3 lines each (2 readings total):\n  - Line 1: a single character grade (`A`, `B`, or `C`)\n  - Line 2: a floating-point value (the sensor reading)\n  - Line 3: an integer sensor ID\n\n## Output\n- Two lines, one per reading, in this format:\n  ```\n  Sensor <id>: <value> [Grade <grade>]\n  ```\n  Print `<value>` with exactly one decimal place (use `std::fixed` and `std::setprecision(1)`).\n- Then one blank line followed by two lines:\n  ```\n  sizeof(char) + sizeof(double) + sizeof(int) = <sum>\n  sizeof(Reading) = <actual>\n  ```\n  Compute both values in code using `sizeof` expressions -- do not hardcode numbers.\n- Then a third line:\n  ```\n  Has padding: <yes/no>\n  ```\n  Print `yes` if `sizeof(Reading)` is greater than the member sum, `no` otherwise.\n\n## Requirements\n1. Define a struct named `Reading` with members `char grade`, `double value`, `int id` (in that order). Do not change the member order.\n2. This member ordering is intentional -- it typically produces padding on 64-bit platforms because `double` requires 8-byte alignment but follows a 1-byte `char`.\n3. In `main`, read two readings into two separate `Reading` variables (`r1` and `r2`). Use aggregate initialization (brace init) for each.\n4. Print each reading in the format shown above.\n5. After the readings, print the blank line and the size/padding lines. Compute the member sum as `sizeof(char) + sizeof(double) + sizeof(int)`. Compute actual size as `sizeof(Reading)`.\n6. Use `std::cout` with `std::fixed` and `std::setprecision(1)` for the value output.\n\n## Notes\n- The exact values of `sizeof` are platform-dependent. Your code computes them at compile time, so it will always produce correct output on any platform.\n- You may use `#include <iostream>`, `#include <iomanip>`.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nstruct Reading\n{\n    char grade;\n    double value;\n    int id;\n};\n\nint main()\n{\n    char g1{}, g2{};\n    double v1{}, v2{};\n    int id1{}, id2{};\n\n    std::cin >> g1 >> v1 >> id1;\n    std::cin >> g2 >> v2 >> id2;\n\n    // TODO: Create two Reading objects using aggregate initialization\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    // TODO: Print each reading as: Sensor <id>: <value> [Grade <grade>]\n\n    // TODO: Print a blank line, then:\n    //       sizeof(char) + sizeof(double) + sizeof(int) = <sum>\n    //       sizeof(Reading) = <actual>\n    //       Has padding: yes/no\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Reading\n{\n    char grade;\n    double value;\n    int id;\n};\n\nint main()\n{\n    char g1{}, g2{};\n    double v1{}, v2{};\n    int id1{}, id2{};\n\n    std::cin >> g1 >> v1 >> id1;\n    std::cin >> g2 >> v2 >> id2;\n\n    Reading r1{ g1, v1, id1 };\n    Reading r2{ g2, v2, id2 };\n\n    std::cout << std::fixed << std::setprecision(1);\n\n    std::cout << \"Sensor \" << r1.id << \": \"\n              << r1.value << \" [Grade \"\n              << r1.grade << \"]\\n\";\n    std::cout << \"Sensor \" << r2.id << \": \"\n              << r2.value << \" [Grade \"\n              << r2.grade << \"]\\n\";\n\n    std::size_t memberSum = sizeof(char) + sizeof(double) + sizeof(int);\n    std::size_t actual = sizeof(Reading);\n\n    std::cout << '\\n';\n    std::cout << \"sizeof(char) + sizeof(double) + sizeof(int) = \" << memberSum << '\\n';\n    std::cout << \"sizeof(Reading) = \" << actual << '\\n';\n    std::cout << \"Has padding: \" << (actual > memberSum ? \"yes\" : \"no\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- two readings with mixed grades",
+              "is_sample": true,
+              "stdin": "A\n98.6\n101\nB\n72.0\n202\n",
+              "expected_stdout": "Sensor 101: 98.6 [Grade A]\nSensor 202: 72.0 [Grade B]\n\nsizeof(char) + sizeof(double) + sizeof(int) = 13\nsizeof(Reading) = 24\nHas padding: yes\n"
+            },
+            {
+              "label": "Hidden -- same grade for both",
+              "is_sample": false,
+              "stdin": "C\n55.3\n303\nC\n100.0\n1\n",
+              "expected_stdout": "Sensor 303: 55.3 [Grade C]\nSensor 1: 100.0 [Grade C]\n\nsizeof(char) + sizeof(double) + sizeof(int) = 13\nsizeof(Reading) = 24\nHas padding: yes\n"
+            },
+            {
+              "label": "Hidden -- large sensor IDs",
+              "is_sample": false,
+              "stdin": "A\n0.5\n99999\nB\n42.0\n10000\n",
+              "expected_stdout": "Sensor 99999: 0.5 [Grade A]\nSensor 10000: 42.0 [Grade B]\n\nsizeof(char) + sizeof(double) + sizeof(int) = 13\nsizeof(Reading) = 24\nHas padding: yes\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.12",
+      "title": "Member selection with pointers and references",
+      "sort_order": 11,
+      "summary_md": "## Member Selection with Pointers and References\n\nWhen you have a struct variable, you access its members with the **member selection operator** (`.`). But what happens when you have a *pointer* to a struct instead? You cannot write `ptr.member` because the pointer itself is not a struct -- it is an address. You first need to dereference it.\n\n### Dereference Then Select vs. the Arrow Operator\n\nYou can dereference a pointer with `*` and then use `.`, but operator precedence requires parentheses because `.` binds tighter than `*`. Writing `(*ptr).member` everywhere is clunky, so C++ provides the **arrow operator** (`->`) as syntactic sugar. `ptr->member` is exactly equivalent to `(*ptr).member`. Use `->` whenever you access a member through a pointer -- it is the idiomatic choice and virtually all C++ code follows this convention.\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Employee {\n    std::string name{};\n    int id{};\n};\n\nvoid printViaPtr(const Employee* emp) {\n    std::cout << emp->name << ' ' << emp->id << '\\n';\n}\n\nvoid printViaRef(const Employee& emp) {\n    std::cout << emp.name << ' ' << emp.id << '\\n';\n}\n\nint main() {\n    Employee e{ \"Nara\", 42 };\n    Employee* ptr{ &e };\n    ptr->name = \"Sato\";\n    printViaPtr(ptr);\n    printViaRef(e);\n}\n```\n\nThe arrow operator works with any pointer to a struct (or class) type, including pointers received as function parameters, as shown in `printViaPtr` above.\n\n### Member Access Through References\n\nReferences are not pointers -- a reference *is* the object it refers to. So you access members through a reference using the plain dot operator, just as you would with the original object. No arrow operator, no dereferencing. This is demonstrated by `printViaRef` in the example above.\n\n### Quick Rule\n\nIf you have an object or a reference, use the dot operator (`.`). If you have a pointer, use the arrow operator (`->`). Prefer pass-by-const-reference over pass-by-address for functions that only read struct data, since references cannot be null and the call-site syntax is cleaner. Use pointers (and `->`) when you need nullable semantics or are working with dynamically allocated objects.",
+      "exercises": [
+        {
+          "title": "Employee Lookup via Pointer",
+          "prompt_md": "## Goal\nGiven three employees, find one by ID using a function that searches through pointers, then print its details using the arrow operator.\n\n## Input\n- Exactly 3 lines, each containing a name (single word, no spaces) and an integer ID, separated by a space.\n- A fourth line: an integer `queryId`, the ID to search for.\n\n## Output\n- If an employee with the given ID exists, print exactly:\n```\nFound: <name> (ID: <id>)\n```\n- If no employee matches, print exactly:\n```\nNot found\n```\n\n## Requirements\n1. Define a struct named `Employee` at namespace scope with fields `std::string name` and `int id`, in that order.\n2. Write a function `Employee* findById(Employee* e1, Employee* e2, Employee* e3, int targetId)` that checks each employee pointer's `id` (using the arrow operator `->`) against `targetId`. Return a pointer to the first match, or `nullptr` if none matches.\n3. In `main`, create three separate `Employee` variables (`emp1`, `emp2`, `emp3`) and read their data from stdin.\n4. Call `findById` passing the address of each employee (`&emp1`, `&emp2`, `&emp3`) and the query ID.\n5. If the returned pointer is not `nullptr`, use the **arrow operator** (`->`) to access the employee's `name` and `id` for printing. Do not dereference with `(*ptr).member`.\n6. Use `std::cout` for all output.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\n// TODO: Write function:\n// Employee* findById(Employee* e1, Employee* e2, Employee* e3, int targetId)\n// Check each pointer's id using -> and return the first match, or nullptr.\n\nint main()\n{\n    Employee emp1{}, emp2{}, emp3{};\n\n    std::cin >> emp1.name >> emp1.id;\n    std::cin >> emp2.name >> emp2.id;\n    std::cin >> emp3.name >> emp3.id;\n\n    int queryId{};\n    std::cin >> queryId;\n\n    // TODO: Call findById with &emp1, &emp2, &emp3, and queryId\n    // TODO: If the pointer is not nullptr, print: Found: <name> (ID: <id>)\n    //       using the arrow operator (->)\n    // TODO: Otherwise, print: Not found\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\nEmployee* findById(Employee* e1, Employee* e2, Employee* e3, int targetId)\n{\n    if (e1->id == targetId)\n        return e1;\n    if (e2->id == targetId)\n        return e2;\n    if (e3->id == targetId)\n        return e3;\n    return nullptr;\n}\n\nint main()\n{\n    Employee emp1{}, emp2{}, emp3{};\n\n    std::cin >> emp1.name >> emp1.id;\n    std::cin >> emp2.name >> emp2.id;\n    std::cin >> emp3.name >> emp3.id;\n\n    int queryId{};\n    std::cin >> queryId;\n\n    Employee* result{ findById(&emp1, &emp2, &emp3, queryId) };\n    if (result != nullptr)\n        std::cout << \"Found: \" << result->name << \" (ID: \" << result->id << \")\\n\";\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- find existing employee",
+              "is_sample": true,
+              "stdin": "Alice 101\nBob 202\nCarla 303\n202\n",
+              "expected_stdout": "Found: Bob (ID: 202)\n"
+            },
+            {
+              "label": "Hidden -- ID not found",
+              "is_sample": false,
+              "stdin": "Dave 10\nEve 20\nFrank 30\n99\n",
+              "expected_stdout": "Not found\n"
+            },
+            {
+              "label": "Hidden -- first employee matches",
+              "is_sample": false,
+              "stdin": "Zara 500\nMax 600\nLeo 700\n500\n",
+              "expected_stdout": "Found: Zara (ID: 500)\n"
+            }
+          ]
+        },
+        {
+          "title": "Modify Structs Through Pointers and Read Through References",
+          "prompt_md": "## Goal\nRead a rectangle's dimensions, use a pointer to double its size via the arrow operator, then use a reference to print the updated dimensions.\n\n## Input\n- Line 1: two integers `width` and `height` separated by a space (1 <= width, height <= 1000)\n\n## Output\nPrint exactly two lines:\n```\nBefore: <width> x <height> (area: <area>)\nAfter: <width> x <height> (area: <area>)\n```\nThe \"After\" line shows the rectangle after both `width` and `height` have been doubled.\n\n## Requirements\n1. Define a struct named `Rect` at namespace scope with fields `int width` and `int height`, in that order.\n2. Write a function `void doubleSize(Rect* r)` that takes a pointer to a `Rect` and doubles both its `width` and `height` using the **arrow operator** (`->`).\n3. Write a function `void printRect(const Rect& r)` that takes a **const reference** to a `Rect` and prints one line in the format `<width> x <height> (area: <area>)` using the **dot operator** (`.`). The area is `width * height`.\n4. In `main`, create a `Rect` from the input values. Print the \"Before\" line by calling `printRect`, then call `doubleSize` with the address of the rect, then print the \"After\" line by calling `printRect` again.\n5. The \"Before:\" and \"After:\" prefixes must be printed in `main`, not inside `printRect`. Call `printRect` to produce the rest of each line.\n6. Use `std::cout` for all output. Print each prefix without a newline, then call `printRect` which prints the remainder of the line including the newline.",
+          "starter_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\n// TODO: Write function: void doubleSize(Rect* r)\n//       Double both width and height using the arrow operator (->).\n\n// TODO: Write function: void printRect(const Rect& r)\n//       Print: <width> x <height> (area: <area>)\n//       Access fields using the dot operator (.) since r is a reference.\n//       End the line with '\\n'.\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    Rect rect{ w, h };\n\n    // TODO: Print \"Before: \" then call printRect\n    // TODO: Call doubleSize with the address of rect\n    // TODO: Print \"After: \" then call printRect\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\nvoid doubleSize(Rect* r)\n{\n    r->width *= 2;\n    r->height *= 2;\n}\n\nvoid printRect(const Rect& r)\n{\n    std::cout << r.width << \" x \" << r.height\n              << \" (area: \" << r.width * r.height << \")\\n\";\n}\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    Rect rect{ w, h };\n\n    std::cout << \"Before: \";\n    printRect(rect);\n\n    doubleSize(&rect);\n\n    std::cout << \"After: \";\n    printRect(rect);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- 5 by 3 rectangle",
+              "is_sample": true,
+              "stdin": "5 3\n",
+              "expected_stdout": "Before: 5 x 3 (area: 15)\nAfter: 10 x 6 (area: 60)\n"
+            },
+            {
+              "label": "Hidden -- square 1 by 1",
+              "is_sample": false,
+              "stdin": "1 1\n",
+              "expected_stdout": "Before: 1 x 1 (area: 1)\nAfter: 2 x 2 (area: 4)\n"
+            },
+            {
+              "label": "Hidden -- larger values 100 by 250",
+              "is_sample": false,
+              "stdin": "100 250\n",
+              "expected_stdout": "Before: 100 x 250 (area: 25000)\nAfter: 200 x 500 (area: 100000)\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.13",
+      "title": "Class templates",
+      "sort_order": 12,
+      "summary_md": "## Class Templates\n\nYou already know that **function templates** let you write a single function definition that works with multiple types. **Class templates** apply the same idea to structs (and classes): you define the struct once with placeholder type parameters, and the compiler generates concrete versions for each set of types you use.\n\n### Defining a Class Template\n\nPrefix the struct definition with `template<typename T>` (or multiple parameters like `template<typename T, typename U>`). Inside the struct, use the type parameters wherever a concrete type would normally go:\n\n```cpp\n#include <iostream>\n\ntemplate<typename T, typename U>\nstruct Pair\n{\n    T first{};\n    U second{};\n};\n\nint main()\n{\n    Pair<int, double> p1{ 5, 3.14 };\n    Pair<std::string, int> p2{ \"age\", 30 };\n    std::cout << p1.first << ' ' << p1.second << '\\n';\n    std::cout << p2.first << ' ' << p2.second << '\\n';\n}\n```\n\nWhen the compiler sees `Pair<int, double>`, it generates a concrete struct with `int first` and `double second`. This process is called **template instantiation**, and each distinct combination of type arguments produces a separate type.\n\n### Explicit Template Arguments Are Required (For Now)\n\nAt this point in the curriculum you must always supply the types inside angle brackets: `Pair<int, double>`. The compiler cannot yet deduce them from the initializer values. (Class template argument deduction, or CTAD, is a later topic.)\n\n### Single Type Parameter Templates\n\nWhen every member uses the same type, a single parameter suffices:\n\n```cpp\ntemplate<typename T>\nstruct Triplet\n{\n    T a{};\n    T b{};\n    T c{};\n};\n```\n\nYou instantiate it the same way: `Triplet<int> t{ 1, 2, 3 };`.\n\n### Using Class Templates with Functions\n\nYou can write function templates that accept class template instantiations. The function's own template parameters stand in for the class template's type arguments:\n\n```cpp\ntemplate<typename T, typename U>\nvoid printPair(const Pair<T, U>& p)\n{\n    std::cout << p.first << ' ' << p.second;\n}\n```\n\nHere the compiler deduces `T` and `U` from the `Pair` you pass in -- function template argument deduction still works normally.\n\n### Key Points\n\n- Class templates are defined in header files because the compiler needs the full definition at every point of instantiation.\n- Each unique set of template arguments creates a completely independent type: `Pair<int, int>` and `Pair<double, double>` are unrelated types.\n- Use class templates whenever you find yourself duplicating a struct definition just to change the member types.",
+      "exercises": [
+        {
+          "title": "Generic Pair Printer",
+          "prompt_md": "## Goal\nDefine a class template `Pair` with two type parameters and write a function template that prints a pair in a specific format.\n\n## Input\n- Line 1: two integers separated by a space (the first pair's values)\n- Line 2: a double and an integer separated by a space (the second pair's values)\n\n## Output\n- Line 1: `(first, second)` using the first pair's values\n- Line 2: `(first, second)` using the second pair's values\n\nFor example, given input `3 7` and `2.5 4`, the output is:\n```\n(3, 7)\n(2.5, 4)\n```\n\n## Requirements\n1. Define a struct template `Pair` with two type parameters `T` and `U`, containing members `T first{}` and `U second{}`.\n2. Write a function template `void printPair(const Pair<T, U>& p)` that prints the pair in the format `(first, second)` followed by a newline.\n3. In `main`, read the values and create a `Pair<int, int>` and a `Pair<double, int>` using explicit template arguments. Do NOT rely on the compiler to deduce the template arguments for `Pair`.\n4. Call `printPair` for each pair (the function template arguments may be deduced by the compiler).\n5. Use `std::fixed` with `std::setprecision(1)` when printing the second pair so that the double displays with exactly one decimal place.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a struct template Pair with two type parameters T and U\n//       Members: T first{}, U second{}\n\n// TODO: Write a function template printPair that takes\n//       const Pair<T, U>& and prints it as (first, second)\\n\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Create a Pair<int, int> from a and b\n    // TODO: Call printPair on it\n\n    double x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: Create a Pair<double, int> from x and y\n    // TODO: Print with std::fixed and std::setprecision(1), then call printPair\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\ntemplate<typename T, typename U>\nstruct Pair\n{\n    T first{};\n    U second{};\n};\n\ntemplate<typename T, typename U>\nvoid printPair(const Pair<T, U>& p)\n{\n    std::cout << '(' << p.first << \", \" << p.second << ')' << '\\n';\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    Pair<int, int> p1{ a, b };\n    printPair(p1);\n\n    double x{};\n    int y{};\n    std::cin >> x >> y;\n\n    std::cout << std::fixed << std::setprecision(1);\n    Pair<double, int> p2{ x, y };\n    printPair(p2);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- int pair and double-int pair",
+              "is_sample": true,
+              "stdin": "3 7\n2.5 4\n",
+              "expected_stdout": "(3, 7)\n(2.5, 4)\n"
+            },
+            {
+              "label": "Hidden -- negative values",
+              "is_sample": false,
+              "stdin": "-1 0\n-3.2 10\n",
+              "expected_stdout": "(-1, 0)\n(-3.2, 10)\n"
+            },
+            {
+              "label": "Hidden -- large values and zero decimal",
+              "is_sample": false,
+              "stdin": "100 200\n0.0 99\n",
+              "expected_stdout": "(100, 200)\n(0.0, 99)\n"
+            }
+          ]
+        },
+        {
+          "title": "Bounded Value Checker",
+          "prompt_md": "## Goal\nBuild a single-type-parameter class template `Bounds` that stores a minimum and maximum value, then checks whether given values fall within that range.\n\n## Input\n- Line 1: two integers representing the min and max of an integer range\n- Line 2: an integer to test against the range\n- Line 3: two doubles representing the min and max of a double range\n- Line 4: a double to test against the range\n\n## Output\n- Line 1: `in range` or `out of range` for the integer test\n- Line 2: `in range` or `out of range` for the double test\n\nA value is in range if it is >= min and <= max (inclusive on both ends).\n\n## Requirements\n1. Define a struct template `Bounds` with a single type parameter `T`, containing members `T low{}` and `T high{}`.\n2. Write a function template `bool isInRange(const Bounds<T>& b, T value)` that returns `true` if `value >= b.low && value <= b.high`.\n3. In `main`, read the integer range and test value, create a `Bounds<int>` with explicit template arguments, call `isInRange`, and print the result.\n4. Then read the double range and test value, create a `Bounds<double>` with explicit template arguments, call `isInRange`, and print the result.\n5. Do NOT rely on the compiler to deduce template arguments for `Bounds`. Use `Bounds<int>` and `Bounds<double>` explicitly.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define a struct template Bounds with one type parameter T\n//       Members: T low{}, T high{}\n\n// TODO: Write a function template isInRange that takes\n//       const Bounds<T>& and a T value, returns bool\n\nint main()\n{\n    int iLow{};\n    int iHigh{};\n    int iVal{};\n    std::cin >> iLow >> iHigh >> iVal;\n\n    // TODO: Create a Bounds<int> and test iVal\n    // TODO: Print \"in range\" or \"out of range\"\n\n    double dLow{};\n    double dHigh{};\n    double dVal{};\n    std::cin >> dLow >> dHigh >> dVal;\n\n    // TODO: Create a Bounds<double> and test dVal\n    // TODO: Print \"in range\" or \"out of range\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate<typename T>\nstruct Bounds\n{\n    T low{};\n    T high{};\n};\n\ntemplate<typename T>\nbool isInRange(const Bounds<T>& b, T value)\n{\n    return value >= b.low && value <= b.high;\n}\n\nint main()\n{\n    int iLow{};\n    int iHigh{};\n    int iVal{};\n    std::cin >> iLow >> iHigh >> iVal;\n\n    Bounds<int> intBounds{ iLow, iHigh };\n    std::cout << (isInRange(intBounds, iVal) ? \"in range\" : \"out of range\") << '\\n';\n\n    double dLow{};\n    double dHigh{};\n    double dVal{};\n    std::cin >> dLow >> dHigh >> dVal;\n\n    Bounds<double> dblBounds{ dLow, dHigh };\n    std::cout << (isInRange(dblBounds, dVal) ? \"in range\" : \"out of range\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- int in range and double out of range",
+              "is_sample": true,
+              "stdin": "1 10\n5\n0.0 1.0\n1.5\n",
+              "expected_stdout": "in range\nout of range\n"
+            },
+            {
+              "label": "Hidden -- boundary values (both inclusive)",
+              "is_sample": false,
+              "stdin": "-5 5\n-5\n-1.0 1.0\n1.0\n",
+              "expected_stdout": "in range\nin range\n"
+            },
+            {
+              "label": "Hidden -- both out of range",
+              "is_sample": false,
+              "stdin": "10 20\n21\n3.5 7.5\n3.4\n",
+              "expected_stdout": "out of range\nout of range\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.14",
+      "title": "Class template argument deduction (CTAD) and deduction guides",
+      "sort_order": 13,
+      "summary_md": "## Class Template Argument Deduction (CTAD)\n\nWhen you use a class template like `std::pair`, you normally specify template arguments explicitly: `std::pair<int, double> p{ 1, 3.14 };`. Starting with C++17, **class template argument deduction (CTAD)** lets the compiler deduce those arguments from the initializer, so you can write `std::pair p{ 1, 3.14 };` and the compiler figures out the types.\n\nCTAD works with your own templates too. Given a struct template with a constructor (or, for aggregates in C++20, from the member types), the compiler matches the initializer types against the template parameters:\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nstruct Wrapper\n{\n    T value;\n};\n\nint main()\n{\n    Wrapper w1{ 42 };       // CTAD: T = int\n    Wrapper w2{ 3.14 };     // CTAD: T = double\n    std::pair p{ 5, 2.0 };  // CTAD: pair<int, double>\n    std::cout << w1.value << ' ' << w2.value << '\\n';\n}\n```\n\nFor aggregate class templates (structs with no user-declared constructors), CTAD from brace initialization requires **C++20**. In C++17, CTAD only works when the class has a constructor whose parameters the compiler can use for deduction.\n\n### Deduction Guides\n\nSometimes the compiler cannot deduce template arguments on its own -- for example, when you want a `Wrapper<std::string>` but pass a string literal (which is `const char*`). A **deduction guide** is a hint you write outside the class that tells the compiler how to map constructor argument types to template parameters:\n\n```cpp\nWrapper(const char*) -> Wrapper<std::string>;\n```\n\nWith this guide, `Wrapper w{\"hello\"};` deduces `T = std::string` instead of `T = const char*`. The standard library ships with many built-in deduction guides -- that is why `std::pair p{1, 2.0};` and `std::vector v{1, 2, 3};` work out of the box.\n\n### When CTAD Does Not Apply\n\nCTAD only triggers when **no** template arguments are provided. If you write even one argument explicitly (e.g., `std::pair<int> p{1, 2.0};`), CTAD is disabled and normal rules apply. CTAD also cannot deduce a type that does not appear in the initializer -- if a template parameter is used only internally, you must specify it explicitly.\n\n### Best Practice\n\nUse CTAD when the deduced types are obvious from context (e.g., `std::pair p{1, 2.0}`). Spell out the types explicitly when CTAD would deduce something surprising or when readability benefits from seeing the type.",
+      "exercises": [
+        {
+          "title": "Pair Deduction Printer",
+          "prompt_md": "## Goal\nUse CTAD to create `std::pair` objects without specifying template arguments, then print their contents.\n\n## Input\n- Line 1: an integer and a double, space-separated\n- Line 2: two integers, space-separated\n\n## Output\n- Line 1: `<first> <second>` from the first pair (int and double)\n- Line 2: `<first> <second>` from the second pair (both ints)\n- Line 3: `<first> <second>` from a third pair created by combining the first element of pair1 and the first element of pair2\n\n## Requirements\n1. Read the input values into local variables first.\n2. Create `pair1` using CTAD from an `int` and a `double` -- do **not** write `std::pair<int, double>`.\n3. Create `pair2` using CTAD from two `int` values -- do **not** write `std::pair<int, int>`.\n4. Create `pair3` using CTAD from `pair1.first` and `pair2.first` -- do **not** specify template arguments.\n5. Print each pair's `.first` and `.second` separated by a space, one pair per line.\n6. Use `#include <iostream>` and `#include <utility>`.\n7. Do not use `auto` for the pair declarations -- use `std::pair` with CTAD.",
+          "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int a{};\n    double b{};\n    int c{};\n    int d{};\n\n    std::cin >> a >> b >> c >> d;\n\n    // TODO: Create pair1 from a and b using CTAD (no explicit template args)\n    // TODO: Create pair2 from c and d using CTAD (no explicit template args)\n    // TODO: Create pair3 from pair1.first and pair2.first using CTAD\n\n    // TODO: Print each pair's first and second on separate lines\n    //       Format per line: <first> <second>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int a{};\n    double b{};\n    int c{};\n    int d{};\n\n    std::cin >> a >> b >> c >> d;\n\n    std::pair pair1{ a, b };\n    std::pair pair2{ c, d };\n    std::pair pair3{ pair1.first, pair2.first };\n\n    std::cout << pair1.first << ' ' << pair1.second << '\\n';\n    std::cout << pair2.first << ' ' << pair2.second << '\\n';\n    std::cout << pair3.first << ' ' << pair3.second << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- basic int and double pair",
+              "is_sample": true,
+              "stdin": "5 3.14\n10 20\n",
+              "expected_stdout": "5 3.14\n10 20\n5 10\n"
+            },
+            {
+              "label": "Hidden -- negative values",
+              "is_sample": false,
+              "stdin": "-3 2.5\n-7 -1\n",
+              "expected_stdout": "-3 2.5\n-7 -1\n-3 -7\n"
+            },
+            {
+              "label": "Hidden -- zeros",
+              "is_sample": false,
+              "stdin": "0 0.0\n0 0\n",
+              "expected_stdout": "0 0\n0 0\n0 0\n"
+            }
+          ]
+        },
+        {
+          "title": "Labeled Value with Deduction Guide",
+          "prompt_md": "## Goal\nWrite a struct template `Labeled` that pairs a label string with a value of any type. Add a deduction guide so that constructing from a C-string literal and a value deduces the label as `std::string`.\n\n## Input\n- Line 1: a single word (the label) and an integer, space-separated\n- Line 2: a single word (the label) and a double, space-separated\n\n## Output\n- Line 1: `[<label>] <value>` for the integer-valued `Labeled` created from input\n- Line 2: `[<label>] <value>` for the double-valued `Labeled` created from input\n- Line 3: `[fixed] 0` — a `Labeled` created directly from a string literal `\"fixed\"` and integer `0`, exercising the deduction guide\n\n## Requirements\n1. Define a struct template `Labeled` with template parameter `T` and two members: `std::string label` and `T value`, in that order.\n2. Provide a **deduction guide** so that `Labeled{\"text\", 42}` deduces `T = int` with `label` as `std::string` (not `const char*`). The deduction guide signature should accept `const char*` for the label and `T` for the value.\n3. In `main`, read both input lines into local `std::string` and numeric variables.\n4. Create each `Labeled` object using CTAD -- do **not** write explicit template arguments.\n5. Additionally, create a third `Labeled` object directly from a **string literal** and an integer: `Labeled item3{\"fixed\", 0};`. This exercises the deduction guide (since `\"fixed\"` is `const char*`, not `std::string`).\n6. Print all three objects in the format `[<label>] <value>`, one per line.\n7. Use `#include <iostream>` and `#include <string>`. Do not use `std::pair`.\n8. The struct must not have a user-declared constructor -- rely on aggregate initialization and the deduction guide.",
+          "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct template Labeled<T> with members:\n//       std::string label\n//       T value\n\n// TODO: Write a deduction guide so that Labeled(const char*, T) -> Labeled<T>\n\nint main()\n{\n    std::string label1;\n    int intVal{};\n    std::string label2;\n    double dblVal{};\n\n    std::cin >> label1 >> intVal >> label2 >> dblVal;\n\n    // TODO: Create a Labeled object from label1 and intVal using CTAD\n    // TODO: Create a Labeled object from label2 and dblVal using CTAD\n    // TODO: Create a Labeled object from a string literal \"fixed\" and 0 using CTAD\n\n    // TODO: Print each in the format: [<label>] <value>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\ntemplate <typename T>\nstruct Labeled\n{\n    std::string label;\n    T value;\n};\n\ntemplate <typename T>\nLabeled(const char*, T) -> Labeled<T>;\n\nint main()\n{\n    std::string label1;\n    int intVal{};\n    std::string label2;\n    double dblVal{};\n\n    std::cin >> label1 >> intVal >> label2 >> dblVal;\n\n    Labeled item1{ label1, intVal };\n    Labeled item2{ label2, dblVal };\n    Labeled item3{ \"fixed\", 0 };\n\n    std::cout << '[' << item1.label << \"] \" << item1.value << '\\n';\n    std::cout << '[' << item2.label << \"] \" << item2.value << '\\n';\n    std::cout << '[' << item3.label << \"] \" << item3.value << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- basic labels",
+              "is_sample": true,
+              "stdin": "count 42\nprice 9.99\n",
+              "expected_stdout": "[count] 42\n[price] 9.99\n[fixed] 0\n"
+            },
+            {
+              "label": "Hidden -- negative values",
+              "is_sample": false,
+              "stdin": "debt -500\nrate -0.05\n",
+              "expected_stdout": "[debt] -500\n[rate] -0.05\n[fixed] 0\n"
+            },
+            {
+              "label": "Hidden -- zero values",
+              "is_sample": false,
+              "stdin": "empty 0\nzero 0.0\n",
+              "expected_stdout": "[empty] 0\n[zero] 0\n[fixed] 0\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.15",
+      "title": "Alias templates",
+      "sort_order": 14,
+      "summary_md": "## Alias Templates\n\nIn lesson 10.7 you learned that a **type alias** gives an existing type a new name using `using`. But a regular type alias cannot be templated -- if you want an alias for `std::pair<int, double>` and another for `std::pair<int, std::string>`, you must write each one by hand. **Alias templates** solve this by letting you create a family of aliases parameterized by one or more types.\n\nAn alias template is declared with `template` followed by a `using` statement:\n\n```cpp\n#include <iostream>\n#include <utility>\n\ntemplate <typename T>\nusing IntPair = std::pair<int, T>;\n\nint main()\n{\n    IntPair<double> a { 1, 3.14 };\n    IntPair<std::string> b { 2, \"hello\" };\n    std::cout << a.first << ' ' << a.second << '\\n';\n    std::cout << b.first << ' ' << b.second << '\\n';\n}\n```\n\nHere `IntPair<T>` is not a type itself -- it is a template that produces a type when you supply a template argument. `IntPair<double>` becomes `std::pair<int, double>`, and `IntPair<std::string>` becomes `std::pair<int, std::string>`. The compiler substitutes the argument into the right-hand side, exactly like a function template substitutes into its body.\n\n### When Alias Templates Are Useful\n\nAlias templates shine when a class template has multiple parameters but you want to fix some of them. Instead of repeating `std::pair<int, Something>` everywhere, `IntPair<Something>` communicates intent and reduces duplication. If you later change the fixed parameter from `int` to `long`, you update a single line.\n\nThey also help when a template name is long or deeply nested. A short alias template keeps call sites readable without sacrificing generality.\n\n### Alias Templates vs. Regular Type Aliases\n\nA regular type alias (`using Coord = std::pair<int, int>;`) fixes every parameter -- it names exactly one concrete type. An alias template leaves at least one parameter open, so it names a family of types. Use a regular alias when the type is fully known; use an alias template when the type still depends on a parameter the caller provides.\n\n### Important Details\n\n- Alias templates are not new types; they are just shorthand. `IntPair<double>` and `std::pair<int, double>` are the exact same type.\n- CTAD (class template argument deduction) does not work through alias templates in C++17 or C++20. You must supply the template arguments explicitly.\n- Like other templates, alias templates are typically defined in header files so every translation unit that uses them can see the definition.",
+      "exercises": [
+        {
+          "title": "Fixed-First Pair Alias Template",
+          "prompt_md": "## Goal\nCreate an alias template that fixes the first element of a `std::pair` to `std::string`, then use it to store and print two different pairs.\n\n## Input\n- Line 1: a single word (no spaces) and an integer separated by a space\n- Line 2: a single word (no spaces) and a double separated by a space\n\n## Output\nPrint exactly two lines:\n```\n<word1> <integer>\n<word2> <double>\n```\nThe double must be printed with default `std::cout` precision (no formatting manipulators needed).\n\n## Requirements\n1. Define an alias template `template <typename T> using StringPair = std::pair<std::string, T>;` at namespace scope.\n2. In `main`, read the input and create a `StringPair<int>` for line 1 and a `StringPair<double>` for line 2. Use brace initialization.\n3. Write a function template `template <typename T> void printPair(const StringPair<T>& p)` that prints `p.first`, a space, and `p.second`, followed by a newline.\n4. Call `printPair` for each pair.\n5. Do not use `std::pair` directly anywhere in `main` -- use only `StringPair`.\n\n## Notes\n- You may use `#include <iostream>`, `#include <string>`, and `#include <utility>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <utility>\n\n// TODO: Define an alias template:\n// template <typename T>\n// using StringPair = std::pair<std::string, T>;\n\n// TODO: Write a function template:\n// template <typename T>\n// void printPair(const StringPair<T>& p)\n// that prints p.first, a space, p.second, then '\\n'.\n\nint main()\n{\n    std::string word1, word2;\n    int intVal{};\n    double dblVal{};\n\n    std::cin >> word1 >> intVal >> word2 >> dblVal;\n\n    // TODO: Create a StringPair<int> from word1 and intVal\n    // TODO: Create a StringPair<double> from word2 and dblVal\n    // TODO: Call printPair for each pair\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <utility>\n\ntemplate <typename T>\nusing StringPair = std::pair<std::string, T>;\n\ntemplate <typename T>\nvoid printPair(const StringPair<T>& p)\n{\n    std::cout << p.first << ' ' << p.second << '\\n';\n}\n\nint main()\n{\n    std::string word1, word2;\n    int intVal{};\n    double dblVal{};\n\n    std::cin >> word1 >> intVal >> word2 >> dblVal;\n\n    StringPair<int> a { word1, intVal };\n    StringPair<double> b { word2, dblVal };\n\n    printPair(a);\n    printPair(b);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- string-int and string-double pairs",
+              "is_sample": true,
+              "stdin": "apple 42\nbanana 3.14\n",
+              "expected_stdout": "apple 42\nbanana 3.14\n"
+            },
+            {
+              "label": "Hidden -- negative values",
+              "is_sample": false,
+              "stdin": "error -1\nwarn -0.5\n",
+              "expected_stdout": "error -1\nwarn -0.5\n"
+            },
+            {
+              "label": "Hidden -- zero values",
+              "is_sample": false,
+              "stdin": "origin 0\nzero 0\n",
+              "expected_stdout": "origin 0\nzero 0\n"
+            }
+          ]
+        },
+        {
+          "title": "Coordinate Alias Template with Struct",
+          "prompt_md": "## Goal\nDefine a struct template for a 2D coordinate and an alias template that fixes it to `int`, then compute and print the Manhattan distance between two points.\n\n## Input\n- Line 1: two integers `x1 y1` (the first point)\n- Line 2: two integers `x2 y2` (the second point)\n\nAll values are in the range -1000 to 1000.\n\n## Output\nPrint exactly three lines:\n```\nA: (<x1>, <y1>)\nB: (<x2>, <y2>)\nManhattan distance: <distance>\n```\nwhere `<distance>` is `|x1 - x2| + |y1 - y2|`.\n\n## Requirements\n1. Define a struct template `template <typename T> struct Coord` with two members `T x` and `T y`, at namespace scope.\n2. Define an alias template `template <typename T> using Point = Coord<T>;` at namespace scope.\n3. Define a regular type alias `using IntPoint = Point<int>;` at namespace scope.\n4. Write a function `int manhattan(const IntPoint& a, const IntPoint& b)` that returns the Manhattan distance. Use `std::abs` from `<cstdlib>`.\n5. In `main`, read the two points into `IntPoint` objects using brace initialization, print them in the format shown, then print the distance.\n6. Do not use `Coord<int>` directly in `main` -- use `IntPoint` everywhere.\n\n## Notes\n- You may use `#include <iostream>`, `#include <cstdlib>` (for `std::abs`).",
+          "starter_code": "#include <iostream>\n#include <cstdlib>\n\n// TODO: Define a struct template:\n// template <typename T>\n// struct Coord { T x; T y; };\n\n// TODO: Define an alias template:\n// template <typename T>\n// using Point = Coord<T>;\n\n// TODO: Define a regular type alias:\n// using IntPoint = Point<int>;\n\n// TODO: Write a function:\n// int manhattan(const IntPoint& a, const IntPoint& b)\n// Return |a.x - b.x| + |a.y - b.y| using std::abs.\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    // TODO: Create two IntPoint objects using brace initialization\n    // TODO: Print each point as \"A: (<x>, <y>)\" and \"B: (<x>, <y>)\"\n    // TODO: Print \"Manhattan distance: <result>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <cstdlib>\n\ntemplate <typename T>\nstruct Coord\n{\n    T x;\n    T y;\n};\n\ntemplate <typename T>\nusing Point = Coord<T>;\n\nusing IntPoint = Point<int>;\n\nint manhattan(const IntPoint& a, const IntPoint& b)\n{\n    return std::abs(a.x - b.x) + std::abs(a.y - b.y);\n}\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    IntPoint a { x1, y1 };\n    IntPoint b { x2, y2 };\n\n    std::cout << \"A: (\" << a.x << \", \" << a.y << \")\\n\";\n    std::cout << \"B: (\" << b.x << \", \" << b.y << \")\\n\";\n    std::cout << \"Manhattan distance: \" << manhattan(a, b) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- simple positive coordinates",
+              "is_sample": true,
+              "stdin": "1 2\n4 6\n",
+              "expected_stdout": "A: (1, 2)\nB: (4, 6)\nManhattan distance: 7\n"
+            },
+            {
+              "label": "Hidden -- negative coordinates",
+              "is_sample": false,
+              "stdin": "-3 -5\n2 7\n",
+              "expected_stdout": "A: (-3, -5)\nB: (2, 7)\nManhattan distance: 17\n"
+            },
+            {
+              "label": "Hidden -- same point gives distance zero",
+              "is_sample": false,
+              "stdin": "100 -200\n100 -200\n",
+              "expected_stdout": "A: (100, -200)\nB: (100, -200)\nManhattan distance: 0\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.x",
+      "title": "Chapter 13 summary and quiz",
+      "sort_order": 15,
+      "summary_md": "## Chapter 13 Summary\n\nThis chapter introduced **program-defined types** -- custom types you create to model your problem domain.\n\n### Enumerations\n\n- An **unscoped enumeration** (`enum`) defines a type with a fixed set of named integral constants called enumerators. Enumerators are injected into the surrounding scope, which can cause naming collisions. They implicitly convert to their underlying integer type, but integers do not convert back without `static_cast`.\n- A **scoped enumeration** (`enum class`) fixes both issues: enumerators are accessed via `EnumName::enumerator` and do not implicitly convert to integers. Prefer `enum class` unless you need implicit integer conversion.\n- Convert enumerations to and from strings with helper functions, typically using a `switch` mapping each enumerator to its string representation.\n- **Overloading `operator<<` and `operator>>`** for enum types enables direct I/O with `std::cout` and `std::cin`.\n\n### Structs\n\n- A **struct** groups related variables (members) under one type. Access members with the dot operator (`.`) or arrow operator (`->`) through a pointer.\n- **Aggregate initialization** uses braces in declaration order: `Point p{ 3.0, 4.0 };`. C++20 adds **designated initializers**: `Point p{ .x = 3.0, .y = 4.0 };`.\n- **Default member initializers** provide fallback values in the struct definition. If an initializer list omits a member, its default applies.\n- Structs can be **passed to and returned from functions**. Pass by `const` reference to avoid copies; return by value for small structs.\n- Structs support nesting. Use chained dot notation (`e.addr.city`) to access nested members.\n- **Member selection with pointers**: use `ptr->member` instead of `(*ptr).member`.\n\n### Class Templates\n\n- A **class template** parameterizes a struct definition by one or more types via `template<typename T>`. The compiler generates a concrete type for each unique set of template arguments.\n- **CTAD** (class template argument deduction) lets the compiler deduce template arguments from initializer values, so `Pair p{ 1, 2.5 };` works without explicit `Pair<int, double>`.\n- An **alias template** creates a shorthand for a template instantiation: `template<typename T> using Name = SomeTemplate<T, T>;`.",
+      "exercises": [
+        {
+          "title": "Inventory Item Tracker with Enum and Struct",
+          "prompt_md": "## Goal\nDefine a scoped enum for item rarity and a struct for inventory items. Read exactly three items from stdin and print a formatted inventory report.\n\n## Input\n- Exactly 3 groups of 2 lines each:\n  - Line 1: item name (single word, no spaces)\n  - Line 2: two space-separated integers: `quantity` (1-999) and `rarity_code` (0 = Common, 1 = Rare, 2 = Legendary)\n\n## Output\nPrint exactly 3 lines, one per item, in this format:\n```\n<name> x<quantity> [<Rarity>]\n```\nWhere `<Rarity>` is one of `Common`, `Rare`, or `Legendary`.\n\nAfter the item lines, print one blank line, then a final summary line:\n```\nTotal items: <sum_of_all_quantities>\n```\n\n## Requirements\n1. Define a `enum class Rarity` at namespace scope with enumerators `Common = 0`, `Rare = 1`, `Legendary = 2`.\n2. Define a struct `Item` at namespace scope with three members in order: `std::string name`, `int quantity`, `Rarity rarity`.\n3. Write a function `std::string_view rarityLabel(Rarity r)` that returns the display string for each rarity using a switch statement. Return `\"Unknown\"` for unrecognized values.\n4. Write a helper function `void printItem(const Item& item)` that prints a single item line in the format `<name> x<quantity> [<Rarity>]` using the dot operator and `rarityLabel`.\n5. In `main`, read three items into three separate `Item` variables (`item1`, `item2`, `item3`) using aggregate initialization.\n6. The rarity code from stdin is an `int` -- use `static_cast<Rarity>(code)` to convert it.\n7. Call `printItem` for each item, then compute and print the total quantity.\n8. Do not use `std::vector`, `std::array`, or C-style arrays.",
+          "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: Define enum class Rarity with Common = 0, Rare = 1, Legendary = 2\n\n// TODO: Define struct Item with: std::string name, int quantity, Rarity rarity\n\n// TODO: Write function: std::string_view rarityLabel(Rarity r)\n//       Use a switch statement. Return \"Unknown\" for unrecognized values.\n\n// TODO: Write function: void printItem(const Item& item)\n//       Print: <name> x<quantity> [<Rarity>]\n\nint main()\n{\n    // TODO: Read three items from stdin (name, then quantity and rarity_code)\n    //       Convert rarity_code to Rarity using static_cast\n    //       Store each item in a separate Item variable using aggregate initialization\n\n    // TODO: Call printItem for each of the three items\n\n    // TODO: Print a blank line, then: Total items: <total>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nenum class Rarity\n{\n    Common    = 0,\n    Rare      = 1,\n    Legendary = 2\n};\n\nstruct Item\n{\n    std::string name;\n    int         quantity;\n    Rarity      rarity;\n};\n\nstd::string_view rarityLabel(Rarity r)\n{\n    switch (r)\n    {\n        case Rarity::Common:    return \"Common\";\n        case Rarity::Rare:      return \"Rare\";\n        case Rarity::Legendary: return \"Legendary\";\n        default:                return \"Unknown\";\n    }\n}\n\nvoid printItem(const Item& item)\n{\n    std::cout << item.name << \" x\" << item.quantity\n              << \" [\" << rarityLabel(item.rarity) << \"]\\n\";\n}\n\nint main()\n{\n    std::string n1, n2, n3;\n    int q1{}, q2{}, q3{};\n    int c1{}, c2{}, c3{};\n\n    std::cin >> n1 >> q1 >> c1;\n    std::cin >> n2 >> q2 >> c2;\n    std::cin >> n3 >> q3 >> c3;\n\n    Item item1{ n1, q1, static_cast<Rarity>(c1) };\n    Item item2{ n2, q2, static_cast<Rarity>(c2) };\n    Item item3{ n3, q3, static_cast<Rarity>(c3) };\n\n    printItem(item1);\n    printItem(item2);\n    printItem(item3);\n\n    int total{ item1.quantity + item2.quantity + item3.quantity };\n\n    std::cout << '\\n';\n    std::cout << \"Total items: \" << total << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- three items of different rarity",
+              "is_sample": true,
+              "stdin": "Sword\n5 0\nShield\n2 1\nCrown\n1 2\n",
+              "expected_stdout": "Sword x5 [Common]\nShield x2 [Rare]\nCrown x1 [Legendary]\n\nTotal items: 8\n"
+            },
+            {
+              "label": "Hidden -- all same rarity",
+              "is_sample": false,
+              "stdin": "Helm\n3 2\nBow\n7 2\nRing\n1 2\n",
+              "expected_stdout": "Helm x3 [Legendary]\nBow x7 [Legendary]\nRing x1 [Legendary]\n\nTotal items: 11\n"
+            },
+            {
+              "label": "Hidden -- large quantities",
+              "is_sample": false,
+              "stdin": "Potion\n99 0\nElixir\n50 1\nGem\n999 2\n",
+              "expected_stdout": "Potion x99 [Common]\nElixir x50 [Rare]\nGem x999 [Legendary]\n\nTotal items: 1148\n"
+            }
+          ]
+        },
+        {
+          "title": "Generic Pair Statistics with Class Template",
+          "prompt_md": "## Goal\nDefine a class template `Pair` that holds two values of the same type, then use it to read pairs of integers and pairs of doubles, printing the larger value from each pair.\n\n## Input\n- Line 1: two space-separated integers (the first pair)\n- Line 2: two space-separated integers (the second pair)\n- Line 3: two space-separated doubles (the third pair)\n\n## Output\nPrint exactly 3 lines:\n```\nInt pair 1 max: <value>\nInt pair 2 max: <value>\nDouble pair max: <value>\n```\nFor doubles, the output uses the default `std::cout` formatting (no fixed precision needed).\n\n## Requirements\n1. Define a class template `Pair` with a single template parameter `T` at namespace scope. It must have exactly two members: `T first` and `T second`, in that order.\n2. Write a function template `T larger(const Pair<T>& p)` that returns the larger of `p.first` and `p.second`. If they are equal, return `p.first`.\n3. In `main`, create two `Pair<int>` objects and one `Pair<double>` object from stdin using aggregate initialization.\n4. Use CTAD (class template argument deduction) for at least one of the three `Pair` objects -- omit the explicit template argument and let the compiler deduce it.\n5. Call `larger()` on each pair and print the results in the format above.\n6. Do not use `std::max`, `std::pair`, or any standard library template. The point is to write your own.\n7. Do not use `std::vector` or any container from Chapter 16+.\n\n**Note:** CTAD for aggregate class templates (structs without constructors) requires C++20. The judge compiles with C++20 or later.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define a class template Pair<T> with members: T first, T second\n\n// TODO: Write a function template: T larger(const Pair<T>& p)\n//       Return the larger of p.first and p.second (return p.first if equal)\n\nint main()\n{\n    int a1{}, b1{}, a2{}, b2{};\n    double d1{}, d2{};\n\n    std::cin >> a1 >> b1;\n    std::cin >> a2 >> b2;\n    std::cin >> d1 >> d2;\n\n    // TODO: Create Pair<int> p1 and p2 from the integer inputs\n    // TODO: Create a Pair for doubles using CTAD (omit template argument)\n\n    // TODO: Print \"Int pair 1 max: <larger(p1)>\"\n    // TODO: Print \"Int pair 2 max: <larger(p2)>\"\n    // TODO: Print \"Double pair max: <larger(p3)>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Pair\n{\n    T first;\n    T second;\n};\n\ntemplate <typename T>\nT larger(const Pair<T>& p)\n{\n    if (p.first >= p.second)\n        return p.first;\n    return p.second;\n}\n\nint main()\n{\n    int a1{}, b1{}, a2{}, b2{};\n    double d1{}, d2{};\n\n    std::cin >> a1 >> b1;\n    std::cin >> a2 >> b2;\n    std::cin >> d1 >> d2;\n\n    Pair<int> p1{ a1, b1 };\n    Pair<int> p2{ a2, b2 };\n    Pair p3{ d1, d2 };\n\n    std::cout << \"Int pair 1 max: \" << larger(p1) << '\\n';\n    std::cout << \"Int pair 2 max: \" << larger(p2) << '\\n';\n    std::cout << \"Double pair max: \" << larger(p3) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- mixed values",
+              "is_sample": true,
+              "stdin": "10 20\n5 3\n1.5 2.7\n",
+              "expected_stdout": "Int pair 1 max: 20\nInt pair 2 max: 5\nDouble pair max: 2.7\n"
+            },
+            {
+              "label": "Hidden -- equal values and negatives",
+              "is_sample": false,
+              "stdin": "7 7\n-3 -10\n-1.5 -1.5\n",
+              "expected_stdout": "Int pair 1 max: 7\nInt pair 2 max: -3\nDouble pair max: -1.5\n"
+            },
+            {
+              "label": "Hidden -- large values and second larger",
+              "is_sample": false,
+              "stdin": "999 1000\n-100 100\n0.001 0.999\n",
+              "expected_stdout": "Int pair 1 max: 1000\nInt pair 2 max: 100\nDouble pair max: 0.999\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "13.y",
+      "title": "Using a language reference",
+      "sort_order": 16,
+      "summary_md": "## Using a Language Reference\n\nAt some point you will need a function you have never used before. Maybe you know the name, maybe you only know what you want to do. Either way, the answer lives in a **language reference** — a comprehensive catalog of every type, function, and header in the C++ standard library. The most widely used free reference is [cppreference.com](https://en.cppreference.com).\n\n### Anatomy of a Reference Page\n\nEvery function page follows a predictable structure. Here is a condensed version of what you would see for `std::string::substr`:\n\n```\nconstexpr basic_string substr( size_type pos = 0, size_type count = npos ) const;\n```\n\nBreaking this apart:\n\n- **Return type** (`basic_string`) — tells you what you get back. For `std::string`, `basic_string` *is* `std::string`.\n- **Parameters** — `pos` is where the substring starts (defaults to `0`); `count` is how many characters to extract (defaults to `npos`, meaning \"until the end\").\n- **`const`** after the parameter list — the function does not modify the string you call it on.\n- **`constexpr`** — usable in constant expressions (you can ignore this until it matters).\n\nBelow the signature you will find a description, a list of exceptions the function can throw, and — critically — any **undefined behavior** warnings (e.g., \"the behavior is undefined if `pos > size()`\"). Always read these.\n\n### Translating a Signature into Code\n\nOnce you understand the signature, usage is mechanical:\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string greeting{ \"Hello, world!\" };\n    std::string sub{ greeting.substr(7, 5) }; // pos=7, count=5\n    std::cout << sub << '\\n';                 // prints: world\n}\n```\n\nYou matched `pos` to `7`, `count` to `5`, captured the returned `std::string`, and printed it. Every standard library call follows the same read-the-signature, fill-in-the-arguments pattern.\n\n### Practical Tips\n\n- **Search by name** when you know it (`std::string::find`). **Search by concept** when you do not (\"C++ check if string contains substring\").\n- **Check the header** listed at the top of the page — that is the `#include` you need.\n- **Read the \"Parameters\" and \"Return value\" sections first**, then skim \"Exceptions\" and \"Notes\" for gotchas.\n- **Look at the example** at the bottom of every cppreference page — it is runnable code that demonstrates the function.\n- **Pay attention to version tags** like `(since C++17)`. If a feature is tagged with a newer standard than you are compiling with, it will not compile.",
+      "exercises": [
+        {
+          "title": "Extract a Substring Using the Reference",
+          "prompt_md": "## Goal\nYou are given the following reference description for `std::string::substr`:\n\n```\nbasic_string substr( size_type pos = 0, size_type count = npos ) const;\n```\n\n**Returns:** A new string containing `count` characters starting at position `pos`. If `count` extends past the end of the string, the returned string goes up to (but not including) the end.\n\nUse this signature to extract specific parts of an input string.\n\n## Input\n- Line 1: a single word (no spaces, 1 to 100 characters)\n- Line 2: two integers separated by a space — `start` (0-based position) and `length` (number of characters to extract)\n\n## Output\n- Line 1: the extracted substring\n- Line 2: the number of characters in the extracted substring\n\n## Requirements\n1. Read the word into a `std::string`.\n2. Read the two integers `start` and `length`.\n3. Call `substr` on the string with the given `start` and `length` to produce the extracted substring.\n4. Print the substring on the first line.\n5. Print the size of the substring (using `.length()` or `.size()`) as an integer on the second line.\n6. You may assume `start` is always a valid index within the string. `length` may extend past the end — `substr` handles that automatically by returning only the available characters.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string word{};\n    std::cin >> word;\n\n    int start{};\n    int length{};\n    std::cin >> start >> length;\n\n    // TODO: Use word.substr(start, length) to extract the substring\n    // TODO: Print the substring on one line\n    // TODO: Print the length of the substring on the next line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string word{};\n    std::cin >> word;\n\n    int start{};\n    int length{};\n    std::cin >> start >> length;\n\n    std::string sub{ word.substr(static_cast<std::size_t>(start),\n                                 static_cast<std::size_t>(length)) };\n    std::cout << sub << '\\n';\n    std::cout << sub.length() << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — middle of a word",
+              "is_sample": true,
+              "stdin": "programming\n3 4\n",
+              "expected_stdout": "gram\n4\n"
+            },
+            {
+              "label": "Hidden — length extends past end of string",
+              "is_sample": false,
+              "stdin": "hello\n2 100\n",
+              "expected_stdout": "llo\n3\n"
+            },
+            {
+              "label": "Hidden — extract from position 0",
+              "is_sample": false,
+              "stdin": "cppreference\n0 3\n",
+              "expected_stdout": "cpp\n3\n"
+            }
+          ]
+        },
+        {
+          "title": "Look Up and Use std::string::find",
+          "prompt_md": "## Goal\nHere is a reference description for a function you may not have used before:\n\n```\nsize_type find( const basic_string& str, size_type pos = 0 ) const;\n```\n\n**Returns:** The index of the first occurrence of `str` within this string, starting the search at position `pos`. If the substring is not found, returns `std::string::npos`.\n\n`std::string::npos` is a special constant (equal to the largest possible `size_type` value) that signals \"not found\".\n\nUse this function to search for a target word inside a larger string.\n\n## Input\n- Line 1: a single word to search within (the haystack, no spaces, 1 to 200 characters)\n- Line 2: a single word to search for (the needle, no spaces, 1 to 50 characters)\n\n## Output\n- If the needle is found inside the haystack, print:\n  ```\n  Found at position <index>\n  ```\n  where `<index>` is the 0-based position returned by `find`.\n\n- If the needle is not found, print:\n  ```\n  Not found\n  ```\n\n## Requirements\n1. Read both strings from stdin.\n2. Call the `find` member function on the haystack, passing the needle as the argument.\n3. Compare the result to `std::string::npos` to determine whether the needle was found.\n4. Print the appropriate output as described above.\n5. Do not use any loops or manual character-by-character searching — use `find` directly.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.\n- `std::string::npos` is accessible as a constant — you can compare directly: `if (result == std::string::npos)`.",
+          "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string haystack{};\n    std::string needle{};\n    std::cin >> haystack >> needle;\n\n    // TODO: Call haystack.find(needle) and store the result\n    // TODO: Check if the result equals std::string::npos\n    // TODO: Print \"Found at position <index>\" or \"Not found\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string haystack{};\n    std::string needle{};\n    std::cin >> haystack >> needle;\n\n    std::size_t pos{ haystack.find(needle) };\n\n    if (pos == std::string::npos)\n    {\n        std::cout << \"Not found\" << '\\n';\n    }\n    else\n    {\n        std::cout << \"Found at position \" << pos << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample — needle found in middle",
+              "is_sample": true,
+              "stdin": "encyclopedia\ncyclo\n",
+              "expected_stdout": "Found at position 2\n"
+            },
+            {
+              "label": "Hidden — needle not present",
+              "is_sample": false,
+              "stdin": "abcdef\nxyz\n",
+              "expected_stdout": "Not found\n"
+            },
+            {
+              "label": "Hidden — needle found at position 0",
+              "is_sample": false,
+              "stdin": "structure\nstruct\n",
+              "expected_stdout": "Found at position 0\n"
             }
           ]
         }

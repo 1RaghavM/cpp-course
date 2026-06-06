@@ -1,0 +1,60 @@
+{
+  "number": "20.3",
+  "title": "Recursion",
+  "sort_order": 2,
+  "summary_md": "A **recursive function** is a function that calls itself. Every recursive function needs two things: a **base case** that stops the recursion, and a **recursive case** that breaks the problem into a smaller subproblem and calls itself.\n\nHere is a classic example — computing the factorial of a number:\n\n```cpp\n#include <iostream>\n\nint factorial(int n) {\n    if (n <= 1)        // base case\n        return 1;\n    return n * factorial(n - 1);  // recursive case\n}\n\nint main() {\n    std::cout << factorial(5) << '\\n'; // 120\n    return 0;\n}\n```\n\nWhen `factorial(5)` is called, the call stack grows with each recursive call: `factorial(5)` waits on `factorial(4)`, which waits on `factorial(3)`, and so on until `factorial(1)` hits the base case and returns `1`. Then each waiting call completes in reverse order, multiplying as it goes: `1 * 2 * 3 * 4 * 5 = 120`. Each call gets its own stack frame with its own copy of `n`.\n\n**Stack overflow** is the main danger. Every recursive call adds a frame to the call stack, and the stack has a finite size (typically 1-8 MB). If the base case is missing or never reached, the function calls itself infinitely until the stack is exhausted and the program crashes. Always verify that every recursive path eventually reaches a base case and that the arguments move toward it on each call.\n\n**When to use recursion vs. iteration:** Recursion is elegant for problems that are naturally self-similar — tree traversals, divide-and-conquer algorithms, and mathematical recurrences. However, a simple loop is usually faster and uses constant stack space. Use recursion when it makes the logic substantially clearer, and prefer iteration for straightforward counting or accumulation tasks.\n\nA useful mental model: think of each recursive call as delegating a smaller version of the same job to a fresh copy of the function. Trust that the recursive call will return the correct answer for the smaller problem, then combine that answer to solve the current problem.",
+  "exercises": [
+    {
+      "title": "Sum of Digits",
+      "prompt_md": "**Goal:** Write a recursive function that computes the sum of the digits of a non-negative integer.\n\n**Input:** A single non-negative integer `n` on one line (0 <= n <= 1,000,000,000).\n\n**Output:** Print the sum of the digits of `n`, followed by a newline.\n\n**Requirements:**\n- Implement `int sumDigits(int n)` using recursion (no loops).\n- Base case: a single-digit number returns itself.\n- Recursive case: add the last digit (`n % 10`) to the result of `sumDigits(n / 10)`.",
+      "starter_code": "#include <iostream>\n\nint sumDigits(int n) {\n    // TODO: implement recursively\n    return 0;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << sumDigits(n) << '\\n';\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint sumDigits(int n) {\n    if (n < 10)\n        return n;\n    return (n % 10) + sumDigits(n / 10);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << sumDigits(n) << '\\n';\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Single-digit and small number",
+          "is_sample": true,
+          "stdin": "123\n",
+          "expected_stdout": "6\n"
+        },
+        {
+          "label": "Zero input",
+          "is_sample": false,
+          "stdin": "0\n",
+          "expected_stdout": "0\n"
+        },
+        {
+          "label": "Large number with many digits",
+          "is_sample": false,
+          "stdin": "999999999\n",
+          "expected_stdout": "81\n"
+        }
+      ]
+    },
+    {
+      "title": "Recursive Power",
+      "prompt_md": "**Goal:** Write a recursive function that computes `base` raised to the power `exp` using an efficient approach.\n\n**Input:** Two integers on one line separated by a space: `base` (-10 <= base <= 10) and `exp` (0 <= exp <= 30).\n\n**Output:** Print the result of `base^exp`, followed by a newline.\n\n**Requirements:**\n- Implement `long long power(int base, int exp)` using recursion (no loops).\n- Use the fast exponentiation strategy:\n  - Base case: any number to the power 0 is 1.\n  - If `exp` is even: `power(base, exp) = power(base, exp/2) * power(base, exp/2)`. Compute `power(base, exp/2)` once and multiply the result by itself to avoid redundant calls.\n  - If `exp` is odd: `power(base, exp) = base * power(base, exp - 1)`.",
+      "starter_code": "#include <iostream>\n\nlong long power(int base, int exp) {\n    // TODO: implement recursively using fast exponentiation\n    return 0;\n}\n\nint main() {\n    int base, exp;\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << '\\n';\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nlong long power(int base, int exp) {\n    if (exp == 0)\n        return 1;\n    if (exp % 2 == 1)\n        return base * power(base, exp - 1);\n    long long half = power(base, exp / 2);\n    return half * half;\n}\n\nint main() {\n    int base, exp;\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << '\\n';\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic power computation",
+          "is_sample": true,
+          "stdin": "2 10\n",
+          "expected_stdout": "1024\n"
+        },
+        {
+          "label": "Exponent zero",
+          "is_sample": false,
+          "stdin": "5 0\n",
+          "expected_stdout": "1\n"
+        },
+        {
+          "label": "Negative base with odd exponent",
+          "is_sample": false,
+          "stdin": "-3 7\n",
+          "expected_stdout": "-2187\n"
+        }
+      ]
+    }
+  ]
+}

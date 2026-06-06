@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Detect the leak",
+    "prompt_md": "## Goal\n\nWrite a class `TrackedInt` that prints a message when its heap-allocated integer is created and properly cleaned up. This simulates tracking resource lifetime.\n\n## Input\n\n- A single line containing one integer `n` (-10000 <= n <= 10000).\n\n## Output\n\n- Line 1: `allocated <n>` (printed when the heap int is created)\n- Line 2: `value: <n>` (the stored value)\n- Line 3: `deallocated` (printed when cleanup occurs)\n\nwhere `<n>` is the value read from input.\n\n## Requirements\n\n- Define a class `TrackedInt` with a private `int*` member allocated with `new` in the constructor.\n- The constructor prints `allocated <value>`.\n- Provide a public `getValue()` const member function that dereferences the pointer.\n- Implement a destructor that prints `deallocated` and calls `delete` on the pointer.\n- In `main`, create a `TrackedInt` on the stack so the destructor runs automatically at end of scope.",
+    "starter_code": "#include <iostream>\n\nclass TrackedInt\n{\n    int* m_ptr{};\n\npublic:\n    TrackedInt(int value)\n        : m_ptr{ new int{ value } }\n    {\n        // TODO: Print \"allocated <value>\"\n    }\n\n    ~TrackedInt()\n    {\n        // TODO: Print \"deallocated\" and delete m_ptr\n    }\n\n    int getValue() const { return *m_ptr; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create a TrackedInt on the stack and print its value\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass TrackedInt\n{\n    int* m_ptr{};\n\npublic:\n    TrackedInt(int value)\n        : m_ptr{ new int{ value } }\n    {\n        std::cout << \"allocated \" << value << '\\n';\n    }\n\n    ~TrackedInt()\n    {\n        std::cout << \"deallocated\" << '\\n';\n        delete m_ptr;\n    }\n\n    int getValue() const { return *m_ptr; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    TrackedInt t{ n };\n    std::cout << \"value: \" << t.getValue() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Positive value",
+        "is_sample": true,
+        "stdin": "42",
+        "expected_stdout": "allocated 42\nvalue: 42\ndeallocated\n"
+      },
+      {
+        "label": "Zero value",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "allocated 0\nvalue: 0\ndeallocated\n"
+      },
+      {
+        "label": "Negative value",
+        "is_sample": false,
+        "stdin": "-99",
+        "expected_stdout": "allocated -99\nvalue: -99\ndeallocated\n"
+      }
+    ]
+  },
+  {
+    "title": "Ownership transfer function",
+    "prompt_md": "## Goal\n\nWrite a function that creates a dynamically allocated array, fills it, and returns a struct that bundles the pointer with its size -- demonstrating explicit ownership transfer. The caller is responsible for cleanup.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the number of elements.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- Line 1: the elements printed space-separated.\n- Line 2: `cleaned up`\n\n## Requirements\n\n- Define a struct `OwnedArray` with two members: `int* data` and `int size`.\n- Write a function `OwnedArray createArray(int n)` that allocates a dynamic array of `n` ints with `new int[n]` and returns an `OwnedArray` holding the pointer and size.\n- In `main`, read values into the returned array, print them, then `delete[]` the data and print `cleaned up`.\n- Do not leak memory.",
+    "starter_code": "#include <iostream>\n\nstruct OwnedArray\n{\n    int* data{};\n    int size{};\n};\n\n// TODO: Implement createArray that allocates a dynamic int array\n// and returns an OwnedArray\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call createArray, read n integers into the array,\n    // print them space-separated, delete[] the data,\n    // and print \"cleaned up\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct OwnedArray\n{\n    int* data{};\n    int size{};\n};\n\nOwnedArray createArray(int n)\n{\n    return OwnedArray{ new int[n]{}, n };\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    OwnedArray arr{ createArray(n) };\n\n    for (int i{ 0 }; i < arr.size; ++i)\n        std::cin >> arr.data[i];\n\n    for (int i{ 0 }; i < arr.size; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << arr.data[i];\n    }\n    std::cout << '\\n';\n\n    delete[] arr.data;\n    arr.data = nullptr;\n    std::cout << \"cleaned up\" << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Three elements",
+        "is_sample": true,
+        "stdin": "3\n10 20 30",
+        "expected_stdout": "10 20 30\ncleaned up\n"
+      },
+      {
+        "label": "Single element",
+        "is_sample": false,
+        "stdin": "1\n-5",
+        "expected_stdout": "-5\ncleaned up\n"
+      },
+      {
+        "label": "Five elements with negatives",
+        "is_sample": false,
+        "stdin": "5\n1 -2 3 -4 5",
+        "expected_stdout": "1 -2 3 -4 5\ncleaned up\n"
+      }
+    ]
+  }
+]

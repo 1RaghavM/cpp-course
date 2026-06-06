@@ -1,0 +1,60 @@
+{
+  "number": "18.2",
+  "title": "Introduction to iterators",
+  "sort_order": 1,
+  "summary_md": "## Introduction to Iterators\n\nAn **iterator** is an object that points to an element in a container and lets you traverse the container without exposing how it stores its data. Every standard container (`std::array`, `std::vector`, etc.) provides iterators through the `begin()` and `end()` member functions. `begin()` returns an iterator to the first element; `end()` returns an iterator to one-past-the-last element (a sentinel that should never be dereferenced).\n\nThree core operations make iterators work: **dereference** (`*it`) to read or write the pointed-to element, **increment** (`++it`) to advance to the next element, and **comparison** (`it != end`) to detect when traversal is complete.\n\n```cpp\n#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array arr{ 10, 20, 30, 40 };\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n        std::cout << *it << ' ';\n    // prints: 10 20 30 40\n\n    return 0;\n}\n```\n\nYou can also call the free functions `std::begin(c)` and `std::end(c)`, which work with any container and C-style arrays alike. For the standard containers we use in this course, the member-function form and the free-function form are interchangeable.\n\nBecause iterators abstract away indexing, the same loop pattern works for `std::vector`, `std::array`, and other containers without changing logic. Under the hood, a range-based `for` loop (`for (auto x : arr)`) is syntactic sugar that calls `begin()` / `end()` and uses exactly these iterator operations.\n\n### Why not just use indices?\n\nIndices require the container to support random access, and they couple your code to a specific container type. Iterators decouple traversal from storage, which becomes important when you use standard library algorithms later. They also eliminate signed/unsigned mismatch warnings that plague index-based loops.\n\n### Key takeaways\n\n- `begin()` points to the first element; `end()` points past the last.\n- Dereference (`*it`), increment (`++it`), and compare (`it != end`) are the three fundamental iterator operations.\n- Range-based `for` loops use iterators behind the scenes.",
+  "exercises": [
+    {
+      "title": "Iterator Traversal Printer",
+      "prompt_md": "## Goal\nRead integers into a `std::vector`, then use an explicit iterator loop to print each element and compute the sum.\n\n## Input\n- Line 1: a single integer `N` (1 <= N <= 20), the number of elements.\n- Line 2: exactly `N` space-separated integers.\n\n## Output\n- Line 1: `Elements:` followed by a space, then all elements separated by spaces, with a trailing newline (no trailing space).\n- Line 2: `Sum: S` where S is the sum of all elements.\n\n## Requirements\n1. Declare a `std::vector<int>` and read `N` values into it using `push_back`.\n2. Use an explicit iterator loop (`auto it = vec.begin(); it != vec.end(); ++it`) to traverse the vector.\n3. Inside the loop, dereference the iterator with `*it` to access each element.\n4. Print elements separated by single spaces with no trailing space. Hint: print a space before every element except the first.\n5. Accumulate the sum using `*it` during the same loop.\n6. Include `<vector>` and `<iostream>`.",
+      "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> vec{};\n\n    // TODO: Read n integers into vec using push_back\n\n    int sum{ 0 };\n\n    // TODO: Use an iterator loop (begin/end) to:\n    //   - Print all elements on one line separated by spaces (no trailing space)\n    //   - Accumulate the sum\n\n    std::cout << '\\n';\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> vec{};\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        vec.push_back(val);\n    }\n\n    int sum{ 0 };\n    std::cout << \"Elements:\";\n    for (auto it{ vec.begin() }; it != vec.end(); ++it)\n    {\n        std::cout << ' ' << *it;\n        sum += *it;\n    }\n    std::cout << '\\n';\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- five positive integers",
+          "is_sample": true,
+          "stdin": "5\n10 20 30 40 50\n",
+          "expected_stdout": "Elements: 10 20 30 40 50\nSum: 150\n"
+        },
+        {
+          "label": "Hidden -- single element",
+          "is_sample": false,
+          "stdin": "1\n42\n",
+          "expected_stdout": "Elements: 42\nSum: 42\n"
+        },
+        {
+          "label": "Hidden -- mixed negative and positive",
+          "is_sample": false,
+          "stdin": "4\n-3 7 -1 5\n",
+          "expected_stdout": "Elements: -3 7 -1 5\nSum: 8\n"
+        }
+      ]
+    },
+    {
+      "title": "Iterator-Based Maximum Finder",
+      "prompt_md": "## Goal\nRead integers into a `std::array`, then use iterators to find and report the maximum value and its position.\n\n## Input\n- A single line containing exactly 6 space-separated integers.\n\n## Output\n- Line 1: `Max: M` where M is the largest element in the array.\n- Line 2: `Position: P` where P is the zero-based index of the first occurrence of the maximum.\n\n## Requirements\n1. Declare a `std::array<int, 6>` and read all 6 values from stdin.\n2. Initialize a `max` variable by dereferencing `arr.begin()`.\n3. Initialize a `position` variable to `0`.\n4. Use an explicit iterator loop starting from `arr.begin()` to traverse the array.\n5. Inside the loop, compare `*it` against `max`. If it is strictly greater, update `max` and compute the position as the distance from `arr.begin()` to `it` (subtract iterators: `it - arr.begin()`).\n6. Do not use any standard library algorithm. Do not use index-based access to find the maximum.\n7. Include `<array>`, `<iostream>`, and `<cstddef>`.",
+      "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n        std::cin >> *it;\n\n    int max{ *arr.begin() };\n    std::size_t position{ 0 };\n\n    // TODO: Use an iterator loop to find the maximum value and its position\n    //   - Compare *it > max to find a new maximum\n    //   - Compute position as: static_cast<std::size_t>(it - arr.begin())\n\n    std::cout << \"Max: \" << max << '\\n';\n    std::cout << \"Position: \" << position << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n        std::cin >> *it;\n\n    int max{ *arr.begin() };\n    std::size_t position{ 0 };\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n    {\n        if (*it > max)\n        {\n            max = *it;\n            position = static_cast<std::size_t>(it - arr.begin());\n        }\n    }\n\n    std::cout << \"Max: \" << max << '\\n';\n    std::cout << \"Position: \" << position << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- max at end",
+          "is_sample": true,
+          "stdin": "3 1 4 1 5 9\n",
+          "expected_stdout": "Max: 9\nPosition: 5\n"
+        },
+        {
+          "label": "Hidden -- max at beginning",
+          "is_sample": false,
+          "stdin": "100 20 30 40 50 60\n",
+          "expected_stdout": "Max: 100\nPosition: 0\n"
+        },
+        {
+          "label": "Hidden -- duplicate max keeps first position",
+          "is_sample": false,
+          "stdin": "5 8 8 2 8 1\n",
+          "expected_stdout": "Max: 8\nPosition: 1\n"
+        }
+      ]
+    }
+  ]
+}

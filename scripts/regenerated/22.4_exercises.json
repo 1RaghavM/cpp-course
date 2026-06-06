@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Move a DynArray into a Holder",
+    "prompt_md": "## Goal\n\nPractice using `std::move` to transfer ownership of a dynamically allocated resource from one object to another.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the size of the array to create.\n\n## Output\n\n- Line 1: `source:` followed by a space and the size of the source `DynArray` after the move.\n- Line 2: `holder:` followed by a space and the size stored in the `Holder` object.\n\n## Requirements\n\n- A `DynArray` class is provided with a move constructor that sets the source's `m_data` to `nullptr` and `m_size` to `0`.\n- Write a `Holder` class that stores a `DynArray` member. Its constructor should take a `DynArray&&` parameter and use `std::move` to initialize the member.\n- In `main`, create a `DynArray` of size `n`, then construct a `Holder` by moving the array into it using `std::move`.\n- Print the source array's size (should be `0` after the move) and the holder's size (should be `n`).",
+    "starter_code": "#include <iostream>\n#include <utility>\n\nclass DynArray\n{\n    int* m_data{};\n    int m_size{};\n\npublic:\n    DynArray(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    DynArray(DynArray&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size }\n    {\n        src.m_data = nullptr;\n        src.m_size = 0;\n    }\n\n    ~DynArray() { delete[] m_data; }\n\n    DynArray(const DynArray&) = delete;\n    DynArray& operator=(const DynArray&) = delete;\n    DynArray& operator=(DynArray&&) = delete;\n\n    int size() const { return m_size; }\n};\n\n// TODO: Write a Holder class that:\n// - Has a DynArray member\n// - Has a constructor taking DynArray&& and moves it into the member\n// - Has a size() method returning the held array's size\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynArray arr{ n };\n\n    // TODO: Create a Holder by moving arr into it\n    // TODO: Print \"source: \" followed by arr.size()\n    // TODO: Print \"holder: \" followed by the holder's size()\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <utility>\n\nclass DynArray\n{\n    int* m_data{};\n    int m_size{};\n\npublic:\n    DynArray(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    DynArray(DynArray&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size }\n    {\n        src.m_data = nullptr;\n        src.m_size = 0;\n    }\n\n    ~DynArray() { delete[] m_data; }\n\n    DynArray(const DynArray&) = delete;\n    DynArray& operator=(const DynArray&) = delete;\n    DynArray& operator=(DynArray&&) = delete;\n\n    int size() const { return m_size; }\n};\n\nclass Holder\n{\n    DynArray m_arr;\n\npublic:\n    Holder(DynArray&& arr)\n        : m_arr{ std::move(arr) } {}\n\n    int size() const { return m_arr.size(); }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynArray arr{ n };\n\n    Holder h{ std::move(arr) };\n\n    std::cout << \"source: \" << arr.size() << '\\n';\n    std::cout << \"holder: \" << h.size() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Small array",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "source: 0\nholder: 5\n"
+      },
+      {
+        "label": "Size one",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "source: 0\nholder: 1\n"
+      },
+      {
+        "label": "Larger array",
+        "is_sample": false,
+        "stdin": "42",
+        "expected_stdout": "source: 0\nholder: 42\n"
+      }
+    ]
+  },
+  {
+    "title": "Swap via std::move",
+    "prompt_md": "## Goal\n\nImplement a generic-style swap function for a custom `Buffer` class using `std::move`, demonstrating how three moves can exchange two objects without copying.\n\n## Input\n\n- Line 1: two space-separated integers `sizeA` and `sizeB` (1 <= each <= 100), the sizes of two buffers.\n\n## Output\n\n- Line 1: `before: ` followed by the sizes of buffer A and B separated by a space.\n- Line 2: `after: ` followed by the sizes of buffer A and B separated by a space (swapped).\n\n## Requirements\n\n- A `Buffer` class is provided. It has a move constructor and move assignment operator that set the source's `m_data` to `nullptr` and `m_size` to `0`. Copy operations are deleted.\n- Write a function `void swapBuffers(Buffer& a, Buffer& b)` that swaps `a` and `b` using exactly three `std::move` calls: move `a` into a temporary, move-assign `b` into `a`, then move-assign the temporary into `b`.\n- In `main`, create two `Buffer` objects with the given sizes, print the \"before\" line, call `swapBuffers`, then print the \"after\" line.",
+    "starter_code": "#include <iostream>\n#include <utility>\n\nclass Buffer\n{\n    int* m_data{};\n    int m_size{};\n\npublic:\n    Buffer(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    Buffer(Buffer&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size }\n    {\n        src.m_data = nullptr;\n        src.m_size = 0;\n    }\n\n    Buffer& operator=(Buffer&& src) noexcept\n    {\n        if (this != &src)\n        {\n            delete[] m_data;\n            m_data = src.m_data;\n            m_size = src.m_size;\n            src.m_data = nullptr;\n            src.m_size = 0;\n        }\n        return *this;\n    }\n\n    ~Buffer() { delete[] m_data; }\n\n    Buffer(const Buffer&) = delete;\n    Buffer& operator=(const Buffer&) = delete;\n\n    int size() const { return m_size; }\n};\n\n// TODO: Write swapBuffers(Buffer& a, Buffer& b)\n// Use three std::move calls to swap a and b\n\nint main()\n{\n    int sizeA{};\n    int sizeB{};\n    std::cin >> sizeA >> sizeB;\n\n    Buffer a{ sizeA };\n    Buffer b{ sizeB };\n\n    // TODO: Print \"before: \" with sizes of a and b\n    // TODO: Call swapBuffers\n    // TODO: Print \"after: \" with sizes of a and b\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <utility>\n\nclass Buffer\n{\n    int* m_data{};\n    int m_size{};\npublic:\n    Buffer(int size) : m_data{ new int[size]{} }, m_size{ size } {}\n    Buffer(Buffer&& src) noexcept : m_data{ src.m_data }, m_size{ src.m_size }\n    { src.m_data = nullptr; src.m_size = 0; }\n    Buffer& operator=(Buffer&& src) noexcept {\n        if (this != &src) {\n            delete[] m_data;\n            m_data = src.m_data; m_size = src.m_size;\n            src.m_data = nullptr; src.m_size = 0;\n        }\n        return *this;\n    }\n    ~Buffer() { delete[] m_data; }\n    Buffer(const Buffer&) = delete;\n    Buffer& operator=(const Buffer&) = delete;\n    int size() const { return m_size; }\n};\n\nvoid swapBuffers(Buffer& a, Buffer& b)\n{\n    Buffer temp{ std::move(a) };\n    a = std::move(b);\n    b = std::move(temp);\n}\n\nint main()\n{\n    int sizeA{};\n    int sizeB{};\n    std::cin >> sizeA >> sizeB;\n\n    Buffer a{ sizeA };\n    Buffer b{ sizeB };\n\n    std::cout << \"before: \" << a.size() << ' ' << b.size() << '\\n';\n    swapBuffers(a, b);\n    std::cout << \"after: \" << a.size() << ' ' << b.size() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Swap different sizes",
+        "is_sample": true,
+        "stdin": "3 7",
+        "expected_stdout": "before: 3 7\nafter: 7 3\n"
+      },
+      {
+        "label": "Swap equal sizes",
+        "is_sample": false,
+        "stdin": "10 10",
+        "expected_stdout": "before: 10 10\nafter: 10 10\n"
+      },
+      {
+        "label": "Swap with size one",
+        "is_sample": false,
+        "stdin": "1 99",
+        "expected_stdout": "before: 1 99\nafter: 99 1\n"
+      }
+    ]
+  }
+]

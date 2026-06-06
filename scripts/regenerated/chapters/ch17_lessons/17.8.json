@@ -1,0 +1,60 @@
+{
+  "number": "17.8",
+  "title": "C-style array decay",
+  "sort_order": 7,
+  "summary_md": "## C-style Array Decay\n\nWhen you use a C-style array in most expressions, the compiler silently converts it into a pointer to its first element. This implicit conversion is called **array decay** (or \"array-to-pointer decay\"), and it is the single biggest reason C-style arrays are error-prone.\n\n### How Decay Works\n\nA C-style array has a type that encodes its length -- `int arr[5]` has type `int[5]`. But the moment you pass `arr` to a function or assign it to a pointer, the compiler drops the length and gives you a plain `int*`:\n\n```cpp\n#include <iostream>\n\nvoid printSize(int* ptr, int length)\n{\n    // sizeof(ptr) is the size of a pointer, NOT the array\n    std::cout << \"pointer size: \" << sizeof(ptr) << '\\n';\n    std::cout << \"length: \" << length << '\\n';\n}\n\nint main()\n{\n    int arr[5] { 10, 20, 30, 40, 50 };\n    std::cout << \"array size: \" << sizeof(arr) << '\\n';\n    printSize(arr, 5); // arr decays to int*\n}\n```\n\nInside `main`, `sizeof(arr)` reports the true byte size of the entire array (typically 20 on systems where `int` is 4 bytes). But after decay, `sizeof(ptr)` reports the size of a pointer (typically 8 bytes on a 64-bit system) -- the array length is gone.\n\n### Why This Matters\n\nBecause the length is lost, every function that receives a decayed array must also receive the length as a separate parameter. Forgetting to pass the length, or passing the wrong value, causes out-of-bounds access -- a bug the compiler cannot catch. This is the root cause of countless buffer-overflow vulnerabilities in C and C++ code.\n\nWhen you write a function parameter as `int arr[]`, the compiler treats it identically to `int* arr`. The bracket syntax is cosmetic; no length checking occurs.\n\n### Prefer `std::array`\n\n`std::array` does not decay. It carries its length as part of the type, so `sizeof` always works and functions receive the full type. This is a key reason modern C++ favors `std::array` (or `std::vector`) over C-style arrays. When you encounter legacy code that uses C-style arrays, watch for decay -- especially at function boundaries -- and pass the size explicitly.",
+  "exercises": [
+    {
+      "title": "Sum a Decayed Array",
+      "prompt_md": "## Goal\nWrite a function that receives a decayed C-style array and its length, computes the sum of its elements, and returns the result.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of elements\n- Line 2: `n` integers separated by spaces (each between -1000 and 1000)\n\n## Output\nPrint exactly one line:\n```\nsum: <total>\n```\nwhere `<total>` is the sum of all `n` elements.\n\n## Requirements\n1. Declare a C-style array of size 10 in `main` and read `n` elements into it.\n2. Write a function `int arraySum(const int* arr, int length)` that computes and returns the sum using a `for` loop. The pointer parameter reflects the fact that the array decays when passed.\n3. Call `arraySum` from `main`, passing the array and `n`, and print the result.\n4. Do not use `std::array`, `std::vector`, or any container. The point is to practice the decay-and-length pattern.",
+      "starter_code": "#include <iostream>\n\n// TODO: Write int arraySum(const int* arr, int length)\n//       Loop from 0 to length, sum the elements, return the sum.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Call arraySum and print \"sum: <result>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint arraySum(const int* arr, int length)\n{\n    int total{ 0 };\n    for (int i{ 0 }; i < length; ++i)\n        total += arr[i];\n    return total;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"sum: \" << arraySum(arr, n) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- small array with positive values",
+          "is_sample": true,
+          "stdin": "4\n10 20 30 40\n",
+          "expected_stdout": "sum: 100\n"
+        },
+        {
+          "label": "Hidden -- single element",
+          "is_sample": false,
+          "stdin": "1\n-7\n",
+          "expected_stdout": "sum: -7\n"
+        },
+        {
+          "label": "Hidden -- mixed positive and negative values",
+          "is_sample": false,
+          "stdin": "5\n100 -50 25 -75 0\n",
+          "expected_stdout": "sum: 0\n"
+        }
+      ]
+    },
+    {
+      "title": "Find the Maximum via Decayed Array",
+      "prompt_md": "## Goal\nWrite two functions that operate on a decayed C-style array: one that finds the maximum element and one that reports whether `sizeof` on the parameter reflects the true array size.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of elements\n- Line 2: `n` integers separated by spaces (each between -1000 and 1000)\n\n## Output\nPrint exactly three lines:\n```\narray sizeof: <S1>\npointer sizeof: <S2>\nmax: <maximum>\n```\n- `<S1>` is `sizeof(arr)` applied to the C-style array **in main** (before decay).\n- `<S2>` is `sizeof` applied to the pointer parameter **inside the function** (after decay).\n- `<maximum>` is the largest element in the first `n` entries.\n\n## Requirements\n1. Declare a C-style `int` array of size 10 in `main` and read `n` elements into it.\n2. Write a function `std::size_t pointerSizeof(const int* arr)` that returns `sizeof(arr)` -- demonstrating that the decayed pointer loses the array's true size.\n3. Write a function `int findMax(const int* arr, int length)` that returns the maximum element. Initialize your running max to `arr[0]` and loop from index 1.\n4. In `main`, print `sizeof(arr)` (the local array, before decay), then call `pointerSizeof` and print its result, then call `findMax` and print the max.\n5. Do not use `std::array`, `std::vector`, `<algorithm>`, or any container.",
+      "starter_code": "#include <iostream>\n#include <cstddef>\n\n// TODO: Write std::size_t pointerSizeof(const int* arr)\n//       Return sizeof(arr) to show the decayed size.\n\n// TODO: Write int findMax(const int* arr, int length)\n//       Return the maximum element in the first 'length' entries.\n//       Initialize max to arr[0], loop from index 1.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Print \"array sizeof: \" followed by sizeof(arr)\n    // TODO: Print \"pointer sizeof: \" followed by pointerSizeof(arr)\n    // TODO: Print \"max: \" followed by findMax(arr, n)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <cstddef>\n\nstd::size_t pointerSizeof(const int* arr)\n{\n    return sizeof(arr);\n}\n\nint findMax(const int* arr, int length)\n{\n    int max{ arr[0] };\n    for (int i{ 1 }; i < length; ++i)\n    {\n        if (arr[i] > max)\n            max = arr[i];\n    }\n    return max;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"array sizeof: \" << sizeof(arr) << '\\n';\n    std::cout << \"pointer sizeof: \" << pointerSizeof(arr) << '\\n';\n    std::cout << \"max: \" << findMax(arr, n) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- basic max finding",
+          "is_sample": true,
+          "stdin": "3\n5 12 8\n",
+          "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 12\n"
+        },
+        {
+          "label": "Hidden -- all negative values",
+          "is_sample": false,
+          "stdin": "4\n-10 -3 -20 -1\n",
+          "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: -1\n"
+        },
+        {
+          "label": "Hidden -- single element",
+          "is_sample": false,
+          "stdin": "1\n999\n",
+          "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 999\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print a Fraction",
+    "prompt_md": "## Goal\n\nCreate a `Fraction` class and overload `operator<<` so that fractions print in the form `numerator/denominator`.\n\n## Input\n\n- Line 1: two space-separated integers `n` and `d` representing the numerator and denominator of a fraction.\n- Line 2: two space-separated integers `n2` and `d2` representing a second fraction.\n\n## Output\n\n- A single line printing both fractions separated by ` and `: `n/d and n2/d2` followed by a newline.\n\n## Requirements\n\n- Define a class `Fraction` with private members `int m_num` and `int m_den`.\n- Provide a constructor `Fraction(int num, int den)`.\n- Overload `operator<<` as a friend function that outputs the fraction as `m_num/m_den` (no spaces around the slash).\n- In `main`, read both fractions, then print them on one line using a single chained `std::cout` statement: `std::cout << f1 << \" and \" << f2 << '\\n';`",
+    "starter_code": "#include <iostream>\n\nclass Fraction {\n    int m_num{};\n    int m_den{};\npublic:\n    Fraction(int num, int den) : m_num{num}, m_den{den} {}\n\n    // TODO: Declare operator<< as a friend\n};\n\n// TODO: Define operator<< for Fraction\n\nint main() {\n    int n1{}, d1{}, n2{}, d2{};\n    std::cin >> n1 >> d1 >> n2 >> d2;\n\n    Fraction f1{n1, d1};\n    Fraction f2{n2, d2};\n\n    // TODO: Print both fractions using chained <<\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Fraction {\n    int m_num{};\n    int m_den{};\npublic:\n    Fraction(int num, int den) : m_num{num}, m_den{den} {}\n\n    friend std::ostream& operator<<(std::ostream& out, const Fraction& f);\n};\n\nstd::ostream& operator<<(std::ostream& out, const Fraction& f) {\n    out << f.m_num << '/' << f.m_den;\n    return out;\n}\n\nint main() {\n    int n1{}, d1{}, n2{}, d2{};\n    std::cin >> n1 >> d1 >> n2 >> d2;\n\n    Fraction f1{n1, d1};\n    Fraction f2{n2, d2};\n\n    std::cout << f1 << \" and \" << f2 << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Two simple fractions",
+        "is_sample": true,
+        "stdin": "1 2\n3 4\n",
+        "expected_stdout": "1/2 and 3/4\n"
+      },
+      {
+        "label": "Negative numerator",
+        "is_sample": false,
+        "stdin": "-5 8\n7 3\n",
+        "expected_stdout": "-5/8 and 7/3\n"
+      },
+      {
+        "label": "Zero numerator",
+        "is_sample": false,
+        "stdin": "0 1\n100 99\n",
+        "expected_stdout": "0/1 and 100/99\n"
+      }
+    ]
+  },
+  {
+    "title": "Read and Echo a Color",
+    "prompt_md": "## Goal\n\nCreate a `Color` class that stores red, green, and blue values. Overload both `operator>>` to read a color and `operator<<` to print it.\n\n## Input\n\n- Line 1: three integers `r`, `g`, `b` (0 <= each <= 255) representing a color.\n\n## Output\n\n- A single line in the format `rgb(r, g, b)` followed by a newline.\n\n## Requirements\n\n- Define a class `Color` with private members `int m_r`, `int m_g`, `int m_b`, all default-initialized to 0.\n- Provide a default constructor (or use default member initializers).\n- Overload `operator>>` as a friend that reads three integers from the stream into `m_r`, `m_g`, `m_b`.\n- Overload `operator<<` as a friend that outputs the color in the format `rgb(r, g, b)` -- note the comma-space between values.\n- In `main`, default-construct a `Color`, read into it with `std::cin >> c`, then print it with `std::cout << c`.",
+    "starter_code": "#include <iostream>\n\nclass Color {\n    int m_r{0};\n    int m_g{0};\n    int m_b{0};\npublic:\n    Color() = default;\n\n    // TODO: Declare operator>> and operator<< as friends\n};\n\n// TODO: Define operator>> for Color\n\n// TODO: Define operator<< for Color\n\nint main() {\n    Color c;\n    std::cin >> c;\n    std::cout << c << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Color {\n    int m_r{0};\n    int m_g{0};\n    int m_b{0};\npublic:\n    Color() = default;\n\n    friend std::istream& operator>>(std::istream& in, Color& c);\n    friend std::ostream& operator<<(std::ostream& out, const Color& c);\n};\n\nstd::istream& operator>>(std::istream& in, Color& c) {\n    in >> c.m_r >> c.m_g >> c.m_b;\n    return in;\n}\n\nstd::ostream& operator<<(std::ostream& out, const Color& c) {\n    out << \"rgb(\" << c.m_r << \", \" << c.m_g << \", \" << c.m_b << ')';\n    return out;\n}\n\nint main() {\n    Color c;\n    std::cin >> c;\n    std::cout << c << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Standard RGB values",
+        "is_sample": true,
+        "stdin": "255 128 0\n",
+        "expected_stdout": "rgb(255, 128, 0)\n"
+      },
+      {
+        "label": "All zeros (black)",
+        "is_sample": false,
+        "stdin": "0 0 0\n",
+        "expected_stdout": "rgb(0, 0, 0)\n"
+      },
+      {
+        "label": "Maximum values (white)",
+        "is_sample": false,
+        "stdin": "255 255 255\n",
+        "expected_stdout": "rgb(255, 255, 255)\n"
+      }
+    ]
+  }
+]

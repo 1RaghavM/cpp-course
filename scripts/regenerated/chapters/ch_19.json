@@ -1,0 +1,553 @@
+{
+  "chapter": {
+    "number": "19",
+    "title": "Dynamic Allocation"
+  },
+  "prior_lesson_titles": [
+    "0.1: Introduction to these tutorials",
+    "0.2: Introduction to programs and programming languages",
+    "0.3: Introduction to C/C++",
+    "0.4: Introduction to C++ development",
+    "0.5: Introduction to the compiler, linker, and libraries",
+    "0.6: Installing an Integrated Development Environment (IDE)",
+    "0.7: Compiling your first program",
+    "0.8: A few common C++ problems",
+    "0.9: Configuring your compiler: Build configurations",
+    "0.10: Configuring your compiler: Compiler extensions",
+    "0.11: Configuring your compiler: Warning and error levels",
+    "0.12: Configuring your compiler: Choosing a language standard",
+    "0.13: What language standard is my compiler using?",
+    "1.1: Statements and the structure of a program",
+    "1.2: Comments",
+    "1.3: Introduction to objects and variables",
+    "1.4: Variable assignment and initialization",
+    "1.5: Introduction to iostream: cout, cin, and endl",
+    "1.6: Uninitialized variables and undefined behavior",
+    "1.7: Keywords and naming identifiers",
+    "1.8: Whitespace and basic formatting",
+    "1.9: Introduction to literals and operators",
+    "1.10: Introduction to expressions",
+    "1.11: Developing your first program",
+    "1.x: Chapter 1 summary and quiz",
+    "2.1: Introduction to functions",
+    "2.2: Function return values (value-returning functions)",
+    "2.3: Void functions (non-value returning functions)",
+    "2.4: Introduction to function parameters and arguments",
+    "2.5: Introduction to local scope",
+    "2.6: Why functions are useful, and how to use them effectively",
+    "2.7: Forward declarations and definitions",
+    "2.8: Programs with multiple code files",
+    "2.9: Naming collisions and an introduction to namespaces",
+    "2.10: Introduction to the preprocessor",
+    "2.11: Header files",
+    "2.12: Header guards",
+    "2.13: How to design your first programs",
+    "2.x: Chapter 2 summary and quiz",
+    "3.1: Syntax and semantic errors",
+    "3.2: The debugging process",
+    "3.3: A strategy for debugging",
+    "3.4: Basic debugging tactics",
+    "3.5: More debugging tactics",
+    "3.6: Using an integrated debugger: Stepping",
+    "3.7: Using an integrated debugger: Running and breakpoints",
+    "3.8: Using an integrated debugger: Watching variables",
+    "3.9: Using an integrated debugger: The call stack",
+    "3.10: Finding issues before they become problems",
+    "3.x: Chapter 3 summary and quiz",
+    "4.1: Introduction to fundamental data types",
+    "4.2: Void",
+    "4.3: Object sizes and the sizeof operator",
+    "4.4: Signed integers",
+    "4.5: Unsigned integers, and why to avoid them",
+    "4.6: Fixed-width integers and size_t",
+    "4.7: Introduction to scientific notation",
+    "4.8: Floating point numbers",
+    "4.9: Boolean values",
+    "4.10: Introduction to if statements",
+    "4.11: Chars",
+    "4.12: Introduction to type conversion and static_cast",
+    "4.x: Chapter 4 summary and quiz",
+    "5.1: Constant variables (named constants)",
+    "5.2: Literals",
+    "5.3: Numeral systems (decimal, binary, hexadecimal, and octal)",
+    "5.4: The as-if rule and compile-time optimization",
+    "5.5: Constant expressions",
+    "5.6: Constexpr variables",
+    "5.7: Introduction to std::string",
+    "5.8: Introduction to std::string_view",
+    "5.9: std::string_view (part 2)",
+    "5.x: Chapter 5 summary and quiz",
+    "6.1: Operator precedence and associativity",
+    "6.2: Arithmetic operators",
+    "6.3: Remainder and Exponentiation",
+    "6.4: Increment/decrement operators, and side effects",
+    "6.5: The comma operator",
+    "6.6: The conditional operator",
+    "6.7: Relational operators and floating point comparisons",
+    "6.8: Logical operators",
+    "6.x: Chapter 6 summary and quiz",
+    "O.1: Bit flags and bit manipulation via std::bitset",
+    "O.2: Bitwise operators",
+    "O.3: Bit manipulation with bitwise operators and bit masks",
+    "O.4: Converting integers between binary and decimal representation",
+    "7.1: Compound statements (blocks)",
+    "7.2: User-defined namespaces and the scope resolution operator",
+    "7.3: Local variables",
+    "7.4: Introduction to global variables",
+    "7.5: Variable shadowing (name hiding)",
+    "7.6: Internal linkage",
+    "7.7: External linkage and variable forward declarations",
+    "7.8: Why (non-const) global variables are evil",
+    "7.9: Inline functions and variables",
+    "7.10: Sharing global constants across multiple files (using inline variables)",
+    "7.11: Static local variables",
+    "7.12: Scope, duration, and linkage summary",
+    "7.13: Using declarations and using directives",
+    "7.14: Unnamed and inline namespaces",
+    "7.x: Chapter 7 summary and quiz",
+    "8.1: Control flow introduction",
+    "8.2: If statements and blocks",
+    "8.3: Common if statement problems",
+    "8.4: Constexpr if statements",
+    "8.5: Switch statement basics",
+    "8.6: Switch fallthrough and scoping",
+    "8.7: Goto statements",
+    "8.8: Introduction to loops and while statements",
+    "8.9: Do while statements",
+    "8.10: For statements",
+    "8.11: Break and continue",
+    "8.12: Halts (exiting your program early)",
+    "8.13: Introduction to random number generation",
+    "8.14: Generating random numbers using Mersenne Twister",
+    "8.15: Global random numbers (Random.h)",
+    "8.x: Chapter 8 summary and quiz",
+    "9.1: Introduction to testing your code",
+    "9.2: Code coverage",
+    "9.3: Common semantic errors in C++",
+    "9.4: Detecting and handling errors",
+    "9.5: std::cin and handling invalid input",
+    "9.6: Assert and static_assert",
+    "9.x: Chapter 9 summary and quiz",
+    "10.1: Implicit type conversion",
+    "10.2: Floating-point and integral promotion",
+    "10.3: Numeric conversions",
+    "10.4: Narrowing conversions, list initialization, and constexpr initializers",
+    "10.5: Arithmetic conversions",
+    "10.6: Explicit type conversion (casting) and static_cast",
+    "10.7: Typedefs and type aliases",
+    "10.8: Type deduction for objects using the auto keyword",
+    "10.9: Type deduction for functions",
+    "10.x: Chapter 10 summary and quiz",
+    "11.1: Introduction to function overloading",
+    "11.2: Function overload differentiation",
+    "11.3: Function overload resolution and ambiguous matches",
+    "11.4: Deleting functions",
+    "11.5: Default arguments",
+    "11.6: Function templates",
+    "11.7: Function template instantiation",
+    "11.8: Function templates with multiple template types",
+    "11.9: Non-type template parameters",
+    "11.10: Using function templates in multiple files",
+    "11.x: Chapter 11 summary and quiz",
+    "F.1: Constexpr functions",
+    "F.2: Constexpr functions (part 2)",
+    "F.3: Constexpr functions (part 3) and consteval",
+    "F.4: Constexpr functions (part 4)",
+    "F.X: Chapter F summary and quiz",
+    "12.1: Introduction to compound data types",
+    "12.2: Value categories (lvalues and rvalues)",
+    "12.3: Lvalue references",
+    "12.4: Lvalue references to const",
+    "12.5: Pass by lvalue reference",
+    "12.6: Pass by const lvalue reference",
+    "12.7: Introduction to pointers",
+    "12.8: Null pointers",
+    "12.9: Pointers and const",
+    "12.10: Pass by address",
+    "12.11: Pass by address (part 2)",
+    "12.12: Return by reference and return by address",
+    "12.13: In and out parameters",
+    "12.14: Type deduction with pointers, references, and const",
+    "12.15: std::optional",
+    "12.x: Chapter 12 summary and quiz",
+    "13.1: Introduction to program-defined (user-defined) types",
+    "13.2: Unscoped enumerations",
+    "13.3: Unscoped enumerator integral conversions",
+    "13.4: Converting an enumeration to and from a string",
+    "13.5: Introduction to overloading the I/O operators",
+    "13.6: Scoped enumerations (enum classes)",
+    "13.7: Introduction to structs, members, and member selection",
+    "13.8: Struct aggregate initialization",
+    "13.9: Default member initialization",
+    "13.10: Passing and returning structs",
+    "13.11: Struct miscellany",
+    "13.12: Member selection with pointers and references",
+    "13.13: Class templates",
+    "13.14: Class template argument deduction (CTAD) and deduction guides",
+    "13.15: Alias templates",
+    "13.x: Chapter 13 summary and quiz",
+    "13.y: Using a language reference",
+    "14.1: Introduction to object-oriented programming",
+    "14.2: Introduction to classes",
+    "14.3: Member functions",
+    "14.4: Const class objects and const member functions",
+    "14.5: Public and private members and access specifiers",
+    "14.6: Access functions",
+    "14.7: Member functions returning references to data members",
+    "14.8: The benefits of data hiding (encapsulation)",
+    "14.9: Introduction to constructors",
+    "14.10: Constructor member initializer lists",
+    "14.11: Default constructors and default arguments",
+    "14.12: Delegating constructors",
+    "14.13: Temporary class objects",
+    "14.14: Introduction to the copy constructor",
+    "14.15: Class initialization and copy elision",
+    "14.16: Converting constructors and the explicit keyword",
+    "14.17: Constexpr aggregates and classes",
+    "14.x: Chapter 14 summary and quiz",
+    "15.1: The hidden this pointer and member function chaining",
+    "15.2: Classes and header files",
+    "15.3: Nested types (member types)",
+    "15.4: Introduction to destructors",
+    "15.5: Class templates with member functions",
+    "15.6: Static member variables",
+    "15.7: Static member functions",
+    "15.8: Friend non-member functions",
+    "15.9: Friend classes and friend member functions",
+    "15.10: Ref qualifiers",
+    "15.x: Chapter 15 summary and quiz",
+    "16.1: Introduction to containers and arrays",
+    "16.2: Introduction to std::vector and list constructors",
+    "16.3: std::vector and the unsigned length and subscript problem",
+    "16.4: Passing std::vector",
+    "16.5: Returning std::vector, and an introduction to move semantics",
+    "16.6: Arrays and loops",
+    "16.7: Arrays, loops, and sign challenge solutions",
+    "16.8: Range-based for loops (for-each)",
+    "16.9: Array indexing and length using enumerators",
+    "16.10: std::vector resizing and capacity",
+    "16.11: std::vector and stack behavior",
+    "16.12: std::vector<bool>",
+    "16.x: Chapter 16 summary and quiz",
+    "17.1: Introduction to std::array",
+    "17.2: std::array length and indexing",
+    "17.3: Passing and returning std::array",
+    "17.4: std::array of class types, and brace elision",
+    "17.5: Arrays of references via std::reference_wrapper",
+    "17.6: std::array and enumerations",
+    "17.7: Introduction to C-style arrays",
+    "17.8: C-style array decay",
+    "17.9: Pointer arithmetic and subscripting",
+    "17.10: C-style strings",
+    "17.11: C-style string symbolic constants",
+    "17.12: Multidimensional C-style Arrays",
+    "17.13: Multidimensional std::array",
+    "17.x: Chapter 17 summary and quiz",
+    "18.1: Sorting an array using selection sort",
+    "18.2: Introduction to iterators",
+    "18.3: Introduction to standard library algorithms",
+    "18.4: Timing your code"
+  ],
+  "lessons": [
+    {
+      "number": "19.1",
+      "title": "Dynamic memory allocation with new and delete",
+      "sort_order": 0,
+      "summary_md": "So far, every variable you have created lives on the **stack** -- its lifetime is tied to the scope where it is defined, and the compiler handles cleanup automatically. **Dynamic memory allocation** lets you request memory from the **heap** (also called the free store) at runtime, giving you explicit control over when that memory is created and destroyed.\n\nUse the `new` keyword to allocate a single object on the heap. It returns a pointer to the newly created memory. Use `delete` to release that memory when you are done with it.\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int* ptr{ new int{ 42 } }; // allocate an int on the heap\n    std::cout << *ptr << '\\n'; // prints 42\n    delete ptr;                // free the heap memory\n    ptr = nullptr;             // prevent dangling pointer\n    return 0;\n}\n```\n\nThree critical mistakes to avoid:\n\n- **Memory leak:** If you lose the pointer to heap memory (e.g., the pointer goes out of scope or gets reassigned) without calling `delete`, that memory is never freed. The OS reclaims it when the program exits, but long-running programs will consume more and more memory.\n- **Dangling pointer:** After `delete`, the pointer still holds the old address. Dereferencing it is undefined behavior. Always set the pointer to `nullptr` immediately after `delete`.\n- **Double delete:** Calling `delete` on the same non-null pointer twice is undefined behavior. Setting the pointer to `nullptr` after delete also guards against this, because `delete nullptr` is a safe no-op.\n\nWhen should you use dynamic allocation? When the size or number of objects is not known at compile time, or when an object must outlive the scope that created it. Stack memory is faster and safer by default -- prefer it unless you have a concrete reason to allocate on the heap.\n\n`new` can fail if the system runs out of memory. By default it throws a `std::bad_alloc` exception. For now, assume allocations succeed in small programs.",
+      "exercises": [
+        {
+          "title": "Heap-Allocated Sum",
+          "prompt_md": "## Goal\n\nRead two integers from input, dynamically allocate an `int` on the heap to store their sum, print the result, and properly clean up the allocated memory.\n\n## Input\n\n- A single line containing two space-separated integers `a` and `b` (-10000 <= a, b <= 10000).\n\n## Output\n\n- Line 1: the value pointed to by the heap-allocated pointer (the sum of `a` and `b`).\n- Line 2: the literal text `nullptr` if the pointer is null after cleanup, or `dangling` otherwise.\n\n## Requirements\n\n- Use `new` to allocate a single `int` on the heap and initialize it with the sum.\n- Use `delete` to free the memory.\n- Set the pointer to `nullptr` after deleting.\n- Print whether the pointer is `nullptr` after cleanup to confirm correct practice.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Allocate an int on the heap initialized to (a + b)\n    // Print the dereferenced value\n    // Delete the allocated memory\n    // Set pointer to nullptr\n    // Print \"nullptr\" if the pointer is null, otherwise \"dangling\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int* ptr{ new int{ a + b } };\n    std::cout << *ptr << '\\n';\n\n    delete ptr;\n    ptr = nullptr;\n\n    std::cout << (ptr == nullptr ? \"nullptr\" : \"dangling\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic positive numbers",
+              "is_sample": true,
+              "stdin": "10 25",
+              "expected_stdout": "35\nnullptr\n"
+            },
+            {
+              "label": "Negative numbers",
+              "is_sample": false,
+              "stdin": "-7 3",
+              "expected_stdout": "-4\nnullptr\n"
+            },
+            {
+              "label": "Both zero",
+              "is_sample": false,
+              "stdin": "0 0",
+              "expected_stdout": "0\nnullptr\n"
+            }
+          ]
+        },
+        {
+          "title": "Dynamic Swap",
+          "prompt_md": "## Goal\n\nRead two integers, store each in a separately heap-allocated `int`, swap the values they point to, print the swapped values, and clean up all allocated memory.\n\n## Input\n\n- A single line containing two space-separated integers `x` and `y` (-10000 <= x, y <= 10000).\n\n## Output\n\n- Line 1: the value pointed to by the first pointer after swapping (originally `y`).\n- Line 2: the value pointed to by the second pointer after swapping (originally `x`).\n- Line 3: `clean` if both pointers are `nullptr` after cleanup.\n\n## Requirements\n\n- Use `new` to allocate two separate `int` objects on the heap, one initialized with `x` and one with `y`.\n- Swap the pointed-to values using a temporary variable (do not swap the pointers themselves).\n- After printing, `delete` both allocations and set both pointers to `nullptr`.\n- Print `clean` only if both pointers are `nullptr` after cleanup.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: Allocate two ints on the heap, initialized to x and y\n    // Swap the values they point to using a temporary variable\n    // Print the swapped values (one per line)\n    // Delete both allocations and set pointers to nullptr\n    // Print \"clean\" if both pointers are nullptr\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    int* ptrX{ new int{ x } };\n    int* ptrY{ new int{ y } };\n\n    int temp{ *ptrX };\n    *ptrX = *ptrY;\n    *ptrY = temp;\n\n    std::cout << *ptrX << '\\n';\n    std::cout << *ptrY << '\\n';\n\n    delete ptrX;\n    delete ptrY;\n    ptrX = nullptr;\n    ptrY = nullptr;\n\n    if (ptrX == nullptr && ptrY == nullptr)\n        std::cout << \"clean\" << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic swap",
+              "is_sample": true,
+              "stdin": "3 7",
+              "expected_stdout": "7\n3\nclean\n"
+            },
+            {
+              "label": "Negative and positive",
+              "is_sample": false,
+              "stdin": "-5 12",
+              "expected_stdout": "12\n-5\nclean\n"
+            },
+            {
+              "label": "Equal values",
+              "is_sample": false,
+              "stdin": "99 99",
+              "expected_stdout": "99\n99\nclean\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "19.2",
+      "title": "Dynamically allocating arrays",
+      "sort_order": 1,
+      "summary_md": "In lesson 19.1 you used `new` and `delete` to allocate single objects. C++ extends this to arrays with `new[]` and `delete[]`, letting you create arrays whose size is determined at runtime.\n\nTo allocate a dynamic array, write `new type[size]` where `size` can be any expression that evaluates to an integral value -- it does not need to be a compile-time constant. The result is a pointer to the first element. When you are done, call `delete[]` (not plain `delete`) on that pointer to free the entire array.\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int count{};\n    std::cin >> count;\n\n    int* arr{ new int[count]{} }; // value-initialized to 0\n\n    for (int i{ 0 }; i < count; ++i)\n        std::cin >> arr[i];\n\n    for (int i{ 0 }; i < count; ++i)\n        std::cout << arr[i] << ' ';\n\n    delete[] arr;\n    return 0;\n}\n```\n\nThe `{}` after `new int[count]{}` value-initializes every element to zero. Without it, elements contain indeterminate values. You can also provide an initializer list: `new int[4]{ 1, 2, 3, 4 }`. Any elements not covered by the list are value-initialized.\n\nA critical rule: **always match `new[]` with `delete[]`**. Using plain `delete` on an array allocated with `new[]` is undefined behavior -- it may leak memory or corrupt the heap. Likewise, using `delete[]` on a single-object allocation is also undefined.\n\nDynamic arrays have the same pointer-decay behavior as fixed arrays. You can index them with `[]`, iterate with pointer arithmetic, and pass them to functions that accept a pointer plus a size.\n\n### Why prefer `std::vector`\n\nDynamic arrays via `new[]` require you to manually track the size and remember to call `delete[]`. If an exception is thrown between `new[]` and `delete[]`, the memory leaks. `std::vector` handles allocation, resizing, and cleanup automatically. In modern C++ you should almost always use `std::vector` instead of raw `new[]`. Understanding `new[]`/`delete[]` is still valuable because you will encounter it in legacy code and it deepens your understanding of how `std::vector` works internally.",
+      "exercises": [
+        {
+          "title": "Dynamic Array Reversal",
+          "prompt_md": "## Goal\n\nDynamically allocate an array of integers, read values into it, reverse the array in place, and print the result.\n\n## Input\n\n- Line 1: a single integer `n` (1 <= n <= 100), the number of elements.\n- Line 2: `n` space-separated integers.\n\n## Output\n\n- A single line containing the reversed elements, each separated by a space, with a trailing space after the last element.\n\n## Requirements\n\n- Allocate the array using `new int[n]{}`.\n- Reverse the array in place by swapping elements from the outside in (use `std::swap` from `<utility>`).\n- Print the reversed array.\n- Free the memory using `delete[]` before the program ends.\n- Do not use `std::vector`, `std::array`, or any standard library algorithm for reversing.",
+          "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int* arr{ new int[n]{} };\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Reverse the array in place\n    // Use two indices (front and back) moving toward each other\n    // Swap arr[front] with arr[back] using std::swap\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << arr[i] << ' ';\n\n    delete[] arr;\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int* arr{ new int[n]{} };\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    for (int front{ 0 }, back{ n - 1 }; front < back; ++front, --back)\n        std::swap(arr[front], arr[back]);\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << arr[i] << ' ';\n\n    delete[] arr;\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic reversal of five elements",
+              "is_sample": true,
+              "stdin": "5\n10 20 30 40 50",
+              "expected_stdout": "50 40 30 20 10 "
+            },
+            {
+              "label": "Single element array",
+              "is_sample": false,
+              "stdin": "1\n42",
+              "expected_stdout": "42 "
+            },
+            {
+              "label": "Even-length array with negatives",
+              "is_sample": false,
+              "stdin": "6\n-3 7 0 15 -8 2",
+              "expected_stdout": "2 -8 15 0 7 -3 "
+            }
+          ]
+        },
+        {
+          "title": "Merge Two Dynamic Arrays",
+          "prompt_md": "## Goal\n\nRead two dynamically allocated arrays of sorted integers, merge them into a third dynamically allocated array in sorted order, and print the result.\n\n## Input\n\n- Line 1: an integer `a` (1 <= a <= 50), the size of the first array.\n- Line 2: `a` space-separated integers in non-decreasing order.\n- Line 3: an integer `b` (1 <= b <= 50), the size of the second array.\n- Line 4: `b` space-separated integers in non-decreasing order.\n\n## Output\n\n- A single line containing `a + b` integers in non-decreasing order, each separated by a space, with a trailing space after the last element.\n\n## Requirements\n\n- Allocate all three arrays using `new int[size]{}`.\n- Use two index variables to walk through both input arrays simultaneously, always picking the smaller current element for the merged array.\n- After one input array is exhausted, copy the remaining elements from the other.\n- Print the merged array, then free all three arrays with `delete[]`.\n- Do not use `std::vector`, `std::array`, or any standard library algorithm for merging or sorting.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    std::cin >> a;\n    int* arr1{ new int[a]{} };\n    for (int i{ 0 }; i < a; ++i)\n        std::cin >> arr1[i];\n\n    int b{};\n    std::cin >> b;\n    int* arr2{ new int[b]{} };\n    for (int i{ 0 }; i < b; ++i)\n        std::cin >> arr2[i];\n\n    int* merged{ new int[a + b]{} };\n\n    // TODO: Merge arr1 and arr2 into merged in sorted order\n    // Use index i for arr1, j for arr2, k for merged\n    // Compare arr1[i] and arr2[j], copy the smaller one to merged[k]\n    // After the loop, copy any remaining elements from whichever array isn't exhausted\n\n    for (int k{ 0 }; k < a + b; ++k)\n        std::cout << merged[k] << ' ';\n\n    delete[] arr1;\n    delete[] arr2;\n    delete[] merged;\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    std::cin >> a;\n    int* arr1{ new int[a]{} };\n    for (int i{ 0 }; i < a; ++i)\n        std::cin >> arr1[i];\n\n    int b{};\n    std::cin >> b;\n    int* arr2{ new int[b]{} };\n    for (int i{ 0 }; i < b; ++i)\n        std::cin >> arr2[i];\n\n    int* merged{ new int[a + b]{} };\n\n    int i{ 0 };\n    int j{ 0 };\n    int k{ 0 };\n\n    while (i < a && j < b)\n    {\n        if (arr1[i] <= arr2[j])\n            merged[k++] = arr1[i++];\n        else\n            merged[k++] = arr2[j++];\n    }\n\n    while (i < a)\n        merged[k++] = arr1[i++];\n\n    while (j < b)\n        merged[k++] = arr2[j++];\n\n    for (int m{ 0 }; m < a + b; ++m)\n        std::cout << merged[m] << ' ';\n\n    delete[] arr1;\n    delete[] arr2;\n    delete[] merged;\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Basic merge of two small arrays",
+              "is_sample": true,
+              "stdin": "3\n1 5 9\n4\n2 4 6 8",
+              "expected_stdout": "1 2 4 5 6 8 9 "
+            },
+            {
+              "label": "One single-element array",
+              "is_sample": false,
+              "stdin": "1\n50\n3\n10 20 30",
+              "expected_stdout": "10 20 30 50 "
+            },
+            {
+              "label": "Arrays with duplicates across both",
+              "is_sample": false,
+              "stdin": "4\n1 3 3 7\n3\n2 3 5",
+              "expected_stdout": "1 2 3 3 3 5 7 "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "19.3",
+      "title": "Destructors",
+      "sort_order": 2,
+      "summary_md": "## Destructors and Dynamic Memory\n\nIn Ch 15.4 you learned that a **destructor** is a special member function that runs automatically when an object is destroyed. With dynamic allocation in the picture, destructors become essential: they are where you `delete` memory that the class allocated with `new`, preventing leaks.\n\nThis pattern has a name: **RAII** (Resource Acquisition Is Initialization). The constructor acquires a resource (allocates memory), and the destructor releases it (deallocates memory). Because destructors run automatically when an object leaves scope, cleanup is guaranteed even if an early `return` or exception exits the function.\n\n```cpp\n#include <iostream>\n\nclass IntArray\n{\n    int* m_data{};\n    int m_size{};\npublic:\n    IntArray(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    ~IntArray()\n    {\n        delete[] m_data;\n        std::cout << \"Freed \" << m_size << \" ints\\n\";\n    }\n\n    int size() const { return m_size; }\n};\n```\n\nWhen an `IntArray` object goes out of scope, `~IntArray()` fires and calls `delete[]` on `m_data`. The caller never needs to remember to free anything.\n\n### Order of destruction\n\nLocal objects are destroyed in the **reverse order** of their construction. If you create `a` then `b`, the destructor for `b` runs first, then `a`. This reverse ordering ensures that if `b` depends on `a`, `b` is cleaned up while `a` is still valid.\n\nFor class members, destruction also happens in reverse declaration order, after the body of the destructor finishes executing.\n\n### Guidelines\n\n- If your class calls `new` in the constructor, it must call `delete` in the destructor (and `new[]` pairs with `delete[]`).\n- A destructor should never throw exceptions. If deallocation cannot fail, this is naturally satisfied.\n- Setting the pointer to `nullptr` after `delete` inside a destructor is unnecessary since the object is being destroyed anyway.\n- If you find yourself writing manual `delete` calls outside a destructor, consider whether RAII can handle it instead.",
+      "exercises": [
+        {
+          "title": "RAII String Wrapper",
+          "prompt_md": "## Goal\nImplement a class `DynString` that owns a dynamically allocated `char` array and cleans it up in its destructor, demonstrating the RAII pattern.\n\n## Input\n- Line 1: a single integer `N` (1 <= N <= 100), the number of characters to store.\n- Line 2: exactly `N` space-separated characters.\n\n## Output\n- Line 1: `Stored: ` followed by all N characters with no separators.\n- Line 2: `Destroyed N chars` where N is the count, printed by the destructor.\n\n## Requirements\n1. `DynString` has a constructor taking an `int` size that allocates a `char` array with `new char[size]`.\n2. `DynString` has a destructor that calls `delete[]` on the array and prints the destruction message.\n3. Provide a `void set(int index, char c)` member to set individual characters.\n4. Provide a `void print() const` member that prints all characters in order with no separators.\n5. Create the `DynString` as a local variable in `main` so the destructor runs automatically at the end of scope.\n6. Do not use `std::string` or smart pointers.",
+          "starter_code": "#include <iostream>\n\nclass DynString\n{\n    char* m_data{};\n    int m_size{};\n\npublic:\n    DynString(int size)\n        : m_data{ new char[size]{} }, m_size{ size }\n    {\n    }\n\n    // TODO: Write the destructor ~DynString()\n    //   - delete[] m_data\n    //   - print: Destroyed N chars  (where N is m_size)\n\n    void set(int index, char c)\n    {\n        m_data[index] = c;\n    }\n\n    void print() const\n    {\n        // TODO: output each character in m_data (no separators, no newline)\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynString ds(n);\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        char c{};\n        std::cin >> c;\n        ds.set(i, c);\n    }\n\n    std::cout << \"Stored: \";\n    ds.print();\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nclass DynString\n{\n    char* m_data{};\n    int m_size{};\n\npublic:\n    DynString(int size)\n        : m_data{ new char[size]{} }, m_size{ size }\n    {\n    }\n\n    ~DynString()\n    {\n        delete[] m_data;\n        std::cout << \"Destroyed \" << m_size << \" chars\\n\";\n    }\n\n    void set(int index, char c)\n    {\n        m_data[index] = c;\n    }\n\n    void print() const\n    {\n        for (int i{ 0 }; i < m_size; ++i)\n            std::cout << m_data[i];\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynString ds(n);\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        char c{};\n        std::cin >> c;\n        ds.set(i, c);\n    }\n\n    std::cout << \"Stored: \";\n    ds.print();\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- five characters",
+              "is_sample": true,
+              "stdin": "5\nH e l l o\n",
+              "expected_stdout": "Stored: Hello\nDestroyed 5 chars\n"
+            },
+            {
+              "label": "Hidden -- single character",
+              "is_sample": false,
+              "stdin": "1\nX\n",
+              "expected_stdout": "Stored: X\nDestroyed 1 chars\n"
+            },
+            {
+              "label": "Hidden -- digits as characters",
+              "is_sample": false,
+              "stdin": "4\n1 2 3 4\n",
+              "expected_stdout": "Stored: 1234\nDestroyed 4 chars\n"
+            }
+          ]
+        },
+        {
+          "title": "Reverse Destruction Order",
+          "prompt_md": "## Goal\nDemonstrate that local objects are destroyed in reverse order of construction by creating multiple RAII wrapper objects and observing destructor output.\n\n## Input\n- A single line containing exactly 3 space-separated integers representing sizes for three dynamic arrays.\n\n## Output\n- Lines 1-3: `Created pool 'X' (N ints)` for each pool in creation order, where X is A, B, C and N is the size.\n- Lines 4-6: `Destroyed pool 'X' (N ints)` for each pool in reverse creation order (C, B, A).\n\n## Requirements\n1. Implement a class `IntPool` with a constructor that takes a `char` label and an `int` size, allocates an `int` array with `new int[size]{}`, and prints the creation message.\n2. The destructor calls `delete[]` on the array and prints the destruction message.\n3. In `main`, create three `IntPool` objects named `a`, `b`, `c` (labels `'A'`, `'B'`, `'C'`) as local variables in that order.\n4. Do not explicitly call any destructor. Let scope exit handle cleanup.\n5. Do not use smart pointers or `std::vector`.",
+          "starter_code": "#include <iostream>\n\nclass IntPool\n{\n    char m_label{};\n    int* m_data{};\n    int m_size{};\n\npublic:\n    // TODO: Constructor taking (char label, int size)\n    //   - allocate m_data with new int[size]{}\n    //   - print: Created pool 'X' (N ints)\n\n    // TODO: Destructor\n    //   - delete[] m_data\n    //   - print: Destroyed pool 'X' (N ints)\n};\n\nint main()\n{\n    int sA{}, sB{}, sC{};\n    std::cin >> sA >> sB >> sC;\n\n    // TODO: Create three IntPool locals: a('A', sA), b('B', sB), c('C', sC)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nclass IntPool\n{\n    char m_label{};\n    int* m_data{};\n    int m_size{};\n\npublic:\n    IntPool(char label, int size)\n        : m_label{ label }, m_data{ new int[size]{} }, m_size{ size }\n    {\n        std::cout << \"Created pool '\" << m_label << \"' (\" << m_size << \" ints)\\n\";\n    }\n\n    ~IntPool()\n    {\n        delete[] m_data;\n        std::cout << \"Destroyed pool '\" << m_label << \"' (\" << m_size << \" ints)\\n\";\n    }\n};\n\nint main()\n{\n    int sA{}, sB{}, sC{};\n    std::cin >> sA >> sB >> sC;\n\n    IntPool a('A', sA);\n    IntPool b('B', sB);\n    IntPool c('C', sC);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- sizes 3 5 2",
+              "is_sample": true,
+              "stdin": "3 5 2\n",
+              "expected_stdout": "Created pool 'A' (3 ints)\nCreated pool 'B' (5 ints)\nCreated pool 'C' (2 ints)\nDestroyed pool 'C' (2 ints)\nDestroyed pool 'B' (5 ints)\nDestroyed pool 'A' (3 ints)\n"
+            },
+            {
+              "label": "Hidden -- all same size",
+              "is_sample": false,
+              "stdin": "10 10 10\n",
+              "expected_stdout": "Created pool 'A' (10 ints)\nCreated pool 'B' (10 ints)\nCreated pool 'C' (10 ints)\nDestroyed pool 'C' (10 ints)\nDestroyed pool 'B' (10 ints)\nDestroyed pool 'A' (10 ints)\n"
+            },
+            {
+              "label": "Hidden -- size one each",
+              "is_sample": false,
+              "stdin": "1 1 1\n",
+              "expected_stdout": "Created pool 'A' (1 ints)\nCreated pool 'B' (1 ints)\nCreated pool 'C' (1 ints)\nDestroyed pool 'C' (1 ints)\nDestroyed pool 'B' (1 ints)\nDestroyed pool 'A' (1 ints)\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "19.4",
+      "title": "Pointers to pointers and dynamic multidimensional arrays",
+      "sort_order": 3,
+      "summary_md": "A **pointer to a pointer** (declared with `**`) holds the address of another pointer. When you dereference once with `*ptr`, you get the inner pointer; dereference again with `**ptr` to reach the underlying value. This concept is essential for dynamically allocating two-dimensional arrays.\n\nTo create a dynamic 2D array, you allocate an array of `int*` pointers (one per row), then allocate each row individually. This gives you a contiguous array of row pointers, where each row is its own heap-allocated array.\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int rows{ 3 };\n    int cols{ 4 };\n    int** matrix{ new int*[rows] };\n    for (int r{ 0 }; r < rows; ++r)\n        matrix[r] = new int[cols]{};\n\n    matrix[1][2] = 42;\n    std::cout << matrix[1][2] << '\\n';\n\n    for (int r{ 0 }; r < rows; ++r)\n        delete[] matrix[r];\n    delete[] matrix;\n}\n```\n\nThe cleanup order matters: you must `delete[]` each row first, then `delete[]` the array of row pointers. Reversing this order loses access to the row pointers and leaks every row. Think of it as unwinding in the opposite order of allocation.\n\nBecause each row is allocated separately, the rows are not necessarily contiguous in memory. This is different from a fixed-size 2D C-style array where all elements occupy a single block. The tradeoff is flexibility -- each row could even have a different length (a \"jagged\" array) -- but you lose cache locality.\n\nDeclaring a pointer to a pointer follows normal pointer syntax stacked one level deeper: `int** ptr` means \"ptr is a pointer to a pointer to int.\" You can chain more levels (`int***`), but in practice two levels is the most you will encounter. Beyond that, the code becomes hard to reason about and better alternatives exist (like `std::vector<std::vector<int>>`).\n\nKey rules to remember: always pair every `new` with a `delete` and every `new[]` with a `delete[]`. For a dynamic 2D array with `r` rows, that means `r + 1` total allocations and `r + 1` total deallocations.",
+      "exercises": [
+        {
+          "title": "Build and Print a Dynamic 2D Array",
+          "prompt_md": "## Goal\n\nDynamically allocate a 2D integer array, fill it with values read from input, and print it row by row. Properly deallocate all memory.\n\n## Input\n\n- Line 1: two integers `rows` and `cols` (1 <= rows, cols <= 10)\n- Next `rows` lines: `cols` space-separated integers per line\n\n## Output\n\n- Print the matrix row by row. Within each row, separate values with a single space. Print a newline after each row.\n\n## Requirements\n\n- Declare an `int**` and use `new` to allocate an array of `int*` pointers, then allocate each row with `new int[cols]`.\n- After printing, deallocate each row with `delete[]`, then deallocate the array of pointers with `delete[]`.\n- Do not use `std::vector` or any container class.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int rows{};\n    int cols{};\n    std::cin >> rows >> cols;\n\n    // TODO: Allocate a dynamic 2D array using int**\n    // Allocate the array of row pointers, then allocate each row\n\n    // TODO: Read rows*cols integers into the 2D array\n\n    // TODO: Print the matrix row by row (space-separated, newline after each row)\n\n    // TODO: Deallocate each row, then deallocate the array of pointers\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int rows{};\n    int cols{};\n    std::cin >> rows >> cols;\n\n    int** matrix{ new int*[rows] };\n    for (int r{ 0 }; r < rows; ++r)\n        matrix[r] = new int[cols]{};\n\n    for (int r{ 0 }; r < rows; ++r)\n        for (int c{ 0 }; c < cols; ++c)\n            std::cin >> matrix[r][c];\n\n    for (int r{ 0 }; r < rows; ++r)\n    {\n        for (int c{ 0 }; c < cols; ++c)\n        {\n            if (c > 0)\n                std::cout << ' ';\n            std::cout << matrix[r][c];\n        }\n        std::cout << '\\n';\n    }\n\n    for (int r{ 0 }; r < rows; ++r)\n        delete[] matrix[r];\n    delete[] matrix;\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- 2x3 matrix",
+              "is_sample": true,
+              "stdin": "2 3\n1 2 3\n4 5 6\n",
+              "expected_stdout": "1 2 3\n4 5 6\n"
+            },
+            {
+              "label": "Hidden -- single element",
+              "is_sample": false,
+              "stdin": "1 1\n42\n",
+              "expected_stdout": "42\n"
+            },
+            {
+              "label": "Hidden -- 3x4 matrix with negatives",
+              "is_sample": false,
+              "stdin": "3 4\n10 -20 30 -40\n5 15 -25 35\n0 0 0 1\n",
+              "expected_stdout": "10 -20 30 -40\n5 15 -25 35\n0 0 0 1\n"
+            }
+          ]
+        },
+        {
+          "title": "Transpose a Dynamic Matrix",
+          "prompt_md": "## Goal\n\nRead a matrix, build its **transpose** in a second dynamically allocated 2D array, and print the transposed matrix. The transpose of an `R x C` matrix is a `C x R` matrix where element `[r][c]` becomes element `[c][r]`.\n\n## Input\n\n- Line 1: two integers `R` and `C` (1 <= R, C <= 10)\n- Next `R` lines: `C` space-separated integers per line\n\n## Output\n\n- Print the transposed matrix (`C` rows, `R` columns). Within each row, separate values with a single space. Print a newline after each row.\n\n## Requirements\n\n- Allocate the original matrix as `int**` with `new`.\n- Allocate a second `int**` for the transpose (dimensions `C x R`).\n- Copy values so that `transposed[c][r] = original[r][c]`.\n- After printing, deallocate both matrices completely (rows first, then the pointer arrays).\n- Do not use `std::vector` or any container class.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int R{};\n    int C{};\n    std::cin >> R >> C;\n\n    // TODO: Allocate and read the original R x C matrix\n\n    // TODO: Allocate a transposed C x R matrix\n    // Copy values: transposed[c][r] = original[r][c]\n\n    // TODO: Print the transposed matrix (C rows, R cols per row)\n\n    // TODO: Deallocate both matrices (rows first, then pointer arrays)\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int R{};\n    int C{};\n    std::cin >> R >> C;\n\n    int** original{ new int*[R] };\n    for (int r{ 0 }; r < R; ++r)\n        original[r] = new int[C]{};\n\n    for (int r{ 0 }; r < R; ++r)\n        for (int c{ 0 }; c < C; ++c)\n            std::cin >> original[r][c];\n\n    int** transposed{ new int*[C] };\n    for (int c{ 0 }; c < C; ++c)\n        transposed[c] = new int[R]{};\n\n    for (int r{ 0 }; r < R; ++r)\n        for (int c{ 0 }; c < C; ++c)\n            transposed[c][r] = original[r][c];\n\n    for (int c{ 0 }; c < C; ++c)\n    {\n        for (int r{ 0 }; r < R; ++r)\n        {\n            if (r > 0)\n                std::cout << ' ';\n            std::cout << transposed[c][r];\n        }\n        std::cout << '\\n';\n    }\n\n    for (int r{ 0 }; r < R; ++r)\n        delete[] original[r];\n    delete[] original;\n\n    for (int c{ 0 }; c < C; ++c)\n        delete[] transposed[c];\n    delete[] transposed;\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- 2x3 transpose",
+              "is_sample": true,
+              "stdin": "2 3\n1 2 3\n4 5 6\n",
+              "expected_stdout": "1 4\n2 5\n3 6\n"
+            },
+            {
+              "label": "Hidden -- square matrix",
+              "is_sample": false,
+              "stdin": "3 3\n1 0 0\n0 2 0\n0 0 3\n",
+              "expected_stdout": "1 0 0\n0 2 0\n0 0 3\n"
+            },
+            {
+              "label": "Hidden -- tall matrix becomes wide",
+              "is_sample": false,
+              "stdin": "4 2\n10 20\n30 40\n50 60\n70 80\n",
+              "expected_stdout": "10 30 50 70\n20 40 60 80\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "19.5",
+      "title": "Void pointers",
+      "sort_order": 4,
+      "summary_md": "A **void pointer** (`void*`) is a special pointer type that can point to an object of any data type. Unlike a typed pointer such as `int*` or `double*`, a `void*` discards all type information — it only stores a raw memory address. This makes it the closest thing C++ has to a truly generic pointer.\n\nBecause the compiler does not know what type a `void*` points to, you **cannot dereference it directly**. Attempting `*ptr` on a `void*` is a compile error. You also cannot perform pointer arithmetic on it, since the compiler has no idea how many bytes each element occupies. To use the pointed-to value, you must first cast the `void*` back to the correct typed pointer using `static_cast`.\n\n```cpp\n#include <iostream>\n\nvoid printInt(void* ptr)\n{\n    int* intPtr{ static_cast<int*>(ptr) };\n    std::cout << *intPtr << '\\n';\n}\n\nint main()\n{\n    int value{ 42 };\n    void* voidPtr{ &value };\n    printInt(voidPtr);\n    return 0;\n}\n```\n\nCasting to the wrong type is **undefined behavior** — the compiler will not catch the mistake. If you store the address of a `double` but cast to `int*`, the program silently reads garbage. This is why `void*` is considered unsafe: it shifts all responsibility for type correctness onto the programmer.\n\nIn modern C++, `void*` is rarely the right tool. Templates provide type-safe alternatives for generic code. The main places you still encounter `void*` are at the boundary with C libraries (e.g., some C library APIs use `void*` to handle generic data) and in low-level memory allocators.\n\nKey rules to remember: any typed pointer converts to `void*` implicitly, but converting back always requires an explicit `static_cast`. A `void*` can be compared with `==` and `!=` and can be `nullptr`. Avoid `void*` whenever a template or typed pointer will do the job.",
+      "exercises": [
+        {
+          "title": "Cast and Print via Void Pointer",
+          "prompt_md": "## Goal\n\nRead an integer and a double from input. Store pointers to each in `void*` variables, then cast them back to their original types to print the values.\n\n## Input\n\n- Line 1: an integer\n- Line 2: a double (printed with fixed 2-decimal precision)\n\n## Output\n\n- Line 1: `int: ` followed by the integer value\n- Line 2: `double: ` followed by the double value with exactly 2 decimal places\n\n## Requirements\n\n- Declare an `int` variable and a `double` variable, reading into each from `std::cin`.\n- Assign their addresses to two separate `void*` variables.\n- Use `static_cast` to convert each `void*` back to the correct typed pointer, then dereference to print.\n- Use `std::fixed` and `std::setprecision(2)` from `<iomanip>` for the double output.",
+          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int iVal{};\n    double dVal{};\n    std::cin >> iVal >> dVal;\n\n    // TODO: Create void* pointers to iVal and dVal\n    // TODO: Use static_cast to convert each void* back and print:\n    //   \"int: <value>\"\n    //   \"double: <value with 2 decimal places>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int iVal{};\n    double dVal{};\n    std::cin >> iVal >> dVal;\n\n    void* vp1{ &iVal };\n    void* vp2{ &dVal };\n\n    std::cout << \"int: \" << *static_cast<int*>(vp1) << '\\n';\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"double: \" << *static_cast<double*>(vp2) << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Positive values",
+              "is_sample": true,
+              "stdin": "42\n3.14159",
+              "expected_stdout": "int: 42\ndouble: 3.14\n"
+            },
+            {
+              "label": "Zero values",
+              "is_sample": false,
+              "stdin": "0\n0.0",
+              "expected_stdout": "int: 0\ndouble: 0.00\n"
+            },
+            {
+              "label": "Negative values",
+              "is_sample": false,
+              "stdin": "-7\n-99.999",
+              "expected_stdout": "int: -7\ndouble: -100.00\n"
+            }
+          ]
+        },
+        {
+          "title": "Generic Swap Through Void Pointers",
+          "prompt_md": "## Goal\n\nImplement a function `swapBytes` that swaps the raw memory contents of two objects given their addresses as `void*` and their size in bytes. Use it to swap two integers.\n\n## Input\n\n- Line 1: two space-separated integers `a` and `b`\n\n## Output\n\n- Line 1: `Before: a b` (the original values, space-separated)\n- Line 2: `After: b a` (the swapped values, space-separated)\n\n## Requirements\n\n- Write a function with the signature: `void swapBytes(void* p1, void* p2, std::size_t size)`.\n- Inside `swapBytes`, cast both `void*` parameters to `char*` so you can iterate byte by byte.\n- Swap each corresponding byte using a temporary `char` variable. Do not use `std::swap` or `std::memcpy`.\n- In `main`, read two ints, print the before line, call `swapBytes` with `sizeof(int)`, then print the after line.",
+          "starter_code": "#include <iostream>\n#include <cstddef> // std::size_t\n\nvoid swapBytes(void* p1, void* p2, std::size_t size)\n{\n    // TODO: Cast p1 and p2 to char*\n    // TODO: Loop size times, swapping one byte at a time\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Before: \" << a << ' ' << b << '\\n';\n\n    // TODO: Call swapBytes to swap a and b\n\n    std::cout << \"After: \" << a << ' ' << b << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <cstddef> // std::size_t\n\nvoid swapBytes(void* p1, void* p2, std::size_t size)\n{\n    char* c1{ static_cast<char*>(p1) };\n    char* c2{ static_cast<char*>(p2) };\n\n    for (std::size_t i{ 0 }; i < size; ++i)\n    {\n        char tmp{ c1[i] };\n        c1[i] = c2[i];\n        c2[i] = tmp;\n    }\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Before: \" << a << ' ' << b << '\\n';\n    swapBytes(&a, &b, sizeof(int));\n    std::cout << \"After: \" << a << ' ' << b << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Simple positive swap",
+              "is_sample": true,
+              "stdin": "10 20",
+              "expected_stdout": "Before: 10 20\nAfter: 20 10\n"
+            },
+            {
+              "label": "Same values",
+              "is_sample": false,
+              "stdin": "5 5",
+              "expected_stdout": "Before: 5 5\nAfter: 5 5\n"
+            },
+            {
+              "label": "Negative and positive",
+              "is_sample": false,
+              "stdin": "-42 1000",
+              "expected_stdout": "Before: -42 1000\nAfter: 1000 -42\n"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

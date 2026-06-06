@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Filter and Sort with Lambdas",
+    "prompt_md": "## Goal\nRead a list of integers and a threshold value. Use lambdas with standard algorithms to count how many values exceed the threshold, extract those values, and print them sorted in descending order.\n\n## Input\n- Line 1: integer N (1 <= N <= 50), the number of values.\n- Line 2: N space-separated integers.\n- Line 3: a single integer T, the threshold.\n\n## Output\n- Line 1: `Count: X` where X is the number of values strictly greater than T.\n- Line 2: `Filtered:` followed by the matching values sorted in descending order, each preceded by a space. If no values match, print just `Filtered:` with nothing after it.\n\n## Requirements\n1. Store the input in a `std::vector<int>`.\n2. Use `std::count_if` with a lambda that captures the threshold to compute the count.\n3. Use `std::copy_if` with a lambda to extract matching values into a second `std::vector<int>`.\n4. Use `std::sort` with a lambda comparator to sort the filtered vector in descending order.\n5. Do not write any named helper functions other than `main`.\n6. You may include `<vector>`, `<algorithm>`, `<iostream>`.",
+    "starter_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> data(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> data[i];\n\n    int threshold{};\n    std::cin >> threshold;\n\n    // TODO: Use std::count_if with a lambda capturing threshold\n    //       to count how many values are strictly greater than threshold.\n\n    // TODO: Use std::copy_if with a lambda to copy matching values\n    //       into a new std::vector<int> called filtered.\n\n    // TODO: Use std::sort with a lambda comparator to sort filtered\n    //       in descending order.\n\n    // TODO: Print \"Count: <count>\" on line 1.\n    // TODO: Print \"Filtered:\" followed by each value preceded by a space on line 2.\n\n    return 0;\n}\n",
+    "solution_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> data(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> data[i];\n\n    int threshold{};\n    std::cin >> threshold;\n\n    auto isAbove{ [threshold](int val) { return val > threshold; } };\n\n    int count{ static_cast<int>(std::count_if(data.begin(), data.end(), isAbove)) };\n\n    std::vector<int> filtered{};\n    std::copy_if(data.begin(), data.end(), std::back_inserter(filtered), isAbove);\n\n    std::sort(filtered.begin(), filtered.end(),\n        [](int a, int b) { return a > b; });\n\n    std::cout << \"Count: \" << count << '\\n';\n    std::cout << \"Filtered:\";\n    for (int val : filtered)\n        std::cout << ' ' << val;\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed values with threshold 4",
+        "is_sample": true,
+        "stdin": "5\n3 7 1 9 5\n4\n",
+        "expected_stdout": "Count: 3\nFiltered: 9 7 5\n"
+      },
+      {
+        "label": "Hidden -- threshold eliminates most values",
+        "is_sample": false,
+        "stdin": "4\n10 20 30 40\n25\n",
+        "expected_stdout": "Count: 2\nFiltered: 40 30\n"
+      },
+      {
+        "label": "Hidden -- no values above threshold",
+        "is_sample": false,
+        "stdin": "3\n1 2 3\n10\n",
+        "expected_stdout": "Count: 0\nFiltered:\n"
+      }
+    ]
+  },
+  {
+    "title": "Recursive Reduce with Function Pointer",
+    "prompt_md": "## Goal\nRead a list of integers and an operation name. Use a recursive function that accepts a **function pointer** parameter to reduce the list to a single value by repeatedly applying the chosen operation.\n\n## Input\n- Line 1: a string, either `sum` or `product`.\n- Line 2: integer N (1 <= N <= 10), the number of values.\n- Line 3: N space-separated integers (each between -100 and 100). For `product`, no value is zero.\n\n## Output\n- A single line: `Result: X` where X is the result of reducing all values with the chosen operation.\n\n## Requirements\n1. Write two ordinary functions with the signature `int op(int a, int b)`:\n   - `add` returns `a + b`.\n   - `multiply` returns `a * b`.\n2. Write a recursive function:\n   ```\n   int reduce(const int* arr, int size, int (*op)(int, int))\n   ```\n   - **Base case:** if `size` is 1, return `arr[0]`.\n   - **Recursive case:** return `op(arr[0], reduce(arr + 1, size - 1, op))`.\n3. In `main`, read the operation string, read N integers into a C-style array or `std::vector`, select the matching function pointer, call `reduce`, and print the result.\n4. You may include `<iostream>`, `<string>`, `<vector>`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\n// TODO: Write int add(int a, int b)\n\n// TODO: Write int multiply(int a, int b)\n\n// TODO: Write int reduce(const int* arr, int size, int (*op)(int, int))\n//       Base case: size == 1 -> return arr[0]\n//       Recursive case: return op(arr[0], reduce(arr + 1, size - 1, op))\n\nint main()\n{\n    std::string opName{};\n    std::cin >> opName;\n\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> data(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> data[i];\n\n    // TODO: Choose the correct function pointer based on opName\n    // TODO: Call reduce with data.data(), n, and the function pointer\n    // TODO: Print \"Result: <value>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint multiply(int a, int b)\n{\n    return a * b;\n}\n\nint reduce(const int* arr, int size, int (*op)(int, int))\n{\n    if (size == 1)\n        return arr[0];\n    return op(arr[0], reduce(arr + 1, size - 1, op));\n}\n\nint main()\n{\n    std::string opName{};\n    std::cin >> opName;\n\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> data(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> data[i];\n\n    int (*opPtr)(int, int){ nullptr };\n    if (opName == \"sum\")\n        opPtr = add;\n    else\n        opPtr = multiply;\n\n    int result{ reduce(data.data(), n, opPtr) };\n    std::cout << \"Result: \" << result << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- sum of four values",
+        "is_sample": true,
+        "stdin": "sum\n4\n3 5 2 7\n",
+        "expected_stdout": "Result: 17\n"
+      },
+      {
+        "label": "Hidden -- product of three values",
+        "is_sample": false,
+        "stdin": "product\n3\n4 3 2\n",
+        "expected_stdout": "Result: 24\n"
+      },
+      {
+        "label": "Hidden -- sum with negative values",
+        "is_sample": false,
+        "stdin": "sum\n5\n-1 10 -3 4 -2\n",
+        "expected_stdout": "Result: 8\n"
+      }
+    ]
+  }
+]

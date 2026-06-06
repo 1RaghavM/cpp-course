@@ -1,0 +1,60 @@
+{
+  "number": "20.2",
+  "title": "The stack and the heap",
+  "sort_order": 1,
+  "summary_md": "Every running program uses two main memory regions for storing data: the **stack** and the **heap**. Understanding how each works is essential for writing efficient, bug-free C++.\n\n## The call stack\n\nWhen you call a function, the compiler pushes a **stack frame** onto the call stack. That frame holds the function's local variables, parameters, and the return address. When the function returns, its frame is popped off and the memory is instantly reclaimed. This push/pop pattern makes stack allocation extremely fast — it only requires adjusting a single pointer.\n\nStack memory is limited (typically 1–8 MB). If you exhaust it — for example, by declaring a massive local array — you get a **stack overflow**, which crashes your program.\n\n## The heap\n\nHeap memory (also called the free store) is allocated at runtime with `new` and released with `delete`. It is much larger than the stack, but allocation is slower because the system must search for a suitable block of free memory. Heap-allocated objects persist until you explicitly free them, which means their lifetime is not tied to any particular function scope.\n\nFailing to `delete` heap memory causes a **memory leak**; using a pointer after `delete` causes **undefined behavior**.\n\n## Stack vs heap at a glance\n\n- **Speed:** Stack allocation is faster (pointer bump vs. free-list search).\n- **Size:** The stack is small and fixed; the heap is large.\n- **Lifetime:** Stack variables die when the function returns; heap variables live until you `delete` them.\n- **Management:** The compiler manages the stack automatically; you manage the heap manually (or via smart pointers, covered later).\n\n```cpp\n#include <iostream>\n\nvoid showStackAddress() {\n    int local{42};                    // stack\n    std::cout << \"Stack: \" << &local << '\\n';\n}\n\nint main() {\n    showStackAddress();\n    int* heapVal{new int{99}};        // heap\n    std::cout << \"Heap:  \" << heapVal << '\\n';\n    delete heapVal;\n    return 0;\n}\n```\n\nPrefer stack allocation by default. Reach for the heap only when you need an object to outlive its creating scope or when the data is too large for the stack.",
+  "exercises": [
+    {
+      "title": "Stack frame reporter",
+      "prompt_md": "## Goal\nWrite a program that demonstrates stack frame behavior by reading an integer and passing it through a chain of two functions, printing a message at each level.\n\n## Input\nA single integer `n` on stdin.\n\n## Output\nExactly three lines:\n```\nmain received <n>\nlevel1 received <n>\nlevel2 received <n>\n```\nwhere `<n>` is the input value.\n\n## Requirements\n- Write two functions `level1(int v)` and `level2(int v)`, each printing its line and then calling the next.\n- `main` prints its line, then calls `level1`.\n- Use `std::cout` for all output. Each line ends with `'\\n'`.",
+      "starter_code": "#include <iostream>\n\nvoid level2(int v) {\n    // TODO: print \"level2 received <v>\"\n}\n\nvoid level1(int v) {\n    // TODO: print \"level1 received <v>\", then call level2\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    // TODO: print \"main received <n>\", then call level1\n    return 0;\n}",
+      "solution_code": "#include <iostream>\n\nvoid level2(int v) {\n    std::cout << \"level2 received \" << v << '\\n';\n}\n\nvoid level1(int v) {\n    std::cout << \"level1 received \" << v << '\\n';\n    level2(v);\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cout << \"main received \" << n << '\\n';\n    level1(n);\n    return 0;\n}",
+      "test_cases": [
+        {
+          "label": "Sample: input 7",
+          "is_sample": true,
+          "stdin": "7",
+          "expected_stdout": "main received 7\nlevel1 received 7\nlevel2 received 7\n"
+        },
+        {
+          "label": "Hidden: input 0",
+          "is_sample": false,
+          "stdin": "0",
+          "expected_stdout": "main received 0\nlevel1 received 0\nlevel2 received 0\n"
+        },
+        {
+          "label": "Hidden: negative input",
+          "is_sample": false,
+          "stdin": "-42",
+          "expected_stdout": "main received -42\nlevel1 received -42\nlevel2 received -42\n"
+        }
+      ]
+    },
+    {
+      "title": "Heap array statistics",
+      "prompt_md": "## Goal\nRead `n` integers into a heap-allocated array, compute the sum and the count of positive values, print the results, and properly free the memory.\n\n## Input\n- Line 1: a positive integer `n` (1 <= n <= 100).\n- Line 2: `n` space-separated integers.\n\n## Output\nExactly two lines:\n```\nsum: <S>\npositives: <P>\n```\nwhere `<S>` is the sum of all elements and `<P>` is the count of elements strictly greater than zero.\n\n## Requirements\n- Allocate the array on the heap with `new int[n]`.\n- Free the array with `delete[]` before `main` returns.\n- Use `std::cout` for output. Each line ends with `'\\n'`.",
+      "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: allocate array of n ints on the heap\n\n    // TODO: read n integers into the array\n\n    // TODO: compute sum and count of positive values\n\n    // TODO: print results\n\n    // TODO: free the heap memory\n\n    return 0;\n}",
+      "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int* arr{new int[n]};\n\n    for (int i{0}; i < n; ++i) {\n        std::cin >> arr[i];\n    }\n\n    int sum{0};\n    int positives{0};\n    for (int i{0}; i < n; ++i) {\n        sum += arr[i];\n        if (arr[i] > 0) {\n            ++positives;\n        }\n    }\n\n    std::cout << \"sum: \" << sum << '\\n';\n    std::cout << \"positives: \" << positives << '\\n';\n\n    delete[] arr;\n\n    return 0;\n}",
+      "test_cases": [
+        {
+          "label": "Sample: mixed values",
+          "is_sample": true,
+          "stdin": "5\n3 -1 4 0 2",
+          "expected_stdout": "sum: 8\npositives: 3\n"
+        },
+        {
+          "label": "Hidden: single element",
+          "is_sample": false,
+          "stdin": "1\n-5",
+          "expected_stdout": "sum: -5\npositives: 0\n"
+        },
+        {
+          "label": "Hidden: all positive",
+          "is_sample": false,
+          "stdin": "4\n10 20 30 40",
+          "expected_stdout": "sum: 100\npositives: 4\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "13.13",
+  "title": "Class templates",
+  "sort_order": 12,
+  "summary_md": "## Class Templates\n\nYou already know that **function templates** let you write a single function definition that works with multiple types. **Class templates** apply the same idea to structs (and classes): you define the struct once with placeholder type parameters, and the compiler generates concrete versions for each set of types you use.\n\n### Defining a Class Template\n\nPrefix the struct definition with `template<typename T>` (or multiple parameters like `template<typename T, typename U>`). Inside the struct, use the type parameters wherever a concrete type would normally go:\n\n```cpp\n#include <iostream>\n\ntemplate<typename T, typename U>\nstruct Pair\n{\n    T first{};\n    U second{};\n};\n\nint main()\n{\n    Pair<int, double> p1{ 5, 3.14 };\n    Pair<std::string, int> p2{ \"age\", 30 };\n    std::cout << p1.first << ' ' << p1.second << '\\n';\n    std::cout << p2.first << ' ' << p2.second << '\\n';\n}\n```\n\nWhen the compiler sees `Pair<int, double>`, it generates a concrete struct with `int first` and `double second`. This process is called **template instantiation**, and each distinct combination of type arguments produces a separate type.\n\n### Explicit Template Arguments Are Required (For Now)\n\nAt this point in the curriculum you must always supply the types inside angle brackets: `Pair<int, double>`. The compiler cannot yet deduce them from the initializer values. (Class template argument deduction, or CTAD, is a later topic.)\n\n### Single Type Parameter Templates\n\nWhen every member uses the same type, a single parameter suffices:\n\n```cpp\ntemplate<typename T>\nstruct Triplet\n{\n    T a{};\n    T b{};\n    T c{};\n};\n```\n\nYou instantiate it the same way: `Triplet<int> t{ 1, 2, 3 };`.\n\n### Using Class Templates with Functions\n\nYou can write function templates that accept class template instantiations. The function's own template parameters stand in for the class template's type arguments:\n\n```cpp\ntemplate<typename T, typename U>\nvoid printPair(const Pair<T, U>& p)\n{\n    std::cout << p.first << ' ' << p.second;\n}\n```\n\nHere the compiler deduces `T` and `U` from the `Pair` you pass in -- function template argument deduction still works normally.\n\n### Key Points\n\n- Class templates are defined in header files because the compiler needs the full definition at every point of instantiation.\n- Each unique set of template arguments creates a completely independent type: `Pair<int, int>` and `Pair<double, double>` are unrelated types.\n- Use class templates whenever you find yourself duplicating a struct definition just to change the member types.",
+  "exercises": [
+    {
+      "title": "Generic Pair Printer",
+      "prompt_md": "## Goal\nDefine a class template `Pair` with two type parameters and write a function template that prints a pair in a specific format.\n\n## Input\n- Line 1: two integers separated by a space (the first pair's values)\n- Line 2: a double and an integer separated by a space (the second pair's values)\n\n## Output\n- Line 1: `(first, second)` using the first pair's values\n- Line 2: `(first, second)` using the second pair's values\n\nFor example, given input `3 7` and `2.5 4`, the output is:\n```\n(3, 7)\n(2.5, 4)\n```\n\n## Requirements\n1. Define a struct template `Pair` with two type parameters `T` and `U`, containing members `T first{}` and `U second{}`.\n2. Write a function template `void printPair(const Pair<T, U>& p)` that prints the pair in the format `(first, second)` followed by a newline.\n3. In `main`, read the values and create a `Pair<int, int>` and a `Pair<double, int>` using explicit template arguments. Do NOT rely on the compiler to deduce the template arguments for `Pair`.\n4. Call `printPair` for each pair (the function template arguments may be deduced by the compiler).\n5. Use `std::fixed` with `std::setprecision(1)` when printing the second pair so that the double displays with exactly one decimal place.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a struct template Pair with two type parameters T and U\n//       Members: T first{}, U second{}\n\n// TODO: Write a function template printPair that takes\n//       const Pair<T, U>& and prints it as (first, second)\\n\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Create a Pair<int, int> from a and b\n    // TODO: Call printPair on it\n\n    double x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: Create a Pair<double, int> from x and y\n    // TODO: Print with std::fixed and std::setprecision(1), then call printPair\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\ntemplate<typename T, typename U>\nstruct Pair\n{\n    T first{};\n    U second{};\n};\n\ntemplate<typename T, typename U>\nvoid printPair(const Pair<T, U>& p)\n{\n    std::cout << '(' << p.first << \", \" << p.second << ')' << '\\n';\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    Pair<int, int> p1{ a, b };\n    printPair(p1);\n\n    double x{};\n    int y{};\n    std::cin >> x >> y;\n\n    std::cout << std::fixed << std::setprecision(1);\n    Pair<double, int> p2{ x, y };\n    printPair(p2);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- int pair and double-int pair",
+          "is_sample": true,
+          "stdin": "3 7\n2.5 4\n",
+          "expected_stdout": "(3, 7)\n(2.5, 4)\n"
+        },
+        {
+          "label": "Hidden -- negative values",
+          "is_sample": false,
+          "stdin": "-1 0\n-3.2 10\n",
+          "expected_stdout": "(-1, 0)\n(-3.2, 10)\n"
+        },
+        {
+          "label": "Hidden -- large values and zero decimal",
+          "is_sample": false,
+          "stdin": "100 200\n0.0 99\n",
+          "expected_stdout": "(100, 200)\n(0.0, 99)\n"
+        }
+      ]
+    },
+    {
+      "title": "Bounded Value Checker",
+      "prompt_md": "## Goal\nBuild a single-type-parameter class template `Bounds` that stores a minimum and maximum value, then checks whether given values fall within that range.\n\n## Input\n- Line 1: two integers representing the min and max of an integer range\n- Line 2: an integer to test against the range\n- Line 3: two doubles representing the min and max of a double range\n- Line 4: a double to test against the range\n\n## Output\n- Line 1: `in range` or `out of range` for the integer test\n- Line 2: `in range` or `out of range` for the double test\n\nA value is in range if it is >= min and <= max (inclusive on both ends).\n\n## Requirements\n1. Define a struct template `Bounds` with a single type parameter `T`, containing members `T low{}` and `T high{}`.\n2. Write a function template `bool isInRange(const Bounds<T>& b, T value)` that returns `true` if `value >= b.low && value <= b.high`.\n3. In `main`, read the integer range and test value, create a `Bounds<int>` with explicit template arguments, call `isInRange`, and print the result.\n4. Then read the double range and test value, create a `Bounds<double>` with explicit template arguments, call `isInRange`, and print the result.\n5. Do NOT rely on the compiler to deduce template arguments for `Bounds`. Use `Bounds<int>` and `Bounds<double>` explicitly.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define a struct template Bounds with one type parameter T\n//       Members: T low{}, T high{}\n\n// TODO: Write a function template isInRange that takes\n//       const Bounds<T>& and a T value, returns bool\n\nint main()\n{\n    int iLow{};\n    int iHigh{};\n    int iVal{};\n    std::cin >> iLow >> iHigh >> iVal;\n\n    // TODO: Create a Bounds<int> and test iVal\n    // TODO: Print \"in range\" or \"out of range\"\n\n    double dLow{};\n    double dHigh{};\n    double dVal{};\n    std::cin >> dLow >> dHigh >> dVal;\n\n    // TODO: Create a Bounds<double> and test dVal\n    // TODO: Print \"in range\" or \"out of range\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\ntemplate<typename T>\nstruct Bounds\n{\n    T low{};\n    T high{};\n};\n\ntemplate<typename T>\nbool isInRange(const Bounds<T>& b, T value)\n{\n    return value >= b.low && value <= b.high;\n}\n\nint main()\n{\n    int iLow{};\n    int iHigh{};\n    int iVal{};\n    std::cin >> iLow >> iHigh >> iVal;\n\n    Bounds<int> intBounds{ iLow, iHigh };\n    std::cout << (isInRange(intBounds, iVal) ? \"in range\" : \"out of range\") << '\\n';\n\n    double dLow{};\n    double dHigh{};\n    double dVal{};\n    std::cin >> dLow >> dHigh >> dVal;\n\n    Bounds<double> dblBounds{ dLow, dHigh };\n    std::cout << (isInRange(dblBounds, dVal) ? \"in range\" : \"out of range\") << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- int in range and double out of range",
+          "is_sample": true,
+          "stdin": "1 10\n5\n0.0 1.0\n1.5\n",
+          "expected_stdout": "in range\nout of range\n"
+        },
+        {
+          "label": "Hidden -- boundary values (both inclusive)",
+          "is_sample": false,
+          "stdin": "-5 5\n-5\n-1.0 1.0\n1.0\n",
+          "expected_stdout": "in range\nin range\n"
+        },
+        {
+          "label": "Hidden -- both out of range",
+          "is_sample": false,
+          "stdin": "10 20\n21\n3.5 7.5\n3.4\n",
+          "expected_stdout": "out of range\nout of range\n"
+        }
+      ]
+    }
+  ]
+}

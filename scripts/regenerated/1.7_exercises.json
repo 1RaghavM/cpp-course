@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Well-Named Variables",
+    "difficulty": "practice",
+    "prompt_md": "## Well-Named Variables\n\nWrite a program that computes the area of a rectangle using well-named variables.\n\nRead two integers from stdin (width and height, on the same line separated by a space). Compute the area and print it in the following format:\n\n```\nWidth: <width>\nHeight: <height>\nArea: <area>\n```\n\nYou must use descriptive variable names \u2014 not single letters like `w` or `h`. Use `snake_case` naming convention.\n\n### Example\n\n**Input:**\n```\n5 3\n```\n\n**Output:**\n```\nWidth: 5\nHeight: 3\nArea: 15\n```\n\nRequirements:\n- Use `std::cin` to read input\n- Use `std::cout` with `'\\n'` for output\n- No extra spaces or blank lines in output\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare well-named integer variables for width and height\n\n    // TODO: read width and height from std::cin\n\n    // TODO: compute the area using a well-named variable\n\n    // TODO: print each value on its own line in the required format\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int width{};\n    int height{};\n\n    std::cin >> width >> height;\n\n    int area{ width * height };\n\n    std::cout << \"Width: \" << width << '\\n';\n    std::cout << \"Height: \" << height << '\\n';\n    std::cout << \"Area: \" << area << '\\n';\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample: 5 x 3",
+        "stdin": "5 3",
+        "expected_stdout": "Width: 5\nHeight: 3\nArea: 15\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden: 1 x 1",
+        "stdin": "1 1",
+        "expected_stdout": "Width: 1\nHeight: 1\nArea: 1\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: larger values",
+        "stdin": "12 8",
+        "expected_stdout": "Width: 12\nHeight: 8\nArea: 96\n",
+        "is_sample": false
+      }
+    ]
+  },
+  {
+    "title": "Coin Counter",
+    "difficulty": "practice",
+    "prompt_md": "## Coin Counter\n\nWrite a program that reads a total amount in cents (a positive integer) and breaks it down into quarters (25c), dimes (10c), nickels (5c), and pennies (1c), using as few coins as possible.\n\nPrint four lines in exactly this format:\n\n```\nQuarters: <value>\nDimes: <value>\nNickels: <value>\nPennies: <value>\n```\n\nUse integer division (`/`) and remainder (`%`) to compute each coin count. Use descriptive `snake_case` variable names \u2014 not single letters.\n\n### Example\n\n**Input:**\n```\n87\n```\n\n**Output:**\n```\nQuarters: 3\nDimes: 1\nNickels: 0\nPennies: 2\n```\n\n(87 = 3\u00d725 + 1\u00d710 + 0\u00d75 + 2\u00d71)\n\nRequirements:\n- Use `std::cin` to read input\n- Use `std::cout` with `'\\n'` for output\n- No extra spaces or blank lines in output\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int total_cents{};\n\n    // TODO: read total_cents from std::cin\n\n    // TODO: compute quarters (total_cents / 25), then update remaining cents\n    // TODO: compute dimes from remaining cents, then update remaining cents\n    // TODO: compute nickels from remaining cents, then update remaining cents\n    // TODO: pennies are whatever is left\n\n    // TODO: print each coin count on its own line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int total_cents{};\n    std::cin >> total_cents;\n\n    int quarters{ total_cents / 25 };\n    int remaining_cents{ total_cents % 25 };\n\n    int dimes{ remaining_cents / 10 };\n    remaining_cents = remaining_cents % 10;\n\n    int nickels{ remaining_cents / 5 };\n    int pennies{ remaining_cents % 5 };\n\n    std::cout << \"Quarters: \" << quarters << '\\n';\n    std::cout << \"Dimes: \" << dimes << '\\n';\n    std::cout << \"Nickels: \" << nickels << '\\n';\n    std::cout << \"Pennies: \" << pennies << '\\n';\n\n    return 0;\n}\n",
+    "test_cases": [
+      {
+        "label": "Sample: 87 cents",
+        "stdin": "87",
+        "expected_stdout": "Quarters: 3\nDimes: 1\nNickels: 0\nPennies: 2\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden: 1 cent",
+        "stdin": "1",
+        "expected_stdout": "Quarters: 0\nDimes: 0\nNickels: 0\nPennies: 1\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: exact dollar",
+        "stdin": "100",
+        "expected_stdout": "Quarters: 4\nDimes: 0\nNickels: 0\nPennies: 0\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden: 41 cents",
+        "stdin": "41",
+        "expected_stdout": "Quarters: 1\nDimes: 1\nNickels: 1\nPennies: 1\n",
+        "is_sample": false
+      }
+    ]
+  }
+]

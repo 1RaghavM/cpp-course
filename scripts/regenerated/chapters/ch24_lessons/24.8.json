@@ -1,0 +1,60 @@
+{
+  "number": "24.8",
+  "title": "Hiding inherited functionality",
+  "sort_order": 7,
+  "summary_md": "Sometimes a derived class inherits member functions that should not be part of its public interface. C++ gives you two tools to restrict or reshape inherited functionality: **using declarations** to change access levels, and **= delete** to forbid calls entirely.\n\nA `using` declaration inside a derived class's access section pulls a base class member into that section. If the base class has a public member and you place `using Base::member` inside the `private` or `protected` section of the derived class, that member becomes inaccessible (or restricted) through the derived type. You can also go the other direction -- if a base class member is `protected`, a `using` declaration in the `public` section of the derived class makes it publicly accessible.\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    int getValue() const { return m_val; }\nprotected:\n    int m_val{};\n};\n\nclass Restricted : public Base {\nprivate:\n    using Base::getValue; // now private in Restricted\npublic:\n    void printDouble() const {\n        std::cout << (getValue() * 2) << '\\n';\n    }\n};\n```\n\nHere `Restricted` inherits `getValue()` publicly from `Base`, but the `using` declaration moves it into the `private` section. Code that holds a `Restricted` object cannot call `getValue()` directly, but the class itself can still use it internally. Note that if someone casts a `Restricted&` to a `Base&`, they can still call `getValue()` through the base reference -- hiding is not a security mechanism, it is an interface design tool.\n\nThe second technique is marking an inherited function as **deleted** in the derived class. Writing `void someFunction() = delete;` in the derived class causes any attempt to call that function on a derived object to produce a compile error. Unlike the access-level approach, a deleted function cannot even be called from inside the derived class.\n\nUse these techniques when a derived class represents a narrower concept than the base. For example, a `FixedArray` derived from a resizable `Array` might delete the `resize()` function because fixed-size arrays must not change length. Hiding keeps the derived class's interface honest about what it actually supports.\n\nBoth techniques apply only when accessed through the derived type. A pointer or reference to the base type bypasses the hiding entirely. This is an inherent limitation of the non-virtual approach -- true interface enforcement across pointer types requires virtual functions (covered later).",
+  "exercises": [
+    {
+      "title": "Restricting access with using declarations",
+      "prompt_md": "## Goal\n\nGiven a `Base` class with two public member functions (`getValue` and `setValue`), create a `ReadOnly` derived class that hides `setValue` by moving it to the private section with a `using` declaration. The class should still be able to use `setValue` internally through a controlled `reset` function.\n\n## Input\n\n- Line 1: two integers `initial` and `resetVal` (-10000 <= each <= 10000).\n\n## Output\n\n- Line 1: `initial: <initial>` -- the value after construction.\n- Line 2: `reset: <resetVal>` -- the value after calling `reset(resetVal)`.\n- Line 3: `base ref: <resetVal>` -- the value accessed through a `Base&` reference (demonstrating that hiding only works through the derived type).\n\n## Requirements\n\n- A `Base` class is provided with `int getValue() const` and `void setValue(int v)` as public members, and `int m_val{}` as a protected member.\n- Define a class `ReadOnly` that publicly inherits from `Base`.\n- Inside `ReadOnly`'s `private` section, add `using Base::setValue;` to hide `setValue` from external callers.\n- Add a public constructor `ReadOnly(int v)` that calls `setValue(v)` internally to set the initial value.\n- Add a public member function `void reset(int v)` that calls `setValue(v)` internally.\n- In `main`, construct a `ReadOnly` object with `initial`, print its value, call `reset(resetVal)`, print again, then create a `Base&` reference to the object and call `getValue()` through it.",
+      "starter_code": "#include <iostream>\n\nclass Base {\npublic:\n    int getValue() const { return m_val; }\n    void setValue(int v) { m_val = v; }\nprotected:\n    int m_val{};\n};\n\nclass ReadOnly : public Base {\n    // TODO: Use a using declaration to hide setValue in the private section\n\npublic:\n    ReadOnly(int v)\n    {\n        // TODO: Call setValue(v) to set the initial value\n    }\n\n    void reset(int v)\n    {\n        // TODO: Call setValue(v) internally\n    }\n};\n\nint main()\n{\n    int initial{};\n    int resetVal{};\n    std::cin >> initial >> resetVal;\n\n    ReadOnly ro{ initial };\n    std::cout << \"initial: \" << ro.getValue() << '\\n';\n\n    ro.reset(resetVal);\n    std::cout << \"reset: \" << ro.getValue() << '\\n';\n\n    Base& baseRef{ ro };\n    std::cout << \"base ref: \" << baseRef.getValue() << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass Base {\npublic:\n    int getValue() const { return m_val; }\n    void setValue(int v) { m_val = v; }\nprotected:\n    int m_val{};\n};\n\nclass ReadOnly : public Base {\n    using Base::setValue;\n\npublic:\n    ReadOnly(int v)\n    {\n        setValue(v);\n    }\n\n    void reset(int v)\n    {\n        setValue(v);\n    }\n};\n\nint main()\n{\n    int initial{};\n    int resetVal{};\n    std::cin >> initial >> resetVal;\n\n    ReadOnly ro{ initial };\n    std::cout << \"initial: \" << ro.getValue() << '\\n';\n\n    ro.reset(resetVal);\n    std::cout << \"reset: \" << ro.getValue() << '\\n';\n\n    Base& baseRef{ ro };\n    std::cout << \"base ref: \" << baseRef.getValue() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: positive values",
+          "is_sample": true,
+          "stdin": "42 100",
+          "expected_stdout": "initial: 42\nreset: 100\nbase ref: 100\n"
+        },
+        {
+          "label": "Hidden: negative initial, zero reset",
+          "is_sample": false,
+          "stdin": "-7 0",
+          "expected_stdout": "initial: -7\nreset: 0\nbase ref: 0\n"
+        },
+        {
+          "label": "Hidden: same value for both",
+          "is_sample": false,
+          "stdin": "55 55",
+          "expected_stdout": "initial: 55\nreset: 55\nbase ref: 55\n"
+        }
+      ]
+    },
+    {
+      "title": "Deleting inherited functions in a FixedArray",
+      "prompt_md": "## Goal\n\nGiven a `DynamicArray` base class that supports `push_back`, `size`, `get`, and `resize`, create a `FixedArray` derived class that deletes `resize` and `push_back` so that the array size cannot change after construction. The `FixedArray` should fill all elements from input at construction time.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 20), the fixed array size.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- Line 1: `size: <n>`\n- Line 2: the elements printed space-separated.\n- Line 3: `fixed: yes`\n\n## Requirements\n\n- A `DynamicArray` class is provided with `push_back`, `resize`, `size`, and `get` public member functions, plus a constructor taking an initial capacity.\n- Define `FixedArray` that publicly inherits from `DynamicArray`.\n- `FixedArray` constructor takes `const int* data` and `int count`, passes `count` to the `DynamicArray` constructor, then calls `push_back` internally for each element.\n- Delete `resize` in `FixedArray`: `void resize(int) = delete;`\n- Delete `push_back` in `FixedArray`: `void push_back(int) = delete;`\n- In `main`, read `n` values into a local array, construct a `FixedArray`, print its size and elements, then print `fixed: yes`.",
+      "starter_code": "#include <cassert>\n#include <iostream>\n\nclass DynamicArray {\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\n\npublic:\n    DynamicArray(int capacity)\n        : m_data{ new int[static_cast<std::size_t>(capacity)]{} }\n        , m_capacity{ capacity }\n    {\n    }\n\n    ~DynamicArray() { delete[] m_data; }\n\n    void push_back(int val)\n    {\n        assert(m_size < m_capacity);\n        m_data[m_size++] = val;\n    }\n\n    void resize(int newCap)\n    {\n        int* newData{ new int[static_cast<std::size_t>(newCap)]{} };\n        int copyCount{ (m_size < newCap) ? m_size : newCap };\n        for (int i{ 0 }; i < copyCount; ++i)\n            newData[i] = m_data[i];\n        delete[] m_data;\n        m_data = newData;\n        m_capacity = newCap;\n        if (m_size > newCap)\n            m_size = newCap;\n    }\n\n    int size() const { return m_size; }\n    int get(int index) const\n    {\n        assert(index >= 0 && index < m_size);\n        return m_data[index];\n    }\n};\n\n// TODO: Define FixedArray that inherits from DynamicArray\n// - Constructor takes (const int* data, int count)\n// - Delete resize and push_back\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int temp[20]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> temp[i];\n\n    // TODO: Construct a FixedArray from temp and n\n    // TODO: Print size, elements (space-separated), and \"fixed: yes\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <cassert>\n#include <iostream>\n\nclass DynamicArray {\n    int* m_data{};\n    int m_size{};\n    int m_capacity{};\n\npublic:\n    DynamicArray(int capacity)\n        : m_data{ new int[static_cast<std::size_t>(capacity)]{} }\n        , m_capacity{ capacity }\n    {\n    }\n\n    ~DynamicArray() { delete[] m_data; }\n\n    void push_back(int val)\n    {\n        assert(m_size < m_capacity);\n        m_data[m_size++] = val;\n    }\n\n    void resize(int newCap)\n    {\n        int* newData{ new int[static_cast<std::size_t>(newCap)]{} };\n        int copyCount{ (m_size < newCap) ? m_size : newCap };\n        for (int i{ 0 }; i < copyCount; ++i)\n            newData[i] = m_data[i];\n        delete[] m_data;\n        m_data = newData;\n        m_capacity = newCap;\n        if (m_size > newCap)\n            m_size = newCap;\n    }\n\n    int size() const { return m_size; }\n    int get(int index) const\n    {\n        assert(index >= 0 && index < m_size);\n        return m_data[index];\n    }\n};\n\nclass FixedArray : public DynamicArray {\npublic:\n    FixedArray(const int* data, int count)\n        : DynamicArray{ count }\n    {\n        for (int i{ 0 }; i < count; ++i)\n            DynamicArray::push_back(data[i]);\n    }\n\n    void resize(int) = delete;\n    void push_back(int) = delete;\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int temp[20]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> temp[i];\n\n    FixedArray arr{ temp, n };\n\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << arr.get(i);\n    }\n    std::cout << '\\n';\n    std::cout << \"fixed: yes\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample: three elements",
+          "is_sample": true,
+          "stdin": "3\n10 20 30",
+          "expected_stdout": "size: 3\n10 20 30\nfixed: yes\n"
+        },
+        {
+          "label": "Hidden: single element negative",
+          "is_sample": false,
+          "stdin": "1\n-500",
+          "expected_stdout": "size: 1\n-500\nfixed: yes\n"
+        },
+        {
+          "label": "Hidden: five mixed values",
+          "is_sample": false,
+          "stdin": "5\n0 -1 99 -99 42",
+          "expected_stdout": "size: 5\n0 -1 99 -99 42\nfixed: yes\n"
+        }
+      ]
+    }
+  ]
+}

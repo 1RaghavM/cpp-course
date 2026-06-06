@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Matrix2x2 with Arithmetic, I/O, and Comparison",
+    "prompt_md": "## Goal\nImplement a `Matrix2x2` class that supports arithmetic, I/O, and comparison operators.\n\n## Input\n- Line 1: four integers `a b c d` representing the first matrix (row-major: top-left, top-right, bottom-left, bottom-right).\n- Line 2: four integers `e f g h` representing the second matrix.\n- Line 3: a string, one of `add`, `subtract`, or `compare`.\n\n## Output\n- If the operation is `add` or `subtract`, print the resulting matrix using `operator<<` in the format:\n  ```\n  [a, b]\n  [c, d]\n  ```\n- If the operation is `compare`, print `Equal` if the two matrices are equal, otherwise `Not equal`.\n\n## Requirements\n1. Define a class `Matrix2x2` with four `int` members `m00`, `m01`, `m10`, `m11` (row, col).\n2. Overload `operator+` and `operator-` as **friend functions**.\n3. Overload `operator==` as a **member function**.\n4. Overload `operator<<` as a **friend function** printing the format shown above.\n5. Overload `operator>>` as a **friend function** to read four integers into a `Matrix2x2`.\n6. Do not use any standard library containers. You may include `<iostream>` and `<string>`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Matrix2x2\n{\nprivate:\n    int m00{}, m01{}, m10{}, m11{};\n\npublic:\n    Matrix2x2() = default;\n    Matrix2x2(int a, int b, int c, int d) : m00{a}, m01{b}, m10{c}, m11{d} {}\n\n    // TODO: Overload operator== as a member function\n\n    // TODO: Declare friend operator+, operator-, operator<<, operator>>\n};\n\n// TODO: Define operator+, operator-, operator<<, operator>>\n\nint main()\n{\n    Matrix2x2 m1{}, m2{};\n    std::cin >> m1 >> m2;\n    std::string op{};\n    std::cin >> op;\n\n    if (op == \"add\")\n        std::cout << (m1 + m2);\n    else if (op == \"subtract\")\n        std::cout << (m1 - m2);\n    else\n        std::cout << (m1 == m2 ? \"Equal\" : \"Not equal\") << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Matrix2x2\n{\nprivate:\n    int m00{}, m01{}, m10{}, m11{};\npublic:\n    Matrix2x2() = default;\n    Matrix2x2(int a, int b, int c, int d) : m00{a}, m01{b}, m10{c}, m11{d} {}\n\n    bool operator==(const Matrix2x2& rhs) const\n    {\n        return m00 == rhs.m00 && m01 == rhs.m01 && m10 == rhs.m10 && m11 == rhs.m11;\n    }\n\n    friend Matrix2x2 operator+(const Matrix2x2& l, const Matrix2x2& r);\n    friend Matrix2x2 operator-(const Matrix2x2& l, const Matrix2x2& r);\n    friend std::ostream& operator<<(std::ostream& out, const Matrix2x2& m);\n    friend std::istream& operator>>(std::istream& in, Matrix2x2& m);\n};\n\nMatrix2x2 operator+(const Matrix2x2& l, const Matrix2x2& r)\n{\n    return {l.m00 + r.m00, l.m01 + r.m01, l.m10 + r.m10, l.m11 + r.m11};\n}\n\nMatrix2x2 operator-(const Matrix2x2& l, const Matrix2x2& r)\n{\n    return {l.m00 - r.m00, l.m01 - r.m01, l.m10 - r.m10, l.m11 - r.m11};\n}\n\nstd::ostream& operator<<(std::ostream& out, const Matrix2x2& m)\n{\n    out << '[' << m.m00 << \", \" << m.m01 << \"]\\n\";\n    return out << '[' << m.m10 << \", \" << m.m11 << \"]\\n\";\n}\n\nstd::istream& operator>>(std::istream& in, Matrix2x2& m)\n{\n    return in >> m.m00 >> m.m01 >> m.m10 >> m.m11;\n}\n\nint main()\n{\n    Matrix2x2 m1{}, m2{};\n    std::cin >> m1 >> m2;\n    std::string op{};\n    std::cin >> op;\n\n    if (op == \"add\")\n        std::cout << (m1 + m2);\n    else if (op == \"subtract\")\n        std::cout << (m1 - m2);\n    else\n        std::cout << (m1 == m2 ? \"Equal\" : \"Not equal\") << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- add two matrices",
+        "is_sample": true,
+        "stdin": "1 2 3 4\n5 6 7 8\nadd\n",
+        "expected_stdout": "[6, 8]\n[10, 12]\n"
+      },
+      {
+        "label": "Hidden -- subtract with negative results",
+        "is_sample": false,
+        "stdin": "1 0 0 1\n3 4 5 6\nsubtract\n",
+        "expected_stdout": "[-2, -4]\n[-5, -5]\n"
+      },
+      {
+        "label": "Hidden -- compare equal matrices",
+        "is_sample": false,
+        "stdin": "7 8 9 10\n7 8 9 10\ncompare\n",
+        "expected_stdout": "Equal\n"
+      }
+    ]
+  },
+  {
+    "title": "Accumulator Functor with Subscript and Typecast",
+    "prompt_md": "## Goal\nBuild an `Accumulator` class that collects integers, supports indexed access, can be called as a functor to append values, and converts to `int` yielding the sum of all stored elements.\n\n## Input\n- Line 1: integer N (1 <= N <= 20), the number of commands.\n- Next N lines: each line is one of:\n  - `push X` -- call the accumulator as a functor with integer X to append it.\n  - `get I` -- print the element at index I (0-based) using `operator[]`.\n  - `sum` -- print the sum by converting the accumulator to `int` via a typecast operator.\n\n## Output\n- For each `get` command, print: `acc[I] = V` where I is the index and V is the value.\n- For each `sum` command, print: `Sum = S` where S is the total.\n- `push` commands produce no output.\n\n## Requirements\n1. Store elements in a `std::vector<int>` member.\n2. Overload `operator()(int value)` to push the value onto the vector (functor -- returns `void`).\n3. Overload `operator[](int index)` returning `int` (read-only access is sufficient). Assert that the index is valid.\n4. Overload `operator int() const` (explicit typecast) that returns the sum of all stored elements.\n5. Mark the typecast `explicit` so it only works with `static_cast<int>(acc)`.\n6. You may include `<iostream>`, `<string>`, `<vector>`, `<numeric>`, `<cassert>`.",
+    "starter_code": "#include <cassert>\n#include <iostream>\n#include <numeric>\n#include <string>\n#include <vector>\n\nclass Accumulator\n{\nprivate:\n    std::vector<int> m_data{};\n\npublic:\n    // TODO: Overload operator()(int value) to append value to m_data\n\n    // TODO: Overload operator[](int index) to return the element at index\n    //       Assert that index >= 0 && index < size\n\n    // TODO: Overload explicit operator int() const\n    //       Return the sum of all elements (use std::accumulate)\n};\n\nint main()\n{\n    Accumulator acc{};\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string cmd{};\n        std::cin >> cmd;\n\n        if (cmd == \"push\")\n        {\n            int val{};\n            std::cin >> val;\n            acc(val);\n        }\n        else if (cmd == \"get\")\n        {\n            int idx{};\n            std::cin >> idx;\n            std::cout << \"acc[\" << idx << \"] = \" << acc[idx] << '\\n';\n        }\n        else // sum\n        {\n            std::cout << \"Sum = \" << static_cast<int>(acc) << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <cassert>\n#include <iostream>\n#include <numeric>\n#include <string>\n#include <vector>\n\nclass Accumulator\n{\nprivate:\n    std::vector<int> m_data{};\n\npublic:\n    void operator()(int value) { m_data.push_back(value); }\n\n    int operator[](int index) const\n    {\n        assert(index >= 0 && index < static_cast<int>(m_data.size()));\n        return m_data[static_cast<std::size_t>(index)];\n    }\n\n    explicit operator int() const\n    {\n        return std::accumulate(m_data.begin(), m_data.end(), 0);\n    }\n};\n\nint main()\n{\n    Accumulator acc{};\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string cmd{};\n        std::cin >> cmd;\n\n        if (cmd == \"push\")\n        {\n            int val{};\n            std::cin >> val;\n            acc(val);\n        }\n        else if (cmd == \"get\")\n        {\n            int idx{};\n            std::cin >> idx;\n            std::cout << \"acc[\" << idx << \"] = \" << acc[idx] << '\\n';\n        }\n        else // sum\n        {\n            std::cout << \"Sum = \" << static_cast<int>(acc) << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- push, get, and sum",
+        "is_sample": true,
+        "stdin": "7\npush 10\npush 20\npush 30\nget 0\nget 2\nsum\npush 40\n",
+        "expected_stdout": "acc[0] = 10\nacc[2] = 30\nSum = 60\n"
+      },
+      {
+        "label": "Hidden -- sum after many pushes including negatives",
+        "is_sample": false,
+        "stdin": "6\npush 5\npush -3\npush 8\npush -10\nsum\nget 1\n",
+        "expected_stdout": "Sum = 0\nacc[1] = -3\n"
+      },
+      {
+        "label": "Hidden -- single element",
+        "is_sample": false,
+        "stdin": "3\npush 42\nget 0\nsum\n",
+        "expected_stdout": "acc[0] = 42\nSum = 42\n"
+      }
+    ]
+  }
+]

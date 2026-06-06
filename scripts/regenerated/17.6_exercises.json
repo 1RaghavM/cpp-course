@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Enum-Indexed Planet Data Lookup",
+    "prompt_md": "## Goal\nCreate a `constexpr std::array` that maps planet enumerators to their names, then look up and print the name for a user-selected planet.\n\n## Input\n- A single integer on one line: `0` = Mercury, `1` = Venus, `2` = Earth, `3` = Mars, `4` = Jupiter.\n\n## Output\nPrint exactly one line:\n```\nPlanet: <Name>\n```\nwhere `<Name>` is the planet's capitalized name. If the input is outside 0-4, print:\n```\nPlanet: Unknown\n```\n\n## Requirements\n1. Define an unscoped enum `Planet` at namespace scope with enumerators `mercury = 0`, `venus`, `earth`, `mars`, `jupiter`, and a count enumerator `maxPlanets`.\n2. Define a `constexpr std::array<std::string_view, maxPlanets>` named `planetNames` that holds the capitalized name strings in enumerator order.\n3. In `main`, read an integer from `std::cin`. If it is in range `[0, maxPlanets)`, use `static_cast<Planet>` to convert it, then index `planetNames` with the enumerator. Otherwise print the `Unknown` line.\n4. Do **not** use a `switch` or `if/else` chain to select the name -- use the array lookup.\n5. You may use `#include <array>`, `#include <iostream>`, and `#include <string_view>`.",
+    "starter_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Planet with:\n//       mercury = 0, venus, earth, mars, jupiter, maxPlanets\n\n// TODO: Define constexpr std::array<std::string_view, maxPlanets> planetNames\n//       with the capitalized names in order\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Validate input is in [0, maxPlanets)\n    // If valid: cast to Planet, look up planetNames, print \"Planet: <Name>\"\n    // If invalid: print \"Planet: Unknown\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\nenum Planet\n{\n    mercury = 0,\n    venus,\n    earth,\n    mars,\n    jupiter,\n    maxPlanets\n};\n\nconstexpr std::array<std::string_view, maxPlanets> planetNames{\n    \"Mercury\", \"Venus\", \"Earth\", \"Mars\", \"Jupiter\"\n};\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    if (input >= 0 && input < maxPlanets)\n    {\n        Planet p{ static_cast<Planet>(input) };\n        std::cout << \"Planet: \" << planetNames[p] << '\\n';\n    }\n    else\n    {\n        std::cout << \"Planet: Unknown\" << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- Earth selected",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "Planet: Earth\n"
+      },
+      {
+        "label": "Hidden -- Mercury (first enumerator)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Planet: Mercury\n"
+      },
+      {
+        "label": "Hidden -- out of range (9)",
+        "is_sample": false,
+        "stdin": "9\n",
+        "expected_stdout": "Planet: Unknown\n"
+      }
+    ]
+  },
+  {
+    "title": "Student Grade Report Using Enum-Indexed Arrays",
+    "prompt_md": "## Goal\nUse two parallel `constexpr` enum-indexed `std::array`s to map subjects to their names and passing thresholds, then determine whether a student passes each subject.\n\n## Input\n- Exactly 4 integers on separate lines, representing the student's scores for Math, Science, English, and History (in that order). Each score is in the range 0-100.\n\n## Output\nPrint exactly 4 lines, one per subject in order. Each line has the format:\n```\n<SubjectName>: <score> - <Result>\n```\nwhere `<Result>` is `Pass` if the score is greater than or equal to the subject's passing threshold, or `Fail` otherwise.\n\nAfter the 4 subject lines, print one summary line:\n```\nPassed: <count>/4\n```\n\n## Requirements\n1. Define an unscoped enum `Subject` at namespace scope with enumerators `math = 0`, `science`, `english`, `history`, and `maxSubjects`.\n2. Define a `constexpr std::array<std::string_view, maxSubjects>` named `subjectNames` with values `\"Math\"`, `\"Science\"`, `\"English\"`, `\"History\"`.\n3. Define a `constexpr std::array<int, maxSubjects>` named `passThresholds` with values `50`, `55`, `45`, `50` (the minimum passing score for each subject).\n4. In `main`, read 4 scores into a `std::array<int, maxSubjects>`. Loop through all subjects using the count enumerator, look up the name and threshold by indexing with the enumerator, and print each result line.\n5. Count how many subjects the student passed and print the summary line.\n6. Do **not** use a `switch` statement. Use the enum-indexed arrays for all lookups.\n7. You may use `#include <array>`, `#include <iostream>`, and `#include <string_view>`.",
+    "starter_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Subject with:\n//       math = 0, science, english, history, maxSubjects\n\n// TODO: Define constexpr std::array<std::string_view, maxSubjects> subjectNames\n\n// TODO: Define constexpr std::array<int, maxSubjects> passThresholds\n//       with values 50, 55, 45, 50\n\nint main()\n{\n    std::array<int, 4> scores{};\n\n    // TODO: Read 4 scores from std::cin\n\n    int passCount{ 0 };\n\n    // TODO: Loop from 0 to maxSubjects\n    //   - Cast loop index to Subject\n    //   - Look up name and threshold using the enumerator\n    //   - Print \"<Name>: <score> - Pass\" or \"<Name>: <score> - Fail\"\n    //   - Count passes\n\n    // TODO: Print \"Passed: <count>/4\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\nenum Subject\n{\n    math = 0,\n    science,\n    english,\n    history,\n    maxSubjects\n};\n\nconstexpr std::array<std::string_view, maxSubjects> subjectNames{\n    \"Math\", \"Science\", \"English\", \"History\"\n};\n\nconstexpr std::array<int, maxSubjects> passThresholds{\n    50, 55, 45, 50\n};\n\nint main()\n{\n    std::array<int, maxSubjects> scores{};\n\n    for (int i{ 0 }; i < maxSubjects; ++i)\n        std::cin >> scores[i];\n\n    int passCount{ 0 };\n\n    for (int i{ 0 }; i < maxSubjects; ++i)\n    {\n        Subject subj{ static_cast<Subject>(i) };\n        std::cout << subjectNames[subj] << \": \" << scores[subj];\n\n        if (scores[subj] >= passThresholds[subj])\n        {\n            std::cout << \" - Pass\" << '\\n';\n            ++passCount;\n        }\n        else\n        {\n            std::cout << \" - Fail\" << '\\n';\n        }\n    }\n\n    std::cout << \"Passed: \" << passCount << \"/4\" << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed pass and fail",
+        "is_sample": true,
+        "stdin": "60\n40\n45\n80\n",
+        "expected_stdout": "Math: 60 - Pass\nScience: 40 - Fail\nEnglish: 45 - Pass\nHistory: 80 - Pass\nPassed: 3/4\n"
+      },
+      {
+        "label": "Hidden -- all pass at exact thresholds",
+        "is_sample": false,
+        "stdin": "50\n55\n45\n50\n",
+        "expected_stdout": "Math: 50 - Pass\nScience: 55 - Pass\nEnglish: 45 - Pass\nHistory: 50 - Pass\nPassed: 4/4\n"
+      },
+      {
+        "label": "Hidden -- all fail (one below each threshold)",
+        "is_sample": false,
+        "stdin": "49\n54\n44\n49\n",
+        "expected_stdout": "Math: 49 - Fail\nScience: 54 - Fail\nEnglish: 44 - Fail\nHistory: 49 - Fail\nPassed: 0/4\n"
+      }
+    ]
+  }
+]

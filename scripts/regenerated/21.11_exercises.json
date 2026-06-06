@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Percentage to Double Conversion",
+    "prompt_md": "## Goal\n\nCreate a `Percentage` class that stores an integer percent value and provides an explicit conversion to `double` that returns the decimal form (e.g., 75 becomes 0.75).\n\n## Input\n\n- A single line containing one integer `P` (0 <= P <= 100).\n\n## Output\n\n- A single line containing the decimal equivalent printed with exactly 2 decimal places, followed by a newline.\n\n## Requirements\n\n- Define a class `Percentage` with a constructor that takes an `int`.\n- Overload `operator double()` as an `explicit` conversion operator.\n- In `main`, read the input, construct a `Percentage`, explicitly cast it to `double`, and print the result using `std::fixed` and `std::setprecision(2)`.\n- Do not use any global variables.",
+    "starter_code": "#include <iomanip>\n#include <iostream>\n\nclass Percentage\n{\n    int m_pct{};\npublic:\n    Percentage(int pct) : m_pct{ pct } {}\n\n    // TODO: Add an explicit operator double() that returns m_pct / 100.0\n};\n\nint main()\n{\n    int p{};\n    std::cin >> p;\n\n    Percentage pct{ p };\n\n    // TODO: Explicitly cast pct to double and print with 2 decimal places\n\n    return 0;\n}\n",
+    "solution_code": "#include <iomanip>\n#include <iostream>\n\nclass Percentage\n{\n    int m_pct{};\npublic:\n    Percentage(int pct) : m_pct{ pct } {}\n\n    explicit operator double() const\n    {\n        return m_pct / 100.0;\n    }\n};\n\nint main()\n{\n    int p{};\n    std::cin >> p;\n\n    Percentage pct{ p };\n\n    std::cout << std::fixed << std::setprecision(2)\n              << static_cast<double>(pct) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- 75 percent",
+        "is_sample": true,
+        "stdin": "75\n",
+        "expected_stdout": "0.75\n"
+      },
+      {
+        "label": "Hidden -- zero percent",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0.00\n"
+      },
+      {
+        "label": "Hidden -- 100 percent",
+        "is_sample": false,
+        "stdin": "100\n",
+        "expected_stdout": "1.00\n"
+      }
+    ]
+  },
+  {
+    "title": "Boolean Validity Check",
+    "prompt_md": "## Goal\n\nCreate an `ID` class that stores an integer identifier and converts to `bool` -- an `ID` is valid (true) when its value is positive, and invalid (false) when it is zero or negative. Use the explicit `operator bool()` special rule to test objects directly in `if` statements.\n\n## Input\n\n- Line 1: a single integer `N` (1 <= N <= 50).\n- Line 2: `N` space-separated integers (-1000 <= each <= 1000).\n\n## Output\n\n- For each integer, print `valid` if the ID is valid or `invalid` otherwise, one per line.\n\n## Requirements\n\n- Define a class `ID` with a constructor that takes an `int`.\n- Overload `explicit operator bool()` that returns `true` when the stored value is greater than 0.\n- In the loop, construct an `ID` from each input value and use it directly in an `if` statement (do not cast or call any other method).\n- Do not use any global variables.",
+    "starter_code": "#include <iostream>\n\nclass ID\n{\n    int m_id{};\npublic:\n    ID(int id) : m_id{ id } {}\n\n    // TODO: Add explicit operator bool() returning true when m_id > 0\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        ID id{ val };\n\n        // TODO: Use id directly in an if-statement to print valid/invalid\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass ID\n{\n    int m_id{};\npublic:\n    ID(int id) : m_id{ id } {}\n\n    explicit operator bool() const\n    {\n        return m_id > 0;\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        ID id{ val };\n\n        if (id)\n            std::cout << \"valid\\n\";\n        else\n            std::cout << \"invalid\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- mixed values",
+        "is_sample": true,
+        "stdin": "4\n5 -1 0 42\n",
+        "expected_stdout": "valid\ninvalid\ninvalid\nvalid\n"
+      },
+      {
+        "label": "Hidden -- all invalid",
+        "is_sample": false,
+        "stdin": "3\n0 -5 -100\n",
+        "expected_stdout": "invalid\ninvalid\ninvalid\n"
+      },
+      {
+        "label": "Hidden -- single valid",
+        "is_sample": false,
+        "stdin": "1\n1\n",
+        "expected_stdout": "valid\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "number": "13.x",
+  "title": "Chapter 13 summary and quiz",
+  "sort_order": 15,
+  "summary_md": "## Chapter 13 Summary\n\nThis chapter introduced **program-defined types** -- custom types you create to model your problem domain.\n\n### Enumerations\n\n- An **unscoped enumeration** (`enum`) defines a type with a fixed set of named integral constants called enumerators. Enumerators are injected into the surrounding scope, which can cause naming collisions. They implicitly convert to their underlying integer type, but integers do not convert back without `static_cast`.\n- A **scoped enumeration** (`enum class`) fixes both issues: enumerators are accessed via `EnumName::enumerator` and do not implicitly convert to integers. Prefer `enum class` unless you need implicit integer conversion.\n- Convert enumerations to and from strings with helper functions, typically using a `switch` mapping each enumerator to its string representation.\n- **Overloading `operator<<` and `operator>>`** for enum types enables direct I/O with `std::cout` and `std::cin`.\n\n### Structs\n\n- A **struct** groups related variables (members) under one type. Access members with the dot operator (`.`) or arrow operator (`->`) through a pointer.\n- **Aggregate initialization** uses braces in declaration order: `Point p{ 3.0, 4.0 };`. C++20 adds **designated initializers**: `Point p{ .x = 3.0, .y = 4.0 };`.\n- **Default member initializers** provide fallback values in the struct definition. If an initializer list omits a member, its default applies.\n- Structs can be **passed to and returned from functions**. Pass by `const` reference to avoid copies; return by value for small structs.\n- Structs support nesting and **structured bindings** (`auto [a, b] = myStruct;`) for decomposing members.\n- **Member selection with pointers**: use `ptr->member` instead of `(*ptr).member`.\n\n### Class Templates\n\n- A **class template** parameterizes a struct definition by one or more types via `template<typename T>`. The compiler generates a concrete type for each unique set of template arguments.\n- **CTAD** (class template argument deduction) lets the compiler deduce template arguments from initializer values, so `Pair p{ 1, 2.5 };` works without explicit `Pair<int, double>`.\n- An **alias template** creates a shorthand for a template instantiation: `template<typename T> using Name = SomeTemplate<T, T>;`.",
+  "exercises": [
+    {
+      "title": "Inventory Item Tracker with Enum and Struct",
+      "prompt_md": "## Goal\nDefine a scoped enum for item rarity and a struct for inventory items, then read items from stdin and print a formatted inventory report.\n\n## Input\n- Line 1: an integer N (1 <= N <= 5), the number of items\n- Next N groups of 2 lines each:\n  - Line 1: item name (single word, no spaces)\n  - Line 2: two space-separated integers: `quantity` (1-999) and `rarity_code` (0 = Common, 1 = Rare, 2 = Legendary)\n\n## Output\nPrint exactly N lines, one per item, in this format:\n```\n<name> x<quantity> [<Rarity>]\n```\nWhere `<Rarity>` is one of `Common`, `Rare`, or `Legendary`.\n\nAfter the item lines, print one blank line, then a final summary line:\n```\nTotal items: <sum_of_all_quantities>\n```\n\n## Requirements\n1. Define a `enum class Rarity` at namespace scope with enumerators `Common = 0`, `Rare = 1`, `Legendary = 2`.\n2. Define a struct `Item` at namespace scope with three members in order: `std::string name`, `int quantity`, `Rarity rarity`.\n3. Write a function `std::string_view rarityLabel(Rarity r)` that returns the display string for each rarity using a switch statement. Use `static_cast<int>(r)` inside the switch or switch on the enum directly. Return `\"Unknown\"` for unrecognized values.\n4. In `main`, read N, then read each item into an `Item` using aggregate initialization. Store items in a plain array `Item items[5]`.\n5. Loop over the items to print each line and accumulate the total quantity.\n6. The rarity code from stdin is an `int` -- use `static_cast<Rarity>(code)` to convert it.\n7. Do not use `std::vector` or any container from Chapter 16+.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: Define enum class Rarity with Common = 0, Rare = 1, Legendary = 2\n\n// TODO: Define struct Item with: std::string name, int quantity, Rarity rarity\n\n// TODO: Write function: std::string_view rarityLabel(Rarity r)\n//       Use a switch statement. Return \"Unknown\" for unrecognized values.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Declare Item items[5];\n    // TODO: Read n items from stdin (name, then quantity and rarity_code)\n    //       Convert rarity_code to Rarity using static_cast\n    //       Store each item using aggregate initialization\n\n    int total{ 0 };\n    // TODO: Loop over the n items, print each as: <name> x<quantity> [<Rarity>]\n    //       and accumulate total quantity\n\n    // TODO: Print a blank line, then: Total items: <total>\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nenum class Rarity\n{\n    Common    = 0,\n    Rare      = 1,\n    Legendary = 2\n};\n\nstruct Item\n{\n    std::string name;\n    int         quantity;\n    Rarity      rarity;\n};\n\nstd::string_view rarityLabel(Rarity r)\n{\n    switch (r)\n    {\n        case Rarity::Common:    return \"Common\";\n        case Rarity::Rare:      return \"Rare\";\n        case Rarity::Legendary: return \"Legendary\";\n        default:                return \"Unknown\";\n    }\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Item items[5];\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string name;\n        int quantity{};\n        int code{};\n        std::cin >> name >> quantity >> code;\n        items[i] = Item{ name, quantity, static_cast<Rarity>(code) };\n    }\n\n    int total{ 0 };\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cout << items[i].name << \" x\" << items[i].quantity\n                  << \" [\" << rarityLabel(items[i].rarity) << \"]\\n\";\n        total += items[i].quantity;\n    }\n\n    std::cout << '\\n';\n    std::cout << \"Total items: \" << total << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- three items of different rarity",
+          "is_sample": true,
+          "stdin": "3\nSword\n5 0\nShield\n2 1\nCrown\n1 2\n",
+          "expected_stdout": "Sword x5 [Common]\nShield x2 [Rare]\nCrown x1 [Legendary]\n\nTotal items: 8\n"
+        },
+        {
+          "label": "Hidden -- single item",
+          "is_sample": false,
+          "stdin": "1\nPotion\n99 0\n",
+          "expected_stdout": "Potion x99 [Common]\n\nTotal items: 99\n"
+        },
+        {
+          "label": "Hidden -- five items all legendary",
+          "is_sample": false,
+          "stdin": "5\nHelm\n3 2\nBow\n7 2\nRing\n1 2\nAmulet\n4 2\nBoots\n2 2\n",
+          "expected_stdout": "Helm x3 [Legendary]\nBow x7 [Legendary]\nRing x1 [Legendary]\nAmulet x4 [Legendary]\nBoots x2 [Legendary]\n\nTotal items: 17\n"
+        }
+      ]
+    },
+    {
+      "title": "Generic Pair Statistics with Class Template",
+      "prompt_md": "## Goal\nDefine a class template `Pair` that holds two values of the same type, then use it to read pairs of integers and pairs of doubles, printing the larger value from each pair.\n\n## Input\n- Line 1: two space-separated integers (the first pair)\n- Line 2: two space-separated integers (the second pair)\n- Line 3: two space-separated doubles (the third pair)\n\n## Output\nPrint exactly 3 lines:\n```\nInt pair 1 max: <value>\nInt pair 2 max: <value>\nDouble pair max: <value>\n```\nFor doubles, the output uses the default `std::cout` formatting (no fixed precision needed).\n\n## Requirements\n1. Define a class template `Pair` with a single template parameter `T` at namespace scope. It must have exactly two members: `T first` and `T second`, in that order.\n2. Write a function template `T larger(const Pair<T>& p)` that returns the larger of `p.first` and `p.second`. If they are equal, return `p.first`.\n3. In `main`, create two `Pair<int>` objects and one `Pair<double>` object from stdin using aggregate initialization.\n4. Use CTAD (class template argument deduction) for at least one of the three `Pair` objects -- omit the explicit template argument and let the compiler deduce it.\n5. Call `larger()` on each pair and print the results in the format above.\n6. Do not use `std::max`, `std::pair`, or any standard library template. The point is to write your own.\n7. Do not use `std::vector` or any container from Chapter 16+.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define a class template Pair<T> with members: T first, T second\n\n// TODO: Write a function template: T larger(const Pair<T>& p)\n//       Return the larger of p.first and p.second (return p.first if equal)\n\nint main()\n{\n    int a1{}, b1{}, a2{}, b2{};\n    double d1{}, d2{};\n\n    std::cin >> a1 >> b1;\n    std::cin >> a2 >> b2;\n    std::cin >> d1 >> d2;\n\n    // TODO: Create Pair<int> p1 and p2 from the integer inputs\n    // TODO: Create a Pair for doubles using CTAD (omit template argument)\n\n    // TODO: Print \"Int pair 1 max: <larger(p1)>\"\n    // TODO: Print \"Int pair 2 max: <larger(p2)>\"\n    // TODO: Print \"Double pair max: <larger(p3)>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Pair\n{\n    T first;\n    T second;\n};\n\ntemplate <typename T>\nT larger(const Pair<T>& p)\n{\n    if (p.first >= p.second)\n        return p.first;\n    return p.second;\n}\n\nint main()\n{\n    int a1{}, b1{}, a2{}, b2{};\n    double d1{}, d2{};\n\n    std::cin >> a1 >> b1;\n    std::cin >> a2 >> b2;\n    std::cin >> d1 >> d2;\n\n    Pair<int> p1{ a1, b1 };\n    Pair<int> p2{ a2, b2 };\n    Pair p3{ d1, d2 };\n\n    std::cout << \"Int pair 1 max: \" << larger(p1) << '\\n';\n    std::cout << \"Int pair 2 max: \" << larger(p2) << '\\n';\n    std::cout << \"Double pair max: \" << larger(p3) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- mixed values",
+          "is_sample": true,
+          "stdin": "10 20\n5 3\n1.5 2.7\n",
+          "expected_stdout": "Int pair 1 max: 20\nInt pair 2 max: 5\nDouble pair max: 2.7\n"
+        },
+        {
+          "label": "Hidden -- equal values and negatives",
+          "is_sample": false,
+          "stdin": "7 7\n-3 -10\n-1.5 -1.5\n",
+          "expected_stdout": "Int pair 1 max: 7\nInt pair 2 max: -3\nDouble pair max: -1.5\n"
+        },
+        {
+          "label": "Hidden -- large values and second larger",
+          "is_sample": false,
+          "stdin": "999 1000\n-100 100\n0.001 0.999\n",
+          "expected_stdout": "Int pair 1 max: 1000\nInt pair 2 max: 100\nDouble pair max: 0.999\n"
+        }
+      ]
+    }
+  ]
+}

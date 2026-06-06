@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum and Average of Fixed Scores",
+    "prompt_md": "## Goal\nDeclare a `std::array` of integers, read values into it, then compute and print the sum and average.\n\n## Input\n- A single line containing exactly 5 space-separated integers.\n\n## Output\n- Line 1: the sum of all 5 integers\n- Line 2: the average as a `double`, printed with exactly 1 decimal place\n\n## Requirements\n1. Declare a `std::array<int, 5>` to hold the scores.\n2. Use a range-based `for` loop to read each element from `std::cin`.\n3. Use a second range-based `for` loop to compute the sum.\n4. Compute the average as a `double` and print it with `std::fixed` and `std::setprecision(1)`.\n5. Include `<array>`, `<iostream>`, and `<iomanip>`.\n\n## Notes\n- The average of `{10, 20, 30, 40, 50}` is `30.0`.",
+    "starter_code": "#include <array>\n#include <iomanip>\n#include <iostream>\n\nint main()\n{\n    // TODO: Declare a std::array<int, 5> named scores\n\n    // TODO: Use a range-based for loop to read 5 integers into scores\n\n    // TODO: Use a range-based for loop to compute the sum\n\n    // TODO: Compute the average as a double\n\n    // TODO: Print the sum on one line\n    // TODO: Print the average with 1 decimal place on the next line\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iomanip>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 5> scores{};\n\n    for (auto& s : scores)\n        std::cin >> s;\n\n    int sum{ 0 };\n    for (auto s : scores)\n        sum += s;\n\n    double average{ static_cast<double>(sum) / static_cast<double>(scores.size()) };\n\n    std::cout << sum << '\\n';\n    std::cout << std::fixed << std::setprecision(1) << average << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- simple values",
+        "is_sample": true,
+        "stdin": "10 20 30 40 50\n",
+        "expected_stdout": "150\n30.0\n"
+      },
+      {
+        "label": "Hidden -- all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0 0\n",
+        "expected_stdout": "0\n0.0\n"
+      },
+      {
+        "label": "Hidden -- mixed positive and negative",
+        "is_sample": false,
+        "stdin": "-3 7 2 -1 10\n",
+        "expected_stdout": "15\n3.0\n"
+      }
+    ]
+  },
+  {
+    "title": "Count Elements Above Threshold",
+    "prompt_md": "## Goal\nRead a fixed-size array of temperatures and a threshold value, then report how many temperatures exceed the threshold and print them.\n\n## Input\n- Line 1: exactly 6 space-separated integers (the temperatures)\n- Line 2: a single integer (the threshold)\n\n## Output\n- Line 1: the count of temperatures strictly greater than the threshold\n- Remaining lines: each temperature that exceeds the threshold, printed one per line, in their original order\n\nIf no temperature exceeds the threshold, print only `0`.\n\n## Requirements\n1. Declare a `std::array<int, 6>` for the temperatures.\n2. Use a range-based `for` loop to read the values.\n3. Use a range-based `for` loop to count how many exceed the threshold. Store the count in a variable of type `std::size_t`.\n4. Print the count first, then iterate again and print each exceeding temperature on its own line.\n5. Do not use `std::vector` or any dynamic container.\n\n## Notes\n- This exercise combines `std::array` (this lesson) with range-based `for` loops (Ch 16) and basic comparison operators (Ch 6).",
+    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    // TODO: Declare a std::array<int, 6> named temps\n\n    // TODO: Read 6 integers into temps using a range-based for loop\n\n    int threshold{};\n    std::cin >> threshold;\n\n    // TODO: Count how many elements in temps are strictly greater than threshold\n    //       Use std::size_t for the count variable\n\n    // TODO: Print the count on its own line\n\n    // TODO: Print each temperature that exceeds the threshold, one per line\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> temps{};\n\n    for (auto& t : temps)\n        std::cin >> t;\n\n    int threshold{};\n    std::cin >> threshold;\n\n    std::size_t count{ 0 };\n    for (auto t : temps)\n    {\n        if (t > threshold)\n            ++count;\n    }\n\n    std::cout << count << '\\n';\n\n    for (auto t : temps)\n    {\n        if (t > threshold)\n            std::cout << t << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- three above threshold",
+        "is_sample": true,
+        "stdin": "30 25 35 28 40 22\n29\n",
+        "expected_stdout": "3\n30\n35\n40\n"
+      },
+      {
+        "label": "Hidden -- none above threshold",
+        "is_sample": false,
+        "stdin": "10 20 30 40 50 60\n100\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden -- all above threshold with negatives",
+        "is_sample": false,
+        "stdin": "5 3 8 1 9 4\n0\n",
+        "expected_stdout": "6\n5\n3\n8\n1\n9\n4\n"
+      }
+    ]
+  }
+]

@@ -263,56 +263,62 @@
       "number": "1.5",
       "title": "Introduction to iostream: cout, cin, and endl",
       "sort_order": 17,
-      "summary_md": "## iostream: cout, cin, and endl\n\nThe `<iostream>` header gives your program two objects it needs constantly: `std::cout` for output and `std::cin` for input. These aren't functions — they're objects with overloaded operators, a concept you'll understand more deeply later.\n\n### Sending output with std::cout\n\n`std::cout` uses the insertion operator `<<` to push values to the terminal. You can chain multiple `<<` calls on one line:\n\n```cpp\n#include <iostream>\n\nint main() {\n    int score{ 42 };          // direct initialization (see: Variable assignment and initialization)\n    std::cout << \"Score: \" << score << '\\n';\n    std::cout << \"Double: \" << score * 2 << '\\n';\n    return 0;\n}\n```\n\nThe `'\\n'` character ends the line. You'll also see `std::endl`, which does the same thing but additionally flushes the output buffer — forcing the OS to write pending output immediately. Prefer `'\\n'` in tight loops because flushing is slow; use `std::endl` when you need the output to appear before a blocking operation like `std::cin`.\n\n### Reading input with std::cin\n\n`std::cin` uses the extraction operator `>>` to read a value from the user and store it in a variable. The variable must already exist (see: Introduction to objects and variables):\n\n```cpp\nint age{};\nstd::cin >> age;\n```\n\n`std::cin` skips leading whitespace and stops at the first whitespace after the value, so reading two integers in sequence works naturally:\n\n```cpp\nint x{}, y{};\nstd::cin >> x >> y;   // reads two space- or newline-separated integers\n```\n\nIn Python you call `input()` and cast manually. In C++ the type of the variable tells `>>` how to parse — an `int` variable causes it to parse an integer, a `double` causes it to parse a floating-point number. Type mismatches put `std::cin` into a fail state; you'll learn error handling later.\n\n### The std:: prefix\n\nEvery name in the standard library lives in the `std` namespace. The prefix `std::` tells the compiler where to find `cout`, `cin`, and `endl`. Lesson 1-2 (Comments) mentioned that clear names reduce confusion — `std::cout` is unambiguous in a way that a bare `cout` (after `using namespace std;`) is not. Avoid `using namespace std;` in files you'll maintain.\n\n### Practical mental model\n\n- `std::cout << x` — push `x` toward the screen\n- `std::cin >> x` — pull a value from the keyboard into `x`\n- The arrows point in the direction data moves\n",
+      "summary_md": "## iostream: cout, cin, and endl\n\nThe `<iostream>` header gives your program two objects it needs constantly: `std::cout` for output and `std::cin` for input. These aren't functions — they're objects with overloaded operators, a concept you'll understand more deeply later.\n\n### Sending output with std::cout\n\n`std::cout` uses the insertion operator `<<` to push values to the terminal. You can chain multiple `<<` calls on one line:\n\n```cpp\n#include <iostream>\n\nint main() {\n    int score{ 42 };          // direct initialization (see: Variable assignment and initialization)\n    std::cout << \"Score: \" << score << '\\n';\n    std::cout << \"Double: \" << score * 2 << '\\n';\n    return 0;\n}\n```\n\nThe `'\\n'` character ends the line. You'll also see `std::endl`, which does the same thing but additionally flushes the output buffer — forcing the OS to write pending output immediately. Prefer `'\\n'` in tight loops because flushing is slow; use `std::endl` when you need the output to appear before a blocking operation like `std::cin`.\n\n### Reading input with std::cin\n\n`std::cin` uses the extraction operator `>>` to read a value from the user and store it in a variable. The variable must already exist (see: Introduction to objects and variables):\n\n```cpp\nint age{};\nstd::cin >> age;\n```\n\n`std::cin` skips leading whitespace and stops at the first whitespace after the value, so reading two integers in sequence works naturally:\n\n```cpp\nint x{}, y{};\nstd::cin >> x >> y;   // reads two space- or newline-separated integers\n```\n\nIn Python you call `input()` and cast manually. In C++ the type of the variable tells `>>` how to parse — an `int` variable causes it to parse an integer. Type mismatches put `std::cin` into a fail state; you'll learn error handling later.\n\n### The std:: prefix\n\nEvery name in the standard library lives in the `std` namespace. The prefix `std::` tells the compiler where to find `cout`, `cin`, and `endl`. Lesson 1-2 (Comments) mentioned that clear names reduce confusion — `std::cout` is unambiguous in a way that a bare `cout` (after `using namespace std;`) is not. Avoid `using namespace std;` in files you'll maintain.\n\n### Practical mental model\n\n- `std::cout << x` — push `x` toward the screen\n- `std::cin >> x` — pull a value from the keyboard into `x`\n- The arrows point in the direction data moves\n",
       "exercises": [
         {
-          "title": "Unit Converter",
-          "prompt_md": "## Unit Converter\n\nWrite a program that reads a length in **inches** (a positive integer) from stdin and prints two lines:\n\n```\nFeet: <value>\nCentimeters: <value>\n```\n\nConversion rules:\n- 1 foot = 12 inches (integer division, no remainder)\n- 1 inch = 2.54 centimeters (print with exactly **2 decimal places**)\n\nThe centimeters result must use `std::fixed` and `std::setprecision(2)` from `<iomanip>`.\n\n### Example\n\n**Input:**\n```\n36\n```\n\n**Output:**\n```\nFeet: 3\nCentimeters: 91.44\n```\n\nRequirements:\n- Use `std::cin` to read the input\n- Use `std::cout` with `'\\n'` to end each line\n- No extra spaces or blank lines in output\n",
-          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int inches{};\n\n    // TODO: read inches from stdin using std::cin\n\n    // TODO: compute feet using integer division\n    // TODO: compute centimeters (inches * 2.54)\n\n    // TODO: print \"Feet: <feet>\" followed by a newline\n    // TODO: print \"Centimeters: <cm>\" with 2 decimal places followed by a newline\n    //       Hint: use std::fixed and std::setprecision(2) before printing cm\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int inches{};\n    std::cin >> inches;\n\n    int feet{ inches / 12 };\n    double cm{ inches * 2.54 };\n\n    std::cout << \"Feet: \" << feet << '\\n';\n    std::cout << \"Centimeters: \" << std::fixed << std::setprecision(2) << cm << '\\n';\n\n    return 0;\n}\n",
+          "title": "Echo and Double",
+          "prompt_md": "## Echo and Double\n\nWrite a program that reads two integers from stdin (on the same line, separated by a space) and prints three lines:\n\n1. The sum of the two numbers\n2. The difference (first minus second)\n3. The product of the two numbers\n\nPrint each result on its own line in the following format:\n\n```\nSum: <value>\nDifference: <value>\nProduct: <value>\n```\n\n### Example\n\n**Input:**\n```\n8 3\n```\n\n**Output:**\n```\nSum: 11\nDifference: 5\nProduct: 24\n```\n\nRequirements:\n- Use `std::cin` to read the input\n- Use `std::cout` with `'\\n'` to end each line\n- No extra spaces or blank lines in output\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n\n    // TODO: read a and b from stdin using std::cin\n\n    // TODO: print \"Sum: <a + b>\" followed by a newline\n    // TODO: print \"Difference: <a - b>\" followed by a newline\n    // TODO: print \"Product: <a * b>\" followed by a newline\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Sum: \" << a + b << '\\n';\n    std::cout << \"Difference: \" << a - b << '\\n';\n    std::cout << \"Product: \" << a * b << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: 36 inches",
-              "stdin": "36",
-              "expected_stdout": "Feet: 3\nCentimeters: 91.44\n",
+              "label": "Sample: 8 and 3",
+              "stdin": "8 3",
+              "expected_stdout": "Sum: 11\nDifference: 5\nProduct: 24\n",
               "is_sample": true
             },
             {
-              "label": "Hidden: 1 inch",
-              "stdin": "1",
-              "expected_stdout": "Feet: 0\nCentimeters: 2.54\n",
+              "label": "Hidden: negative values",
+              "stdin": "-4 7",
+              "expected_stdout": "Sum: 3\nDifference: -11\nProduct: -28\n",
               "is_sample": false
             },
             {
-              "label": "Hidden: 120 inches",
-              "stdin": "120",
-              "expected_stdout": "Feet: 10\nCentimeters: 304.80\n",
+              "label": "Hidden: zeros",
+              "stdin": "0 5",
+              "expected_stdout": "Sum: 5\nDifference: -5\nProduct: 0\n",
+              "is_sample": false
+            },
+            {
+              "label": "Hidden: both same",
+              "stdin": "6 6",
+              "expected_stdout": "Sum: 12\nDifference: 0\nProduct: 36\n",
               "is_sample": false
             }
           ]
         },
         {
-          "title": "Greeting Card",
-          "prompt_md": "## Greeting Card\n\nWrite a program that reads two values from stdin:\n1. A person's **name** (a single word, no spaces)\n2. Their **age** (a positive integer)\n\nThen print a greeting in exactly this format:\n\n```\nHello, <name>! You are <age> years old.\nNext year you will be <age+1>.\n```\n\n### Example\n\n**Input:**\n```\nAlice 30\n```\n\n**Output:**\n```\nHello, Alice! You are 30 years old.\nNext year you will be 31.\n```\n\nRequirements:\n- Use `std::cin` to read both values (they are on the same line separated by a space)\n- Use `std::cout` and `'\\n'` for output\n- No extra blank lines\n",
-          "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name{};\n    int age{};\n\n    // TODO: read name and age from stdin using std::cin\n    //       (they are space-separated on one line)\n\n    // TODO: print the first line: \"Hello, <name>! You are <age> years old.\"\n    // TODO: print the second line: \"Next year you will be <age+1>.\"\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name{};\n    int age{};\n\n    std::cin >> name >> age;\n\n    std::cout << \"Hello, \" << name << \"! You are \" << age << \" years old.\" << '\\n';\n    std::cout << \"Next year you will be \" << age + 1 << '.' << '\\n';\n\n    return 0;\n}\n",
+          "title": "Year Calculator",
+          "prompt_md": "## Year Calculator\n\nWrite a program that reads two integers from stdin: a person's **birth year** and the **current year** (on the same line, separated by a space).\n\nPrint two lines:\n1. The person's age (current year minus birth year)\n2. What year they will turn 100\n\nUse exactly this format:\n\n```\nAge: <value>\nTurns 100 in: <value>\n```\n\n### Example\n\n**Input:**\n```\n1995 2025\n```\n\n**Output:**\n```\nAge: 30\nTurns 100 in: 2095\n```\n\nRequirements:\n- Use `std::cin` to read both values\n- Use `std::cout` and `'\\n'` for output\n- No extra blank lines\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int birth_year{};\n    int current_year{};\n\n    // TODO: read birth_year and current_year from stdin using std::cin\n\n    // TODO: compute age (current_year - birth_year)\n    // TODO: compute the year the person turns 100 (birth_year + 100)\n\n    // TODO: print \"Age: <age>\" followed by a newline\n    // TODO: print \"Turns 100 in: <year>\" followed by a newline\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int birth_year{};\n    int current_year{};\n\n    std::cin >> birth_year >> current_year;\n\n    int age{ current_year - birth_year };\n    int turns_100{ birth_year + 100 };\n\n    std::cout << \"Age: \" << age << '\\n';\n    std::cout << \"Turns 100 in: \" << turns_100 << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: Alice 30",
-              "stdin": "Alice 30",
-              "expected_stdout": "Hello, Alice! You are 30 years old.\nNext year you will be 31.\n",
+              "label": "Sample: born 1995, current 2025",
+              "stdin": "1995 2025",
+              "expected_stdout": "Age: 30\nTurns 100 in: 2095\n",
               "is_sample": true
             },
             {
-              "label": "Hidden: Bob 1",
-              "stdin": "Bob 1",
-              "expected_stdout": "Hello, Bob! You are 1 years old.\nNext year you will be 2.\n",
+              "label": "Hidden: born 2000, current 2025",
+              "stdin": "2000 2025",
+              "expected_stdout": "Age: 25\nTurns 100 in: 2100\n",
               "is_sample": false
             },
             {
-              "label": "Hidden: Zara 99",
-              "stdin": "Zara 99",
-              "expected_stdout": "Hello, Zara! You are 99 years old.\nNext year you will be 100.\n",
+              "label": "Hidden: born 1950, current 2024",
+              "stdin": "1950 2024",
+              "expected_stdout": "Age: 74\nTurns 100 in: 2050\n",
               "is_sample": false
             }
           ]
@@ -323,82 +329,82 @@
       "number": "1.6",
       "title": "Uninitialized variables and undefined behavior",
       "sort_order": 18,
-      "summary_md": "## Uninitialized Variables and Undefined Behavior\n\nIn Python, using a variable before assigning it raises a `NameError` at runtime. C++ does not offer that protection. When you declare a variable without initializing it, the memory it occupies holds whatever bytes happened to be there — leftover stack data from a previous function call, OS residue, anything. Reading that value is **undefined behavior** (UB).\n\n### What \"uninitialized\" actually means\n\nFrom *Introduction to objects and variables*, you know that declaring `int x;` reserves memory for `x`. But C++ does not zero that memory for local variables. Until you write a value into `x`, its content is indeterminate.\n\n```cpp\n#include <iostream>\n#include <format>\n\nint main() {\n    int a { 5 };      // direct-list initialization — always prefer this\n    int b {};         // value-initialization: b is guaranteed 0\n    int c;            // uninitialized — reading c is undefined behavior\n\n    std::cout << std::format(\"a={} b={}\\n\", a, b);\n    // std::cout << c;  // DO NOT do this — undefined behavior\n}\n```\n\nPrefer `int b {}` (value-initialization) from *Variable assignment and initialization* any time you need a known zero. Prefer `int a { 5 }` when you have a meaningful starting value. Never leave a local variable without an initializer unless you are about to overwrite it unconditionally on the very next line.\n\n### Why UB is dangerous\n\nUndefined behavior does not guarantee a crash or a wrong number. The C++ standard places **no constraints** on what happens. In practice:\n\n- Debug builds often read predictable-looking garbage (zeros from a fresh page, or recognizable stack patterns).\n- Optimized builds can silently delete, reorder, or transform code that the compiler proves must involve UB — including security-critical checks.\n- The program may appear to work correctly for months, then fail on a different machine or after a compiler upgrade.\n\nThis is a sharp difference from Python, where every operation is checked at runtime.\n\n### The compiler can warn you\n\nCompiling with `-Wall -Wextra` lets `g++` detect many (not all) uses of uninitialized variables. `-fsanitize=undefined` catches more at runtime during testing. Neither tool is exhaustive — the only reliable strategy is to initialize every variable at the point of declaration, which modern C++ style enforces.\n\n### Quick rule\n\nIf you declare it, initialize it. If you are filling it from `std::cin` (covered in *Introduction to iostream: cout, cin, and endl*), still write `int x {};` before the `cin >> x` line — it costs nothing and makes the intent clear.",
+      "summary_md": "## Uninitialized Variables and Undefined Behavior\n\nIn Python, using a variable before assigning it raises a `NameError` at runtime. C++ does not offer that protection. When you declare a variable without initializing it, the memory it occupies holds whatever bytes happened to be there — leftover stack data from a previous function call, OS residue, anything. Reading that value is **undefined behavior** (UB).\n\n### What \"uninitialized\" actually means\n\nFrom *Introduction to objects and variables*, you know that declaring `int x;` reserves memory for `x`. But C++ does not zero that memory for local variables. Until you write a value into `x`, its content is indeterminate.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a { 5 };      // direct-list initialization — always prefer this\n    int b {};         // value-initialization: b is guaranteed 0\n    int c;            // uninitialized — reading c is undefined behavior\n\n    std::cout << \"a=\" << a << \" b=\" << b << '\\n';\n    // std::cout << c;  // DO NOT do this — undefined behavior\n}\n```\n\nPrefer `int b {}` (value-initialization) from *Variable assignment and initialization* any time you need a known zero. Prefer `int a { 5 }` when you have a meaningful starting value. Never leave a local variable without an initializer unless you are about to overwrite it unconditionally on the very next line.\n\n### Why UB is dangerous\n\nUndefined behavior does not guarantee a crash or a wrong number. The C++ standard places **no constraints** on what happens. In practice:\n\n- Debug builds often read predictable-looking garbage (zeros from a fresh page, or recognizable stack patterns).\n- Optimized builds can silently delete, reorder, or transform code that the compiler proves must involve UB — including security-critical checks.\n- The program may appear to work correctly for months, then fail on a different machine or after a compiler upgrade.\n\nThis is a sharp difference from Python, where every operation is checked at runtime.\n\n### The compiler can warn you\n\nCompiling with `-Wall -Wextra` lets `g++` detect many (not all) uses of uninitialized variables. `-fsanitize=undefined` catches more at runtime during testing. Neither tool is exhaustive — the only reliable strategy is to initialize every variable at the point of declaration, which modern C++ style enforces.\n\n### Quick rule\n\nIf you declare it, initialize it. If you are filling it from `std::cin` (covered in *Introduction to iostream: cout, cin, and endl*), still write `int x {};` before the `cin >> x` line — it costs nothing and makes the intent clear.",
       "exercises": [
         {
           "title": "Initialize Variables Correctly",
-          "prompt_md": "# Initialize Variables Correctly\n\nYou are given a program that declares several variables but some are left uninitialized. Your task is to initialize all variables properly so that the program produces predictable output.\n\n## Requirements\n\n1. Read an integer `n` from input\n2. Declare and **initialize** the following variables:\n   - `sum`: should start at 0\n   - `product`: should start at 1\n   - `count`: should start at 0\n3. Read `n` integers from input\n4. For each integer read:\n   - Add it to `sum`\n   - Multiply it with `product`\n   - Increment `count`\n5. Output the final values of `sum`, `product`, and `count` on separate lines\n\n## Notes\n\n- All variables **must be initialized** at declaration\n- Do not use uninitialized variables\n- Use brace initialization or assignment initialization\n\n## Example\n\nInput:\n```\n3\n2\n3\n4\n```\n\nOutput:\n```\n9\n24\n3\n```\n\nExplanation: sum = 2+3+4 = 9, product = 2*3*4 = 24, count = 3",
-          "starter_code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    \n    // TODO: Initialize sum, product, and count with appropriate starting values\n    int sum;\n    int product;\n    int count;\n    \n    for (int i = 0; i < n; i++) {\n        int num;\n        cin >> num;\n        sum += num;\n        product *= num;\n        count++;\n    }\n    \n    cout << sum << '\\n';\n    cout << product << '\\n';\n    cout << count << '\\n';\n    \n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    \n    int sum = 0;      // Initialize to 0\n    int product = 1;  // Initialize to 1\n    int count = 0;    // Initialize to 0\n    \n    for (int i = 0; i < n; i++) {\n        int num;\n        cin >> num;\n        sum += num;\n        product *= num;\n        count++;\n    }\n    \n    cout << sum << '\\n';\n    cout << product << '\\n';\n    cout << count << '\\n';\n    \n    return 0;\n}\n",
+          "prompt_md": "# Initialize Variables Correctly\n\nThe starter code declares several variables but leaves some **uninitialized**. Your task is to add proper initializers so the program produces the correct output.\n\n## Requirements\n\n1. Read three integers `a`, `b`, and `c` from stdin (space-separated on one line).\n2. The program then computes:\n   - `sum` = a + b + c\n   - `product` = a * b\n   - `difference` = c - a\n3. Print the three results on separate lines.\n\n## The bug\n\nThe starter code leaves `sum`, `product`, and `difference` uninitialized. Fix them by giving each variable the correct initial value using the expressions above.\n\n## Example\n\nInput:\n```\n2 3 10\n```\n\nOutput:\n```\n15\n6\n8\n```\n\nExplanation: sum = 2+3+10 = 15, product = 2*3 = 6, difference = 10-2 = 8",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    int c{};\n    std::cin >> a >> b >> c;\n\n    // TODO: Fix these — each variable must be initialized with the correct expression\n    int sum;\n    int product;\n    int difference;\n\n    std::cout << sum << '\\n';\n    std::cout << product << '\\n';\n    std::cout << difference << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    int c{};\n    std::cin >> a >> b >> c;\n\n    int sum{ a + b + c };\n    int product{ a * b };\n    int difference{ c - a };\n\n    std::cout << sum << '\\n';\n    std::cout << product << '\\n';\n    std::cout << difference << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: Three numbers",
-              "stdin": "3\n2\n3\n4\n",
-              "expected_stdout": "9\n24\n3\n",
+              "label": "Sample: 2 3 10",
+              "stdin": "2 3 10",
+              "expected_stdout": "15\n6\n8\n",
               "is_sample": true
             },
             {
-              "label": "Single number",
-              "stdin": "1\n5\n",
-              "expected_stdout": "5\n5\n1\n",
+              "label": "Hidden: with zeros",
+              "stdin": "0 5 7",
+              "expected_stdout": "12\n0\n7\n",
               "is_sample": false
             },
             {
-              "label": "Five numbers with negative",
-              "stdin": "5\n1\n2\n3\n4\n5\n",
-              "expected_stdout": "15\n120\n5\n",
+              "label": "Hidden: negative values",
+              "stdin": "-3 4 1",
+              "expected_stdout": "2\n-12\n4\n",
               "is_sample": false
             }
           ]
         },
         {
-          "title": "Safe Temperature Converter",
-          "prompt_md": "## Safe Temperature Converter\n\nWrite a program that reads a temperature in Celsius from stdin and prints the equivalent Fahrenheit value, **and** the equivalent Kelvin value, each on its own line.\n\nThe conversion formulas are:\n- Fahrenheit: `F = C * 9 / 5.0 + 32`\n- Kelvin: `K = C + 273.15`\n\n**Requirements:**\n- Declare **all** local variables with an initializer (use value-initialization `{}` for any variable whose value you do not know yet at the point of declaration).\n- Do **not** read from stdin into a variable before declaring and initializing it.\n- Output format (two lines):\n  ```\n  F: <value>\n  K: <value>\n  ```\n  where `<value>` is printed with exactly **2 decimal places**.\n\n**Input:** A single floating-point number (the Celsius temperature).\n\n**Sample input:**\n```\n100\n```\n**Sample output:**\n```\nF: 212.00\nK: 373.15\n```",
-          "starter_code": "#include <iostream>\n#include <format>\n\nint main() {\n    // TODO: declare and initialize a double to hold the Celsius input\n    // Hint: use double celsius {}; then read from std::cin\n\n    // TODO: read the Celsius value from stdin\n\n    // TODO: declare and initialize variables for Fahrenheit and Kelvin\n    // using the formulas: F = C * 9 / 5.0 + 32  and  K = C + 273.15\n\n    // TODO: print the results with exactly 2 decimal places using std::format\n    // Expected format:\n    //   F: <value>\n    //   K: <value>\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <format>\n\nint main() {\n    double celsius {};\n    std::cin >> celsius;\n\n    double fahrenheit { celsius * 9 / 5.0 + 32 };\n    double kelvin { celsius + 273.15 };\n\n    std::cout << std::format(\"F: {:.2f}\\nK: {:.2f}\\n\", fahrenheit, kelvin);\n\n    return 0;\n}\n",
+          "title": "Predict the Output",
+          "prompt_md": "## Predict the Output\n\nThe point of this exercise is to see what happens when variables are properly initialized vs. when they hold computed values.\n\nRead two integers `x` and `y` from stdin (space-separated). Then:\n\n1. Declare an integer `sum` initialized to `x + y`.\n2. Declare an integer `doubled` initialized to `sum * 2`.\n3. Declare an integer `shifted` initialized to `doubled - y`.\n\nPrint each result on its own line in this format:\n\n```\nsum: <value>\ndoubled: <value>\nshifted: <value>\n```\n\n**Key lesson:** Every variable is initialized at the point of declaration — no variable is ever used before being given a value.\n\n**Sample input:**\n```\n4 6\n```\n\n**Sample output:**\n```\nsum: 10\ndoubled: 20\nshifted: 14\n```",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: declare and initialize sum, doubled, and shifted\n    // using the expressions described in the prompt\n\n    // TODO: print each result on its own line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    int sum{ x + y };\n    int doubled{ sum * 2 };\n    int shifted{ doubled - y };\n\n    std::cout << \"sum: \" << sum << '\\n';\n    std::cout << \"doubled: \" << doubled << '\\n';\n    std::cout << \"shifted: \" << shifted << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Boiling point",
-              "stdin": "100",
-              "expected_stdout": "F: 212.00\nK: 373.15\n",
+              "label": "Sample: 4 and 6",
+              "stdin": "4 6",
+              "expected_stdout": "sum: 10\ndoubled: 20\nshifted: 14\n",
               "is_sample": true
             },
             {
-              "label": "Freezing point",
-              "stdin": "0",
-              "expected_stdout": "F: 32.00\nK: 273.15\n",
+              "label": "Hidden: zeros",
+              "stdin": "0 0",
+              "expected_stdout": "sum: 0\ndoubled: 0\nshifted: 0\n",
               "is_sample": false
             },
             {
-              "label": "Negative temperature",
-              "stdin": "-40",
-              "expected_stdout": "F: -40.00\nK: 233.15\n",
+              "label": "Hidden: negative values",
+              "stdin": "-3 8",
+              "expected_stdout": "sum: 5\ndoubled: 10\nshifted: 2\n",
               "is_sample": false
             }
           ]
         },
         {
-          "title": "Detect Uninitialized Variable Usage",
-          "prompt_md": "# Detect Uninitialized Variable Usage\n\nYou are writing a simple program that processes user input and performs calculations. However, the program has undefined behavior due to uninitialized variables. Your task is to identify which variables need initialization and fix them so the program behaves correctly.\n\n## Requirements\n\n1. Read an integer `operation` (1, 2, or 3)\n2. Read two integers `a` and `b`\n3. Based on `operation`:\n   - If `operation == 1`: output `a + b`\n   - If `operation == 2`: output `a * b`\n   - If `operation == 3`: output `a - b`\n4. Also declare and initialize a counter variable `count` to 0, then increment it for each read operation (3 increments total)\n5. Output the final value of `count` on a new line\n\n## Notes\n\n- All variables must be initialized before use\n- Ensure no undefined behavior\n- The counter must track that exactly 3 inputs were read\n\n## Example\n\nInput:\n```\n1\n10\n20\n```\n\nOutput:\n```\n30\n3\n```\n\nExplanation: operation=1, so output 10+20=30. We read 3 values, so count=3.",
-          "starter_code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    // TODO: Initialize count properly\n    int count;\n    \n    int operation;\n    cin >> operation;\n    count++;\n    \n    int a;\n    cin >> a;\n    count++;\n    \n    int b;\n    cin >> b;\n    count++;\n    \n    int result;\n    \n    if (operation == 1) {\n        result = a + b;\n    } else if (operation == 2) {\n        result = a * b;\n    } else if (operation == 3) {\n        result = a - b;\n    }\n    \n    cout << result << '\\n';\n    cout << count << '\\n';\n    \n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int count = 0;  // Initialize to 0\n    \n    int operation;\n    cin >> operation;\n    count++;\n    \n    int a;\n    cin >> a;\n    count++;\n    \n    int b;\n    cin >> b;\n    count++;\n    \n    int result = 0;  // Initialize result\n    \n    if (operation == 1) {\n        result = a + b;\n    } else if (operation == 2) {\n        result = a * b;\n    } else if (operation == 3) {\n        result = a - b;\n    }\n    \n    cout << result << '\\n';\n    cout << count << '\\n';\n    \n    return 0;\n}\n",
+          "title": "Fix the Uninitialized Variables",
+          "prompt_md": "# Fix the Uninitialized Variables\n\nThe starter code has a bug: two variables are used in computations without being initialized first. This is **undefined behavior** — the program might print garbage values, or it might appear to work and then fail on another machine.\n\nYour task: add proper initializers so the program always produces the correct output.\n\n## Requirements\n\n1. Read two integers `a` and `b` from stdin (space-separated).\n2. `total` must be initialized to `a + b`.\n3. `scaled` must be initialized to `total * 3`.\n4. Print both values, each on its own line.\n\n## Example\n\nInput:\n```\n5 7\n```\n\nOutput:\n```\n12\n36\n```\n\nExplanation: total = 5 + 7 = 12, scaled = 12 * 3 = 36.",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // BUG: these are uninitialized — fix them!\n    int total;\n    int scaled;\n\n    std::cout << total << '\\n';\n    std::cout << scaled << '\\n';\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int total{ a + b };\n    int scaled{ total * 3 };\n\n    std::cout << total << '\\n';\n    std::cout << scaled << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: Addition",
-              "stdin": "1\n10\n20\n",
-              "expected_stdout": "30\n3\n",
+              "label": "Sample: 5 and 7",
+              "stdin": "5 7",
+              "expected_stdout": "12\n36\n",
               "is_sample": true
             },
             {
-              "label": "Multiplication",
-              "stdin": "2\n5\n6\n",
-              "expected_stdout": "30\n3\n",
+              "label": "Hidden: zeros",
+              "stdin": "0 0",
+              "expected_stdout": "0\n0\n",
               "is_sample": false
             },
             {
-              "label": "Subtraction with negatives",
-              "stdin": "3\n100\n45\n",
-              "expected_stdout": "55\n3\n",
+              "label": "Hidden: negative values",
+              "stdin": "-2 8",
+              "expected_stdout": "6\n18\n",
               "is_sample": false
             }
           ]
@@ -406,8 +412,8 @@
         {
           "title": "Swap Without a Temporary",
           "prompt_md": "## Swap Without a Temporary\n\nRead two integers `a` and `b` from stdin. Swap their values **using a properly initialized temporary variable**, then print the swapped values.\n\nThis exercise is specifically about correct initialization: a common beginner mistake is to declare the temporary variable without initializing it, then use it before it holds a valid value.\n\n**Requirements:**\n- Declare every variable with an initializer at the point of declaration.\n- The temporary variable used for the swap must be initialized to `a` at the time it is declared (not in a separate assignment statement).\n- Output format (two lines):\n  ```\n  a: <new_a>\n  b: <new_b>\n  ```\n\n**Input:** Two integers on a single line separated by a space.\n\n**Sample input:**\n```\n3 7\n```\n**Sample output:**\n```\na: 7\nb: 3\n```",
-          "starter_code": "#include <iostream>\n#include <format>\n\nint main() {\n    // TODO: declare and initialize a and b using value-initialization {}\n    // then read both from stdin\n\n    // TODO: swap a and b using a temporary variable.\n    // IMPORTANT: initialize the temporary to a at the point of declaration:\n    //   int tmp { a };   <-- correct\n    //   int tmp;         <-- WRONG: uninitialized, undefined behavior if read\n\n    // TODO: print the result\n    // Expected format:\n    //   a: <value>\n    //   b: <value>\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <format>\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int tmp { a };  // initialized immediately — no uninitialized read\n    a = b;\n    b = tmp;\n\n    std::cout << std::format(\"a: {}\\nb: {}\\n\", a, b);\n\n    return 0;\n}\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare and initialize a and b using value-initialization {}\n    // then read both from stdin\n\n    // TODO: swap a and b using a temporary variable.\n    // IMPORTANT: initialize the temporary to a at the point of declaration:\n    //   int tmp { a };   <-- correct\n    //   int tmp;         <-- WRONG: uninitialized, undefined behavior if read\n\n    // TODO: print the result\n    // Expected format:\n    //   a: <value>\n    //   b: <value>\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int tmp { a };  // initialized immediately — no uninitialized read\n    a = b;\n    b = tmp;\n\n    std::cout << \"a: \" << a << '\\n';\n    std::cout << \"b: \" << b << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "Basic swap",
@@ -435,56 +441,56 @@
       "number": "1.7",
       "title": "Keywords and naming identifiers",
       "sort_order": 19,
-      "summary_md": "# Keywords and Naming Identifiers\n\nKeywords are reserved words in C++ that have special meaning to the compiler. You cannot use them as variable or function names. Common keywords include `int`, `double`, `if`, `while`, `return`, `void`, and `const`. Modern C++20 added keywords like `concept` and `requires` for advanced type constraints. When you see syntax highlighting turn a word blue or bold in your editor, it's usually a keyword.\n\nIdentifiers are names you create for variables, functions, and other entities. C++ is case-sensitive, so `myVar`, `MyVar`, and `myvar` are three different identifiers.\n\n## Naming Rules\n\nC++ enforces strict rules:\n- Start with a letter (a-z, A-Z) or underscore (`_`)\n- Subsequent characters can be letters, digits (0-9), or underscores\n- Cannot be a keyword or contain spaces\n- Traditionally, avoid starting with underscore followed by uppercase or double underscores (reserved for standard library internals)\n\n## Naming Conventions\n\nFollowing conventions makes code readable. The C++ Standard Library uses `snake_case` for variables and functions (`my_variable`), while many projects use `camelCase` (like Python). Pick one style and be consistent. Class names often use `PascalCase` (`MyClass`). Constants are sometimes `UPPER_SNAKE_CASE` or just treated like regular variables—modern C++ prefers the latter since `const` already signals immutability.\n\nChoose descriptive names. `age` is better than `a`. Names should reflect what the variable represents or what a function does. Short loop counters like `i` or `j` are acceptable in tiny scopes.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int player_health = 100;  // Snake case for variables\n    const double pi = 3.14159;  // Constants still use const\n    \n    if (player_health > 0) {\n        std::cout << std::format(\"Health: {}\\n\", player_health);\n    }\n    return 0;\n}\n```\n\nAvoid names that differ only by case when working with others—it confuses readers. Also avoid single-letter names except for well-understood contexts like loop indices or mathematical formulas. When you revisit code months later, `total_damage` tells you far more than `td`.\n\nUnderstanding keywords and following naming conventions prevents compiler errors and makes your code maintainable. Good naming is especially crucial in C++ because it lacks Python's docstring culture—your variable names often document intent directly.",
+      "summary_md": "# Keywords and Naming Identifiers\n\nKeywords are reserved words in C++ that have special meaning to the compiler. You cannot use them as variable or function names. Common keywords you have already seen include `int` and `return`. The full list includes many more that you will encounter in later chapters. There are about 90 keywords in total — you will encounter more as you progress through this course.\n\nIdentifiers are names you create for variables, functions, and other entities. C++ is case-sensitive, so `myVar`, `MyVar`, and `myvar` are three different identifiers.\n\n## Naming Rules\n\nC++ enforces strict rules:\n- Must start with a letter (a–z, A–Z) or underscore (`_`)\n- Subsequent characters can be letters, digits (0–9), or underscores\n- Cannot be a keyword or contain spaces\n- Avoid starting with underscore followed by an uppercase letter or double underscores — these are reserved for compiler and standard library internals\n\n## Naming Conventions\n\nFollowing conventions makes code readable. The C++ Standard Library uses `snake_case` for variables and functions (`my_variable`), while many projects use `camelCase`. Pick one style and be consistent.\n\nChoose descriptive names. `age` is better than `a`. Names should reflect what the variable represents. Abbreviations like `td` for `total_damage` hurt readability when you revisit code months later.\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int player_health{ 100 };\n    int player_damage{ 25 };\n    int remaining_health{ player_health - player_damage };\n\n    std::cout << \"Remaining health: \" << remaining_health << '\\n';\n    return 0;\n}\n```\n\nNotice how `player_health`, `player_damage`, and `remaining_health` immediately tell you what each variable represents — no comments needed.\n\n## The `std::` prefix revisited\n\nFrom the iostream lesson: `std::cout` and `std::cin` live in the `std` namespace. The prefix `std::` is itself a naming convention — it prevents your identifiers from colliding with standard library names. Avoid `using namespace std;` because it pulls every standard library name into your scope, making collisions possible.\n\nGood naming prevents compiler errors and makes your code maintainable. In C++, your variable names are often the primary documentation of intent.",
       "exercises": [
         {
-          "title": "Valid Identifier Checker",
-          "prompt_md": "# Valid Identifier Checker\n\nWrite a program that reads a word and determines whether it is a valid C++ identifier according to the naming rules.\n\nA valid identifier must:\n- Start with a letter (a-z, A-Z) or underscore (_)\n- Contain only letters, digits (0-9), and underscores in subsequent characters\n- Not be a C++ keyword\n\nOutput \"valid\" if the identifier is valid, or \"invalid\" if it violates any rule.\n\n## Keywords to check against:\nint, double, if, while, return, void, const, char, float, bool, for, else, break, continue, class, struct, public, private, protected, static, new, delete, this, nullptr, true, false, auto, switch, case, default, do, try, catch, throw, final, override, virtual, friend, inline, extern, namespace, using, template, typename, operator, sizeof, typedef, union, enum, volatile, mutable, register, explicit, concept, requires\n\n## Input\nA single word (no spaces).\n\n## Output\nOne line: either \"valid\" or \"invalid\"",
-          "starter_code": "#include <iostream>\n#include <string>\n#include <unordered_set>\n#include <cctype>\n\nusing namespace std;\n\nint main() {\n    unordered_set<string> keywords = {\n        \"int\", \"double\", \"if\", \"while\", \"return\", \"void\", \"const\", \"char\",\n        \"float\", \"bool\", \"for\", \"else\", \"break\", \"continue\", \"class\",\n        \"struct\", \"public\", \"private\", \"protected\", \"static\", \"new\",\n        \"delete\", \"this\", \"nullptr\", \"true\", \"false\", \"auto\", \"switch\",\n        \"case\", \"default\", \"do\", \"try\", \"catch\", \"throw\", \"final\",\n        \"override\", \"virtual\", \"friend\", \"inline\", \"extern\", \"namespace\",\n        \"using\", \"template\", \"typename\", \"operator\", \"sizeof\", \"typedef\",\n        \"union\", \"enum\", \"volatile\", \"mutable\", \"register\", \"explicit\",\n        \"concept\", \"requires\"\n    };\n\n    string word;\n    cin >> word;\n\n    // TODO: Check if word is a keyword\n    // TODO: Check if first character is letter or underscore\n    // TODO: Check if remaining characters are letters, digits, or underscores\n    // TODO: Output \"valid\" or \"invalid\"\n\n    return 0;\n}\n",
-          "solution_code": null,
+          "title": "Well-Named Variables",
+          "prompt_md": "## Well-Named Variables\n\nWrite a program that computes the area of a rectangle using well-named variables.\n\nRead two integers from stdin (width and height, on the same line separated by a space). Compute the area and print it in the following format:\n\n```\nWidth: <width>\nHeight: <height>\nArea: <area>\n```\n\nYou must use descriptive variable names — not single letters like `w` or `h`. Use `snake_case` naming convention.\n\n### Example\n\n**Input:**\n```\n5 3\n```\n\n**Output:**\n```\nWidth: 5\nHeight: 3\nArea: 15\n```\n\nRequirements:\n- Use `std::cin` to read input\n- Use `std::cout` with `'\\n'` for output\n- No extra spaces or blank lines in output\n",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare well-named integer variables for width and height\n\n    // TODO: read width and height from std::cin\n\n    // TODO: compute the area using a well-named variable\n\n    // TODO: print each value on its own line in the required format\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int width{};\n    int height{};\n\n    std::cin >> width >> height;\n\n    int area{ width * height };\n\n    std::cout << \"Width: \" << width << '\\n';\n    std::cout << \"Height: \" << height << '\\n';\n    std::cout << \"Area: \" << area << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Valid snake_case identifier",
-              "stdin": "player_health",
-              "expected_stdout": "valid\n",
+              "label": "Sample: 5 x 3",
+              "stdin": "5 3",
+              "expected_stdout": "Width: 5\nHeight: 3\nArea: 15\n",
               "is_sample": true
             },
             {
-              "label": "Invalid: starts with digit",
-              "stdin": "123abc",
-              "expected_stdout": "invalid\n",
+              "label": "Hidden: 1 x 1",
+              "stdin": "1 1",
+              "expected_stdout": "Width: 1\nHeight: 1\nArea: 1\n",
               "is_sample": false
             },
             {
-              "label": "Keyword cannot be identifier",
-              "stdin": "return",
-              "expected_stdout": "invalid\n",
+              "label": "Hidden: larger values",
+              "stdin": "12 8",
+              "expected_stdout": "Width: 12\nHeight: 8\nArea: 96\n",
               "is_sample": false
             }
           ]
         },
         {
-          "title": "Naming Convention Validator",
-          "prompt_md": "# Naming Convention Validator\n\nWrite a program that reads variable names and checks which naming convention they follow: `snake_case`, `camelCase`, or `PascalCase`. If a name doesn't fit any convention, output \"invalid_format\".\n\n## Naming Conventions:\n- **snake_case**: all lowercase, words separated by underscores, starts with lowercase letter\n- **camelCase**: starts with lowercase letter, uppercase letter marks word boundaries, no underscores\n- **PascalCase**: starts with uppercase letter, uppercase letter marks word boundaries, no underscores\n- **invalid_format**: doesn't match any of the above\n\nAssume all inputs are valid C++ identifiers (contain only letters, digits, and underscores; start with letter or underscore).\n\n## Input\nA single identifier (no spaces).\n\n## Output\nOne line: \"snake_case\", \"camelCase\", \"PascalCase\", or \"invalid_format\"",
-          "starter_code": "#include <iostream>\n#include <string>\n#include <cctype>\n\nusing namespace std;\n\nint main() {\n    string identifier;\n    cin >> identifier;\n\n    // TODO: Determine the naming convention of the identifier\n    // TODO: Check for snake_case pattern\n    // TODO: Check for camelCase pattern\n    // TODO: Check for PascalCase pattern\n    // TODO: Output the appropriate convention or \"invalid_format\"\n\n    return 0;\n}\n",
-          "solution_code": null,
+          "title": "Distance Calculator",
+          "prompt_md": "## Distance Calculator\n\nA car travels at a constant speed. Write a program that reads two integers from stdin (on the same line, separated by a space): the speed in kilometers per hour and the number of hours traveled.\n\nCompute and print the total distance, then compute the average speed if the car had covered that distance in one extra hour.\n\nPrint two lines in exactly this format:\n\n```\nTotal distance: <value> km\nAverage over <hours+1> hours: <value> km/h\n```\n\nUse integer division for the average (it truncates, which is expected).\n\n### Example\n\n**Input:**\n```\n60 3\n```\n\n**Output:**\n```\nTotal distance: 180 km\nAverage over 4 hours: 45 km/h\n```\n\n(60 * 3 = 180 km total; 180 / (3+1) = 45 km/h)\n\nRequirements:\n- Use descriptive `snake_case` variable names\n- Use `std::cin` to read input\n- Use `std::cout` with `'\\n'` for output\n",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare well-named integer variables for speed and hours\n\n    // TODO: read speed and hours from std::cin\n\n    // TODO: compute total distance = speed * hours\n\n    // TODO: compute average speed if trip took hours + 1 (integer division)\n\n    // TODO: print both lines in the required format\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int speed_kmh{};\n    int hours{};\n\n    std::cin >> speed_kmh >> hours;\n\n    int total_distance{ speed_kmh * hours };\n    int extra_hours{ hours + 1 };\n    int average_speed{ total_distance / extra_hours };\n\n    std::cout << \"Total distance: \" << total_distance << \" km\" << '\\n';\n    std::cout << \"Average over \" << extra_hours << \" hours: \" << average_speed << \" km/h\" << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Valid snake_case",
-              "stdin": "player_health",
-              "expected_stdout": "snake_case\n",
+              "label": "Sample: 60 km/h for 3 hours",
+              "stdin": "60 3",
+              "expected_stdout": "Total distance: 180 km\nAverage over 4 hours: 45 km/h\n",
               "is_sample": true
             },
             {
-              "label": "Valid camelCase",
-              "stdin": "myVariableName",
-              "expected_stdout": "camelCase\n",
+              "label": "Hidden: 100 km/h for 1 hour",
+              "stdin": "100 1",
+              "expected_stdout": "Total distance: 100 km\nAverage over 2 hours: 50 km/h\n",
               "is_sample": false
             },
             {
-              "label": "Mixed conventions is invalid",
-              "stdin": "player_Health",
-              "expected_stdout": "invalid_format\n",
+              "label": "Hidden: 50 km/h for 7 hours",
+              "stdin": "50 7",
+              "expected_stdout": "Total distance: 350 km\nAverage over 8 hours: 43 km/h\n",
               "is_sample": false
             }
           ]
@@ -524,27 +530,27 @@
           ]
         },
         {
-          "title": "Receipt Printer",
-          "prompt_md": "## Receipt Printer\n\nRead two items from stdin — each item has a name (single word, no spaces) and a price in cents (integer). Print a simple two-line receipt followed by a total line.\n\n**Input format:** Two lines, each containing a name and a price in cents.\n\n```\napple 75\nbread 249\n```\n\n**Output format:**\n```\napple         75c\nbread        249c\n-----------\nTotal        324c\n```\n\nFormatting rules:\n- The name column is exactly 10 characters wide, left-aligned, padded with spaces on the right.\n- The price is right-aligned in a field of 6 characters, followed immediately by `c`.\n- The separator line is exactly 11 hyphens: `-----------`\n- The word `Total` occupies the same 10-character name column (left-aligned).\n- The total price follows the same 6-character right-aligned field + `c`.\n\nUse `std::setw` and `std::left`/`std::right` from `<iomanip>` to produce the alignment. Do not print the output any other way.",
-          "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nint main()\n{\n    // TODO: declare variables for two item names (std::string) and two prices (int)\n\n    // TODO: read item1 name and price, then item2 name and price\n\n    // TODO: compute total\n\n    // TODO: print each item line using std::setw and std::left / std::right\n    // name: left-aligned, width 10\n    // price: right-aligned, width 6, followed by 'c'\n\n    // TODO: print separator (exactly 11 hyphens)\n\n    // TODO: print total line in the same format\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nint main()\n{\n    std::string name1{};\n    int price1{};\n    std::string name2{};\n    int price2{};\n\n    std::cin >> name1 >> price1;\n    std::cin >> name2 >> price2;\n\n    int total{ price1 + price2 };\n\n    std::cout << std::left  << std::setw(10) << name1\n              << std::right << std::setw(6)  << price1 << 'c' << '\\n';\n\n    std::cout << std::left  << std::setw(10) << name2\n              << std::right << std::setw(6)  << price2 << 'c' << '\\n';\n\n    std::cout << \"-----------\" << '\\n';\n\n    std::cout << std::left  << std::setw(10) << \"Total\"\n              << std::right << std::setw(6)  << total  << 'c' << '\\n';\n\n    return 0;\n}\n",
+          "title": "Aligned Price List",
+          "prompt_md": "## Aligned Price List\n\nRead three integers from stdin (on separate lines): the price in cents of three items. Print a small price list showing each item's price in a readable format.\n\nYou must print exactly three lines in this format:\n\n```\nItem 1: <price1> cents\nItem 2: <price2> cents\nItem 3: <price3> cents\n```\n\nThen print a blank line, followed by a total line:\n\n```\nTotal: <sum> cents\n```\n\nThis exercise practices clean formatting: consistent structure, one `std::cout` statement per line, and `'\\n'` for line endings.\n\n**Sample input:**\n```\n150\n275\n99\n```\n\n**Sample output:**\n```\nItem 1: 150 cents\nItem 2: 275 cents\nItem 3: 99 cents\n\nTotal: 524 cents\n```\n\nRequirements:\n- Use `std::cin` to read the input\n- Use `std::cout` with `'\\n'` for output\n- The blank line between the items and total is a single `'\\n'`\n- Use one declaration per line with consistent indentation",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare three integer variables for the prices\n\n    // TODO: read all three from std::cin (one per line)\n\n    // TODO: compute the total\n\n    // TODO: print each item line, a blank line, and the total line\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int price1{};\n    int price2{};\n    int price3{};\n\n    std::cin >> price1 >> price2 >> price3;\n\n    int total{ price1 + price2 + price3 };\n\n    std::cout << \"Item 1: \" << price1 << \" cents\" << '\\n';\n    std::cout << \"Item 2: \" << price2 << \" cents\" << '\\n';\n    std::cout << \"Item 3: \" << price3 << \" cents\" << '\\n';\n    std::cout << '\\n';\n    std::cout << \"Total: \" << total << \" cents\" << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "sample: apple and bread",
-              "stdin": "apple 75\nbread 249",
-              "expected_stdout": "apple         75c\nbread        249c\n-----------\nTotal        324c\n",
+              "label": "Sample: three items",
+              "stdin": "150\n275\n99",
+              "expected_stdout": "Item 1: 150 cents\nItem 2: 275 cents\nItem 3: 99 cents\n\nTotal: 524 cents\n",
               "is_sample": true
             },
             {
-              "label": "hidden: two equal prices",
-              "stdin": "milk 100\neggs 100",
-              "expected_stdout": "milk         100c\neggs         100c\n-----------\nTotal        200c\n",
+              "label": "Hidden: all same price",
+              "stdin": "100\n100\n100",
+              "expected_stdout": "Item 1: 100 cents\nItem 2: 100 cents\nItem 3: 100 cents\n\nTotal: 300 cents\n",
               "is_sample": false
             },
             {
-              "label": "hidden: long name and large price",
-              "stdin": "pasta 399\noil 1250",
-              "expected_stdout": "pasta        399c\noil         1250c\n-----------\nTotal       1649c\n",
+              "label": "Hidden: includes zero",
+              "stdin": "0\n500\n1",
+              "expected_stdout": "Item 1: 0 cents\nItem 2: 500 cents\nItem 3: 1 cents\n\nTotal: 501 cents\n",
               "is_sample": false
             }
           ]
@@ -555,30 +561,30 @@
       "number": "1.9",
       "title": "Introduction to literals and operators",
       "sort_order": 21,
-      "summary_md": "## Literals and Operators\n\nA **literal** is a fixed value written directly in source code. You've already used literals in earlier lessons — when you wrote `int x = 5;` (from *Introduction to objects and variables*), the `5` is an integer literal. Literals are values the compiler bakes in at compile time; they can never be changed.\n\nC++ has several categories of literals:\n\n| Category | Examples |\n|---|---|\n| Integer | `42`, `0`, `-7` |\n| Floating-point | `3.14`, `2.0`, `-0.5` |\n| Character | `'A'`, `'\\n'`, `'0'` |\n| String | `\"hello\"`, `\"\"` |\n| Boolean | `true`, `false` |\n\nBy default, integer literals are `int` and floating-point literals are `double`. You can change the type with a suffix: `42u` is `unsigned int`, `42L` is `long`, `3.14f` is `float`.\n\nAn **operator** takes one or more operands and produces a value. The most common are the arithmetic operators: `+`, `-`, `*`, `/`, and `%` (remainder). These work the same as Python with one key difference: **integer division truncates**. `7 / 2` gives `3`, not `3.5`. If you need the fractional result, at least one operand must be a floating-point value: `7.0 / 2` gives `3.5`.\n\nThe `%` operator gives the remainder after integer division: `7 % 2` gives `1`. It only works on integer types, unlike Python where `%` works on floats too.\n\nOperators also have **precedence** (order of evaluation). Multiplication and division bind tighter than addition and subtraction, just like in math. Use parentheses when the order matters or when the expression would otherwise be unclear.\n\n```cpp\n#include <iostream>\n#include <format>\n\nint main() {\n    int apples = 17;\n    int bags   = 5;\n    int per_bag   = apples / bags;   // truncates: 3\n    int leftover  = apples % bags;   // remainder: 2\n    double exact  = static_cast<double>(apples) / bags; // 3.4\n    std::cout << std::format(\"per bag: {}, leftover: {}, exact: {:.1f}\\n\",\n                             per_bag, leftover, exact);\n}\n```\n\nNote the `static_cast<double>` — casting one operand to `double` before the division forces floating-point arithmetic. This is the idiomatic way to avoid accidental integer truncation.\n\nThe **unary minus** operator negates a value: `-x` flips the sign of `x` without modifying the variable (recall from *Variable assignment and initialization* that operators produce new values; they don't mutate the operand unless you use `=` or a compound assignment like `+=`).\n\nFrom Python you're used to `**` for exponentiation — C++ has no such operator. Use `std::pow` from `<cmath>` instead.\n",
+      "summary_md": "## Literals and Operators\n\nA **literal** is a fixed value written directly in source code. You've already used literals in earlier lessons — when you wrote `int x = 5;` (from *Introduction to objects and variables*), the `5` is an integer literal. Literals are values the compiler bakes in at compile time; they can never be changed.\n\nAt this stage, the most important category is **integer literals** — e.g. `42`, `0`, `-7`. You will encounter other literal types (floating-point, character, string, boolean) in later chapters. For now, integer literals are all you need.\n\nAn **operator** takes one or more operands and produces a value. The most common are the arithmetic operators: `+`, `-`, `*`, `/`, and `%` (remainder). These work the same as Python with one key difference: **integer division truncates**. `7 / 2` gives `3`, not `3.5`. If you need the fractional result, at least one operand must be a floating-point value: `7.0 / 2` gives `3.5`.\n\nThe `%` operator gives the remainder after integer division: `7 % 2` gives `1`. It only works on integer types, unlike Python where `%` works on floats too.\n\nOperators also have **precedence** (order of evaluation). Multiplication and division bind tighter than addition and subtraction, just like in math. Use parentheses when the order matters or when the expression would otherwise be unclear.\n\n```cpp\n#include <iostream>\n\nint main() {\n    int apples = 17;\n    int bags   = 5;\n    int per_bag   = apples / bags;   // truncates: 3\n    int leftover  = apples % bags;   // remainder: 2\n    std::cout << \"per bag: \" << per_bag << \", leftover: \" << leftover << '\\n';\n}\n```\n\nNote that `17 / 5` gives `3`, not `3.4` — integer division always truncates. You will learn how to get fractional results in a later chapter.\n\nThe **unary minus** operator negates a value: `-x` flips the sign of `x` without modifying the variable (recall from *Variable assignment and initialization* that operators produce new values; they don't mutate the operand unless you use `=`).\n\nFrom Python you're used to `**` for exponentiation — C++ has no built-in operator for that. You will learn about library functions for exponentiation in a later chapter.\n",
       "exercises": [
         {
           "title": "Fruit Basket Division",
-          "prompt_md": "A farmer has a basket of fruit to distribute evenly among workers.\n\nRead two integers from stdin: the total number of fruit, then the number of workers.\n\nPrint three lines:\n1. How many whole fruit each worker receives (integer division)\n2. How many fruit are left over (remainder)\n3. The exact amount per worker as a decimal, rounded to two decimal places\n\n**Constraints:** both values are positive integers; workers >= 1.\n\n**Sample input:**\n```\n20 6\n```\n\n**Sample output:**\n```\nEach worker gets: 3\nLeftover fruit: 2\nExact per worker: 3.33\n```\n",
-          "starter_code": "#include <iostream>\n#include <format>\n\nint main() {\n    int fruit, workers;\n    std::cin >> fruit >> workers;\n\n    // TODO: compute whole fruit per worker using integer division\n    int per_worker = 0;\n\n    // TODO: compute leftover using the remainder operator\n    int leftover = 0;\n\n    // TODO: compute exact amount as a double (cast at least one operand)\n    double exact = 0.0;\n\n    // TODO: print the three required lines using std::format\n    // Line 1: \"Each worker gets: {}\"\n    // Line 2: \"Leftover fruit: {}\"\n    // Line 3: \"Exact per worker: {:.2f}\"\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <format>\n\nint main() {\n    int fruit, workers;\n    std::cin >> fruit >> workers;\n\n    int per_worker = fruit / workers;\n    int leftover   = fruit % workers;\n    double exact   = static_cast<double>(fruit) / workers;\n\n    std::cout << std::format(\"Each worker gets: {}\\n\", per_worker);\n    std::cout << std::format(\"Leftover fruit: {}\\n\", leftover);\n    std::cout << std::format(\"Exact per worker: {:.2f}\\n\", exact);\n\n    return 0;\n}\n",
+          "prompt_md": "A farmer has a basket of fruit to distribute evenly among workers.\n\nRead two integers from stdin (space-separated on one line): the total number of fruit, then the number of workers.\n\nPrint two lines:\n1. How many whole fruit each worker receives (integer division)\n2. How many fruit are left over (remainder)\n\n**Constraints:** both values are positive integers; workers >= 1.\n\n**Sample input:**\n```\n20 6\n```\n\n**Sample output:**\n```\nEach worker gets: 3\nLeftover fruit: 2\n```\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int fruit{};\n    int workers{};\n    std::cin >> fruit >> workers;\n\n    // TODO: compute whole fruit per worker using integer division\n    int per_worker{ 0 };\n\n    // TODO: compute leftover using the remainder operator %\n    int leftover{ 0 };\n\n    // TODO: print the two required lines\n    // Line 1: \"Each worker gets: <value>\"\n    // Line 2: \"Leftover fruit: <value>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int fruit{};\n    int workers{};\n    std::cin >> fruit >> workers;\n\n    int per_worker{ fruit / workers };\n    int leftover{ fruit % workers };\n\n    std::cout << \"Each worker gets: \" << per_worker << '\\n';\n    std::cout << \"Leftover fruit: \" << leftover << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "sample: 20 fruit, 6 workers",
               "stdin": "20 6",
-              "expected_stdout": "Each worker gets: 3\nLeftover fruit: 2\nExact per worker: 3.33\n",
+              "expected_stdout": "Each worker gets: 3\nLeftover fruit: 2\n",
               "is_sample": true
             },
             {
               "label": "hidden: exact division (no remainder)",
               "stdin": "100 4",
-              "expected_stdout": "Each worker gets: 25\nLeftover fruit: 0\nExact per worker: 25.00\n",
+              "expected_stdout": "Each worker gets: 25\nLeftover fruit: 0\n",
               "is_sample": false
             },
             {
               "label": "hidden: 1 worker gets everything",
               "stdin": "7 1",
-              "expected_stdout": "Each worker gets: 7\nLeftover fruit: 0\nExact per worker: 7.00\n",
+              "expected_stdout": "Each worker gets: 7\nLeftover fruit: 0\n",
               "is_sample": false
             }
           ]
@@ -586,8 +592,8 @@
         {
           "title": "Ticket Price Calculator",
           "prompt_md": "A cinema charges different prices for adult and child tickets.\n\nRead three integers from stdin on one line: the price of an adult ticket (in cents), the price of a child ticket (in cents), and the total number of tickets sold. Then read the number of those tickets that are child tickets.\n\nCompute:\n- The number of adult tickets sold\n- The total revenue in cents\n- The total revenue in dollars and cents (e.g. 525 cents = 5 dollars and 25 cents)\n\nPrint exactly three lines as shown below.\n\n**Sample input:**\n```\n1200 700 10\n3\n```\n\n**Sample output:**\n```\nAdult tickets: 7\nTotal revenue (cents): 10500\nTotal revenue: 105 dollars and 0 cents\n```\n\n**Constraints:** all values are non-negative integers; child_tickets <= total_tickets; prices >= 0.\n",
-          "starter_code": "#include <iostream>\n#include <format>\n\nint main() {\n    int adult_price, child_price, total_tickets;\n    std::cin >> adult_price >> child_price >> total_tickets;\n\n    int child_tickets;\n    std::cin >> child_tickets;\n\n    // TODO: compute the number of adult tickets\n    int adult_tickets = 0;\n\n    // TODO: compute total revenue in cents\n    int revenue_cents = 0;\n\n    // TODO: compute whole dollars using integer division by 100\n    int dollars = 0;\n\n    // TODO: compute remaining cents using the remainder operator\n    int remaining_cents = 0;\n\n    // TODO: print three lines:\n    // \"Adult tickets: {}\"\n    // \"Total revenue (cents): {}\"\n    // \"Total revenue: {} dollars and {} cents\"\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <format>\n\nint main() {\n    int adult_price, child_price, total_tickets;\n    std::cin >> adult_price >> child_price >> total_tickets;\n\n    int child_tickets;\n    std::cin >> child_tickets;\n\n    int adult_tickets   = total_tickets - child_tickets;\n    int revenue_cents   = adult_tickets * adult_price + child_tickets * child_price;\n    int dollars         = revenue_cents / 100;\n    int remaining_cents = revenue_cents % 100;\n\n    std::cout << std::format(\"Adult tickets: {}\\n\", adult_tickets);\n    std::cout << std::format(\"Total revenue (cents): {}\\n\", revenue_cents);\n    std::cout << std::format(\"Total revenue: {} dollars and {} cents\\n\", dollars, remaining_cents);\n\n    return 0;\n}\n",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int adult_price{};\n    int child_price{};\n    int total_tickets{};\n    std::cin >> adult_price >> child_price >> total_tickets;\n\n    int child_tickets{};\n    std::cin >> child_tickets;\n\n    // TODO: compute the number of adult tickets\n    int adult_tickets{ 0 };\n\n    // TODO: compute total revenue in cents\n    int revenue_cents{ 0 };\n\n    // TODO: compute whole dollars using integer division by 100\n    int dollars{ 0 };\n\n    // TODO: compute remaining cents using the remainder operator\n    int remaining_cents{ 0 };\n\n    // TODO: print three lines:\n    // \"Adult tickets: <value>\"\n    // \"Total revenue (cents): <value>\"\n    // \"Total revenue: <dollars> dollars and <cents> cents\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int adult_price{};\n    int child_price{};\n    int total_tickets{};\n    std::cin >> adult_price >> child_price >> total_tickets;\n\n    int child_tickets{};\n    std::cin >> child_tickets;\n\n    int adult_tickets{ total_tickets - child_tickets };\n    int revenue_cents{ adult_tickets * adult_price + child_tickets * child_price };\n    int dollars{ revenue_cents / 100 };\n    int remaining_cents{ revenue_cents % 100 };\n\n    std::cout << \"Adult tickets: \" << adult_tickets << '\\n';\n    std::cout << \"Total revenue (cents): \" << revenue_cents << '\\n';\n    std::cout << \"Total revenue: \" << dollars << \" dollars and \" << remaining_cents << \" cents\" << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "sample: mixed tickets",
@@ -615,7 +621,7 @@
       "number": "1.10",
       "title": "Introduction to expressions",
       "sort_order": 22,
-      "summary_md": "## Introduction to Expressions\n\nAn **expression** is a combination of literals, variables, operators, and function calls that evaluates to a single value. That resulting value is called the expression's **value**. Every expression has a type, determined at compile time.\n\nYou already use expressions in Python constantly — `2 + 3`, `x * y`, `len(s) > 0` are all expressions. C++ works the same way, but the rules around types are stricter.\n\n### Expressions vs. Statements\n\nFrom \"Statements and the structure of a program\": a statement is a complete instruction that the program executes. An expression becomes an **expression statement** when you append a semicolon:\n\n```cpp\n#include <print>\n\nint main() {\n    int x { 3 };\n    int y { 4 };\n\n    int hyp_sq { x * x + y * y };   // expression: x*x + y*y\n    std::println(\"{}\", hyp_sq);      // prints 25\n\n    x = x + 1;                       // expression statement: x+1 evaluated, result assigned\n    std::println(\"{}\", x);           // prints 4\n}\n```\n\n### Subexpressions\n\nExpressions can contain other expressions — these nested pieces are called **subexpressions**. In `x * x + y * y`, the compiler evaluates `x * x` and `y * y` as subexpressions first, then adds the results. This nesting is what makes expressions composable.\n\nThe compiler is free to evaluate subexpressions in any order unless the operator imposes a sequence (e.g., `&&` and `||` short-circuit left-to-right). Avoid writing expressions where the result depends on evaluation order — that's undefined behavior.\n\n### Operands and Operators\n\nFrom \"Introduction to literals and operators\": operators take **operands** and produce a new value. The type of the result depends on the types of the operands. `int + int` yields `int`; `int + double` yields `double` (the `int` is implicitly converted). Always be deliberate about operand types — integer division truncates (`7 / 2 == 3`, not `3.5`).\n\n### Values Are Not Always Used\n\nSometimes an expression's value is discarded — `x = x + 1;` computes `x + 1`, assigns it to `x`, then throws away the value of the assignment expression itself. This is normal and expected for side-effectful statements.\n\n### Key Takeaway\n\nEvery piece of computation in C++ — whether it's arithmetic, a comparison, or a function call — is an expression. Understanding that expressions evaluate to typed values, and that complex expressions are built from simpler subexpressions, is the mental model for reading and writing any C++ code.",
+      "summary_md": "## Introduction to Expressions\n\nAn **expression** is a combination of literals, variables, operators, and function calls that evaluates to a single value. That resulting value is called the expression's **value**. Every expression has a type, determined at compile time.\n\nYou already use expressions in Python constantly — `2 + 3`, `x * y`, `len(s) > 0` are all expressions. C++ works the same way, but the rules around types are stricter.\n\n### Expressions vs. Statements\n\nFrom \"Statements and the structure of a program\": a statement is a complete instruction that the program executes. An expression becomes an **expression statement** when you append a semicolon:\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x { 3 };\n    int y { 4 };\n\n    int hyp_sq { x * x + y * y };   // expression: x*x + y*y\n    std::cout << hyp_sq << '\\n';     // prints 25\n\n    x = x + 1;                       // expression statement: x+1 evaluated, result assigned\n    std::cout << x << '\\n';          // prints 4\n}\n```\n\n### Subexpressions\n\nExpressions can contain other expressions — these nested pieces are called **subexpressions**. In `x * x + y * y`, the compiler evaluates `x * x` and `y * y` as subexpressions first, then adds the results. This nesting is what makes expressions composable.\n\nThe compiler is free to evaluate subexpressions in any order unless the operator imposes a specific sequence. Avoid writing expressions where the result depends on evaluation order — that's undefined behavior.\n\n### Operands and Operators\n\nFrom \"Introduction to literals and operators\": operators take **operands** and produce a new value. The type of the result depends on the types of the operands. For now, all your operands are `int`, so all results are `int`. Be aware that integer division truncates: `7 / 2` gives `3`, not `3.5`.\n\n### Values Are Not Always Used\n\nSometimes an expression's value is discarded — `x = x + 1;` computes `x + 1`, assigns it to `x`, then throws away the value of the assignment expression itself. This is normal and expected for side-effectful statements.\n\n### Key Takeaway\n\nEvery piece of computation in C++ — whether it's arithmetic, a comparison, or even calling `main` — is an expression. Understanding that expressions evaluate to typed values, and that complex expressions are built from simpler subexpressions, is the mental model for reading and writing any C++ code.",
       "exercises": [
         {
           "title": "Expression Type Detective",
@@ -658,7 +664,7 @@
             {
               "label": "Hidden: zeros and negatives",
               "stdin": "0 -2 5",
-              "expected_stdout": "29\n15\n-10\n",
+              "expected_stdout": "29\n-6\n-10\n",
               "is_sample": false
             },
             {
@@ -675,13 +681,13 @@
       "number": "1.11",
       "title": "Developing your first program",
       "sort_order": 23,
-      "summary_md": "## Developing Your First Program\n\nAt this point you have all the individual pieces: statements, variables, initialization, `std::cin`/`std::cout`, operators, and expressions. This lesson is about combining them into a complete, working program.\n\n### The development loop\n\nWriting a program is iterative. The cycle is:\n\n1. **Write** a small piece of code that does one thing.\n2. **Compile** — fix any errors the compiler reports before adding more code.\n3. **Run** — verify the output matches what you expected.\n4. **Extend** — add the next small piece.\n\nResist the urge to write everything at once. In Python you can run a single expression in the REPL and see results immediately. In C++ the compiler is your REPL: keep each compilation unit small and correct before moving on.\n\n### Putting the pieces together\n\nA complete program needs:\n- A `#include` for every facility you use (`<iostream>`, `<format>` for C++20 formatting).\n- Exactly one `main()` that returns `int`.\n- Variables initialized before use (see *Introduction to objects and variables* and *Uninitialized variables and undefined behavior*).\n- `std::cin` for input, `std::cout` for output (see *Introduction to iostream*).\n- Meaningful names following the rules from *Keywords and naming identifiers*.\n\n```cpp\n#include <iostream>\n#include <format>\n\nint main()\n{\n    int width{};\n    int height{};\n    std::cout << \"Enter width and height: \";\n    std::cin >> width >> height;\n    int area{ width * height };\n    std::cout << std::format(\"Area: {}\\n\", area);\n    return 0;\n}\n```\n\n`std::format` (C++20) works like Python's f-strings: `{}` is a placeholder filled by the following argument. It is cleaner than chaining `<<` operators.\n\n### Reading the compiler's output\n\nCompiler errors point to the exact line where the problem was detected, but the *cause* is often one or two lines earlier. Read the first error first — later errors are often cascades from the first.\n\nWarnings (`-Wall -Wextra`) catch real bugs: uninitialized variables, unused results, signed/unsigned mismatches. Treat every warning as an error until you understand why it fired.\n\n### Formatting and whitespace\n\nConsistent indentation (see *Whitespace and basic formatting*) makes the structure visible to both you and the compiler error messages. Pick 4 spaces or a tab and use it everywhere.\n\n### One responsibility per variable\n\nFrom *Introduction to expressions*: expressions produce values. Assign those values to well-named variables rather than nesting them deeply. `int area{ width * height }` is easier to debug than `std::cout << width * height`.\n\nStart small, compile often, name things clearly. That is the complete recipe.",
+      "summary_md": "## Developing Your First Program\n\nAt this point you have all the individual pieces: statements, variables, initialization, `std::cin`/`std::cout`, operators, and expressions. This lesson is about combining them into a complete, working program.\n\n### The development loop\n\nWriting a program is iterative. The cycle is:\n\n1. **Write** a small piece of code that does one thing.\n2. **Compile** — fix any errors the compiler reports before adding more code.\n3. **Run** — verify the output matches what you expected.\n4. **Extend** — add the next small piece.\n\nResist the urge to write everything at once. In Python you can run a single expression in the REPL and see results immediately. In C++ the compiler is your REPL: keep each compilation unit small and correct before moving on.\n\n### Putting the pieces together\n\nA complete program needs:\n- A `#include` for every facility you use (for now, just `<iostream>`).\n- Exactly one `main()` that returns `int`.\n- Variables initialized before use (see *Introduction to objects and variables* and *Uninitialized variables and undefined behavior*).\n- `std::cin` for input, `std::cout` for output (see *Introduction to iostream*).\n- Meaningful names following the rules from *Keywords and naming identifiers*.\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int width{};\n    int height{};\n    std::cout << \"Enter width and height: \";\n    std::cin >> width >> height;\n    int area{ width * height };\n    std::cout << \"Area: \" << area << '\\n';\n    return 0;\n}\n```\n\n### Reading the compiler's output\n\nCompiler errors point to the exact line where the problem was detected, but the *cause* is often one or two lines earlier. Read the first error first — later errors are often cascades from the first.\n\nWarnings (`-Wall -Wextra`) catch real bugs: uninitialized variables, unused results, signed/unsigned mismatches. Treat every warning as an error until you understand why it fired.\n\n### Formatting and whitespace\n\nConsistent indentation (see *Whitespace and basic formatting*) makes the structure visible to both you and the compiler error messages. Pick 4 spaces or a tab and use it everywhere.\n\n### One responsibility per variable\n\nFrom *Introduction to expressions*: expressions produce values. Assign those values to well-named variables rather than nesting them deeply. `int area{ width * height }` is easier to debug than `std::cout << width * height`.\n\nStart small, compile often, name things clearly. That is the complete recipe.",
       "exercises": [
         {
           "title": "Temperature Converter",
           "prompt_md": "## Temperature Converter\n\nWrite a program that reads a temperature in Celsius from standard input and prints the equivalent in Fahrenheit, followed by a newline.\n\nThe conversion formula is: `F = C * 9 / 5 + 32`\n\nUse integer arithmetic throughout (no floating-point types).\n\n**Input format:** A single integer on one line.\n\n**Output format:** A single line in the form `X degrees C = Y degrees F` where `X` is the input and `Y` is the result.\n\n**Example:**\n```\nInput:  100\nOutput: 100 degrees C = 212 degrees F\n```",
-          "starter_code": "#include <iostream>\n#include <format>\n\nint main()\n{\n    // TODO: declare an integer variable for the Celsius temperature\n\n    // TODO: read the temperature from std::cin\n\n    // TODO: compute the Fahrenheit temperature using integer arithmetic\n    //       formula: F = C * 9 / 5 + 32\n\n    // TODO: print the result using std::format in the form:\n    //       \"X degrees C = Y degrees F\"\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <format>\n\nint main()\n{\n    int celsius{};\n    std::cin >> celsius;\n    int fahrenheit{ celsius * 9 / 5 + 32 };\n    std::cout << std::format(\"{} degrees C = {} degrees F\\n\", celsius, fahrenheit);\n    return 0;\n}\n",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare an integer variable for the Celsius temperature\n\n    // TODO: read the temperature from std::cin\n\n    // TODO: compute the Fahrenheit temperature using integer arithmetic\n    //       formula: F = C * 9 / 5 + 32\n\n    // TODO: print the result in the form:\n    //       \"X degrees C = Y degrees F\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int celsius{};\n    std::cin >> celsius;\n    int fahrenheit{ celsius * 9 / 5 + 32 };\n    std::cout << celsius << \" degrees C = \" << fahrenheit << \" degrees F\" << '\\n';\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "Boiling point",
@@ -706,8 +712,8 @@
         {
           "title": "Simple Bill Splitter",
           "prompt_md": "## Simple Bill Splitter\n\nWrite a program that reads a total bill amount (in whole dollars) and the number of people splitting it, then prints how much each person owes and how many dollars are left over after an even integer split.\n\nUse integer division and the modulo operator.\n\n**Input format:** Two integers on separate lines: the total bill, then the number of people.\n\n**Output format:** Two lines:\n1. `Each person owes $X`\n2. `Remainder: $Y`\n\n**Example:**\n```\nInput:\n100\n3\n\nOutput:\nEach person owes $33\nRemainder: $1\n```\n\nAssume both inputs are positive integers and the number of people is at least 1.",
-          "starter_code": "#include <iostream>\n#include <format>\n\nint main()\n{\n    // TODO: declare integer variables for the total bill and number of people\n\n    // TODO: read both values from std::cin\n\n    // TODO: compute each person's share using integer division\n\n    // TODO: compute the remainder using the modulo operator\n\n    // TODO: print the two result lines using std::format\n    //       \"Each person owes $X\"\n    //       \"Remainder: $Y\"\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <format>\n\nint main()\n{\n    int total{};\n    int people{};\n    std::cin >> total >> people;\n    int share{ total / people };\n    int remainder{ total % people };\n    std::cout << std::format(\"Each person owes ${}\\n\", share);\n    std::cout << std::format(\"Remainder: ${}\\n\", remainder);\n    return 0;\n}\n",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare integer variables for the total bill and number of people\n\n    // TODO: read both values from std::cin\n\n    // TODO: compute each person's share using integer division\n\n    // TODO: compute the remainder using the modulo operator\n\n    // TODO: print the two result lines:\n    //       \"Each person owes $X\"\n    //       \"Remainder: $Y\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int total{};\n    int people{};\n    std::cin >> total >> people;\n    int share{ total / people };\n    int remainder{ total % people };\n    std::cout << \"Each person owes $\" << share << '\\n';\n    std::cout << \"Remainder: $\" << remainder << '\\n';\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "Uneven split",
@@ -735,108 +741,108 @@
       "number": "1.x",
       "title": "Chapter 1 summary and quiz",
       "sort_order": 24,
-      "summary_md": "## Chapter 1 Summary\n\nThis chapter covered the foundational building blocks of C++ programs. Here is a condensed review of each topic.\n\n**Statements and program structure** — A C++ program is a collection of functions; execution starts at `main()`, which must return `int`. Every statement ends with a semicolon. Unlike Python, whitespace and indentation are cosmetic, not syntactic.\n\n**Comments** — `//` for single-line comments, `/* */` for block comments. Prefer explaining *why* over *what*; the code already says what.\n\n**Objects and variables** — A variable is a named region of memory that holds a value of a specific type. In C++ you must declare the type explicitly: `int x;`. Python infers types at runtime; C++ binds them at compile time.\n\n**Assignment and initialization** — Prefer brace (list) initialization: `int x{ 5 };`. It catches narrowing conversions at compile time that `=` silently allows. Copy initialization (`int x = 5;`) still works but is less safe. Direct initialization (`int x(5);`) is mostly legacy.\n\n**`iostream`: `cout`, `cin`, `endl`** — `std::cout` prints to stdout using `<<`; `std::cin` reads from stdin using `>>`. Use `'\\n'` over `std::endl` — `endl` flushes the buffer every time, which is slow in loops.\n\n**Uninitialized variables and undefined behavior** — Reading an uninitialized variable is undefined behavior (UB). UB can silently corrupt memory, crash the process, or produce wrong output that looks right. Always initialize every variable at the point of declaration.\n\n**Keywords and identifiers** — C++ reserves ~100 keywords (`int`, `return`, `if`, etc.). Identifier rules: start with a letter or underscore, followed by letters, digits, or underscores. `camelCase` or `snake_case` are both common; pick one and stick to it.\n\n**Whitespace and formatting** — The compiler ignores most whitespace. Consistent indentation (4 spaces is idiomatic C++) makes code readable. Auto-format with `clang-format` rather than arguing about style.\n\n**Literals and operators** — A literal is a hard-coded value (`42`, `3.14`, `'A'`). Operators act on operands to produce a result. Operator precedence and associativity determine evaluation order; use parentheses to make intent explicit.\n\n**Expressions** — An expression is anything that evaluates to a value. `2 + 3` is an expression; so is `x = 5` (assignment returns the assigned value). An expression followed by `;` becomes an expression statement.\n\n**Developing your first program** — Build incrementally: write a small piece, compile, test, then extend. Read compiler errors top-to-bottom; the first error usually causes the rest.\n\n### Putting it together\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    // Declare and initialize with brace initialization\n    int apples{ 0 };\n    double price{ 0.0 };\n\n    std::cout << \"Enter number of apples and price each: \";\n    std::cin >> apples >> price;\n\n    // Expression: combines variables and arithmetic operator\n    std::cout << \"Total: \" << apples * price << '\\n';\n\n    return 0;\n}\n```\n\nThis single program touches variables, brace initialization, `iostream`, expressions, and the `'\\n'` vs `std::endl` distinction from the chapter.",
+      "summary_md": "## Chapter 1 Summary\n\nThis chapter covered the foundational building blocks of C++ programs. Here is a condensed review of each topic.\n\n**Statements and program structure** — A C++ program is a collection of functions; execution starts at `main()`, which must return `int`. Every statement ends with a semicolon. Unlike Python, whitespace and indentation are cosmetic, not syntactic.\n\n**Comments** — `//` for single-line comments, `/* */` for block comments. Prefer explaining *why* over *what*; the code already says what.\n\n**Objects and variables** — A variable is a named region of memory that holds a value of a specific type. In C++ you must declare the type explicitly: `int x;`. Python infers types at runtime; C++ binds them at compile time.\n\n**Assignment and initialization** — Prefer brace (list) initialization: `int x{ 5 };`. It catches narrowing conversions at compile time that `=` silently allows. Copy initialization (`int x = 5;`) still works but is less safe. Direct initialization (`int x(5);`) is mostly legacy.\n\n**`iostream`: `cout`, `cin`, `endl`** — `std::cout` prints to stdout using `<<`; `std::cin` reads from stdin using `>>`. Use `'\\n'` over `std::endl` — `endl` flushes the buffer every time, which is slow in loops.\n\n**Uninitialized variables and undefined behavior** — Reading an uninitialized variable is undefined behavior (UB). UB can silently corrupt memory, crash the process, or produce wrong output that looks right. Always initialize every variable at the point of declaration.\n\n**Keywords and identifiers** — C++ reserves ~100 keywords (`int`, `return`, etc.). Identifier rules: start with a letter or underscore, followed by letters, digits, or underscores. `camelCase` or `snake_case` are both common; pick one and stick to it.\n\n**Whitespace and formatting** — The compiler ignores most whitespace. Consistent indentation (4 spaces is idiomatic C++) makes code readable. Auto-format with `clang-format` rather than arguing about style.\n\n**Literals and operators** — A literal is a hard-coded value (e.g. `42`, `0`, `-7`). Operators act on operands to produce a result. Operator precedence and associativity determine evaluation order; use parentheses to make intent explicit.\n\n**Expressions** — An expression is anything that evaluates to a value. `2 + 3` is an expression; so is `x = 5` (assignment returns the assigned value). An expression followed by `;` becomes an expression statement.\n\n**Developing your first program** — Build incrementally: write a small piece, compile, test, then extend. Read compiler errors top-to-bottom; the first error usually causes the rest.\n\n### Putting it together\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    // Declare and initialize with brace initialization\n    int apples{ 0 };\n    int price_cents{ 0 };\n\n    std::cout << \"Enter number of apples and price (cents) each: \";\n    std::cin >> apples >> price_cents;\n\n    // Expression: combines variables and arithmetic operator\n    int total_cents{ apples * price_cents };\n    std::cout << \"Total: \" << total_cents << \" cents\" << '\\n';\n\n    return 0;\n}\n```\n\nThis single program touches variables, brace initialization, `iostream`, expressions, and the `'\\n'` vs `std::endl` distinction from the chapter.",
       "exercises": [
         {
-          "title": "Temperature Converter",
-          "prompt_md": "Write a program that converts temperatures between Celsius and Fahrenheit.\n\nYour program should:\n1. Prompt the user to enter a temperature value\n2. Prompt the user to enter the input unit ('C' for Celsius or 'F' for Fahrenheit)\n3. Convert the temperature to the other unit using the formulas:\n   - Celsius to Fahrenheit: (C × 9/5) + 32\n   - Fahrenheit to Celsius: (F - 32) × 5/9\n4. Output the result with the new unit\n\n**Requirements:**\n- Use proper variable initialization (not leaving variables uninitialized)\n- Use `std::cin` to read the temperature and unit\n- Use `std::cout` to display the result\n- Handle both 'C' and 'F' input (case-sensitive)\n- Round the result to 1 decimal place\n\n**Example:**\n- Input: `25` and `C` → Output: `77.0 F`\n- Input: `68` and `F` → Output: `20.0 C`",
-          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    // TODO: Declare and initialize temperature and unit variables\n    \n    // TODO: Prompt user for temperature value\n    \n    // TODO: Prompt user for unit ('C' or 'F')\n    \n    // TODO: Perform the appropriate conversion based on the unit\n    \n    // TODO: Output the converted temperature with 1 decimal place and new unit\n    \n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double temperature{};\n    char unit{};\n    \n    std::cout << \"Enter temperature: \";\n    std::cin >> temperature;\n    \n    std::cout << \"Enter unit (C/F): \";\n    std::cin >> unit;\n    \n    double result{};\n    char resultUnit{};\n    \n    if (unit == 'C') {\n        result = (temperature * 9.0 / 5.0) + 32.0;\n        resultUnit = 'F';\n    } else if (unit == 'F') {\n        result = (temperature - 32.0) * 5.0 / 9.0;\n        resultUnit = 'C';\n    }\n    \n    std::cout << std::fixed << std::setprecision(1) << result << \" \" << resultUnit << std::endl;\n    \n    return 0;\n}\n",
+          "title": "Time Breakdown",
+          "prompt_md": "## Time Breakdown\n\nWrite a program that reads a total number of seconds (a positive integer) from stdin and breaks it down into hours, minutes, and remaining seconds.\n\nRecall:\n- 1 minute = 60 seconds\n- 1 hour = 3600 seconds\n\nUse integer division (`/`) and the remainder operator (`%`) to extract each component.\n\nPrint exactly three lines in this format:\n\n```\nHours: <value>\nMinutes: <value>\nSeconds: <value>\n```\n\n### Example\n\n**Input:**\n```\n3661\n```\n\n**Output:**\n```\nHours: 1\nMinutes: 1\nSeconds: 1\n```\n\n(3661 = 1*3600 + 1*60 + 1)\n\nRequirements:\n- Use `std::cin` to read input\n- Use `std::cout` with `'\\n'` for output\n- Initialize all variables at the point of declaration",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int total_seconds{};\n    std::cin >> total_seconds;\n\n    // TODO: compute hours using integer division by 3600\n    // TODO: compute the remaining seconds after removing hours\n    // TODO: compute minutes from the remaining seconds\n    // TODO: compute the final leftover seconds\n\n    // TODO: print Hours, Minutes, and Seconds\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int total_seconds{};\n    std::cin >> total_seconds;\n\n    int hours{ total_seconds / 3600 };\n    int remaining{ total_seconds % 3600 };\n    int minutes{ remaining / 60 };\n    int seconds{ remaining % 60 };\n\n    std::cout << \"Hours: \" << hours << '\\n';\n    std::cout << \"Minutes: \" << minutes << '\\n';\n    std::cout << \"Seconds: \" << seconds << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: Celsius to Fahrenheit",
-              "stdin": "25\nC\n",
-              "expected_stdout": "77.0 F\n",
+              "label": "Sample: 3661 seconds",
+              "stdin": "3661",
+              "expected_stdout": "Hours: 1\nMinutes: 1\nSeconds: 1\n",
               "is_sample": true
             },
             {
-              "label": "Fahrenheit to Celsius",
-              "stdin": "68\nF\n",
-              "expected_stdout": "20.0 C\n",
+              "label": "Hidden: exactly one hour",
+              "stdin": "3600",
+              "expected_stdout": "Hours: 1\nMinutes: 0\nSeconds: 0\n",
               "is_sample": false
             },
             {
-              "label": "Zero Celsius",
-              "stdin": "0\nC\n",
-              "expected_stdout": "32.0 F\n",
+              "label": "Hidden: less than a minute",
+              "stdin": "45",
+              "expected_stdout": "Hours: 0\nMinutes: 0\nSeconds: 45\n",
               "is_sample": false
             }
           ]
         },
         {
           "title": "Rectangle Geometry",
-          "prompt_md": "## Rectangle Geometry\n\nWrite a program that reads the integer width and height of a rectangle from stdin (on one line, space-separated), then prints three lines:\n\n```\nPerimeter: <value>\nArea: <value>\nIs square: <yes|no>\n```\n\nRules:\n- Width and height are positive integers between 1 and 1000.\n- A rectangle is a square when width equals height.\n- Use `int` for all variables.\n- Do **not** use any conditional (`if`/else`) syntax — use only expressions, operators, and `std::cout`.\n\n**Sample input:**\n```\n4 7\n```\n\n**Sample output:**\n```\nPerimeter: 22\nArea: 28\nIs square: no\n```\n\n**Hint:** `(width == height)` evaluates to `1` (true) or `0` (false). You can index into a string literal with it: `std::string opts[] = {\"no\", \"yes\"}; opts[width == height]`.",
-          "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    // TODO: declare and brace-initialize width and height as int\n\n    // TODO: read width and height from std::cin\n\n    // TODO: compute perimeter (2 * (w + h)) and area (w * h)\n\n    // TODO: print the three output lines\n    // For \"Is square\", use the array-indexing trick from the hint\n    // (no if/else allowed)\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int width{ 0 };\n    int height{ 0 };\n\n    std::cin >> width >> height;\n\n    int perimeter{ 2 * (width + height) };\n    int area{ width * height };\n\n    // Array trick: index with boolean expression (0 = no, 1 = yes)\n    std::string labels[]{ \"no\", \"yes\" };\n\n    std::cout << \"Perimeter: \" << perimeter << '\\n';\n    std::cout << \"Area: \" << area << '\\n';\n    std::cout << \"Is square: \" << labels[width == height] << '\\n';\n\n    return 0;\n}\n",
+          "prompt_md": "## Rectangle Geometry\n\nWrite a program that reads the integer width and height of a rectangle from stdin (on one line, space-separated), then prints two lines:\n\n```\nPerimeter: <value>\nArea: <value>\n```\n\nFormulas:\n- Perimeter = 2 * (width + height)\n- Area = width * height\n\nRules:\n- Width and height are positive integers.\n- Use `int` for all variables.\n- Initialize every variable at the point of declaration.\n\n**Sample input:**\n```\n4 7\n```\n\n**Sample output:**\n```\nPerimeter: 22\nArea: 28\n```",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare and brace-initialize width and height as int\n\n    // TODO: read width and height from std::cin\n\n    // TODO: compute perimeter (2 * (width + height)) and area (width * height)\n\n    // TODO: print the two output lines\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int width{ 0 };\n    int height{ 0 };\n\n    std::cin >> width >> height;\n\n    int perimeter{ 2 * (width + height) };\n    int area{ width * height };\n\n    std::cout << \"Perimeter: \" << perimeter << '\\n';\n    std::cout << \"Area: \" << area << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
               "label": "Sample: 4x7 rectangle",
               "stdin": "4 7",
-              "expected_stdout": "Perimeter: 22\nArea: 28\nIs square: no\n",
+              "expected_stdout": "Perimeter: 22\nArea: 28\n",
               "is_sample": true
             },
             {
               "label": "Hidden: 5x5 square",
               "stdin": "5 5",
-              "expected_stdout": "Perimeter: 20\nArea: 25\nIs square: yes\n",
+              "expected_stdout": "Perimeter: 20\nArea: 25\n",
               "is_sample": false
             },
             {
-              "label": "Hidden: 1x1000 extreme rectangle",
+              "label": "Hidden: 1x1000",
               "stdin": "1 1000",
-              "expected_stdout": "Perimeter: 2002\nArea: 1000\nIs square: no\n",
+              "expected_stdout": "Perimeter: 2002\nArea: 1000\n",
               "is_sample": false
             }
           ]
         },
         {
-          "title": "Simple Banking Transaction",
-          "prompt_md": "Write a program that simulates a simple bank account transaction.\n\nYour program should:\n1. Start with an initial account balance (you choose a reasonable starting value)\n2. Prompt the user to enter the amount to deposit or withdraw\n3. Prompt the user to enter the transaction type ('D' for deposit, 'W' for withdrawal)\n4. Update the balance accordingly\n5. Display the transaction details and new balance\n\n**Requirements:**\n- Initialize the starting balance to 1000.00\n- Use explicit type declarations for all variables\n- Use `std::cin` for input and `std::cout` for output\n- Display all monetary amounts with exactly 2 decimal places\n- For withdrawals, only process if the balance is sufficient; otherwise display an error message\n- Display the transaction type as full words (\"Deposit\" or \"Withdrawal\")\n\n**Example:**\n- Starting balance: $1000.00\n- Input: `200` and `D` → Output: `Deposit of $200.00 processed. New balance: $1200.00`\n- Input: `150` and `W` → Output: `Withdrawal of $150.00 processed. New balance: $1050.00`\n- Input: `2000` and `W` → Output: `Error: Insufficient funds.`",
-          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    // TODO: Initialize the starting balance\n    double balance{1000.00};\n    \n    // TODO: Display current balance\n    \n    // TODO: Prompt user for transaction amount\n    double amount{};\n    \n    // TODO: Prompt user for transaction type\n    char type{};\n    \n    // TODO: Process the transaction (deposit adds, withdrawal subtracts)\n    // TODO: Check if withdrawal is valid (sufficient funds)\n    \n    // TODO: Display the result with proper formatting\n    \n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double balance{1000.00};\n    \n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Current balance: $\" << balance << std::endl;\n    \n    std::cout << \"Enter amount: \";\n    double amount{};\n    std::cin >> amount;\n    \n    std::cout << \"Enter type (D/W): \";\n    char type{};\n    std::cin >> type;\n    \n    if (type == 'D') {\n        balance = balance + amount;\n        std::cout << \"Deposit of $\" << amount << \" processed. New balance: $\" << balance << std::endl;\n    } else if (type == 'W') {\n        if (amount <= balance) {\n            balance = balance - amount;\n            std::cout << \"Withdrawal of $\" << amount << \" processed. New balance: $\" << balance << std::endl;\n        } else {\n            std::cout << \"Error: Insufficient funds.\" << std::endl;\n        }\n    }\n    \n    return 0;\n}\n",
+          "title": "Digit Extractor",
+          "prompt_md": "## Digit Extractor\n\nWrite a program that reads a three-digit positive integer from stdin and prints each digit separately.\n\nUse integer division (`/`) and remainder (`%`) to extract the hundreds, tens, and ones digits.\n\nFor the number `537`:\n- Hundreds digit: `537 / 100` = `5`\n- Tens digit: `537 / 10 % 10` = `3`\n- Ones digit: `537 % 10` = `7`\n\nPrint four lines in exactly this format:\n\n```\nNumber: <input>\nHundreds: <value>\nTens: <value>\nOnes: <value>\n```\n\n### Example\n\n**Input:**\n```\n537\n```\n\n**Output:**\n```\nNumber: 537\nHundreds: 5\nTens: 3\nOnes: 7\n```\n\nRequirements:\n- The input is always a three-digit number (100-999)\n- Use `std::cin` for input and `std::cout` with `'\\n'` for output\n- Initialize all variables at the point of declaration",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int number{};\n    std::cin >> number;\n\n    // TODO: extract the hundreds digit using integer division by 100\n    // TODO: extract the tens digit using division by 10 then remainder by 10\n    // TODO: extract the ones digit using remainder by 10\n\n    // TODO: print the four output lines\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int number{};\n    std::cin >> number;\n\n    int hundreds{ number / 100 };\n    int tens{ number / 10 % 10 };\n    int ones{ number % 10 };\n\n    std::cout << \"Number: \" << number << '\\n';\n    std::cout << \"Hundreds: \" << hundreds << '\\n';\n    std::cout << \"Tens: \" << tens << '\\n';\n    std::cout << \"Ones: \" << ones << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: Valid Deposit",
-              "stdin": "200\nD\n",
-              "expected_stdout": "Current balance: $1000.00\nDeposit of $200.00 processed. New balance: $1200.00\n",
+              "label": "Sample: 537",
+              "stdin": "537",
+              "expected_stdout": "Number: 537\nHundreds: 5\nTens: 3\nOnes: 7\n",
               "is_sample": true
             },
             {
-              "label": "Valid Withdrawal",
-              "stdin": "150\nW\n",
-              "expected_stdout": "Current balance: $1000.00\nWithdrawal of $150.00 processed. New balance: $850.00\n",
+              "label": "Hidden: 100",
+              "stdin": "100",
+              "expected_stdout": "Number: 100\nHundreds: 1\nTens: 0\nOnes: 0\n",
               "is_sample": false
             },
             {
-              "label": "Insufficient Funds",
-              "stdin": "2000\nW\n",
-              "expected_stdout": "Current balance: $1000.00\nError: Insufficient funds.\n",
+              "label": "Hidden: 999",
+              "stdin": "999",
+              "expected_stdout": "Number: 999\nHundreds: 9\nTens: 9\nOnes: 9\n",
               "is_sample": false
             }
           ]
         },
         {
-          "title": "Temperature Converter",
-          "prompt_md": "## Temperature Converter\n\nWrite a program that reads a temperature value and a unit character from stdin (space-separated), then converts and prints the result.\n\n- If the unit is `C`, convert Celsius to Fahrenheit: `F = (C * 9 / 5.0) + 32`\n- If the unit is `F`, convert Fahrenheit to Celsius: `C = (F - 32) * 5 / 9.0`\n\nUse `double` for the temperature value. Print the result rounded to two decimal places using `std::fixed` and `std::setprecision(2)` from `<iomanip>`.\n\nOutput format (exactly):\n```\n<result> <target_unit>\n```\nwhere `<target_unit>` is `F` when converting from Celsius, and `C` when converting from Fahrenheit.\n\n**Sample input:**\n```\n100 C\n```\n\n**Sample output:**\n```\n212.00 F\n```\n\n**Constraints:**\n- Temperature is a valid `double`.\n- Unit is always exactly `C` or `F`.\n- You may use `if`/`else` for this exercise.\n\n**Hint:** You need `#include <iomanip>` for `std::fixed` and `std::setprecision`.",
-          "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    // TODO: declare and brace-initialize a double for temperature\n    //       and a char for the unit\n\n    // TODO: read temperature and unit from std::cin\n\n    // TODO: compute the converted value based on the unit\n\n    // TODO: print the result with std::fixed and std::setprecision(2),\n    //       followed by a space and the target unit letter\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    double temperature{ 0.0 };\n    char unit{ ' ' };\n\n    std::cin >> temperature >> unit;\n\n    double result{ 0.0 };\n    char targetUnit{ ' ' };\n\n    if (unit == 'C')\n    {\n        result = (temperature * 9 / 5.0) + 32.0;\n        targetUnit = 'F';\n    }\n    else\n    {\n        result = (temperature - 32.0) * 5 / 9.0;\n        targetUnit = 'C';\n    }\n\n    std::cout << std::fixed << std::setprecision(2)\n              << result << ' ' << targetUnit << '\\n';\n\n    return 0;\n}\n",
+          "title": "Money Breakdown",
+          "prompt_md": "## Money Breakdown\n\nWrite a program that reads a total amount in cents (a positive integer) from stdin and breaks it down into the fewest number of coins: quarters (25c), dimes (10c), nickels (5c), and pennies (1c).\n\nUse integer division (`/`) and remainder (`%`) to compute each coin count.\n\nPrint five lines in exactly this format:\n\n```\nTotal: <input> cents\nQuarters: <value>\nDimes: <value>\nNickels: <value>\nPennies: <value>\n```\n\n### Example\n\n**Input:**\n```\n87\n```\n\n**Output:**\n```\nTotal: 87 cents\nQuarters: 3\nDimes: 1\nNickels: 0\nPennies: 2\n```\n\n(87 = 3*25 + 1*10 + 0*5 + 2*1)\n\nRequirements:\n- Use `std::cin` for input and `std::cout` with `'\\n'` for output\n- Initialize all variables at the point of declaration\n- Use descriptive variable names",
+          "starter_code": "#include <iostream>\n\nint main() {\n    int total_cents{};\n    std::cin >> total_cents;\n\n    // TODO: compute quarters, then update remaining cents\n    // TODO: compute dimes, then update remaining cents\n    // TODO: compute nickels, then pennies are whatever is left\n\n    // TODO: print the five output lines\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main() {\n    int total_cents{};\n    std::cin >> total_cents;\n\n    int quarters{ total_cents / 25 };\n    int remaining{ total_cents % 25 };\n\n    int dimes{ remaining / 10 };\n    remaining = remaining % 10;\n\n    int nickels{ remaining / 5 };\n    int pennies{ remaining % 5 };\n\n    std::cout << \"Total: \" << total_cents << \" cents\" << '\\n';\n    std::cout << \"Quarters: \" << quarters << '\\n';\n    std::cout << \"Dimes: \" << dimes << '\\n';\n    std::cout << \"Nickels: \" << nickels << '\\n';\n    std::cout << \"Pennies: \" << pennies << '\\n';\n\n    return 0;\n}\n",
           "test_cases": [
             {
-              "label": "Sample: 100C to Fahrenheit",
-              "stdin": "100 C",
-              "expected_stdout": "212.00 F\n",
+              "label": "Sample: 87 cents",
+              "stdin": "87",
+              "expected_stdout": "Total: 87 cents\nQuarters: 3\nDimes: 1\nNickels: 0\nPennies: 2\n",
               "is_sample": true
             },
             {
-              "label": "Hidden: 32F to Celsius (freezing point)",
-              "stdin": "32 F",
-              "expected_stdout": "0.00 C\n",
+              "label": "Hidden: 1 cent",
+              "stdin": "1",
+              "expected_stdout": "Total: 1 cents\nQuarters: 0\nDimes: 0\nNickels: 0\nPennies: 1\n",
               "is_sample": false
             },
             {
-              "label": "Hidden: -40C to Fahrenheit (crossover point)",
-              "stdin": "-40 C",
-              "expected_stdout": "-40.00 F\n",
+              "label": "Hidden: exact dollar",
+              "stdin": "100",
+              "expected_stdout": "Total: 100 cents\nQuarters: 4\nDimes: 0\nNickels: 0\nPennies: 0\n",
               "is_sample": false
             }
           ]

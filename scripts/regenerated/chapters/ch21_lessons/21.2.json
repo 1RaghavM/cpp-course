@@ -1,0 +1,60 @@
+{
+  "number": "21.2",
+  "title": "Overloading the arithmetic operators using friend functions",
+  "sort_order": 1,
+  "summary_md": "In lesson 21.1 you learned that operator overloading lets you define how operators work with your own types. The arithmetic operators (`+`, `-`, `*`, `/`) are among the most commonly overloaded. The cleanest way to implement them is as **friend functions** -- non-member functions that have direct access to a class's private members.\n\nA friend arithmetic operator takes two parameters (the left and right operands), performs the computation, and **returns the result by value**. Returning by value is essential because the result is a new object -- it does not modify either operand. Both parameters should be `const` references to avoid unnecessary copies and to allow the operator to work with const objects.\n\n```cpp\n#include <iostream>\n\nclass Cents {\nprivate:\n    int m_cents{};\npublic:\n    Cents(int cents) : m_cents{cents} {}\n    friend Cents operator+(const Cents& a, const Cents& b);\n    int getCents() const { return m_cents; }\n};\n\nCents operator+(const Cents& a, const Cents& b) {\n    return Cents{a.m_cents + b.m_cents};\n}\n\nint main() {\n    Cents sum{Cents{12} + Cents{8}};\n    std::cout << sum.getCents() << '\\n'; // 20\n}\n```\n\nThe `friend` declaration inside the class grants the standalone `operator+` function access to `m_cents`. The function itself is defined outside the class and is not a member -- it lives at namespace scope.\n\nThe pattern is identical for `-`, `*`, and `/`: replace the `+` with the desired operator and change the arithmetic inside the body. Each overload is independent, so you only define the ones that make sense for your type.\n\nWhy friend functions instead of member functions? When a binary operator is a member, the left operand must be an object of that class. A friend function treats both sides symmetrically, which matters once you start mixing types (e.g., `Cents + int`). Friend functions also keep the operator logic out of the class definition, reducing clutter.\n\nKey rules to remember: always pass operands by `const&`, always return the new object by value, and only grant friendship for operators that genuinely need access to private data. If the operator can be implemented entirely through the public interface, prefer a plain non-member non-friend function instead.",
+  "exercises": [
+    {
+      "title": "Fraction Addition and Subtraction",
+      "prompt_md": "## Goal\n\nImplement a `Fraction` class with overloaded `+` and `-` operators as friend functions.\n\n## Input\n\n- Line 1: four integers `n1 d1 n2 d2` representing two fractions `n1/d1` and `n2/d2` (denominators are always positive and non-zero, -1000 <= n1, n2 <= 1000, 1 <= d1, d2 <= 1000).\n\n## Output\n\n- Line 1: the result of adding the two fractions, printed as `n/d`.\n- Line 2: the result of subtracting the second fraction from the first, printed as `n/d`.\n\nResults do not need to be reduced to lowest terms. Use the formula: `a/b + c/d = (a*d + c*b) / (b*d)` and `a/b - c/d = (a*d - c*b) / (b*d)`.\n\n## Requirements\n\n- Define a class `Fraction` with private members `int m_num` and `int m_den`.\n- Provide a constructor `Fraction(int num, int den)`.\n- Overload `operator+` and `operator-` as **friend functions** that return `Fraction` by value.\n- Provide a public `void print() const` member that outputs the fraction as `<num>/<den>` followed by `'\\n'`.\n- Both operator parameters must be `const Fraction&`.",
+      "starter_code": "#include <iostream>\n\nclass Fraction {\nprivate:\n    int m_num{};\n    int m_den{};\npublic:\n    Fraction(int num, int den) : m_num{num}, m_den{den} {}\n\n    // TODO: Declare friend operator+ and operator-\n\n    void print() const {\n        std::cout << m_num << '/' << m_den << '\\n';\n    }\n};\n\n// TODO: Define operator+ (friend function)\n\n// TODO: Define operator- (friend function)\n\nint main() {\n    int n1{}, d1{}, n2{}, d2{};\n    std::cin >> n1 >> d1 >> n2 >> d2;\n\n    Fraction a{n1, d1};\n    Fraction b{n2, d2};\n\n    Fraction sum{a + b};\n    sum.print();\n\n    Fraction diff{a - b};\n    diff.print();\n\n    return 0;\n}",
+      "solution_code": "#include <iostream>\n\nclass Fraction {\nprivate:\n    int m_num{};\n    int m_den{};\npublic:\n    Fraction(int num, int den) : m_num{num}, m_den{den} {}\n\n    friend Fraction operator+(const Fraction& a, const Fraction& b);\n    friend Fraction operator-(const Fraction& a, const Fraction& b);\n\n    void print() const {\n        std::cout << m_num << '/' << m_den << '\\n';\n    }\n};\n\nFraction operator+(const Fraction& a, const Fraction& b) {\n    return Fraction{a.m_num * b.m_den + b.m_num * a.m_den, a.m_den * b.m_den};\n}\n\nFraction operator-(const Fraction& a, const Fraction& b) {\n    return Fraction{a.m_num * b.m_den - b.m_num * a.m_den, a.m_den * b.m_den};\n}\n\nint main() {\n    int n1{}, d1{}, n2{}, d2{};\n    std::cin >> n1 >> d1 >> n2 >> d2;\n\n    Fraction a{n1, d1};\n    Fraction b{n2, d2};\n\n    Fraction sum{a + b};\n    sum.print();\n\n    Fraction diff{a - b};\n    diff.print();\n\n    return 0;\n}",
+      "test_cases": [
+        {
+          "label": "Sample: simple fractions",
+          "is_sample": true,
+          "stdin": "1 2 3 4",
+          "expected_stdout": "10/8\n-2/8\n"
+        },
+        {
+          "label": "Hidden: negative numerators",
+          "is_sample": false,
+          "stdin": "-3 5 2 5",
+          "expected_stdout": "-5/25\n-25/25\n"
+        },
+        {
+          "label": "Hidden: same denominator",
+          "is_sample": false,
+          "stdin": "7 3 2 3",
+          "expected_stdout": "27/9\n15/9\n"
+        }
+      ]
+    },
+    {
+      "title": "Vector2D Arithmetic",
+      "prompt_md": "## Goal\n\nImplement a `Vector2D` class with overloaded `*` and `/` operators as friend functions. The `*` operator scales a vector by an integer scalar, and `/` divides each component by an integer divisor using integer division.\n\n## Input\n\n- Line 1: two integers `x y` representing the vector components (-10000 <= x, y <= 10000).\n- Line 2: an integer `s` for the scalar multiplier (1 <= s <= 100).\n- Line 3: an integer `d` for the divisor (1 <= d <= 100).\n\n## Output\n\n- Line 1: the result of `vector * s`, printed as `(x, y)`.\n- Line 2: the result of `vector / d`, printed as `(x, y)`.\n\n## Requirements\n\n- Define a class `Vector2D` with private members `int m_x` and `int m_y`.\n- Provide a constructor `Vector2D(int x, int y)`.\n- Overload `operator*` as a friend function taking `const Vector2D&` and `int`, returning `Vector2D` by value.\n- Overload `operator/` as a friend function taking `const Vector2D&` and `int`, returning `Vector2D` by value.\n- Provide a public `void print() const` member that outputs `(<m_x>, <m_y>)` followed by `'\\n'`.\n- Division uses standard integer division (truncation toward zero).",
+      "starter_code": "#include <iostream>\n\nclass Vector2D {\nprivate:\n    int m_x{};\n    int m_y{};\npublic:\n    Vector2D(int x, int y) : m_x{x}, m_y{y} {}\n\n    // TODO: Declare friend operator* and operator/\n\n    void print() const {\n        std::cout << '(' << m_x << \", \" << m_y << ')' << '\\n';\n    }\n};\n\n// TODO: Define operator* (Vector2D * int)\n\n// TODO: Define operator/ (Vector2D / int)\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n\n    int s{}, d{};\n    std::cin >> s >> d;\n\n    Vector2D v{x, y};\n\n    Vector2D scaled{v * s};\n    scaled.print();\n\n    Vector2D divided{v / d};\n    divided.print();\n\n    return 0;\n}",
+      "solution_code": "#include <iostream>\n\nclass Vector2D {\nprivate:\n    int m_x{};\n    int m_y{};\npublic:\n    Vector2D(int x, int y) : m_x{x}, m_y{y} {}\n\n    friend Vector2D operator*(const Vector2D& v, int s);\n    friend Vector2D operator/(const Vector2D& v, int d);\n\n    void print() const {\n        std::cout << '(' << m_x << \", \" << m_y << ')' << '\\n';\n    }\n};\n\nVector2D operator*(const Vector2D& v, int s) {\n    return Vector2D{v.m_x * s, v.m_y * s};\n}\n\nVector2D operator/(const Vector2D& v, int d) {\n    return Vector2D{v.m_x / d, v.m_y / d};\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n\n    int s{}, d{};\n    std::cin >> s >> d;\n\n    Vector2D v{x, y};\n\n    Vector2D scaled{v * s};\n    scaled.print();\n\n    Vector2D divided{v / d};\n    divided.print();\n\n    return 0;\n}",
+      "test_cases": [
+        {
+          "label": "Sample: basic scale and divide",
+          "is_sample": true,
+          "stdin": "3 4\n5\n2",
+          "expected_stdout": "(15, 20)\n(1, 2)\n"
+        },
+        {
+          "label": "Hidden: negative components",
+          "is_sample": false,
+          "stdin": "-6 9\n3\n4",
+          "expected_stdout": "(-18, 27)\n(-1, 2)\n"
+        },
+        {
+          "label": "Hidden: zero components",
+          "is_sample": false,
+          "stdin": "0 -10\n7\n3",
+          "expected_stdout": "(0, -70)\n(0, -3)\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "number": "17.3",
+  "title": "Passing and returning std::array",
+  "sort_order": 2,
+  "summary_md": "## Passing and Returning std::array\n\nBecause `std::array` is a class type, passing it by value copies every element. For any non-trivial size this is wasteful, so the standard practice is to pass by **const reference** when the function only reads the data.\n\n```cpp\n#include <array>\n#include <cstddef>\n#include <iostream>\n\ntemplate <typename T, std::size_t N>\nvoid printArray(const std::array<T, N>& arr)\n{\n    for (std::size_t i{ 0 }; i < N; ++i)\n        std::cout << arr[i] << ' ';\n    std::cout << '\\n';\n}\n\nint main()\n{\n    std::array a{ 10, 20, 30, 40 };\n    printArray(a);\n}\n```\n\n### Why a function template?\n\nThe element type **and** the length are both part of `std::array`'s type. A function that accepts `const std::array<int, 4>&` refuses a `std::array<int, 5>`. To write a function that works with any size, make it a template parameterized on `T` and `N` (a non-type template parameter of type `std::size_t`). Inside the function body you can use `N` directly instead of calling `.size()`.\n\nIf the function must modify elements, drop the `const` and pass by plain reference (`std::array<T, N>&`).\n\n### Returning std::array\n\nReturning a `std::array` by value is safe and idiomatic. The compiler applies copy elision (or move semantics) so no redundant copies are made in practice. Simply declare the return type and return a local or brace-initialized array.\n\n### Why std::array beats C-style arrays here\n\nC-style arrays silently decay to pointers when passed to a function, losing their length information entirely. `std::array` never decays: the function always knows both the element type and the size at compile time. This is one of the strongest reasons to prefer `std::array` over C-style arrays in modern C++.\n\n### Guidelines\n\n- Pass by `const&` for read-only access, by `&` when the function must modify elements.\n- Use a function template when the function should work with multiple array sizes.\n- Return `std::array` by value freely -- the compiler optimizes away the copy.",
+  "exercises": [
+    {
+      "title": "Sum and Average via Const Reference",
+      "prompt_md": "## Goal\nWrite a function template that computes the sum and average of a `std::array` passed by const reference.\n\n## Input\n- Line 1: an integer `N` (1 <= N <= 5) indicating how many elements follow.\n- Line 2: exactly `N` integers separated by spaces.\n\nBecause `std::array` sizes must be compile-time constants, we handle this with a fixed-size array: read into a `std::array<int, 5>` and also read `N` to know how many elements are valid.\n\n## Output\nExactly two lines:\n- Line 1: `Sum: <S>` where `<S>` is the sum of the first `N` elements.\n- Line 2: `Avg: <A>` where `<A>` is the integer average (sum divided by `N`, using integer division).\n\n## Requirements\n1. Write a function template with signature:\n   ```\n   template <typename T, std::size_t N>\n   T arraySum(const std::array<T, N>& arr, std::size_t count)\n   ```\n   It returns the sum of the first `count` elements of `arr`.\n2. Pass the array by **const reference** -- do not pass by value.\n3. In `main`, declare `std::array<int, 5> arr{};`, read `N`, then read `N` values into the array using a loop and `operator[]`.\n4. Call `arraySum` and use its result to print the sum and the integer average.\n5. You may use `#include <array>`, `#include <cstddef>`, and `#include <iostream>`.",
+      "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\n// TODO: Write a function template arraySum\n//       template <typename T, std::size_t N>\n//       T arraySum(const std::array<T, N>& arr, std::size_t count)\n//       Return the sum of the first 'count' elements.\n\nint main()\n{\n    std::array<int, 5> arr{};\n    std::size_t n{};\n    std::cin >> n;\n\n    // TODO: Read n integers into arr\n\n    // TODO: Call arraySum, print Sum and Avg\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\ntemplate <typename T, std::size_t N>\nT arraySum(const std::array<T, N>& arr, std::size_t count)\n{\n    T sum{};\n    for (std::size_t i{ 0 }; i < count; ++i)\n        sum += arr[i];\n    return sum;\n}\n\nint main()\n{\n    std::array<int, 5> arr{};\n    std::size_t n{};\n    std::cin >> n;\n\n    for (std::size_t i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    int sum{ arraySum(arr, n) };\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << \"Avg: \" << sum / static_cast<int>(n) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- three elements",
+          "is_sample": true,
+          "stdin": "3\n10 20 30\n",
+          "expected_stdout": "Sum: 60\nAvg: 20\n"
+        },
+        {
+          "label": "Hidden -- five elements with truncating average",
+          "is_sample": false,
+          "stdin": "5\n1 2 3 4 5\n",
+          "expected_stdout": "Sum: 15\nAvg: 3\n"
+        },
+        {
+          "label": "Hidden -- single element",
+          "is_sample": false,
+          "stdin": "1\n42\n",
+          "expected_stdout": "Sum: 42\nAvg: 42\n"
+        }
+      ]
+    },
+    {
+      "title": "Build and Return a Multiplication Table Row",
+      "prompt_md": "## Goal\nWrite a function that builds a `std::array` representing a row of a multiplication table and returns it by value. Then write a print function that takes the array by const reference.\n\n## Input\n- A single integer `M` (1 <= M <= 10) on one line -- the multiplier.\n\n## Output\nPrint the first 5 multiples of `M`, separated by spaces, on a single line. For example, if `M` is 3 the output is:\n```\n3 6 9 12 15\n```\nNo trailing space, one trailing newline.\n\n## Requirements\n1. Write a function with this signature:\n   ```\n   std::array<int, 5> buildRow(int multiplier)\n   ```\n   It creates a local `std::array<int, 5>`, fills it so that `arr[i] = multiplier * (i + 1)` for each index, and returns it **by value**.\n2. Write a function template with this signature:\n   ```\n   template <typename T, std::size_t N>\n   void printArray(const std::array<T, N>& arr)\n   ```\n   It prints every element separated by a single space, with no trailing space, followed by `'\\n'`.\n3. In `main`, read `M`, call `buildRow`, and pass the result to `printArray`.\n4. You may use `#include <array>`, `#include <cstddef>`, and `#include <iostream>`.",
+      "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\n// TODO: Write std::array<int, 5> buildRow(int multiplier)\n//       Return an array where arr[i] = multiplier * (i + 1).\n\n// TODO: Write a function template printArray\n//       template <typename T, std::size_t N>\n//       void printArray(const std::array<T, N>& arr)\n//       Print elements separated by spaces, no trailing space, end with '\\n'.\n\nint main()\n{\n    int m{};\n    std::cin >> m;\n\n    // TODO: Call buildRow and pass the result to printArray\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nstd::array<int, 5> buildRow(int multiplier)\n{\n    std::array<int, 5> row{};\n    for (std::size_t i{ 0 }; i < 5; ++i)\n        row[i] = multiplier * static_cast<int>(i + 1);\n    return row;\n}\n\ntemplate <typename T, std::size_t N>\nvoid printArray(const std::array<T, N>& arr)\n{\n    for (std::size_t i{ 0 }; i < N; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main()\n{\n    int m{};\n    std::cin >> m;\n\n    auto row{ buildRow(m) };\n    printArray(row);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- multiplier 3",
+          "is_sample": true,
+          "stdin": "3\n",
+          "expected_stdout": "3 6 9 12 15\n"
+        },
+        {
+          "label": "Hidden -- multiplier 1",
+          "is_sample": false,
+          "stdin": "1\n",
+          "expected_stdout": "1 2 3 4 5\n"
+        },
+        {
+          "label": "Hidden -- multiplier 10",
+          "is_sample": false,
+          "stdin": "10\n",
+          "expected_stdout": "10 20 30 40 50\n"
+        }
+      ]
+    }
+  ]
+}

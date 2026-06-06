@@ -45,6 +45,17 @@ export function SummaryView({ markdown }: SummaryViewProps) {
         );
       }
 
+      if (codeString.includes("\n")) {
+        return (
+          <code
+            className="block text-sm font-mono text-brand-bright"
+            {...rest}
+          >
+            {children}
+          </code>
+        );
+      }
+
       return (
         <code
           className="rounded-md bg-elevated px-1.5 py-0.5 text-sm font-mono text-brand-bright"
@@ -52,6 +63,16 @@ export function SummaryView({ markdown }: SummaryViewProps) {
         >
           {children}
         </code>
+      );
+    },
+    pre({ children, ...rest }) {
+      return (
+        <pre
+          className="rounded-lg bg-elevated border border-border p-3 overflow-x-auto"
+          {...rest}
+        >
+          {children}
+        </pre>
       );
     },
   };

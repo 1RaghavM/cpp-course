@@ -33,7 +33,7 @@ function BranchNew({ dispatch }: { dispatch: React.Dispatch<Action> }) {
       <motion.button
         type="button"
         className="ob-primary-btn"
-        onClick={() => dispatch({ type: "SET_START_MODULE", module: "variables" })}
+        onClick={() => dispatch({ type: "SET_START_MODULE", module: "intro-basics" })}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.35 }}
@@ -75,13 +75,13 @@ function BranchOtherLang({ dispatch }: { dispatch: React.Dispatch<Action> }) {
         <OptionCard
           label="Yes, skip to what's different"
           onSelect={() =>
-            dispatch({ type: "SET_START_MODULE", module: "variables", fastTrack: true })
+            dispatch({ type: "SET_START_MODULE", module: "intro-basics", fastTrack: true })
           }
         />
         <OptionCard
           label="No, walk me through everything"
           onSelect={() =>
-            dispatch({ type: "SET_START_MODULE", module: "variables", fastTrack: false })
+            dispatch({ type: "SET_START_MODULE", module: "intro-basics", fastTrack: false })
           }
         />
       </motion.div>
@@ -90,9 +90,9 @@ function BranchOtherLang({ dispatch }: { dispatch: React.Dispatch<Action> }) {
 }
 
 const SELF_SELECT: { label: string; module: ModuleId }[] = [
-  { label: "Memory & pointers", module: "pointers" },
-  { label: "Classes & RAII", module: "classes" },
-  { label: "STL & templates", module: "vectors-maps" },
+  { label: "References & pointers", module: "refs-pointers" },
+  { label: "Classes", module: "classes" },
+  { label: "Vectors & arrays", module: "vectors-arrays" },
 ];
 
 function BranchSomeCpp({ dispatch }: { dispatch: React.Dispatch<Action> }) {
@@ -133,7 +133,7 @@ function BranchSomeCpp({ dispatch }: { dispatch: React.Dispatch<Action> }) {
         />
         <OptionCard
           label="Actually, start me from the basics"
-          onSelect={() => dispatch({ type: "SET_START_MODULE", module: "variables" })}
+          onSelect={() => dispatch({ type: "SET_START_MODULE", module: "intro-basics" })}
         />
       </motion.div>
     </>

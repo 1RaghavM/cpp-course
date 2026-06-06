@@ -1,0 +1,60 @@
+{
+  "number": "13.6",
+  "title": "Scoped enumerations (enum classes)",
+  "sort_order": 5,
+  "summary_md": "## Scoped Enumerations (enum classes)\n\nUnscoped enumerations (`enum`) place their enumerators in the surrounding scope and implicitly convert to integers. This causes two recurring problems: name collisions between enums that share an enumerator name, and accidental arithmetic on values that should not behave like numbers. **Scoped enumerations** (`enum class`) fix both.\n\n### Declaration and Access\n\nDeclare with `enum class` instead of `enum`. Enumerators are accessed through the enum name using the scope resolution operator:\n\n```cpp\n#include <iostream>\n#include <string>\n\nenum class Color { red, green, blue };\nenum class Fruit { red, green, blue };  // no collision with Color::red\n\nstd::string colorToString(Color c) {\n    switch (c) {\n        case Color::red:   return \"red\";\n        case Color::green: return \"green\";\n        case Color::blue:  return \"blue\";\n        default:           return \"unknown\";\n    }\n}\n```\n\nBoth `Color` and `Fruit` define `red`, `green`, `blue` without conflict because each enumerator lives inside its own scope.\n\n### No Implicit Conversion to int\n\nUnlike unscoped enums, a scoped enumerator does **not** implicitly convert to an integer. Passing `Color::red` where an `int` is expected is a compile error. When you genuinely need the underlying integer, use `static_cast`:\n\n```cpp\nint index = static_cast<int>(Color::green); // 1\n```\n\nThis forces every int conversion to be explicit, making accidental misuse visible in code review.\n\n### Specifying the Underlying Type\n\nBy default the underlying type is `int`. You can choose a different integral type after a colon:\n\n```cpp\nenum class Permission : std::uint8_t { read = 1, write = 2, execute = 4 };\n```\n\nThis is useful when memory matters or when you need a specific width for serialization.\n\n### When to Use enum class vs. enum\n\nPrefer `enum class` in new code. The scoping and type safety it provides eliminate entire categories of bugs. Use unscoped `enum` only when you have a deliberate need for implicit integer conversion (rare in modern C++).\n\n### Key Takeaways\n\n- `enum class` enumerators require scope resolution (`Color::red`, not just `red`)\n- No implicit conversion to `int` — use `static_cast` when needed\n- Two `enum class` types can share enumerator names without conflict\n- You can specify the underlying type with `: <type>` after the enum name",
+  "exercises": [
+    {
+      "title": "Traffic Light with Scoped Enum",
+      "prompt_md": "## Goal\nModel a traffic light using a scoped enumeration and print the action a driver should take for each light color.\n\n## Input\n- A single line containing an integer: `0` for red, `1` for yellow, `2` for green.\n\n## Output\nPrint exactly one line in this format:\n```\n<Color>: <Action>\n```\nWhere `<Color>` is `Red`, `Yellow`, or `Green`, and `<Action>` is `Stop`, `Caution`, or `Go` respectively.\n\nIf the input is not 0, 1, or 2, print:\n```\nUnknown: Invalid\n```\n\n## Requirements\n1. Define a scoped enumeration `enum class Light` with enumerators `red`, `yellow`, `green` (in that order, starting from default value 0).\n2. Write a function `std::string lightToString(Light l)` that returns the capitalized color name (`\"Red\"`, `\"Yellow\"`, `\"Green\"`). Use a `switch` statement. Return `\"Unknown\"` for any unrecognized value.\n3. Write a function `std::string lightToAction(Light l)` that returns the action (`\"Stop\"`, `\"Caution\"`, `\"Go\"`). Use a `switch` statement. Return `\"Invalid\"` for any unrecognized value.\n4. In `main`, read an integer from `std::cin`, convert it to a `Light` using `static_cast`, then print the result using the two functions.\n5. All enumerator access must use scope resolution (e.g., `Light::red`). Do not use unscoped enums.\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define enum class Light with enumerators: red, yellow, green\n\n// TODO: Write std::string lightToString(Light l)\n//       Return \"Red\", \"Yellow\", \"Green\", or \"Unknown\"\n\n// TODO: Write std::string lightToAction(Light l)\n//       Return \"Stop\", \"Caution\", \"Go\", or \"Invalid\"\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    // TODO: Convert code to Light using static_cast\n    // TODO: Print \"<Color>: <Action>\" using the two functions\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nenum class Light\n{\n    red,\n    yellow,\n    green\n};\n\nstd::string lightToString(Light l)\n{\n    switch (l)\n    {\n        case Light::red:    return \"Red\";\n        case Light::yellow: return \"Yellow\";\n        case Light::green:  return \"Green\";\n        default:            return \"Unknown\";\n    }\n}\n\nstd::string lightToAction(Light l)\n{\n    switch (l)\n    {\n        case Light::red:    return \"Stop\";\n        case Light::yellow: return \"Caution\";\n        case Light::green:  return \"Go\";\n        default:            return \"Invalid\";\n    }\n}\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    Light light { static_cast<Light>(code) };\n    std::cout << lightToString(light) << \": \" << lightToAction(light) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — green light",
+          "stdin": "2\n",
+          "expected_stdout": "Green: Go\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — red light",
+          "stdin": "0\n",
+          "expected_stdout": "Red: Stop\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — invalid code",
+          "stdin": "5\n",
+          "expected_stdout": "Unknown: Invalid\n",
+          "is_sample": false
+        }
+      ]
+    },
+    {
+      "title": "Permission Checker with Explicit Underlying Type",
+      "prompt_md": "## Goal\nUse a scoped enumeration with an explicit underlying type to model file permissions, then check which permissions a user has.\n\n## Input\n- Line 1: a single integer representing a combined permission value (0-7).\n  - `1` = read, `2` = write, `4` = execute\n  - Values combine additively: `3` = read+write, `5` = read+execute, `6` = write+execute, `7` = all three, `0` = none.\n\n## Output\nPrint exactly three lines, one per permission, in this order:\n```\nRead: <yes/no>\nWrite: <yes/no>\nExecute: <yes/no>\n```\nPrint `yes` if the permission is present in the input value, `no` otherwise.\n\n## Requirements\n1. Define `enum class Permission : int` with enumerators `read = 1`, `write = 2`, `execute = 4`.\n2. Write a function `bool hasPermission(int mask, Permission p)` that returns `true` if the permission bit is set. Use `static_cast<int>(p)` to extract the underlying value, then use bitwise AND (`&`) to test the bit.\n3. In `main`, read the integer mask from `std::cin`, then call `hasPermission` for each of the three permissions in order (read, write, execute).\n4. Print `yes` or `no` based on the return value. Use the exact output format shown above.\n5. All enumerator access must use scope resolution (e.g., `Permission::read`).\n\n## Notes\n- You may use `#include <iostream>` and `#include <string>`.\n- The input will always be an integer in the range 0-7.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define enum class Permission : int\n//       with enumerators: read = 1, write = 2, execute = 4\n\n// TODO: Write bool hasPermission(int mask, Permission p)\n//       Use static_cast<int>(p) and bitwise AND to check the bit\n\nint main()\n{\n    int mask{};\n    std::cin >> mask;\n\n    // TODO: Check each permission and print:\n    //   Read: yes/no\n    //   Write: yes/no\n    //   Execute: yes/no\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nenum class Permission : int\n{\n    read    = 1,\n    write   = 2,\n    execute = 4\n};\n\nbool hasPermission(int mask, Permission p)\n{\n    return (mask & static_cast<int>(p)) != 0;\n}\n\nint main()\n{\n    int mask{};\n    std::cin >> mask;\n\n    std::cout << \"Read: \"    << (hasPermission(mask, Permission::read)    ? \"yes\" : \"no\") << '\\n';\n    std::cout << \"Write: \"   << (hasPermission(mask, Permission::write)   ? \"yes\" : \"no\") << '\\n';\n    std::cout << \"Execute: \" << (hasPermission(mask, Permission::execute) ? \"yes\" : \"no\") << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample — all permissions (7)",
+          "stdin": "7\n",
+          "expected_stdout": "Read: yes\nWrite: yes\nExecute: yes\n",
+          "is_sample": true
+        },
+        {
+          "label": "Hidden — read and execute only (5)",
+          "stdin": "5\n",
+          "expected_stdout": "Read: yes\nWrite: no\nExecute: yes\n",
+          "is_sample": false
+        },
+        {
+          "label": "Hidden — no permissions (0)",
+          "stdin": "0\n",
+          "expected_stdout": "Read: no\nWrite: no\nExecute: no\n",
+          "is_sample": false
+        }
+      ]
+    }
+  ]
+}

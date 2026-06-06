@@ -1,0 +1,60 @@
+{
+  "number": "22.2",
+  "title": "R-value references",
+  "sort_order": 1,
+  "summary_md": "Every expression in C++ is either an **l-value** or an **r-value**. An l-value refers to an object that persists beyond the expression that uses it -- it has an identifiable memory address. Variables, array elements, and dereferenced pointers are l-values. An r-value is a temporary that exists only within the expression that creates it. Literals (other than string literals), the return value of a function that returns by value, and the result of arithmetic operators are all r-values.\n\nAn **l-value reference** (declared with `&`) can bind to an l-value. A `const` l-value reference can also bind to an r-value -- this is why `const std::string&` can accept a temporary string. But a non-const l-value reference cannot bind to an r-value, because modifying a value that is about to be destroyed makes no sense in that context.\n\nC++11 introduced **r-value references**, declared with `&&`. An r-value reference can bind to an r-value but not to an l-value. This gives you a way to write functions that specifically accept temporaries.\n\nWhen an r-value reference binds to a temporary, **the lifetime of that temporary is extended** to match the lifetime of the reference. This means you can safely use the value for as long as the reference exists.\n\n```cpp\n#include <iostream>\n\nvoid printRef(int& x)       { std::cout << \"l-value: \" << x << '\\n'; }\nvoid printRef(int&& x)      { std::cout << \"r-value: \" << x << '\\n'; }\n\nint main()\n{\n    int a{5};\n    printRef(a);       // calls int& overload\n    printRef(3 + 4);   // calls int&& overload\n\n    int&& rref{10};    // r-value ref extends lifetime of temporary\n    std::cout << rref << '\\n'; // 10 -- still valid\n}\n```\n\nR-value references are the key building block for move semantics. Because an r-value reference tells you the bound object is a temporary that nobody else needs, a function receiving one can safely \"steal\" the object's resources instead of copying them. The next lessons will show exactly how move constructors and move assignment operators use this capability. For now, the important takeaway is: `&&` identifies temporaries, and the compiler uses overload resolution to pick the `&&` overload when the argument is an r-value.",
+  "exercises": [
+    {
+      "title": "Classify l-value and r-value",
+      "prompt_md": "## Goal\n\nWrite a program that uses function overloading to determine whether a given expression is passed as an l-value or an r-value, then prints the classification.\n\n## Input\n\n- A single integer `n` (-10000 <= n <= 10000).\n\n## Output\n\n- Three lines of output, one for each of these calls in order:\n  1. Passing the variable `n` directly.\n  2. Passing the literal `42`.\n  3. Passing the expression `n + 1`.\n\nEach line must be exactly one of:\n- `l-value: <value>`\n- `r-value: <value>`\n\nwhere `<value>` is the integer value received by the function.\n\n## Requirements\n\n- Define two overloads of a function `classify`: one taking `int&` and one taking `int&&`.\n- The `int&` overload prints `l-value: ` followed by the value.\n- The `int&&` overload prints `r-value: ` followed by the value.\n- Call `classify` three times in `main` in the order described above.\n- Do not use `std::move`.",
+      "starter_code": "#include <iostream>\n\n// TODO: Define void classify(int& x) that prints \"l-value: \" and the value\n// TODO: Define void classify(int&& x) that prints \"r-value: \" and the value\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call classify with n, then 42, then n + 1\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nvoid classify(int& x)\n{\n    std::cout << \"l-value: \" << x << '\\n';\n}\n\nvoid classify(int&& x)\n{\n    std::cout << \"r-value: \" << x << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    classify(n);\n    classify(42);\n    classify(n + 1);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Input 5: variable, literal, expression",
+          "is_sample": true,
+          "stdin": "5",
+          "expected_stdout": "l-value: 5\nr-value: 42\nr-value: 6\n"
+        },
+        {
+          "label": "Input 0: zero edge case",
+          "is_sample": false,
+          "stdin": "0",
+          "expected_stdout": "l-value: 0\nr-value: 42\nr-value: 1\n"
+        },
+        {
+          "label": "Negative input",
+          "is_sample": false,
+          "stdin": "-7",
+          "expected_stdout": "l-value: -7\nr-value: 42\nr-value: -6\n"
+        }
+      ]
+    },
+    {
+      "title": "R-value reference lifetime extension",
+      "prompt_md": "## Goal\n\nWrite a program that demonstrates r-value reference lifetime extension by binding the result of a computation to an `int&&` and then using that reference in further calculations.\n\n## Input\n\n- A single line with two space-separated integers `a` and `b` (-10000 <= each <= 10000).\n\n## Output\n\nExactly three lines:\n1. `sum: <value>` where `<value>` is `a + b`, read through the r-value reference.\n2. `doubled: <value>` where `<value>` is the sum multiplied by 2, computed using the r-value reference.\n3. `offset: <value>` where `<value>` is the sum plus 100, computed using the r-value reference.\n\n## Requirements\n\n- Compute `a + b` and bind the result to an r-value reference: `int&& ref = a + b;`\n- Use `ref` (not `a` or `b`) for all three printed calculations.\n- Do not use `std::move`.\n- Do not use any classes or structs.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Bind the result of a + b to an r-value reference\n\n    // TODO: Print sum, doubled, and offset using the r-value reference\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int&& ref{a + b};\n\n    std::cout << \"sum: \" << ref << '\\n';\n    std::cout << \"doubled: \" << ref * 2 << '\\n';\n    std::cout << \"offset: \" << ref + 100 << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Positive values 3 and 7",
+          "is_sample": true,
+          "stdin": "3 7",
+          "expected_stdout": "sum: 10\ndoubled: 20\noffset: 110\n"
+        },
+        {
+          "label": "Negative values cancel out",
+          "is_sample": false,
+          "stdin": "-5 5",
+          "expected_stdout": "sum: 0\ndoubled: 0\noffset: 100\n"
+        },
+        {
+          "label": "Both negative",
+          "is_sample": false,
+          "stdin": "-100 -200",
+          "expected_stdout": "sum: -300\ndoubled: -600\noffset: -200\n"
+        }
+      ]
+    }
+  ]
+}

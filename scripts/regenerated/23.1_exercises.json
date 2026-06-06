@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Composition: Room owns a Light",
+    "prompt_md": "## Goal\n\nModel a composition relationship where a `Room` fully owns a `Light`. The light is created when the room is created and destroyed when the room is destroyed. Print messages that trace the lifecycle.\n\n## Input\n\n- A single line containing a string `name` (1-50 characters, no spaces) representing the room name.\n\n## Output\n\nExactly three lines:\n1. `Light created for <name>`\n2. `<name>: light is on`\n3. `Light destroyed for <name>`\n\nwhere `<name>` is the room name read from input.\n\n## Requirements\n\n- Define a class `Light` that takes a `const std::string&` room name in its constructor and stores it.\n- `Light`'s constructor prints `Light created for <name>`.\n- `Light`'s destructor prints `Light destroyed for <name>`.\n- `Light` has a public `void turnOn() const` member function that prints `<name>: light is on`.\n- Define a class `Room` that has a `Light` member variable (composition -- not a pointer). `Room`'s constructor takes a `std::string` name and initializes the `Light` with that name.\n- `Room` has a public `void illuminate() const` method that calls `turnOn()` on its light.\n- In `main`, read the room name, create a `Room` on the stack, and call `illuminate()`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Light\n{\n    std::string m_roomName;\n\npublic:\n    Light(const std::string& roomName)\n        : m_roomName{roomName}\n    {\n        // TODO: Print \"Light created for <roomName>\"\n    }\n\n    ~Light()\n    {\n        // TODO: Print \"Light destroyed for <roomName>\"\n    }\n\n    void turnOn() const\n    {\n        // TODO: Print \"<roomName>: light is on\"\n    }\n};\n\nclass Room\n{\n    Light m_light;\n\npublic:\n    Room(const std::string& name)\n        : m_light{name}\n    {\n    }\n\n    void illuminate() const\n    {\n        // TODO: Call turnOn on the light\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    // TODO: Create a Room and call illuminate()\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Light\n{\n    std::string m_roomName;\n\npublic:\n    Light(const std::string& roomName)\n        : m_roomName{roomName}\n    {\n        std::cout << \"Light created for \" << m_roomName << '\\n';\n    }\n\n    ~Light()\n    {\n        std::cout << \"Light destroyed for \" << m_roomName << '\\n';\n    }\n\n    void turnOn() const\n    {\n        std::cout << m_roomName << \": light is on\" << '\\n';\n    }\n};\n\nclass Room\n{\n    Light m_light;\n\npublic:\n    Room(const std::string& name)\n        : m_light{name}\n    {\n    }\n\n    void illuminate() const\n    {\n        m_light.turnOn();\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Room room{name};\n    room.illuminate();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Kitchen room",
+        "is_sample": true,
+        "stdin": "Kitchen",
+        "expected_stdout": "Light created for Kitchen\nKitchen: light is on\nLight destroyed for Kitchen\n"
+      },
+      {
+        "label": "Bedroom room",
+        "is_sample": false,
+        "stdin": "Bedroom",
+        "expected_stdout": "Light created for Bedroom\nBedroom: light is on\nLight destroyed for Bedroom\n"
+      },
+      {
+        "label": "Garage room",
+        "is_sample": false,
+        "stdin": "Garage",
+        "expected_stdout": "Light created for Garage\nGarage: light is on\nLight destroyed for Garage\n"
+      }
+    ]
+  },
+  {
+    "title": "Aggregation vs dependency",
+    "prompt_md": "## Goal\n\nModel a `Team` that **aggregates** `Player` objects (the team references players but does not own their lifetime) and has a **dependency** on a `std::ostream` for printing.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 10), the number of players.\n- Lines 2 to n+1: each line contains a single string `name` (1-50 characters, no spaces).\n\n## Output\n\n- `Team roster:` followed by one line per player in the format `- <name>`.\n- A final line: `Players still exist` (proving the players outlive the team).\n\nExample for input `2 / Alice / Bob`:\n```\nTeam roster:\n- Alice\n- Bob\nPlayers still exist\n```\n\n## Requirements\n\n- Define a class `Player` with a `std::string` name, a constructor taking `const std::string&`, and a `const std::string& getName() const` accessor.\n- Define a class `Team` that stores an array of `const Player*` pointers (use a fixed-size array of 10 `const Player*` initialized to `nullptr`, plus an `int` count). This is aggregation -- `Team` does not `new` or `delete` any `Player`.\n- `Team` has `void addPlayer(const Player& p)` that stores the address of `p`.\n- `Team` has `void printRoster(std::ostream& out) const` that prints `Team roster:` then each player as `- <name>`. The `std::ostream&` parameter is a dependency.\n- In `main`, create players in an array, build a team inside an inner scope so it is destroyed first, then print `Players still exist` to prove the players outlive the team.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Player\n{\n    std::string m_name;\n\npublic:\n    Player(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n};\n\nclass Team\n{\n    const Player* m_players[10]{};\n    int m_count{0};\n\npublic:\n    void addPlayer(const Player& p)\n    {\n        // TODO: Store address of p in m_players and increment m_count\n    }\n\n    void printRoster(std::ostream& out) const\n    {\n        // TODO: Print \"Team roster:\" then each player as \"- <name>\"\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Player players[10]{Player{\"\"}, Player{\"\"}, Player{\"\"}, Player{\"\"},\n                       Player{\"\"}, Player{\"\"}, Player{\"\"}, Player{\"\"},\n                       Player{\"\"}, Player{\"\"}};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string name{};\n        std::cin >> name;\n        players[i] = Player{name};\n    }\n\n    // TODO: Create a Team in an inner scope, add players, print roster.\n    // After the scope ends, print \"Players still exist\".\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Player\n{\n    std::string m_name;\npublic:\n    Player(const std::string& name) : m_name{name} {}\n    const std::string& getName() const { return m_name; }\n};\n\nclass Team\n{\n    const Player* m_players[10]{};\n    int m_count{0};\npublic:\n    void addPlayer(const Player& p)\n    {\n        if (m_count < 10)\n            m_players[m_count++] = &p;\n    }\n    void printRoster(std::ostream& out) const\n    {\n        out << \"Team roster:\" << '\\n';\n        for (int i{0}; i < m_count; ++i)\n            out << \"- \" << m_players[i]->getName() << '\\n';\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Player players[10]{Player{\"\"}, Player{\"\"}, Player{\"\"}, Player{\"\"},\n                       Player{\"\"}, Player{\"\"}, Player{\"\"}, Player{\"\"},\n                       Player{\"\"}, Player{\"\"}};\n    for (int i{0}; i < n; ++i)\n    {\n        std::string name{};\n        std::cin >> name;\n        players[i] = Player{name};\n    }\n    {\n        Team team{};\n        for (int i{0}; i < n; ++i)\n            team.addPlayer(players[i]);\n        team.printRoster(std::cout);\n    }\n    std::cout << \"Players still exist\" << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Two players",
+        "is_sample": true,
+        "stdin": "2\nAlice\nBob",
+        "expected_stdout": "Team roster:\n- Alice\n- Bob\nPlayers still exist\n"
+      },
+      {
+        "label": "Single player",
+        "is_sample": false,
+        "stdin": "1\nCharlie",
+        "expected_stdout": "Team roster:\n- Charlie\nPlayers still exist\n"
+      },
+      {
+        "label": "Four players",
+        "is_sample": false,
+        "stdin": "4\nAna\nKai\nLeo\nMia",
+        "expected_stdout": "Team roster:\n- Ana\n- Kai\n- Leo\n- Mia\nPlayers still exist\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "IntArray with initializer_list constructor",
+    "prompt_md": "## Goal\n\nImplement an `IntArray` class that can be constructed from a braced list of integers using `std::initializer_list`, then print its contents.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 20), the number of elements.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- Line 1: `size: <n>` where `<n>` is the number of elements in the dynamic array.\n- Line 2: the dynamic array elements printed space-separated.\n- Line 3: `size: 3`\n- Line 4: `10 20 30`\n\n## Requirements\n\n- Define a class `IntArray` with private members `int m_size` and `int* m_data`.\n- Provide a constructor taking `std::initializer_list<int>` that allocates a dynamic array and copies the elements from the list.\n- Provide a second constructor `IntArray(const int* data, int size)` that copies from a raw pointer (already provided in the starter code).\n- Provide a destructor that calls `delete[]` on `m_data`.\n- Provide `int size() const` and `int operator[](int index) const` public member functions.\n- In `main`, read `n` integers into a `std::vector<int>`, then construct an `IntArray` using the pointer constructor. Print its size and contents on lines 1-2.\n- Also construct a second `IntArray` from the literal list `{10, 20, 30}` using the `initializer_list` constructor. Print its size and contents on lines 3-4.",
+    "starter_code": "#include <initializer_list>\n#include <iostream>\n#include <vector>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        // TODO: Copy elements from list into m_data\n    }\n    IntArray(const int* data, int size)\n        : m_size{ size }, m_data{ new int[static_cast<std::size_t>(size)] } {\n        for (int i{ 0 }; i < size; ++i)\n            m_data[i] = data[i];\n    }\n    ~IntArray() {\n        // TODO: Free m_data\n    }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printArray(const IntArray& arr) {\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> input(static_cast<std::size_t>(n));\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> input[static_cast<std::size_t>(i)];\n\n    // TODO: Construct an IntArray from input data using the pointer constructor\n    // and print it with printArray\n\n    // TODO: Construct an IntArray using initializer_list {10, 20, 30}\n    // and print it with printArray\n\n    return 0;\n}\n",
+    "solution_code": "#include <initializer_list>\n#include <iostream>\n#include <vector>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    IntArray(const int* data, int size)\n        : m_size{ size }, m_data{ new int[static_cast<std::size_t>(size)] } {\n        for (int i{ 0 }; i < size; ++i)\n            m_data[i] = data[i];\n    }\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printArray(const IntArray& arr) {\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> input(static_cast<std::size_t>(n));\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> input[static_cast<std::size_t>(i)];\n    IntArray dynamic{ input.data(), n };\n    printArray(dynamic);\n    IntArray literal{ 10, 20, 30 };\n    printArray(literal);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: four positive values",
+        "is_sample": true,
+        "stdin": "4\n1 2 3 4",
+        "expected_stdout": "size: 4\n1 2 3 4\nsize: 3\n10 20 30\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n-99",
+        "expected_stdout": "size: 1\n-99\nsize: 3\n10 20 30\n"
+      },
+      {
+        "label": "Hidden: five elements with mixed signs",
+        "is_sample": false,
+        "stdin": "5\n100 -50 0 25 -1",
+        "expected_stdout": "size: 5\n100 -50 0 25 -1\nsize: 3\n10 20 30\n"
+      }
+    ]
+  },
+  {
+    "title": "IntArray list assignment and sum",
+    "prompt_md": "## Goal\n\nImplement `operator=` for an `IntArray` class that accepts `std::initializer_list<int>`, allowing the array to be reassigned from a braced list after construction. Then use the reassigned array to compute a sum.\n\n## Input\n\n- A single integer `x` (-10000 <= x <= 10000).\n\n## Output\n\n- Line 1: `before: 1 2 3` (the initial hard-coded contents).\n- Line 2: `after: <x> <x*2> <x*3> <x*4>` (four values derived from input, space-separated).\n- Line 3: `sum: <s>` where `<s>` is the sum of the four values in the reassigned array.\n\n## Requirements\n\n- The `IntArray` class with an `std::initializer_list<int>` constructor is provided in the starter code.\n- Implement `IntArray& operator=(std::initializer_list<int> list)` that deletes the old `m_data`, allocates new storage matching the list size, copies the elements, updates `m_size`, and returns `*this`.\n- In `main`, create `IntArray arr{1, 2, 3}` and print its contents prefixed with `before: `.\n- Read `x`, then reassign `arr` using `arr = {x, x*2, x*3, x*4}` and print the new contents prefixed with `after: `.\n- Compute and print the sum of the reassigned array's elements.",
+    "starter_code": "#include <initializer_list>\n#include <iostream>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    // TODO: Implement operator= taking std::initializer_list<int>\n    // Delete old m_data, allocate new storage, copy elements, update m_size, return *this\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printElements(const IntArray& arr) {\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n}\n\nint main() {\n    IntArray arr{ 1, 2, 3 };\n    std::cout << \"before: \";\n    printElements(arr);\n    std::cout << '\\n';\n\n    int x{};\n    std::cin >> x;\n\n    // TODO: Reassign arr using: arr = {x, x*2, x*3, x*4};\n\n    std::cout << \"after: \";\n    printElements(arr);\n    std::cout << '\\n';\n\n    // TODO: Compute and print the sum of arr's elements as \"sum: <value>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <initializer_list>\n#include <iostream>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    IntArray& operator=(std::initializer_list<int> list) {\n        delete[] m_data;\n        m_size = static_cast<int>(list.size());\n        m_data = new int[list.size()];\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n        return *this;\n    }\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printElements(const IntArray& arr) {\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n}\n\nint main() {\n    IntArray arr{ 1, 2, 3 };\n    std::cout << \"before: \";\n    printElements(arr);\n    std::cout << '\\n';\n    int x{};\n    std::cin >> x;\n    arr = { x, x * 2, x * 3, x * 4 };\n    std::cout << \"after: \";\n    printElements(arr);\n    std::cout << '\\n';\n    int sum{ 0 };\n    for (int i{ 0 }; i < arr.size(); ++i)\n        sum += arr[i];\n    std::cout << \"sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: x is 10",
+        "is_sample": true,
+        "stdin": "10",
+        "expected_stdout": "before: 1 2 3\nafter: 10 20 30 40\nsum: 100\n"
+      },
+      {
+        "label": "Hidden: x is negative",
+        "is_sample": false,
+        "stdin": "-3",
+        "expected_stdout": "before: 1 2 3\nafter: -3 -6 -9 -12\nsum: -30\n"
+      },
+      {
+        "label": "Hidden: x is zero",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "before: 1 2 3\nafter: 0 0 0 0\nsum: 0\n"
+      }
+    ]
+  }
+]

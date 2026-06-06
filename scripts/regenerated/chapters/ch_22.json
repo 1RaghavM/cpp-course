@@ -86,6 +86,10 @@
     "6.7: Relational operators and floating point comparisons",
     "6.8: Logical operators",
     "6.x: Chapter 6 summary and quiz",
+    "O.1: Bit flags and bit manipulation via std::bitset",
+    "O.2: Bitwise operators",
+    "O.3: Bit manipulation with bitwise operators and bit masks",
+    "O.4: Converting integers between binary and decimal representation",
     "7.1: Compound statements (blocks)",
     "7.2: User-defined namespaces and the scope resolution operator",
     "7.3: Local variables",
@@ -148,6 +152,8 @@
     "F.1: Constexpr functions",
     "F.2: Constexpr functions (part 2)",
     "F.3: Constexpr functions (part 3) and consteval",
+    "F.4: Constexpr functions (part 4)",
+    "F.X: Chapter F summary and quiz",
     "12.1: Introduction to compound data types",
     "12.2: Value categories (lvalues and rvalues)",
     "12.3: Lvalue references",
@@ -165,6 +171,22 @@
     "12.15: std::optional",
     "12.x: Chapter 12 summary and quiz",
     "13.1: Introduction to program-defined (user-defined) types",
+    "13.2: Unscoped enumerations",
+    "13.3: Unscoped enumerator integral conversions",
+    "13.4: Converting an enumeration to and from a string",
+    "13.5: Introduction to overloading the I/O operators",
+    "13.6: Scoped enumerations (enum classes)",
+    "13.7: Introduction to structs, members, and member selection",
+    "13.8: Struct aggregate initialization",
+    "13.9: Default member initialization",
+    "13.10: Passing and returning structs",
+    "13.11: Struct miscellany",
+    "13.12: Member selection with pointers and references",
+    "13.13: Class templates",
+    "13.14: Class template argument deduction (CTAD) and deduction guides",
+    "13.15: Alias templates",
+    "13.x: Chapter 13 summary and quiz",
+    "13.y: Using a language reference",
     "14.1: Introduction to object-oriented programming",
     "14.2: Introduction to classes",
     "14.3: Member functions",
@@ -206,64 +228,533 @@
     "16.10: std::vector resizing and capacity",
     "16.11: std::vector and stack behavior",
     "16.12: std::vector<bool>",
-    "16.x: Chapter 16 summary and quiz"
+    "16.x: Chapter 16 summary and quiz",
+    "17.1: Introduction to std::array",
+    "17.2: std::array length and indexing",
+    "17.3: Passing and returning std::array",
+    "17.4: std::array of class types, and brace elision",
+    "17.5: Arrays of references via std::reference_wrapper",
+    "17.6: std::array and enumerations",
+    "17.7: Introduction to C-style arrays",
+    "17.8: C-style array decay",
+    "17.9: Pointer arithmetic and subscripting",
+    "17.10: C-style strings",
+    "17.11: C-style string symbolic constants",
+    "17.12: Multidimensional C-style Arrays",
+    "17.13: Multidimensional std::array",
+    "17.x: Chapter 17 summary and quiz",
+    "18.1: Sorting an array using selection sort",
+    "18.2: Introduction to iterators",
+    "18.3: Introduction to standard library algorithms",
+    "18.4: Timing your code",
+    "19.1: Dynamic memory allocation with new and delete",
+    "19.2: Dynamically allocating arrays",
+    "19.3: Destructors",
+    "19.4: Pointers to pointers and dynamic multidimensional arrays",
+    "19.5: Void pointers",
+    "20.1: Function Pointers",
+    "20.2: The stack and the heap",
+    "20.3: Recursion",
+    "20.4: Command line arguments",
+    "20.5: Ellipsis (and why to avoid them)",
+    "20.6: Introduction to lambdas (anonymous functions)",
+    "20.7: Lambda captures",
+    "20.x: Chapter 20 summary and quiz",
+    "21.1: Introduction to operator overloading",
+    "21.2: Overloading the arithmetic operators using friend functions",
+    "21.3: Overloading operators using normal functions",
+    "21.4: Overloading the I/O operators",
+    "21.5: Overloading operators using member functions",
+    "21.6: Overloading unary operators +, -, and !",
+    "21.7: Overloading the comparison operators",
+    "21.8: Overloading the increment and decrement operators",
+    "21.9: Overloading the subscript operator",
+    "21.10: Overloading the parenthesis operator",
+    "21.11: Overloading typecasts",
+    "21.12: Overloading the assignment operator",
+    "21.13: Shallow vs. deep copying",
+    "21.14: Overloading operators and function templates",
+    "21.x: Chapter 21 summary and quiz",
+    "21.y: Chapter 21 project"
   ],
   "lessons": [
     {
       "number": "22.1",
       "title": "Introduction to smart pointers and move semantics",
-      "sort_order": 272,
-      "summary_md": "## Introduction to Smart Pointers and Move Semantics\n\nRaw pointers in C++ require manual `new`/`delete` pairing. Miss a `delete` and you leak memory; delete twice and you get undefined behavior. Smart pointers eliminate both problems by tying object lifetime to a wrapping object whose destructor handles cleanup automatically — a direct application of RAII (Resource Acquisition Is Initialization).\n\nThe standard library provides three smart pointer types in `<memory>`:\n\n- `std::unique_ptr<T>` — sole ownership; one pointer owns the object at a time\n- `std::shared_ptr<T>` — shared ownership; a reference count tracks how many pointers co-own the object\n- `std::weak_ptr<T>` — non-owning observer of a `shared_ptr`; breaks reference cycles\n\n**Move semantics** are what make `unique_ptr` work. A `unique_ptr` cannot be *copied* — that would create two owners — but it can be *moved*, transferring ownership to a new pointer and leaving the source empty. The compiler represents this through *rvalue references* (`T&&`), and `std::move` explicitly casts a named variable to an rvalue so the move constructor or move assignment operator is selected.\n\n```cpp\n#include <memory>\n#include <print>\n\nstruct Widget {\n    int id;\n    ~Widget() { std::println(\"Widget {} destroyed\", id); }\n};\n\nint main() {\n    auto a = std::make_unique<Widget>(42);  // a owns the Widget\n    auto b = std::move(a);                 // ownership transferred to b\n    // a is now nullptr; b holds the Widget\n    std::println(\"b owns Widget {}\", b->id);\n}   // Widget 42 destroyed here — automatically\n```\n\n`std::make_unique` is preferred over `new` because it's exception-safe and keeps allocation and ownership together in one expression.\n\nA few practical rules:\n\n- Default to `unique_ptr`; reach for `shared_ptr` only when multiple owners genuinely make sense.\n- Prefer passing raw pointers or references into functions that don't affect ownership — the caller retains the smart pointer.\n- `std::move` doesn't move anything by itself; it just enables the compiler to call the move overload. The actual transfer happens inside the move constructor.\n\nLater lessons in this chapter cover move constructors and move assignment in detail, and the reference-counting mechanics behind `shared_ptr`. For now, the core mental model is: smart pointers own memory, move semantics transfer ownership, and destructors clean up.",
+      "sort_order": 0,
+      "summary_md": "Chapter 19 introduced dynamic memory allocation with `new` and `delete`. While powerful, manual memory management is one of the most common sources of bugs in C++. This lesson examines the core problems and introduces the concept of **ownership** -- the foundation that the rest of this chapter builds on.\n\nThree recurring issues plague raw-pointer-based resource management:\n\n- **Memory leaks:** Forgetting to call `delete`, or having an early `return` or exception skip the `delete` statement entirely.\n- **Dangling pointers:** Using a pointer after the memory it points to has been freed.\n- **Unclear ownership:** When multiple pointers refer to the same heap object, it becomes ambiguous which part of the code is responsible for deleting it.\n\nConsider a function that allocates, uses, and frees memory:\n\n```cpp\n#include <iostream>\n\nvoid process(int value) {\n    int* ptr{ new int{ value * 2 } };\n    if (value == 0)\n        return; // leak: ptr is never deleted\n    std::cout << *ptr << '\\n';\n    delete ptr;\n}\n\nint main() {\n    process(5);  // ok\n    process(0);  // leaks memory\n}\n```\n\nThe early `return` skips `delete`, leaking memory. The Rule of Three (Chapter 21) helps classes manage their own resources, but it does not solve the problem of bare pointers in functions or of transferring ownership between objects.\n\n**Ownership** means exactly one entity is responsible for the lifetime of a resource. If you can always identify who owns a heap allocation, you know exactly where `delete` should happen. The difficulty is that raw pointers carry no ownership information -- a `T*` might own the memory, or it might just be observing it.\n\nC++ solves this with two mechanisms introduced in the rest of this chapter:\n\n- **Smart pointers** -- class templates that wrap a raw pointer and automatically call `delete` when the owning object is destroyed. They encode ownership directly in the type system.\n- **Move semantics** -- a language feature that allows transferring ownership of resources from one object to another without copying. This makes smart pointers efficient to return from functions and store in containers.\n\nBoth build on concepts you already know: destructors, operator overloading, and dynamic allocation. The following lessons cover each in detail.",
       "exercises": [
         {
-          "title": "Transfer unique_ptr Ownership Through a Chain",
-          "prompt_md": "## Goal\nComplete the function `transferOwnership` that accepts a `std::unique_ptr<Device>` by value and returns it, demonstrating that `unique_ptr` ownership can be moved through a function call.\n\n## Input\n- Line 1: a single integer `id` (1 ≤ id ≤ 9999) representing the device ID to create.\n\n## Output\nPrint exactly four lines in this order:\n1. `Device <id> created` — printed inside the `Device` constructor\n2. `Transferring ownership of device <id>` — printed inside `transferOwnership` before returning\n3. `Main holds device <id>` — printed in `main` after receiving the returned pointer\n4. `Device <id> destroyed` — printed inside the `Device` destructor when the pointer goes out of scope\n\nReplace `<id>` with the integer read from stdin. No trailing blank lines.\n\n## Requirements\n1. Define `struct Device` with an `int id` field, a constructor that prints `Device <id> created`, and a destructor that prints `Device <id> destroyed`.\n2. Implement `std::unique_ptr<Device> transferOwnership(std::unique_ptr<Device> d)` that prints the transfer message and returns `d` using `std::move`.\n3. In `main`, create the `Device` with `std::make_unique<Device>(id)`, pass it to `transferOwnership` using `std::move`, and store the result. Do **not** call `new` or `delete` directly.\n4. After the transfer, the original `unique_ptr` in `main` must be empty (nullptr); the returned pointer must be non-null and used to print line 3.\n5. The destructor message must appear last, after line 3, confirming automatic cleanup.",
-          "starter_code": "#include <iostream>\n#include <memory>\n\n// TODO: Define struct Device with:\n//   - int id\n//   - constructor that prints \"Device <id> created\"\n//   - destructor that prints \"Device <id> destroyed\"\n\n// TODO: Implement transferOwnership\n// Signature: std::unique_ptr<Device> transferOwnership(std::unique_ptr<Device> d)\n// Inside: print \"Transferring ownership of device <id>\", then return d (use std::move)\n\nint main() {\n    int id;\n    std::cin >> id;\n\n    // TODO: create a unique_ptr<Device> using make_unique, then\n    // move it into transferOwnership and store the result\n    // Print \"Main holds device <id>\" using the returned pointer\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <memory>\n\nstruct Device {\n    int id;\n    Device(int id) : id(id) {\n        std::cout << \"Device \" << id << \" created\\n\";\n    }\n    ~Device() {\n        std::cout << \"Device \" << id << \" destroyed\\n\";\n    }\n};\n\nstd::unique_ptr<Device> transferOwnership(std::unique_ptr<Device> d) {\n    std::cout << \"Transferring ownership of device \" << d->id << \"\\n\";\n    return std::move(d);\n}\n\nint main() {\n    int id;\n    std::cin >> id;\n\n    auto original = std::make_unique<Device>(id);\n    auto received = transferOwnership(std::move(original));\n\n    std::cout << \"Main holds device \" << received->id << \"\\n\";\n\n    return 0;\n}\n",
+          "title": "Detect the leak",
+          "prompt_md": "## Goal\n\nWrite a class `TrackedInt` that prints a message when its heap-allocated integer is created and properly cleaned up. This simulates tracking resource lifetime.\n\n## Input\n\n- A single line containing one integer `n` (-10000 <= n <= 10000).\n\n## Output\n\n- Line 1: `allocated <n>` (printed when the heap int is created)\n- Line 2: `value: <n>` (the stored value)\n- Line 3: `deallocated` (printed when cleanup occurs)\n\nwhere `<n>` is the value read from input.\n\n## Requirements\n\n- Define a class `TrackedInt` with a private `int*` member allocated with `new` in the constructor.\n- The constructor prints `allocated <value>`.\n- Provide a public `getValue()` const member function that dereferences the pointer.\n- Implement a destructor that prints `deallocated` and calls `delete` on the pointer.\n- In `main`, create a `TrackedInt` on the stack so the destructor runs automatically at end of scope.",
+          "starter_code": "#include <iostream>\n\nclass TrackedInt\n{\n    int* m_ptr{};\n\npublic:\n    TrackedInt(int value)\n        : m_ptr{ new int{ value } }\n    {\n        // TODO: Print \"allocated <value>\"\n    }\n\n    ~TrackedInt()\n    {\n        // TODO: Print \"deallocated\" and delete m_ptr\n    }\n\n    int getValue() const { return *m_ptr; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create a TrackedInt on the stack and print its value\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nclass TrackedInt\n{\n    int* m_ptr{};\n\npublic:\n    TrackedInt(int value)\n        : m_ptr{ new int{ value } }\n    {\n        std::cout << \"allocated \" << value << '\\n';\n    }\n\n    ~TrackedInt()\n    {\n        std::cout << \"deallocated\" << '\\n';\n        delete m_ptr;\n    }\n\n    int getValue() const { return *m_ptr; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    TrackedInt t{ n };\n    std::cout << \"value: \" << t.getValue() << '\\n';\n\n    return 0;\n}\n",
+          "difficulty": "practice",
           "test_cases": [
             {
-              "label": "sample — id 7",
-              "stdin": "7\n",
-              "expected_stdout": "Device 7 created\nTransferring ownership of device 7\nMain holds device 7\nDevice 7 destroyed\n",
-              "is_sample": true
+              "label": "Positive value",
+              "is_sample": true,
+              "stdin": "42",
+              "expected_stdout": "allocated 42\nvalue: 42\ndeallocated\n"
             },
             {
-              "label": "hidden — id 1 (minimum boundary)",
-              "stdin": "1\n",
-              "expected_stdout": "Device 1 created\nTransferring ownership of device 1\nMain holds device 1\nDevice 1 destroyed\n",
-              "is_sample": false
+              "label": "Zero value",
+              "is_sample": false,
+              "stdin": "0",
+              "expected_stdout": "allocated 0\nvalue: 0\ndeallocated\n"
             },
             {
-              "label": "hidden — id 9999 (maximum boundary)",
-              "stdin": "9999\n",
-              "expected_stdout": "Device 9999 created\nTransferring ownership of device 9999\nMain holds device 9999\nDevice 9999 destroyed\n",
-              "is_sample": false
+              "label": "Negative value",
+              "is_sample": false,
+              "stdin": "-99",
+              "expected_stdout": "allocated -99\nvalue: -99\ndeallocated\n"
             }
           ]
         },
         {
-          "title": "shared_ptr Reference Count Inspector",
-          "prompt_md": "## Goal\nWrite a program that creates a `std::shared_ptr<Resource>`, shares ownership with a second pointer, releases one owner, and prints the reference count at each stage — combining `shared_ptr` reference-count mechanics with `unique_ptr`/move concepts from the lesson.\n\n## Input\n- Line 1: a single integer `id` (1 ≤ id ≤ 9999) for the resource identifier.\n\n## Output\nPrint exactly six lines in this order:\n1. `Resource <id> created`\n2. `After first owner: count = 1`\n3. `After second owner: count = 2`\n4. `After reset of first owner: count = 1`\n5. `Resource <id> destroyed` — emitted by the destructor when the last owner is reset\n6. `After reset of second owner: count = 0`\n\nReplace `<id>` with the integer read from stdin. No trailing blank lines.\n\n## Requirements\n1. Define `struct Resource` with an `int id` field, a constructor that prints `Resource <id> created`, and a destructor that prints `Resource <id> destroyed`.\n2. In `main`, create `first` with `std::make_shared<Resource>(id)`. Do **not** use `new` or `delete` directly.\n3. Print line 2 using `first.use_count()`.\n4. Create `second` by copying `first` (plain assignment — this is shared ownership, not a move). Print line 3 using either pointer's `use_count()`.\n5. Call `first.reset()` to release `first`'s ownership. Print line 4 using `second.use_count()`.\n6. Call `second.reset()`. The destructor message (line 5) must appear **before** line 6. Print line 6 with a literal `0` (use_count() on an empty shared_ptr returns 0).\n7. The program must compile without warnings under `g++ -std=c++20 -Wall -Wextra`.",
-          "starter_code": "#include <iostream>\n#include <memory>\n\n// TODO: Define struct Resource with:\n//   - int id\n//   - constructor that prints \"Resource <id> created\"\n//   - destructor that prints \"Resource <id> destroyed\"\n\nint main() {\n    int id;\n    std::cin >> id;\n\n    // TODO: create 'first' as a shared_ptr<Resource> using make_shared\n    // Print \"After first owner: count = \" followed by use_count()\n\n    // TODO: create 'second' by copying 'first'\n    // Print \"After second owner: count = \" followed by use_count()\n\n    // TODO: call first.reset(), then print\n    // \"After reset of first owner: count = \" followed by second.use_count()\n\n    // TODO: call second.reset() — destructor fires here\n    // Print \"After reset of second owner: count = 0\"\n\n    return 0;\n}\n",
-          "solution_code": "#include <iostream>\n#include <memory>\n\nstruct Resource {\n    int id;\n    Resource(int id) : id(id) {\n        std::cout << \"Resource \" << id << \" created\\n\";\n    }\n    ~Resource() {\n        std::cout << \"Resource \" << id << \" destroyed\\n\";\n    }\n};\n\nint main() {\n    int id;\n    std::cin >> id;\n\n    auto first = std::make_shared<Resource>(id);\n    std::cout << \"After first owner: count = \" << first.use_count() << \"\\n\";\n\n    auto second = first;  // shared ownership — copy, not move\n    std::cout << \"After second owner: count = \" << first.use_count() << \"\\n\";\n\n    first.reset();\n    std::cout << \"After reset of first owner: count = \" << second.use_count() << \"\\n\";\n\n    second.reset();  // destructor fires here\n    std::cout << \"After reset of second owner: count = 0\\n\";\n\n    return 0;\n}\n",
+          "title": "Ownership transfer function",
+          "prompt_md": "## Goal\n\nWrite a function that creates a dynamically allocated array, fills it, and returns a struct that bundles the pointer with its size -- demonstrating explicit ownership transfer. The caller is responsible for cleanup.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the number of elements.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- Line 1: the elements printed space-separated.\n- Line 2: `cleaned up`\n\n## Requirements\n\n- Define a struct `OwnedArray` with two members: `int* data` and `int size`.\n- Write a function `OwnedArray createArray(int n)` that allocates a dynamic array of `n` ints with `new int[n]` and returns an `OwnedArray` holding the pointer and size.\n- In `main`, read values into the returned array, print them, then `delete[]` the data and print `cleaned up`.\n- Do not leak memory.",
+          "starter_code": "#include <iostream>\n\nstruct OwnedArray\n{\n    int* data{};\n    int size{};\n};\n\n// TODO: Implement createArray that allocates a dynamic int array\n// and returns an OwnedArray\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call createArray, read n integers into the array,\n    // print them space-separated, delete[] the data,\n    // and print \"cleaned up\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nstruct OwnedArray\n{\n    int* data{};\n    int size{};\n};\n\nOwnedArray createArray(int n)\n{\n    return OwnedArray{ new int[n]{}, n };\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    OwnedArray arr{ createArray(n) };\n\n    for (int i{ 0 }; i < arr.size; ++i)\n        std::cin >> arr.data[i];\n\n    for (int i{ 0 }; i < arr.size; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << arr.data[i];\n    }\n    std::cout << '\\n';\n\n    delete[] arr.data;\n    arr.data = nullptr;\n    std::cout << \"cleaned up\" << '\\n';\n\n    return 0;\n}\n",
+          "difficulty": "practice",
           "test_cases": [
             {
-              "label": "sample — id 42",
-              "stdin": "42\n",
-              "expected_stdout": "Resource 42 created\nAfter first owner: count = 1\nAfter second owner: count = 2\nAfter reset of first owner: count = 1\nResource 42 destroyed\nAfter reset of second owner: count = 0\n",
-              "is_sample": true
+              "label": "Three elements",
+              "is_sample": true,
+              "stdin": "3\n10 20 30",
+              "expected_stdout": "10 20 30\ncleaned up\n"
             },
             {
-              "label": "hidden — id 1 (minimum boundary)",
+              "label": "Single element",
+              "is_sample": false,
+              "stdin": "1\n-5",
+              "expected_stdout": "-5\ncleaned up\n"
+            },
+            {
+              "label": "Five elements with negatives",
+              "is_sample": false,
+              "stdin": "5\n1 -2 3 -4 5",
+              "expected_stdout": "1 -2 3 -4 5\ncleaned up\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.2",
+      "title": "R-value references",
+      "sort_order": 1,
+      "summary_md": "Every expression in C++ is either an **l-value** or an **r-value**. An l-value refers to an object that persists beyond the expression that uses it -- it has an identifiable memory address. Variables, array elements, and dereferenced pointers are l-values. An r-value is a temporary that exists only within the expression that creates it. Literals (other than string literals), the return value of a function that returns by value, and the result of arithmetic operators are all r-values.\n\nAn **l-value reference** (declared with `&`) can bind to an l-value. A `const` l-value reference can also bind to an r-value -- this is why `const std::string&` can accept a temporary string. But a non-const l-value reference cannot bind to an r-value, because modifying a value that is about to be destroyed makes no sense in that context.\n\nC++11 introduced **r-value references**, declared with `&&`. An r-value reference can bind to an r-value but not to an l-value. This gives you a way to write functions that specifically accept temporaries.\n\nWhen an r-value reference binds to a temporary, **the lifetime of that temporary is extended** to match the lifetime of the reference. This means you can safely use the value for as long as the reference exists.\n\n```cpp\n#include <iostream>\n\nvoid printRef(int& x)       { std::cout << \"l-value: \" << x << '\\n'; }\nvoid printRef(int&& x)      { std::cout << \"r-value: \" << x << '\\n'; }\n\nint main()\n{\n    int a{5};\n    printRef(a);       // calls int& overload\n    printRef(3 + 4);   // calls int&& overload\n\n    int&& rref{10};    // r-value ref extends lifetime of temporary\n    std::cout << rref << '\\n'; // 10 -- still valid\n}\n```\n\nR-value references are the key building block for move semantics. Because an r-value reference tells you the bound object is a temporary that nobody else needs, a function receiving one can safely \"steal\" the object's resources instead of copying them. The next lessons will show exactly how move constructors and move assignment operators use this capability. For now, the important takeaway is: `&&` identifies temporaries, and the compiler uses overload resolution to pick the `&&` overload when the argument is an r-value.",
+      "exercises": [
+        {
+          "title": "Classify l-value and r-value",
+          "prompt_md": "## Goal\n\nWrite a program that uses function overloading to determine whether a given expression is passed as an l-value or an r-value, then prints the classification.\n\n## Input\n\n- A single integer `n` (-10000 <= n <= 10000).\n\n## Output\n\n- Three lines of output, one for each of these calls in order:\n  1. Passing the variable `n` directly.\n  2. Passing the literal `42`.\n  3. Passing the expression `n + 1`.\n\nEach line must be exactly one of:\n- `l-value: <value>`\n- `r-value: <value>`\n\nwhere `<value>` is the integer value received by the function.\n\n## Requirements\n\n- Define two overloads of a function `classify`: one taking `int&` and one taking `int&&`.\n- The `int&` overload prints `l-value: ` followed by the value.\n- The `int&&` overload prints `r-value: ` followed by the value.\n- Call `classify` three times in `main` in the order described above.\n- Do not use `std::move`.",
+          "starter_code": "#include <iostream>\n\n// TODO: Define void classify(int& x) that prints \"l-value: \" and the value\n// TODO: Define void classify(int&& x) that prints \"r-value: \" and the value\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call classify with n, then 42, then n + 1\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nvoid classify(int& x)\n{\n    std::cout << \"l-value: \" << x << '\\n';\n}\n\nvoid classify(int&& x)\n{\n    std::cout << \"r-value: \" << x << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    classify(n);\n    classify(42);\n    classify(n + 1);\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Input 5: variable, literal, expression",
+              "is_sample": true,
+              "stdin": "5",
+              "expected_stdout": "l-value: 5\nr-value: 42\nr-value: 6\n"
+            },
+            {
+              "label": "Input 0: zero edge case",
+              "is_sample": false,
+              "stdin": "0",
+              "expected_stdout": "l-value: 0\nr-value: 42\nr-value: 1\n"
+            },
+            {
+              "label": "Negative input",
+              "is_sample": false,
+              "stdin": "-7",
+              "expected_stdout": "l-value: -7\nr-value: 42\nr-value: -6\n"
+            }
+          ]
+        },
+        {
+          "title": "R-value reference lifetime extension",
+          "prompt_md": "## Goal\n\nWrite a program that demonstrates r-value reference lifetime extension by binding the result of a computation to an `int&&` and then using that reference in further calculations.\n\n## Input\n\n- A single line with two space-separated integers `a` and `b` (-10000 <= each <= 10000).\n\n## Output\n\nExactly three lines:\n1. `sum: <value>` where `<value>` is `a + b`, read through the r-value reference.\n2. `doubled: <value>` where `<value>` is the sum multiplied by 2, computed using the r-value reference.\n3. `offset: <value>` where `<value>` is the sum plus 100, computed using the r-value reference.\n\n## Requirements\n\n- Compute `a + b` and bind the result to an r-value reference: `int&& ref = a + b;`\n- Use `ref` (not `a` or `b`) for all three printed calculations.\n- Do not use `std::move`.\n- Do not use any classes or structs.",
+          "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Bind the result of a + b to an r-value reference\n\n    // TODO: Print sum, doubled, and offset using the r-value reference\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int&& ref{a + b};\n\n    std::cout << \"sum: \" << ref << '\\n';\n    std::cout << \"doubled: \" << ref * 2 << '\\n';\n    std::cout << \"offset: \" << ref + 100 << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Positive values 3 and 7",
+              "is_sample": true,
+              "stdin": "3 7",
+              "expected_stdout": "sum: 10\ndoubled: 20\noffset: 110\n"
+            },
+            {
+              "label": "Negative values cancel out",
+              "is_sample": false,
+              "stdin": "-5 5",
+              "expected_stdout": "sum: 0\ndoubled: 0\noffset: 100\n"
+            },
+            {
+              "label": "Both negative",
+              "is_sample": false,
+              "stdin": "-100 -200",
+              "expected_stdout": "sum: -300\ndoubled: -600\noffset: -200\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.3",
+      "title": "Move constructors and move assignment",
+      "sort_order": 2,
+      "summary_md": "When you return a large object from a function, the compiler sees the return value as an r-value. In lesson 22.2 you learned that r-value references (`&&`) can bind to these temporaries. A **move constructor** and **move assignment operator** exploit this: instead of deep-copying a resource, they *steal* it from the source and leave the source in a safe empty state.\n\nConsider a class that owns a dynamically allocated array:\n\n```cpp\n#include <iostream>\n\nclass IntArray {\n    int* m_data{};\n    int m_size{};\npublic:\n    IntArray(int size) : m_data{ new int[size]{} }, m_size{ size } {}\n    ~IntArray() { delete[] m_data; }\n    IntArray(const IntArray& src) // copy ctor\n        : m_data{ new int[src.m_size] }, m_size{ src.m_size } {\n        for (int i{ 0 }; i < m_size; ++i) m_data[i] = src.m_data[i];\n    }\n    IntArray(IntArray&& src) noexcept // move ctor\n        : m_data{ src.m_data }, m_size{ src.m_size } {\n        src.m_data = nullptr; src.m_size = 0;\n    }\n};\n```\n\nThe move constructor takes an `IntArray&&` parameter. It copies the pointer and size from `src`, then **nulls the source pointer** so the source's destructor does not free the stolen memory. Marking it `noexcept` is important because standard containers will only use move operations when they are guaranteed not to throw.\n\nA **move assignment operator** follows the same idea but must also release any resource the target already owns:\n\n```\nIntArray& operator=(IntArray&& src) noexcept {\n    if (this != &src) {\n        delete[] m_data;          // free existing resource\n        m_data = src.m_data;      // steal\n        m_size = src.m_size;\n        src.m_data = nullptr;     // null the source\n        src.m_size = 0;\n    }\n    return *this;\n}\n```\n\nThe self-assignment check prevents an object from accidentally deleting its own data.\n\nWith the copy constructor, copy assignment, and destructor (the Rule of Three), plus the move constructor and move assignment operator, you now have the **Rule of Five**: if a class manages a resource, define or delete all five. The compiler calls the move versions automatically when the source is an r-value. No special cast is needed; the r-value nature of the expression selects the `&&` overload. Note that under C++17 mandatory copy elision, returning a local object by value typically constructs it directly in the caller -- the move constructor is never invoked. Move constructors still matter when you explicitly cast with `std::move` (lesson 22.4) or when copy elision does not apply.\n\nAfter a move, the source object must remain in a valid, destructible state. The convention is to null any owned pointers and zero out sizes, so the destructor runs harmlessly.",
+      "exercises": [
+        {
+          "title": "Move-Aware Dynamic String",
+          "prompt_md": "## Goal\n\nImplement a `DynString` class that manages a heap-allocated C-string and supports both copying and moving. When a `DynString` is the source of a move, its resource is stolen rather than duplicated.\n\n## Input\n\n- Line 1: a single word (1-100 characters, no spaces).\n\n## Output\n\n- Line 1: print the word (from the original object).\n- Line 2: print the word (from a copy-constructed object).\n- Line 3: print the word (from a copy-assigned object).\n- Line 4: print the word (from an object constructed via a function return value -- under C++17 mandatory copy elision, the object is constructed directly in the caller).\n- Line 5: print `empty` (from an object that was move-assigned with a default-constructed empty `DynString`).\n\n## Requirements\n\n- Define `class DynString` with a `char* m_data` member (null-terminated C-string) and an `int m_length` member (string length, not counting the null terminator).\n- Provide a **constructor** `DynString(const char* str)` that allocates `m_length + 1` chars and copies the string using a loop (do not use `std::strcpy`).\n- Provide a **default constructor** that sets `m_data` to `nullptr` and `m_length` to `0`.\n- Provide a **destructor** that calls `delete[]` on `m_data`.\n- Provide a **copy constructor** that deep-copies the string.\n- Provide a **copy assignment operator** (`DynString& operator=(const DynString& src)`) that checks for self-assignment, frees any existing resource, deep-copies from `src`, and returns `*this`.\n- Provide a **move constructor** (`DynString(DynString&& src) noexcept`) that steals `m_data` and `m_length`, then nulls the source.\n- Provide a **move assignment operator** (`DynString& operator=(DynString&& src) noexcept`) that frees any existing resource, steals from the source, nulls the source, and handles self-assignment.\n- Provide a `void print() const` member that prints `m_data` if non-null, or `empty` if `m_data` is `nullptr`, followed by a newline.\n- Write a free function `DynString makeGreeting(const char* str)` that constructs a `DynString` from `str` and returns it (under C++17 mandatory copy elision, the returned object is constructed directly in the caller -- no move constructor is invoked).\n- In `main`, read the word, create a `DynString`, copy-construct another, use copy assignment to assign the original into a third variable, call `makeGreeting` to get a copy-elided instance, then move-assign an empty `DynString` into a fifth variable and print all five.",
+          "starter_code": "#include <iostream>\n\nclass DynString {\n    char* m_data{};\n    int m_length{};\npublic:\n    // Default constructor\n    DynString() = default;\n\n    // Parameterized constructor -- allocate and copy str\n    DynString(const char* str) {\n        // TODO: compute length of str, allocate m_data, copy characters\n    }\n\n    // Destructor\n    ~DynString() {\n        delete[] m_data;\n    }\n\n    // Copy constructor\n    DynString(const DynString& src) {\n        // TODO: deep copy\n    }\n\n    // Copy assignment operator\n    DynString& operator=(const DynString& src) {\n        // TODO: self-assignment check, free existing, deep copy from src\n        return *this;\n    }\n\n    // Move constructor\n    DynString(DynString&& src) noexcept {\n        // TODO: steal resource, null the source\n    }\n\n    // Move assignment operator\n    DynString& operator=(DynString&& src) noexcept {\n        // TODO: self-assignment check, free existing, steal, null source\n        return *this;\n    }\n\n    void print() const {\n        if (m_data)\n            std::cout << m_data << '\\n';\n        else\n            std::cout << \"empty\" << '\\n';\n    }\n};\n\nDynString makeGreeting(const char* str) {\n    DynString ds{ str };\n    return ds;\n}\n\nint main() {\n    char word[101]{};\n    std::cin >> word;\n\n    DynString a{ word };\n    a.print();\n\n    DynString b{ a }; // copy construct\n    b.print();\n\n    DynString c{};\n    c = a; // copy assignment\n    c.print();\n\n    DynString d{ makeGreeting(word) }; // constructed directly via copy elision (C++17)\n    d.print();\n\n    DynString e{};\n    e = DynString{}; // move assignment with empty\n    e.print();\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n\nclass DynString {\n    char* m_data{};\n    int m_length{};\npublic:\n    DynString() = default;\n    ~DynString() { delete[] m_data; }\n    DynString(const char* str) {\n        m_length = 0;\n        while (str[m_length] != '\\0') ++m_length;\n        m_data = new char[m_length + 1];\n        for (int i{ 0 }; i <= m_length; ++i) m_data[i] = str[i];\n    }\n    DynString(const DynString& src) : m_length{ src.m_length } {\n        if (src.m_data) {\n            m_data = new char[m_length + 1];\n            for (int i{ 0 }; i <= m_length; ++i) m_data[i] = src.m_data[i];\n        }\n    }\n    DynString& operator=(const DynString& src) {\n        if (this != &src) {\n            delete[] m_data;\n            m_data = nullptr;\n            m_length = src.m_length;\n            if (src.m_data) {\n                m_data = new char[m_length + 1];\n                for (int i{ 0 }; i <= m_length; ++i) m_data[i] = src.m_data[i];\n            }\n        }\n        return *this;\n    }\n    DynString(DynString&& src) noexcept\n        : m_data{ src.m_data }, m_length{ src.m_length } {\n        src.m_data = nullptr; src.m_length = 0;\n    }\n    DynString& operator=(DynString&& src) noexcept {\n        if (this != &src) {\n            delete[] m_data;\n            m_data = src.m_data; m_length = src.m_length;\n            src.m_data = nullptr; src.m_length = 0;\n        }\n        return *this;\n    }\n    void print() const {\n        std::cout << (m_data ? m_data : \"empty\") << '\\n';\n    }\n};\n\nDynString makeGreeting(const char* str) {\n    DynString ds{ str };\n    return ds;\n}\n\nint main() {\n    char word[101]{};\n    std::cin >> word;\n    DynString a{ word };\n    a.print();\n    DynString b{ a };\n    b.print();\n    DynString c{};\n    c = a; // copy assignment\n    c.print();\n    DynString d{ makeGreeting(word) }; // constructed directly via copy elision (C++17)\n    d.print();\n    DynString e{};\n    e = DynString{}; // move assignment with empty\n    e.print();\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Simple word",
+              "is_sample": true,
+              "stdin": "hello",
+              "expected_stdout": "hello\nhello\nhello\nhello\nempty\n"
+            },
+            {
+              "label": "Single character",
+              "is_sample": false,
+              "stdin": "x",
+              "expected_stdout": "x\nx\nx\nx\nempty\n"
+            },
+            {
+              "label": "Longer word",
+              "is_sample": false,
+              "stdin": "constructor",
+              "expected_stdout": "constructor\nconstructor\nconstructor\nconstructor\nempty\n"
+            }
+          ]
+        },
+        {
+          "title": "Resource-Tracking Matrix Row",
+          "prompt_md": "## Goal\n\nBuild a `MatrixRow` class that owns a dynamically allocated `double` array. Implement the full Rule of Five so the class is safe to copy and move. Write a factory function that returns a `MatrixRow` filled with a repeating value. Under C++17 mandatory copy elision, the returned object is constructed directly in the caller without invoking the move constructor.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 50), the number of elements.\n- Line 2: a double `value`, the fill value.\n\n## Output\n\n- Line 1: the elements of the `MatrixRow` returned by the factory, space-separated.\n- Line 2: the elements after copy-constructing a second `MatrixRow` from the first.\n- Line 3: the elements of a third `MatrixRow` after move-assigning the factory's return value (using a fresh factory call) into it. Then print the word `valid` if the third object's size is `n`, or `invalid` otherwise, separated by a space after the last element.\n\n## Requirements\n\n- Define `class MatrixRow` with `double* m_data` and `int m_size` members.\n- **Constructor** `MatrixRow(int size)`: allocates `size` doubles, zero-initialized.\n- **Default constructor**: sets `m_data` to `nullptr` and `m_size` to `0`.\n- **Destructor**: `delete[] m_data`.\n- **Copy constructor**: deep-copies the array.\n- **Copy assignment operator**: frees existing memory, deep-copies, handles self-assignment. Returns `*this`.\n- **Move constructor** (`noexcept`): steals pointer and size, nulls source.\n- **Move assignment operator** (`noexcept`): frees existing memory, steals, nulls source, handles self-assignment. Returns `*this`.\n- `void set(int index, double val)`: sets `m_data[index]` to `val`.\n- `void print() const`: prints all elements space-separated followed by a newline.\n- `int size() const`: returns `m_size`.\n- Free function `MatrixRow makeFilledRow(int n, double val)`: creates a `MatrixRow` of size `n`, sets every element to `val`, and returns it.\n- In `main`: call `makeFilledRow`, print its contents; copy-construct and print; default-construct a third, move-assign a new `makeFilledRow` call into it, print its contents followed by `valid`/`invalid`.",
+          "starter_code": "#include <iostream>\n\nclass MatrixRow {\n    double* m_data{};\n    int m_size{};\npublic:\n    MatrixRow() = default;\n\n    MatrixRow(int size)\n        : m_data{ new double[size]{} }, m_size{ size } {}\n\n    ~MatrixRow() { delete[] m_data; }\n\n    // TODO: Copy constructor (deep copy)\n\n    // TODO: Copy assignment operator\n\n    // TODO: Move constructor (noexcept)\n\n    // TODO: Move assignment operator (noexcept)\n\n    void set(int index, double val) { m_data[index] = val; }\n\n    int size() const { return m_size; }\n\n    void print() const {\n        for (int i{ 0 }; i < m_size; ++i) {\n            if (i > 0) std::cout << ' ';\n            std::cout << m_data[i];\n        }\n        std::cout << '\\n';\n    }\n};\n\nMatrixRow makeFilledRow(int n, double val) {\n    MatrixRow row{ n };\n    for (int i{ 0 }; i < n; ++i)\n        row.set(i, val);\n    return row;\n}\n\nint main() {\n    int n{};\n    double val{};\n    std::cin >> n >> val;\n\n    MatrixRow a{ makeFilledRow(n, val) };\n    a.print();\n\n    // TODO: Copy-construct b from a, print b\n\n    // TODO: Default-construct c, move-assign makeFilledRow(n, val) into c\n    // TODO: Print c's elements followed by \" valid\" or \" invalid\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\nclass MatrixRow {\n    double* m_data{};\n    int m_size{};\npublic:\n    MatrixRow() = default;\n    MatrixRow(int size) : m_data{ new double[size]{} }, m_size{ size } {}\n    ~MatrixRow() { delete[] m_data; }\n    MatrixRow(const MatrixRow& src)\n        : m_data{ src.m_size > 0 ? new double[src.m_size] : nullptr }, m_size{ src.m_size } {\n        for (int i{ 0 }; i < m_size; ++i) m_data[i] = src.m_data[i];\n    }\n    MatrixRow& operator=(const MatrixRow& src) {\n        if (this != &src) {\n            delete[] m_data; m_size = src.m_size;\n            m_data = m_size > 0 ? new double[m_size] : nullptr;\n            for (int i{ 0 }; i < m_size; ++i) m_data[i] = src.m_data[i];\n        }\n        return *this;\n    }\n    MatrixRow(MatrixRow&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size } {\n        src.m_data = nullptr; src.m_size = 0;\n    }\n    MatrixRow& operator=(MatrixRow&& src) noexcept {\n        if (this != &src) {\n            delete[] m_data; m_data = src.m_data; m_size = src.m_size;\n            src.m_data = nullptr; src.m_size = 0;\n        }\n        return *this;\n    }\n    void set(int index, double val) { m_data[index] = val; }\n    int size() const { return m_size; }\n    void print() const {\n        for (int i{ 0 }; i < m_size; ++i) {\n            if (i > 0) std::cout << ' ';\n            std::cout << m_data[i];\n        }\n        std::cout << '\\n';\n    }\n};\nMatrixRow makeFilledRow(int n, double val) {\n    MatrixRow row{ n };\n    for (int i{ 0 }; i < n; ++i) row.set(i, val);\n    return row;\n}\nint main() {\n    int n{}; double val{};\n    std::cin >> n >> val;\n    MatrixRow a{ makeFilledRow(n, val) };\n    a.print();\n    MatrixRow b{ a };\n    b.print();\n    MatrixRow c{};\n    c = makeFilledRow(n, val);\n    c.print();\n    std::cout << (c.size() == n ? \"valid\" : \"invalid\") << '\\n';\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Three elements filled with 2.5",
+              "is_sample": true,
+              "stdin": "3\n2.5",
+              "expected_stdout": "2.5 2.5 2.5\n2.5 2.5 2.5\n2.5 2.5 2.5\nvalid\n"
+            },
+            {
+              "label": "Single element with zero",
+              "is_sample": false,
+              "stdin": "1\n0",
+              "expected_stdout": "0\n0\n0\nvalid\n"
+            },
+            {
+              "label": "Five elements with negative value",
+              "is_sample": false,
+              "stdin": "5\n-3.14",
+              "expected_stdout": "-3.14 -3.14 -3.14 -3.14 -3.14\n-3.14 -3.14 -3.14 -3.14 -3.14\n-3.14 -3.14 -3.14 -3.14 -3.14\nvalid\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.4",
+      "title": "std::move",
+      "sort_order": 3,
+      "summary_md": "When you have a named object (an l-value) and you want to invoke a move constructor or move assignment operator instead of a copy, you need a way to treat that l-value as an r-value reference. That is exactly what `std::move` does -- it is a cast, defined in `<utility>`, that converts its argument to an r-value reference. It does not move anything by itself.\n\nConsider a simple `DynArray` class with a move constructor. If you write `DynArray b{ a };` the compiler sees `a` as an l-value and copies. Writing `DynArray b{ std::move(a) };` casts `a` to an r-value reference, so the move constructor runs instead and steals the internal resources.\n\n```cpp\n#include <iostream>\n#include <utility>\n\nclass DynArray {\n    int* m_data{};\n    int m_size{};\npublic:\n    DynArray(int sz) : m_data{new int[sz]{}}, m_size{sz} {}\n    DynArray(DynArray&& src) noexcept\n        : m_data{src.m_data}, m_size{src.m_size}\n    { src.m_data = nullptr; src.m_size = 0; }\n    ~DynArray() { delete[] m_data; }\n    int size() const { return m_size; }\n};\n```\n\nAfter `std::move(a)` and the move constructor runs, `a` is in a **moved-from state**: its pointer is `nullptr` and its size is `0`. The object is still valid and destructible, but you should not rely on its contents. The only safe operations are reassignment and destruction.\n\nKey rules for using `std::move`:\n\n- **Use it when you are done with an object** and want to transfer its resources elsewhere, such as pushing a local object into a container or returning from a function where copy elision does not apply.\n- **Do not use a moved-from object** for anything other than reassignment or destruction.\n- **Moving a `const` object silently falls back to copying** because a move constructor takes a non-const r-value reference, which cannot bind to a `const` r-value. The compiler quietly selects the copy constructor instead -- no error, no warning, just a performance surprise.\n- **Do not `std::move` a return value** from a function -- this disables Return Value Optimization (RVO) and makes performance worse.",
+      "exercises": [
+        {
+          "title": "Move a DynArray into a Holder",
+          "prompt_md": "## Goal\n\nPractice using `std::move` to transfer ownership of a dynamically allocated resource from one object to another.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the size of the array to create.\n\n## Output\n\n- Line 1: `source:` followed by a space and the size of the source `DynArray` after the move.\n- Line 2: `holder:` followed by a space and the size stored in the `Holder` object.\n\n## Requirements\n\n- A `DynArray` class is provided with a move constructor that sets the source's `m_data` to `nullptr` and `m_size` to `0`.\n- Write a `Holder` class that stores a `DynArray` member. Its constructor should take a `DynArray&&` parameter and use `std::move` to initialize the member.\n- In `main`, create a `DynArray` of size `n`, then construct a `Holder` by moving the array into it using `std::move`.\n- Print the source array's size (should be `0` after the move) and the holder's size (should be `n`).",
+          "starter_code": "#include <iostream>\n#include <utility>\n\nclass DynArray\n{\n    int* m_data{};\n    int m_size{};\n\npublic:\n    DynArray(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    DynArray(DynArray&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size }\n    {\n        src.m_data = nullptr;\n        src.m_size = 0;\n    }\n\n    ~DynArray() { delete[] m_data; }\n\n    DynArray(const DynArray&) = delete;\n    DynArray& operator=(const DynArray&) = delete;\n    DynArray& operator=(DynArray&&) = delete;\n\n    int size() const { return m_size; }\n};\n\n// TODO: Write a Holder class that:\n// - Has a DynArray member\n// - Has a constructor taking DynArray&& and moves it into the member\n// - Has a size() method returning the held array's size\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynArray arr{ n };\n\n    // TODO: Create a Holder by moving arr into it\n    // TODO: Print \"source: \" followed by arr.size()\n    // TODO: Print \"holder: \" followed by the holder's size()\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <utility>\n\nclass DynArray\n{\n    int* m_data{};\n    int m_size{};\n\npublic:\n    DynArray(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    DynArray(DynArray&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size }\n    {\n        src.m_data = nullptr;\n        src.m_size = 0;\n    }\n\n    ~DynArray() { delete[] m_data; }\n\n    DynArray(const DynArray&) = delete;\n    DynArray& operator=(const DynArray&) = delete;\n    DynArray& operator=(DynArray&&) = delete;\n\n    int size() const { return m_size; }\n};\n\nclass Holder\n{\n    DynArray m_arr;\n\npublic:\n    Holder(DynArray&& arr)\n        : m_arr{ std::move(arr) } {}\n\n    int size() const { return m_arr.size(); }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    DynArray arr{ n };\n\n    Holder h{ std::move(arr) };\n\n    std::cout << \"source: \" << arr.size() << '\\n';\n    std::cout << \"holder: \" << h.size() << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Small array",
+              "is_sample": true,
+              "stdin": "5",
+              "expected_stdout": "source: 0\nholder: 5\n"
+            },
+            {
+              "label": "Size one",
+              "is_sample": false,
+              "stdin": "1",
+              "expected_stdout": "source: 0\nholder: 1\n"
+            },
+            {
+              "label": "Larger array",
+              "is_sample": false,
+              "stdin": "42",
+              "expected_stdout": "source: 0\nholder: 42\n"
+            }
+          ]
+        },
+        {
+          "title": "Swap via std::move",
+          "prompt_md": "## Goal\n\nImplement a generic-style swap function for a custom `Buffer` class using `std::move`, demonstrating how three moves can exchange two objects without copying.\n\n## Input\n\n- Line 1: two space-separated integers `sizeA` and `sizeB` (1 <= each <= 100), the sizes of two buffers.\n\n## Output\n\n- Line 1: `before: ` followed by the sizes of buffer A and B separated by a space.\n- Line 2: `after: ` followed by the sizes of buffer A and B separated by a space (swapped).\n\n## Requirements\n\n- A `Buffer` class is provided. It has a move constructor and move assignment operator that set the source's `m_data` to `nullptr` and `m_size` to `0`. Copy operations are deleted.\n- Write a function `void swapBuffers(Buffer& a, Buffer& b)` that swaps `a` and `b` using exactly three `std::move` calls: move `a` into a temporary, move-assign `b` into `a`, then move-assign the temporary into `b`.\n- In `main`, create two `Buffer` objects with the given sizes, print the \"before\" line, call `swapBuffers`, then print the \"after\" line.",
+          "starter_code": "#include <iostream>\n#include <utility>\n\nclass Buffer\n{\n    int* m_data{};\n    int m_size{};\n\npublic:\n    Buffer(int size)\n        : m_data{ new int[size]{} }, m_size{ size } {}\n\n    Buffer(Buffer&& src) noexcept\n        : m_data{ src.m_data }, m_size{ src.m_size }\n    {\n        src.m_data = nullptr;\n        src.m_size = 0;\n    }\n\n    Buffer& operator=(Buffer&& src) noexcept\n    {\n        if (this != &src)\n        {\n            delete[] m_data;\n            m_data = src.m_data;\n            m_size = src.m_size;\n            src.m_data = nullptr;\n            src.m_size = 0;\n        }\n        return *this;\n    }\n\n    ~Buffer() { delete[] m_data; }\n\n    Buffer(const Buffer&) = delete;\n    Buffer& operator=(const Buffer&) = delete;\n\n    int size() const { return m_size; }\n};\n\n// TODO: Write swapBuffers(Buffer& a, Buffer& b)\n// Use three std::move calls to swap a and b\n\nint main()\n{\n    int sizeA{};\n    int sizeB{};\n    std::cin >> sizeA >> sizeB;\n\n    Buffer a{ sizeA };\n    Buffer b{ sizeB };\n\n    // TODO: Print \"before: \" with sizes of a and b\n    // TODO: Call swapBuffers\n    // TODO: Print \"after: \" with sizes of a and b\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <utility>\n\nclass Buffer\n{\n    int* m_data{};\n    int m_size{};\npublic:\n    Buffer(int size) : m_data{ new int[size]{} }, m_size{ size } {}\n    Buffer(Buffer&& src) noexcept : m_data{ src.m_data }, m_size{ src.m_size }\n    { src.m_data = nullptr; src.m_size = 0; }\n    Buffer& operator=(Buffer&& src) noexcept {\n        if (this != &src) {\n            delete[] m_data;\n            m_data = src.m_data; m_size = src.m_size;\n            src.m_data = nullptr; src.m_size = 0;\n        }\n        return *this;\n    }\n    ~Buffer() { delete[] m_data; }\n    Buffer(const Buffer&) = delete;\n    Buffer& operator=(const Buffer&) = delete;\n    int size() const { return m_size; }\n};\n\nvoid swapBuffers(Buffer& a, Buffer& b)\n{\n    Buffer temp{ std::move(a) };\n    a = std::move(b);\n    b = std::move(temp);\n}\n\nint main()\n{\n    int sizeA{};\n    int sizeB{};\n    std::cin >> sizeA >> sizeB;\n\n    Buffer a{ sizeA };\n    Buffer b{ sizeB };\n\n    std::cout << \"before: \" << a.size() << ' ' << b.size() << '\\n';\n    swapBuffers(a, b);\n    std::cout << \"after: \" << a.size() << ' ' << b.size() << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Swap different sizes",
+              "is_sample": true,
+              "stdin": "3 7",
+              "expected_stdout": "before: 3 7\nafter: 7 3\n"
+            },
+            {
+              "label": "Swap equal sizes",
+              "is_sample": false,
+              "stdin": "10 10",
+              "expected_stdout": "before: 10 10\nafter: 10 10\n"
+            },
+            {
+              "label": "Swap with size one",
+              "is_sample": false,
+              "stdin": "1 99",
+              "expected_stdout": "before: 1 99\nafter: 99 1\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.5",
+      "title": "std::unique_ptr",
+      "sort_order": 4,
+      "summary_md": "## std::unique_ptr\n\n`std::unique_ptr` is a smart pointer that enforces **exclusive ownership**: exactly one `unique_ptr` owns the managed object at any time. When the `unique_ptr` is destroyed (goes out of scope), it automatically `delete`s the object it holds. This is the RAII pattern applied to dynamic memory -- acquisition happens in the constructor, release happens in the destructor, and you never write `delete` yourself.\n\nCreate a `unique_ptr` with `std::make_unique<T>(args...)`, which allocates the object and wraps it in one expression. Prefer this over raw `new` because it is exception-safe and avoids writing the type twice.\n\nBecause ownership is exclusive, `unique_ptr` **cannot be copied** -- its copy constructor and copy assignment operator are deleted. Attempting `auto b = a;` where `a` is a `unique_ptr` produces a compile error. To transfer ownership, use `std::move`, which converts the source to an rvalue so the move constructor takes over. After the move, the source becomes `nullptr`.\n\nYou access the managed object through `operator->` (member access), `operator*` (dereference), or `.get()` (raw pointer without releasing ownership). To check whether a `unique_ptr` currently owns an object, compare it to `nullptr` or use it in a boolean context.\n\n```cpp\n#include <iostream>\n#include <memory>\n\nstruct Sensor {\n    int id;\n    Sensor(int id) : id{id} { std::cout << \"Sensor \" << id << \" online\\n\"; }\n    ~Sensor() { std::cout << \"Sensor \" << id << \" offline\\n\"; }\n};\n\nint main() {\n    auto s = std::make_unique<Sensor>(5);\n    std::cout << \"Reading sensor \" << s->id << '\\n';\n    auto t = std::move(s);        // ownership transferred\n    std::cout << std::boolalpha << (s == nullptr) << '\\n'; // true\n}   // Sensor 5 offline -- automatic cleanup\n```\n\nKey guidelines: default to `unique_ptr` for any heap allocation. Pass raw pointers or references to functions that observe but do not own the object -- call `.get()` or dereference at the call site. Reserve `std::shared_ptr` for the rare case where multiple owners genuinely share lifetime responsibility. A `unique_ptr` has zero overhead compared to a raw pointer -- no reference count, no extra allocation -- so there is no reason to avoid it.",
+      "exercises": [
+        {
+          "title": "Manage a single resource with unique_ptr",
+          "prompt_md": "## Goal\n\nWrite a program that creates a `Logger` object via `std::unique_ptr`, uses it, then transfers ownership to a second pointer and verifies the original is empty.\n\n## Input\n\n- A single line containing one integer `id` (1 <= id <= 9999) representing the logger ID.\n\n## Output\n\nPrint exactly five lines in this order:\n1. `Logger <id> created`\n2. `Logger <id> logging`\n3. `Transferred: original is null = true`\n4. `New owner has logger <id>`\n5. `Logger <id> destroyed`\n\nReplace `<id>` with the integer read from stdin.\n\n## Requirements\n\n- Define `struct Logger` with an `int id` member, a constructor that prints `Logger <id> created`, a member function `void log() const` that prints `Logger <id> logging`, and a destructor that prints `Logger <id> destroyed`.\n- In `main`, create the logger using `std::make_unique<Logger>(id)`. Do not use `new` or `delete`.\n- Call `log()` on the unique_ptr (use `->`).\n- Transfer ownership to a second `unique_ptr` using `std::move`.\n- Print line 3 using `std::boolalpha` and checking whether the original pointer equals `nullptr`.\n- Print line 4 by accessing `id` through the new owner.\n- The destructor message (line 5) must appear last when the owning pointer goes out of scope.",
+          "starter_code": "#include <iostream>\n#include <memory>\n\n// TODO: Define struct Logger with:\n//   - int id\n//   - constructor that prints \"Logger <id> created\"\n//   - void log() const that prints \"Logger <id> logging\"\n//   - destructor that prints \"Logger <id> destroyed\"\n\nint main() {\n    int id{};\n    std::cin >> id;\n\n    // TODO: create a unique_ptr<Logger> using make_unique\n    // TODO: call log() via the pointer\n    // TODO: transfer ownership to a new unique_ptr using std::move\n    // TODO: print whether original is null (use std::boolalpha)\n    // TODO: print the id from the new owner\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n\nstruct Logger {\n    int id;\n    Logger(int id) : id{id} {\n        std::cout << \"Logger \" << id << \" created\\n\";\n    }\n    void log() const {\n        std::cout << \"Logger \" << id << \" logging\\n\";\n    }\n    ~Logger() {\n        std::cout << \"Logger \" << id << \" destroyed\\n\";\n    }\n};\n\nint main() {\n    int id{};\n    std::cin >> id;\n\n    auto original = std::make_unique<Logger>(id);\n    original->log();\n\n    auto newOwner = std::move(original);\n    std::cout << \"Transferred: original is null = \"\n              << std::boolalpha << (original == nullptr) << '\\n';\n    std::cout << \"New owner has logger \" << newOwner->id << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample -- id 10",
+              "is_sample": true,
+              "stdin": "10\n",
+              "expected_stdout": "Logger 10 created\nLogger 10 logging\nTransferred: original is null = true\nNew owner has logger 10\nLogger 10 destroyed\n"
+            },
+            {
+              "label": "hidden -- id 1 (minimum)",
+              "is_sample": false,
               "stdin": "1\n",
-              "expected_stdout": "Resource 1 created\nAfter first owner: count = 1\nAfter second owner: count = 2\nAfter reset of first owner: count = 1\nResource 1 destroyed\nAfter reset of second owner: count = 0\n",
-              "is_sample": false
+              "expected_stdout": "Logger 1 created\nLogger 1 logging\nTransferred: original is null = true\nNew owner has logger 1\nLogger 1 destroyed\n"
             },
             {
-              "label": "hidden — id 500 (mid-range)",
-              "stdin": "500\n",
-              "expected_stdout": "Resource 500 created\nAfter first owner: count = 1\nAfter second owner: count = 2\nAfter reset of first owner: count = 1\nResource 500 destroyed\nAfter reset of second owner: count = 0\n",
-              "is_sample": false
+              "label": "hidden -- id 9999 (maximum)",
+              "is_sample": false,
+              "stdin": "9999\n",
+              "expected_stdout": "Logger 9999 created\nLogger 9999 logging\nTransferred: original is null = true\nNew owner has logger 9999\nLogger 9999 destroyed\n"
+            }
+          ]
+        },
+        {
+          "title": "Build and transfer a unique_ptr collection",
+          "prompt_md": "## Goal\n\nWrite a program that creates multiple `Item` objects managed by `std::unique_ptr`, stores them in a `std::vector`, and then moves one item out of the vector to demonstrate ownership transfer with containers.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 10) representing the number of items to create.\n- Line 2: an integer `idx` (0 <= idx < n) representing the index of the item to extract from the vector.\n\n## Output\n\n1. For each item created (in order from 1 to n): `Item <i> created`\n2. `Vector size: <n>`\n3. `Extracted item <id>`\n4. `Vector size after extract: <n>` (size stays the same -- the slot becomes nullptr)\n5. Destruction messages as items go out of scope. The extracted item is destroyed first (it is a local variable declared after the vector, so it is destroyed before the vector). Then the vector's remaining items are destroyed in forward index order (0, 1, 2, ...). Items whose slot is nullptr produce no output. Note: `std::vector` destroys its elements in forward order on all major compilers (GCC, Clang, MSVC).\n\n## Requirements\n\n- Define `struct Item` with an `int id` member, a constructor that prints `Item <id> created`, and a destructor that prints `Item <id> destroyed`.\n- In `main`, read `n` and `idx`. Create a `std::vector<std::unique_ptr<Item>>` and use a loop to `push_back` items with ids from 1 to n (use `std::make_unique`).\n- Print the vector size.\n- Move the element at index `idx` out of the vector into a local `unique_ptr` using `std::move`. This leaves `nullptr` in the vector slot.\n- Print the extracted item's id and the vector size after extraction.\n- Do not use `new`, `delete`, or `erase`. The vector size must remain `n` after extraction.",
+          "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\n// TODO: Define struct Item with:\n//   - int id\n//   - constructor that prints \"Item <id> created\"\n//   - destructor that prints \"Item <id> destroyed\"\n\nint main() {\n    int n{};\n    int idx{};\n    std::cin >> n >> idx;\n\n    std::vector<std::unique_ptr<Item>> items;\n\n    // TODO: loop from 1 to n, push_back make_unique<Item>(i)\n    // TODO: print \"Vector size: <n>\"\n    // TODO: move items[idx] into a local unique_ptr\n    // TODO: print \"Extracted item <id>\"\n    // TODO: print \"Vector size after extract: <n>\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nstruct Item {\n    int id;\n    Item(int id) : id{id} {\n        std::cout << \"Item \" << id << \" created\\n\";\n    }\n    ~Item() {\n        std::cout << \"Item \" << id << \" destroyed\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    int idx{};\n    std::cin >> n >> idx;\n\n    std::vector<std::unique_ptr<Item>> items;\n    for (int i{1}; i <= n; ++i) {\n        items.push_back(std::make_unique<Item>(i));\n    }\n\n    std::cout << \"Vector size: \" << items.size() << '\\n';\n\n    auto extracted = std::move(items[static_cast<std::size_t>(idx)]);\n    std::cout << \"Extracted item \" << extracted->id << '\\n';\n    std::cout << \"Vector size after extract: \" << items.size() << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample -- 3 items, extract index 1",
+              "is_sample": true,
+              "stdin": "3\n1\n",
+              "expected_stdout": "Item 1 created\nItem 2 created\nItem 3 created\nVector size: 3\nExtracted item 2\nVector size after extract: 3\nItem 2 destroyed\nItem 1 destroyed\nItem 3 destroyed\n"
+            },
+            {
+              "label": "hidden -- 1 item, extract index 0",
+              "is_sample": false,
+              "stdin": "1\n0\n",
+              "expected_stdout": "Item 1 created\nVector size: 1\nExtracted item 1\nVector size after extract: 1\nItem 1 destroyed\n"
+            },
+            {
+              "label": "hidden -- 5 items, extract index 4",
+              "is_sample": false,
+              "stdin": "5\n4\n",
+              "expected_stdout": "Item 1 created\nItem 2 created\nItem 3 created\nItem 4 created\nItem 5 created\nVector size: 5\nExtracted item 5\nVector size after extract: 5\nItem 5 destroyed\nItem 1 destroyed\nItem 2 destroyed\nItem 3 destroyed\nItem 4 destroyed\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.6",
+      "title": "std::shared_ptr",
+      "sort_order": 5,
+      "summary_md": "A `std::unique_ptr` enforces single ownership -- exactly one pointer owns the resource at any time. But sometimes a resource legitimately has **multiple owners**. For example, several data structures might hold a pointer to the same configuration object, and the object should only be destroyed when the last owner is done with it. This is the problem `std::shared_ptr` solves.\n\n`std::shared_ptr` uses **reference counting**. Internally it maintains a control block that tracks how many `shared_ptr` instances point to the same object. Every time you copy a `shared_ptr`, the count increments. Every time a `shared_ptr` is destroyed or reassigned, the count decrements. When the count reaches zero, the managed object is deleted. You can inspect the current count with `use_count()`.\n\nCreate a `shared_ptr` with `std::make_shared<T>(args...)`, which allocates the object and the control block in a single memory allocation (more efficient than using `new` directly):\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main()\n{\n    auto ptr1{ std::make_shared<int>(42) };\n    std::cout << ptr1.use_count() << '\\n'; // 1\n\n    auto ptr2{ ptr1 }; // copy: count goes to 2\n    std::cout << ptr1.use_count() << '\\n'; // 2\n\n    ptr2.reset(); // ptr2 releases ownership: count back to 1\n    std::cout << ptr1.use_count() << '\\n'; // 1\n}\n```\n\nKey differences from `std::unique_ptr`: shared pointers **can be copied** (unique pointers cannot), shared pointers carry the overhead of the control block and atomic reference count operations, and shared pointers use `std::make_shared` instead of `std::make_unique`. Like `unique_ptr`, `shared_ptr` overloads `operator*` and `operator->` so you can use it like a raw pointer, and a default-constructed `shared_ptr` is null.\n\nPrefer `std::unique_ptr` when single ownership is sufficient -- it is cheaper and expresses intent more clearly. Reach for `std::shared_ptr` only when you genuinely need shared ownership. Avoid creating a `shared_ptr` from a raw pointer that is already managed by another `shared_ptr`; always copy from an existing `shared_ptr` or use `make_shared` to prevent double-deletion.",
+      "exercises": [
+        {
+          "title": "Trace the reference count",
+          "prompt_md": "## Goal\n\nWrite a program that creates a `std::shared_ptr<int>`, copies it a given number of times into a `std::vector`, then removes elements one by one, printing the reference count at each step.\n\n## Input\n\n- A single integer `n` (1 <= n <= 20): the number of copies to place in the vector.\n\n## Output\n\n- First, print the use count after creating the original `shared_ptr` (before any copies): `1`\n- Then print the use count after all `n` copies have been pushed into the vector (this will be `n + 1`).\n- Then, for each element removed from the back of the vector (n removals), print the use count of the original pointer after that removal.\n- Each value on its own line.\n\n## Requirements\n\n- Create the `shared_ptr` with `std::make_shared<int>(0)`.\n- Store copies in a `std::vector<std::shared_ptr<int>>`.\n- Use `push_back` to add copies and `pop_back` to remove them.\n- Print `use_count()` of the **original** `shared_ptr` at each required point.\n- Do not use `new` or `delete`.",
+          "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create a shared_ptr<int> with make_shared\n    // Print its initial use_count\n\n    // TODO: Push n copies into a vector\n    // Print the use_count after all copies\n\n    // TODO: Pop elements one by one, printing use_count after each pop\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    auto ptr{ std::make_shared<int>(0) };\n    std::cout << ptr.use_count() << '\\n';\n\n    std::vector<std::shared_ptr<int>> vec{};\n    for (int i{ 0 }; i < n; ++i)\n        vec.push_back(ptr);\n\n    std::cout << ptr.use_count() << '\\n';\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        vec.pop_back();\n        std::cout << ptr.use_count() << '\\n';\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Three copies",
+              "is_sample": true,
+              "stdin": "3",
+              "expected_stdout": "1\n4\n3\n2\n1\n"
+            },
+            {
+              "label": "Single copy",
+              "is_sample": false,
+              "stdin": "1",
+              "expected_stdout": "1\n2\n1\n"
+            },
+            {
+              "label": "Five copies",
+              "is_sample": false,
+              "stdin": "5",
+              "expected_stdout": "1\n6\n5\n4\n3\n2\n1\n"
+            }
+          ]
+        },
+        {
+          "title": "Shared vs unique ownership report",
+          "prompt_md": "## Goal\n\nWrite a program that manages a dynamically allocated integer through both `std::unique_ptr` and `std::shared_ptr`, and reports their ownership characteristics.\n\n## Input\n\n- A single integer `value` (-100000 <= value <= 100000).\n\n## Output\n\nPrint exactly 5 lines:\n\n1. `unique: <value>` -- the value held by a `unique_ptr`.\n2. `shared: <value> count:<N>` -- the value and use count of a `shared_ptr` right after creation.\n3. `after copy: count:<N>` -- the use count after copying the `shared_ptr` to a second `shared_ptr`.\n4. `after reset: count:<N>` -- the use count of the original after the copy is reset.\n5. `equal: true` or `equal: false` -- whether both pointers (before the copy was reset) pointed to the same value.\n\n## Requirements\n\n- Create the `unique_ptr` with `std::make_unique<int>(value)` and the `shared_ptr` with `std::make_shared<int>(value)`.\n- For line 5, compare the **dereferenced values** of the original shared_ptr and the copy **before** resetting the copy. Store this comparison result in a `bool` before the reset.\n- Use `.use_count()` for the count.\n- Do not use `new` or `delete`.",
+          "starter_code": "#include <iostream>\n#include <memory>\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    // TODO: Create a unique_ptr<int> and print its value\n\n    // TODO: Create a shared_ptr<int> and print its value and use_count\n\n    // TODO: Copy the shared_ptr, print the new use_count\n\n    // TODO: Check if both shared_ptrs hold equal values (store result)\n\n    // TODO: Reset the copy, print use_count, then print the equality result\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    auto uptr{ std::make_unique<int>(value) };\n    std::cout << \"unique: \" << *uptr << '\\n';\n\n    auto sptr1{ std::make_shared<int>(value) };\n    std::cout << \"shared: \" << *sptr1 << \" count:\" << sptr1.use_count() << '\\n';\n\n    auto sptr2{ sptr1 };\n    std::cout << \"after copy: count:\" << sptr1.use_count() << '\\n';\n\n    bool equal{ *sptr1 == *sptr2 };\n\n    sptr2.reset();\n    std::cout << \"after reset: count:\" << sptr1.use_count() << '\\n';\n\n    std::cout << \"equal: \" << (equal ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Positive value",
+              "is_sample": true,
+              "stdin": "42",
+              "expected_stdout": "unique: 42\nshared: 42 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+            },
+            {
+              "label": "Zero value",
+              "is_sample": false,
+              "stdin": "0",
+              "expected_stdout": "unique: 0\nshared: 0 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+            },
+            {
+              "label": "Negative value",
+              "is_sample": false,
+              "stdin": "-9999",
+              "expected_stdout": "unique: -9999\nshared: -9999 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.7",
+      "title": "Circular dependency issues with std::shared_ptr, and std::weak_ptr",
+      "sort_order": 6,
+      "summary_md": "When two objects hold `std::shared_ptr` references to each other, neither object's reference count ever reaches zero. Both stay alive forever -- a **circular dependency** (also called a reference cycle). This is the most common way `shared_ptr` leaks memory.\n\nConsider two classes, `Person`, each storing a `std::shared_ptr` to a partner. When you write `alice->partner = bob; bob->partner = alice;`, the reference count for each object reaches 2 (one from `main`, one from the partner pointer). When the `shared_ptr` variables in `main` go out of scope, each count drops to 1 -- but never to 0. Neither destructor runs, and memory leaks silently.\n\n**`std::weak_ptr`** breaks the cycle. A `weak_ptr` observes a `shared_ptr`-managed object without incrementing the reference count. If the partner pointer is a `weak_ptr` instead of a `shared_ptr`, the mutual reference does not keep the objects alive. When the last owning `shared_ptr` goes away, the object is destroyed normally.\n\nBecause a `weak_ptr` does not own the object, the object might be destroyed while you still hold the `weak_ptr`. Two member functions let you check:\n\n- **`expired()`** returns `true` if the managed object has been destroyed.\n- **`lock()`** returns a `std::shared_ptr` to the object if it still exists, or an empty `shared_ptr` if it has been destroyed. Always use `lock()` before accessing the object -- never dereference a `weak_ptr` directly (it has no `operator*` or `operator->`).\n\n```cpp\n#include <iostream>\n#include <memory>\n\nstruct Node {\n    int id;\n    std::weak_ptr<Node> next;  // weak, not shared -- breaks cycle\n    Node(int id) : id{id} {}\n    ~Node() { std::cout << \"Node \" << id << \" destroyed\\n\"; }\n};\n\nint main() {\n    auto a = std::make_shared<Node>(1);\n    auto b = std::make_shared<Node>(2);\n    a->next = b;  // weak_ptr assigned from shared_ptr\n    b->next = a;\n    // Both nodes are destroyed when a and b leave scope\n}\n```\n\nThe design rule is straightforward: in any relationship where two objects point at each other, make one direction a `weak_ptr`. The owning direction keeps a `shared_ptr`; the back-pointer uses `weak_ptr`. This preserves the reference-count cleanup that makes `shared_ptr` useful in the first place.",
+      "exercises": [
+        {
+          "title": "Detect a circular dependency with use_count",
+          "prompt_md": "## Goal\n\nDemonstrate the circular dependency problem by building two objects that reference each other via `std::shared_ptr`, then show how switching to `std::weak_ptr` fixes the leak. You will use `use_count()` to observe the reference counts at each stage.\n\n## Input\n\n- Line 1: two space-separated integers `idA` and `idB` (1 <= each <= 9999), the IDs for two nodes.\n\n## Output\n\nPrint exactly five lines:\n1. `Circular: A count = <countA>, B count = <countB>` -- the reference counts of `a` and `b` after cross-linking with `shared_ptr` members (before any cleanup).\n2. `Circular after reset: A count = <countA>, B count = <countB>` -- the counts after calling `a.reset()` and `b.reset()` (the cycle keeps both alive, so counts will be 1 each).\n3. `Fixed: A count = <countA>, B count = <countB>` -- the counts after cross-linking with `weak_ptr` members (weak_ptr does not increase count).\n4. `A expired: false` -- check `weak_ptr` on node A's `next` member before cleanup.\n5. `A expired: true` -- check the same `weak_ptr` after calling `b.reset()` (node B is destroyed).\n\nReplace each `<countA>` and `<countB>` with the actual integer from `use_count()`.\n\n## Requirements\n\n1. Define `struct BadNode` with `int id` and `std::shared_ptr<BadNode> next`.\n2. Define `struct GoodNode` with `int id` and `std::weak_ptr<GoodNode> next`.\n3. For the circular test: create `a` and `b` as `shared_ptr<BadNode>`, assign `a->next = b` and `b->next = a`, print line 1, call `a.reset()` then `b.reset()`, print line 2.\n4. For the fixed test: create new `a` and `b` as `shared_ptr<GoodNode>`, assign `a->next = b` and `b->next = a`, print line 3. Store `a->next` in a local `std::weak_ptr<GoodNode> obs` before any reset. Print line 4 using `obs.expired()`. Call `b.reset()`, then print line 5 using `obs.expired()`.\n5. Print `false`/`true` as literal text (use `std::boolalpha`).\n6. Do **not** rely on destructor output for correctness.",
+          "starter_code": "#include <iostream>\n#include <memory>\n\nstruct BadNode {\n    int id;\n    std::shared_ptr<BadNode> next;\n    BadNode(int id) : id{id} {}\n};\n\nstruct GoodNode {\n    int id;\n    std::weak_ptr<GoodNode> next;\n    GoodNode(int id) : id{id} {}\n};\n\nint main() {\n    int idA{}, idB{};\n    std::cin >> idA >> idB;\n\n    // --- Part 1: Circular dependency (BadNode) ---\n    // TODO: create shared_ptr<BadNode> a and b, cross-link, print counts,\n    //       reset both, print counts again\n\n    // --- Part 2: Fixed with weak_ptr (GoodNode) ---\n    // TODO: create shared_ptr<GoodNode> a2 and b2, cross-link, print counts,\n    //       store a2->next in a weak_ptr, print expired before and after b2.reset()\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n\nstruct BadNode {\n    int id;\n    std::shared_ptr<BadNode> next;\n    BadNode(int id) : id{id} {}\n};\n\nstruct GoodNode {\n    int id;\n    std::weak_ptr<GoodNode> next;\n    GoodNode(int id) : id{id} {}\n};\n\nint main() {\n    int idA{}, idB{};\n    std::cin >> idA >> idB;\n\n    // Part 1: Circular dependency\n    {\n        auto a = std::make_shared<BadNode>(idA);\n        auto b = std::make_shared<BadNode>(idB);\n        a->next = b;\n        b->next = a;\n        std::cout << \"Circular: A count = \" << a.use_count()\n                  << \", B count = \" << b.use_count() << \"\\n\";\n        a.reset();\n        b.reset();\n        std::cout << \"Circular after reset: A count = \"\n                  << a.use_count() << \", B count = \" << b.use_count() << \"\\n\";\n    }\n\n    // Part 2: Fixed with weak_ptr\n    {\n        auto a2 = std::make_shared<GoodNode>(idA);\n        auto b2 = std::make_shared<GoodNode>(idB);\n        a2->next = b2;\n        b2->next = a2;\n        std::cout << \"Fixed: A count = \" << a2.use_count()\n                  << \", B count = \" << b2.use_count() << \"\\n\";\n\n        std::weak_ptr<GoodNode> obs = a2->next;\n        std::cout << std::boolalpha;\n        std::cout << \"A expired: \" << obs.expired() << \"\\n\";\n        b2.reset();\n        std::cout << \"A expired: \" << obs.expired() << \"\\n\";\n    }\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample -- ids 1 and 2",
+              "is_sample": true,
+              "stdin": "1 2\n",
+              "expected_stdout": "Circular: A count = 2, B count = 2\nCircular after reset: A count = 0, B count = 0\nFixed: A count = 1, B count = 1\nA expired: false\nA expired: true\n"
+            },
+            {
+              "label": "hidden -- ids 100 and 200",
+              "is_sample": false,
+              "stdin": "100 200\n",
+              "expected_stdout": "Circular: A count = 2, B count = 2\nCircular after reset: A count = 0, B count = 0\nFixed: A count = 1, B count = 1\nA expired: false\nA expired: true\n"
+            },
+            {
+              "label": "hidden -- ids 9999 and 1",
+              "is_sample": false,
+              "stdin": "9999 1\n",
+              "expected_stdout": "Circular: A count = 2, B count = 2\nCircular after reset: A count = 0, B count = 0\nFixed: A count = 1, B count = 1\nA expired: false\nA expired: true\n"
+            }
+          ]
+        },
+        {
+          "title": "Safe observer with weak_ptr::lock",
+          "prompt_md": "## Goal\n\nBuild a `Registry` that hands out `std::shared_ptr<Item>` objects and an `Observer` that watches a single item via `std::weak_ptr<Item>`. The observer must safely report the item's value using `lock()`, and correctly detect when the item has been destroyed.\n\n## Input\n\n- Line 1: a single integer `value` (1 <= value <= 99999) representing the item's stored value.\n\n## Output\n\nPrint exactly five lines:\n1. `Observer lock: <value>` -- the observer successfully locks and reads the item's value.\n2. `Owner count: <count>` -- the use_count of the shared_ptr returned by lock() (printed while the locked pointer is still alive).\n3. `After unlock owner count: <count>` -- the use_count of the original shared_ptr after the locked pointer is destroyed.\n4. `Item alive: true` -- check expired() on the observer while the original shared_ptr still exists.\n5. `Item alive: false` -- check expired() on the observer after the original shared_ptr is reset.\n\n## Requirements\n\n1. Define `struct Item` with a single `int value` member and a constructor `Item(int v)`.\n2. In `main`, create a `std::shared_ptr<Item>` called `owner` using `std::make_shared`.\n3. Create a `std::weak_ptr<Item>` called `observer` from `owner`.\n4. Call `observer.lock()` to obtain a temporary `std::shared_ptr<Item>` called `locked`. If `locked` is non-null, print line 1 with `locked->value`. Print line 2 with `owner.use_count()` (which reflects both `owner` and `locked`).\n5. Destroy `locked` (e.g., by ending its scope or calling `reset()`). Print line 3 with `owner.use_count()`.\n6. Print line 4: `Item alive: ` followed by `!observer.expired()` (use `std::boolalpha`).\n7. Call `owner.reset()`. Print line 5: `Item alive: ` followed by `!observer.expired()`.\n8. Do **not** use `new`/`delete`. Do **not** rely on destructor output for correctness.",
+          "starter_code": "#include <iostream>\n#include <memory>\n\nstruct Item {\n    int value;\n    Item(int v) : value{v} {}\n};\n\nint main() {\n    int value{};\n    std::cin >> value;\n\n    // TODO: create shared_ptr<Item> owner with make_shared\n\n    // TODO: create weak_ptr<Item> observer from owner\n\n    // TODO: lock the observer to get a temporary shared_ptr\n    //       print the value and use_count while locked\n\n    // TODO: release the lock, print use_count again\n\n    // TODO: print whether the item is alive (use boolalpha and !expired())\n\n    // TODO: reset owner, print whether the item is alive\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n\nstruct Item {\n    int value;\n    Item(int v) : value{v} {}\n};\n\nint main() {\n    int value{};\n    std::cin >> value;\n\n    auto owner = std::make_shared<Item>(value);\n    std::weak_ptr<Item> observer = owner;\n\n    {\n        auto locked = observer.lock();\n        if (locked) {\n            std::cout << \"Observer lock: \" << locked->value << \"\\n\";\n            std::cout << \"Owner count: \" << owner.use_count() << \"\\n\";\n        }\n    }\n\n    std::cout << \"After unlock owner count: \" << owner.use_count() << \"\\n\";\n\n    std::cout << std::boolalpha;\n    std::cout << \"Item alive: \" << !observer.expired() << \"\\n\";\n\n    owner.reset();\n    std::cout << \"Item alive: \" << !observer.expired() << \"\\n\";\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "sample -- value 42",
+              "is_sample": true,
+              "stdin": "42\n",
+              "expected_stdout": "Observer lock: 42\nOwner count: 2\nAfter unlock owner count: 1\nItem alive: true\nItem alive: false\n"
+            },
+            {
+              "label": "hidden -- value 1 (minimum)",
+              "is_sample": false,
+              "stdin": "1\n",
+              "expected_stdout": "Observer lock: 1\nOwner count: 2\nAfter unlock owner count: 1\nItem alive: true\nItem alive: false\n"
+            },
+            {
+              "label": "hidden -- value 99999 (maximum)",
+              "is_sample": false,
+              "stdin": "99999\n",
+              "expected_stdout": "Observer lock: 99999\nOwner count: 2\nAfter unlock owner count: 1\nItem alive: true\nItem alive: false\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": "22.x",
+      "title": "Chapter 22 summary and quiz",
+      "sort_order": 7,
+      "summary_md": "## Chapter 22 Summary\n\nThis chapter addressed the two biggest pain points of manual memory management in C++ -- ownership ambiguity and expensive copies -- by introducing move semantics and smart pointers.\n\n### Ownership and the case for smart pointers (22.1)\n\nRaw pointers carry no ownership information. When multiple pointers alias the same heap object, it is unclear which call site should `delete` it, leading to leaks, double-frees, and dangling pointers. Smart pointers solve this by encoding ownership in the type system and calling `delete` automatically in their destructors.\n\n### R-value references (22.2)\n\nEvery expression is either an l-value (has a persistent address) or an r-value (temporary). An r-value reference (`T&&`) binds only to r-values, extending the temporary's lifetime. Overloading on `T&` vs `T&&` lets the compiler route temporaries to a move path instead of a copy path -- the foundation of move semantics.\n\n### Move constructors and move assignment (22.3)\n\nA move constructor (`T(T&& src) noexcept`) transfers ownership by copying the source's internal pointer and nullifying it. Move assignment does the same after releasing the target's existing resource. After a move, the source is in a valid but unspecified state.\n\n### std::move (22.4)\n\n`std::move` (from `<utility>`) casts an l-value to an r-value reference, enabling the compiler to select a move overload. It does not move anything by itself -- it simply signals you no longer need the object's value.\n\n### std::unique_ptr (22.5)\n\n`std::unique_ptr<T>` models exclusive ownership. It cannot be copied, only moved. Create one with `std::make_unique<T>(args...)`. When destroyed or reassigned, the managed object is deleted. Passing by value transfers ownership; passing by `const` reference allows observation without transfer.\n\n### std::shared_ptr (22.6)\n\n`std::shared_ptr<T>` models shared ownership via reference counting. The object is deleted when the last owning `shared_ptr` is destroyed. Create with `std::make_shared<T>(args...)`, which performs a single allocation for both the control block and the object. Use `use_count()` to inspect the reference count.\n\n### Circular dependencies and std::weak_ptr (22.7)\n\nWhen two objects hold `shared_ptr` references to each other, neither count reaches zero, causing a leak. `std::weak_ptr<T>` breaks the cycle by observing without incrementing the count. Call `lock()` to obtain a `shared_ptr` that is non-null only if the object still exists, or `expired()` to check validity without locking.",
+      "exercises": [
+        {
+          "title": "Transfer Unique Ownership",
+          "prompt_md": "## Goal\n\nBuild a `UniqueResource` class that manages a dynamically allocated string and supports move semantics. Then use `std::unique_ptr` to hold instances of this class, transferring ownership between containers.\n\n## Input\n\n- Line 1: integer N (1 <= N <= 10), the number of resources.\n- Next N lines: one string per line (no spaces, 1-50 characters).\n\n## Output\n\nFor each resource, after transferring all unique_ptrs from a source vector to a destination vector using `std::move`, print:\n- `moved: <name>` for each transfer (in input order)\n\nThen print the destination vector contents:\n- `dest: <name1> <name2> ...` (space-separated, input order)\n\nFinally, print the source vector's state:\n- `source empty: true`\n\n## Requirements\n\n1. Define class `UniqueResource` with a `std::string` member `m_name`.\n2. Its constructor takes a `std::string` by value and moves it into `m_name`.\n3. Provide `const std::string& getName() const`.\n4. Store each resource as a `std::unique_ptr<UniqueResource>` created via `std::make_unique`.\n5. Transfer each `unique_ptr` from a source `std::vector` to a destination `std::vector` using `std::move`. Print `moved: <name>` before each transfer by reading the name from the pointer before moving it.\n6. After all transfers, verify each source element is `nullptr` and print the final `source empty: true` line only if all are null.\n7. Use `<memory>`, `<vector>`, `<iostream>`, `<string>`.",
+          "starter_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\nclass UniqueResource\n{\n    std::string m_name;\n\npublic:\n    UniqueResource(std::string name)\n        : m_name{ std::move(name) }\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<std::unique_ptr<UniqueResource>> source;\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string name{};\n        std::cin >> name;\n        source.push_back(std::make_unique<UniqueResource>(std::move(name)));\n    }\n\n    std::vector<std::unique_ptr<UniqueResource>> dest;\n\n    // TODO: For each element in source, print \"moved: <name>\",\n    //       then std::move it into dest.\n\n    // TODO: Print \"dest: \" followed by all names in dest, space-separated.\n\n    // TODO: Check that every element in source is nullptr.\n    //       Print \"source empty: true\" if all are null,\n    //       or \"source empty: false\" otherwise.\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\nclass UniqueResource\n{\n    std::string m_name;\n\npublic:\n    UniqueResource(std::string name)\n        : m_name{ std::move(name) }\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<std::unique_ptr<UniqueResource>> source;\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string name{};\n        std::cin >> name;\n        source.push_back(std::make_unique<UniqueResource>(std::move(name)));\n    }\n\n    std::vector<std::unique_ptr<UniqueResource>> dest;\n\n    for (auto& ptr : source)\n    {\n        std::cout << \"moved: \" << ptr->getName() << '\\n';\n        dest.push_back(std::move(ptr));\n    }\n\n    std::cout << \"dest:\";\n    for (const auto& ptr : dest)\n        std::cout << ' ' << ptr->getName();\n    std::cout << '\\n';\n\n    bool allNull{ true };\n    for (const auto& ptr : source)\n    {\n        if (ptr != nullptr)\n        {\n            allNull = false;\n            break;\n        }\n    }\n    std::cout << \"source empty: \" << (allNull ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- three resources",
+              "is_sample": true,
+              "stdin": "3\nalpha\nbeta\ngamma\n",
+              "expected_stdout": "moved: alpha\nmoved: beta\nmoved: gamma\ndest: alpha beta gamma\nsource empty: true\n"
+            },
+            {
+              "label": "Hidden -- single resource",
+              "is_sample": false,
+              "stdin": "1\nwidget\n",
+              "expected_stdout": "moved: widget\ndest: widget\nsource empty: true\n"
+            },
+            {
+              "label": "Hidden -- five resources",
+              "is_sample": false,
+              "stdin": "5\nptr\nref\nobj\nval\nres\n",
+              "expected_stdout": "moved: ptr\nmoved: ref\nmoved: obj\nmoved: val\nmoved: res\ndest: ptr ref obj val res\nsource empty: true\n"
+            }
+          ]
+        },
+        {
+          "title": "Shared and Weak Pointer Lifecycle",
+          "prompt_md": "## Goal\n\nSimulate a shared resource with multiple owners and a weak observer. Track the reference count at each stage to demonstrate `shared_ptr` and `weak_ptr` behavior.\n\n## Input\n\n- Line 1: a single string `name` (no spaces, 1-50 characters) for the resource.\n\n## Output\n\nPrint the following lines in order, showing the `use_count()` at each stage:\n\n1. `created <name>, refs: 1` -- after creating the initial shared_ptr.\n2. `copied, refs: 2` -- after copying to a second shared_ptr.\n3. `weak created, refs: 2` -- after creating a weak_ptr (count stays the same).\n4. `weak expired: false` -- the weak_ptr can still lock.\n5. `locked, refs: 3` -- after locking the weak_ptr into a temporary shared_ptr.\n6. `lock released, refs: 2` -- after the locked shared_ptr goes out of scope.\n7. `copy reset, refs: 1` -- after resetting the second shared_ptr.\n8. `original reset, refs: 0` -- after resetting the first shared_ptr.\n9. `weak expired: true` -- the weak_ptr can no longer lock.\n\n## Requirements\n\n1. Create `std::shared_ptr<std::string>` with `std::make_shared` holding the input name.\n2. Copy it to a second `shared_ptr`. Print the ref count from the original.\n3. Create a `std::weak_ptr<std::string>` from the original.\n4. Print whether the weak_ptr is expired.\n5. In a nested scope, call `lock()` on the weak_ptr and print the ref count.\n6. After leaving that scope, print the ref count again.\n7. Call `reset()` on the copy, then on the original, printing ref counts.\n8. Print the final `expired()` state of the weak_ptr.\n9. Use `<memory>`, `<iostream>`, `<string>`.",
+          "starter_code": "#include <iostream>\n#include <memory>\n#include <string>\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    // TODO: Create shared_ptr<std::string> called original using make_shared\n    // TODO: Print \"created <name>, refs: <count>\"\n\n    // TODO: Copy original into a second shared_ptr called copy\n    // TODO: Print \"copied, refs: <count>\"\n\n    // TODO: Create weak_ptr<std::string> called weak from original\n    // TODO: Print \"weak created, refs: <count>\"\n\n    // TODO: Print \"weak expired: false\" or \"weak expired: true\"\n\n    // TODO: In a nested scope, lock the weak_ptr and print \"locked, refs: <count>\"\n    // TODO: After the scope, print \"lock released, refs: <count>\"\n\n    // TODO: Reset copy, print \"copy reset, refs: <count>\"\n    // TODO: Reset original, print \"original reset, refs: <count>\"\n    // TODO: Print final \"weak expired: true\" or \"weak expired: false\"\n\n    return 0;\n}\n",
+          "solution_code": "#include <iostream>\n#include <memory>\n#include <string>\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    auto original{ std::make_shared<std::string>(std::move(name)) };\n    std::cout << \"created \" << *original << \", refs: \" << original.use_count() << '\\n';\n\n    auto copy{ original };\n    std::cout << \"copied, refs: \" << original.use_count() << '\\n';\n\n    std::weak_ptr<std::string> weak{ original };\n    std::cout << \"weak created, refs: \" << original.use_count() << '\\n';\n\n    std::cout << \"weak expired: \" << (weak.expired() ? \"true\" : \"false\") << '\\n';\n\n    {\n        auto locked{ weak.lock() };\n        std::cout << \"locked, refs: \" << original.use_count() << '\\n';\n    }\n    std::cout << \"lock released, refs: \" << original.use_count() << '\\n';\n\n    copy.reset();\n    std::cout << \"copy reset, refs: \" << original.use_count() << '\\n';\n\n    original.reset();\n    std::cout << \"original reset, refs: \" << original.use_count() << '\\n';\n\n    std::cout << \"weak expired: \" << (weak.expired() ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+          "test_cases": [
+            {
+              "label": "Sample -- resource named Engine",
+              "is_sample": true,
+              "stdin": "Engine\n",
+              "expected_stdout": "created Engine, refs: 1\ncopied, refs: 2\nweak created, refs: 2\nweak expired: false\nlocked, refs: 3\nlock released, refs: 2\ncopy reset, refs: 1\noriginal reset, refs: 0\nweak expired: true\n"
+            },
+            {
+              "label": "Hidden -- short name",
+              "is_sample": false,
+              "stdin": "X\n",
+              "expected_stdout": "created X, refs: 1\ncopied, refs: 2\nweak created, refs: 2\nweak expired: false\nlocked, refs: 3\nlock released, refs: 2\ncopy reset, refs: 1\noriginal reset, refs: 0\nweak expired: true\n"
+            },
+            {
+              "label": "Hidden -- longer name",
+              "is_sample": false,
+              "stdin": "DatabaseConnection\n",
+              "expected_stdout": "created DatabaseConnection, refs: 1\ncopied, refs: 2\nweak created, refs: 2\nweak expired: false\nlocked, refs: 3\nlock released, refs: 2\ncopy reset, refs: 1\noriginal reset, refs: 0\nweak expired: true\n"
             }
           ]
         }

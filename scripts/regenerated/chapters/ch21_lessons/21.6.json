@@ -1,0 +1,60 @@
+{
+  "number": "21.6",
+  "title": "Overloading unary operators +, -, and !",
+  "sort_order": 5,
+  "summary_md": "Unary operators act on a single operand. When you overload `operator+`, `operator-`, or `operator!` as **member functions**, they take no parameters because the object itself (`*this`) is the operand. The compiler translates an expression like `-obj` into `obj.operator-()`.\n\nAll three follow the same pattern: return a new value computed from the current object's state without modifying the original. `operator-` typically returns a new object with negated members, `operator+` often returns a copy unchanged (useful for symmetry or explicit sign), and `operator!` returns a `bool` representing the logical negation of some condition the class defines.\n\n```cpp\n#include <iostream>\n\nclass Point {\n    int m_x{}, m_y{};\npublic:\n    Point(int x, int y) : m_x{x}, m_y{y} {}\n    Point operator-() const { return Point{-m_x, -m_y}; }\n    Point operator+() const { return *this; }\n    bool operator!() const { return (m_x == 0 && m_y == 0); }\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n```\n\nKey details to remember. First, mark these functions `const` -- they should not modify the object they operate on. Second, `operator-` and `operator+` return the class type by value (a new object), while `operator!` returns `bool`. Third, do not confuse unary minus (`-obj`, no parameters) with binary minus (`a - b`, one parameter); the compiler distinguishes them by parameter count.\n\nUnary `operator+` rarely changes behavior, but defining it keeps your interface symmetric when you provide `operator-`. Unary `operator!` is most useful when your class has a natural notion of \"empty\" or \"zero\" -- it lets objects appear naturally in boolean contexts like `if (!obj)`.\n\nBecause these operators do not modify the object, they never return a reference to `*this`. They always produce a fresh value, which is why the return is by value for the class type and by value for `bool`.",
+  "exercises": [
+    {
+      "title": "Negate a Vec2",
+      "prompt_md": "## Goal\n\nImplement unary `operator-` and `operator+` for a `Vec2` class so that negating a vector flips both components and the unary plus returns an identical copy.\n\n## Input\n\n- A single line with two integers `x` and `y` (each between -1000 and 1000).\n\n## Output\n\n- Line 1: the `x` and `y` of `-vec`, space-separated.\n- Line 2: the `x` and `y` of `+vec`, space-separated.\n\n## Requirements\n\n- Overload both operators as `const` member functions.\n- `operator-` returns a `Vec2` with both components negated.\n- `operator+` returns a copy of the original `Vec2` unchanged.\n- Do not modify the original object.",
+      "starter_code": "#include <iostream>\n\nclass Vec2\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Vec2(int x, int y) : m_x{ x }, m_y{ y } {}\n\n    // TODO: Overload unary operator- (return negated Vec2)\n\n    // TODO: Overload unary operator+ (return copy)\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    Vec2 v{ x, y };\n    Vec2 neg{ -v };\n    Vec2 pos{ +v };\n\n    std::cout << neg.getX() << ' ' << neg.getY() << '\\n';\n    std::cout << pos.getX() << ' ' << pos.getY() << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass Vec2\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Vec2(int x, int y) : m_x{ x }, m_y{ y } {}\n\n    Vec2 operator-() const { return Vec2{ -m_x, -m_y }; }\n    Vec2 operator+() const { return *this; }\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    Vec2 v{ x, y };\n    Vec2 neg{ -v };\n    Vec2 pos{ +v };\n\n    std::cout << neg.getX() << ' ' << neg.getY() << '\\n';\n    std::cout << pos.getX() << ' ' << pos.getY() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Positive values",
+          "is_sample": true,
+          "stdin": "3 7",
+          "expected_stdout": "-3 -7\n3 7\n"
+        },
+        {
+          "label": "Negative values",
+          "is_sample": false,
+          "stdin": "-5 -2",
+          "expected_stdout": "5 2\n-5 -2\n"
+        },
+        {
+          "label": "Zero vector",
+          "is_sample": false,
+          "stdin": "0 0",
+          "expected_stdout": "0 0\n0 0\n"
+        }
+      ]
+    },
+    {
+      "title": "Logical Not on a Counter",
+      "prompt_md": "## Goal\n\nImplement unary `operator!` and `operator-` for a `Counter` class that wraps a single integer count.\n\n## Input\n\n- A single integer `n` (-1000 <= n <= 1000).\n\n## Output\n\n- Line 1: the value of `-counter` (the negated count).\n- Line 2: `true` if `!counter` is true (count is zero), `false` otherwise.\n\n## Requirements\n\n- `operator-` returns a new `Counter` whose count is the negation of the original.\n- `operator!` returns `true` when the count equals zero, `false` otherwise.\n- Both must be `const` member functions.\n- Use `std::boolalpha` to print `true`/`false` instead of `1`/`0`.",
+      "starter_code": "#include <iostream>\n\nclass Counter\n{\n    int m_count{};\n\npublic:\n    explicit Counter(int count) : m_count{ count } {}\n\n    // TODO: Overload unary operator- (return Counter with negated count)\n\n    // TODO: Overload unary operator! (return true if count is zero)\n\n    int getCount() const { return m_count; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Counter c{ n };\n    Counter neg{ -c };\n\n    std::cout << neg.getCount() << '\\n';\n    std::cout << std::boolalpha << !c << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass Counter\n{\n    int m_count{};\n\npublic:\n    explicit Counter(int count) : m_count{ count } {}\n\n    Counter operator-() const { return Counter{ -m_count }; }\n    bool operator!() const { return m_count == 0; }\n\n    int getCount() const { return m_count; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Counter c{ n };\n    Counter neg{ -c };\n\n    std::cout << neg.getCount() << '\\n';\n    std::cout << std::boolalpha << !c << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Positive count",
+          "is_sample": true,
+          "stdin": "42",
+          "expected_stdout": "-42\nfalse\n"
+        },
+        {
+          "label": "Zero count",
+          "is_sample": false,
+          "stdin": "0",
+          "expected_stdout": "0\ntrue\n"
+        },
+        {
+          "label": "Negative count",
+          "is_sample": false,
+          "stdin": "-15",
+          "expected_stdout": "15\nfalse\n"
+        }
+      ]
+    }
+  ]
+}

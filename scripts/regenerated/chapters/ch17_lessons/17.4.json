@@ -1,0 +1,60 @@
+{
+  "number": "17.4",
+  "title": "std::array of class types, and brace elision",
+  "sort_order": 3,
+  "summary_md": "## std::array of Class Types and Brace Elision\n\nA `std::array` can hold any type that is copyable, including structs and classes. When the element type is an aggregate (like a struct with no user-declared constructors), each element itself needs braces, leading to a double-brace syntax:\n\n```cpp\n#include <array>\n#include <iostream>\n\nstruct Point\n{\n    int x{};\n    int y{};\n};\n\nint main()\n{\n    std::array<Point, 3> pts {{ {1, 2}, {3, 4}, {5, 6} }};\n    for (const auto& p : pts)\n        std::cout << p.x << ' ' << p.y << '\\n';\n    return 0;\n}\n```\n\nThe outer braces initialize the `std::array` object, the second set of braces initializes its internal C-style array member, and each `{1, 2}` initializes one `Point`. That is three levels of nesting.\n\n### Brace Elision\n\nC++ allows **brace elision**: the compiler can strip away inner brace levels during aggregate initialization when the meaning is unambiguous. This means a single pair of outer braces works too:\n\n```cpp\nstd::array<Point, 3> pts { {1, 2}, {3, 4}, {5, 6} };\n```\n\nThe compiler knows `Point` has two `int` members, so it consumes values two at a time. Both forms produce identical results. The single-brace version is more common in practice because it is easier to read.\n\n### CTAD with std::array\n\nClass template argument deduction (CTAD) lets the compiler deduce both the element type and size. However, CTAD requires all elements to have the same type. For class types, every element must be the same struct/class type and initialized the same way:\n\n```cpp\nstd::array pts { Point{1, 2}, Point{3, 4} }; // deduces std::array<Point, 2>\n```\n\nWith CTAD you must name the type inside each element's initializer because the compiler needs at least the first element's type to deduce the template parameter.\n\n### When Double Braces Are Required\n\nBrace elision does not always apply. If you value-initialize a `std::array` (all elements to zero/default), you still need double braces to avoid a compiler warning: `std::array<Point, 3> pts {{}};`. The inner `{}` value-initializes the internal array member. A single `{}` works functionally but some compilers warn about a missing brace level.",
+  "exercises": [
+    {
+      "title": "Student Roster Lookup",
+      "prompt_md": "## Goal\n\nCreate a `std::array` of structs representing students and look up a student by index.\n\n## Input\n\n- Line 1: a single integer representing the 0-based index of the student to look up.\n\n## Output\n\n- If the index is valid (0 to 3 inclusive), print a single line:\n\n```\n<name> has grade <grade>\n```\n\n- If the index is out of range, print:\n\n```\nInvalid index\n```\n\n## Requirements\n\n1. Define a struct `Student` at namespace scope with two members: `std::string_view name{}` and `int grade{}`.\n2. In `main`, define a `constexpr std::array<Student, 4>` named `roster` containing these students in order: `{\"Alice\", 92}`, `{\"Bob\", 85}`, `{\"Carol\", 97}`, `{\"Dave\", 78}`.\n3. Use brace elision (single outer braces) when initializing the array.\n4. Read the index from `std::cin`. Validate it is in range `0` to `roster.size() - 1` inclusive.\n5. Use `roster[index]` to access the element (not `.at()`).\n6. Print the result in the exact format shown above.",
+      "starter_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\n// TODO: Define a struct Student with:\n//       std::string_view name{}\n//       int grade{}\n\nint main()\n{\n    // TODO: Define a constexpr std::array<Student, 4> named roster\n    //       with students: Alice(92), Bob(85), Carol(97), Dave(78)\n    //       Use brace elision (single outer braces)\n\n    int index{};\n    std::cin >> index;\n\n    // TODO: Validate index is in range 0 to roster.size()-1\n    //       If invalid, print \"Invalid index\" and return 0\n\n    // TODO: Print \"<name> has grade <grade>\" for the selected student\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\nstruct Student\n{\n    std::string_view name{};\n    int grade{};\n};\n\nint main()\n{\n    constexpr std::array<Student, 4> roster {\n        Student{\"Alice\", 92},\n        Student{\"Bob\", 85},\n        Student{\"Carol\", 97},\n        Student{\"Dave\", 78}\n    };\n\n    int index{};\n    std::cin >> index;\n\n    if (index < 0 || index >= static_cast<int>(roster.size()))\n    {\n        std::cout << \"Invalid index\" << '\\n';\n        return 0;\n    }\n\n    std::cout << roster[static_cast<std::size_t>(index)].name\n              << \" has grade \"\n              << roster[static_cast<std::size_t>(index)].grade << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- index 0 is Alice",
+          "is_sample": true,
+          "stdin": "0\n",
+          "expected_stdout": "Alice has grade 92\n"
+        },
+        {
+          "label": "Hidden -- index 3 is Dave",
+          "is_sample": false,
+          "stdin": "3\n",
+          "expected_stdout": "Dave has grade 78\n"
+        },
+        {
+          "label": "Hidden -- out of range index",
+          "is_sample": false,
+          "stdin": "5\n",
+          "expected_stdout": "Invalid index\n"
+        }
+      ]
+    },
+    {
+      "title": "Rectangle Area Report",
+      "prompt_md": "## Goal\n\nStore a collection of rectangles in a `std::array` of structs, then compute and print the area of each rectangle that has an area greater than or equal to a given threshold.\n\n## Input\n\n- Line 1: a single integer representing the minimum area threshold.\n\n## Output\n\n- For each rectangle whose area (width * height) is greater than or equal to the threshold, print one line:\n\n```\n<name>: <area>\n```\n\n- If no rectangles meet the threshold, print:\n\n```\nNone\n```\n\n- Rectangles must be checked in the order they appear in the array.\n\n## Requirements\n\n1. Define a struct `Rect` at namespace scope with three members: `std::string_view name{}`, `int width{}`, `int height{}`.\n2. In `main`, define a `constexpr std::array<Rect, 5>` named `rects` with these values in order: `{\"A\", 3, 4}`, `{\"B\", 10, 2}`, `{\"C\", 1, 1}`, `{\"D\", 5, 5}`, `{\"E\", 2, 3}`.\n3. Use brace elision (single outer braces) when initializing the array.\n4. Read the threshold from `std::cin`.\n5. Loop through `rects` using a range-based for loop with `const auto&`.\n6. For each rectangle, compute `width * height`. If the area is >= threshold, print it in the format shown.\n7. Track whether any rectangle was printed. If none were, print `None`.",
+      "starter_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\n// TODO: Define a struct Rect with:\n//       std::string_view name{}\n//       int width{}\n//       int height{}\n\nint main()\n{\n    // TODO: Define a constexpr std::array<Rect, 5> named rects\n    //       with: A(3,4), B(10,2), C(1,1), D(5,5), E(2,3)\n    //       Use brace elision (single outer braces)\n\n    int threshold{};\n    std::cin >> threshold;\n\n    // TODO: Loop through rects with range-based for (const auto&)\n    //       Compute area = width * height\n    //       If area >= threshold, print \"<name>: <area>\"\n    //       Track whether any rectangle was printed\n\n    // TODO: If no rectangles were printed, print \"None\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <iostream>\n#include <string_view>\n\nstruct Rect\n{\n    std::string_view name{};\n    int width{};\n    int height{};\n};\n\nint main()\n{\n    constexpr std::array<Rect, 5> rects {\n        Rect{\"A\", 3, 4},\n        Rect{\"B\", 10, 2},\n        Rect{\"C\", 1, 1},\n        Rect{\"D\", 5, 5},\n        Rect{\"E\", 2, 3}\n    };\n\n    int threshold{};\n    std::cin >> threshold;\n\n    bool found{ false };\n    for (const auto& r : rects)\n    {\n        int area{ r.width * r.height };\n        if (area >= threshold)\n        {\n            std::cout << r.name << \": \" << area << '\\n';\n            found = true;\n        }\n    }\n\n    if (!found)\n        std::cout << \"None\" << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- threshold 10 shows A, B, D",
+          "is_sample": true,
+          "stdin": "10\n",
+          "expected_stdout": "A: 12\nB: 20\nD: 25\n"
+        },
+        {
+          "label": "Hidden -- threshold 1 shows all",
+          "is_sample": false,
+          "stdin": "1\n",
+          "expected_stdout": "A: 12\nB: 20\nC: 1\nD: 25\nE: 6\n"
+        },
+        {
+          "label": "Hidden -- threshold 100 shows none",
+          "is_sample": false,
+          "stdin": "100\n",
+          "expected_stdout": "None\n"
+        }
+      ]
+    }
+  ]
+}

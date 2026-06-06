@@ -1,22 +1,22 @@
 import type { OnboardingState, Action, ModuleId } from "./types";
 
 export function placeFromScore(score: number): ModuleId {
-  if (score <= 1) return "pointers";
-  if (score <= 3) return "vectors-maps";
-  return "templates";
+  if (score <= 1) return "refs-pointers";
+  if (score <= 3) return "vectors-arrays";
+  return "adv-functions";
 }
 
 export function deriveStartModule(s: OnboardingState): ModuleId {
   switch (s.background) {
     case "new":
-      return "variables";
+      return "intro-basics";
     case "other_lang":
-      return "variables";
+      return "intro-basics";
     case "some_cpp":
       if (s.placementTaken && s.placementScore != null) return placeFromScore(s.placementScore);
-      return s.startModule ?? "pointers";
+      return s.startModule ?? "refs-pointers";
     default:
-      return "variables";
+      return "intro-basics";
   }
 }
 

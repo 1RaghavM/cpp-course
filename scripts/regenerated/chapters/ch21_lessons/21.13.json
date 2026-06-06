@@ -1,0 +1,60 @@
+{
+  "number": "21.13",
+  "title": "Shallow vs. deep copying",
+  "sort_order": 12,
+  "summary_md": "When a class manages a dynamically allocated resource (a pointer obtained via `new`), the compiler-generated copy constructor and copy assignment operator create problems. They perform a **shallow copy** -- they copy the pointer value itself, not the data it points to. Two objects then point to the same memory, and when both destructors run, that memory is `delete`-ed twice, causing undefined behavior.\n\n```cpp\n#include <iostream>\n\nclass IntHolder {\n    int* m_ptr;\npublic:\n    IntHolder(int v) : m_ptr{ new int{ v } } {}\n    ~IntHolder() { delete m_ptr; }\n    int value() const { return *m_ptr; }\n    void setValue(int v) { *m_ptr = v; }\n};\n\nint main() {\n    IntHolder a{ 5 };\n    IntHolder b{ a }; // shallow copy: b.m_ptr == a.m_ptr\n    a.setValue(99);\n    std::cout << b.value(); // prints 99, not 5!\n} // crash: double delete\n```\n\nThe fix is a **deep copy** -- allocate fresh memory in the copy and duplicate the pointed-to data. You implement this in two places: the **copy constructor** (used when a new object is initialized from an existing one) and the **copy assignment operator** (used when an already-constructed object is assigned a new value). The assignment operator must additionally handle self-assignment (`if (this == &src) return *this;`) and release its old resource before allocating new memory.\n\nThis leads to the **Rule of Three**: if a class needs a custom destructor, it almost certainly needs a custom copy constructor and a custom copy assignment operator as well. The compiler-generated versions do shallow copies, which are only safe when the class holds no owning pointers. Whenever you write a destructor that calls `delete`, immediately write the other two.\n\nA practical checklist for a correct deep-copy assignment operator: (1) guard against self-assignment, (2) `delete` the existing resource, (3) copy the length or size, (4) allocate new memory, (5) copy each element, (6) return `*this`. Forgetting any step leads to leaks, crashes, or corruption.",
+  "exercises": [
+    {
+      "title": "Deep-Copy IntArray",
+      "prompt_md": "## Goal\n\nComplete the `IntArray` class so that copying it performs a **deep copy** -- each copy owns its own independent heap-allocated array.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the array size.\n- Line 2: `n` space-separated integers (each between -1000 and 1000).\n- Line 3: two integers `idx` and `val`, where 0 <= idx < n.\n\n## Output\n\nAfter reading input into `original`, the program creates `copy` via the copy constructor and `assigned` via the assignment operator. It then modifies `original[idx] = val`. Because the copies are deep, they must be unaffected.\n\n- Line 1: all elements of `copy`, space-separated.\n- Line 2: all elements of `assigned`, space-separated.\n\n## Requirements\n\n1. Implement a copy constructor that allocates new memory and copies each element.\n2. Implement `operator=` that handles self-assignment, deletes old data, allocates new memory, copies each element, and returns `*this`.\n3. Do not change `main` or the existing members.",
+      "starter_code": "#include <iostream>\n\nclass IntArray\n{\nprivate:\n    int m_length{};\n    int* m_data{};\n\npublic:\n    IntArray(int length)\n        : m_length{ length }\n        , m_data{ new int[length]{} }\n    {\n    }\n\n    // TODO: Write a deep-copy constructor\n\n    // TODO: Write a deep-copy assignment operator (operator=)\n\n    ~IntArray()\n    {\n        delete[] m_data;\n    }\n\n    int getLength() const { return m_length; }\n    int& operator[](int index) { return m_data[index]; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    IntArray original(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> original[i];\n\n    IntArray copy{ original };\n    IntArray assigned(1);\n    assigned = original;\n\n    int idx{};\n    int val{};\n    std::cin >> idx >> val;\n    original[idx] = val;\n\n    for (int i{ 0 }; i < copy.getLength(); ++i)\n        std::cout << copy[i] << ' ';\n    std::cout << '\\n';\n\n    for (int i{ 0 }; i < assigned.getLength(); ++i)\n        std::cout << assigned[i] << ' ';\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass IntArray\n{\nprivate:\n    int m_length{};\n    int* m_data{};\n\npublic:\n    IntArray(int length)\n        : m_length{ length }\n        , m_data{ new int[length]{} }\n    {\n    }\n\n    IntArray(const IntArray& src)\n        : m_length{ src.m_length }\n        , m_data{ new int[src.m_length] }\n    {\n        for (int i{ 0 }; i < m_length; ++i)\n            m_data[i] = src.m_data[i];\n    }\n\n    IntArray& operator=(const IntArray& src)\n    {\n        if (this == &src)\n            return *this;\n\n        delete[] m_data;\n\n        m_length = src.m_length;\n        m_data = new int[m_length];\n        for (int i{ 0 }; i < m_length; ++i)\n            m_data[i] = src.m_data[i];\n\n        return *this;\n    }\n\n    ~IntArray()\n    {\n        delete[] m_data;\n    }\n\n    int getLength() const { return m_length; }\n    int& operator[](int index) { return m_data[index]; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    IntArray original(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> original[i];\n\n    IntArray copy{ original };\n    IntArray assigned(1);\n    assigned = original;\n\n    int idx{};\n    int val{};\n    std::cin >> idx >> val;\n    original[idx] = val;\n\n    for (int i{ 0 }; i < copy.getLength(); ++i)\n        std::cout << copy[i] << ' ';\n    std::cout << '\\n';\n\n    for (int i{ 0 }; i < assigned.getLength(); ++i)\n        std::cout << assigned[i] << ' ';\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic three-element array",
+          "is_sample": true,
+          "stdin": "3\n10 20 30\n1 999\n",
+          "expected_stdout": "10 20 30 \n10 20 30 \n"
+        },
+        {
+          "label": "Single-element array",
+          "is_sample": false,
+          "stdin": "1\n42\n0 -1\n",
+          "expected_stdout": "42 \n42 \n"
+        },
+        {
+          "label": "Five elements with negative values",
+          "is_sample": false,
+          "stdin": "5\n-5 0 7 -3 12\n4 100\n",
+          "expected_stdout": "-5 0 7 -3 12 \n-5 0 7 -3 12 \n"
+        }
+      ]
+    },
+    {
+      "title": "Rule of Three: Named String",
+      "prompt_md": "## Goal\n\nComplete a `NamedValue` class that stores a label (C-string on the heap) and an integer. Implement the Rule of Three so that copies are independent.\n\n## Input\n\n- Line 1: a single word (max 49 characters) and an integer, space-separated.\n\n## Output\n\nThe program creates an object, copies it, modifies the original's value, then prints both.\n\n- Line 1: `<label> <value>` of the copy (unchanged).\n- Line 2: `<label> <value>` of the original (modified).\n\n## Requirements\n\n1. Implement the copy constructor: allocate a new `char` array with `std::strlen(src.m_name) + 1` and use `std::strcpy` to copy the string. Copy `m_value` normally.\n2. Implement `operator=`: guard self-assignment, `delete[]` old `m_name`, allocate and copy the new name, copy `m_value`, return `*this`.\n3. The destructor is provided. Do not change `main` or existing members.\n4. Include `<cstring>` for `std::strlen` and `std::strcpy`.",
+      "starter_code": "#include <cstring>\n#include <iostream>\n\nclass NamedValue\n{\nprivate:\n    char* m_name{};\n    int m_value{};\n\npublic:\n    NamedValue(const char* name, int value)\n        : m_name{ new char[std::strlen(name) + 1] }\n        , m_value{ value }\n    {\n        std::strcpy(m_name, name);\n    }\n\n    // TODO: Deep-copy constructor\n\n    // TODO: Deep-copy assignment operator\n\n    ~NamedValue()\n    {\n        delete[] m_name;\n    }\n\n    const char* getName() const { return m_name; }\n    int getValue() const { return m_value; }\n    void setValue(int v) { m_value = v; }\n};\n\nint main()\n{\n    char name[50]{};\n    int val{};\n    std::cin >> name >> val;\n\n    NamedValue orig{ name, val };\n    NamedValue copy{ orig };\n\n    orig.setValue(val * 2);\n\n    std::cout << copy.getName() << ' ' << copy.getValue() << '\\n';\n    std::cout << orig.getName() << ' ' << orig.getValue() << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstring>\n#include <iostream>\n\nclass NamedValue\n{\nprivate:\n    char* m_name{};\n    int m_value{};\n\npublic:\n    NamedValue(const char* name, int value)\n        : m_name{ new char[std::strlen(name) + 1] }\n        , m_value{ value }\n    {\n        std::strcpy(m_name, name);\n    }\n\n    NamedValue(const NamedValue& src)\n        : m_name{ new char[std::strlen(src.m_name) + 1] }\n        , m_value{ src.m_value }\n    {\n        std::strcpy(m_name, src.m_name);\n    }\n\n    NamedValue& operator=(const NamedValue& src)\n    {\n        if (this == &src)\n            return *this;\n\n        delete[] m_name;\n\n        m_name = new char[std::strlen(src.m_name) + 1];\n        std::strcpy(m_name, src.m_name);\n        m_value = src.m_value;\n\n        return *this;\n    }\n\n    ~NamedValue()\n    {\n        delete[] m_name;\n    }\n\n    const char* getName() const { return m_name; }\n    int getValue() const { return m_value; }\n    void setValue(int v) { m_value = v; }\n};\n\nint main()\n{\n    char name[50]{};\n    int val{};\n    std::cin >> name >> val;\n\n    NamedValue orig{ name, val };\n    NamedValue copy{ orig };\n\n    orig.setValue(val * 2);\n\n    std::cout << copy.getName() << ' ' << copy.getValue() << '\\n';\n    std::cout << orig.getName() << ' ' << orig.getValue() << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Basic word and value",
+          "is_sample": true,
+          "stdin": "score 100\n",
+          "expected_stdout": "score 100\nscore 200\n"
+        },
+        {
+          "label": "Negative value",
+          "is_sample": false,
+          "stdin": "temp -5\n",
+          "expected_stdout": "temp -5\ntemp -10\n"
+        },
+        {
+          "label": "Zero value",
+          "is_sample": false,
+          "stdin": "counter 0\n",
+          "expected_stdout": "counter 0\ncounter 0\n"
+        }
+      ]
+    }
+  ]
+}

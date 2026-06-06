@@ -1,0 +1,62 @@
+{
+  "number": "23.2",
+  "title": "Composition",
+  "sort_order": 1,
+  "summary_md": "In the previous lesson we surveyed the types of object relationships in C++. Now we focus on the most common and most intuitive one: **composition**. Composition models a \"part-of\" relationship where the whole *owns* its parts. The parts have no meaningful existence outside the whole, and the whole is responsible for creating and destroying them.\n\nThink of a body and a heart. The heart is part of the body. It is created when the body is created, and it is destroyed when the body is destroyed. The heart cannot belong to two bodies at the same time.\n\nIn C++ code, composition is implemented using **member variables with value semantics**. The part is a direct member (not a pointer or reference), so its lifetime is automatically tied to the containing object:\n\n```cpp\nstruct Point2D\n{\n    int m_x{};\n    int m_y{};\n};\nclass Creature\n{\n    std::string m_name;   // composed part\n    Point2D m_location;   // composed part\npublic:\n    Creature(std::string_view name, int x, int y)\n        : m_name{name}, m_location{x, y} {}\n    const Point2D& getLocation() const { return m_location; }\n};\n```\n\nHere `Creature` *composes* both a `std::string` and a `Point2D`. Neither member is allocated with `new`; both live inside the `Creature` object itself. When a `Creature` is copied, its parts are copied. When it is destroyed, its parts are destroyed automatically in reverse order of declaration.\n\nThe defining properties of composition are:\n\n- **The part is a member of exactly one whole** at any time.\n- **The whole manages the part's lifetime** -- construction, copying, and destruction happen through the whole.\n- **The part has no independent identity** -- it cannot be accessed except through the whole (unless the whole explicitly exposes it).\n\nBecause C++ member variables already follow these rules by default, composition is the relationship you have been writing all along whenever you gave a class a data member. The key insight of this lesson is recognizing that pattern by name and understanding why it matters: it produces the tightest coupling between objects and the strongest lifetime guarantee, which makes code easier to reason about and less prone to dangling-reference bugs.",
+  "exercises": [
+    {
+      "title": "Build a composed creature",
+      "prompt_md": "## Goal\n\nImplement two classes, `Point2D` and `Creature`, where `Creature` composes a `Point2D` as a member to represent its location. This demonstrates composition: the `Point2D` is owned by the `Creature` and has no independent existence.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters).\n- Line 2: two integers `x` and `y` (-1000 <= x, y <= 1000).\n\n## Output\n\n- Line 1: `<name> is at (<x>, <y>)`\n\nwhere `<name>`, `<x>`, and `<y>` are the values read from input.\n\n## Requirements\n\n- Define a class `Point2D` with private `int` members `m_x` and `m_y`, constructed via a two-parameter constructor.\n- `Point2D` must have public getters `getX()` and `getY()` (both `const`).\n- Define a class `Creature` with private members `std::string m_name` and `Point2D m_location`.\n- `Creature`'s constructor takes `std::string_view name` and `const Point2D& location`.\n- `Creature` must have public `const` getters `getName()` (returns `std::string_view`) and `getLocation()` (returns `const Point2D&`).\n- In `main`, read input, construct a `Creature`, and print the output using the getters.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Point2D\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Point2D(int x, int y)\n        : m_x{ x }, m_y{ y }\n    {\n    }\n\n    // TODO: Add getX() and getY() const getters\n};\n\nclass Creature\n{\n    std::string m_name;\n    Point2D m_location;\n\npublic:\n    // TODO: Constructor taking std::string_view and const Point2D&\n\n    // TODO: Add getName() and getLocation() const getters\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: Create a Creature and print \"<name> is at (<x>, <y>)\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Point2D\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Point2D(int x, int y)\n        : m_x{ x }, m_y{ y }\n    {\n    }\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nclass Creature\n{\n    std::string m_name;\n    Point2D m_location;\n\npublic:\n    Creature(std::string_view name, const Point2D& location)\n        : m_name{ name }, m_location{ location }\n    {\n    }\n\n    std::string_view getName() const { return m_name; }\n    const Point2D& getLocation() const { return m_location; }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    Creature c{ name, Point2D{ x, y } };\n    std::cout << c.getName() << \" is at (\"\n              << c.getLocation().getX() << \", \"\n              << c.getLocation().getY() << \")\\n\";\n\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Basic creature",
+          "is_sample": true,
+          "stdin": "Goblin\n3 7",
+          "expected_stdout": "Goblin is at (3, 7)\n"
+        },
+        {
+          "label": "Negative coordinates",
+          "is_sample": false,
+          "stdin": "Dragon\n-10 -20",
+          "expected_stdout": "Dragon is at (-10, -20)\n"
+        },
+        {
+          "label": "Origin",
+          "is_sample": false,
+          "stdin": "Slime\n0 0",
+          "expected_stdout": "Slime is at (0, 0)\n"
+        }
+      ]
+    },
+    {
+      "title": "Computer with composed parts",
+      "prompt_md": "## Goal\n\nModel a `Computer` that composes a `CPU` and a `Memory` part. The `Computer` owns both components and exposes a `describe()` method that prints a summary. This exercise reinforces that composed parts are value members whose lifetimes are tied to the whole.\n\n## Input\n\n- Line 1: a string `cpuModel` (no spaces, 1-50 characters) and an integer `cores` (1 <= cores <= 128).\n- Line 2: an integer `sizeGB` (1 <= sizeGB <= 1024).\n\n## Output\n\n- Line 1: `CPU: <cpuModel> (<cores> cores)`\n- Line 2: `Memory: <sizeGB>GB`\n- Line 3: `Computer built`\n\n## Requirements\n\n- Define a class `CPU` with private members `std::string m_model` and `int m_cores`. Provide a constructor and a `describe()` const method that returns `std::string` in the format `<model> (<cores> cores)`.\n- Define a class `Memory` with a private member `int m_sizeGB`. Provide a constructor and a `describe()` const method that returns `std::string` in the format `<sizeGB>GB`.\n- Define a class `Computer` with private members `CPU m_cpu` and `Memory m_memory`. Provide a constructor that takes a `CPU` and a `Memory`. Provide a `printSpecs()` const method that prints the three output lines.\n- In `main`, read input, construct the parts, construct the `Computer`, and call `printSpecs()`.",
+      "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass CPU\n{\n    std::string m_model;\n    int m_cores{};\n\npublic:\n    CPU(std::string_view model, int cores)\n        : m_model{ model }, m_cores{ cores }\n    {\n    }\n\n    // TODO: describe() const -> std::string\n    // Return \"<model> (<cores> cores)\"\n};\n\nclass Memory\n{\n    int m_sizeGB{};\n\npublic:\n    Memory(int sizeGB)\n        : m_sizeGB{ sizeGB }\n    {\n    }\n\n    // TODO: describe() const -> std::string\n    // Return \"<sizeGB>GB\"\n};\n\nclass Computer\n{\n    CPU m_cpu;\n    Memory m_memory;\n\npublic:\n    // TODO: Constructor taking CPU and Memory\n\n    // TODO: printSpecs() const\n    // Print:\n    //   CPU: <cpu.describe()>\n    //   Memory: <memory.describe()>\n    //   Computer built\n};\n\nint main()\n{\n    std::string cpuModel{};\n    int cores{};\n    std::cin >> cpuModel >> cores;\n\n    int sizeGB{};\n    std::cin >> sizeGB;\n\n    // TODO: Build CPU, Memory, Computer and call printSpecs()\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass CPU\n{\n    std::string m_model;\n    int m_cores{};\npublic:\n    CPU(std::string_view model, int cores)\n        : m_model{ model }, m_cores{ cores } {}\n    std::string describe() const\n    {\n        return m_model + \" (\" + std::to_string(m_cores) + \" cores)\";\n    }\n};\n\nclass Memory\n{\n    int m_sizeGB{};\npublic:\n    Memory(int sizeGB) : m_sizeGB{ sizeGB } {}\n    std::string describe() const\n    {\n        return std::to_string(m_sizeGB) + \"GB\";\n    }\n};\n\nclass Computer\n{\n    CPU m_cpu;\n    Memory m_memory;\npublic:\n    Computer(const CPU& cpu, const Memory& memory)\n        : m_cpu{ cpu }, m_memory{ memory } {}\n    void printSpecs() const\n    {\n        std::cout << \"CPU: \" << m_cpu.describe() << '\\n';\n        std::cout << \"Memory: \" << m_memory.describe() << '\\n';\n        std::cout << \"Computer built\\n\";\n    }\n};\n\nint main()\n{\n    std::string cpuModel{};\n    int cores{};\n    std::cin >> cpuModel >> cores;\n    int sizeGB{};\n    std::cin >> sizeGB;\n    Computer computer{ CPU{ cpuModel, cores }, Memory{ sizeGB } };\n    computer.printSpecs();\n    return 0;\n}\n",
+      "difficulty": "practice",
+      "test_cases": [
+        {
+          "label": "Typical desktop",
+          "is_sample": true,
+          "stdin": "Ryzen7 8\n16",
+          "expected_stdout": "CPU: Ryzen7 (8 cores)\nMemory: 16GB\nComputer built\n"
+        },
+        {
+          "label": "Single core minimal",
+          "is_sample": false,
+          "stdin": "i3 1\n4",
+          "expected_stdout": "CPU: i3 (1 cores)\nMemory: 4GB\nComputer built\n"
+        },
+        {
+          "label": "Server config",
+          "is_sample": false,
+          "stdin": "EPYC 128\n1024",
+          "expected_stdout": "CPU: EPYC (128 cores)\nMemory: 1024GB\nComputer built\n"
+        }
+      ]
+    }
+  ]
+}

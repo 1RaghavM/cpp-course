@@ -1,0 +1,60 @@
+{
+  "number": "13.2",
+  "title": "Unscoped enumerations",
+  "sort_order": 1,
+  "summary_md": "## Unscoped Enumerations\n\nAn **unscoped enumeration** (defined with the `enum` keyword) creates a distinct type whose values are restricted to a set of named constants called **enumerators**. Each enumerator is an integral constant, and by default the compiler assigns values starting at `0` and incrementing by one.\n\n```cpp\n#include <iostream>\n\nenum Color\n{\n    red,    // 0\n    green,  // 1\n    blue    // 2\n};\n\nint main()\n{\n    Color shirt{ green };\n    std::cout << shirt << '\\n'; // prints 1\n}\n```\n\nThe name `Color` is the **enumerated type**, and `red`, `green`, `blue` are its enumerators. Because `Color` is a distinct type, you cannot assign a raw integer to it directly: `Color c{ 5 };` is a compile error.\n\n### Explicit Values\n\nYou can assign specific integer values to any enumerator with `= value`. Enumerators without an explicit value receive the prior enumerator's value plus one. For example, if you write `fileNotFound = 10`, the next enumerator without an explicit value would be `11`. Duplicate values are legal but usually a sign of poor design.\n\n### Implicit Conversion to int\n\nUnscoped enumerators **implicitly convert** to their underlying integer type. That is why `std::cout << shirt` prints `1` rather than `green`. This implicit conversion is convenient but can mask bugs -- you can accidentally pass an enumerator where a plain `int` is expected and the compiler will not warn you.\n\n### Naming Conventions\n\n- The enum type name uses PascalCase (`Color`, `Direction`).\n- Enumerator names typically use camelCase or snake_case starting with a lowercase letter. Some codebases prefix enumerators with the type name (e.g., `color_red`) to avoid name collisions, since unscoped enumerators are placed into the same scope as the enum itself.\n\n### Scope Behavior\n\nThe word \"unscoped\" matters: the enumerators are injected into the **surrounding scope**, not confined inside the enum type. If two unscoped enums in the same scope both define an enumerator named `red`, you get a naming collision. This is the primary drawback of unscoped enums and the motivation for scoped enums (`enum class`), covered in a later lesson.\n\n### When to Use Unscoped Enums\n\nUse them when you have a small, fixed set of related named constants and you want the convenience of implicit integer conversion -- for example, representing cardinal directions, simple status codes, or menu options.",
+  "exercises": [
+    {
+      "title": "Traffic Light State Machine",
+      "prompt_md": "## Goal\nDefine an unscoped enumeration for traffic light colors and write a function that returns the next state in the cycle.\n\n## Input\n- A single integer on one line: `0` for red, `1` for yellow, `2` for green.\n\n## Output\n- Two lines:\n  - Line 1: the name of the current light (e.g. `red`, `yellow`, or `green`)\n  - Line 2: the name of the next light in the cycle\n\nThe cycle is: red -> green -> yellow -> red.\n\n## Requirements\n1. Define an unscoped enum named `Light` at namespace scope with enumerators `red = 0`, `yellow = 1`, `green = 2`.\n2. Write a function `Light nextLight(Light current)` that returns the next light in the cycle: red -> green, green -> yellow, yellow -> red.\n3. Write a function `std::string lightName(Light l)` that returns the lowercase string name of the given enumerator using a switch statement. Return `\"unknown\"` for any value not in the enum.\n4. In `main`, read the integer from stdin, convert it to a `Light` using `static_cast`, then print the current and next light names.\n5. Do not use any if/else chains -- use switch statements in both functions.\n\n## Notes\n- The cycle order is red -> green -> yellow -> red (green follows red, not yellow).\n- You may use `#include <iostream>` and `#include <string>`.",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define an unscoped enum named Light with:\n//       red = 0, yellow = 1, green = 2\n\n// TODO: Write a function: std::string lightName(Light l)\n//       Return the lowercase name of the light. Use a switch statement.\n//       Return \"unknown\" for unrecognized values.\n\n// TODO: Write a function: Light nextLight(Light current)\n//       Return the next light in the cycle: red->green, green->yellow, yellow->red.\n//       Use a switch statement.\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    // TODO: Convert input to a Light using static_cast\n    // TODO: Print the current light name on one line\n    // TODO: Print the next light name on the next line\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nenum Light\n{\n    red = 0,\n    yellow = 1,\n    green = 2\n};\n\nstd::string lightName(Light l)\n{\n    switch (l)\n    {\n        case red:    return \"red\";\n        case yellow: return \"yellow\";\n        case green:  return \"green\";\n        default:     return \"unknown\";\n    }\n}\n\nLight nextLight(Light current)\n{\n    switch (current)\n    {\n        case red:    return green;\n        case green:  return yellow;\n        case yellow: return red;\n        default:     return red;\n    }\n}\n\nint main()\n{\n    int input{};\n    std::cin >> input;\n\n    Light current{ static_cast<Light>(input) };\n    std::cout << lightName(current) << '\\n';\n    std::cout << lightName(nextLight(current)) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- red goes to green",
+          "is_sample": true,
+          "stdin": "0\n",
+          "expected_stdout": "red\ngreen\n"
+        },
+        {
+          "label": "Hidden -- green goes to yellow",
+          "is_sample": false,
+          "stdin": "2\n",
+          "expected_stdout": "green\nyellow\n"
+        },
+        {
+          "label": "Hidden -- yellow goes to red",
+          "is_sample": false,
+          "stdin": "1\n",
+          "expected_stdout": "yellow\nred\n"
+        }
+      ]
+    },
+    {
+      "title": "Day of Week Offset Calculator",
+      "prompt_md": "## Goal\nDefine an unscoped enumeration for the days of the week and use integer arithmetic on enumerator values to calculate a future day.\n\n## Input\n- Line 1: an integer representing the starting day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)\n- Line 2: a non-negative integer representing the number of days to add (0 to 1000)\n\n## Output\n- Two lines:\n  - Line 1: the name of the starting day (e.g. `Sunday`, `Monday`, etc.)\n  - Line 2: the name of the day after adding the offset\n\n## Requirements\n1. Define an unscoped enum named `Day` at namespace scope with enumerators: `Sunday = 0`, `Monday = 1`, `Tuesday = 2`, `Wednesday = 3`, `Thursday = 4`, `Friday = 5`, `Saturday = 6`.\n2. Write a function `std::string dayName(Day d)` that returns the capitalized name of the day using a switch statement. Return `\"Unknown\"` for any value not in the enum.\n3. To compute the future day: use the implicit conversion of the starting `Day` to `int`, add the offset, take the result modulo 7, and convert back to `Day` with `static_cast`.\n4. Read both values from stdin and print the two day names, each on its own line.\n5. Do not use arrays or if/else chains for the name lookup.\n\n## Notes\n- This exercise combines enumerator-to-int implicit conversion (this lesson) with `static_cast` (from lesson 4.12) and the remainder operator (from lesson 6.3).",
+      "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define an unscoped enum named Day with:\n//       Sunday = 0, Monday = 1, ..., Saturday = 6\n\n// TODO: Write a function: std::string dayName(Day d)\n//       Return the capitalized day name using a switch statement.\n//       Return \"Unknown\" for unrecognized values.\n\nint main()\n{\n    int startDay{};\n    int offset{};\n    std::cin >> startDay >> offset;\n\n    // TODO: Convert startDay to a Day using static_cast\n    // TODO: Compute the future day using implicit int conversion,\n    //       addition, modulo 7, and static_cast back to Day\n    // TODO: Print the starting day name on one line\n    // TODO: Print the future day name on the next line\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nenum Day\n{\n    Sunday = 0,\n    Monday = 1,\n    Tuesday = 2,\n    Wednesday = 3,\n    Thursday = 4,\n    Friday = 5,\n    Saturday = 6\n};\n\nstd::string dayName(Day d)\n{\n    switch (d)\n    {\n        case Sunday:    return \"Sunday\";\n        case Monday:    return \"Monday\";\n        case Tuesday:   return \"Tuesday\";\n        case Wednesday: return \"Wednesday\";\n        case Thursday:  return \"Thursday\";\n        case Friday:    return \"Friday\";\n        case Saturday:  return \"Saturday\";\n        default:        return \"Unknown\";\n    }\n}\n\nint main()\n{\n    int startDay{};\n    int offset{};\n    std::cin >> startDay >> offset;\n\n    Day start{ static_cast<Day>(startDay) };\n    Day future{ static_cast<Day>((start + offset) % 7) };\n\n    std::cout << dayName(start) << '\\n';\n    std::cout << dayName(future) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- Monday plus 3 is Thursday",
+          "is_sample": true,
+          "stdin": "1\n3\n",
+          "expected_stdout": "Monday\nThursday\n"
+        },
+        {
+          "label": "Hidden -- Saturday plus 1 wraps to Sunday",
+          "is_sample": false,
+          "stdin": "6\n1\n",
+          "expected_stdout": "Saturday\nSunday\n"
+        },
+        {
+          "label": "Hidden -- Wednesday plus 1000 days",
+          "is_sample": false,
+          "stdin": "3\n1000\n",
+          "expected_stdout": "Wednesday\nTuesday\n"
+        }
+      ]
+    }
+  ]
+}

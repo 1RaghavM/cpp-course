@@ -1,0 +1,60 @@
+{
+  "number": "13.12",
+  "title": "Member selection with pointers and references",
+  "sort_order": 11,
+  "summary_md": "## Member Selection with Pointers and References\n\nWhen you have a struct variable, you access its members with the **member selection operator** (`.`). But what happens when you have a *pointer* to a struct instead? You cannot write `ptr.member` because the pointer itself is not a struct -- it is an address. You first need to dereference it.\n\n### Dereference Then Select vs. the Arrow Operator\n\nYou can dereference a pointer with `*` and then use `.`, but operator precedence requires parentheses because `.` binds tighter than `*`. Writing `(*ptr).member` everywhere is clunky, so C++ provides the **arrow operator** (`->`) as syntactic sugar. `ptr->member` is exactly equivalent to `(*ptr).member`. Use `->` whenever you access a member through a pointer -- it is the idiomatic choice and virtually all C++ code follows this convention.\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Employee {\n    std::string name{};\n    int id{};\n};\n\nvoid printViaPtr(const Employee* emp) {\n    std::cout << emp->name << ' ' << emp->id << '\\n';\n}\n\nvoid printViaRef(const Employee& emp) {\n    std::cout << emp.name << ' ' << emp.id << '\\n';\n}\n\nint main() {\n    Employee e{ \"Nara\", 42 };\n    Employee* ptr{ &e };\n    ptr->name = \"Sato\";\n    printViaPtr(ptr);\n    printViaRef(e);\n}\n```\n\nThe arrow operator works with any pointer to a struct (or class) type, including pointers received as function parameters, as shown in `printViaPtr` above.\n\n### Member Access Through References\n\nReferences are not pointers -- a reference *is* the object it refers to. So you access members through a reference using the plain dot operator, just as you would with the original object. No arrow operator, no dereferencing. This is demonstrated by `printViaRef` in the example above.\n\n### Quick Rule\n\nIf you have an object or a reference, use the dot operator (`.`). If you have a pointer, use the arrow operator (`->`). Prefer pass-by-const-reference over pass-by-address for functions that only read struct data, since references cannot be null and the call-site syntax is cleaner. Use pointers (and `->`) when you need nullable semantics or are working with dynamically allocated objects.",
+  "exercises": [
+    {
+      "title": "Employee Lookup via Pointer",
+      "prompt_md": "## Goal\nGiven a list of employees, find one by ID using a function that returns a pointer, then print its details using the arrow operator.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of employees\n- Next `n` lines: each contains a name (single word, no spaces) and an integer ID, separated by a space\n- Final line: an integer `queryId`, the ID to search for\n\n## Output\n- If an employee with the given ID exists, print exactly:\n```\nFound: <name> (ID: <id>)\n```\n- If no employee matches, print exactly:\n```\nNot found\n```\n\n## Requirements\n1. Define a struct named `Employee` at namespace scope with fields `std::string name` and `int id`, in that order.\n2. Write a function with signature `Employee* findById(Employee employees[], int size, int targetId)` that loops through the array and returns a pointer to the first employee whose `id` matches `targetId`. Return `nullptr` if none matches.\n3. In `main`, store employees in a plain array `Employee employees[10]`.\n4. After calling `findById`, check whether the returned pointer is `nullptr`. If it is not null, use the **arrow operator** (`->`) to access the employee's `name` and `id` for printing. Do not dereference with `(*ptr).member`.\n5. Use `std::cout` for all output.",
+      "starter_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\n// TODO: Write function: Employee* findById(Employee employees[], int size, int targetId)\n//       Return a pointer to the matching employee, or nullptr if not found.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Employee employees[10];\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cin >> employees[i].name >> employees[i].id;\n    }\n\n    int queryId{};\n    std::cin >> queryId;\n\n    // TODO: Call findById and store the result in a pointer\n    // TODO: If the pointer is not nullptr, print: Found: <name> (ID: <id>)\n    //       using the arrow operator (->)\n    // TODO: Otherwise, print: Not found\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\nEmployee* findById(Employee employees[], int size, int targetId)\n{\n    for (int i{ 0 }; i < size; ++i)\n    {\n        if (employees[i].id == targetId)\n            return &employees[i];\n    }\n    return nullptr;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Employee employees[10];\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cin >> employees[i].name >> employees[i].id;\n    }\n\n    int queryId{};\n    std::cin >> queryId;\n\n    Employee* result{ findById(employees, n, queryId) };\n    if (result != nullptr)\n        std::cout << \"Found: \" << result->name << \" (ID: \" << result->id << \")\\n\";\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- find existing employee",
+          "is_sample": true,
+          "stdin": "3\nAlice 101\nBob 202\nCarla 303\n202\n",
+          "expected_stdout": "Found: Bob (ID: 202)\n"
+        },
+        {
+          "label": "Hidden -- ID not found",
+          "is_sample": false,
+          "stdin": "2\nDave 10\nEve 20\n99\n",
+          "expected_stdout": "Not found\n"
+        },
+        {
+          "label": "Hidden -- single employee matches",
+          "is_sample": false,
+          "stdin": "1\nZara 500\n500\n",
+          "expected_stdout": "Found: Zara (ID: 500)\n"
+        }
+      ]
+    },
+    {
+      "title": "Modify Structs Through Pointers and Read Through References",
+      "prompt_md": "## Goal\nRead a rectangle's dimensions, use a pointer to double its size via the arrow operator, then use a reference to print the updated dimensions.\n\n## Input\n- Line 1: two integers `width` and `height` separated by a space (1 <= width, height <= 1000)\n\n## Output\nPrint exactly two lines:\n```\nBefore: <width> x <height> (area: <area>)\nAfter: <width> x <height> (area: <area>)\n```\nThe \"After\" line shows the rectangle after both `width` and `height` have been doubled.\n\n## Requirements\n1. Define a struct named `Rect` at namespace scope with fields `int width` and `int height`, in that order.\n2. Write a function `void doubleSize(Rect* r)` that takes a pointer to a `Rect` and doubles both its `width` and `height` using the **arrow operator** (`->`).\n3. Write a function `void printRect(const Rect& r)` that takes a **const reference** to a `Rect` and prints one line in the format `<width> x <height> (area: <area>)` using the **dot operator** (`.`). The area is `width * height`.\n4. In `main`, create a `Rect` from the input values. Print the \"Before\" line by calling `printRect`, then call `doubleSize` with the address of the rect, then print the \"After\" line by calling `printRect` again.\n5. The \"Before:\" and \"After:\" prefixes must be printed in `main`, not inside `printRect`. Call `printRect` to produce the rest of each line.\n6. Use `std::cout` for all output. Print each prefix without a newline, then call `printRect` which prints the remainder of the line including the newline.",
+      "starter_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\n// TODO: Write function: void doubleSize(Rect* r)\n//       Double both width and height using the arrow operator (->).\n\n// TODO: Write function: void printRect(const Rect& r)\n//       Print: <width> x <height> (area: <area>)\n//       Access fields using the dot operator (.) since r is a reference.\n//       End the line with '\\n'.\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    Rect rect{ w, h };\n\n    // TODO: Print \"Before: \" then call printRect\n    // TODO: Call doubleSize with the address of rect\n    // TODO: Print \"After: \" then call printRect\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\nvoid doubleSize(Rect* r)\n{\n    r->width *= 2;\n    r->height *= 2;\n}\n\nvoid printRect(const Rect& r)\n{\n    std::cout << r.width << \" x \" << r.height\n              << \" (area: \" << r.width * r.height << \")\\n\";\n}\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    Rect rect{ w, h };\n\n    std::cout << \"Before: \";\n    printRect(rect);\n\n    doubleSize(&rect);\n\n    std::cout << \"After: \";\n    printRect(rect);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- 5 by 3 rectangle",
+          "is_sample": true,
+          "stdin": "5 3\n",
+          "expected_stdout": "Before: 5 x 3 (area: 15)\nAfter: 10 x 6 (area: 60)\n"
+        },
+        {
+          "label": "Hidden -- square 1 by 1",
+          "is_sample": false,
+          "stdin": "1 1\n",
+          "expected_stdout": "Before: 1 x 1 (area: 1)\nAfter: 2 x 2 (area: 4)\n"
+        },
+        {
+          "label": "Hidden -- larger values 100 by 250",
+          "is_sample": false,
+          "stdin": "100 250\n",
+          "expected_stdout": "Before: 100 x 250 (area: 25000)\nAfter: 200 x 500 (area: 100000)\n"
+        }
+      ]
+    }
+  ]
+}

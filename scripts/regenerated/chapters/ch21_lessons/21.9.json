@@ -1,0 +1,60 @@
+{
+  "number": "21.9",
+  "title": "Overloading the subscript operator",
+  "sort_order": 8,
+  "summary_md": "The **subscript operator (`operator[]`)** lets objects of your class use array-style indexing syntax. It must be overloaded as a member function — it cannot be a friend or free function.\n\nThe parameter inside the brackets is whatever type makes sense for your container. For a simple integer-indexed list, the parameter is an `int` or `std::size_t`. The return type is almost always a **reference** so the caller can both read and assign through the subscript:\n\n```cpp\n#include <iostream>\n\nclass IntArray {\n    int m_data[5]{};\npublic:\n    int& operator[](int index) { return m_data[index]; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nint main() {\n    IntArray arr;\n    arr[2] = 42;\n    std::cout << arr[2] << '\\n'; // 42\n    return 0;\n}\n```\n\nThe non-const overload returns `int&`, which allows expressions like `arr[2] = 42` to compile — the reference binds to the actual element, so the assignment modifies the stored value. The const overload returns by value (or `const int&`) and is selected when the object itself is const. Providing both overloads is the standard practice: non-const objects get read-write access, and const objects get read-only access.\n\nBecause `operator[]` forwards directly to an internal array or data structure, it is the natural place to add **bounds checking**. You can assert or throw if the index is out of range, catching bugs that raw array access would silently allow.\n\nA few rules to remember. `operator[]` takes exactly one parameter (the index inside the brackets). It must be a member function — the compiler requires this because the left-hand operand is always the object being indexed. The return-by-reference pattern is what makes subscript assignment work; without it, `arr[i] = value` would assign to a temporary and the stored element would remain unchanged.",
+  "exercises": [
+    {
+      "title": "Graded Array",
+      "prompt_md": "## Goal\n\nImplement a `GradeList` class that stores up to 5 integer grades and supports subscript access for both reading and writing.\n\n## Input\n\n- Line 1: five space-separated integers representing grades (0 <= each <= 100).\n- Line 2: an integer `index` (0 <= index <= 4) and an integer `newGrade` (0 <= newGrade <= 100), space-separated.\n\n## Output\n\n- Line 1: the grade at position `index` before modification.\n- Line 2: the grade at position `index` after setting it to `newGrade`.\n\n## Requirements\n\n- Define a class `GradeList` with a private `int m_grades[5]{}` array.\n- Provide a `void set(int index, int value)` member to populate the array during setup.\n- Overload `operator[]` returning `int&` so subscript assignment works.\n- Overload a const version of `operator[]` returning `int`.\n- In `main`, create a `GradeList`, populate it using `set`, then use `operator[]` for all reads and the modification.",
+      "starter_code": "#include <iostream>\n\nclass GradeList {\n    int m_grades[5]{};\npublic:\n    void set(int index, int value) { m_grades[index] = value; }\n    int get(int index) const { return m_grades[index]; }\n\n    // TODO: overload operator[] returning int& so subscript assignment works\n\n    // TODO: overload a const version of operator[]\n};\n\nvoid printGrade(const GradeList& list, int index) {\n    std::cout << list.get(index) << '\\n';\n}\n\nint main() {\n    GradeList grades;\n    for (int i{ 0 }; i < 5; ++i) {\n        int g{};\n        std::cin >> g;\n        grades.set(i, g);\n    }\n\n    int index{};\n    int newGrade{};\n    std::cin >> index >> newGrade;\n\n    // TODO: replace get() calls with operator[] and use operator[] for assignment\n    printGrade(grades, index);\n    grades.set(index, newGrade);\n    printGrade(grades, index);\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nclass GradeList {\n    int m_grades[5]{};\npublic:\n    void set(int index, int value) { m_grades[index] = value; }\n    int get(int index) const { return m_grades[index]; }\n\n    int& operator[](int index) { return m_grades[index]; }\n\n    int operator[](int index) const { return m_grades[index]; }\n};\n\nvoid printGrade(const GradeList& list, int index) {\n    std::cout << list[index] << '\\n';\n}\n\nint main() {\n    GradeList grades;\n    for (int i{ 0 }; i < 5; ++i) {\n        int g{};\n        std::cin >> g;\n        grades.set(i, g);\n    }\n\n    int index{};\n    int newGrade{};\n    std::cin >> index >> newGrade;\n\n    printGrade(grades, index);\n    grades[index] = newGrade;\n    printGrade(grades, index);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Modify middle element",
+          "is_sample": true,
+          "stdin": "90 85 78 92 88\n2 100",
+          "expected_stdout": "78\n100\n"
+        },
+        {
+          "label": "Modify first element",
+          "is_sample": false,
+          "stdin": "50 60 70 80 90\n0 55",
+          "expected_stdout": "50\n55\n"
+        },
+        {
+          "label": "Modify last element to zero",
+          "is_sample": false,
+          "stdin": "100 100 100 100 100\n4 0",
+          "expected_stdout": "100\n0\n"
+        }
+      ]
+    },
+    {
+      "title": "Name Lookup Table",
+      "prompt_md": "## Goal\n\nBuild a `NameTable` class that maps integer indices to strings and supports const-correct subscript access. Demonstrate that a const reference to the table allows reading but the compiler would prevent writing.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 10), the number of names.\n- Next `n` lines: one name per line (no spaces within a name).\n- Last line: two integers `readIndex` and `swapA swapB` — an index to read, and two indices whose values should be swapped.\n\n## Output\n\n- Line 1: the name at `readIndex` before any swap.\n- Line 2: the name at `swapA` after swapping elements at `swapA` and `swapB`.\n- Line 3: the name at `swapB` after the swap.\n\n## Requirements\n\n- Define a class `NameTable` with a private `std::string m_names[10]` array and an `int m_size{}`.\n- Provide `void add(const std::string& name)` that appends a name (increment `m_size`).\n- Overload `operator[]` returning `std::string&`.\n- Overload a const `operator[]` returning `const std::string&`.\n- Perform the read through a `const NameTable&` reference to exercise the const overload.\n- Perform the swap using the non-const overload (use a temporary `std::string`).",
+      "starter_code": "#include <iostream>\n#include <string>\n\nclass NameTable {\n    std::string m_names[10];\n    int m_size{};\npublic:\n    void add(const std::string& name) { m_names[m_size++] = name; }\n    const std::string& get(int index) const { return m_names[index]; }\n    void setAt(int index, const std::string& val) { m_names[index] = val; }\n\n    // TODO: overload operator[] returning std::string&\n\n    // TODO: overload const operator[] returning const std::string&\n};\n\nint main() {\n    NameTable table;\n    int n{};\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i) {\n        std::string name;\n        std::cin >> name;\n        table.add(name);\n    }\n\n    int readIndex{};\n    int swapA{};\n    int swapB{};\n    std::cin >> readIndex >> swapA >> swapB;\n\n    // TODO: use const operator[] via constRef instead of get()\n    const NameTable& constRef{ table };\n    std::cout << constRef.get(readIndex) << '\\n';\n\n    // TODO: use non-const operator[] for the swap instead of get()/setAt()\n    std::string temp{ table.get(swapA) };\n    table.setAt(swapA, table.get(swapB));\n    table.setAt(swapB, temp);\n\n    std::cout << table.get(swapA) << '\\n';\n    std::cout << table.get(swapB) << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <string>\n\nclass NameTable {\n    std::string m_names[10];\n    int m_size{};\npublic:\n    void add(const std::string& name) { m_names[m_size++] = name; }\n    const std::string& get(int index) const { return m_names[index]; }\n    void setAt(int index, const std::string& val) { m_names[index] = val; }\n\n    std::string& operator[](int index) { return m_names[index]; }\n\n    const std::string& operator[](int index) const { return m_names[index]; }\n};\n\nint main() {\n    NameTable table;\n    int n{};\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i) {\n        std::string name;\n        std::cin >> name;\n        table.add(name);\n    }\n\n    int readIndex{};\n    int swapA{};\n    int swapB{};\n    std::cin >> readIndex >> swapA >> swapB;\n\n    const NameTable& constRef{ table };\n    std::cout << constRef[readIndex] << '\\n';\n\n    std::string temp{ table[swapA] };\n    table[swapA] = table[swapB];\n    table[swapB] = temp;\n\n    std::cout << table[swapA] << '\\n';\n    std::cout << table[swapB] << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Swap adjacent names",
+          "is_sample": true,
+          "stdin": "4\nAlice\nBob\nCarol\nDave\n1 0 2",
+          "expected_stdout": "Bob\nCarol\nAlice\n"
+        },
+        {
+          "label": "Swap same index (no change)",
+          "is_sample": false,
+          "stdin": "3\nXena\nYuri\nZara\n0 1 1",
+          "expected_stdout": "Xena\nYuri\nYuri\n"
+        },
+        {
+          "label": "Swap first and last of many",
+          "is_sample": false,
+          "stdin": "5\nAlpha\nBravo\nCharlie\nDelta\nEcho\n2 0 4",
+          "expected_stdout": "Charlie\nEcho\nAlpha\n"
+        }
+      ]
+    }
+  ]
+}

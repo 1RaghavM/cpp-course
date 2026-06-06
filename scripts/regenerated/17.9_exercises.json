@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Pointer Distance Calculator",
+    "prompt_md": "## Goal\nGiven a C-style array of integers, use pointer arithmetic to find the element at a given offset and compute the distance between two pointed-to positions.\n\n## Input\n- Line 1: an integer `n` (2 <= n <= 20), the number of elements.\n- Line 2: `n` space-separated integers, the array elements.\n- Line 3: two space-separated zero-based indices `i` and `j` (0 <= i, j < n).\n\n## Output\n- Line 1: the value of the element at index `i`, accessed using pointer arithmetic (not subscript).\n- Line 2: the value of the element at index `j`, accessed using pointer arithmetic.\n- Line 3: the signed distance `j - i` (as a number of elements) computed by subtracting two pointers.\n\n## Requirements\n1. Declare a C-style `int` array of size 20 and read `n` elements into it.\n2. Create a pointer `ptr` that points to the first element of the array.\n3. Access the elements at positions `i` and `j` using `*(ptr + i)` and `*(ptr + j)` -- do not use the subscript operator `[]` for these accesses.\n4. Compute the distance by subtracting the two pointers: `(ptr + j) - (ptr + i)`, and print the result.\n5. Use `#include <iostream>` only. Do not use `std::array` or `std::vector`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int arr[20]{};\n    int n{};\n    std::cin >> n;\n\n    for (int k{ 0 }; k < n; ++k)\n        std::cin >> arr[k];\n\n    int i{};\n    int j{};\n    std::cin >> i >> j;\n\n    // TODO: Create a pointer ptr to the first element of arr\n    // TODO: Print the value at index i using *(ptr + i)\n    // TODO: Print the value at index j using *(ptr + j)\n    // TODO: Print the distance (ptr + j) - (ptr + i)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int arr[20]{};\n    int n{};\n    std::cin >> n;\n\n    for (int k{ 0 }; k < n; ++k)\n        std::cin >> arr[k];\n\n    int i{};\n    int j{};\n    std::cin >> i >> j;\n\n    int* ptr{ arr };\n\n    std::cout << *(ptr + i) << '\\n';\n    std::cout << *(ptr + j) << '\\n';\n    std::cout << (ptr + j) - (ptr + i) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- basic forward distance",
+        "is_sample": true,
+        "stdin": "5\n10 20 30 40 50\n1 4\n",
+        "expected_stdout": "20\n50\n3\n"
+      },
+      {
+        "label": "Hidden -- negative distance (j < i)",
+        "is_sample": false,
+        "stdin": "6\n5 15 25 35 45 55\n4 1\n",
+        "expected_stdout": "45\n15\n-3\n"
+      },
+      {
+        "label": "Hidden -- same index gives zero distance",
+        "is_sample": false,
+        "stdin": "3\n100 200 300\n2 2\n",
+        "expected_stdout": "300\n300\n0\n"
+      }
+    ]
+  },
+  {
+    "title": "Reverse Array via Pointer Iteration",
+    "prompt_md": "## Goal\nRead an array of integers and print its elements in reverse order using pointer arithmetic to iterate -- no index variables or subscript operators allowed in the reversal logic.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 20), the number of elements.\n- Line 2: `n` space-separated integers.\n\n## Output\n- A single line containing the elements in reverse order, separated by spaces, with a trailing newline.\n\n## Requirements\n1. Declare a C-style `int` array of size 20 and read `n` elements into it.\n2. Create two pointers: `begin` pointing to the first element, and `end` pointing one past the last element (`arr + n`).\n3. Iterate backward from `end` to `begin` using pointer decrement. Start your pointer at `end`, decrement it, and dereference to get each element from last to first.\n4. Print each element followed by a space (a trailing space on the line is acceptable).\n5. Do not use the subscript operator `[]` anywhere in the reversal/printing loop. You may use `[]` only for reading input.\n6. Do not use `std::array`, `std::vector`, or any algorithm headers.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int arr[20]{};\n    int n{};\n    std::cin >> n;\n\n    for (int k{ 0 }; k < n; ++k)\n        std::cin >> arr[k];\n\n    // TODO: Create pointers: begin = arr, end = arr + n\n    // TODO: Iterate from end backward to begin using a pointer\n    //       Print each element followed by a space\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int arr[20]{};\n    int n{};\n    std::cin >> n;\n\n    for (int k{ 0 }; k < n; ++k)\n        std::cin >> arr[k];\n\n    int* begin{ arr };\n    int* end{ arr + n };\n\n    for (int* p{ end }; p != begin; )\n    {\n        --p;\n        std::cout << *p << ' ';\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- reverse five elements",
+        "is_sample": true,
+        "stdin": "5\n1 2 3 4 5\n",
+        "expected_stdout": "5 4 3 2 1 \n"
+      },
+      {
+        "label": "Hidden -- single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42 \n"
+      },
+      {
+        "label": "Hidden -- larger array with negatives",
+        "is_sample": false,
+        "stdin": "8\n-3 0 7 -1 12 5 -8 99\n",
+        "expected_stdout": "99 -8 5 12 -1 7 0 -3 \n"
+      }
+    ]
+  }
+]

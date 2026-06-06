@@ -1,0 +1,60 @@
+{
+  "number": "19.5",
+  "title": "Void pointers",
+  "sort_order": 4,
+  "summary_md": "A **void pointer** (`void*`) is a special pointer type that can point to an object of any data type. Unlike a typed pointer such as `int*` or `double*`, a `void*` discards all type information — it only stores a raw memory address. This makes it the closest thing C++ has to a truly generic pointer.\n\nBecause the compiler does not know what type a `void*` points to, you **cannot dereference it directly**. Attempting `*ptr` on a `void*` is a compile error. You also cannot perform pointer arithmetic on it, since the compiler has no idea how many bytes each element occupies. To use the pointed-to value, you must first cast the `void*` back to the correct typed pointer using `static_cast`.\n\n```cpp\n#include <iostream>\n\nvoid printInt(void* ptr)\n{\n    int* intPtr{ static_cast<int*>(ptr) };\n    std::cout << *intPtr << '\\n';\n}\n\nint main()\n{\n    int value{ 42 };\n    void* voidPtr{ &value };\n    printInt(voidPtr);\n    return 0;\n}\n```\n\nCasting to the wrong type is **undefined behavior** — the compiler will not catch the mistake. If you store the address of a `double` but cast to `int*`, the program silently reads garbage. This is why `void*` is considered unsafe: it shifts all responsibility for type correctness onto the programmer.\n\nIn modern C++, `void*` is rarely the right tool. Templates and `std::variant` provide type-safe alternatives for generic code. The main places you still encounter `void*` are at the boundary with C libraries (e.g., `std::malloc` returns `void*`, callback APIs like `qsort` pass `void*` context parameters) and in low-level memory allocators.\n\nKey rules to remember: any typed pointer converts to `void*` implicitly, but converting back always requires an explicit `static_cast`. A `void*` can be compared with `==` and `!=` and can be `nullptr`. Avoid `void*` whenever a template or typed pointer will do the job.",
+  "exercises": [
+    {
+      "title": "Cast and Print via Void Pointer",
+      "prompt_md": "## Goal\n\nRead an integer and a double from input. Store pointers to each in `void*` variables, then cast them back to their original types to print the values.\n\n## Input\n\n- Line 1: an integer\n- Line 2: a double (printed with fixed 2-decimal precision)\n\n## Output\n\n- Line 1: `int: ` followed by the integer value\n- Line 2: `double: ` followed by the double value with exactly 2 decimal places\n\n## Requirements\n\n- Declare an `int` variable and a `double` variable, reading into each from `std::cin`.\n- Assign their addresses to two separate `void*` variables.\n- Use `static_cast` to convert each `void*` back to the correct typed pointer, then dereference to print.\n- Use `std::fixed` and `std::setprecision(2)` from `<iomanip>` for the double output.",
+      "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int iVal{};\n    double dVal{};\n    std::cin >> iVal >> dVal;\n\n    // TODO: Create void* pointers to iVal and dVal\n    // TODO: Use static_cast to convert each void* back and print:\n    //   \"int: <value>\"\n    //   \"double: <value with 2 decimal places>\"\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int iVal{};\n    double dVal{};\n    std::cin >> iVal >> dVal;\n\n    void* vp1{ &iVal };\n    void* vp2{ &dVal };\n\n    std::cout << \"int: \" << *static_cast<int*>(vp1) << '\\n';\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"double: \" << *static_cast<double*>(vp2) << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Positive values",
+          "is_sample": true,
+          "stdin": "42\n3.14159",
+          "expected_stdout": "int: 42\ndouble: 3.14\n"
+        },
+        {
+          "label": "Zero values",
+          "is_sample": false,
+          "stdin": "0\n0.0",
+          "expected_stdout": "int: 0\ndouble: 0.00\n"
+        },
+        {
+          "label": "Negative values",
+          "is_sample": false,
+          "stdin": "-7\n-99.999",
+          "expected_stdout": "int: -7\ndouble: -100.00\n"
+        }
+      ]
+    },
+    {
+      "title": "Generic Swap Through Void Pointers",
+      "prompt_md": "## Goal\n\nImplement a function `swapBytes` that swaps the raw memory contents of two objects given their addresses as `void*` and their size in bytes. Use it to swap two integers.\n\n## Input\n\n- Line 1: two space-separated integers `a` and `b`\n\n## Output\n\n- Line 1: `Before: a b` (the original values, space-separated)\n- Line 2: `After: b a` (the swapped values, space-separated)\n\n## Requirements\n\n- Write a function with the signature: `void swapBytes(void* p1, void* p2, std::size_t size)`.\n- Inside `swapBytes`, cast both `void*` parameters to `char*` so you can iterate byte by byte.\n- Swap each corresponding byte using a temporary `char` variable. Do not use `std::swap` or `std::memcpy`.\n- In `main`, read two ints, print the before line, call `swapBytes` with `sizeof(int)`, then print the after line.",
+      "starter_code": "#include <iostream>\n#include <cstddef> // std::size_t\n\nvoid swapBytes(void* p1, void* p2, std::size_t size)\n{\n    // TODO: Cast p1 and p2 to char*\n    // TODO: Loop size times, swapping one byte at a time\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Before: \" << a << ' ' << b << '\\n';\n\n    // TODO: Call swapBytes to swap a and b\n\n    std::cout << \"After: \" << a << ' ' << b << '\\n';\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n#include <cstddef> // std::size_t\n\nvoid swapBytes(void* p1, void* p2, std::size_t size)\n{\n    char* c1{ static_cast<char*>(p1) };\n    char* c2{ static_cast<char*>(p2) };\n\n    for (std::size_t i{ 0 }; i < size; ++i)\n    {\n        char tmp{ c1[i] };\n        c1[i] = c2[i];\n        c2[i] = tmp;\n    }\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << \"Before: \" << a << ' ' << b << '\\n';\n    swapBytes(&a, &b, sizeof(int));\n    std::cout << \"After: \" << a << ' ' << b << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Simple positive swap",
+          "is_sample": true,
+          "stdin": "10 20",
+          "expected_stdout": "Before: 10 20\nAfter: 20 10\n"
+        },
+        {
+          "label": "Same values",
+          "is_sample": false,
+          "stdin": "5 5",
+          "expected_stdout": "Before: 5 5\nAfter: 5 5\n"
+        },
+        {
+          "label": "Negative and positive",
+          "is_sample": false,
+          "stdin": "-42 1000",
+          "expected_stdout": "Before: -42 1000\nAfter: 1000 -42\n"
+        }
+      ]
+    }
+  ]
+}

@@ -14,11 +14,11 @@ function makeLessons(count: number, moduleId: string): Lesson[] {
 
 function makeCurriculum(): Module[] {
   return [
-    { id: "variables", stage: "basics", title: "Variables", order: 1, lessons: makeLessons(3, "variables") },
-    { id: "control-flow", stage: "basics", title: "Control Flow", order: 2, lessons: makeLessons(2, "control-flow") },
-    { id: "pointers", stage: "memory-oop", title: "Pointers", order: 3, lessons: makeLessons(2, "pointers") },
-    { id: "templates", stage: "stl-templates", title: "Templates", order: 4, lessons: makeLessons(2, "templates") },
-    { id: "concurrency", stage: "advanced", title: "Concurrency", order: 5, lessons: makeLessons(1, "concurrency") },
+    { id: "intro-basics", stage: "basics", title: "Intro & Basics", order: 1, lessons: makeLessons(3, "intro-basics") },
+    { id: "functions-debugging", stage: "basics", title: "Functions & Debugging", order: 2, lessons: makeLessons(2, "functions-debugging") },
+    { id: "refs-pointers", stage: "memory-oop", title: "References & Pointers", order: 3, lessons: makeLessons(2, "refs-pointers") },
+    { id: "vectors-arrays", stage: "stl-templates", title: "Vectors & Arrays", order: 4, lessons: makeLessons(2, "vectors-arrays") },
+    { id: "templates-exceptions-io", stage: "advanced", title: "Templates, Exceptions & I/O", order: 5, lessons: makeLessons(1, "templates-exceptions-io") },
   ];
 }
 
@@ -46,42 +46,42 @@ describe("deriveStageStates", () => {
 
   it("marks the stage containing lastVisitedLessonId as active", () => {
     const progress = emptyProgress();
-    progress.lessonProgress["pointers-0"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
-    const states = deriveStageStates(curriculum, progress, "pointers-0");
+    progress.lessonProgress["refs-pointers-0"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
+    const states = deriveStageStates(curriculum, progress, "refs-pointers-0");
     expect(states.find((s) => s.stageId === "memory-oop")!.status).toBe("active");
   });
 
   it("active overrides locked even if prior stage has 0 completions", () => {
     const progress = emptyProgress();
-    progress.lessonProgress["templates-0"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
-    const states = deriveStageStates(curriculum, progress, "templates-0");
+    progress.lessonProgress["vectors-arrays-0"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
+    const states = deriveStageStates(curriculum, progress, "vectors-arrays-0");
     expect(states.find((s) => s.stageId === "stl-templates")!.status).toBe("active");
   });
 
   it("marks a completed stage as completed regardless of active", () => {
     const progress = emptyProgress();
-    ["variables-0", "variables-1", "variables-2", "control-flow-0", "control-flow-1"].forEach((id) => {
+    ["intro-basics-0", "intro-basics-1", "intro-basics-2", "functions-debugging-0", "functions-debugging-1"].forEach((id) => {
       progress.lessonProgress[id] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     });
     progress.totalLessonsCompleted = 5;
-    const states = deriveStageStates(curriculum, progress, "variables-0");
+    const states = deriveStageStates(curriculum, progress, "intro-basics-0");
     expect(states.find((s) => s.stageId === "basics")!.status).toBe("completed");
   });
 
   it("marks a stage as unlocked when prior stage has some completions", () => {
     const progress = emptyProgress();
-    progress.lessonProgress["variables-0"] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
+    progress.lessonProgress["intro-basics-0"] = { status: "completed", lastVisitAt: "2026-01-01T00:00:00Z" };
     progress.totalLessonsCompleted = 1;
-    const states = deriveStageStates(curriculum, progress, "variables-0");
+    const states = deriveStageStates(curriculum, progress, "intro-basics-0");
     expect(states.find((s) => s.stageId === "basics")!.status).toBe("active");
     expect(states.find((s) => s.stageId === "memory-oop")!.status).toBe("unlocked");
   });
 
   it("returns correct completed/total counts per stage", () => {
     const progress = emptyProgress();
-    progress.lessonProgress["variables-0"] = { status: "completed", lastVisitAt: "" };
-    progress.lessonProgress["variables-1"] = { status: "skipped", lastVisitAt: "" };
-    const states = deriveStageStates(curriculum, progress, "variables-2");
+    progress.lessonProgress["intro-basics-0"] = { status: "completed", lastVisitAt: "" };
+    progress.lessonProgress["intro-basics-1"] = { status: "skipped", lastVisitAt: "" };
+    const states = deriveStageStates(curriculum, progress, "intro-basics-2");
     const basics = states.find((s) => s.stageId === "basics")!;
     expect(basics.completed).toBe(2);
     expect(basics.total).toBe(5);
@@ -89,8 +89,8 @@ describe("deriveStageStates", () => {
 
   it("has exactly one active stage", () => {
     const progress = emptyProgress();
-    progress.lessonProgress["pointers-0"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
-    const states = deriveStageStates(curriculum, progress, "pointers-0");
+    progress.lessonProgress["refs-pointers-0"] = { status: "in_progress", lastVisitAt: "2026-01-02T00:00:00Z" };
+    const states = deriveStageStates(curriculum, progress, "refs-pointers-0");
     const activeCount = states.filter((s) => s.status === "active").length;
     expect(activeCount).toBe(1);
   });

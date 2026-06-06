@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Accumulator Functor",
+    "prompt_md": "## Goal\n\nCreate a functor class `Accumulator` that keeps a running total. Each call to the functor adds the given value to its internal sum and returns the new total.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the number of values.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- `n` lines, each containing the running total after adding the corresponding input value.\n\n## Requirements\n\n- Define a class `Accumulator` with a private `int m_total` initialized to 0.\n- Overload `operator()(int value)` so it adds `value` to `m_total` and returns `m_total`.\n- In `main`, create one `Accumulator` instance and call it for each input value, printing the result each time.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define the Accumulator class with operator()\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create an Accumulator and use it for each input value\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Accumulator\n{\nprivate:\n    int m_total{ 0 };\n\npublic:\n    int operator()(int value)\n    {\n        m_total += value;\n        return m_total;\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Accumulator acc{};\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int value{};\n        std::cin >> value;\n        std::cout << acc(value) << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Simple accumulation",
+        "is_sample": true,
+        "stdin": "4\n10 20 30 40",
+        "expected_stdout": "10\n30\n60\n100\n"
+      },
+      {
+        "label": "Mixed positive and negative",
+        "is_sample": false,
+        "stdin": "5\n5 -3 8 -10 2",
+        "expected_stdout": "5\n2\n10\n0\n2\n"
+      },
+      {
+        "label": "Single element",
+        "is_sample": false,
+        "stdin": "1\n-7",
+        "expected_stdout": "-7\n"
+      }
+    ]
+  },
+  {
+    "title": "Custom Sort with a Functor",
+    "prompt_md": "## Goal\n\nWrite a functor `AbsCompare` that compares two integers by their absolute values. Use it with `std::sort` to sort an array by ascending absolute value. When two values have the same absolute value, preserve the one that appears first (use `std::stable_sort`).\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the number of elements.\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\n- A single line of `n` space-separated integers sorted by ascending absolute value.\n\n## Requirements\n\n- Define a struct `AbsCompare` that overloads `operator()(int a, int b) const` to return `true` when the absolute value of `a` is less than the absolute value of `b`.\n- Compute absolute value manually (do not use `std::abs` or `<cmath>`).\n- Use `std::stable_sort` with an `AbsCompare{}` instance to sort a `std::vector<int>`.\n- Print elements separated by single spaces with a trailing newline.",
+    "starter_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\n// TODO: Define AbsCompare functor\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    // TODO: Sort v using AbsCompare and std::stable_sort\n\n    // TODO: Print the sorted elements\n\n    return 0;\n}\n",
+    "solution_code": "#include <algorithm>\n#include <iostream>\n#include <vector>\n\nstruct AbsCompare\n{\n    bool operator()(int a, int b) const\n    {\n        int absA{ a < 0 ? -a : a };\n        int absB{ b < 0 ? -b : b };\n        return absA < absB;\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    std::stable_sort(v.begin(), v.end(), AbsCompare{});\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << v[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Mixed positive and negative",
+        "is_sample": true,
+        "stdin": "5\n-3 1 -4 2 -1",
+        "expected_stdout": "1 -1 2 -3 -4\n"
+      },
+      {
+        "label": "All same absolute value",
+        "is_sample": false,
+        "stdin": "4\n5 -5 5 -5",
+        "expected_stdout": "5 -5 5 -5\n"
+      },
+      {
+        "label": "Already sorted by absolute value",
+        "is_sample": false,
+        "stdin": "3\n0 -2 7",
+        "expected_stdout": "0 -2 7\n"
+      }
+    ]
+  }
+]

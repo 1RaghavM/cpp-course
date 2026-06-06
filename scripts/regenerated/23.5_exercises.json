@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Format a temperature",
+    "prompt_md": "## Goal\n\nWrite a `Thermometer` class whose `readTemperature` member function depends on a `Formatter` object to produce a display string. `Formatter` is passed by const reference -- it is not stored as a member.\n\n## Input\n\n- Line 1: a single floating-point number `temp` (-100.0 <= temp <= 100.0), the temperature in Celsius.\n\n## Output\n\n- A single line: `Temperature: <temp>C`\n\nwhere `<temp>` is the input value printed with exactly one decimal place.\n\n## Requirements\n\n- Define a class `Formatter` with a public const member function `std::string format(double value) const` that returns the value as a string with exactly one decimal place followed by `C` (e.g. `\"36.5C\"`).\n- Define a class `Thermometer` with a private `double m_celsius` member set via the constructor.\n- `Thermometer` must have a public member function `void display(const Formatter& fmt) const` that prints `Temperature: ` followed by the result of `fmt.format(m_celsius)` and a newline.\n- `Thermometer` must **not** store the `Formatter` as a member -- this is a dependency, not an association.\n- In `main`, read the temperature, construct both objects, and call `display`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <iomanip>\n\nclass Formatter\n{\npublic:\n    // TODO: Implement format(double) const that returns\n    // the value with 1 decimal place followed by 'C'\n};\n\nclass Thermometer\n{\n    double m_celsius{};\n\npublic:\n    Thermometer(double celsius)\n        : m_celsius{ celsius }\n    {\n    }\n\n    // TODO: Implement display(const Formatter& fmt) const\n    // that prints \"Temperature: \" + fmt.format(m_celsius)\n};\n\nint main()\n{\n    double temp{};\n    std::cin >> temp;\n\n    // TODO: Create a Formatter and a Thermometer,\n    // then call display\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <sstream>\n#include <iomanip>\n\nclass Formatter\n{\npublic:\n    std::string format(double value) const\n    {\n        std::ostringstream out{};\n        out << std::fixed << std::setprecision(1) << value << 'C';\n        return out.str();\n    }\n};\n\nclass Thermometer\n{\n    double m_celsius{};\n\npublic:\n    Thermometer(double celsius)\n        : m_celsius{ celsius }\n    {\n    }\n\n    void display(const Formatter& fmt) const\n    {\n        std::cout << \"Temperature: \" << fmt.format(m_celsius) << '\\n';\n    }\n};\n\nint main()\n{\n    double temp{};\n    std::cin >> temp;\n\n    Formatter fmt{};\n    Thermometer t{ temp };\n    t.display(fmt);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Positive temperature",
+        "is_sample": true,
+        "stdin": "36.5",
+        "expected_stdout": "Temperature: 36.5C\n"
+      },
+      {
+        "label": "Zero temperature",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "Temperature: 0.0C\n"
+      },
+      {
+        "label": "Negative temperature",
+        "is_sample": false,
+        "stdin": "-12.8",
+        "expected_stdout": "Temperature: -12.8C\n"
+      }
+    ]
+  },
+  {
+    "title": "Scoreboard reporter",
+    "prompt_md": "## Goal\n\nBuild a `Scoreboard` class that tracks a player's score and a free function `report` that accepts the scoreboard as a dependency to print a summary. The `report` function demonstrates a dependency in the opposite direction -- a function depending on an object it does not own.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters) -- the player's name.\n- Line 2: an integer `n` (1 <= n <= 20) -- the number of score entries.\n- Line 3: `n` space-separated integers (0 <= each <= 1000) -- the individual scores.\n\n## Output\n\n- Line 1: `Player: <name>`\n- Line 2: `Rounds: <n>`\n- Line 3: `Total: <sum>`\n\nwhere `<sum>` is the sum of all scores.\n\n## Requirements\n\n- Define a class `Scoreboard` with private members for the player name and a total score (an `int`, not an array).\n- Provide a constructor that takes the player name and initializes the total to 0.\n- Provide `void addScore(int points)` that adds to the running total, and `int getRounds() const` that returns how many times `addScore` was called.\n- Provide `const std::string& getName() const` and `int getTotal() const`.\n- Write a free function `void report(const Scoreboard& sb)` that prints the three output lines. This function depends on `Scoreboard` but does not own it.\n- In `main`, read input, call `addScore` for each value, then call `report`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Scoreboard\n{\n    std::string m_name{};\n    int m_total{};\n    int m_rounds{};\n\npublic:\n    Scoreboard(std::string name)\n        : m_name{ name }\n    {\n    }\n\n    // TODO: Implement addScore, getRounds, getName, getTotal\n};\n\n// TODO: Implement void report(const Scoreboard& sb)\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    int n{};\n    std::cin >> n;\n\n    Scoreboard sb{ name };\n\n    // TODO: Read n scores, call addScore for each, then call report\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Scoreboard\n{\n    std::string m_name{};\n    int m_total{};\n    int m_rounds{};\n\npublic:\n    Scoreboard(std::string name)\n        : m_name{ name }\n    {\n    }\n\n    void addScore(int points)\n    {\n        m_total += points;\n        ++m_rounds;\n    }\n\n    int getRounds() const { return m_rounds; }\n    const std::string& getName() const { return m_name; }\n    int getTotal() const { return m_total; }\n};\n\nvoid report(const Scoreboard& sb)\n{\n    std::cout << \"Player: \" << sb.getName() << '\\n';\n    std::cout << \"Rounds: \" << sb.getRounds() << '\\n';\n    std::cout << \"Total: \" << sb.getTotal() << '\\n';\n}\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    int n{};\n    std::cin >> n;\n\n    Scoreboard sb{ name };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int score{};\n        std::cin >> score;\n        sb.addScore(score);\n    }\n\n    report(sb);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Three rounds",
+        "is_sample": true,
+        "stdin": "Alice\n3\n10 20 30",
+        "expected_stdout": "Player: Alice\nRounds: 3\nTotal: 60\n"
+      },
+      {
+        "label": "Single round",
+        "is_sample": false,
+        "stdin": "Bob\n1\n999",
+        "expected_stdout": "Player: Bob\nRounds: 1\nTotal: 999\n"
+      },
+      {
+        "label": "Five rounds with zeros",
+        "is_sample": false,
+        "stdin": "Zara\n5\n0 50 0 100 0",
+        "expected_stdout": "Player: Zara\nRounds: 5\nTotal: 150\n"
+      }
+    ]
+  }
+]

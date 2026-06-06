@@ -1,0 +1,60 @@
+{
+  "number": "17.10",
+  "title": "C-style strings",
+  "sort_order": 9,
+  "summary_md": "## C-style Strings\n\nBefore `std::string` existed, C++ inherited **C-style strings** from C: null-terminated arrays of `char`. You already know C-style arrays from earlier lessons; a C-style string is simply a `char` array whose last meaningful element is followed by a **null terminator** (`'\\0'`, value 0). The null terminator is how every C string function knows where the string ends.\n\n```cpp\n#include <cstring>\n#include <iostream>\n\nint main()\n{\n    char greeting[]{ \"Hello\" }; // compiler adds '\\0', size is 6\n    std::cout << std::strlen(greeting) << '\\n'; // 5 (does not count '\\0')\n\n    char copy[10];\n    std::strcpy(copy, greeting);       // copies chars + '\\0' into copy\n    std::cout << copy << '\\n';         // Hello\n    std::cout << std::strcmp(greeting, copy) << '\\n'; // 0 (equal)\n}\n```\n\n### The Null Terminator Matters\n\nIf you forget the null terminator, functions like `std::strlen`, `std::strcpy`, and `std::cout <<` will read past the end of the array into unrelated memory -- undefined behavior. When you initialize a `char` array with a string literal (`\"Hello\"`), the compiler appends `'\\0'` automatically. When you fill the array yourself, you must place it manually.\n\n### Common <cstring> Functions\n\n- `std::strlen(s)` -- returns the number of characters before the null terminator (not counting it).\n- `std::strcpy(dest, src)` -- copies `src` (including `'\\0'`) into `dest`. You must ensure `dest` is large enough.\n- `std::strcat(dest, src)` -- appends `src` onto the end of `dest`. The destination must have room for both strings plus the null terminator.\n- `std::strcmp(a, b)` -- returns `0` if the strings are equal, a negative value if `a` comes before `b` lexicographically, and a positive value if `a` comes after `b`.\n\n### Why Prefer std::string\n\nC-style strings are error-prone: buffer overflows from `strcpy`/`strcat` into undersized arrays, off-by-one errors from forgetting the null terminator, and no built-in size tracking. `std::string` manages its own memory, knows its length, and supports comparison with `==` instead of `strcmp`. Use C-style strings only when interfacing with legacy C APIs or when you encounter them in existing code.",
+  "exercises": [
+    {
+      "title": "Reverse a C-style String",
+      "prompt_md": "## Goal\nRead a word into a C-style string, report its length, then print the characters in reverse order as a new C-style string.\n\n## Input\n- A single line containing one word (no spaces, at most 40 characters).\n\n## Output\n- Line 1: the length of the input string (as reported by `std::strlen`)\n- Line 2: the string with its characters in reverse order\n\n## Requirements\n1. Declare a `char` array of size 50 to hold the input. Use `std::cin.getline()` to read the line.\n2. Use `std::strlen` (from `<cstring>`) to compute the length.\n3. Declare a second `char` array of size 50. Fill it with the characters of the input in reverse order, then manually place a null terminator at the correct position.\n4. Print the reversed array using `std::cout <<`.\n5. Do not use `std::string`, `std::reverse`, or any `<algorithm>` function.\n\n## Example\nInput: `hello` produces length `5` and reversed string `olleh`.",
+      "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 50 };\n    char input[maxLen];\n    std::cin.getline(input, maxLen);\n\n    // TODO: Use std::strlen to get the length and print it\n\n    // TODO: Declare a char array 'reversed' of size maxLen\n    // TODO: Copy characters from input into reversed in reverse order\n    // TODO: Place a null terminator at the end of the reversed string\n\n    // TODO: Print the reversed C-style string\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 50 };\n    char input[maxLen];\n    std::cin.getline(input, maxLen);\n\n    std::size_t len{ std::strlen(input) };\n\n    char reversed[maxLen];\n    for (std::size_t i{ 0 }; i < len; ++i)\n        reversed[i] = input[len - 1 - i];\n    reversed[len] = '\\0';\n\n    std::cout << len << '\\n';\n    std::cout << reversed << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- simple word",
+          "is_sample": true,
+          "stdin": "hello\n",
+          "expected_stdout": "5\nolleh\n"
+        },
+        {
+          "label": "Hidden -- three-letter word",
+          "is_sample": false,
+          "stdin": "C++\n",
+          "expected_stdout": "3\n++C\n"
+        },
+        {
+          "label": "Hidden -- single character",
+          "is_sample": false,
+          "stdin": "a\n",
+          "expected_stdout": "1\na\n"
+        }
+      ]
+    },
+    {
+      "title": "Compare and Concatenate C-style Strings",
+      "prompt_md": "## Goal\nRead two words into C-style strings, determine their lexicographic order using `std::strcmp`, then concatenate them and print the result along with its length.\n\n## Input\n- Line 1: a single word (no spaces, at most 30 characters)\n- Line 2: a single word (no spaces, at most 30 characters)\n\n## Output\n- Line 1: one of three words describing the order of the first string relative to the second:\n  - `before` if the first string comes before the second lexicographically\n  - `after` if the first string comes after the second\n  - `equal` if both strings are identical\n- Line 2: the length of the concatenated string (first + second, no separator)\n- Line 3: the concatenated string itself\n\n## Requirements\n1. Declare two `char` arrays of size 64 for the inputs. Use `std::cin.getline()` to read each.\n2. Use `std::strcmp` to compare the two strings.\n3. Declare a third `char` array large enough to hold both strings concatenated. Use `std::strcpy` to copy the first string into it, then `std::strcat` to append the second.\n4. Use `std::strlen` to get the length of the concatenated result.\n5. Do not use `std::string` or any `<algorithm>` function.\n\n## Example\nInputs `apple` and `banana` produces `before`, length `11`, and concatenation `applebanana`.",
+      "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 64 };\n    char str1[maxLen];\n    char str2[maxLen];\n\n    std::cin.getline(str1, maxLen);\n    std::cin.getline(str2, maxLen);\n\n    // TODO: Use std::strcmp to compare str1 and str2\n    // TODO: Print \"before\", \"after\", or \"equal\" based on the result\n\n    // TODO: Declare a char array 'combined' large enough for both strings\n    // TODO: Use std::strcpy to copy str1 into combined\n    // TODO: Use std::strcat to append str2 onto combined\n\n    // TODO: Print the length of combined using std::strlen\n    // TODO: Print the combined string\n\n    return 0;\n}\n",
+      "solution_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 64 };\n    char str1[maxLen];\n    char str2[maxLen];\n\n    std::cin.getline(str1, maxLen);\n    std::cin.getline(str2, maxLen);\n\n    int cmp{ std::strcmp(str1, str2) };\n\n    if (cmp < 0)\n        std::cout << \"before\\n\";\n    else if (cmp > 0)\n        std::cout << \"after\\n\";\n    else\n        std::cout << \"equal\\n\";\n\n    char combined[maxLen * 2];\n    std::strcpy(combined, str1);\n    std::strcat(combined, str2);\n\n    std::cout << std::strlen(combined) << '\\n';\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- first before second",
+          "is_sample": true,
+          "stdin": "apple\nbanana\n",
+          "expected_stdout": "before\n11\napplebanana\n"
+        },
+        {
+          "label": "Hidden -- identical strings",
+          "is_sample": false,
+          "stdin": "same\nsame\n",
+          "expected_stdout": "equal\n8\nsamesame\n"
+        },
+        {
+          "label": "Hidden -- first after second",
+          "is_sample": false,
+          "stdin": "zoo\nalpha\n",
+          "expected_stdout": "after\n8\nzooalpha\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Classify l-value and r-value",
+    "prompt_md": "## Goal\n\nWrite a program that uses function overloading to determine whether a given expression is passed as an l-value or an r-value, then prints the classification.\n\n## Input\n\n- A single integer `n` (-10000 <= n <= 10000).\n\n## Output\n\n- Three lines of output, one for each of these calls in order:\n  1. Passing the variable `n` directly.\n  2. Passing the literal `42`.\n  3. Passing the expression `n + 1`.\n\nEach line must be exactly one of:\n- `l-value: <value>`\n- `r-value: <value>`\n\nwhere `<value>` is the integer value received by the function.\n\n## Requirements\n\n- Define two overloads of a function `classify`: one taking `int&` and one taking `int&&`.\n- The `int&` overload prints `l-value: ` followed by the value.\n- The `int&&` overload prints `r-value: ` followed by the value.\n- Call `classify` three times in `main` in the order described above.\n- Do not use `std::move`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define void classify(int& x) that prints \"l-value: \" and the value\n// TODO: Define void classify(int&& x) that prints \"r-value: \" and the value\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call classify with n, then 42, then n + 1\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid classify(int& x)\n{\n    std::cout << \"l-value: \" << x << '\\n';\n}\n\nvoid classify(int&& x)\n{\n    std::cout << \"r-value: \" << x << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    classify(n);\n    classify(42);\n    classify(n + 1);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Input 5: variable, literal, expression",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "l-value: 5\nr-value: 42\nr-value: 6\n"
+      },
+      {
+        "label": "Input 0: zero edge case",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "l-value: 0\nr-value: 42\nr-value: 1\n"
+      },
+      {
+        "label": "Negative input",
+        "is_sample": false,
+        "stdin": "-7",
+        "expected_stdout": "l-value: -7\nr-value: 42\nr-value: -6\n"
+      }
+    ]
+  },
+  {
+    "title": "R-value reference lifetime extension",
+    "prompt_md": "## Goal\n\nWrite a program that demonstrates r-value reference lifetime extension by binding the result of a computation to an `int&&` and then using that reference in further calculations.\n\n## Input\n\n- A single line with two space-separated integers `a` and `b` (-10000 <= each <= 10000).\n\n## Output\n\nExactly three lines:\n1. `sum: <value>` where `<value>` is `a + b`, read through the r-value reference.\n2. `doubled: <value>` where `<value>` is the sum multiplied by 2, computed using the r-value reference.\n3. `offset: <value>` where `<value>` is the sum plus 100, computed using the r-value reference.\n\n## Requirements\n\n- Compute `a + b` and bind the result to an r-value reference: `int&& ref = a + b;`\n- Use `ref` (not `a` or `b`) for all three printed calculations.\n- Do not use `std::move`.\n- Do not use any classes or structs.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Bind the result of a + b to an r-value reference\n\n    // TODO: Print sum, doubled, and offset using the r-value reference\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int&& ref{a + b};\n\n    std::cout << \"sum: \" << ref << '\\n';\n    std::cout << \"doubled: \" << ref * 2 << '\\n';\n    std::cout << \"offset: \" << ref + 100 << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Positive values 3 and 7",
+        "is_sample": true,
+        "stdin": "3 7",
+        "expected_stdout": "sum: 10\ndoubled: 20\noffset: 110\n"
+      },
+      {
+        "label": "Negative values cancel out",
+        "is_sample": false,
+        "stdin": "-5 5",
+        "expected_stdout": "sum: 0\ndoubled: 0\noffset: 100\n"
+      },
+      {
+        "label": "Both negative",
+        "is_sample": false,
+        "stdin": "-100 -200",
+        "expected_stdout": "sum: -300\ndoubled: -600\noffset: -200\n"
+      }
+    ]
+  }
+]

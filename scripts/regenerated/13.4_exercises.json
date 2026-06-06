@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Color Enum to String Converter",
+    "prompt_md": "## Goal\nWrite a program that reads color codes from stdin and prints their string names using a `constexpr` conversion function.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of color codes to convert.\n- Next `n` lines: each contains a single integer color code.\n  - `0` = red, `1` = green, `2` = blue. Any other value is unknown.\n\n## Output\nPrint exactly `n` lines. Each line is the string name of the color (`red`, `green`, `blue`, or `unknown`).\n\n## Requirements\n1. Define an unscoped enum named `Color` with enumerators `red = 0`, `green = 1`, `blue = 2` at namespace scope.\n2. Write a function with signature `constexpr std::string_view colorToString(Color c)` that uses a `switch` statement to return the lowercase name of each color. Return `\"unknown\"` in the `default` case.\n3. In `main`, read `n`, then loop `n` times: read an integer, `static_cast` it to `Color`, call `colorToString`, and print the result on its own line.\n4. Use `std::string_view` (from `<string_view>`) as the return type — do not return `std::string`.\n5. Do not use any `if`/`else` chains for the conversion.",
+    "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define an unscoped enum Color with: red = 0, green = 1, blue = 2\n\n// TODO: Write constexpr std::string_view colorToString(Color c)\n//       Use a switch statement. Return \"unknown\" for the default case.\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    // TODO: Loop n times, read an integer code, cast to Color,\n    //       call colorToString, and print the result.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Color\n{\n    red   = 0,\n    green = 1,\n    blue  = 2\n};\n\nconstexpr std::string_view colorToString(Color c)\n{\n    switch (c)\n    {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n        default:    return \"unknown\";\n    }\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        int code;\n        std::cin >> code;\n        std::cout << colorToString(static_cast<Color>(code)) << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample — all three colors",
+        "stdin": "3\n0\n1\n2\n",
+        "expected_stdout": "red\ngreen\nblue\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden — unknown codes mixed in",
+        "stdin": "5\n2\n7\n0\n-1\n1\n",
+        "expected_stdout": "blue\nunknown\nred\nunknown\ngreen\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden — single unknown code",
+        "stdin": "1\n99\n",
+        "expected_stdout": "unknown\n",
+        "is_sample": false
+      }
+    ]
+  },
+  {
+    "title": "Day-of-Week Round Trip Converter",
+    "prompt_md": "## Goal\nBuild a program that converts day-of-week names to enum values and back, demonstrating both string-to-enum and enum-to-string conversion.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of queries.\n- Next `n` lines: each contains a single day name (all lowercase). Valid names are `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`. Any other string is invalid.\n\n## Output\nFor each query, print one line in this format:\n```\n<day_name> = <integer_value>\n```\nwhere `<day_name>` is the enum-to-string result and `<integer_value>` is the underlying integer (monday = 0, tuesday = 1, ..., sunday = 6).\n\nIf the input string is invalid, print:\n```\ninvalid = -1\n```\n\n## Requirements\n1. Define an unscoped enum named `Day` with enumerators `monday = 0` through `sunday = 6` at namespace scope.\n2. Write a function `constexpr std::string_view dayToString(Day d)` that uses a `switch` to return the lowercase day name. Return `\"invalid\"` in the `default` case.\n3. Write a function `int stringToDay(std::string_view s)` that takes a string and returns the matching enumerator's integer value. If the string does not match any day, return `-1`. Use `if`/`else if` comparisons against each day name string.\n4. In `main`, for each query: call `stringToDay` to get the integer. If the result is `-1`, print `invalid = -1`. Otherwise, cast the integer to `Day`, call `dayToString` on it, and print `<day_name> = <integer_value>`.\n5. Do not use arrays, maps, or any container to store the mapping.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: Define an unscoped enum Day with:\n//       monday = 0, tuesday = 1, wednesday = 2, thursday = 3,\n//       friday = 4, saturday = 5, sunday = 6\n\n// TODO: Write constexpr std::string_view dayToString(Day d)\n//       Use a switch statement. Return \"invalid\" for the default case.\n\n// TODO: Write int stringToDay(std::string_view s)\n//       Return the integer value of the matching enumerator,\n//       or -1 if no match. Use if/else if comparisons.\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    // TODO: For each query, read a string, convert to Day integer,\n    //       then print: <day_name> = <integer_value>\n    //       or: invalid = -1\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nenum Day { monday = 0, tuesday, wednesday, thursday, friday, saturday, sunday };\n\nconstexpr std::string_view dayToString(Day d) {\n    switch (d) {\n        case monday:    return \"monday\";\n        case tuesday:   return \"tuesday\";\n        case wednesday: return \"wednesday\";\n        case thursday:  return \"thursday\";\n        case friday:    return \"friday\";\n        case saturday:  return \"saturday\";\n        case sunday:    return \"sunday\";\n        default:        return \"invalid\";\n    }\n}\n\nint stringToDay(std::string_view s) {\n    if (s == \"monday\")         return monday;\n    else if (s == \"tuesday\")   return tuesday;\n    else if (s == \"wednesday\") return wednesday;\n    else if (s == \"thursday\")  return thursday;\n    else if (s == \"friday\")    return friday;\n    else if (s == \"saturday\")  return saturday;\n    else if (s == \"sunday\")    return sunday;\n    else return -1;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string input;\n        std::cin >> input;\n        int val = stringToDay(input);\n        if (val == -1) {\n            std::cout << \"invalid = -1\\n\";\n        } else {\n            Day d = static_cast<Day>(val);\n            std::cout << dayToString(d) << \" = \" << val << '\\n';\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample — weekdays and a weekend day",
+        "stdin": "3\nmonday\nfriday\nsunday\n",
+        "expected_stdout": "monday = 0\nfriday = 4\nsunday = 6\n",
+        "is_sample": true
+      },
+      {
+        "label": "Hidden — invalid input mixed with valid",
+        "stdin": "4\ntuesday\nhelloworld\nsaturday\nwednesday\n",
+        "expected_stdout": "tuesday = 1\ninvalid = -1\nsaturday = 5\nwednesday = 2\n",
+        "is_sample": false
+      },
+      {
+        "label": "Hidden — all invalid inputs",
+        "stdin": "2\nfunday\nnotaday\n",
+        "expected_stdout": "invalid = -1\ninvalid = -1\n",
+        "is_sample": false
+      }
+    ]
+  }
+]

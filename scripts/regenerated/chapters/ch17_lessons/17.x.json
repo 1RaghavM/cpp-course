@@ -1,0 +1,60 @@
+{
+  "number": "17.x",
+  "title": "Chapter 17 summary and quiz",
+  "sort_order": 13,
+  "summary_md": "## Chapter 17 Summary\n\nThis chapter covered **fixed-size arrays** -- the modern `std::array` and the legacy C-style array -- plus the pointer arithmetic that underpins C-style array access.\n\n### std::array\n\n- `std::array<T, N>` wraps a fixed-length array. Initialize with braces; CTAD can deduce `T` and `N` from the initializers.\n- `operator[]` is unchecked; `.at()` throws `std::out_of_range` on bad indices. `.size()` is `constexpr` and returns `std::size_t`.\n- Pass by `const&` for read-only, by `&` to modify. Use a function template with `T` and `std::size_t N` to accept any size. Return by value -- the compiler applies copy elision.\n- **Brace elision:** inner braces can be omitted when storing aggregates (structs) inside `std::array`.\n- **`std::reference_wrapper`:** arrays cannot hold raw references; use `std::ref` / `std::cref` to store reference-like handles, accessed via `.get()` or implicit conversion.\n- **Enum indices:** use a scoped enum to give indices meaningful names, casting to `std::size_t` for subscripting.\n\n### C-style arrays\n\n- Declared as `int arr[5];` with a compile-time constant size. Use `{}` to value-initialize.\n- **Decay:** passed to a function, a C-style array converts to a pointer to its first element, losing size information. This is the main reason to prefer `std::array`.\n- **Pointer arithmetic:** `ptr + n` advances by `n` elements. `arr[n]` is equivalent to `*(arr + n)`. Only valid within array bounds (including one-past-the-end).\n- **C-style strings:** null-terminated `char` arrays. String literals decay to `const char*`. Prefer `std::string` / `std::string_view` in new code.\n- **String constants:** `const char*` pointing to a literal acts as a symbolic constant. Identical literals may or may not share storage.\n- **Multidimensional:** C-style: `int grid[3][4];` -- first dimension decays, rest must be specified. `std::array`: nest types like `std::array<std::array<int, 4>, 3>` for full type safety and `.size()` at every level.",
+  "exercises": [
+    {
+      "title": "Reverse and Rotate a std::array",
+      "prompt_md": "## Goal\nRead integers into a `std::array`, reverse it in-place using a function template, then rotate the reversed array left by one position. Print the array after each operation.\n\n## Input\n- A single line containing exactly 6 space-separated integers.\n\n## Output\n- Line 1: the array after reversing, elements separated by spaces.\n- Line 2: the array after rotating the reversed array left by one (the first element moves to the end), elements separated by spaces.\n\nNo trailing spaces on either line.\n\n## Requirements\n1. Declare a `std::array<int, 6>` and read all 6 values from stdin.\n2. Write a function template:\n   ```\n   template <typename T, std::size_t N>\n   void reverseArray(std::array<T, N>& arr)\n   ```\n   that reverses the array in-place by swapping elements from both ends toward the middle. Use `arr.size()` to determine bounds.\n3. Write a function template:\n   ```\n   template <typename T, std::size_t N>\n   void rotateLeft(std::array<T, N>& arr)\n   ```\n   that shifts every element one position to the left and places the original first element at the end. Use a loop with `operator[]`.\n4. Write a function template:\n   ```\n   template <typename T, std::size_t N>\n   void printArray(const std::array<T, N>& arr)\n   ```\n   that prints all elements separated by single spaces (no trailing space) followed by `'\\n'`.\n5. In `main`, read the array, call `reverseArray`, print, call `rotateLeft`, print.\n6. Do not use any standard library algorithm (no `<algorithm>`). Do not use `std::vector`.",
+      "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\n// TODO: Write function template reverseArray\n//       Reverse arr in-place by swapping from both ends toward the middle.\n\n// TODO: Write function template rotateLeft\n//       Shift every element one position left; move the first element to the end.\n\n// TODO: Write function template printArray\n//       Print elements separated by spaces, no trailing space, end with '\\n'.\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    // TODO: Read 6 integers into arr\n\n    // TODO: Reverse, print, rotate left, print\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\ntemplate <typename T, std::size_t N>\nvoid reverseArray(std::array<T, N>& arr)\n{\n    for (std::size_t i{ 0 }; i < N / 2; ++i)\n    {\n        T temp{ arr[i] };\n        arr[i] = arr[N - 1 - i];\n        arr[N - 1 - i] = temp;\n    }\n}\n\ntemplate <typename T, std::size_t N>\nvoid rotateLeft(std::array<T, N>& arr)\n{\n    T first{ arr[0] };\n    for (std::size_t i{ 0 }; i + 1 < N; ++i)\n        arr[i] = arr[i + 1];\n    arr[N - 1] = first;\n}\n\ntemplate <typename T, std::size_t N>\nvoid printArray(const std::array<T, N>& arr)\n{\n    for (std::size_t i{ 0 }; i < N; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (std::size_t i{ 0 }; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    reverseArray(arr);\n    printArray(arr);\n\n    rotateLeft(arr);\n    printArray(arr);\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- sequential values",
+          "is_sample": true,
+          "stdin": "1 2 3 4 5 6\n",
+          "expected_stdout": "6 5 4 3 2 1\n5 4 3 2 1 6\n"
+        },
+        {
+          "label": "Hidden -- negative and mixed values",
+          "is_sample": false,
+          "stdin": "10 -3 7 0 -5 2\n",
+          "expected_stdout": "2 -5 0 7 -3 10\n-5 0 7 -3 10 2\n"
+        },
+        {
+          "label": "Hidden -- all same value",
+          "is_sample": false,
+          "stdin": "4 4 4 4 4 4\n",
+          "expected_stdout": "4 4 4 4 4 4\n4 4 4 4 4 4\n"
+        }
+      ]
+    },
+    {
+      "title": "Copy Between C-style Array and std::array",
+      "prompt_md": "## Goal\nRead integers into a C-style array, copy them into a `std::array` using pointer arithmetic, compute the sum using the `std::array`, and print both the copied array and the sum.\n\n## Input\n- A single line containing exactly 5 space-separated integers.\n\n## Output\n- Line 1: `Array:` followed by a space, then the 5 elements separated by spaces (no trailing space).\n- Line 2: `Sum:` followed by a space, then the sum of all elements.\n\n## Requirements\n1. Declare a C-style array `int cArr[5]{};` and read 5 integers into it using index notation.\n2. Declare a `std::array<int, 5> sArr{};`.\n3. Copy from `cArr` to `sArr` using a pointer-based loop: declare `const int* ptr{ cArr };` and iterate while `ptr < cArr + 5`, using pointer arithmetic to compute the index (`static_cast<std::size_t>(ptr - cArr)`) for `sArr`.\n4. Write a function template:\n   ```\n   template <typename T, std::size_t N>\n   T computeSum(const std::array<T, N>& arr)\n   ```\n   that returns the sum of all elements using a range-based `for` loop.\n5. In `main`, call `computeSum` on `sArr` and print the output in the format above.\n6. Do not use `std::copy`, `<algorithm>`, `std::vector`, or `memcpy`.",
+      "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\n// TODO: Write function template computeSum\n//       template <typename T, std::size_t N>\n//       T computeSum(const std::array<T, N>& arr)\n//       Return the sum of all elements using a range-based for loop.\n\nint main()\n{\n    int cArr[5]{};\n\n    // TODO: Read 5 integers into cArr using index notation\n\n    std::array<int, 5> sArr{};\n\n    // TODO: Copy from cArr to sArr using pointer arithmetic:\n    //       const int* ptr{ cArr };\n    //       Loop while ptr < cArr + 5\n    //       Use static_cast<std::size_t>(ptr - cArr) as the index into sArr\n\n    // TODO: Call computeSum on sArr\n\n    // TODO: Print \"Array: \" followed by elements separated by spaces\n    // TODO: Print \"Sum: \" followed by the sum\n\n    return 0;\n}\n",
+      "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\ntemplate <typename T, std::size_t N>\nT computeSum(const std::array<T, N>& arr)\n{\n    T sum{};\n    for (const auto& val : arr)\n        sum += val;\n    return sum;\n}\n\nint main()\n{\n    int cArr[5]{};\n\n    for (int i{ 0 }; i < 5; ++i)\n        std::cin >> cArr[i];\n\n    std::array<int, 5> sArr{};\n\n    const int* ptr{ cArr };\n    while (ptr < cArr + 5)\n    {\n        std::size_t idx{ static_cast<std::size_t>(ptr - cArr) };\n        sArr[idx] = *ptr;\n        ++ptr;\n    }\n\n    int sum{ computeSum(sArr) };\n\n    std::cout << \"Array:\";\n    for (std::size_t i{ 0 }; i < sArr.size(); ++i)\n        std::cout << ' ' << sArr[i];\n    std::cout << '\\n';\n\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+      "test_cases": [
+        {
+          "label": "Sample -- simple positive values",
+          "is_sample": true,
+          "stdin": "10 20 30 40 50\n",
+          "expected_stdout": "Array: 10 20 30 40 50\nSum: 150\n"
+        },
+        {
+          "label": "Hidden -- mixed positive and negative",
+          "is_sample": false,
+          "stdin": "-5 3 0 -2 8\n",
+          "expected_stdout": "Array: -5 3 0 -2 8\nSum: 4\n"
+        },
+        {
+          "label": "Hidden -- all zeros",
+          "is_sample": false,
+          "stdin": "0 0 0 0 0\n",
+          "expected_stdout": "Array: 0 0 0 0 0\nSum: 0\n"
+        }
+      ]
+    }
+  ]
+}

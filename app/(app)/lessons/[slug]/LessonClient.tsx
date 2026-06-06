@@ -922,7 +922,7 @@ function TestCaseCard({ testCase }: { testCase: SampleTestCase }) {
       {testCase.stdin && (
         <div className="mb-2">
           <span className="text-xs text-muted-foreground">Input: </span>
-          <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-accent">
+          <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-foreground">
             {testCase.stdin}
           </code>
         </div>

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Virtual speak",
+    "prompt_md": "## Goal\n\nComplete a small class hierarchy where a `virtual` function in the base class enables the correct derived version to be called through a base-class reference.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 10) -- the number of animals.\n- Next `N` lines: a single word, either `cat` or `dog`.\n\n## Output\n\nFor each animal, print the result of calling `speak()` through an `Animal` reference:\n- A `Cat` speaks `Meow`\n- A `Dog` speaks `Woof`\n\nEach on its own line.\n\n## Requirements\n\n- Define a base class `Animal` with a `virtual` member function `std::string_view speak() const` that returns `\"...\"`.\n- Define `Cat` (publicly derived from `Animal`) whose `speak()` returns `\"Meow\"`.\n- Define `Dog` (publicly derived from `Animal`) whose `speak()` returns `\"Woof\"`.\n- In `main`, read each animal type, create the appropriate object, and call a free function `void printSpeak(const Animal& a)` that prints `a.speak()` followed by a newline.\n- You must call `speak()` through the `Animal&` parameter, not directly on the derived type.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <vector>\n#include <memory>\n\nclass Animal\n{\npublic:\n    // TODO: declare speak() as a virtual function\n    // returning std::string_view, const-qualified,\n    // that returns \"...\"\n};\n\nclass Cat : public Animal\n{\npublic:\n    // TODO: override speak() to return \"Meow\"\n};\n\nclass Dog : public Animal\n{\npublic:\n    // TODO: override speak() to return \"Woof\"\n};\n\nvoid printSpeak(const Animal& a)\n{\n    // TODO: print a.speak() followed by '\\n'\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        // TODO: create the correct derived object and call printSpeak\n        // Hint: you can create a local Cat or Dog and pass it to printSpeak\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n#include <vector>\n#include <memory>\n\nclass Animal\n{\npublic:\n    virtual std::string_view speak() const { return \"...\"; }\n};\n\nclass Cat : public Animal\n{\npublic:\n    std::string_view speak() const { return \"Meow\"; }\n};\n\nclass Dog : public Animal\n{\npublic:\n    std::string_view speak() const { return \"Woof\"; }\n};\n\nvoid printSpeak(const Animal& a)\n{\n    std::cout << a.speak() << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"cat\")\n        {\n            Cat c{};\n            printSpeak(c);\n        }\n        else\n        {\n            Dog d{};\n            printSpeak(d);\n        }\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Mixed animals",
+        "is_sample": true,
+        "stdin": "3\ncat\ndog\ncat\n",
+        "expected_stdout": "Meow\nWoof\nMeow\n"
+      },
+      {
+        "label": "All dogs",
+        "is_sample": false,
+        "stdin": "2\ndog\ndog\n",
+        "expected_stdout": "Woof\nWoof\n"
+      },
+      {
+        "label": "Single cat",
+        "is_sample": false,
+        "stdin": "1\ncat\n",
+        "expected_stdout": "Meow\n"
+      }
+    ]
+  },
+  {
+    "title": "Polymorphic shape areas",
+    "prompt_md": "## Goal\n\nBuild a polymorphic shape hierarchy where `Circle` and `Rectangle` are derived from `Shape`. Store different shapes in a `std::vector<Shape*>` and compute the total area through virtual dispatch -- the classic polymorphism pattern.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 20) -- the number of shapes.\n- Next `N` lines: either `circle <radius>` or `rect <width> <height>`, where all values are positive integers (1 <= value <= 100).\n\n## Output\n\n- One line: the total area of all shapes, printed as a **truncated integer** (use `static_cast<int>(totalArea)`).\n\nUse `pi = 3.14159265` (provided as a constant) for circle area.\n\n## Requirements\n\n- Define a base class `Shape` with a `virtual double area() const` member function that returns `0.0`.\n- Define `Circle` (derived from `Shape`) with a private `int m_radius` member. Its `area()` returns `pi * m_radius * m_radius`.\n- Define `Rectangle` (derived from `Shape`) with private `int m_width` and `int m_height` members. Its `area()` returns `m_width * m_height` (as a `double`).\n- In `main`, read each shape into a `std::vector<Shape*>` (you may use `new` to allocate, or use local arrays -- but the vector must hold base pointers).\n- Loop over the vector calling `area()` through the `Shape*` to accumulate the total.\n- Print `static_cast<int>(total)` followed by a newline.\n- Clean up any dynamically allocated memory with `delete`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nconstexpr double pi{ 3.14159265 };\n\nclass Shape\n{\npublic:\n    // TODO: declare a virtual area() function returning double, const\n};\n\nclass Circle : public Shape\n{\n    int m_radius{};\n\npublic:\n    Circle(int radius)\n        : m_radius{ radius }\n    {\n    }\n\n    // TODO: override area() to return pi * m_radius * m_radius\n};\n\nclass Rectangle : public Shape\n{\n    int m_width{};\n    int m_height{};\n\npublic:\n    Rectangle(int width, int height)\n        : m_width{ width }, m_height{ height }\n    {\n    }\n\n    // TODO: override area() to return width * height as double\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Shape*> shapes{};\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"circle\")\n        {\n            int r{};\n            std::cin >> r;\n            // TODO: allocate a Circle and push to shapes\n        }\n        else\n        {\n            int w{}, h{};\n            std::cin >> w >> h;\n            // TODO: allocate a Rectangle and push to shapes\n        }\n    }\n\n    // TODO: sum area() for every shape via the base pointer\n    double total{ 0.0 };\n\n    std::cout << static_cast<int>(total) << '\\n';\n\n    // TODO: delete all shapes\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nconstexpr double pi{ 3.14159265 };\n\nclass Shape\n{\npublic:\n    virtual double area() const { return 0.0; }\n};\n\nclass Circle : public Shape\n{\n    int m_radius{};\n\npublic:\n    Circle(int radius)\n        : m_radius{ radius }\n    {\n    }\n\n    double area() const { return pi * m_radius * m_radius; }\n};\n\nclass Rectangle : public Shape\n{\n    int m_width{};\n    int m_height{};\n\npublic:\n    Rectangle(int width, int height)\n        : m_width{ width }, m_height{ height }\n    {\n    }\n\n    double area() const { return static_cast<double>(m_width) * m_height; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Shape*> shapes{};\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"circle\")\n        {\n            int r{};\n            std::cin >> r;\n            shapes.push_back(new Circle{ r });\n        }\n        else\n        {\n            int w{}, h{};\n            std::cin >> w >> h;\n            shapes.push_back(new Rectangle{ w, h });\n        }\n    }\n\n    double total{ 0.0 };\n    for (const auto* s : shapes)\n    {\n        total += s->area();\n    }\n\n    std::cout << static_cast<int>(total) << '\\n';\n\n    for (auto* s : shapes)\n    {\n        delete s;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Circle and rectangle",
+        "is_sample": true,
+        "stdin": "2\ncircle 5\nrect 4 6\n",
+        "expected_stdout": "102\n"
+      },
+      {
+        "label": "Three circles",
+        "is_sample": false,
+        "stdin": "3\ncircle 1\ncircle 2\ncircle 3\n",
+        "expected_stdout": "43\n"
+      },
+      {
+        "label": "Single large rectangle",
+        "is_sample": false,
+        "stdin": "1\nrect 100 100\n",
+        "expected_stdout": "10000\n"
+      }
+    ]
+  }
+]

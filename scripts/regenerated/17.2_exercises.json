@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Array Stats Reporter",
+    "prompt_md": "## Goal\nRead integers into a `std::array`, then report its length and specific elements using both `operator[]` and `.at()`.\n\n## Input\n- A single line containing exactly 5 space-separated integers.\n\n## Output\n- Line 1: `Size: N` where N is the result of calling `.size()` on the array.\n- Line 2: `First: X` where X is the first element, accessed with `operator[]`.\n- Line 3: `Last: X` where X is the last element, accessed with `.at()`.\n- Line 4: `Middle: X` where X is the element at index 2, accessed with `.at()`.\n\n## Requirements\n1. Declare a `std::array<int, 5>` and read all 5 values from stdin into it using `operator[]` in a loop.\n2. Use `.size()` to print the array's length -- do not hard-code `5` in the output statement.\n3. Access the first element with `operator[]` and the last element with `.at()`. Use `.size() - 1` to compute the last index.\n4. Access the middle element (index 2) with `.at()`.\n5. Include `<array>`, `<iostream>`, and `<cstddef>`.",
+    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 5> arr{};\n\n    // TODO: Read 5 integers from stdin into arr using operator[] in a loop\n\n    // TODO: Print \"Size: \" followed by arr.size()\n    // TODO: Print \"First: \" followed by arr[0]\n    // TODO: Print \"Last: \" followed by arr.at(arr.size() - 1)\n    // TODO: Print \"Middle: \" followed by arr.at(2)\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 5> arr{};\n\n    for (std::size_t i{ 0 }; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"Size: \" << arr.size() << '\\n';\n    std::cout << \"First: \" << arr[0] << '\\n';\n    std::cout << \"Last: \" << arr.at(arr.size() - 1) << '\\n';\n    std::cout << \"Middle: \" << arr.at(2) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- sequential values",
+        "is_sample": true,
+        "stdin": "10 20 30 40 50\n",
+        "expected_stdout": "Size: 5\nFirst: 10\nLast: 50\nMiddle: 30\n"
+      },
+      {
+        "label": "Hidden -- negative values",
+        "is_sample": false,
+        "stdin": "-5 0 99 -42 7\n",
+        "expected_stdout": "Size: 5\nFirst: -5\nLast: 7\nMiddle: 99\n"
+      },
+      {
+        "label": "Hidden -- all same value",
+        "is_sample": false,
+        "stdin": "3 3 3 3 3\n",
+        "expected_stdout": "Size: 5\nFirst: 3\nLast: 3\nMiddle: 3\n"
+      }
+    ]
+  },
+  {
+    "title": "Safe Element Lookup",
+    "prompt_md": "## Goal\nBuild a program that reads an array and an index, then uses `.at()` to safely look up the element -- catching the exception if the index is out of range.\n\n## Input\n- Line 1: exactly 6 space-separated integers (the array elements).\n- Line 2: a single integer representing the index to look up.\n\n## Output\n- Line 1: `Size: N` where N is the array's `.size()`.\n- Line 2: one of the following:\n  - `Value: X` if the index is valid, where X is the element at that index.\n  - `Error: index out of range` if `.at()` throws an exception.\n\n## Requirements\n1. Declare a `std::array<int, 6>` and read all 6 values from stdin.\n2. Read the lookup index into an `int`, then cast it to `std::size_t`.\n3. Use a `try`/`catch` block around the `.at()` call. Catch `const std::out_of_range&`.\n4. Print the size on line 1 regardless of whether the lookup succeeds.\n5. On success, print `Value: X`. On failure, print `Error: index out of range`.\n6. Include `<array>`, `<iostream>`, `<cstddef>`, and `<stdexcept>`.",
+    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n#include <stdexcept>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    // TODO: Read 6 integers from stdin into arr\n\n    int index{};\n    std::cin >> index;\n\n    // TODO: Print \"Size: \" followed by arr.size()\n\n    // TODO: Use try/catch with arr.at() to look up the element\n    //       On success, print \"Value: \" followed by the element\n    //       On catch (const std::out_of_range&), print \"Error: index out of range\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n#include <stdexcept>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (std::size_t i{ 0 }; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    int index{};\n    std::cin >> index;\n\n    std::cout << \"Size: \" << arr.size() << '\\n';\n\n    try\n    {\n        std::cout << \"Value: \" << arr.at(static_cast<std::size_t>(index)) << '\\n';\n    }\n    catch (const std::out_of_range&)\n    {\n        std::cout << \"Error: index out of range\" << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- valid index 3",
+        "is_sample": true,
+        "stdin": "5 10 15 20 25 30\n3\n",
+        "expected_stdout": "Size: 6\nValue: 20\n"
+      },
+      {
+        "label": "Hidden -- out of range index 10",
+        "is_sample": false,
+        "stdin": "1 2 3 4 5 6\n10\n",
+        "expected_stdout": "Size: 6\nError: index out of range\n"
+      },
+      {
+        "label": "Hidden -- last valid index",
+        "is_sample": false,
+        "stdin": "100 200 300 400 500 600\n5\n",
+        "expected_stdout": "Size: 6\nValue: 600\n"
+      }
+    ]
+  }
+]
