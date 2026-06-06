@@ -233,33 +233,19 @@ export async function POST(request: NextRequest) {
     .eq("lesson_id", exercise.lesson_id)
     .then(() => {});
 
-  // Auto-mark lesson completed only when ALL exercises in the lesson have passing submissions
+  // Auto-mark lesson completed when the displayed exercise is passed.
+  // Only one exercise per lesson is shown (first by sort_order).
   let lessonCompleted = false;
   if (verdict.overallStatus === "passed") {
-    const { data: lessonExercises } = await supabase
+    const { data: firstExercise } = await supabase
       .from("exercises")
       .select("id")
-      .eq("lesson_id", exercise.lesson_id);
+      .eq("lesson_id", exercise.lesson_id)
+      .order("sort_order", { ascending: true })
+      .limit(1)
+      .single();
 
-    const otherExerciseIds = (lessonExercises ?? [])
-      .map((e) => e.id)
-      .filter((id) => id !== exercise_id);
-
-    let allPassed = true;
-    if (otherExerciseIds.length > 0) {
-      const { data: passedSubs } = await supabase
-        .from("submissions")
-        .select("exercise_id")
-        .eq("user_id", userId)
-        .in("exercise_id", otherExerciseIds)
-        .eq("mode", "submit")
-        .eq("status", "passed");
-
-      const passedIds = new Set((passedSubs ?? []).map((s) => s.exercise_id));
-      allPassed = otherExerciseIds.every((id) => passedIds.has(id));
-    }
-
-    if (allPassed) {
+    if (firstExercise && firstExercise.id === exercise_id) {
       lessonCompleted = true;
       await supabase.from("progress").upsert(
         {
