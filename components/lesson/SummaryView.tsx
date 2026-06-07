@@ -1,8 +1,17 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
 import type { Components } from "react-markdown";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 interface SummaryViewProps {
   markdown: string;
@@ -75,11 +84,35 @@ export function SummaryView({ markdown }: SummaryViewProps) {
         </pre>
       );
     },
+    table({ children }) {
+      return (
+        <div className="my-4 rounded-lg border border-border overflow-hidden">
+          <Table>{children}</Table>
+        </div>
+      );
+    },
+    thead({ children }) {
+      return <TableHeader className="bg-elevated">{children}</TableHeader>;
+    },
+    tbody({ children }) {
+      return <TableBody>{children}</TableBody>;
+    },
+    tr({ children }) {
+      return <TableRow className="border-border">{children}</TableRow>;
+    },
+    th({ children }) {
+      return <TableHead className="text-foreground font-semibold">{children}</TableHead>;
+    },
+    td({ children }) {
+      return <TableCell className="text-muted-foreground">{children}</TableCell>;
+    },
   };
 
   return (
     <div className="prose prose-invert prose-base max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-brand-bright prose-a:no-underline hover:prose-a:underline prose-li:text-muted-foreground prose-code:before:content-none prose-code:after:content-none">
-      <ReactMarkdown components={components}>{markdown}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+        {markdown}
+      </ReactMarkdown>
     </div>
   );
 }
