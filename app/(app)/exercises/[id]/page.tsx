@@ -48,29 +48,34 @@ export default async function ExercisePage({ params }: Props) {
 
   const exerciseIds = exercises.map((ex) => ex.id);
 
-  const [{ data: passingSubmissions }, { data: chapter }, { data: chapterLessons }] =
-    await Promise.all([
-      exerciseIds.length > 0
-        ? supabase
-            .from("submissions")
-            .select("exercise_id, source_code")
-            .eq("user_id", userId)
-            .in("exercise_id", exerciseIds)
-            .eq("mode", "submit")
-            .eq("status", "passed")
-            .order("created_at", { ascending: false })
-        : Promise.resolve({ data: [] as Array<{ exercise_id: string; source_code: string }> }),
-      serviceClient
-        .from("chapters")
-        .select("id, learncpp_title, my_title")
-        .eq("id", lessonRow.chapter_id)
-        .single(),
-      serviceClient
-        .from("lessons")
-        .select("slug, sort_order")
-        .eq("chapter_id", lessonRow.chapter_id)
-        .order("sort_order", { ascending: true }),
-    ]);
+  const [
+    { data: passingSubmissions },
+    { data: chapter },
+    { data: chapterLessons },
+    { data: progressRows },
+  ] = await Promise.all([
+    exerciseIds.length > 0
+      ? supabase
+          .from("submissions")
+          .select("exercise_id, source_code")
+          .eq("user_id", userId)
+          .in("exercise_id", exerciseIds)
+          .eq("mode", "submit")
+          .eq("status", "passed")
+          .order("created_at", { ascending: false })
+      : Promise.resolve({ data: [] as Array<{ exercise_id: string; source_code: string }> }),
+    serviceClient
+      .from("chapters")
+      .select("id, learncpp_title, my_title")
+      .eq("id", lessonRow.chapter_id)
+      .single(),
+    serviceClient
+      .from("lessons")
+      .select("id, slug, sort_order, learncpp_title, my_title")
+      .eq("chapter_id", lessonRow.chapter_id)
+      .order("sort_order", { ascending: true }),
+    supabase.from("progress").select("lesson_id, state"),
+  ]);
 
   const lastPassingMap = new Map<string, string>();
   for (const sub of passingSubmissions ?? []) {
@@ -105,6 +110,11 @@ export default async function ExercisePage({ params }: Props) {
 
   let navInfo = null;
   if (chapter && chapterLessons) {
+    const progressMap = new Map<string, string>();
+    for (const p of progressRows ?? []) {
+      progressMap.set(p.lesson_id, p.state);
+    }
+
     const currentIdx = chapterLessons.findIndex((l) => l.slug === lessonRow.slug);
     navInfo = {
       chapter: { title: chapter.my_title ?? chapter.learncpp_title },
@@ -115,6 +125,11 @@ export default async function ExercisePage({ params }: Props) {
         currentIdx < chapterLessons.length - 1
           ? (chapterLessons[currentIdx + 1]?.slug ?? null)
           : null,
+      chapterLessons: chapterLessons.map((l) => ({
+        slug: l.slug,
+        title: l.my_title ?? l.learncpp_title,
+        status: progressMap.get(l.id) ?? "not_started",
+      })),
     };
   }
 

@@ -31,6 +31,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
+import { CheckCircle2, Circle, Loader2 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
+import {
+  Drawer,
+  DrawerPopup,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), {
   ssr: false,
@@ -58,12 +67,19 @@ interface LessonData {
   learncppUrl: string;
 }
 
+interface ChapterLesson {
+  slug: string;
+  title: string;
+  status: string;
+}
+
 interface NavData {
   chapter: { title: string };
   currentIndex: number;
   totalInChapter: number;
   prevSlug: string | null;
   nextSlug: string | null;
+  chapterLessons: ChapterLesson[];
 }
 
 interface ExerciseData {
@@ -282,7 +298,6 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
           onToggleTutor={toggleTutor}
           notepadOpen={notepadOpen}
           onToggleNotepad={() => setNotepadOpen((prev) => !prev)}
-          exerciseOnly={exerciseOnly}
         />
       )}
 
@@ -617,6 +632,25 @@ function MobileLayout({
   );
 }
 
+function ChapterLessonStatusIcon({ status }: { status: string }) {
+  switch (status) {
+    case "completed":
+      return <CheckCircle2 className="size-4 shrink-0" style={{ color: "var(--color-brand)" }} />;
+    case "skipped":
+      return <CheckCircle2 className="size-4 shrink-0 text-muted-foreground" />;
+    case "in_progress":
+      return (
+        <Loader2
+          className="size-4 shrink-0 animate-spin"
+          style={{ color: "var(--node-active)" }}
+        />
+      );
+    case "not_started":
+    default:
+      return <Circle className="size-4 shrink-0 text-muted-foreground" />;
+  }
+}
+
 function LessonNav({
   nav,
   lessonTitle,
@@ -626,7 +660,6 @@ function LessonNav({
   onToggleTutor,
   notepadOpen,
   onToggleNotepad,
-  exerciseOnly,
 }: {
   nav: NavData;
   lessonTitle: string;
@@ -636,9 +669,12 @@ function LessonNav({
   onToggleTutor?: () => void;
   notepadOpen?: boolean;
   onToggleNotepad?: () => void;
-  exerciseOnly?: boolean;
 }) {
   const router = useRouter();
+  const [chapterDrawerOpen, setChapterDrawerOpen] = useState(false);
+
+  const completed = nav.chapterLessons.filter((l) => l.status === "completed" || l.status === "skipped").length;
+  const percent = nav.chapterLessons.length > 0 ? Math.round((completed / nav.chapterLessons.length) * 100) : 0;
 
   const handleNextClick = useCallback(
     async (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -646,7 +682,6 @@ function LessonNav({
         e.preventDefault();
         return;
       }
-      // Reading-only lessons: mark complete when advancing to the next topic.
       if (hasExercises) return;
 
       e.preventDefault();
@@ -669,13 +704,49 @@ function LessonNav({
       <Link href="/dashboard" className="shrink-0">
         <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={112} height={28} className="h-7 w-auto" />
       </Link>
-      <Link
-        href={exerciseOnly ? "/dashboard/exercises" : "/dashboard"}
+      <button
+        onClick={() => setChapterDrawerOpen(true)}
         className="p-1.5 hover:bg-hover rounded-md transition-colors text-muted-foreground hover:text-primary"
-        title={exerciseOnly ? "Back to exercises" : "Back to roadmap"}
+        title="Chapter lessons"
       >
         <MenuIcon />
-      </Link>
+      </button>
+
+      <Drawer open={chapterDrawerOpen} onOpenChange={(val) => !val && setChapterDrawerOpen(false)} swipeDirection="left">
+        <DrawerPopup className="module-drawer-popup module-drawer-popup-left">
+          <div className="mb-4 module-drawer-content" style={{ "--stagger": 0 } as React.CSSProperties}>
+            <DrawerTitle>{nav.chapter.title}</DrawerTitle>
+            <DrawerDescription>
+              {completed}/{nav.chapterLessons.length} lessons completed ({percent}%)
+            </DrawerDescription>
+            <Progress value={percent} className="mt-2" />
+          </div>
+          <ScrollArea className="flex-1">
+            <ul className="flex flex-col gap-0.5 pb-4">
+              {nav.chapterLessons.map((lesson, i) => (
+                <li
+                  key={lesson.slug}
+                  className="module-drawer-content"
+                  style={{ "--stagger": i + 1 } as React.CSSProperties}
+                >
+                  <Link
+                    href={`/lessons/${lesson.slug}`}
+                    className={`flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-colors hover:bg-accent ${
+                      lesson.slug === nav.chapterLessons[nav.currentIndex - 1]?.slug
+                        ? "bg-accent/50"
+                        : ""
+                    }`}
+                    onClick={() => setChapterDrawerOpen(false)}
+                  >
+                    <ChapterLessonStatusIcon status={lesson.status} />
+                    <span className="text-card-foreground">{lesson.title}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </ScrollArea>
+        </DrawerPopup>
+      </Drawer>
 
       <Link
         href={nav.prevSlug ? `/lessons/${nav.prevSlug}` : "#"}

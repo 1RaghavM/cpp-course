@@ -12,12 +12,19 @@ interface PageProps {
   searchParams: { ex?: string };
 }
 
+interface ChapterLesson {
+  slug: string;
+  title: string;
+  status: string;
+}
+
 interface NavInfo {
   chapter: { title: string };
   currentIndex: number;
   totalInChapter: number;
   prevSlug: string | null;
   nextSlug: string | null;
+  chapterLessons: ChapterLesson[];
 }
 
 export default async function LessonPage({ params, searchParams }: PageProps) {
@@ -47,33 +54,43 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
 
   const exerciseIds = exercises.map((ex) => ex.id);
 
-  // ------ Parallel fetches: nav + last passing submissions ------
-  const [{ data: chapter }, { data: chapterLessons }, { data: passingSubmissions }] =
-    await Promise.all([
-      serviceClient
-        .from("chapters")
-        .select("id, learncpp_title, my_title")
-        .eq("id", lesson.chapter_id)
-        .single(),
-      serviceClient
-        .from("lessons")
-        .select("slug, sort_order")
-        .eq("chapter_id", lesson.chapter_id)
-        .order("sort_order", { ascending: true }),
-      exerciseIds.length > 0
-        ? supabase
-            .from("submissions")
-            .select("exercise_id, source_code")
-            .eq("user_id", userId)
-            .in("exercise_id", exerciseIds)
-            .eq("mode", "submit")
-            .eq("status", "passed")
-            .order("created_at", { ascending: false })
-        : Promise.resolve({ data: [] as Array<{ exercise_id: string; source_code: string }> }),
-    ]);
+  // ------ Parallel fetches: nav + last passing submissions + progress ------
+  const [
+    { data: chapter },
+    { data: chapterLessons },
+    { data: passingSubmissions },
+    { data: progressRows },
+  ] = await Promise.all([
+    serviceClient
+      .from("chapters")
+      .select("id, learncpp_title, my_title")
+      .eq("id", lesson.chapter_id)
+      .single(),
+    serviceClient
+      .from("lessons")
+      .select("id, slug, sort_order, learncpp_title, my_title")
+      .eq("chapter_id", lesson.chapter_id)
+      .order("sort_order", { ascending: true }),
+    exerciseIds.length > 0
+      ? supabase
+          .from("submissions")
+          .select("exercise_id, source_code")
+          .eq("user_id", userId)
+          .in("exercise_id", exerciseIds)
+          .eq("mode", "submit")
+          .eq("status", "passed")
+          .order("created_at", { ascending: false })
+      : Promise.resolve({ data: [] as Array<{ exercise_id: string; source_code: string }> }),
+    supabase.from("progress").select("lesson_id, state"),
+  ]);
 
   let navInfo: NavInfo | null = null;
   if (chapter && chapterLessons) {
+    const progressMap = new Map<string, string>();
+    for (const p of progressRows ?? []) {
+      progressMap.set(p.lesson_id, p.state);
+    }
+
     const currentIdx = chapterLessons.findIndex((l) => l.slug === slug);
     navInfo = {
       chapter: { title: chapter.my_title ?? chapter.learncpp_title },
@@ -84,6 +101,11 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
         currentIdx < chapterLessons.length - 1
           ? (chapterLessons[currentIdx + 1]?.slug ?? null)
           : null,
+      chapterLessons: chapterLessons.map((l) => ({
+        slug: l.slug,
+        title: l.my_title ?? l.learncpp_title,
+        status: progressMap.get(l.id) ?? "not_started",
+      })),
     };
   }
 
