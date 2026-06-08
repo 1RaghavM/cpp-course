@@ -18,14 +18,15 @@ export default function QuotaIndicator({
   const [quota, setQuota] = useState<QuotaData | null>(null);
 
   useEffect(() => {
+    if (hasByoakKey) return;
     fetch("/api/chat/quota")
       .then((r) => r.json())
       .then((data) => setQuota({ usedToday: data.usedToday, dailyCap: data.dailyCap }))
       .catch(() => {});
-  }, [refreshKey]);
+  }, [refreshKey, hasByoakKey]);
 
-  if (!quota) return null;
   if (hasByoakKey) return null;
+  if (!quota) return null;
 
   const ratio = quota.usedToday / quota.dailyCap;
   if (ratio < 0.8) return null;

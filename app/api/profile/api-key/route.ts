@@ -23,10 +23,10 @@ async function checkSaveRateLimit(userId: string): Promise<boolean> {
 
 async function validateGeminiKey(apiKey: string): Promise<boolean> {
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models?key=${encodeURIComponent(apiKey)}`,
-      { signal: AbortSignal.timeout(5000) },
-    );
+    const res = await fetch("https://generativelanguage.googleapis.com/v1/models", {
+      headers: { "x-goog-api-key": apiKey },
+      signal: AbortSignal.timeout(5000),
+    });
     return res.ok;
   } catch {
     return false;
@@ -119,7 +119,7 @@ export async function POST(request: Request) {
     .single();
 
   if (existing) {
-    await supabase
+    const { error: updateErr } = await supabase
       .from("user_api_keys")
       .update({
         encrypted_key: encrypted.ciphertext,
@@ -127,31 +127,48 @@ export async function POST(request: Request) {
         auth_tag: encrypted.authTag,
         key_preview: preview,
         is_valid: true,
-        key_version: 1,
         updated_at: new Date().toISOString(),
       })
       .eq("id", existing.id);
 
+    if (updateErr) {
+      return NextResponse.json(
+        { error: { code: "INTERNAL_ERROR", message: "Failed to save key" } },
+        { status: 500 },
+      );
+    }
+
     const serviceClient = createServiceClient();
     await serviceClient
       .from("user_api_key_events")
-      .insert({ user_id: userId, event: "updated" });
+      .insert({ user_id: userId, event: "updated" })
+      .then(({ error: auditErr }) => {
+        if (auditErr) console.error("Audit log failed:", auditErr.message);
+      });
   } else {
-    await supabase.from("user_api_keys").insert({
+    const { error: insertErr } = await supabase.from("user_api_keys").insert({
       user_id: userId,
       provider: "google",
       encrypted_key: encrypted.ciphertext,
       iv: encrypted.iv,
       auth_tag: encrypted.authTag,
       key_preview: preview,
-      is_valid: true,
-      key_version: 1,
     });
+
+    if (insertErr) {
+      return NextResponse.json(
+        { error: { code: "INTERNAL_ERROR", message: "Failed to save key" } },
+        { status: 500 },
+      );
+    }
 
     const serviceClient = createServiceClient();
     await serviceClient
       .from("user_api_key_events")
-      .insert({ user_id: userId, event: "created" });
+      .insert({ user_id: userId, event: "created" })
+      .then(({ error: auditErr }) => {
+        if (auditErr) console.error("Audit log failed:", auditErr.message);
+      });
   }
 
   return NextResponse.json({ preview, isValid: true });

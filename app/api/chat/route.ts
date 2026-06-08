@@ -206,80 +206,79 @@ export async function POST(request: Request) {
 
   const streamStartTime = Date.now();
 
-  try {
-    const result = streamText({
-      model: tutorModel(userApiKey),
-      system: systemPrompt,
-      messages: history.concat({ role: "user", content: userContent }),
-      maxOutputTokens: TUTOR_CONFIG.maxOutputTokens,
-      abortSignal: AbortSignal.timeout(30_000),
-      async onFinish({ text, usage }) {
-        const tokensIn = usage.inputTokens ?? 0;
-        const tokensOut = usage.outputTokens ?? 0;
-        const costMicro = computeTutorCostMicro("gemini-2.5-flash", tokensIn, tokensOut);
-
-        try {
-          await supabase.from("messages").insert({
-            conversation_id: conversationId,
-            role: "assistant",
-            content: text,
-            hint_tier: tier,
-            tokens_in: tokensIn,
-            tokens_out: tokensOut,
-            model: "gemini-2.5-flash",
+  const result = streamText({
+    model: tutorModel(userApiKey),
+    system: systemPrompt,
+    messages: history.concat({ role: "user", content: userContent }),
+    maxOutputTokens: TUTOR_CONFIG.maxOutputTokens,
+    abortSignal: AbortSignal.timeout(30_000),
+    onError({ error }) {
+      const status = (error as { status?: number })?.status;
+      if (status === 401 || status === 403) {
+        Promise.resolve(
+          supabase
+            .from("user_api_keys")
+            .update({ is_valid: false, updated_at: new Date().toISOString() })
+            .eq("user_id", userId)
+            .eq("provider", "google"),
+        )
+          .then(() => {
+            const svc = createServiceClient();
+            return svc.from("user_api_key_events").insert({
+              user_id: userId,
+              event: "invalidated",
+            });
+          })
+          .catch((e: unknown) => {
+            console.error("Failed to invalidate API key:", e);
           });
-        } catch (e) {
-          console.error("Failed to persist assistant message", e);
-        }
+      }
+    },
+    async onFinish({ text, usage }) {
+      const tokensIn = usage.inputTokens ?? 0;
+      const tokensOut = usage.outputTokens ?? 0;
+      const costMicro = computeTutorCostMicro("gemini-2.5-flash", tokensIn, tokensOut);
 
-        try {
-          const serviceClient = createServiceClient();
-          await serviceClient.from("token_usage").insert({
-            user_id: userId,
-            call_type: "tutor",
-            model: "gemini-2.5-flash",
-            tokens_in: tokensIn,
-            tokens_out: tokensOut,
-            cached_in: 0,
-            cost_usd_micro: Number(costMicro),
-            lesson_id: isPlayground ? null : (body.lessonId ?? null),
-            conversation_id: conversationId,
-          });
-        } catch (e) {
-          console.error("Failed to persist token usage", e);
-        }
-
-        const latencyMs = Date.now() - streamStartTime;
-        logTutorResponse(userId, {
-          latency_ms_bucket: bucketLatency(latencyMs),
-          tokens_in: String(tokensIn),
-          tokens_out: String(tokensOut),
+      try {
+        await supabase.from("messages").insert({
+          conversation_id: conversationId,
+          role: "assistant",
+          content: text,
+          hint_tier: tier,
+          tokens_in: tokensIn,
+          tokens_out: tokensOut,
           model: "gemini-2.5-flash",
-        }).catch(() => {});
-      },
-    });
+        });
+      } catch (e) {
+        console.error("Failed to persist assistant message", e);
+      }
 
-    return result.toUIMessageStreamResponse();
-  } catch (err: unknown) {
-    const status = (err as { status?: number })?.status;
-    if (status === 401 || status === 403) {
-      await supabase
-        .from("user_api_keys")
-        .update({ is_valid: false, updated_at: new Date().toISOString() })
-        .eq("user_id", userId)
-        .eq("provider", "google");
+      try {
+        const serviceClient = createServiceClient();
+        await serviceClient.from("token_usage").insert({
+          user_id: userId,
+          call_type: "tutor",
+          model: "gemini-2.5-flash",
+          tokens_in: tokensIn,
+          tokens_out: tokensOut,
+          cached_in: 0,
+          cost_usd_micro: Number(costMicro),
+          lesson_id: isPlayground ? null : (body.lessonId ?? null),
+          conversation_id: conversationId,
+        });
+      } catch (e) {
+        console.error("Failed to persist token usage", e);
+      }
 
-      const serviceClient = createServiceClient();
-      await serviceClient.from("user_api_key_events").insert({
-        user_id: userId,
-        event: "invalidated",
-      });
+      const latencyMs = Date.now() - streamStartTime;
+      logTutorResponse(userId, {
+        latency_ms_bucket: bucketLatency(latencyMs),
+        tokens_in: String(tokensIn),
+        tokens_out: String(tokensOut),
+        model: "gemini-2.5-flash",
+      }).catch(() => {});
+    },
+  });
 
-      return NextResponse.json(
-        { error: { code: "API_KEY_INVALID", message: "Your API key is no longer working." } },
-        { status: 403 },
-      );
-    }
-    throw err;
-  }
+  return result.toUIMessageStreamResponse();
 }

@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ApiKeyInvalidProps {
   preview: string;
-  onKeyUpdated: () => void;
+  onKeyUpdated: (preview?: string) => void;
   onKeyRemoved: () => void;
 }
 
@@ -37,7 +37,8 @@ export default function ApiKeyInvalid({ preview, onKeyUpdated, onKeyRemoved }: A
       });
 
       if (res.ok) {
-        onKeyUpdated();
+        const data = await res.json();
+        onKeyUpdated(data?.preview);
         return;
       }
 

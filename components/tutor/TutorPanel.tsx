@@ -125,18 +125,8 @@ export default function TutorPanel() {
     setQuotaExhausted(false);
   }, [isPlayground, lessonId, setMessages]);
 
-  const handleKeySaved = useCallback(() => {
-    setKeyStatus({ hasKey: true, isValid: true, preview: "" });
-    fetch("/api/profile/api-key")
-      .then((r) => r.json())
-      .then((data) => {
-        setKeyStatus({
-          hasKey: data.hasKey ?? false,
-          isValid: data.isValid ?? false,
-          preview: data.preview ?? "",
-        });
-      })
-      .catch(() => {});
+  const handleKeySaved = useCallback((preview?: string) => {
+    setKeyStatus({ hasKey: true, isValid: true, preview: preview ?? "" });
   }, []);
 
   const handleKeyRemoved = useCallback(() => {

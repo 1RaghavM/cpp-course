@@ -9,7 +9,7 @@ import { AlertCircle, ExternalLink, Key } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ApiKeySetupProps {
-  onKeySaved: () => void;
+  onKeySaved: (preview?: string) => void;
 }
 
 type Status = "idle" | "validating" | "error" | "rate-limited";
@@ -35,7 +35,8 @@ export default function ApiKeySetup({ onKeySaved }: ApiKeySetupProps) {
       });
 
       if (res.ok) {
-        onKeySaved();
+        const data = await res.json();
+        onKeySaved(data?.preview);
         return;
       }
 
