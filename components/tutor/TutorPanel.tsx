@@ -2,12 +2,15 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, AlertTriangle } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import ApiKeySetup from "./ApiKeySetup";
+import ApiKeyInvalid from "./ApiKeyInvalid";
 import MessageList from "./MessageList";
 import Composer from "./Composer";
 import QuotaIndicator from "./QuotaIndicator";
@@ -20,6 +23,12 @@ export default function TutorPanel() {
   const isPlayground = context === "playground";
   const [currentTier, setCurrentTier] = useState(1);
   const [quotaExhausted, setQuotaExhausted] = useState(false);
+  const [keyStatus, setKeyStatus] = useState<{
+    hasKey: boolean;
+    isValid: boolean;
+    preview: string;
+  } | null>(null);
+  const [keyLoading, setKeyLoading] = useState(true);
 
   const bodyRef = useMemo(
     () =>
@@ -38,13 +47,39 @@ export default function TutorPanel() {
     [bodyRef],
   );
 
+  useEffect(() => {
+    fetch("/api/profile/api-key")
+      .then((r) => r.json())
+      .then((data) => {
+        setKeyStatus({
+          hasKey: data.hasKey ?? false,
+          isValid: data.isValid ?? false,
+          preview: data.preview ?? "",
+        });
+      })
+      .catch(() => {
+        setKeyStatus({ hasKey: false, isValid: false, preview: "" });
+      })
+      .finally(() => setKeyLoading(false));
+  }, []);
+
   const { messages, sendMessage, stop, setMessages, status, error } = useChat({
     transport,
     onError(err) {
       try {
-        const parsed = JSON.parse(err.message) as { error?: { code?: string } };
+        const parsed = JSON.parse(err.message) as { error?: { code?: string; message?: string } };
         if (parsed?.error?.code === "RATE_LIMITED" || parsed?.error?.code === "BUDGET_EXCEEDED") {
           setQuotaExhausted(true);
+        }
+        if (parsed?.error?.code === "API_KEY_REQUIRED") {
+          setKeyStatus({ hasKey: false, isValid: false, preview: "" });
+        }
+        if (parsed?.error?.code === "API_KEY_INVALID") {
+          setKeyStatus((prev) => ({
+            hasKey: true,
+            isValid: false,
+            preview: prev?.preview ?? "",
+          }));
         }
       } catch {
         // not JSON, ignore
@@ -90,6 +125,14 @@ export default function TutorPanel() {
     setQuotaExhausted(false);
   }, [isPlayground, lessonId, setMessages]);
 
+  const handleKeySaved = useCallback((preview?: string) => {
+    setKeyStatus({ hasKey: true, isValid: true, preview: preview ?? "" });
+  }, []);
+
+  const handleKeyRemoved = useCallback(() => {
+    setKeyStatus({ hasKey: false, isValid: false, preview: "" });
+  }, []);
+
   const LESSON_SUGGESTIONS = [
     "Summarize this lesson for me",
     "What are the key concepts here?",
@@ -121,55 +164,81 @@ export default function TutorPanel() {
   return (
     <div className="flex flex-col h-full bg-surface" style={{ position: "relative" }}>
       <TutorCoachmark />
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-foreground">Tutor</span>
-          {!isPlayground && <TierBadge tier={currentTier} />}
-          <QuotaIndicator refreshKey={messages.length} />
+
+      {keyLoading && (
+        <div className="flex flex-1 items-center justify-center">
+          <Spinner className="size-6" />
         </div>
-        <Button variant="outline" size="xs" onClick={() => void handleReset()}>
-          New chat
-        </Button>
-      </div>
-
-      {/* Messages */}
-      <MessageList
-        messages={messages}
-        status={status}
-        suggestions={suggestions}
-        onSuggestionClick={handleSuggestionClick}
-      />
-
-      {/* Error display */}
-      {error && !quotaExhausted && (
-        <Alert className="mx-4 mb-2 bg-error/10 border-error/20 text-error">
-          <AlertCircle className="size-4" />
-          <AlertDescription>
-            The tutor is briefly unavailable. Your editor and lessons still work.
-          </AlertDescription>
-        </Alert>
       )}
 
-      {quotaExhausted && (
-        <Alert className="mx-4 mb-2 bg-warning/10 border-warning/20 text-warning">
-          <AlertTriangle className="size-4" />
-          <AlertDescription>
-            You&apos;ve reached today&apos;s message limit. Come back tomorrow!
-          </AlertDescription>
-        </Alert>
+      {!keyLoading && keyStatus && !keyStatus.hasKey && (
+        <ApiKeySetup onKeySaved={handleKeySaved} />
       )}
 
-      {/* Explain error shortcut */}
-      <ExplainErrorButton visible={showExplainError} onExplain={handleExplainError} />
+      {!keyLoading && keyStatus && keyStatus.hasKey && !keyStatus.isValid && (
+        <ApiKeyInvalid
+          preview={keyStatus.preview}
+          onKeyUpdated={handleKeySaved}
+          onKeyRemoved={handleKeyRemoved}
+        />
+      )}
 
-      {/* Input */}
-      <Composer
-        onSubmit={handleSend}
-        onStop={stop}
-        status={status}
-        disabled={quotaExhausted}
-      />
+      {!keyLoading && keyStatus?.hasKey && keyStatus.isValid && (
+        <>
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-foreground">Tutor</span>
+              {!isPlayground && <TierBadge tier={currentTier} />}
+              <QuotaIndicator
+                refreshKey={messages.length}
+                hasByoakKey={keyStatus?.hasKey && keyStatus.isValid}
+              />
+            </div>
+            <Button variant="outline" size="xs" onClick={() => void handleReset()}>
+              New chat
+            </Button>
+          </div>
+
+          {/* Messages */}
+          <MessageList
+            messages={messages}
+            status={status}
+            suggestions={suggestions}
+            onSuggestionClick={handleSuggestionClick}
+          />
+
+          {/* Error display */}
+          {error && !quotaExhausted && (
+            <Alert className="mx-4 mb-2 bg-error/10 border-error/20 text-error">
+              <AlertCircle className="size-4" />
+              <AlertDescription>
+                The tutor is briefly unavailable. Your editor and lessons still work.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {quotaExhausted && (
+            <Alert className="mx-4 mb-2 bg-warning/10 border-warning/20 text-warning">
+              <AlertTriangle className="size-4" />
+              <AlertDescription>
+                You&apos;ve reached today&apos;s message limit. Come back tomorrow!
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Explain error shortcut */}
+          <ExplainErrorButton visible={showExplainError} onExplain={handleExplainError} />
+
+          {/* Input */}
+          <Composer
+            onSubmit={handleSend}
+            onStop={stop}
+            status={status}
+            disabled={quotaExhausted}
+          />
+        </>
+      )}
     </div>
   );
 }

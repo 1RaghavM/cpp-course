@@ -463,6 +463,69 @@ export interface Database {
         };
         Relationships: [];
       };
+      user_api_keys: {
+        Row: {
+          id: string;
+          user_id: string;
+          provider: string;
+          encrypted_key: string;
+          iv: string;
+          auth_tag: string;
+          key_preview: string;
+          key_version: number;
+          is_valid: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          provider?: string;
+          encrypted_key: string;
+          iv: string;
+          auth_tag: string;
+          key_preview: string;
+          key_version?: number;
+          is_valid?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          provider?: string;
+          encrypted_key?: string;
+          iv?: string;
+          auth_tag?: string;
+          key_preview?: string;
+          key_version?: number;
+          is_valid?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      user_api_key_events: {
+        Row: {
+          id: string;
+          user_id: string;
+          event: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          event: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          event?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -493,6 +556,8 @@ export type Onboarding = Database["public"]["Tables"]["onboarding"]["Row"];
 export type UserStats = Database["public"]["Tables"]["user_stats"]["Row"];
 export type Note = Database["public"]["Tables"]["notes"]["Row"];
 export type PlaygroundState = Database["public"]["Tables"]["playground_state"]["Row"];
+export type UserApiKey = Database["public"]["Tables"]["user_api_keys"]["Row"];
+export type UserApiKeyEvent = Database["public"]["Tables"]["user_api_key_events"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.

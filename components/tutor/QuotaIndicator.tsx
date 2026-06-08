@@ -8,16 +8,24 @@ interface QuotaData {
   dailyCap: number;
 }
 
-export default function QuotaIndicator({ refreshKey = 0 }: { refreshKey?: number }) {
+export default function QuotaIndicator({
+  refreshKey = 0,
+  hasByoakKey = false,
+}: {
+  refreshKey?: number;
+  hasByoakKey?: boolean;
+}) {
   const [quota, setQuota] = useState<QuotaData | null>(null);
 
   useEffect(() => {
+    if (hasByoakKey) return;
     fetch("/api/chat/quota")
       .then((r) => r.json())
       .then((data) => setQuota({ usedToday: data.usedToday, dailyCap: data.dailyCap }))
       .catch(() => {});
-  }, [refreshKey]);
+  }, [refreshKey, hasByoakKey]);
 
+  if (hasByoakKey) return null;
   if (!quota) return null;
 
   const ratio = quota.usedToday / quota.dailyCap;

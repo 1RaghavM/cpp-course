@@ -13,7 +13,7 @@ export interface GuardResult {
   message?: string;
 }
 
-export function checkRateAndBudget(input: GuardInput): GuardResult {
+export function checkRateAndBudget(input: GuardInput, options?: { bypassDailyCap?: boolean }): GuardResult {
   if (input.minuteCount >= TUTOR_CONFIG.perMinMsgCap) {
     return {
       allowed: false,
@@ -22,7 +22,7 @@ export function checkRateAndBudget(input: GuardInput): GuardResult {
     };
   }
 
-  if (input.dailyCount >= TUTOR_CONFIG.dailyMsgCap) {
+  if (!options?.bypassDailyCap && input.dailyCount >= TUTOR_CONFIG.dailyMsgCap) {
     return {
       allowed: false,
       code: "RATE_LIMITED",

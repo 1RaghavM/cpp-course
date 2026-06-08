@@ -15,6 +15,15 @@ export async function GET() {
   startOfDay.setHours(0, 0, 0, 0);
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+  const { data: apiKeyData } = await supabase
+    .from("user_api_keys")
+    .select("id")
+    .eq("user_id", authResult.user.id)
+    .eq("provider", "google")
+    .single();
+
+  const hasByoakKey = !!apiKeyData;
+
   const [dailyRes, monthRes] = await Promise.all([
     supabase
       .from("messages")
@@ -38,5 +47,6 @@ export async function GET() {
     dailyCap: TUTOR_CONFIG.dailyMsgCap,
     monthSpendUsd: monthSpendMicro / 1_000_000,
     monthCapUsd: TUTOR_CONFIG.monthlyHardCapMicro / 1_000_000,
+    hasByoakKey,
   });
 }

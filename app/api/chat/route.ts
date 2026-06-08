@@ -16,6 +16,7 @@ import { checkRateAndBudget } from "@/lib/rate/guard";
 import { computeTutorCostMicro } from "@/lib/ai/pricing";
 import { TUTOR_CONFIG } from "@/lib/ai/config";
 import { logTutorResponse } from "@/lib/statsig/server-events";
+import { decryptApiKey } from "@/lib/crypto/api-keys";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -32,6 +33,41 @@ export async function POST(request: Request) {
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
   const userId = authResult.user.id;
+
+  const { data: apiKeyRow } = await supabase
+    .from("user_api_keys")
+    .select("encrypted_key, iv, auth_tag, is_valid")
+    .eq("user_id", userId)
+    .eq("provider", "google")
+    .single();
+
+  if (!apiKeyRow) {
+    return NextResponse.json(
+      { error: { code: "API_KEY_REQUIRED", message: "Please add your Gemini API key to use the tutor." } },
+      { status: 403 },
+    );
+  }
+
+  if (!apiKeyRow.is_valid) {
+    return NextResponse.json(
+      { error: { code: "API_KEY_INVALID", message: "Your API key is no longer working. Please update it." } },
+      { status: 403 },
+    );
+  }
+
+  let userApiKey: string;
+  try {
+    userApiKey = decryptApiKey({
+      ciphertext: apiKeyRow.encrypted_key,
+      iv: apiKeyRow.iv,
+      authTag: apiKeyRow.auth_tag,
+    });
+  } catch {
+    return NextResponse.json(
+      { error: { code: "API_KEY_INVALID", message: "Failed to read your API key. Please re-enter it." } },
+      { status: 403 },
+    );
+  }
 
   const rawBody = await request.text();
   if (rawBody.length > TUTOR_CONFIG.maxInputBytes) {
@@ -100,7 +136,7 @@ export async function POST(request: Request) {
       );
 
   const guardCounts = await getGuardCounts(supabase, userId, conversationId);
-  const guardResult = checkRateAndBudget(guardCounts);
+  const guardResult = checkRateAndBudget(guardCounts, { bypassDailyCap: true });
   if (!guardResult.allowed) {
     return NextResponse.json(
       { error: { code: guardResult.code, message: guardResult.message } },
@@ -171,11 +207,33 @@ export async function POST(request: Request) {
   const streamStartTime = Date.now();
 
   const result = streamText({
-    model: tutorModel(),
+    model: tutorModel(userApiKey),
     system: systemPrompt,
     messages: history.concat({ role: "user", content: userContent }),
     maxOutputTokens: TUTOR_CONFIG.maxOutputTokens,
     abortSignal: AbortSignal.timeout(30_000),
+    onError({ error }) {
+      const status = (error as { status?: number })?.status;
+      if (status === 401 || status === 403) {
+        Promise.resolve(
+          supabase
+            .from("user_api_keys")
+            .update({ is_valid: false, updated_at: new Date().toISOString() })
+            .eq("user_id", userId)
+            .eq("provider", "google"),
+        )
+          .then(() => {
+            const svc = createServiceClient();
+            return svc.from("user_api_key_events").insert({
+              user_id: userId,
+              event: "invalidated",
+            });
+          })
+          .catch((e: unknown) => {
+            console.error("Failed to invalidate API key:", e);
+          });
+      }
+    },
     async onFinish({ text, usage }) {
       const tokensIn = usage.inputTokens ?? 0;
       const tokensOut = usage.outputTokens ?? 0;

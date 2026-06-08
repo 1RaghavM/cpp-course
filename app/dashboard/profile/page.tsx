@@ -7,13 +7,18 @@ export const dynamic = "force-dynamic";
 export default async function ProfileRoute() {
   const { supabase, user } = await requireServerSession();
 
-  const [statsResult, onboardingResult, progressResult] = await Promise.all([
+  const [statsResult, onboardingResult, progressResult, apiKeyResult] = await Promise.all([
     supabase.from("user_stats").select("display_name, streak_days, weekly_goal").single(),
     supabase.from("onboarding").select("background, motivation").single(),
     supabase
       .from("progress")
       .select("state, completed_at")
       .or("state.eq.completed,state.eq.skipped"),
+    supabase
+      .from("user_api_keys")
+      .select("key_preview, is_valid")
+      .eq("provider", "google")
+      .single(),
   ]);
 
   const stats = statsResult.data as {
@@ -40,6 +45,14 @@ export default async function ProfileRoute() {
     .map((r) => ({ completedAt: r.completed_at! }));
   const lessonsCompletedThisWeek = computeWeeklyCompleted(weeklyRecords, today);
 
+  const apiKeyStatus = apiKeyResult.data
+    ? {
+        hasKey: true,
+        preview: (apiKeyResult.data as { key_preview: string; is_valid: boolean }).key_preview,
+        isValid: (apiKeyResult.data as { key_preview: string; is_valid: boolean }).is_valid,
+      }
+    : { hasKey: false, preview: "", isValid: false };
+
   const email = user.email ?? "";
   const userInitial = (email[0] ?? "?").toUpperCase();
 
@@ -55,6 +68,7 @@ export default async function ProfileRoute() {
       lessonsCompletedThisWeek={lessonsCompletedThisWeek}
       background={onboarding?.background ?? null}
       motivation={onboarding?.motivation ?? null}
+      apiKeyStatus={apiKeyStatus}
     />
   );
 }
