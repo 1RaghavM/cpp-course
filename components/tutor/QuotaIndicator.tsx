@@ -8,7 +8,13 @@ interface QuotaData {
   dailyCap: number;
 }
 
-export default function QuotaIndicator({ refreshKey = 0 }: { refreshKey?: number }) {
+export default function QuotaIndicator({
+  refreshKey = 0,
+  hasByoakKey = false,
+}: {
+  refreshKey?: number;
+  hasByoakKey?: boolean;
+}) {
   const [quota, setQuota] = useState<QuotaData | null>(null);
 
   useEffect(() => {
@@ -19,6 +25,7 @@ export default function QuotaIndicator({ refreshKey = 0 }: { refreshKey?: number
   }, [refreshKey]);
 
   if (!quota) return null;
+  if (hasByoakKey) return null;
 
   const ratio = quota.usedToday / quota.dailyCap;
   if (ratio < 0.8) return null;
