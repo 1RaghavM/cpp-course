@@ -41,6 +41,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ApiKeyCard } from "./ApiKeyCard";
 
 interface ProfilePageProps {
   email: string;
@@ -53,6 +54,11 @@ interface ProfilePageProps {
   lessonsCompletedThisWeek: number;
   background: string | null;
   motivation: string | null;
+  apiKeyStatus: {
+    hasKey: boolean;
+    preview: string;
+    isValid: boolean;
+  };
 }
 
 const BACKGROUND_LABELS: Record<string, string> = {
@@ -88,6 +94,7 @@ export function ProfilePage({
   lessonsCompletedThisWeek,
   background,
   motivation,
+  apiKeyStatus,
 }: ProfilePageProps) {
   const router = useRouter();
   const reducedMotion = useReducedMotion();
@@ -305,6 +312,15 @@ export function ProfilePage({
               </div>
             </CardContent>
           </Card>
+        </motion.div>
+
+        {/* Section: API Key */}
+        <motion.div variants={itemVariants}>
+          <ApiKeyCard
+            hasKey={apiKeyStatus.hasKey}
+            preview={apiKeyStatus.preview}
+            isValid={apiKeyStatus.isValid}
+          />
         </motion.div>
 
         {/* Section 3: Stats Overview */}
