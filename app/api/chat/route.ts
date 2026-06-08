@@ -16,6 +16,7 @@ import { checkRateAndBudget } from "@/lib/rate/guard";
 import { computeTutorCostMicro } from "@/lib/ai/pricing";
 import { TUTOR_CONFIG } from "@/lib/ai/config";
 import { logTutorResponse } from "@/lib/statsig/server-events";
+import { decryptApiKey } from "@/lib/crypto/api-keys";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -32,6 +33,41 @@ export async function POST(request: Request) {
   const authResult = await requireAuth(supabase);
   if (authResult instanceof NextResponse) return authResult;
   const userId = authResult.user.id;
+
+  const { data: apiKeyRow } = await supabase
+    .from("user_api_keys")
+    .select("encrypted_key, iv, auth_tag, is_valid")
+    .eq("user_id", userId)
+    .eq("provider", "google")
+    .single();
+
+  if (!apiKeyRow) {
+    return NextResponse.json(
+      { error: { code: "API_KEY_REQUIRED", message: "Please add your Gemini API key to use the tutor." } },
+      { status: 403 },
+    );
+  }
+
+  if (!apiKeyRow.is_valid) {
+    return NextResponse.json(
+      { error: { code: "API_KEY_INVALID", message: "Your API key is no longer working. Please update it." } },
+      { status: 403 },
+    );
+  }
+
+  let userApiKey: string;
+  try {
+    userApiKey = decryptApiKey({
+      ciphertext: apiKeyRow.encrypted_key,
+      iv: apiKeyRow.iv,
+      authTag: apiKeyRow.auth_tag,
+    });
+  } catch {
+    return NextResponse.json(
+      { error: { code: "API_KEY_INVALID", message: "Failed to read your API key. Please re-enter it." } },
+      { status: 403 },
+    );
+  }
 
   const rawBody = await request.text();
   if (rawBody.length > TUTOR_CONFIG.maxInputBytes) {
@@ -100,7 +136,7 @@ export async function POST(request: Request) {
       );
 
   const guardCounts = await getGuardCounts(supabase, userId, conversationId);
-  const guardResult = checkRateAndBudget(guardCounts);
+  const guardResult = checkRateAndBudget(guardCounts, { bypassDailyCap: true });
   if (!guardResult.allowed) {
     return NextResponse.json(
       { error: { code: guardResult.code, message: guardResult.message } },
@@ -170,57 +206,80 @@ export async function POST(request: Request) {
 
   const streamStartTime = Date.now();
 
-  const result = streamText({
-    model: tutorModel(),
-    system: systemPrompt,
-    messages: history.concat({ role: "user", content: userContent }),
-    maxOutputTokens: TUTOR_CONFIG.maxOutputTokens,
-    abortSignal: AbortSignal.timeout(30_000),
-    async onFinish({ text, usage }) {
-      const tokensIn = usage.inputTokens ?? 0;
-      const tokensOut = usage.outputTokens ?? 0;
-      const costMicro = computeTutorCostMicro("gemini-2.5-flash", tokensIn, tokensOut);
+  try {
+    const result = streamText({
+      model: tutorModel(userApiKey),
+      system: systemPrompt,
+      messages: history.concat({ role: "user", content: userContent }),
+      maxOutputTokens: TUTOR_CONFIG.maxOutputTokens,
+      abortSignal: AbortSignal.timeout(30_000),
+      async onFinish({ text, usage }) {
+        const tokensIn = usage.inputTokens ?? 0;
+        const tokensOut = usage.outputTokens ?? 0;
+        const costMicro = computeTutorCostMicro("gemini-2.5-flash", tokensIn, tokensOut);
 
-      try {
-        await supabase.from("messages").insert({
-          conversation_id: conversationId,
-          role: "assistant",
-          content: text,
-          hint_tier: tier,
-          tokens_in: tokensIn,
-          tokens_out: tokensOut,
+        try {
+          await supabase.from("messages").insert({
+            conversation_id: conversationId,
+            role: "assistant",
+            content: text,
+            hint_tier: tier,
+            tokens_in: tokensIn,
+            tokens_out: tokensOut,
+            model: "gemini-2.5-flash",
+          });
+        } catch (e) {
+          console.error("Failed to persist assistant message", e);
+        }
+
+        try {
+          const serviceClient = createServiceClient();
+          await serviceClient.from("token_usage").insert({
+            user_id: userId,
+            call_type: "tutor",
+            model: "gemini-2.5-flash",
+            tokens_in: tokensIn,
+            tokens_out: tokensOut,
+            cached_in: 0,
+            cost_usd_micro: Number(costMicro),
+            lesson_id: isPlayground ? null : (body.lessonId ?? null),
+            conversation_id: conversationId,
+          });
+        } catch (e) {
+          console.error("Failed to persist token usage", e);
+        }
+
+        const latencyMs = Date.now() - streamStartTime;
+        logTutorResponse(userId, {
+          latency_ms_bucket: bucketLatency(latencyMs),
+          tokens_in: String(tokensIn),
+          tokens_out: String(tokensOut),
           model: "gemini-2.5-flash",
-        });
-      } catch (e) {
-        console.error("Failed to persist assistant message", e);
-      }
+        }).catch(() => {});
+      },
+    });
 
-      try {
-        const serviceClient = createServiceClient();
-        await serviceClient.from("token_usage").insert({
-          user_id: userId,
-          call_type: "tutor",
-          model: "gemini-2.5-flash",
-          tokens_in: tokensIn,
-          tokens_out: tokensOut,
-          cached_in: 0,
-          cost_usd_micro: Number(costMicro),
-          lesson_id: isPlayground ? null : (body.lessonId ?? null),
-          conversation_id: conversationId,
-        });
-      } catch (e) {
-        console.error("Failed to persist token usage", e);
-      }
+    return result.toUIMessageStreamResponse();
+  } catch (err: unknown) {
+    const status = (err as { status?: number })?.status;
+    if (status === 401 || status === 403) {
+      await supabase
+        .from("user_api_keys")
+        .update({ is_valid: false, updated_at: new Date().toISOString() })
+        .eq("user_id", userId)
+        .eq("provider", "google");
 
-      const latencyMs = Date.now() - streamStartTime;
-      logTutorResponse(userId, {
-        latency_ms_bucket: bucketLatency(latencyMs),
-        tokens_in: String(tokensIn),
-        tokens_out: String(tokensOut),
-        model: "gemini-2.5-flash",
-      }).catch(() => {});
-    },
-  });
+      const serviceClient = createServiceClient();
+      await serviceClient.from("user_api_key_events").insert({
+        user_id: userId,
+        event: "invalidated",
+      });
 
-  return result.toUIMessageStreamResponse();
+      return NextResponse.json(
+        { error: { code: "API_KEY_INVALID", message: "Your API key is no longer working." } },
+        { status: 403 },
+      );
+    }
+    throw err;
+  }
 }
