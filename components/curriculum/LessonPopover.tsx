@@ -68,6 +68,9 @@ export function ModuleSidebar({ data, open, onClose }: ModuleSidebarProps) {
                   onClick={onClose}
                 >
                   <StatusIcon status={lesson.status} />
+                  <span className="shrink-0 tabular-nums text-muted-foreground">
+                    {lesson.number}
+                  </span>
                   <span className="text-card-foreground">{lesson.title}</span>
                 </Link>
               </li>

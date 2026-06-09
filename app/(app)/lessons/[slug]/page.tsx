@@ -14,6 +14,7 @@ interface PageProps {
 
 interface ChapterLesson {
   slug: string;
+  number: string;
   title: string;
   status: string;
 }
@@ -68,7 +69,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
       .single(),
     serviceClient
       .from("lessons")
-      .select("id, slug, sort_order, learncpp_title, my_title")
+      .select("id, slug, number, sort_order, learncpp_title, my_title")
       .eq("chapter_id", lesson.chapter_id)
       .order("sort_order", { ascending: true }),
     exerciseIds.length > 0
@@ -103,6 +104,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
           : null,
       chapterLessons: chapterLessons.map((l) => ({
         slug: l.slug,
+        number: l.number,
         title: l.my_title ?? l.learncpp_title,
         status: progressMap.get(l.id) ?? "not_started",
       })),

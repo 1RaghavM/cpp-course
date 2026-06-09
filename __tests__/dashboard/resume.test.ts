@@ -14,6 +14,7 @@ function makeLessons(count: number, moduleId: string = "intro-basics"): Lesson[]
   return Array.from({ length: count }, (_, i) => ({
     id: `lesson-${i}`,
     moduleId: moduleId as any,
+    number: `1.${i + 1}`,
     title: `Lesson ${i}`,
     slug: `lesson-${i}`,
     order: i,

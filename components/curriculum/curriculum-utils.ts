@@ -21,7 +21,7 @@ export interface ModuleNodeData {
   status: ModuleStatus;
   stage: Stage;
   moduleId: string;
-  lessons: { id: string; title: string; slug: string; status: string }[];
+  lessons: { id: string; number: string; title: string; slug: string; status: string }[];
   [key: string]: unknown;
 }
 
@@ -146,6 +146,7 @@ export function buildFlowData(
           moduleId: mod.id,
           lessons: mod.lessons.map((l) => ({
             id: l.id,
+            number: l.number,
             title: l.title,
             slug: l.slug,
             status: lessonStatus(l.id),

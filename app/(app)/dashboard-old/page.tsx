@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   const [lessonsResult, progressResult, statsResult] = await Promise.all([
     serviceClient
       .from("lessons")
-      .select("id, chapter_id, slug, learncpp_title, my_title, sort_order")
+      .select("id, chapter_id, number, slug, learncpp_title, my_title, sort_order")
       .order("sort_order", { ascending: true }),
     supabase
       .from("progress")
@@ -82,6 +82,7 @@ export default async function DashboardPage() {
   const dbLessons = (lessonsResult.data ?? []) as {
     id: string;
     chapter_id: number;
+    number: string;
     slug: string;
     learncpp_title: string;
     my_title: string | null;

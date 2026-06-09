@@ -52,6 +52,7 @@ export type LessonStatus = "Done" | "In Progress" | "Not Started"
 export interface LessonRow {
   id: string
   slug: string
+  number: string
   title: string
   status: LessonStatus
 }
@@ -174,6 +175,7 @@ function LessonRowView({
         href={`/lessons/${lesson.slug}`}
         className="flex-1 min-w-0 truncate text-base text-foreground !no-underline hover:text-foreground/80"
       >
+        <span className="mr-2 tabular-nums text-muted-foreground">{lesson.number}</span>
         {lesson.title}
       </Link>
       {chapterTitle ? (
@@ -260,7 +262,11 @@ export function LessonsBrowser({ chapters, resumeLessonSlug }: LessonsBrowserPro
         ...c,
         lessons: c.lessons.filter((l) => {
           if (!lessonMatchesTab(l.status, activeTab)) return false
-          if (normalizedSearch && !l.title.toLowerCase().includes(normalizedSearch))
+          if (
+            normalizedSearch &&
+            !l.title.toLowerCase().includes(normalizedSearch) &&
+            !l.number.toLowerCase().includes(normalizedSearch)
+          )
             return false
           return true
         }),

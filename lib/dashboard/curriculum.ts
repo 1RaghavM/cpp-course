@@ -33,6 +33,7 @@ export const STAGES: { id: Stage; title: string; order: number }[] = [
 interface DbLesson {
   id: string;
   chapter_id: number;
+  number: string;
   slug: string;
   learncpp_title: string;
   my_title: string | null;
@@ -54,6 +55,7 @@ export function buildCurriculum(dbLessons: DbLesson[]): Module[] {
       .map((db) => ({
         id: db.id,
         moduleId: def.id,
+        number: db.number,
         title: db.my_title ?? db.learncpp_title,
         slug: db.slug,
         order: db.sort_order,
