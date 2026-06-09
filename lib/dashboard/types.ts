@@ -11,6 +11,7 @@ export type ResumeVariant = "resume" | "start" | "complete" | "next-chapter";
 export interface Lesson {
   id: string;
   moduleId: ModuleId;
+  number: string;
   title: string;
   slug: string;
   order: number;

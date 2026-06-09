@@ -246,7 +246,7 @@ export default function PlaygroundClient({ savedState }: Props) {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-full bg-base">
+      <div className="flex flex-col h-full bg-background">
         {/* Header */}
         <div className="flex items-center gap-2 bg-elevated px-3 py-2 border-b border-border">
           <Link href="/dashboard" className="shrink-0">
@@ -337,7 +337,7 @@ export default function PlaygroundClient({ savedState }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-base">
+    <div className="flex flex-col h-full bg-background">
       <div className="flex items-center gap-2 bg-elevated px-4 py-2 border-b border-border">
         <Link href="/dashboard" className="shrink-0">
           <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={112} height={28} className="h-7 w-auto" />
@@ -447,7 +447,7 @@ export default function PlaygroundClient({ savedState }: Props) {
                         value={stdin}
                         onChange={(e) => setStdin(e.target.value)}
                         placeholder="stdin..."
-                        className="w-full h-[calc(100%-28px)] resize-none bg-base p-3 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        className="w-full h-[calc(100%-28px)] resize-none bg-background p-3 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
                       />
                     </div>
                   )}

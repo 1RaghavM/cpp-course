@@ -69,6 +69,7 @@ interface LessonData {
 
 interface ChapterLesson {
   slug: string;
+  number: string;
   title: string;
   status: string;
 }
@@ -282,7 +283,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
 
   return (
     <div
-      className="flex flex-col h-full bg-base"
+      className="flex flex-col h-full bg-background"
       style={{
         width: "100vw",
         marginLeft: "calc(-50vw + 50%)",
@@ -481,7 +482,7 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                     <>
                       <ResizableHandle withHandle />
                       <ResizablePanel defaultSize="35" minSize="10" maxSize="70">
-                        <div className="h-full overflow-y-auto bg-base p-4">
+                        <div className="h-full overflow-y-auto bg-background p-4">
                           <ConsoleContent result={result} error={error} />
                         </div>
                       </ResizablePanel>
@@ -739,6 +740,9 @@ function LessonNav({
                     onClick={() => setChapterDrawerOpen(false)}
                   >
                     <ChapterLessonStatusIcon status={lesson.status} />
+                    <span className="shrink-0 tabular-nums text-muted-foreground">
+                      {lesson.number}
+                    </span>
                     <span className="text-card-foreground">{lesson.title}</span>
                   </Link>
                 </li>
@@ -993,14 +997,14 @@ function TestCaseCard({ testCase }: { testCase: SampleTestCase }) {
       {testCase.stdin && (
         <div className="mb-2">
           <span className="text-xs text-muted-foreground">Input: </span>
-          <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-foreground">
+          <code className="text-xs font-mono bg-background rounded px-1.5 py-0.5 text-foreground">
             {testCase.stdin}
           </code>
         </div>
       )}
       <div>
         <span className="text-xs text-muted-foreground">Expected Output: </span>
-        <code className="text-xs font-mono bg-base rounded px-1.5 py-0.5 text-success">
+        <code className="text-xs font-mono bg-background rounded px-1.5 py-0.5 text-success">
           {testCase.expectedStdout}
         </code>
       </div>

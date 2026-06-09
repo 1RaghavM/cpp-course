@@ -6,6 +6,7 @@ const FAKE_LESSONS = CURRICULUM.flatMap((mod) =>
     Array.from({ length: 3 }, (_, i) => ({
       id: `${mod.id}-${chId}-${i}`,
       chapter_id: chId,
+      number: `${chId}.${i + 1}`,
       slug: `${mod.id}-${chId}-${i}`,
       learncpp_title: `Lesson ${i}`,
       my_title: null,

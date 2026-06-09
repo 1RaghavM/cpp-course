@@ -6,6 +6,7 @@ function makeLessons(count: number, moduleId: string): Lesson[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `${moduleId}-${i}`,
     moduleId: moduleId as any,
+    number: `1.${i + 1}`,
     title: `Lesson ${i}`,
     slug: `${moduleId}-${i}`,
     order: i,

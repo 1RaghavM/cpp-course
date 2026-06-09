@@ -71,7 +71,7 @@ export default async function ExercisePage({ params }: Props) {
       .single(),
     serviceClient
       .from("lessons")
-      .select("id, slug, sort_order, learncpp_title, my_title")
+      .select("id, slug, number, sort_order, learncpp_title, my_title")
       .eq("chapter_id", lessonRow.chapter_id)
       .order("sort_order", { ascending: true }),
     supabase.from("progress").select("lesson_id, state"),
@@ -127,6 +127,7 @@ export default async function ExercisePage({ params }: Props) {
           : null,
       chapterLessons: chapterLessons.map((l) => ({
         slug: l.slug,
+        number: l.number,
         title: l.my_title ?? l.learncpp_title,
         status: progressMap.get(l.id) ?? "not_started",
       })),

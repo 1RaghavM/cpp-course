@@ -39,8 +39,9 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* legacy color tokens for existing components */
-  --color-base: var(--bg-base);
+  /* legacy color tokens for existing components.
+     NOTE: never add a token named --color-base — it hijacks the `text-base`
+     font-size utility and renders text in the background color. */
   --color-surface: var(--bg-surface);
   --color-elevated: var(--bg-elevated);
   --color-hover: var(--bg-hover);
