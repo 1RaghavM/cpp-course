@@ -57,7 +57,7 @@ const config: Config = {
           ring: "var(--sidebar-ring)",
         },
         // legacy project aliases
-        base: "var(--bg-base)",
+        // (no color may be named "base" — it hijacks the text-base font-size utility)
         surface: "var(--bg-surface)",
         elevated: "var(--bg-elevated)",
         hover: "var(--bg-hover)",

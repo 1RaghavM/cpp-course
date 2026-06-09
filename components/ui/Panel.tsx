@@ -10,7 +10,7 @@ interface PanelProps {
 }
 
 const variantStyles: Record<PanelVariant, string> = {
-  base: "bg-base",
+  base: "bg-background",
   surface: "bg-surface",
   elevated: "bg-elevated",
 };

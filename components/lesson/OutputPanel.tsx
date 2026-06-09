@@ -142,7 +142,7 @@ export function OutputPanel({
       </div>
 
       {/* Output content */}
-      <div className="flex-1 min-h-0 overflow-y-auto bg-base p-4">
+      <div className="flex-1 min-h-0 overflow-y-auto bg-background p-4">
         {error && (
           <div className="rounded-md bg-error/10 border border-error/30 p-3 text-sm text-error mb-3">
             {error}
