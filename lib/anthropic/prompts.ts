@@ -194,6 +194,63 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
 }
 
 // ---------------------------------------------------------------------------
+// 6.2b Concept-check generation prompt
+// ---------------------------------------------------------------------------
+
+/** Shape of one generated concept-check item (matches the concept_checks table). */
+export interface ConceptCheckItem {
+  kind: "predict_output" | "spot_bug" | "mcq";
+  prompt_md: string;
+  options: Record<string, string> | null;
+  answer: string;
+  explanation_md: string;
+}
+
+/**
+ * Build the prompt for generating 3-5 concept-check questions with Sonnet 4.6.
+ * Takes the finished lesson body so checks test exactly what was taught.
+ */
+export function buildConceptCheckPrompt(
+  lessonTitle: string,
+  summaryMd: string,
+  priorTitles: string[],
+): PromptPayload {
+  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none)";
+
+  const systemText = `Design 3-5 concept-check questions for the C++ lesson "${lessonTitle}".
+
+PURPOSE: Quick formative checks shown right after the learner reads the lesson. Each question must target a real MISCONCEPTION — something a learner plausibly believes that is wrong — not trivia recall. Good misconception genres: integer division truncation, narrowing conversions, copy vs reference semantics, operator precedence surprises, uninitialized reads, off-by-one errors, scope/shadowing confusion, implicit conversions.
+
+CONCEPT BOUNDARY (CRITICAL):
+The learner has completed only these prior lessons: [${priorList}], plus the lesson body below. Use ONLY concepts, syntax, and library features that appear in those sources. If a feature is not in the lesson body or prior lessons list, the learner does not know it.
+
+QUESTION KINDS:
+- "predict_output": a code snippet (<= 12 lines) that compiles cleanly and prints deterministic output; the learner types the exact stdout. "options" must be null; "answer" is the exact expected stdout.
+- "spot_bug": a snippet (<= 12 lines) containing exactly one bug; 3-4 options (keys "a" through "d") each describing a candidate explanation of the bug; exactly one is correct. "answer" is the correct key.
+- "mcq": a conceptual question with 3-4 options (keys "a" through "d"); wrong options must be plausible misconceptions. "answer" is the correct key.
+
+RULES:
+- Produce 3-5 items. Include at least one "predict_output" and at least one "mcq".
+- Code inside prompt_md goes in \`\`\`cpp fences.
+- explanation_md teaches WHY the right answer is right and why the most tempting wrong answer is wrong, in 2-4 sentences.
+- No markdown tables anywhere.
+- Output ONLY a JSON array, no prose before or after, with each element conforming to:
+{ "kind": "predict_output" | "spot_bug" | "mcq", "prompt_md": "string", "options": {"a": "string", "b": "string"} | null, "answer": "string", "explanation_md": "string" }`;
+
+  return {
+    model: MODEL_SONNET,
+    system: [withCache({ type: "text", text: systemText })],
+    messages: [
+      {
+        role: "user",
+        content: `Lesson body:\n\n${summaryMd}\n\nWrite the concept checks.`,
+      },
+    ],
+    maxTokens: 4096,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // 6.3 Tutor prompt
 // ---------------------------------------------------------------------------
 
