@@ -4,14 +4,14 @@
 
 **Goal:** Turn each lesson from a thin 250–400 word summary + 2 identical-format exercises into real sole-source instruction: an 800–1,200 word four-section lesson body, 3–5 cached concept-check questions, a recall warm-up block reusing prior-lesson checks, rotating exercise-2 formats, and a mechanical offline validation gate (compile + run + concept-boundary lint).
 
-**Architecture:** Content generation stays fully offline (scripts → validate → push to Supabase). Runtime stays cache-read-only — zero LLM calls on lesson visits. New `concept_checks` table follows the same generate-once pattern as `exercises`; per-user data is only cheap `concept_check_attempts` rows under RLS. Warm-up selection is pure SQL + a pure TypeScript picker function.
+**Architecture:** Content generation is fully offline and makes ZERO Anthropic API calls: deployed Claude Code agents (briefed with the canonical prompts) write content files → mechanical validation gate → push to Supabase. Runtime stays cache-read-only — zero LLM calls on lesson visits. New `concept_checks` table follows the same generate-once pattern as `exercises`; per-user data is only cheap `concept_check_attempts` rows under RLS. Warm-up selection is pure SQL + a pure TypeScript picker function.
 
 **Tech Stack:** Next.js 14 App Router, Supabase (Postgres + RLS), Anthropic SDK (`claude-sonnet-4-6`), Judge0, vitest, tsx scripts, shadcn/ui.
 
 **Spec:** `docs/superpowers/specs/2026-06-09-phase-a-content-overhaul-design.md`
 
 **Key as-built facts (differ from CLAUDE.md's "planned" docs):**
-- Runtime generation is disabled. `lib/content/lesson-generation.ts:getOrGenerateLesson` only reads the DB; the regenerate endpoint returns 403. The prompt builders in `lib/anthropic/prompts.ts` currently have **zero callers** — the new offline script becomes the first.
+- Runtime generation is disabled. `lib/content/lesson-generation.ts:getOrGenerateLesson` only reads the DB; the regenerate endpoint returns 403. The prompt builders in `lib/anthropic/prompts.ts` have **zero callers by design** — they are the canonical spec text used to brief content-generation agents, never invoked against the API.
 - Content pipeline: scripts write JSON/MD to `scripts/regenerated/`, `push_regenerated.ts` pushes to Supabase using a deterministic UUID derived from the lesson number.
 - Tests: vitest, files in `__tests__/`, `@` alias resolves to repo root (see `vitest.config.ts`). Run with `npm run test`.
 - `scripts/*.ts` run via `npx tsx` and must use **relative imports** for repo files (tsx does not resolve the `@/*` alias). `lib/anthropic/prompts.ts` and `lib/anthropic/cache.ts` use only relative/SDK imports, so scripts may import them relatively. Do NOT import `lib/anthropic/client.ts` or `lib/judge0/verdict.ts` from scripts (they use `@/` imports).
@@ -27,7 +27,7 @@
 - `lib/content/concept-checks.ts` — loaders + pure warm-up picker
 - `app/api/concept-checks/route.ts` — POST attempt recording
 - `components/lesson/ConceptChecks.tsx` — check card, section, warm-up block
-- `scripts/generate_v2.ts` — offline generation (body → checks → exercises)
+- `scripts/export_lesson_meta.ts` — per-lesson briefing metadata for generation agents (zero LLM calls)
 - `scripts/validate_v2.ts` — compile/run/boundary-lint gate
 - `scripts/push_v2.ts` — push validated content + concept checks to DB
 
@@ -482,352 +482,152 @@ git commit -m "feat(prompts): rotating exercise-2 format (fix-the-bug / complete
 
 ---
 
-### Task 6: Offline generation script `scripts/generate_v2.ts`
+### Task 6: Lesson metadata export + agent generation protocol (zero API calls)
 
 **Files:**
-- Create: `scripts/generate_v2.ts`
+- Create: `scripts/export_lesson_meta.ts`
 
-Reads lessons/chapters from Supabase, calls Anthropic directly (relative import of `../lib/anthropic/prompts` — safe, it has no `@/` imports), writes per-lesson files to `scripts/regenerated/v2/<lesson_number>/`. Resumable: existing files are skipped unless `--force`. Rate-limited to 40 calls/min (org limit is 50).
+**Generation policy (user directive, 2026-06-09):** NO Anthropic API calls are made for
+content generation — not from scripts, not at runtime. Content is produced by deployed
+Claude Code agents, each briefed with the canonical prompt text from
+`lib/anthropic/prompts.ts` (LESSON_SUMMARY_SYSTEM, CONCEPT_CHECK_SYSTEM, EXERCISE_SYSTEM)
+plus per-lesson metadata, writing files directly under
+`scripts/regenerated/v2/<lesson_number>/`. The prompt builders remain the canonical spec
+text for agent briefings; they are never invoked against the API.
 
-- [ ] **Step 1: Write the script**
+This task creates the metadata export script (a read-only DB query — not an LLM call) and
+documents the agent protocol that Tasks 12/13 execute.
 
-````typescript
+- [ ] **Step 1: Write `scripts/export_lesson_meta.ts`**
+
+```typescript
 /**
- * generate_v2.ts — Phase A offline content generation.
+ * export_lesson_meta.ts — Export per-lesson briefing metadata for generation agents.
  *
- * Per target lesson, generates in order:
- *   1. lesson body (four-section format)      → summary.md
- *   2. concept checks (3-5 JSON items)        → checks.json
- *   3. exercises (2; exercise-2 format rotates by chapter position) → exercises.json
- *
- * Chapters "0"/"O" get a lesson body only (no checks, no exercises) — matching
- * shouldGenerateExercises().
+ * Zero LLM calls. Reads chapters + lessons from Supabase and writes
+ * scripts/regenerated/v2/_meta/ch_<number>.json — one file per chapter, each an
+ * array of briefing objects consumed by content-generation agents.
  *
  * Usage:
- *   npx tsx scripts/generate_v2.ts --chapters 13
- *   npx tsx scripts/generate_v2.ts --chapters 4,5,6
- *   npx tsx scripts/generate_v2.ts --lessons 13.7,13.8
- *   npx tsx scripts/generate_v2.ts --all
- *   npx tsx scripts/generate_v2.ts --chapters 13 --force   # regenerate even if files exist
+ *   npx tsx scripts/export_lesson_meta.ts                  # all chapters
+ *   npx tsx scripts/export_lesson_meta.ts --chapters 13
  *
- * Env (.env / .env.local):
- *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY
+ * Env (.env / .env.local): NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 
-import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { config } from "dotenv";
-import {
-  buildLessonSummaryPrompt,
-  buildConceptCheckPrompt,
-  buildExercisePrompt,
-  shouldGenerateExercises,
-  type PromptPayload,
-  type ConceptCheckItem,
-  type Exercise2Format,
-} from "../lib/anthropic/prompts";
+import { shouldGenerateExercises, type Exercise2Format } from "../lib/anthropic/prompts";
 
 config({ path: resolve(__dirname, "..", ".env") });
 config({ path: resolve(__dirname, "..", ".env.local") });
 
-const OUT_ROOT = resolve(__dirname, "regenerated", "v2");
-const CALLS_PER_MINUTE = 40;
+const META_DIR = resolve(__dirname, "regenerated", "v2", "_meta");
 
-// ---------------------------------------------------------------------------
-// Rate limiter (rolling 60s window on API calls)
-// ---------------------------------------------------------------------------
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((done) => setTimeout(done, ms));
-}
-
-function createRateLimiter(maxPerMinute: number): () => Promise<void> {
-  const windowMs = 60_000;
-  const timestamps: number[] = [];
-  return async function acquire(): Promise<void> {
-    for (;;) {
-      const now = Date.now();
-      while (timestamps.length > 0 && now - timestamps[0]! >= windowMs) {
-        timestamps.shift();
-      }
-      if (timestamps.length < maxPerMinute) {
-        timestamps.push(now);
-        return;
-      }
-      await sleep(windowMs - (now - timestamps[0]!) + 1);
-    }
-  };
-}
-
-const acquire = createRateLimiter(CALLS_PER_MINUTE);
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-let totalIn = 0;
-let totalOut = 0;
-
-async function callLLM(payload: PromptPayload): Promise<string> {
-  await acquire();
-  const msg = await anthropic.messages.create({
-    model: payload.model,
-    max_tokens: payload.maxTokens,
-    system: payload.system,
-    messages: payload.messages,
-  });
-  totalIn += msg.usage.input_tokens;
-  totalOut += msg.usage.output_tokens;
-  const block = msg.content.find((b) => b.type === "text");
-  if (!block || block.type !== "text") throw new Error("No text block in response");
-  return block.text;
-}
-
-// ---------------------------------------------------------------------------
-// JSON helpers
-// ---------------------------------------------------------------------------
-
-function stripFences(raw: string): string {
-  const m = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
-  return (m ? m[1]! : raw).trim();
-}
-
-/** Call, parse JSON; on parse/shape failure retry once with the error appended. */
-async function generateJson<T>(
-  payload: PromptPayload,
-  validate: (parsed: unknown) => string | null,
-): Promise<T> {
-  let lastError = "";
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const augmented: PromptPayload =
-      attempt === 0
-        ? payload
-        : {
-            ...payload,
-            messages: [
-              ...payload.messages,
-              { role: "assistant", content: "(previous attempt)" },
-              {
-                role: "user",
-                content: `Your previous output was invalid: ${lastError}. Output ONLY the corrected JSON array.`,
-              },
-            ],
-          };
-    const raw = await callLLM(augmented);
-    try {
-      const parsed: unknown = JSON.parse(stripFences(raw));
-      const problem = validate(parsed);
-      if (problem) throw new Error(problem);
-      return parsed as T;
-    } catch (err) {
-      lastError = err instanceof Error ? err.message : String(err);
-      console.warn(`    JSON attempt ${attempt + 1} failed: ${lastError}`);
-    }
-  }
-  throw new Error(`JSON generation failed after retry: ${lastError}`);
-}
-
-function validateChecks(parsed: unknown): string | null {
-  if (!Array.isArray(parsed)) return "not a JSON array";
-  if (parsed.length < 3 || parsed.length > 5) return `expected 3-5 items, got ${parsed.length}`;
-  const kinds = new Set<string>();
-  for (const item of parsed as ConceptCheckItem[]) {
-    if (!["predict_output", "spot_bug", "mcq"].includes(item.kind)) return `bad kind "${item.kind}"`;
-    if (typeof item.prompt_md !== "string" || !item.prompt_md) return "missing prompt_md";
-    if (typeof item.answer !== "string" || !item.answer) return "missing answer";
-    if (typeof item.explanation_md !== "string" || !item.explanation_md) return "missing explanation_md";
-    if (item.kind === "predict_output") {
-      if (item.options !== null) return "predict_output must have options: null";
-    } else {
-      if (!item.options || typeof item.options !== "object") return `${item.kind} needs options`;
-      if (!(item.answer in item.options)) return `answer key "${item.answer}" not in options`;
-    }
-    kinds.add(item.kind);
-  }
-  if (!kinds.has("predict_output") || !kinds.has("mcq"))
-    return "must include at least one predict_output and one mcq";
-  return null;
-}
-
-function validateExercises(parsed: unknown): string | null {
-  if (!Array.isArray(parsed)) return "not a JSON array";
-  if (parsed.length !== 2) return `expected 2 exercises, got ${parsed.length}`;
-  for (const ex of parsed as Array<Record<string, unknown>>) {
-    for (const field of ["title", "prompt_md", "starter_code", "solution_code"]) {
-      if (typeof ex[field] !== "string" || !ex[field]) return `missing ${field}`;
-    }
-    if (!Array.isArray(ex.test_cases) || ex.test_cases.length !== 3)
-      return "each exercise needs exactly 3 test_cases";
-  }
-  return null;
-}
-
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
-
-interface DbChapter {
-  id: number;
+interface LessonMeta {
   number: string;
-  learncpp_title: string;
-  my_title: string | null;
-  sort_order: number;
-}
-
-interface DbLesson {
-  id: string;
-  chapter_id: number;
-  number: string;
-  learncpp_title: string;
-  my_title: string | null;
+  title: string;
+  chapterNumber: string;
+  chapterTitle: string;
+  priorTitles: string[];
   tags: string[];
-  sort_order: number;
-}
-
-function parseArgs(): { chapters: string[] | null; lessons: string[] | null; all: boolean; force: boolean } {
-  const args = process.argv.slice(2);
-  const get = (flag: string): string | null => {
-    const i = args.indexOf(flag);
-    return i !== -1 && args[i + 1] ? args[i + 1]! : null;
-  };
-  return {
-    chapters: get("--chapters")?.split(",").map((s) => s.trim()) ?? null,
-    lessons: get("--lessons")?.split(",").map((s) => s.trim()) ?? null,
-    all: args.includes("--all"),
-    force: args.includes("--force"),
-  };
+  withContent: boolean;
+  exercise2Format: Exercise2Format;
 }
 
 async function main(): Promise<void> {
-  const { chapters: chapterFilter, lessons: lessonFilter, all, force } = parseArgs();
-  if (!chapterFilter && !lessonFilter && !all) {
-    console.error("Usage: --chapters 4,5 | --lessons 13.7 | --all  [--force]");
-    process.exit(1);
-  }
-
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !supabaseKey || !process.env.ANTHROPIC_API_KEY) {
-    console.error("Missing NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, or ANTHROPIC_API_KEY");
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
     process.exit(1);
   }
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const { data: chaptersData, error: chErr } = await supabase
+  const args = process.argv.slice(2);
+  const ci = args.indexOf("--chapters");
+  const chapterFilter =
+    ci !== -1 && args[ci + 1] ? args[ci + 1]!.split(",").map((s) => s.trim()) : null;
+
+  const { data: chapters, error: chErr } = await supabase
     .from("chapters")
     .select("id, number, learncpp_title, my_title, sort_order")
     .order("sort_order");
-  if (chErr || !chaptersData) throw new Error(`chapters query failed: ${chErr?.message}`);
-  const chapters = chaptersData as DbChapter[];
+  if (chErr || !chapters) throw new Error(`chapters query failed: ${chErr?.message}`);
 
-  const { data: lessonsData, error: lsErr } = await supabase
+  const { data: lessons, error: lsErr } = await supabase
     .from("lessons")
     .select("id, chapter_id, number, learncpp_title, my_title, tags, sort_order")
     .order("sort_order");
-  if (lsErr || !lessonsData) throw new Error(`lessons query failed: ${lsErr?.message}`);
-  const lessons = lessonsData as DbLesson[];
+  if (lsErr || !lessons) throw new Error(`lessons query failed: ${lsErr?.message}`);
 
-  const chapterById = new Map(chapters.map((c) => [c.id, c]));
-  const lessonsByChapter = new Map<number, DbLesson[]>();
-  for (const l of lessons) {
-    const arr = lessonsByChapter.get(l.chapter_id) ?? [];
-    arr.push(l);
-    lessonsByChapter.set(l.chapter_id, arr);
-  }
+  mkdirSync(META_DIR, { recursive: true });
 
-  const targets = lessons.filter((l) => {
-    const ch = chapterById.get(l.chapter_id);
-    if (!ch) return false;
-    if (lessonFilter) return lessonFilter.includes(l.number);
-    if (chapterFilter) return chapterFilter.includes(ch.number);
-    return true; // --all
-  });
-
-  console.log(`Generating ${targets.length} lessons → ${OUT_ROOT}`);
-  let failures = 0;
-
-  for (const lesson of targets) {
-    const chapter = chapterById.get(lesson.chapter_id)!;
-    const chapterLessons = lessonsByChapter.get(lesson.chapter_id)!;
-    const idxInChapter = chapterLessons.findIndex((l) => l.id === lesson.id);
-    const priorTitles = chapterLessons
-      .slice(0, idxInChapter)
-      .map((l) => l.my_title ?? l.learncpp_title);
-    const title = lesson.my_title ?? lesson.learncpp_title;
+  for (const chapter of chapters) {
+    if (chapterFilter && !chapterFilter.includes(chapter.number)) continue;
+    const chapterLessons = lessons.filter((l) => l.chapter_id === chapter.id);
     const chapterTitle = chapter.my_title ?? chapter.learncpp_title;
-    const outDir = resolve(OUT_ROOT, lesson.number);
-    mkdirSync(outDir, { recursive: true });
 
-    const summaryPath = resolve(outDir, "summary.md");
-    const checksPath = resolve(outDir, "checks.json");
-    const exercisesPath = resolve(outDir, "exercises.json");
-    const withContent = shouldGenerateExercises(chapter.number);
+    const metas: LessonMeta[] = chapterLessons.map((lesson, idx) => ({
+      number: lesson.number,
+      title: lesson.my_title ?? lesson.learncpp_title,
+      chapterNumber: chapter.number,
+      chapterTitle,
+      priorTitles: chapterLessons.slice(0, idx).map((l) => l.my_title ?? l.learncpp_title),
+      tags: lesson.tags,
+      withContent: shouldGenerateExercises(chapter.number),
+      exercise2Format: idx % 2 === 0 ? "fix_the_bug" : "complete_the_function",
+    }));
 
-    console.log(`\n[${lesson.number}] ${title}`);
-    try {
-      let summaryMd: string;
-      if (!force && existsSync(summaryPath)) {
-        summaryMd = readFileSync(summaryPath, "utf-8");
-        console.log("  summary: exists, skipping");
-      } else {
-        summaryMd = await callLLM(
-          buildLessonSummaryPrompt(title, `${chapter.number}: ${chapterTitle}`, priorTitles, lesson.tags),
-        );
-        writeFileSync(summaryPath, summaryMd);
-        console.log(`  summary: ${summaryMd.split(/\s+/).length} words`);
-      }
-
-      if (!withContent) {
-        console.log("  checks/exercises: skipped (intro chapter)");
-        continue;
-      }
-
-      if (force || !existsSync(checksPath)) {
-        const checks = await generateJson<ConceptCheckItem[]>(
-          buildConceptCheckPrompt(title, summaryMd, priorTitles),
-          validateChecks,
-        );
-        writeFileSync(checksPath, JSON.stringify(checks, null, 2));
-        console.log(`  checks: ${checks.length} items`);
-      } else {
-        console.log("  checks: exist, skipping");
-      }
-
-      if (force || !existsSync(exercisesPath)) {
-        const format: Exercise2Format =
-          idxInChapter % 2 === 0 ? "fix_the_bug" : "complete_the_function";
-        const exercises = await generateJson<unknown[]>(
-          buildExercisePrompt(title, summaryMd, chapter.number, chapterTitle, priorTitles, format),
-          validateExercises,
-        );
-        writeFileSync(exercisesPath, JSON.stringify(exercises, null, 2));
-        console.log(`  exercises: 2 items (exercise 2 = ${format})`);
-      } else {
-        console.log("  exercises: exist, skipping");
-      }
-    } catch (err) {
-      failures++;
-      console.error(`  FAILED: ${err instanceof Error ? err.message : String(err)}`);
-    }
+    const outPath = resolve(META_DIR, `ch_${chapter.number}.json`);
+    writeFileSync(outPath, JSON.stringify(metas, null, 2));
+    console.log(`ch ${chapter.number}: ${metas.length} lessons → ${outPath}`);
   }
-
-  console.log(`\nDone. tokens in=${totalIn} out=${totalOut}, failures=${failures}`);
-  if (failures > 0) process.exit(1);
 }
 
 main();
-````
+```
 
-- [ ] **Step 2: Smoke-test on a single lesson**
+- [ ] **Step 2: Run for chapter 13 and verify**
 
-Run: `npx tsx scripts/generate_v2.ts --lessons 13.7 --force`
-Expected: creates `scripts/regenerated/v2/13.7/summary.md` (four `##` sections), `checks.json` (3–5 items), `exercises.json` (2 items). Token totals printed, `failures=0`.
+Run: `npx tsx scripts/export_lesson_meta.ts --chapters 13`
+Expected: `scripts/regenerated/v2/_meta/ch_13.json` with ~17 briefing objects; first lesson
+has `priorTitles: []`, later lessons accumulate prior titles; `exercise2Format` alternates
+starting with `fix_the_bug`.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add scripts/generate_v2.ts scripts/regenerated/v2/13.7
-git commit -m "feat(scripts): offline Phase A content generator (body, checks, exercises)"
+git add scripts/export_lesson_meta.ts scripts/regenerated/v2/_meta
+git commit -m "feat(scripts): export per-lesson briefing metadata for generation agents"
 ```
+
+#### Agent generation protocol (executed in Tasks 12 and 13)
+
+The controller deploys Claude Code agents in parallel batches. Each agent handles **4–6
+lessons** and receives a self-contained briefing:
+
+1. **The canonical specs, pasted verbatim from `lib/anthropic/prompts.ts`:**
+   - `LESSON_SUMMARY_SYSTEM` — the four-section lesson body format and boundary rules
+   - `CONCEPT_CHECK_SYSTEM` — question kinds, misconception genres, JSON schema
+   - `EXERCISE_SYSTEM` — exercise design principles, PROMPT_MD format, JSON schema
+2. **Per-lesson metadata** from `_meta/ch_<n>.json`: number, title, chapterNumber,
+   chapterTitle, priorTitles, tags, withContent, exercise2Format (including the matching
+   exercise-2 format directive text from `buildExercisePrompt`)
+3. **Output contract** per lesson, written with the Write tool:
+   - `scripts/regenerated/v2/<number>/summary.md` — raw markdown, no surrounding fences
+   - `scripts/regenerated/v2/<number>/checks.json` — JSON array (skip when `withContent` is false)
+   - `scripts/regenerated/v2/<number>/exercises.json` — JSON array (skip when `withContent` is false)
+4. **The validator's shape rules** (so agents self-check before finishing): 3–5 checks
+   with ≥1 `predict_output` and ≥1 `mcq`; `predict_output` has `options: null`; option-based
+   kinds have the answer key present in options; every check has `explanation_md`; exactly
+   2 exercises, each with exactly 3 test cases (1 sample + 2 hidden); all code compiles
+   with `g++ -std=c++20 -Wall -Wextra`; solutions produce the expected stdout for each
+   test's stdin; no concepts from later chapters; no markdown tables.
+
+Generation agents must NOT touch git — the controller validates (Task 7 gate) and commits.
 
 ---
 
@@ -1099,7 +899,7 @@ function main(): void {
   const filter = li !== -1 && args[li + 1] ? args[li + 1]!.split(",").map((s) => s.trim()) : null;
 
   const lessonDirs = readdirSync(V2_ROOT, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && d.name !== ".build")
+    .filter((d) => d.isDirectory() && d.name !== ".build" && d.name !== "_meta")
     .map((d) => d.name)
     .filter((name) => !filter || filter.includes(name))
     .sort();
@@ -1131,15 +931,16 @@ function main(): void {
 main();
 ````
 
-- [ ] **Step 2: Run against the Task 6 smoke-test lesson**
+- [ ] **Step 2: Sanity-run**
 
-Run: `npx tsx scripts/validate_v2.ts --lessons 13.7`
-Expected: `[13.7] pass` (or a report naming concrete issues — if 13.7 fails, re-run Task 6 Step 2 with `--force` once; persistent failures mean a prompt bug worth flagging to the user).
+Run: `npx tsx scripts/validate_v2.ts`
+Expected: completes cleanly with `0 lessons, 0 failed` while no lesson dirs exist yet (the
+gate gets its first real exercise in the Task 12 pilot against agent-generated content).
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add scripts/validate_v2.ts scripts/regenerated/v2/validation_report.md scripts/regenerated/v2/validation_status.json
+git add scripts/validate_v2.ts
 git commit -m "feat(scripts): mechanical validation gate (compile, run, boundary lint)"
 ```
 
@@ -1233,7 +1034,7 @@ async function main(): Promise<void> {
     : {};
 
   const lessonDirs = readdirSync(V2_ROOT, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && d.name !== ".build")
+    .filter((d) => d.isDirectory() && d.name !== ".build" && d.name !== "_meta")
     .map((d) => d.name)
     .filter((name) => !filter || filter.includes(name))
     .sort();
@@ -1351,10 +1152,11 @@ async function main(): Promise<void> {
 main();
 ````
 
-- [ ] **Step 2: Push the smoke-test lesson and verify**
+- [ ] **Step 2: Verify compile**
 
-Run: `npx tsx scripts/push_v2.ts --lessons 13.7`
-Expected: summary updated, 3–5 concept checks inserted, 2 exercises with 3 test cases each. Verify in Supabase: `select kind, position from concept_checks cc join lessons l on l.id = cc.lesson_id where l.number = '13.7' order by position;` returns the items.
+Run: `npx tsc --noEmit`
+Expected: clean. (The first real push happens in the Task 12 pilot, after agent-generated
+content passes the validation gate.)
 
 - [ ] **Step 3: Commit**
 
@@ -2003,15 +1805,19 @@ git commit -m "feat(lessons): concept-check cards and recall warm-up block"
 
 Chapter 13 (structs/enums) is the pilot: mid-curriculum, rich misconception surface, and its old content is well-audited for comparison.
 
-- [ ] **Step 1: Generate**
+- [ ] **Step 1: Generate (deployed agents, zero API calls)**
 
-Run: `npx tsx scripts/generate_v2.ts --chapters 13 --force`
-Expected: ~17 lessons × 3 files each, `failures=0`, total cost roughly $2–4 (printed token counts).
+Run `npx tsx scripts/export_lesson_meta.ts --chapters 13` if `_meta/ch_13.json` doesn't
+exist yet, then deploy generation agents in parallel batches of 4–6 lessons each (~3–4
+agents for chapter 13), following the agent generation protocol in Task 6: each briefing
+contains the canonical prompt text, the lessons' metadata, the output contract, and the
+validator's shape rules. Expected: ~17 lesson dirs × 3 files each under
+`scripts/regenerated/v2/13.*`.
 
 - [ ] **Step 2: Validate**
 
 Run: `npx tsx scripts/validate_v2.ts`
-Expected: all chapter-13 lessons `pass`. For failures: inspect `scripts/regenerated/v2/validation_report.md`, regenerate the named lessons with `--lessons <n> --force`, re-validate. If the same lesson fails twice for the same reason, stop and report to the user — that's a prompt defect, not a generation flake.
+Expected: all chapter-13 lessons `pass`. For failures: inspect `scripts/regenerated/v2/validation_report.md` and re-dispatch the responsible generation agent with the validator's exact error messages so it fixes its files. If the same lesson fails twice for the same reason, stop and report to the user — that's a briefing/spec defect, not a generation flake.
 
 - [ ] **Step 3: Manual quality review (sample of 3)**
 
@@ -2035,7 +1841,7 @@ git commit -m "feat(content): chapter 13 pilot — v2 lesson bodies, checks, exe
 
 - [ ] **Step 6: User checkpoint**
 
-Show the user the pilot in the app before proceeding to the full run. The full run costs ~$40–80 and takes ~45 minutes — do not start it without explicit user approval.
+Show the user the pilot in the app before proceeding to the full run. The full run regenerates and pushes live content for all 345 lessons and deploys many generation agents — do not start it without explicit user approval.
 
 ---
 
@@ -2043,15 +1849,17 @@ Show the user the pilot in the app before proceeding to the full run. The full r
 
 **Files:** content only (`scripts/regenerated/v2/**`)
 
-- [ ] **Step 1: Generate everything**
+- [ ] **Step 1: Generate everything (deployed agents, zero API calls)**
 
-Run: `npx tsx scripts/generate_v2.ts --all` (resumable — already-generated chapter-13 files are skipped; re-run the same command after any crash)
-Expected: ~345 lessons, ≈1,000 API calls at 40/min ≈ 30–45 min. Watch the failure count.
+Run `npx tsx scripts/export_lesson_meta.ts` (all chapters), then deploy generation agents
+chapter by chapter in parallel batches of 4–6 lessons per agent, per the Task 6 protocol.
+Chapter-13 dirs already exist and are skipped. Track per-chapter completion; resume by
+re-dispatching only the missing lesson dirs.
 
 - [ ] **Step 2: Validate everything**
 
 Run: `npx tsx scripts/validate_v2.ts`
-Expected: > 95% pass on first try. Regenerate failures individually (`--lessons <n> --force`), re-validate. Persistent failures: fix by hand-editing the JSON/MD (the gate re-checks edited files — it validates content, not provenance).
+Expected: > 95% pass on first try. For failures, re-dispatch the responsible agent with the validator errors, re-validate. Persistent failures: fix by hand-editing the JSON/MD (the gate re-checks edited files — it validates content, not provenance).
 
 - [ ] **Step 3: Push all passing lessons**
 
@@ -2080,9 +1888,10 @@ Expected: all clean. Phase A complete; Phases B (review queue over `concept_chec
 
 ## Execution notes
 
-- **Cache-guard invariants** (verified in design): lesson visits never call the LLM — all generation is offline; `push_v2.ts` is the only path that replaces cached content; every prompt builder applies `cache_control` via `withCache`.
+- **Zero-API-call policy:** no Anthropic API calls anywhere in the content pipeline — generation is performed by deployed Claude Code agents; the metadata export and push scripts only touch Supabase.
+- **Cache-guard invariants** (verified in design): lesson visits never call the LLM — all generation is offline; `push_v2.ts` is the only path that replaces cached content.
 - **Scope constraints honored:** single `main.cpp` exercises only; no per-user generation; per-user data limited to `concept_check_attempts` rows.
-- **Order matters:** Tasks 1–5 are prerequisites for 6; 6 → 7 → 8 must run in order; 9–11 can proceed in parallel with 6–8 once Task 1 lands; 12 needs everything; 13 needs 12's user checkpoint.
+- **Order matters:** Tasks 1–5 are prerequisites for 6; 7 → 8 in order (8's gate reads 7's status file); 9–11 can proceed in parallel once Task 1 lands; 12 needs everything; 13 needs 12's user checkpoint.
 
 
 

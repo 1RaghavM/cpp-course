@@ -110,21 +110,26 @@ exist (user skipped ahead), the block shrinks or hides. Pure reuse; embryonic Ph
   mirroring the exercise pattern; returns JSON array of 3–5 items; system block cached.
 - `buildExercisePrompt` updated for format rotation and audit-derived rules.
 
-### 6. Regeneration pipeline (offline, `scripts/`)
+### 6. Regeneration pipeline (offline, zero API calls)
 
-1. Regenerate all 345 lessons: body → concept checks → exercises (sequential, each feeds
-   the next).
+Content generation makes NO Anthropic API calls (user directive, 2026-06-09). Deployed
+Claude Code agents — briefed with the canonical prompt text from `lib/anthropic/prompts.ts`
+plus per-lesson metadata exported by `scripts/export_lesson_meta.ts` — write
+`summary.md` / `checks.json` / `exercises.json` per lesson under `scripts/regenerated/v2/`.
+
+1. Generate all 345 lessons via agent batches (4–6 lessons per agent): body → concept
+   checks → exercises.
 2. **Automated validation gate:**
    - `g++ -std=c++20 -Wall -Wextra` compile-check every `starter_code` and `solution_code`
    - Run every solution against its test cases locally; mismatch fails the lesson
    - Concept-boundary lint: per-chapter forbidden-token list derived from
      `scripts/regenerated/curriculum_reference.md` (e.g. `for`/`while` before ch8,
      `std::string` before ch5)
-3. Failures: regenerate once with the error appended to the prompt, then flag for manual
-   review.
-4. Seed DB.
+3. Failures: re-dispatch the responsible agent with the validator's errors, then flag for
+   manual review if it fails again.
+4. Seed DB via the push script (the only path that replaces cached content).
 
-Cost: one-time ≈ 345 × ~8K output tokens (Sonnet) ≈ $40–80. Never recurs.
+Cost: zero API spend — generation runs on deployed Claude Code agents.
 
 ### 7. Runtime data flow
 
