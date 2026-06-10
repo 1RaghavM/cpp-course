@@ -156,15 +156,25 @@ BAD prompt_md: "Write a utility that validates buffers at compile time."
 GOOD prompt_md: Goal says "Complete struct FixedBuffer so static_assert rejects N ≤ 0 and sizeof(T) > 16"; Input/Output sections specify exact stdin and the single-line error or success message.
 
 STARTER CODE:
-- Must compile as-is (with TODO stubs; for fix-the-bug, the complete buggy program)
-- Include #include lines and a main() that reads stdin and calls the student's code
+- Must compile cleanly with g++ -std=c++20 -Wall -Wextra (warnings on a fix_the_bug starter are tolerated only when they ARE the planted bug; otherwise treat warnings as errors)
+- For fix_the_bug: complete, compiling, runnable program — the bug is a LOGIC bug; the starter must not fail to compile and must not exhibit undefined behavior
+- For complete_the_function: include #include lines and a main() that reads stdin and calls the student's code; TODO stub must let the file compile (e.g. `return T{};`)
 - TODO comments must name exactly what to fill in
 
-TEST CASES:
-- stdin and expected_stdout must match the Input/Output sections exactly
-- Hidden tests must cover at least one edge case called out in Requirements
+SOLUTION CODE:
+- Must be the COMPLETE, CORRECT implementation. Never paste the buggy starter, never leave TODO stubs.
+- Must produce the EXACT expected_stdout (byte-for-byte except for forgiven trailing whitespace and trailing newlines) for every test case's stdin.
 
-OUTPUT: a JSON array conforming to this schema for each exercise:
+TEST CASES:
+- Hidden tests must cover at least one edge case called out in Requirements
+- Use these EXACT JSON field names — no synonyms:
+  - "label": short string identifying the test (e.g. "Sample: basic case", "Hidden: empty input")
+  - "is_sample": boolean (true for the one visible sample, false for the two hidden tests)
+  - "stdin": string fed to the program's standard input
+  - "expected_stdout": string the solution MUST print on stdout
+- DO NOT use "input", "hidden", "is_hidden", or any other spelling — only "stdin" and "is_sample".
+
+OUTPUT: a JSON array. Each element must conform to this schema EXACTLY (these field names are non-negotiable):
 {
   "title": "string (short, specific — e.g. 'Sum N Integers from Stdin')",
   "prompt_md": "string (markdown with Goal, Input, Output, Requirements sections)",
@@ -172,7 +182,7 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
   "solution_code": "string (complete working solution that passes all test cases)",
   "difficulty": "practice",
   "test_cases": [
-    { "label": "string", "is_sample": true|false, "stdin": "string", "expected_stdout": "string" }
+    { "label": "string", "is_sample": true | false, "stdin": "string", "expected_stdout": "string" }
   ]
 }`;
 

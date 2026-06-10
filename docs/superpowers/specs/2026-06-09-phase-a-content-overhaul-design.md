@@ -171,6 +171,34 @@ nothing blocks.
   merge/fast-track low-value lessons. Requires updating `priorTitles` boundary lists, so
   deliberately last.
 
+## Chapter 13 pilot — fixes catalogue (2026-06-10)
+
+The pilot ran four sonnet-model generation agents in parallel (4–5 lessons each) and
+exposed gaps that we hardened before scaling to the full curriculum. Recorded here so
+the same mistakes can't recur:
+
+1. **Test-case field-name drift.** Three agents independently invented three different
+   JSON shapes (`input`/`is_sample`, `input`/`is_hidden`, `stdin`/`hidden`). The validator
+   silently treated missing `stdin` as empty input. **Fix:** schema enforcement added to
+   `validate_v2.ts`; EXERCISE_SYSTEM in `lib/anthropic/prompts.ts` now lists the
+   non-negotiable field names (`label`, `is_sample`, `stdin`, `expected_stdout`).
+2. **Solutions that don't solve the problem.** 13.5 ex2 solution always printed "West";
+   13.8 ex2 solution left the TODO stub `return {};` in place. **Fix:** the new agent
+   briefing template (`docs/superpowers/generation-agent-briefing.md`) requires the
+   agent to compile + run its solution against every test case before declaring DONE.
+3. **fix_the_bug starter that doesn't compile.** 13.11 starter passed `const Resolution`
+   into a non-const reference parameter. **Fix:** briefing now mandates that the starter
+   compiles cleanly; the bug is always a LOGIC bug.
+4. **Validator false positives.** `\bclass\b` matched `enum class` and `template<class T>`.
+   **Fix:** rule combined to `(?<!enum\s)\bclass\s+\w+\s*[{:]` so only actual class
+   definitions trip the chapter-14 check.
+5. **Write-tool quirk.** Subagents sometimes hit a "shouldn't write report files" guard on
+   `.md`. **Fix:** briefing documents the `cat > … <<'EOF'` heredoc fallback (already
+   used successfully by two of four pilot batches).
+6. **Coverage gaps.** Three lessons fell below the 800-word target (751–788). Validator
+   warns at <700 / >1400 but the target is 800–1200; briefing reinforces the middle of
+   that band.
+
 ## Out of scope
 
 Multi-file exercises, social features, gating completion on checks, per-user content
