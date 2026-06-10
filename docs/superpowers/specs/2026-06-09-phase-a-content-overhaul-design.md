@@ -55,7 +55,9 @@ syntax, no markdown tables, fast-track mode preserved.
 
 ### 2. Concept checks (new content type)
 
-3–5 per lesson, generated once at first lesson visit (or offline), cached forever.
+3–5 per lesson, generated once by the offline pipeline, cached forever. (As-built note:
+runtime generation is disabled — `getOrGenerateLesson` is read-only and the regenerate
+endpoint returns 403. All generation happens offline; this design keeps that.)
 
 ```sql
 create table concept_checks (
@@ -126,11 +128,11 @@ Cost: one-time ≈ 345 × ~8K output tokens (Sonnet) ≈ $40–80. Never recurs.
 
 ### 7. Runtime data flow
 
-- **Cache miss:** `GET /api/lessons/[slug]` → summary → concept checks → exercises, all
-  written to Postgres in that visit.
-- **Cache hit:** zero LLM calls (unchanged).
-- **Regenerate endpoint:** now also clears/regenerates concept checks — remains the only
-  such path.
+- **Lesson visit:** reads summary, concept checks, and exercises from Postgres. Zero LLM
+  calls in all cases — content that hasn't been generated yet renders as "coming soon".
+- **Content replacement:** the offline push script is the only path that clears and
+  replaces cached content (summary, exercises, concept checks). The runtime regenerate
+  endpoint stays disabled.
 
 ### 8. Frontend (lesson page, existing shadcn primitives)
 
@@ -142,15 +144,15 @@ Cost: one-time ≈ 345 × ~8K output tokens (Sonnet) ≈ $40–80. Never recurs.
 
 ### 9. Error handling
 
-If concept-check generation fails or returns unparseable JSON on a cache-miss visit:
-retry once, then serve the lesson without checks, leaving rows absent so the next visit
-retries. The lesson never blocks on checks.
+Generation failures are an offline concern: unparseable JSON retries once with the parse
+error appended; lessons that still fail are flagged in the validation report and not
+pushed. At runtime, a lesson with no concept checks simply renders without the section —
+nothing blocks.
 
 ### 10. Testing
 
-- Integration: visiting a lesson twice generates concept checks exactly once (extends the
-  existing lesson-cache test).
-- Unit: warm-up SQL selection (wrong-first ordering, graceful empty case).
+- Unit: verdict whitespace normalisation (per-line trailing spaces, trailing newlines).
+- Unit: warm-up selection picker (wrong-first ordering, unseen next, graceful empty case).
 - Content correctness is covered by the offline validation gate, not runtime tests.
 
 ## Future Phases (recorded, not designed)
