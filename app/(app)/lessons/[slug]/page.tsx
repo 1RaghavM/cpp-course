@@ -4,8 +4,10 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { requireServerSession } from "@/lib/auth/require-auth";
 import { getOrGenerateLesson, type ExerciseWithTestCases } from "@/lib/content/lesson-generation";
 import { touchLessonProgress } from "@/lib/content/lesson-progress";
+import { loadConceptChecks, loadWarmupChecks } from "@/lib/content/concept-checks";
 import LessonClient from "./LessonClient";
-import type { Lesson } from "@/lib/supabase/types";
+import type { ConceptCheckClient } from "@/components/lesson/ConceptChecks";
+import type { ConceptCheck, Lesson } from "@/lib/supabase/types";
 
 interface PageProps {
   params: { slug: string };
@@ -85,6 +87,24 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
     supabase.from("progress").select("lesson_id, state"),
   ]);
 
+  const [conceptChecksRaw, warmupsRaw] = await Promise.all([
+    loadConceptChecks(serviceClient, lesson.id),
+    loadWarmupChecks(supabase, userId, lesson),
+  ]);
+
+  const toClientCheck = (c: ConceptCheck, originLesson?: string): ConceptCheckClient => ({
+    id: c.id,
+    kind: c.kind as ConceptCheckClient["kind"],
+    promptMd: c.prompt_md,
+    options: c.options as Record<string, string> | null,
+    answer: c.answer,
+    explanationMd: c.explanation_md,
+    ...(originLesson ? { originLesson } : {}),
+  });
+
+  const conceptChecks = conceptChecksRaw.map((c) => toClientCheck(c));
+  const warmupChecks = warmupsRaw.map((w) => toClientCheck(w.check, w.lessonNumber));
+
   let navInfo: NavInfo | null = null;
   if (chapter && chapterLessons) {
     const progressMap = new Map<string, string>();
@@ -162,6 +182,8 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
       exercises={exercisesForClient}
       initialExerciseIndex={exercisesForClient.length > 0 ? clampedIndex : 0}
       nav={navInfo}
+      conceptChecks={conceptChecks}
+      warmupChecks={warmupChecks}
     />
   );
 }

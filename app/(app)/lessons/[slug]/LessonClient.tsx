@@ -10,6 +10,11 @@ const SummaryView = dynamic(
   { loading: () => <div className="animate-pulse h-64 rounded-lg bg-muted" /> }
 );
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
+import {
+  ConceptChecksSection,
+  WarmupBlock,
+  type ConceptCheckClient,
+} from "@/components/lesson/ConceptChecks";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -125,9 +130,19 @@ interface Props {
   initialExerciseIndex?: number;
   nav: NavData | null;
   exerciseOnly?: boolean;
+  conceptChecks?: ConceptCheckClient[];
+  warmupChecks?: ConceptCheckClient[];
 }
 
-export default function LessonClient({ lesson, exercises, initialExerciseIndex = 0, nav, exerciseOnly = false }: Props) {
+export default function LessonClient({
+  lesson,
+  exercises,
+  initialExerciseIndex = 0,
+  nav,
+  exerciseOnly = false,
+  conceptChecks = [],
+  warmupChecks = [],
+}: Props) {
   const router = useRouter();
   const editorRef = useRef<MonacoEditorHandle>(null);
 
@@ -278,7 +293,15 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
   const busy = isRunning || isSubmitting;
 
   if (isMobile) {
-    return <MobileLayout lesson={lesson} nav={nav} hasExercises={exercises.length > 0} />;
+    return (
+      <MobileLayout
+        lesson={lesson}
+        nav={nav}
+        hasExercises={exercises.length > 0}
+        conceptChecks={conceptChecks}
+        warmupChecks={warmupChecks}
+      />
+    );
   }
 
   return (
@@ -382,6 +405,9 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
 
               <TabsContent value="lesson" className="flex-1 overflow-y-auto p-4">
                 <div className="space-y-6">
+                  {/* Warm-up: recall from earlier lessons */}
+                  <WarmupBlock checks={warmupChecks} />
+
                   {/* Lesson summary */}
                   {lesson.summaryMd ? (
                     <div className="prose prose-base prose-invert max-w-none">
@@ -390,6 +416,10 @@ export default function LessonClient({ lesson, exercises, initialExerciseIndex =
                   ) : (
                     <ComingSoon />
                   )}
+
+                  {/* Concept checks for this lesson */}
+                  <ConceptChecksSection checks={conceptChecks} />
+
 
                   {/* Challenge prompt + samples */}
                   {exercises.length > 0 && activeExercise ? (
@@ -586,10 +616,14 @@ function MobileLayout({
   lesson,
   nav,
   hasExercises,
+  conceptChecks,
+  warmupChecks,
 }: {
   lesson: Props["lesson"];
   nav: Props["nav"];
   hasExercises: boolean;
+  conceptChecks: ConceptCheckClient[];
+  warmupChecks: ConceptCheckClient[];
 }) {
   return (
     <div className="flex flex-col gap-4 pb-6 px-4">
@@ -612,11 +646,15 @@ function MobileLayout({
         <h1 className="mt-1 text-2xl font-bold text-foreground">{lesson.title}</h1>
       </div>
 
+      <WarmupBlock checks={warmupChecks} />
+
       {lesson.summaryMd && (
         <section className="prose prose-base prose-invert max-w-none">
           <SummaryView markdown={lesson.summaryMd} />
         </section>
       )}
+
+      <ConceptChecksSection checks={conceptChecks} />
 
       <section className="mt-4">
         <a
