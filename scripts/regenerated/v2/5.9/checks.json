@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nint main() {\n    std::string_view sv{ \">>hello<<\" };\n    sv.remove_prefix(2);\n    sv.remove_suffix(2);\n    std::cout << sv << '\\n';\n    std::cout << sv.size() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "hello\n5",
+    "explanation_md": "`remove_prefix(2)` advances the start pointer past `>>`, making `sv` refer to `\"hello<<\"`. Then `remove_suffix(2)` shortens the length by 2, dropping `<<`. The resulting view is `\"hello\"` with `size()` 5. Neither operation touches the underlying literal."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is calling `sv.data()` and passing it directly to a C function that expects a null-terminated `const char*` potentially dangerous after `remove_suffix`?",
+    "options": {
+      "a": "remove_suffix deallocates the characters it removes.",
+      "b": "The view no longer ends at a null terminator, so the C function may read beyond the intended length.",
+      "c": "string_view::data() always returns nullptr after remove_suffix.",
+      "d": "C functions cannot accept pointers from C++ objects."
+    },
+    "answer": "b",
+    "explanation_md": "`remove_suffix` only shortens `sv`'s recorded length; the underlying buffer still contains all the original characters. `sv.data()` points at the first character, but there is no null terminator at position `sv.size()` (the buffer continues beyond). A C function using null termination will read those extra bytes. Option a is false — nothing is deallocated."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to check whether a filename ends with `.cpp`. What is the bug?\n\n```cpp\n#include <iostream>\n#include <string>\n#include <string_view>\n\nbool isCppFile(std::string_view name) {\n    return name.ends_with(\".cpp\");\n}\n\nint main() {\n    std::string file{ \"main.cpp\" };\n    std::string_view sv{ file };\n    file += \"x\";      // rename to main.cppx\n    std::cout << isCppFile(sv) << '\\n';\n}\n```",
+    "options": {
+      "a": "ends_with is not available in C++20.",
+      "b": "sv dangles after file += \"x\" potentially reallocates file's buffer.",
+      "c": "isCppFile should take const std::string& not std::string_view.",
+      "d": "The program prints 0 because main.cppx does not end with .cpp."
+    },
+    "answer": "b",
+    "explanation_md": "Appending to `file` with `+=` may trigger a reallocation of `file`'s internal buffer. After reallocation, `sv` still holds the old pointer, which now refers to freed memory. Calling `isCppFile(sv)` is undefined behavior. The fix is to create the view after all modifications are done, or to pass `file` directly to `isCppFile` each time."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nint main() {\n    std::string_view sv{ \"prefix_data\" };\n    std::cout << sv.starts_with(\"prefix\") << '\\n';\n    std::cout << sv.ends_with(\"data\") << '\\n';\n    std::cout << sv.starts_with(\"data\") << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1\n1\n0",
+    "explanation_md": "`starts_with(\"prefix\")` matches the beginning of `\"prefix_data\"` → `true` (printed as `1`). `ends_with(\"data\")` matches the tail → `true` (1). `starts_with(\"data\")` does not match the beginning → `false` (0). These return `bool`, which `cout` prints as `1` or `0` by default."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a safe use of `std::string_view`?\n\n```cpp\n// Option A\nstd::string_view sv;\n{\n    std::string tmp{ \"hello\" };\n    sv = tmp;\n} // tmp destroyed here\nstd::cout << sv;\n\n// Option B\nvoid print(std::string_view sv) {\n    std::cout << sv;\n}\nstd::string s{ \"hello\" };\nprint(s);  // s still alive\n```",
+    "options": {
+      "a": "Both A and B are safe.",
+      "b": "Only A is safe, because string_view keeps the data alive.",
+      "c": "Only B is safe, because the source string is still alive when sv is used.",
+      "d": "Neither A nor B is safe."
+    },
+    "answer": "c",
+    "explanation_md": "In option A, `tmp` is destroyed when the block ends, leaving `sv` dangling. Using `sv` afterward is undefined behavior. In option B, `s` is still alive when `print` executes, so `sv` is a valid view throughout the function call. `std::string_view` never extends the lifetime of the source — the source must outlive the view."
+  }
+]

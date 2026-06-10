@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    double a { 0.1 };\n    double b { 0.2 };\n    double c { 0.3 };\n    std::cout << (a + b == c) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0",
+    "explanation_md": "`0.1`, `0.2`, and `0.3` cannot be represented exactly in binary floating-point. The sum `0.1 + 0.2` produces a value slightly different from the stored representation of `0.3`, so the exact equality `==` returns false (0). This is the fundamental floating-point comparison pitfall — use an epsilon-based comparison for floating-point equality checks."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (Assume a 64-bit system where `long double` is 16 bytes.)\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << sizeof(float)  << \"\\n\";\n    std::cout << sizeof(double) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4\n8",
+    "explanation_md": "`float` is always 32 bits (4 bytes) and `double` is always 64 bits (8 bytes) on standard IEEE 754 platforms. These sizes are not platform-variable the way `int` or `long` can be — `float` and `double` have guaranteed sizes under IEEE 754, which all major C++ implementations follow."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the purpose of the `f` suffix in the literal `3.14f`?",
+    "options": {
+      "a": "It rounds the value to one decimal place",
+      "b": "It marks the literal as type `float` rather than the default `double`",
+      "c": "It forces the compiler to use fixed-point notation",
+      "d": "It makes the literal a `long double`"
+    },
+    "answer": "b",
+    "explanation_md": "Without the `f` suffix, a decimal literal like `3.14` is a `double` by default. The `f` suffix (or uppercase `F`) changes the type of the literal itself to `float`. This is important because assigning a `double` literal to a `float` variable causes a narrowing conversion, which triggers a compiler warning in strict mode. Using `3.14f` avoids that warning."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you generally prefer `double` over `float` for floating-point variables in C++?",
+    "options": {
+      "a": "Because `float` is not part of the C++ standard",
+      "b": "Because `double` has more precision (~15 significant digits vs ~7 for `float`), reducing accumulated rounding errors",
+      "c": "Because `float` causes undefined behavior on 64-bit systems",
+      "d": "Because `double` is faster than `float` on all hardware"
+    },
+    "answer": "b",
+    "explanation_md": "`double` provides roughly 15–16 significant decimal digits of precision while `float` provides only about 7. For most calculations, the difference is enough to avoid noticeable rounding errors accumulating to wrong answers. `float` is still valid C++ and useful when memory is limited. Neither is inherently faster — it depends on hardware and context."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wants to check if two computed values are equal, but the comparison never works as expected. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    double result { 1.0 / 3.0 * 3.0 };\n    double expected { 1.0 };\n    std::cout << (result == expected) << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "Integer division is being performed instead of floating-point division",
+      "b": "Floating-point equality with `==` is unreliable because `1.0/3.0*3.0` may not reconstruct exactly `1.0` due to rounding",
+      "c": "The variable `result` should be declared as `float` to match precision",
+      "d": "`1.0 / 3.0 * 3.0` causes a division-by-zero at runtime"
+    },
+    "answer": "b",
+    "explanation_md": "`1.0 / 3.0` produces a `double` approximation of one-third, and multiplying it back by 3.0 does not exactly reconstruct 1.0 due to floating-point rounding. The `==` comparison may return false even though the result is mathematically 1.0. The fix is to compare using `std::abs(result - expected) < epsilon` with a small tolerance rather than using `==` directly."
+  }
+]

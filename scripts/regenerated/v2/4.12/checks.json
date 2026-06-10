@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a { 7 };\n    int b { 2 };\n    double result { a / b };\n    std::cout << result << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`a / b` is integer division: 7 / 2 = 3 (truncated). The result `3` is then widened to `double` and stored as `3.0`. When printed, `std::cout` outputs `3`, not `3.5`. The conversion to `double` happens *after* the truncating integer division."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    double d { 4.9 };\n    int i { static_cast<int>(d) };\n    std::cout << i << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4",
+    "explanation_md": "`static_cast<int>` truncates toward zero: the fractional part is discarded, not rounded. `4.9` becomes `4`. To round, you would need to add 0.5 before casting. This is not rounding — it is truncation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which expression produces `3.5` (not `3`) when `a = 7` and `b = 2` are both `int`?",
+    "options": {
+      "a": "`a / b`",
+      "b": "`static_cast<double>(a) / b`",
+      "c": "`static_cast<double>(a / b)`",
+      "d": "`a / static_cast<int>(b)`"
+    },
+    "answer": "b",
+    "explanation_md": "`static_cast<double>(a) / b` casts `a` to `double` before the division, so the division is performed as floating-point: 7.0 / 2 = 3.5. Option c casts *after* the integer division, so it produces 3.0. Options a and d are both integer division. Casting at least one operand *before* the division is the key."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the percentage (as a decimal) that `part` is of `total`, but it always prints `0`. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int part  { 3 };\n    int total { 20 };\n    double pct { part / total * 100.0 };\n    std::cout << pct << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`pct` should be declared as `int`, not `double`.",
+      "b": "`part / total` is integer division (result is 0) before being multiplied by 100.0.",
+      "c": "Multiplying by `100.0` is not allowed with `int` operands.",
+      "d": "`std::cout` cannot print `double` values."
+    },
+    "answer": "b",
+    "explanation_md": "`part / total` is `3 / 20` in integer arithmetic, which is `0` (truncated). Multiplying `0` by `100.0` is still `0.0`. The fix is to cast before dividing: `static_cast<double>(part) / total * 100.0`. The cast must happen before the division, not after."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does brace initialization `{}` do differently from direct initialization `()` regarding narrowing conversions?",
+    "options": {
+      "a": "Nothing — they behave identically for all types.",
+      "b": "Brace initialization produces a compile error for narrowing conversions; direct initialization silently truncates.",
+      "c": "Brace initialization rounds to the nearest integer; direct initialization truncates.",
+      "d": "Direct initialization produces a compile error; brace initialization silently converts."
+    },
+    "answer": "b",
+    "explanation_md": "Brace initialization (`{}`) rejects narrowing conversions at compile time — for example, `int x { 3.9 }` is a compile error. Direct initialization (`int x(3.9)` or `int x = 3.9`) silently truncates the value to `3`. This is why brace initialization is preferred: it catches data-loss mistakes before the program runs."
+  }
+]

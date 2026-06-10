@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int x = 10 + 5;\n    const int y = x * 2;\n    std::cout << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "30",
+    "explanation_md": "The compiler folds `10 + 5` to `15`, then folds `15 * 2` to `30` at compile time under the as-if rule. The program prints `30` — the same value it would produce if the arithmetic happened at runtime."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes the as-if rule?",
+    "options": {
+      "a": "The compiler must execute every line of source code in the exact order written.",
+      "b": "The compiler may transform code in any way, as long as the observable behavior (program output, return values) is unchanged.",
+      "c": "The compiler can only optimize code inside functions marked `const`.",
+      "d": "The as-if rule only applies when the programmer writes `constexpr`."
+    },
+    "answer": "b",
+    "explanation_md": "The as-if rule permits the compiler to rearrange, remove, or precompute anything — regardless of `const` or `constexpr` keywords — as long as the externally visible behavior remains identical. Option (a) is the wrong mental model that the rule explicitly contradicts."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes `int result = 60 * 60 * 24;` in their program. Under the as-if rule, what is most likely to happen at runtime?",
+    "options": {
+      "a": "Two multiplications are performed at runtime, just as written.",
+      "b": "The expression is evaluated once per program run and cached.",
+      "c": "The compiler replaces the expression with the constant `86400` and no multiplication occurs at runtime.",
+      "d": "The result depends on whether the variable is declared `const`."
+    },
+    "answer": "c",
+    "explanation_md": "Constant folding is one of the most common applications of the as-if rule. The compiler can evaluate `60 * 60 * 24` at build time and embed `86400` directly into the executable, so no multiplication happens at runtime. This optimization applies regardless of `const`, though `const` does give the compiler a stronger hint."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a = 100;\n    int b = a - a;\n    std::cout << b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0",
+    "explanation_md": "`a - a` is always `0` regardless of the value of `a`. The compiler can fold this to the constant `0` at compile time. The program prints `0`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student is surprised that the following program runs but doesn't seem to use the variable `area` anywhere meaningful. What is really happening?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int width = 4;\n    const int height = 5;\n    int area = width * height;\n    std::cout << width << \" \" << height << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The program will not compile because `area` is unused.",
+      "b": "The program will crash at runtime because `area` is never printed.",
+      "c": "The compiler can legally eliminate `area` entirely since it has no effect on the output, which just prints `4 5`.",
+      "d": "The compiler is required to store `area` on the stack even if it is never used."
+    },
+    "answer": "c",
+    "explanation_md": "Under the as-if rule, the compiler can remove any computation that does not affect observable behavior. Since `area` is computed but never used in I/O or returned, the multiplication may be eliminated. The program compiles and prints `4 5`; option (a) is wrong because unused variables are warnings, not errors, and the code is otherwise valid."
+  }
+]

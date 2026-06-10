@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nconstexpr int square(int x) { return x * x; }\n\nint main() {\n    constexpr int s{ square(7) };\n    std::cout << s << '\\n';\n}\n```",
+    "options": null,
+    "answer": "49",
+    "explanation_md": "`square(7)` is a constant expression: both the function and its argument are compile-time values. The compiler evaluates `7 * 7 = 49` during compilation and stores it in `s`. At runtime the program simply prints `49`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A teammate writes:\n\n```cpp\nint age{};\nstd::cin >> age;\nconstexpr int doubled{ age * 2 };\n```\n\nWhat happens?",
+    "options": {
+      "a": "The code compiles and runs; doubled is computed at runtime.",
+      "b": "The code compiles but prints a garbage value because age is uninitialized.",
+      "c": "The code fails to compile because age is not a constant expression.",
+      "d": "The code compiles only if age is declared const first."
+    },
+    "answer": "c",
+    "explanation_md": "`constexpr` requires that the initializer is fully evaluatable at compile time. `age` is a regular variable whose value is only known after `cin` runs — that is a runtime event. The compiler rejects `constexpr int doubled{ age * 2 }` with an error. Using `const int doubled{ age * 2 }` would compile because `const` only means the value won't change, not that it must be known at compile time."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer `std::string_view` over `const std::string&` as a function parameter?",
+    "options": {
+      "a": "When the function needs to modify the string.",
+      "b": "When the function only reads the string and may be called with string literals or substrings.",
+      "c": "When you need the string to remain valid after the function returns.",
+      "d": "When the string is very short (under 15 characters)."
+    },
+    "answer": "b",
+    "explanation_md": "`std::string_view` accepts a `std::string`, a string literal, or a `string_view::substr` result without any allocation or copy. `const std::string&` forces the compiler to construct a temporary `std::string` when given a literal, which involves a heap allocation. Option a is wrong — `string_view` is read-only. Option c is wrong — the view must not outlive its source. Option d is irrelevant to the choice."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nint main() {\n    std::string_view sv{ \"abcdef\" };\n    sv.remove_prefix(2);\n    sv.remove_suffix(1);\n    std::cout << sv << '\\n';\n    std::cout << sv.size() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "cde\n3",
+    "explanation_md": "`remove_prefix(2)` advances past `ab`, leaving `\"cdef\"`. `remove_suffix(1)` drops `f`, leaving `\"cde\"`. The view is 3 characters long. Neither call touches the underlying literal — only the pointer and length stored in `sv` change."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The program below is supposed to print `9` (the square of 3). What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int n{ 3 };\n    constexpr int result{ n * n };\n    std::cout << result << '\\n';\n}\n```",
+    "options": {
+      "a": "const int n cannot be used in a constexpr initializer.",
+      "b": "There is no bug; the program prints 9.",
+      "c": "constexpr int result must be initialized with a literal, not an expression.",
+      "d": "n * n is integer overflow because n is too small for int."
+    },
+    "answer": "b",
+    "explanation_md": "A `const` variable initialized with a literal (`3`) is a constant expression. `n * n` is therefore also a constant expression, and `constexpr int result{ n * n }` is perfectly valid. The compiler evaluates it to `9` at compile time. The program compiles and prints `9` without any issue."
+  }
+]

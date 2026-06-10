@@ -183,3 +183,108 @@
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/3_x_ex1_starter.cpp:11:19: warning: unused parameter 'value' [-Wunused-parameter]
    11 | int addOffset(int value, int offset)
      
+
+## 4.10 — pass
+- **warning**: 4_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_10_ex2_starter.cpp:3:22: warning: unused parameter 'score' [-Wunused-parameter]
+    3 | char gradeLetter(int score)
+      |                      ^
+1 warning generated.
+
+
+## 4.12 — pass
+- **warning**: 4_12_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_12_ex2_starter.cpp:3:21: warning: unused parameter 'c' [-Wunused-parameter]
+    3 | int charToCode(char c)
+      |                     ^
+1 warning generated.
+
+
+## 4.6 — pass
+- **warning**: 4_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_6_ex1_starter.cpp:6:36: warning: unused parameter 'width_bits' [-Wunused-parameter]
+    6 | std::size_t totalBytes(std::size_t width_bits, std::size_t count)
+      |                                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_6_ex1_starter.cpp:6:60: warning: unused parameter 'co
+- **warning**: 4_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_6_ex2_starter.cpp:6:29: warning: unused parameter 'a' [-Wunused-parameter]
+    6 | int wouldOverflow16(int32_t a, int32_t b)
+      |                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_6_ex2_starter.cpp:6:40: warning: unused parameter 'b' [-Wunused-parameter]
+    6 | int wouldO
+
+## 4.8 — pass
+- **warning**: 4_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_8_ex2_starter.cpp:6:31: warning: unused parameter 'v1' [-Wunused-parameter]
+    6 | double weightedAverage(double v1, int w1, double v2, int w2)
+      |                               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/4_8_ex2_starter.cpp:6:39: warning: unused parameter 'w1' [-Wunused-parame
+
+## 5.2 — pass
+- **warning**: 5_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/5_2_ex2_starter.cpp:5:24: warning: unused variable 'NIBBLE_MASK' [-Wunused-variable]
+    5 |     const unsigned int NIBBLE_MASK{ 0x0Fu };
+      |                        ^~~~~~~~~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/5_2_ex2_starter.cpp:3:42: warning: unused parameter 'value' [-Wunused-parameter
+
+## 5.4 — pass
+- **warning**: 5_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/5_4_ex2_starter.cpp:6:23: warning: unused parameter 'radius' [-Wunused-parameter]
+    6 | double circleArea(int radius) {
+      |                       ^
+1 warning generated.
+
+
+## 5.6 — pass
+- **warning**: 5_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/5_6_ex2_starter.cpp:6:32: warning: unused parameter 'celsius' [-Wunused-parameter]
+    6 | double celsiusToFahrenheit(int celsius) {
+      |                                ^
+1 warning generated.
+
+
+## 5.8 — pass
+- **warning**: 5_8_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/5_8_ex1_starter.cpp:7:33: warning: unused parameter 'sv' [-Wunused-parameter]
+    7 | void printInfo(std::string_view sv) {
+      |                                 ^
+1 warning generated.
+
+
+## 5.x — pass
+- **warning**: 5_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/5_x_ex2_starter.cpp:7:44: warning: unused parameter 'word' [-Wunused-parameter]
+    7 | std::string_view classify(std::string_view word) {
+      |                                            ^
+1 warning generated.
+
+
+## 6.5 — pass
+- **warning**: 6_5_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/6_5_ex2_starter.cpp:10:9: warning: variable 'y' set but not used [-Wunused-but-set-variable]
+   10 |     int y = 0;
+      |         ^
+1 warning generated.
+
+- **warning**: 6_5_ex2_solution: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/6_5_ex2_solution.cpp:9:9: warning: variable 'x' set but not used [-Wunused-but-set-variable]
+    9 |     int x = 0;
+      |         ^
+1 warning generated.
+
+
+## 6.6 — pass
+- **warning**: 6_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/6_6_ex2_starter.cpp:5:15: warning: unused parameter 'value' [-Wunused-parameter]
+    5 | int clamp(int value, int lo, int hi) {
+      |               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/6_6_ex2_starter.cpp:5:26: warning: unused parameter 'lo' [-Wunused-parameter]
+    5 | int clamp(int value, i
+
+## 6.8 — pass
+- **warning**: 6_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/6_8_ex2_starter.cpp:5:21: warning: unused parameter 'year' [-Wunused-parameter]
+    5 | bool isLeapYear(int year) {
+      |                     ^
+1 warning generated.
+

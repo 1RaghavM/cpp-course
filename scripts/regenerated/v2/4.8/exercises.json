@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Floating-Point Equality Checker",
+    "prompt_md": "## Goal\nWrite a program that reads two floating-point numbers and prints whether they are exactly equal (using `==`) and whether they are approximately equal (within 1e-9).\n\n## Input\n- Line 1: floating-point number `a`\n- Line 2: floating-point number `b`\n\n## Output\nPrint exactly two lines:\n- Line 1: `1` if `a == b` (exact equality), `0` otherwise.\n- Line 2: `1` if `|a - b| < 1e-9` (approximate equality), `0` otherwise.\n\n## Requirements\n1. Read both values into `double` variables named `a` and `b`.\n2. Print `(a == b)` on the first line.\n3. Compute the difference `a - b`, then use `std::abs` from `<cmath>` to get its absolute value.\n4. Print whether `std::abs(a - b) < 1.0e-9` on the second line.\n5. For inputs `0.1 + 0.2` and `0.3`, the program reads two separate numbers from stdin — do not compute 0.1+0.2 in the program; just read `a` and `b` as-is.\n6. For inputs `0.30000000000000004` and `0.3`, the exact equality must print `0` and the approximate equality must print `1`.\n7. For inputs `1.0` and `2.0`, both lines must print `0`.\n\n## Notes\n- Include `<cmath>` for `std::abs` on `double` values.",
+    "starter_code": "#include <cmath>\n#include <iostream>\n\nint main()\n{\n    double a {};\n    double b {};\n\n    std::cin >> a;\n    std::cin >> b;\n\n    // TODO: print (a == b) on line 1\n    // TODO: print (std::abs(a - b) < 1.0e-9) on line 2\n\n    return 0;\n}\n",
+    "solution_code": "#include <cmath>\n#include <iostream>\n\nint main()\n{\n    double a {};\n    double b {};\n\n    std::cin >> a;\n    std::cin >> b;\n\n    std::cout << (a == b) << \"\\n\";\n    std::cout << (std::abs(a - b) < 1.0e-9) << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: nearly-equal doubles",
+        "is_sample": true,
+        "stdin": "0.30000000000000004\n0.3\n",
+        "expected_stdout": "0\n1\n"
+      },
+      {
+        "label": "Hidden: exactly equal values",
+        "is_sample": false,
+        "stdin": "1.5\n1.5\n",
+        "expected_stdout": "1\n1\n"
+      },
+      {
+        "label": "Hidden: clearly different values",
+        "is_sample": false,
+        "stdin": "1.0\n2.0\n",
+        "expected_stdout": "0\n0\n"
+      }
+    ]
+  },
+  {
+    "title": "Weighted Average",
+    "prompt_md": "## Goal\nComplete the function `weightedAverage` that computes the weighted average of two `double` values given their respective integer weights.\n\n## Input\n- Line 1: floating-point number `value1`\n- Line 2: integer `weight1` (1 ≤ weight1 ≤ 100)\n- Line 3: floating-point number `value2`\n- Line 4: integer `weight2` (1 ≤ weight2 ≤ 100)\n\n## Output\nPrint exactly one line: the weighted average as a `double` using default `std::cout` formatting.\n\n## Requirements\n1. Complete the function `double weightedAverage(double v1, int w1, double v2, int w2)` which returns `(v1 * w1 + v2 * w2) / (w1 + w2)`.\n2. The integer weights must be converted to `double` before the division so that integer division is not performed.\n3. `main()` reads the four values, calls `weightedAverage`, and prints the result followed by a newline.\n4. For inputs `10.0`, `1`, `20.0`, `3`, the output must be `17.5`.\n5. For inputs `0.0`, `1`, `100.0`, `1`, the output must be `50`.\n6. For inputs `3.0`, `2`, `6.0`, `1`, the output must be `4`.\n\n## Notes\n- Use `static_cast<double>` (covered in lesson 4.12) if needed, or rely on the implicit promotion of `int` to `double` in a mixed arithmetic expression.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete this function\n// Returns (v1 * w1 + v2 * w2) / (w1 + w2)\n// Make sure the division is floating-point, not integer division\ndouble weightedAverage(double v1, int w1, double v2, int w2)\n{\n    return 0.0; // TODO: replace with correct expression\n}\n\nint main()\n{\n    double v1 {};\n    int    w1 {};\n    double v2 {};\n    int    w2 {};\n\n    std::cin >> v1 >> w1 >> v2 >> w2;\n\n    std::cout << weightedAverage(v1, w1, v2, w2) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ndouble weightedAverage(double v1, int w1, double v2, int w2)\n{\n    return (v1 * w1 + v2 * w2) / (w1 + w2);\n}\n\nint main()\n{\n    double v1 {};\n    int    w1 {};\n    double v2 {};\n    int    w2 {};\n\n    std::cin >> v1 >> w1 >> v2 >> w2;\n\n    std::cout << weightedAverage(v1, w1, v2, w2) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10.0 weight 1, 20.0 weight 3",
+        "is_sample": true,
+        "stdin": "10.0\n1\n20.0\n3\n",
+        "expected_stdout": "17.5\n"
+      },
+      {
+        "label": "Hidden: equal weights",
+        "is_sample": false,
+        "stdin": "0.0\n1\n100.0\n1\n",
+        "expected_stdout": "50\n"
+      },
+      {
+        "label": "Hidden: weight 2 and 1",
+        "is_sample": false,
+        "stdin": "3.0\n2\n6.0\n1\n",
+        "expected_stdout": "4\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a = 7;\n    int b = 2;\n    std::cout << a / b << '\\n';\n    std::cout << a % b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n1",
+    "explanation_md": "Both `a` and `b` are `int`, so `/` does integer division: `7 / 2 = 3` (truncated toward zero). The remainder is `7 - 3*2 = 1`. If you expected `3.5`, remember that you need at least one `double` operand for floating-point division."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 10;\n    x += 3;\n    x *= 2;\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "26",
+    "explanation_md": "`x += 3` sets x to 13 (10 + 3). `x *= 2` sets x to 26 (13 * 2). Compound assignment operators apply the operation and store the result back into the variable."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the type and value of the expression `9 / 4` in C++?",
+    "options": {
+      "a": "`double`, value `2.25`",
+      "b": "`int`, value `2`",
+      "c": "`int`, value `3`",
+      "d": "`double`, value `2.0`"
+    },
+    "answer": "b",
+    "explanation_md": "Both `9` and `4` are integer literals, so `/` performs integer division. The result is `int` with value `2` (the fraction `.25` is discarded by truncation toward zero, not rounding). To get `2.25`, at least one operand must be a floating-point type, e.g. `9.0 / 4`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which expression correctly computes the floating-point average of two `int` variables `a` and `b`?",
+    "options": {
+      "a": "`(a + b) / 2`",
+      "b": "`static_cast<double>(a + b) / 2`",
+      "c": "`a + b / 2.0`",
+      "d": "`(double)(a) + (double)(b) / 2`"
+    },
+    "answer": "b",
+    "explanation_md": "Option (a) does integer division. Option (b) casts the sum to `double` before dividing, giving the correct fractional average. Option (c) only converts `b` and divides before adding `a` (wrong precedence). Option (d) only divides `b` by 2.0 and adds full `a` — also incorrect."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to check if a number is even. Their code always prints \"odd\" for the number 4. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int n = 4;\n    if (n / 2 == 0)\n        std::cout << \"even\\n\";\n    else\n        std::cout << \"odd\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "Integer division `n / 2` produces a floating-point result that is never exactly 0.",
+      "b": "The student used `/` instead of `%`; `n % 2 == 0` correctly checks for evenness.",
+      "c": "`==` has higher precedence than `/`, so the comparison is evaluated before the division.",
+      "d": "The `if` condition needs parentheses around `n / 2`."
+    },
+    "answer": "b",
+    "explanation_md": "Dividing by 2 tells you the quotient, not the remainder. `4 / 2` is `2`, which is not `0`, so the program takes the else branch. The remainder operator `%` is the right tool: `n % 2 == 0` checks whether there is no remainder after dividing by 2, which is the definition of evenness."
+  }
+]

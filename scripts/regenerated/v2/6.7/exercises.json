@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compare Two Integers and Classify",
+    "prompt_md": "## Goal\nRead two integers and print one of three classification lines depending on their relationship.\n\n## Input\nLine 1: two space-separated integers `a` and `b` (each between -1000 and 1000 inclusive).\n\n## Output\nPrint exactly one line (followed by a newline):\n- `a < b` if a is less than b\n- `a > b` if a is greater than b\n- `a == b` if they are equal\n\n## Requirements\n1. Use relational operators (`<`, `>`, `==`) to determine the relationship.\n2. Use the conditional operator (`?:`) to select the output string — no if-else statements.\n3. The output uses the literal characters `<`, `>`, or `==` (not words like \"less\" or \"equal\").\n4. Hidden tests cover: a equal to b, a large positive vs large negative, both zero.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: use the conditional operator to produce one of three strings:\n    // \"a < b\", \"a > b\", or \"a == b\"\n    // Store the result in a const char* variable and print it.\n    const char* result = \"?\";\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    const char* result = (a < b) ? \"a < b\" : (a > b) ? \"a > b\" : \"a == b\";\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a less than b",
+        "is_sample": true,
+        "stdin": "3 7\n",
+        "expected_stdout": "a < b\n"
+      },
+      {
+        "label": "Hidden: a equals b",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "a == b\n"
+      },
+      {
+        "label": "Hidden: a greater than b",
+        "is_sample": false,
+        "stdin": "100 -50\n",
+        "expected_stdout": "a > b\n"
+      }
+    ]
+  },
+  {
+    "title": "Floating-Point Equality Checker (Fix the Bug)",
+    "prompt_md": "## Goal\nThis program reads two doubles computed via arithmetic and is supposed to print `equal` if they are mathematically equal, or `not equal` otherwise. Find and fix the one logic bug.\n\n## Input\nLine 1: two space-separated doubles.\n\n## Output\nPrint exactly one line: `equal` or `not equal` followed by a newline.\n\n## Requirements\n1. The bug is a logic error — the program compiles and runs, but gives the wrong result for certain inputs.\n2. The fix must use an epsilon comparison with `std::abs` from `<cmath>` and an epsilon of `1e-9`.\n3. Hidden tests cover: values that are mathematically equal after floating-point arithmetic (e.g. `0.1` and `0.1`), values that differ by more than epsilon, and values equal to zero.\n4. Do not change the program structure — only fix the one broken condition.",
+    "starter_code": "#include <iostream>\n#include <cmath>\n\nint main() {\n    double a, b;\n    std::cin >> a >> b;\n\n    // BUG: this comparison is not reliable for floating-point values\n    if (a == b) {\n        std::cout << \"equal\\n\";\n    } else {\n        std::cout << \"not equal\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cmath>\n\nint main() {\n    double a, b;\n    std::cin >> a >> b;\n\n    if (std::abs(a - b) < 1e-9) {\n        std::cout << \"equal\\n\";\n    } else {\n        std::cout << \"not equal\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: clearly equal values",
+        "is_sample": true,
+        "stdin": "3.5 3.5\n",
+        "expected_stdout": "equal\n"
+      },
+      {
+        "label": "Hidden: clearly unequal values",
+        "is_sample": false,
+        "stdin": "1.0 2.0\n",
+        "expected_stdout": "not equal\n"
+      },
+      {
+        "label": "Hidden: both zero",
+        "is_sample": false,
+        "stdin": "0.0 0.0\n",
+        "expected_stdout": "equal\n"
+      }
+    ]
+  }
+]

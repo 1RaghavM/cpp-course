@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    char c { 'A' };\n    std::cout << c << '\\n';\n    std::cout << static_cast<int>(c) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\n65",
+    "explanation_md": "When a `char` is printed directly, `std::cout` displays the character symbol. When cast to `int` with `static_cast<int>`, the underlying ASCII value is displayed. The ASCII value of `'A'` is 65."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between `'A'` and `\"A\"` in C++?",
+    "options": {
+      "a": "There is no difference; both represent the character A.",
+      "b": "`'A'` is a `char` literal (value 65); `\"A\"` is a string literal (a `const char*` pointing to `{'A', '\\0'}`).",
+      "c": "`'A'` is an integer; `\"A\"` is a `char`.",
+      "d": "`'A'` uses more memory than `\"A\"`."
+    },
+    "answer": "b",
+    "explanation_md": "Single-quote literals are `char` values — one byte holding the character's ASCII code. Double-quote literals are string literals: a `const char*` pointing to an array of characters terminated by a null byte `'\\0'`. Trying to assign `\"A\"` to a `char` variable is a compile error."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    char c { 'a' };\n    char upper { static_cast<char>(c - 32) };\n    std::cout << upper << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A",
+    "explanation_md": "In ASCII, lowercase letters are exactly 32 positions above their uppercase counterparts. `'a'` is 97; subtracting 32 gives 65, which is `'A'`. The `static_cast<char>` converts the integer result back to a `char`, and `std::cout` prints the character symbol."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the letter grade entered by the user, but it does not compile. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    char grade { \"B\" };\n    std::cout << grade << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The variable name `grade` is reserved in C++.",
+      "b": "`\"B\"` is a string literal (`const char*`), not a `char`; it cannot initialize a `char` variable.",
+      "c": "You cannot print a `char` with `std::cout`.",
+      "d": "`char` variables must be initialized with an integer, not a letter."
+    },
+    "answer": "b",
+    "explanation_md": "Double-quoted literals are string literals of type `const char*`. Assigning one to a `char` variable is a type mismatch that the compiler rejects. The fix is to use single quotes: `char grade { 'B' }`. Single quotes create a `char` literal."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which expression correctly tests whether a `char c` holds a lowercase letter (assuming standard ASCII)?",
+    "options": {
+      "a": "`c == 'a' || c == 'z'`",
+      "b": "`c >= 97 && c <= 122`",
+      "c": "`c >= 'a' && c <= 'z'`",
+      "d": "Both b and c are correct."
+    },
+    "answer": "d",
+    "explanation_md": "Both expressions are equivalent and correct. `'a'` is 97 and `'z'` is 122 in ASCII, so comparing against the character literals or their integer values produces the same result. Option c is preferred in practice because it makes the intent clearer without requiring knowledge of the ASCII table."
+  }
+]

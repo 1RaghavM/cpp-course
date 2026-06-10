@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Time Breakdown with Constexpr Constants",
+    "prompt_md": "## Goal\nWrite a program that reads a number of seconds and breaks it down into hours and remaining seconds, using `constexpr` constants for the conversion factors.\n\n## Input\n- Line 1: one non-negative integer `total_seconds` (0 to 86399)\n\n## Output\nPrint exactly two lines:\n- `hours: <h>` where `h` is `total_seconds / 3600` (integer division)\n- `remaining_seconds: <r>` where `r` is `total_seconds % 3600`\n\nExample: input `7384` prints:\n```\nhours: 2\nremaining_seconds: 184\n```\n\n## Requirements\n1. Declare `constexpr int seconds_per_minute{ 60 }` and `constexpr int minutes_per_hour{ 60 }`.\n2. Compute `constexpr int seconds_per_hour{ seconds_per_minute * minutes_per_hour }` — use the two constants, do not hardcode 3600.\n3. Read `total_seconds` as `int`.\n4. Compute `hours` and `remaining_seconds` using `seconds_per_hour`.\n5. Print exactly as shown: label, colon, space, value, newline. No extra blank lines.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare constexpr int seconds_per_minute{ 60 }\n    // TODO: declare constexpr int minutes_per_hour{ 60 }\n    // TODO: declare constexpr int seconds_per_hour using the two constants above\n\n    int total_seconds{};\n    std::cin >> total_seconds;\n\n    // TODO: compute hours and remaining_seconds\n    // TODO: print \"hours: <h>\" and \"remaining_seconds: <r>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    constexpr int seconds_per_minute{ 60 };\n    constexpr int minutes_per_hour{ 60 };\n    constexpr int seconds_per_hour{ seconds_per_minute * minutes_per_hour };\n\n    int total_seconds{};\n    std::cin >> total_seconds;\n\n    int hours{ total_seconds / seconds_per_hour };\n    int remaining_seconds{ total_seconds % seconds_per_hour };\n\n    std::cout << \"hours: \" << hours << \"\\n\";\n    std::cout << \"remaining_seconds: \" << remaining_seconds << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7384 seconds",
+        "is_sample": true,
+        "stdin": "7384\n",
+        "expected_stdout": "hours: 2\nremaining_seconds: 184"
+      },
+      {
+        "label": "Hidden: 0 seconds",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "hours: 0\nremaining_seconds: 0"
+      },
+      {
+        "label": "Hidden: 3600 seconds exactly",
+        "is_sample": false,
+        "stdin": "3600\n",
+        "expected_stdout": "hours: 1\nremaining_seconds: 0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Wrong Constant",
+    "prompt_md": "## Goal\nThe program below converts a total number of minutes into hours and remaining minutes. It compiles and runs, but produces wrong answers. There is exactly one logic bug involving a `constexpr` constant. Find and fix it.\n\n## Input\n- Line 1: one non-negative integer `total_minutes` (0 to 1439)\n\n## Output\nPrint exactly two lines:\n- `hours: <h>` where `h = total_minutes / 60`\n- `remaining_minutes: <r>` where `r = total_minutes % 60`\n\nExample: input `130` prints:\n```\nhours: 2\nremaining_minutes: 10\n```\n\n## Requirements\n1. The bug is in the value of one of the `constexpr` constants — it holds the wrong number.\n2. Do not add or remove variables. Fix only the incorrect constant value.\n3. Do not change the output format.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // BUG: one of these constants has the wrong value\n    constexpr int minutes_per_hour{ 100 };\n\n    int total_minutes{};\n    std::cin >> total_minutes;\n\n    int hours{ total_minutes / minutes_per_hour };\n    int remaining_minutes{ total_minutes % minutes_per_hour };\n\n    std::cout << \"hours: \" << hours << \"\\n\";\n    std::cout << \"remaining_minutes: \" << remaining_minutes << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    constexpr int minutes_per_hour{ 60 };\n\n    int total_minutes{};\n    std::cin >> total_minutes;\n\n    int hours{ total_minutes / minutes_per_hour };\n    int remaining_minutes{ total_minutes % minutes_per_hour };\n\n    std::cout << \"hours: \" << hours << \"\\n\";\n    std::cout << \"remaining_minutes: \" << remaining_minutes << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 130 minutes",
+        "is_sample": true,
+        "stdin": "130\n",
+        "expected_stdout": "hours: 2\nremaining_minutes: 10"
+      },
+      {
+        "label": "Hidden: 0 minutes",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "hours: 0\nremaining_minutes: 0"
+      },
+      {
+        "label": "Hidden: 60 minutes exactly",
+        "is_sample": false,
+        "stdin": "60\n",
+        "expected_stdout": "hours: 1\nremaining_minutes: 0"
+      }
+    ]
+  }
+]

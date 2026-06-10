@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Character Category Detector",
+    "prompt_md": "## Goal\nRead a single non-whitespace character and report its category: uppercase letter, lowercase letter, digit, or other.\n\n## Input\n- Line 1: one non-whitespace character.\n\n## Output\n- Print exactly one of the following lines (no extra spaces or punctuation):\n  - `uppercase`\n  - `lowercase`\n  - `digit`\n  - `other`\n\n## Requirements\n1. Use `if/else if/else` to determine the category.\n2. Uppercase: `'A'` through `'Z'` inclusive (use character literal comparisons, not magic numbers).\n3. Lowercase: `'a'` through `'z'` inclusive.\n4. Digit: `'0'` through `'9'` inclusive.\n5. Anything else (punctuation, symbols): print `other`.\n\n## Notes\n- Process exactly one character. No loops required.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n\n    // TODO: use if/else if/else to print the category\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n\n    if (c >= 'A' && c <= 'Z')\n        std::cout << \"uppercase\\n\";\n    else if (c >= 'a' && c <= 'z')\n        std::cout << \"lowercase\\n\";\n    else if (c >= '0' && c <= '9')\n        std::cout << \"digit\\n\";\n    else\n        std::cout << \"other\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: lowercase letter",
+        "is_sample": true,
+        "stdin": "g\n",
+        "expected_stdout": "lowercase"
+      },
+      {
+        "label": "Hidden: digit",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "digit"
+      },
+      {
+        "label": "Hidden: punctuation",
+        "is_sample": false,
+        "stdin": "!\n",
+        "expected_stdout": "other"
+      }
+    ]
+  },
+  {
+    "title": "ASCII Shift Bug Fix",
+    "prompt_md": "## Goal\nThe program below reads a single uppercase letter and is supposed to print the letter that is two positions later in the alphabet (e.g. `'C'` → `'E'`). It compiles and runs, but it prints the wrong character. Find and fix the single logic bug.\n\n## Input\n- Line 1: one uppercase letter (`'A'` through `'X'` inclusive — you may assume the input will never be `'Y'` or `'Z'`).\n\n## Output\n- Print the shifted character followed by a newline.\n\n## Requirements\n1. The shifted character must be exactly 2 positions later in the ASCII table.\n2. Use `static_cast<char>` when converting the arithmetic result back to `char`.\n\n## Notes\n- The bug is a logic error in the arithmetic, not a compile error.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n\n    char shifted { static_cast<char>(c + 3) };  // BUG: wrong offset\n    std::cout << shifted << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n\n    char shifted { static_cast<char>(c + 2) };  // fixed: 3 -> 2\n    std::cout << shifted << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: C -> E",
+        "is_sample": true,
+        "stdin": "C\n",
+        "expected_stdout": "E"
+      },
+      {
+        "label": "Hidden: A -> C",
+        "is_sample": false,
+        "stdin": "A\n",
+        "expected_stdout": "C"
+      },
+      {
+        "label": "Hidden: M -> O",
+        "is_sample": false,
+        "stdin": "M\n",
+        "expected_stdout": "O"
+      }
+    ]
+  }
+]

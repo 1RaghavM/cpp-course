@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Numeral System Display",
+    "prompt_md": "## Goal\nWrite a program that reads a decimal integer and prints it in three numeral representations.\n\n## Input\n- Line 1: one non-negative integer `n` in the range [0, 255]\n\n## Output\nPrint exactly three lines:\n- `dec: <n>` (decimal, plain `std::cout`)\n- `hex: <n>` (hexadecimal, using `std::hex`)\n- `oct: <n>` (octal, using `std::oct`)\n\nExample: input `255` prints:\n```\ndec: 255\nhex: ff\noct: 377\n```\n\n## Requirements\n1. Read `n` as `unsigned int`.\n2. Use `std::dec`, `std::hex`, and `std::oct` stream manipulators from `<iostream>` — do not manually convert the number.\n3. After switching to `hex` or `oct`, switch back to `dec` with `std::dec` before printing the decimal line.\n4. Print labels exactly as shown: `dec: `, `hex: `, `oct: ` (lowercase label, colon, space).\n5. Hexadecimal digits must be lowercase (`ff`, not `FF`).\n6. No extra blank lines.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    unsigned int n{};\n    std::cin >> n;\n\n    // TODO: print \"dec: <n>\" in decimal\n    // TODO: print \"hex: <n>\" in hexadecimal (lowercase)\n    // TODO: print \"oct: <n>\" in octal\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    unsigned int n{};\n    std::cin >> n;\n\n    std::cout << \"dec: \" << std::dec << n << \"\\n\";\n    std::cout << \"hex: \" << std::hex << n << \"\\n\";\n    std::cout << \"oct: \" << std::oct << n << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 255",
+        "is_sample": true,
+        "stdin": "255\n",
+        "expected_stdout": "dec: 255\nhex: ff\noct: 377"
+      },
+      {
+        "label": "Hidden: 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "dec: 0\nhex: 0\noct: 0"
+      },
+      {
+        "label": "Hidden: 16",
+        "is_sample": false,
+        "stdin": "16\n",
+        "expected_stdout": "dec: 16\nhex: 10\noct: 20"
+      }
+    ]
+  },
+  {
+    "title": "Bit Mask Extractor",
+    "prompt_md": "## Goal\nComplete the function `extract_nibble` that extracts the lower 4 bits (the low nibble) of an integer using a bitmask and returns the result.\n\n## Input\n- Line 1: one non-negative integer `n` in the range [0, 255]\n\n## Output\nPrint exactly one line: the decimal value of the lower 4 bits of `n`.\n\nExample: input `0b1010'1101` (= 173) → lower nibble is `0b0000'1101` (= 13), so print `13`.\n\n## Requirements\n1. Complete `extract_nibble` so it returns `value & NIBBLE_MASK` where `NIBBLE_MASK` is the `const unsigned int` already declared in the function.\n2. `NIBBLE_MASK` must be defined as `0x0Fu` (hexadecimal literal with `u` suffix) — do not change it.\n3. `main` reads `n` as `unsigned int`, calls `extract_nibble(n)`, and prints the result followed by a newline.\n4. Do not add loops, additional parameters, or extra output.\n\n## Notes\n- The bitwise AND operator `&` keeps only the bits that are set in both operands.",
+    "starter_code": "#include <iostream>\n\nunsigned int extract_nibble(unsigned int value)\n{\n    const unsigned int NIBBLE_MASK{ 0x0Fu };\n    // TODO: return the lower 4 bits of value using NIBBLE_MASK\n    return 0u;\n}\n\nint main()\n{\n    unsigned int n{};\n    std::cin >> n;\n    std::cout << extract_nibble(n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nunsigned int extract_nibble(unsigned int value)\n{\n    const unsigned int NIBBLE_MASK{ 0x0Fu };\n    return value & NIBBLE_MASK;\n}\n\nint main()\n{\n    unsigned int n{};\n    std::cin >> n;\n    std::cout << extract_nibble(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 173 (lower nibble 13)",
+        "is_sample": true,
+        "stdin": "173\n",
+        "expected_stdout": "13"
+      },
+      {
+        "label": "Hidden: 0 (lower nibble 0)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: 255 (lower nibble 15)",
+        "is_sample": false,
+        "stdin": "255\n",
+        "expected_stdout": "15"
+      }
+    ]
+  }
+]

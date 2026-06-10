@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Integer and Float Division",
+    "prompt_md": "## Goal\nRead two integers and print both their integer quotient and their floating-point quotient.\n\n## Input\n- Line 1: integer A (divisor is guaranteed non-zero)\n- Line 2: integer B (B != 0)\n\n## Output\nPrint exactly two lines:\n- `int: <value>` — result of integer division `A / B`\n- `float: <value>` — result of floating-point division, with exactly two decimal places\n\n## Requirements\n1. Use `static_cast<double>` to compute the floating-point quotient.\n2. Use `std::cout` with `std::fixed` and `std::setprecision(2)` to print exactly two decimal places.\n3. A and B fit in an `int`; A may be 0.\n\n## Notes\n- `#include <iomanip>` to use `std::fixed` and `std::setprecision`.\n",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    // TODO: print integer division result\n    // TODO: print floating-point division result with 2 decimal places\n    // Use static_cast<double>(a) / b for the float version\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    std::cout << \"int: \" << a / b << '\\n';\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"float: \" << static_cast<double>(a) / b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7 / 2",
+        "is_sample": true,
+        "stdin": "7\n2\n",
+        "expected_stdout": "int: 3\nfloat: 3.50"
+      },
+      {
+        "label": "Hidden: 9 / 3",
+        "is_sample": false,
+        "stdin": "9\n3\n",
+        "expected_stdout": "int: 3\nfloat: 3.00"
+      },
+      {
+        "label": "Hidden: 1 / 4",
+        "is_sample": false,
+        "stdin": "1\n4\n",
+        "expected_stdout": "int: 0\nfloat: 0.25"
+      }
+    ]
+  },
+  {
+    "title": "Compound Arithmetic Update",
+    "prompt_md": "## Goal\nComplete the function `applyUpdates` that takes an integer by value and applies a series of compound arithmetic operations to it, then returns the result.\n\n## Input\n- Line 1: integer N\n\n## Output\nPrint exactly one line: `result: <value>` where value is the return value of `applyUpdates(N)`.\n\n## Requirements\n1. Complete the function `applyUpdates(int x)` so it:\n   - Adds 5 to x (using `+=`)\n   - Multiplies x by 3 (using `*=`)\n   - Subtracts 2 from x (using `-=`)\n   - Divides x by 2 (using `/=`, integer division)\n   - Returns x\n2. The function takes an `int` and returns an `int`.\n3. `main()` reads N, calls `applyUpdates(N)`, and prints the result.\n4. Edge case: N = 0 should produce `result: 6` (since ((0+5)*3-2)/2 = 13/2 = 6).\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement applyUpdates\n// It should add 5, multiply by 3, subtract 2, divide by 2 (integer division)\n// and return the result\nint applyUpdates(int x)\n{\n    return x; // replace this stub\n}\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    std::cout << \"result: \" << applyUpdates(n) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint applyUpdates(int x)\n{\n    x += 5;\n    x *= 3;\n    x -= 2;\n    x /= 2;\n    return x;\n}\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    std::cout << \"result: \" << applyUpdates(n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: N=1",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "result: 8"
+      },
+      {
+        "label": "Hidden: N=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "result: 6"
+      },
+      {
+        "label": "Hidden: N=10",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "result: 21"
+      }
+    ]
+  }
+]

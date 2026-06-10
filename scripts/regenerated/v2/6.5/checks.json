@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 0;\n    int y = 0;\n    int result = (x = 3, y = 5);\n    std::cout << x << ' ' << y << ' ' << result << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3 5 5",
+    "explanation_md": "The comma operator evaluates `x = 3` (x becomes 3), discards that result, then evaluates `y = 5` (y becomes 5) and returns 5. So `result` is 5. The output is `3 5 5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement correctly describes the comma operator in C++?",
+    "options": {
+      "a": "It evaluates both operands and returns the sum of their values.",
+      "b": "It evaluates the left operand, discards its value, then evaluates and returns the right operand.",
+      "c": "It evaluates both operands in unspecified order and returns the left operand.",
+      "d": "It is identical to the comma used to separate function arguments."
+    },
+    "answer": "b",
+    "explanation_md": "The comma operator guarantees left-to-right evaluation: the left side is evaluated for its side effects, its value is discarded, and then the right side is evaluated and its value is returned. This is distinct from function-argument commas, which have unspecified evaluation order and are not an operator."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the precedence of the comma operator relative to other C++ operators?",
+    "options": {
+      "a": "Higher than all other operators — it always groups tightest.",
+      "b": "The same as assignment `=`.",
+      "c": "Lower than all other operators — it always groups loosest.",
+      "d": "Lower than arithmetic but higher than assignment."
+    },
+    "answer": "c",
+    "explanation_md": "The comma operator has the absolute lowest precedence in C++, even lower than assignment. This is why `int x = a, b;` is parsed as a declaration of two variables (x and b), not as `int x = (a, b)`. You must add parentheses to force the comma-operator interpretation."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a = 2;\n    int b = 4;\n    int c = (a + b, a * b);\n    std::cout << c << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "8",
+    "explanation_md": "The comma operator evaluates `a + b` (which is 6) and discards it, then evaluates `a * b` (which is 8) and returns 8. So `c` is 8."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants `result` to hold the product of `a` and `b` after adding 1 to each. Their code prints the wrong value. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a = 2;\n    int b = 3;\n    int result = ++a, ++b, a * b;\n    std::cout << result << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The comma operator evaluates left-to-right but returns the leftmost value, so result is 3.",
+      "b": "Because the comma operator has lower precedence than `=`, this is a declaration of multiple variables, not a comma-operator expression.",
+      "c": "`++a` causes undefined behavior when used together with `++b` in the same statement.",
+      "d": "The `=` assignment applies to all three comma-separated values, averaging them."
+    },
+    "answer": "b",
+    "explanation_md": "The comma operator has lower precedence than `=`, so `int result = ++a, ++b, a * b;` is parsed as three separate declarations: `result` initialized to `++a` (3), and then `++b` and `a * b` treated as additional declarators — which is actually a compile error. To use the comma operator, wrap everything in parentheses: `int result = (++a, ++b, a * b);`."
+  }
+]

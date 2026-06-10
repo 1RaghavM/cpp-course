@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Unit Converter with Named Constants",
+    "prompt_md": "## Goal\nWrite a program that reads a distance in miles and prints its equivalent in kilometers and meters, using named `const` variables for the conversion factors.\n\n## Input\n- Line 1: one integer `miles` (1 to 1000)\n\n## Output\nPrint exactly two lines:\n- `kilometers: <value>` where value is `miles * 1.60934` printed with 3 decimal places\n- `meters: <value>` where value is the kilometer value multiplied by 1000, printed with 1 decimal place\n\nExample: input `5` prints:\n```\nkilometers: 8.047\nmeters: 8046.7\n```\n\n## Requirements\n1. Declare `const double km_per_mile{ 1.60934 }` and use it for both computations.\n2. Compute `km` as `miles * km_per_mile`.\n3. Compute `m` as `km * 1000.0`.\n4. Use `std::fixed` and `std::setprecision` for formatting. Print `km` with `setprecision(3)` and `m` with `setprecision(1)`.\n5. Do not hardcode `1.60934` more than once.\n\n## Notes\n- Include `<iomanip>` for `std::fixed` and `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    // TODO: declare const double km_per_mile with value 1.60934\n\n    int miles{};\n    std::cin >> miles;\n\n    // TODO: compute km and m using km_per_mile\n    // TODO: print \"kilometers: X\" with 3 decimal places\n    // TODO: print \"meters: Y\" with 1 decimal place\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    const double km_per_mile{ 1.60934 };\n\n    int miles{};\n    std::cin >> miles;\n\n    double km{ miles * km_per_mile };\n    double m{ km * 1000.0 };\n\n    std::cout << \"kilometers: \" << std::fixed << std::setprecision(3) << km << \"\\n\";\n    std::cout << \"meters: \" << std::fixed << std::setprecision(1) << m << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 miles",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "kilometers: 8.047\nmeters: 8046.7"
+      },
+      {
+        "label": "Hidden: 1 mile",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "kilometers: 1.609\nmeters: 1609.3"
+      },
+      {
+        "label": "Hidden: 10 miles",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "kilometers: 16.093\nmeters: 16093.4"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Const Bug",
+    "prompt_md": "## Goal\nThe program below is supposed to compute the area and perimeter of a rectangle given its width and height, using a named constant. It compiles and runs but produces wrong output. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers `width` and `height` separated by a space (both 1 to 100)\n\n## Output\nPrint exactly two lines:\n- `area: <width * height>`\n- `perimeter: <2 * (width + height)>`\n\nExample: input `4 3` prints:\n```\narea: 12\nperimeter: 14\n```\n\n## Requirements\n1. The bug involves misuse of the `perimeter_factor` constant.\n2. `area` must be `width * height`.\n3. `perimeter` must be `perimeter_factor * (width + height)` where `perimeter_factor` is 2.\n4. Do not change the output format or add extra lines.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    const int perimeter_factor{ 2 };\n\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    int area = width * height;\n    // BUG: perimeter is computed incorrectly\n    int perimeter = perimeter_factor * width + height;\n\n    std::cout << \"area: \" << area << \"\\n\";\n    std::cout << \"perimeter: \" << perimeter << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    const int perimeter_factor{ 2 };\n\n    int width{};\n    int height{};\n    std::cin >> width >> height;\n\n    int area = width * height;\n    int perimeter = perimeter_factor * (width + height);\n\n    std::cout << \"area: \" << area << \"\\n\";\n    std::cout << \"perimeter: \" << perimeter << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 x 3",
+        "is_sample": true,
+        "stdin": "4 3\n",
+        "expected_stdout": "area: 12\nperimeter: 14"
+      },
+      {
+        "label": "Hidden: square 5 x 5",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "area: 25\nperimeter: 20"
+      },
+      {
+        "label": "Hidden: 10 x 1",
+        "is_sample": false,
+        "stdin": "10 1\n",
+        "expected_stdout": "area: 10\nperimeter: 22"
+      }
+    ]
+  }
+]

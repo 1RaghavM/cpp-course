@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid showValue(int x) {\n    std::cout << x * 3 << \"\\n\";\n}\n\nint main() {\n    showValue(4);\n    showValue(10);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n30",
+    "explanation_md": "`showValue(4)` computes `4 * 3 = 12` and prints it. `showValue(10)` computes `10 * 3 = 30` and prints it. The function is void — it returns nothing — but still produces output as a side effect."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `void` functions is correct?",
+    "options": {
+      "a": "A `void` function can never have parameters.",
+      "b": "A `void` function must end with `return 0;`.",
+      "c": "A `void` function returns no value but can still perform useful work through side effects.",
+      "d": "A `void` function cannot call other functions."
+    },
+    "answer": "c",
+    "explanation_md": "`void` only means the function does not hand a value back to the caller. It can still take parameters, call other functions, print output, and do any other useful work. Option b is wrong — `return 0;` is required only in `main()`; a `void` function uses bare `return;` or no `return` at all."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid doubleIt(int n) {\n    return n * 2;\n}\n\nint main() {\n    doubleIt(5);\n    return 0;\n}\n```",
+    "options": {
+      "a": "`doubleIt` is called but its result is not stored — this causes a compile error.",
+      "b": "`doubleIt` is declared `void` but tries to return a value with `return n * 2;`.",
+      "c": "`n * 2` overflows because `n` is not large enough.",
+      "d": "`main` must call `doubleIt` inside a `std::cout` statement."
+    },
+    "answer": "b",
+    "explanation_md": "A `void` function may not return a value. The statement `return n * 2;` produces a compile error: \"return-statement with a value, in function returning 'void'\". To fix this, either change the return type to `int` or remove the return value."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes `int result = printMessage();` where `printMessage` is declared as `void printMessage()`. What happens?",
+    "options": {
+      "a": "The program compiles and `result` is set to 0.",
+      "b": "The program compiles but `result` holds an undefined garbage value.",
+      "c": "The compiler produces an error because a void value cannot be assigned.",
+      "d": "The program runs but crashes at runtime when the assignment executes."
+    },
+    "answer": "c",
+    "explanation_md": "You cannot assign the result of a `void` function to a variable because there is no result. The compiler catches this at compile time and produces an error such as \"void value not ignored as it ought to be\". The error occurs before the program ever runs."
+  }
+]

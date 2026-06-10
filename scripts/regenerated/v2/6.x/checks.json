@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int a = 10;\n    int b = 3;\n    std::cout << a / b << \"\\n\";\n    std::cout << a % b << \"\\n\";\n    std::cout << (a > b ? a : b) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n1\n10",
+    "explanation_md": "`10 / 3` is integer division: truncates to 3. `10 % 3` is the remainder: 1. The conditional expression picks the greater value (a = 10). All three lines follow directly from integer arithmetic and ternary rules."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 0;\n    bool r1 = (x != 0) && (10 / x > 1);\n    bool r2 = (x == 0) || (10 / x > 1);\n    std::cout << r1 << \"\\n\";\n    std::cout << r2 << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n1",
+    "explanation_md": "For `r1`, `x != 0` is false so `&&` short-circuits and the division is never evaluated — result is false (0). For `r2`, `x == 0` is true so `||` short-circuits and the division is never evaluated — result is true (1). Both cases demonstrate safe short-circuit evaluation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly computes the integer quotient and remainder of `a` divided by `b` and then prints them, given that `a = 17` and `b = 5`?",
+    "options": {
+      "a": "`std::cout << a / b << \" \" << a % b;` — prints `3 2`",
+      "b": "`std::cout << a / b << \" \" << a % b;` — prints `3.4 2`",
+      "c": "`std::cout << a / b << \" \" << a % b;` — prints `3 17`",
+      "d": "`std::cout << a / b << \" \" << a % b;` — prints `3.4 0`"
+    },
+    "answer": "a",
+    "explanation_md": "Integer division `17 / 5` truncates to 3. The remainder `17 % 5` is 2 (since 17 = 5*3 + 2). Option b is wrong because `int / int` gives an `int`, not a decimal. Options c and d show incorrect remainder values."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes `!(a || b)` and wants to rewrite it without the outer `!`. Which expression is equivalent?",
+    "options": {
+      "a": "`!a || !b`",
+      "b": "`!a && !b`",
+      "c": "`a && b`",
+      "d": "`!(a) || !(b)`"
+    },
+    "answer": "b",
+    "explanation_md": "By De Morgan's law, `!(a || b)` is `!a && !b`. Negating an OR produces AND with each operand negated. Option a (`!a || !b`) is the expansion of `!(a && b)`, not `!(a || b)`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to print the larger of two doubles using the conditional operator. What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    double x = 3.5;\n    double y = 7.2;\n    std::cout << \"max: \" << x > y ? x : y << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The `?:` operator cannot work with `double` values.",
+      "b": "`<<` has higher precedence than `?:`, so the expression is parsed as `(std::cout << \"max: \" << x) > y ? x : y << \"\\n\"` — the conditional is applied to the stream comparison, not the values.",
+      "c": "The variable names `x` and `y` are reserved in C++.",
+      "d": "The bug is that `x > y` should be `x >= y` to handle the equal case."
+    },
+    "answer": "b",
+    "explanation_md": "`<<` has higher precedence than `?:`, so without parentheses the stream-insertion operators consume `x` before the conditional operator gets to run. The fix is to wrap the entire `?:` expression: `std::cout << \"max: \" << (x > y ? x : y) << \"\\n\";`."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 10;\n    int y = 20;\n    std::cout << (x > y ? x : y) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "The condition `x > y` is `10 > 20`, which is false, so the operator evaluates and returns the false branch `y`, which is 20. The true branch `x` is not evaluated."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int a = 5;\n    int b = 5;\n    std::cout << (a != b ? a - b : a + b) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "`a != b` is `5 != 5`, which is false, so the false branch `a + b` is evaluated and produces 10. Many learners expect `a - b` (the true branch) to run because they misread the condition."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the correct way to embed a conditional expression inside a `std::cout` statement without parentheses causing a compile error or wrong result?\n\n```cpp\nint n = 3;\n// Attempt to print \"odd\" or \"even\"\n```",
+    "options": {
+      "a": "`std::cout << n % 2 == 1 ? \"odd\" : \"even\" << \"\\n\";`",
+      "b": "`std::cout << (n % 2 == 1 ? \"odd\" : \"even\") << \"\\n\";`",
+      "c": "`std::cout << n % 2 == 1 ? (\"odd\") : (\"even\") << \"\\n\";`",
+      "d": "`std::cout << n % (2 == 1 ? \"odd\" : \"even\") << \"\\n\";`"
+    },
+    "answer": "b",
+    "explanation_md": "Option b correctly parenthesizes the entire `?:` expression. Without those outer parentheses, `<<` has higher precedence than `?:`, causing the expression to be parsed in an unintended way that typically results in a compile error or wrong output."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when the two branches of the conditional operator have different types — for example, `flag ? 5 : 3.14`?",
+    "options": {
+      "a": "It always produces a compile error.",
+      "b": "The compiler picks the type of whichever branch is evaluated at runtime.",
+      "c": "The compiler finds a common type at compile time; `int` is converted to `double` here.",
+      "d": "The result is always truncated to `int`."
+    },
+    "answer": "c",
+    "explanation_md": "The type of a `?:` expression is determined at compile time, not runtime. When one branch is `int` and the other is `double`, the compiler promotes the `int` to `double` so both branches have the same type. The result type is `double`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants this function to return the absolute value of `n`. What is wrong?\n\n```cpp\n#include <iostream>\nint absVal(int n) {\n    return n >= 0 ? n : n * -1;\n}\nint main() {\n    std::cout << absVal(-7) << \"\\n\";  // expected: 7\n    std::cout << absVal(3)  << \"\\n\";  // expected: 3\n    return 0;\n}\n```",
+    "options": {
+      "a": "The condition should be `n > 0` instead of `n >= 0`.",
+      "b": "The false branch `n * -1` should be `-n` — the current version has the same meaning but some compilers reject it.",
+      "c": "There is no bug; the function is correct.",
+      "d": "The function returns the wrong value for zero because `n >= 0` includes zero, treating it as positive."
+    },
+    "answer": "c",
+    "explanation_md": "The function is correct. `n >= 0 ? n : n * -1` properly returns `n` when non-negative and `-n` when negative. `n * -1` and `-n` are equivalent for `int`. Option d is a distractor: returning `n` when `n == 0` is correct because `abs(0)` is 0."
+  }
+]

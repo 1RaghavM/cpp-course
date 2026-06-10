@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a{ 010 };\n    int b{ 0x10 };\n    int c{ 0b10 };\n    std::cout << a << \" \" << b << \" \" << c << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "8 16 2",
+    "explanation_md": "`010` is octal (leading zero), equal to 8 in decimal. `0x10` is hexadecimal, equal to 16 in decimal. `0b10` is binary, equal to 2 in decimal. All four numeral-system prefixes produce the same C++ `int` type — only their numeric value differs. A common mistake is treating `010` as decimal 10."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which literal has the type `float` instead of `double`?",
+    "options": {
+      "a": "`3.14`",
+      "b": "`3.14L`",
+      "c": "`3.14f`",
+      "d": "`3.14l`"
+    },
+    "answer": "c",
+    "explanation_md": "The `f` (or `F`) suffix makes a floating-point literal `float`. Without a suffix, `3.14` is `double`. The `L` or `l` suffix makes it `long double`. So `c` is the only `float` literal in the list."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `big` to hold the value 10,000,000,000 (ten billion). What is wrong?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    long long big{ 10000000000 };\n    std::cout << big << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`long long` cannot hold values larger than 2,147,483,647",
+      "b": "The literal `10000000000` is parsed as `int` and overflows before being stored in `big`",
+      "c": "The variable should be declared as `unsigned long long` to hold this value",
+      "d": "Digit separators are required for literals with 10 or more digits"
+    },
+    "answer": "b",
+    "explanation_md": "Integer literals without a suffix are `int`. `10000000000` (10 billion) far exceeds `int`'s maximum (~2.1 billion), causing overflow at the literal level before the value is assigned to `big`. The fix is `10000000000LL` or `10'000'000'000LL`. `long long` can hold this value just fine — the problem is the literal's default type, not the variable's type."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    const unsigned int mask{ 0b1111'0000u };\n    std::cout << mask << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "240",
+    "explanation_md": "`0b1111'0000` in binary is `11110000`. Reading from right (bit 0): bits 4–7 are set, so the value is 2^4 + 2^5 + 2^6 + 2^7 = 16 + 32 + 64 + 128 = 240. The `u` suffix makes it `unsigned int`. The digit separator `'` is ignored by the compiler. `std::cout` prints unsigned integers in decimal by default."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes `int x{ 09 };`. What happens?",
+    "options": {
+      "a": "The value 9 is stored in `x` since 9 is a valid digit",
+      "b": "It is a compile error because `9` is not a valid octal digit",
+      "c": "The value is interpreted as binary `09`, which equals 1",
+      "d": "The value is stored as decimal 9, overriding the octal prefix"
+    },
+    "answer": "b",
+    "explanation_md": "A leading zero means octal. Octal digits are only `0` through `7`, so `9` is invalid in an octal literal. The compiler produces an error. This is another reason to avoid zero-padding decimal literals — `09` looks like 9 but will not compile."
+  }
+]

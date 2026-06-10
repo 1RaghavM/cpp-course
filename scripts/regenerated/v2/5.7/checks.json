@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string a = \"Hello\";\n    std::string b = \"World\";\n    std::string c = a + \", \" + b;\n    std::cout << c.length() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "`a + \", \" + b` produces the string `\"Hello, World\"`. Counting the characters: `H-e-l-l-o-,-space-W-o-r-l-d` = 12 characters. `.length()` returns `12`, so the program prints `12`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A user runs this program and types `John Smith` then presses Enter. What is printed?\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string name;\n    std::cin >> name;\n    std::cout << name << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`John Smith`",
+      "b": "`John`",
+      "c": "`Smith`",
+      "d": "Nothing — the program crashes because the name has a space."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cin >>` reads one whitespace-delimited token. It stops at the first space, so only `\"John\"` is stored in `name`. `\"Smith\"` remains in the input buffer. To read both words as one string, `std::getline` would be needed instead."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which header must you include to use `std::string`?",
+    "options": {
+      "a": "`<iostream>`",
+      "b": "`<cstdlib>`",
+      "c": "`<string>`",
+      "d": "`<text>`"
+    },
+    "answer": "c",
+    "explanation_md": "`std::string` is defined in the `<string>` header. While some compilers include it transitively through `<iostream>`, relying on that is not portable. Always include `<string>` explicitly when using `std::string`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when the user types `cpp` and presses Enter?\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string word;\n    std::cin >> word;\n    std::string result = word + word;\n    std::cout << result << \"\\n\";\n    std::cout << result.size() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "cppcpp\n6",
+    "explanation_md": "`word + word` concatenates `\"cpp\"` with itself to produce `\"cppcpp\"`. `.size()` returns `6` (the number of characters in `\"cppcpp\"`). The program prints `cppcpp` on the first line and `6` on the second."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to read a full name (which may include a space) and print it. What is wrong with this code?\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string full_name;\n    std::cin >> full_name;\n    std::cout << \"Name: \" << full_name << \"\\n\";\n    return 0;\n}\n```\n\nThe user types `Ada Lovelace` and the student expects `Name: Ada Lovelace` to be printed.",
+    "options": {
+      "a": "No bug — `std::cin >>` reads the entire line including spaces.",
+      "b": "`std::cin >>` stops at the first whitespace, so only `Ada` is stored. The student should use `std::getline(std::cin, full_name)` instead.",
+      "c": "The bug is that `std::string` cannot store names with spaces; use a `char` array instead.",
+      "d": "The program will crash because `full_name` was not initialized to an empty string before reading."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cin >>` reads a single whitespace-delimited token. With input `Ada Lovelace`, it stores only `\"Ada\"` and leaves `\" Lovelace\"` in the input buffer. The output would be `Name: Ada`, not the expected `Name: Ada Lovelace`. The fix is to use `std::getline(std::cin, full_name)`, which reads the entire line including spaces."
+  }
+]
