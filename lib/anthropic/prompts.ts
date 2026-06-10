@@ -98,6 +98,9 @@ export function shouldGenerateExercises(chapterNumber: string): boolean {
   return !NO_EXERCISE_CHAPTERS.includes(chapterNumber);
 }
 
+/** Format for the second (applied) exercise — rotates by lesson position. */
+export type Exercise2Format = "fix_the_bug" | "complete_the_function";
+
 /**
  * Build the prompt for generating exercises with Sonnet 4.6.
  * Takes chapter context to generate more relevant exercises.
@@ -108,8 +111,14 @@ export function buildExercisePrompt(
   chapterNumber: string,
   chapterTitle: string,
   priorTitles: string[],
+  exercise2Format: Exercise2Format,
 ): PromptPayload {
   const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none — this is the first lesson)";
+
+  const exercise2Spec =
+    exercise2Format === "fix_the_bug"
+      ? `- Exercise 2: fix-the-bug — starter_code is a COMPLETE program (no TODOs) that compiles cleanly but contains exactly ONE planted logic bug related to this lesson's concept. prompt_md describes what the program SHOULD do and states that the code contains one bug to find and fix — do not reveal the bug's location or nature. Hidden test cases must fail on the buggy version and pass once fixed. solution_code is the corrected program.`
+      : `- Exercise 2: complete-the-function — starter_code contains a complete main() plus exactly one function with a TODO stub for the learner to implement. prompt_md names the exact function signature. The exercise combines the lesson concept with one prior concept from the prior lessons list above.`;
 
   const systemText = `Design 2 C++ exercises for the lesson "${lessonTitle}" from Chapter ${chapterNumber}: ${chapterTitle}.
 
@@ -121,7 +130,7 @@ EXERCISE DESIGN PRINCIPLES:
 - Exercises must directly test concepts from the lesson summary
 - Difficulty should match the chapter level (early chapters = simpler exercises)
 - Exercise 1: guided — smaller scope, closer to the lesson example
-- Exercise 2: applied — combines the lesson concept with one prior concept from the prior lessons list above
+${exercise2Spec}
 
 Each exercise must:
 - Be original (not from LeetCode or learncpp)
@@ -160,7 +169,7 @@ BAD prompt_md: "Write a utility that validates buffers at compile time."
 GOOD prompt_md: Goal says "Complete struct FixedBuffer so static_assert rejects N ≤ 0 and sizeof(T) > 16"; Input/Output sections specify exact stdin and the single-line error or success message.
 
 STARTER CODE:
-- Must compile as-is (with TODO stubs)
+- Must compile as-is (with TODO stubs; for fix-the-bug, the complete buggy program)
 - Include #include lines and a main() that reads stdin and calls the student's code
 - TODO comments must name exactly what to fill in
 
