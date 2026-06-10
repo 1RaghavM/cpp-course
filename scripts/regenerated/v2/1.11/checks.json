@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n    int result = a * b - a;\n    std::cout << result << '\\n';\n    return 0;\n}\n```\n\nInput provided on stdin:\n```\n5\n3\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "`a = 5`, `b = 3`. The expression `a * b - a` is `5 * 3 - 5 = 15 - 5 = 10`. `*` has higher precedence than `-`, so multiplication happens first."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes:\n\n```cpp\nint x;\nstd::cout << x << '\\n';\n```\n\nWhat happens when this program runs?",
+    "options": {
+      "a": "The program prints `0` because integers default-initialize to zero.",
+      "b": "The program does not compile because `x` has no initializer.",
+      "c": "The program compiles but produces undefined behavior — `x` holds a garbage value.",
+      "d": "The program crashes immediately with an error message."
+    },
+    "answer": "c",
+    "explanation_md": "A local `int` variable that is declared but not initialized holds whatever value was in that memory location. Reading it is undefined behavior: the program compiles without error, but the output is unpredictable. This is a classic C++ trap — always initialize your variables."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int n = 6;\n    std::cout << \"n * n\" << '\\n';\n    std::cout << n * n << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "n * n\n36",
+    "explanation_md": "The first `std::cout` prints the string literal `\"n * n\"` exactly as written — double quotes make it a string, so no arithmetic happens. The second prints the computed value `6 * 6 = 36`. This is a common mistake: putting an expression inside quotes prints the text, not the result."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the correct order of steps when developing a new program?",
+    "options": {
+      "a": "Type `int main()` first, then work out the logic as you code.",
+      "b": "Define the problem in plain English, plan the steps, then write the code one step at a time.",
+      "c": "Write the output statements first, then add the variables needed to produce those outputs.",
+      "d": "Copy a working program and modify it until it does what you want."
+    },
+    "answer": "b",
+    "explanation_md": "Starting with a plain-English description forces you to clarify input and output before writing a single line of C++. Planning the steps next gives you a checklist to follow, making it easy to detect missing logic before you have invested time in code."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program is supposed to print the product of two integers read from stdin. The student writes:\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n    std::cout << \"product: \" << a * b << '\\n';\n    return 0;\n}\n```\n\nThe student asks: should the multiplication `a * b` go inside quotes like `\"a * b\"`? What is the correct answer?",
+    "options": {
+      "a": "Yes — putting `a * b` in quotes causes C++ to evaluate it at compile time.",
+      "b": "No — putting `a * b` in quotes makes it a string literal; the output would be the text `a * b`, not the computed value.",
+      "c": "Yes — the quotes are required for `std::cout` to call the multiplication operator.",
+      "d": "It does not matter; `std::cout` evaluates expressions inside quotes automatically."
+    },
+    "answer": "b",
+    "explanation_md": "Anything inside double quotes is a string literal — the compiler treats it as raw text to be printed. To print the computed product, the expression must appear outside the quotes. The code shown is already correct."
+  }
+]

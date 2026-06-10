@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int n{10};\n    n = n + 3;\n    n = n + 3;\n    std::cout << n << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "16",
+    "explanation_md": "`n` starts at `10`. After the first `n = n + 3`, it becomes `13`. After the second, it becomes `16`. The `=` operator replaces the previous value; the right-hand side is always evaluated using the current value before the assignment takes effect."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a{5};\n    int b{a};\n    a = 99;\n    std::cout << b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`b` is initialized to the *value* of `a` at the time of initialization, which is `5`. Changing `a` to `99` afterward has no effect on `b` — `b` is an independent variable with its own storage. This is value (copy) semantics."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these is the best reason to prefer list initialization (`int x{5}`) over copy initialization (`int x = 5`) for integers?",
+    "options": {
+      "a": "List initialization is faster at runtime.",
+      "b": "List initialization prevents narrowing conversions and is the modern recommended style.",
+      "c": "List initialization allows you to assign multiple values at once.",
+      "d": "Copy initialization does not work for negative numbers."
+    },
+    "answer": "b",
+    "explanation_md": "List initialization (`{}`) rejects narrowing conversions at compile time — for example, `int x{3.7}` is a compile error, catching a truncation bug early. Copy initialization (`= 3.7`) silently truncates to `3`. For simple `int` values, both work identically, but `{}` is the safer habit."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print `8`, but it prints a garbage value. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int result;\n    result = result + 8;\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`result` should be declared as `int result()` to initialize it to zero.",
+      "b": "`result` is used before it has been initialized, so its starting value is indeterminate (garbage).",
+      "c": "You cannot use a variable on both sides of an assignment.",
+      "d": "The `+` operator does not work on uninitialized variables."
+    },
+    "answer": "b",
+    "explanation_md": "Declaring `int result;` without an initializer leaves `result` holding whatever bits happen to occupy that memory location. Adding `8` to garbage still produces garbage. The fix is `int result{0};` so that `result + 8` evaluates to `8` as intended."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does the `=` operator do in the statement `score = score + 10;`?",
+    "options": {
+      "a": "It asserts that `score` is mathematically equal to `score + 10`.",
+      "b": "It evaluates `score + 10` using the current value of `score`, then stores the result back into `score`.",
+      "c": "It creates a new variable called `score + 10`.",
+      "d": "It compares `score` to `score + 10` and stores `true` or `false`."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, `=` is assignment, not mathematical equality. The right-hand side is fully evaluated first using the current values of all variables. The resulting value is then stored in the variable on the left. So `score = score + 10` simply adds 10 to the current value of `score` and stores the new value."
+  }
+]

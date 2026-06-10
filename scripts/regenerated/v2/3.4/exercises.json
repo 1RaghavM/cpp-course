@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Add Cerr Labels to Trace a Bug",
+    "prompt_md": "## Goal\nThe program reads two integers and should print their difference (`a - b`). It currently prints the wrong value. Add `std::cerr` checkpoints with `[label]` prefixes AND fix the semantic error.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space\n\n## Output\n- Print exactly one line to `std::cout`: the value of `a - b`\n- `std::cerr` output is ignored by the tests\n\n## Requirements\n1. Fix the semantic error so the output is `a - b`.\n2. The program currently uses the wrong arithmetic operator in `subtract`.\n3. Output format: just the integer, no label, no trailing spaces.",
+    "starter_code": "#include <iostream>\n\nint subtract(int a, int b)\n{\n    std::cerr << \"[subtract] a=\" << a << \" b=\" << b << \"\\n\";\n    int result = a + b;   // bug: wrong operator\n    std::cerr << \"[subtract] result=\" << result << \"\\n\";\n    return result;\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cerr << \"[main] a=\" << a << \" b=\" << b << \"\\n\";\n    std::cout << subtract(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint subtract(int a, int b)\n{\n    std::cerr << \"[subtract] a=\" << a << \" b=\" << b << \"\\n\";\n    int result = a - b;\n    std::cerr << \"[subtract] result=\" << result << \"\\n\";\n    return result;\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cerr << \"[main] a=\" << a << \" b=\" << b << \"\\n\";\n    std::cout << subtract(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 minus 3",
+        "is_sample": true,
+        "stdin": "10 3",
+        "expected_stdout": "7"
+      },
+      {
+        "label": "Hidden: negative result",
+        "is_sample": false,
+        "stdin": "2 5",
+        "expected_stdout": "-3"
+      },
+      {
+        "label": "Hidden: same values",
+        "is_sample": false,
+        "stdin": "4 4",
+        "expected_stdout": "0"
+      }
+    ]
+  },
+  {
+    "title": "Implement Scaled Sum",
+    "prompt_md": "## Goal\nComplete the function `scaled_sum` that reads two integers, computes their sum, then multiplies the sum by a scale factor. The function should return `(a + b) * scale`.\n\n## Input\n- Line 1: three integers `a`, `b`, and `scale` separated by spaces\n\n## Output\n- Print exactly one line: `Scaled: ` followed by the value of `(a + b) * scale`\n\n## Requirements\n1. Implement the body of `scaled_sum(int a, int b, int scale)` so it returns `(a + b) * scale`.\n2. Do not modify `main`.\n3. Output format: `Scaled: <number>` with no trailing spaces or extra blank lines.\n4. Hidden tests: `a=2, b=3, scale=4` (expect `Scaled: 20`), `a=0, b=5, scale=3` (expect `Scaled: 15`).",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function to return (a + b) * scale\nint scaled_sum(int a, int b, int scale)\n{\n    return a * b * scale;   // wrong — replace this expression\n}\n\nint main()\n{\n    int a;\n    int b;\n    int scale;\n    std::cin >> a >> b >> scale;\n    std::cerr << \"[main] a=\" << a << \" b=\" << b << \" scale=\" << scale << \"\\n\";\n    int result = scaled_sum(a, b, scale);\n    std::cerr << \"[main] result=\" << result << \"\\n\";\n    std::cout << \"Scaled: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint scaled_sum(int a, int b, int scale)\n{\n    return (a + b) * scale;\n}\n\nint main()\n{\n    int a;\n    int b;\n    int scale;\n    std::cin >> a >> b >> scale;\n    std::cerr << \"[main] a=\" << a << \" b=\" << b << \" scale=\" << scale << \"\\n\";\n    int result = scaled_sum(a, b, scale);\n    std::cerr << \"[main] result=\" << result << \"\\n\";\n    std::cout << \"Scaled: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 4 2",
+        "is_sample": true,
+        "stdin": "3 4 2",
+        "expected_stdout": "Scaled: 14"
+      },
+      {
+        "label": "Hidden: 2 3 4",
+        "is_sample": false,
+        "stdin": "2 3 4",
+        "expected_stdout": "Scaled: 20"
+      },
+      {
+        "label": "Hidden: 0 5 3",
+        "is_sample": false,
+        "stdin": "0 5 3",
+        "expected_stdout": "Scaled: 15"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Forward Declare Before Use",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints their product by calling a forward-declared function.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space (-100 ≤ a, b ≤ 100).\n\n## Output\n- Print exactly one line: `Product: X` where `X` is `a * b`.\n\n## Requirements\n1. Define a function `int product(int a, int b)` that returns `a * b`.\n2. Place a forward declaration of `product` above `main`.\n3. Place the full definition of `product` below `main`.\n4. Call `product` from `main` and print `Product: X`.\n5. No other output; no trailing spaces.\n\n## Notes\n- Everything in a single `main.cpp`; the forward declaration mirrors what a header would provide.",
+    "starter_code": "#include <iostream>\n\n// TODO: forward declaration of product\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    // TODO: call product(a, b) and print \"Product: X\"\n    return 0;\n}\n\n// TODO: full definition of product goes here\n",
+    "solution_code": "#include <iostream>\n\nint product(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Product: \" << product(a, b) << \"\\n\";\n    return 0;\n}\n\nint product(int a, int b) {\n    return a * b;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive",
+        "is_sample": true,
+        "stdin": "6 7\n",
+        "expected_stdout": "Product: 42"
+      },
+      {
+        "label": "Hidden: negative times positive",
+        "is_sample": false,
+        "stdin": "-3 8\n",
+        "expected_stdout": "Product: -24"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0 100\n",
+        "expected_stdout": "Product: 0"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Perimeter Calculator",
+    "prompt_md": "## Goal\nComplete the function `perimeter` that returns the perimeter of a rectangle given its width and height.\n\n## Input\n- Line 1: two integers `w` and `h` separated by a space (1 ≤ w, h ≤ 1000).\n\n## Output\n- Print exactly one line: `Perimeter: X` where `X` is `2 * (w + h)`.\n\n## Requirements\n1. Complete the function `int perimeter(int w, int h)` — the stub already exists.\n2. `main` reads the two integers and calls `perimeter`, then prints `Perimeter: X`.\n3. No other output.\n\n## Notes\n- The forward declaration and `main` are already written. Only fill in the function body.",
+    "starter_code": "#include <iostream>\n\nint perimeter(int w, int h);\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n    std::cout << \"Perimeter: \" << perimeter(w, h) << \"\\n\";\n    return 0;\n}\n\nint perimeter(int w, int h) {\n    // TODO: return 2 * (w + h)\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint perimeter(int w, int h);\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n    std::cout << \"Perimeter: \" << perimeter(w, h) << \"\\n\";\n    return 0;\n}\n\nint perimeter(int w, int h) {\n    return 2 * (w + h);\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3x4 rectangle",
+        "is_sample": true,
+        "stdin": "3 4\n",
+        "expected_stdout": "Perimeter: 14"
+      },
+      {
+        "label": "Hidden: square",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "Perimeter: 20"
+      },
+      {
+        "label": "Hidden: large values",
+        "is_sample": false,
+        "stdin": "100 200\n",
+        "expected_stdout": "Perimeter: 600"
+      }
+    ]
+  }
+]

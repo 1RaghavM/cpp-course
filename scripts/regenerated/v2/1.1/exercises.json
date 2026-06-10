@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Three Lines in Order",
+    "prompt_md": "## Goal\nWrite a complete C++ program that prints three specific lines of text to standard output in the correct order.\n\n## Input\nNone. This program takes no input.\n\n## Output\nPrint exactly three lines:\n```\nFirst\nSecond\nThird\n```\n(Each word on its own line, no trailing spaces, no blank lines between them.)\n\n## Requirements\n1. Use exactly three `std::cout` statements — one per line of output.\n2. Your `main` function must return `0`.\n3. Include `#include <iostream>` at the top of the file.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: print \"First\", \"Second\", and \"Third\", each on its own line\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"First\\n\";\n    std::cout << \"Second\\n\";\n    std::cout << \"Third\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "First\nSecond\nThird"
+      },
+      {
+        "label": "Hidden: exact match including case",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "First\nSecond\nThird"
+      },
+      {
+        "label": "Hidden: no extra blank lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "First\nSecond\nThird"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Broken Greeting",
+    "prompt_md": "## Goal\nThe program below is supposed to print a two-line greeting, but it contains one logic bug. Find and fix it so the output matches what is described.\n\n## Input\nNone. This program takes no input.\n\n## Output\nThe fixed program must print exactly:\n```\nHello, C++!\nI am ready to learn.\n```\n\n## Requirements\n1. Do not add or remove any `std::cout` statements — only fix the existing code.\n2. Your `main` function must return `0`.\n3. The output must match the expected text exactly, including punctuation and capitalization.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"I am ready to learn.\\n\";\n    std::cout << \"Hello, C++!\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello, C++!\\n\";\n    std::cout << \"I am ready to learn.\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct order",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Hello, C++!\nI am ready to learn."
+      },
+      {
+        "label": "Hidden: exact text match",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Hello, C++!\nI am ready to learn."
+      },
+      {
+        "label": "Hidden: no reversed order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Hello, C++!\nI am ready to learn."
+      }
+    ]
+  }
+]

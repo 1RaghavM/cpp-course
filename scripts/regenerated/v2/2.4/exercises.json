@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum and Product",
+    "prompt_md": "## Goal\nRead two integers and print their sum and product, each on its own line, by calling two separate functions.\n\n## Input\n- Line 1: integer A (-1000 ≤ A ≤ 1000).\n- Line 2: integer B (-1000 ≤ B ≤ 1000).\n\n## Output\nPrint exactly two lines:\n- Line 1: the integer A + B.\n- Line 2: the integer A * B.\n\nExample: if A=3, B=4:\n```\n7\n12\n```\n\n## Requirements\n1. Define `int sumOf(int a, int b)` that returns `a + b`.\n2. Define `int productOf(int a, int b)` that returns `a * b`.\n3. In `main`, read A and B, then print `sumOf(A, B)` on one line and `productOf(A, B)` on the next.\n4. No additional labels — print only the numbers.",
+    "starter_code": "#include <iostream>\n\n// TODO: define int sumOf(int a, int b)\n\n// TODO: define int productOf(int a, int b)\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    // TODO: print sumOf(a, b) then productOf(a, b)\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint sumOf(int a, int b)\n{\n    return a + b;\n}\n\nint productOf(int a, int b)\n{\n    return a * b;\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << sumOf(a, b) << \"\\n\";\n    std::cout << productOf(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "7\n12\n"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0\n0\n",
+        "expected_stdout": "0\n0\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-5\n3\n",
+        "expected_stdout": "-2\n-15\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Remainder Function",
+    "prompt_md": "## Goal\nComplete the function `remainder(int a, int b)` so that the program reads two integers and prints how much is left over when A is divided by B.\n\n## Input\n- Line 1: integer A (0 ≤ A ≤ 10000).\n- Line 2: integer B (1 ≤ B ≤ 10000).\n\n## Output\nPrint exactly one line: the integer remainder of A divided by B, followed by a newline.\n\nExample: if A=17, B=5, print `2`.\n\n## Requirements\n1. Complete the body of `int remainder(int a, int b)` using the `%` operator.\n2. Do not modify `main` or any other part of the program.\n3. The function must return the correct integer remainder for all valid inputs.",
+    "starter_code": "#include <iostream>\n\nint remainder(int a, int b)\n{\n    (void)a; (void)b;  // suppress unused-parameter warnings in stub\n    // TODO: return a % b\n    return 0;\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << remainder(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint remainder(int a, int b)\n{\n    return a % b;\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << remainder(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 17 % 5 = 2",
+        "is_sample": true,
+        "stdin": "17\n5\n",
+        "expected_stdout": "2\n"
+      },
+      {
+        "label": "Hidden: 10 % 2 = 0",
+        "is_sample": false,
+        "stdin": "10\n2\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: 7 % 7 = 0",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "0\n"
+      }
+    ]
+  }
+]

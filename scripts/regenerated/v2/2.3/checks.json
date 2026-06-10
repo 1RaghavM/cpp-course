@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid greet()\n{\n    std::cout << \"Hi\\n\";\n    std::cout << \"Bye\\n\";\n}\n\nint main()\n{\n    greet();\n    greet();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Hi\nBye\nHi\nBye",
+    "explanation_md": "Each call to `greet()` runs the entire body from top to bottom: prints `Hi` then `Bye`. After the body finishes, execution returns to `main`. Calling `greet()` twice produces four lines total."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you write `return 42;` inside a `void` function?",
+    "options": {
+      "a": "The program exits with code 42.",
+      "b": "It is a compile error — `void` functions cannot return a value.",
+      "c": "The value 42 is silently discarded and the function returns normally.",
+      "d": "It works the same as `return;`."
+    },
+    "answer": "b",
+    "explanation_md": "Returning a value from a `void` function is a compile-time error. The return type `void` means \"no value,\" so providing one contradicts the declaration. The correct syntax to exit a void function early is `return;` with no expression."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes:\n```cpp\nint result = printMessage();\n```\nwhere `printMessage` is declared as `void printMessage()`. What happens?",
+    "options": {
+      "a": "The function runs and `result` is set to 0.",
+      "b": "The function runs and `result` is undefined.",
+      "c": "The compiler reports an error because a void value cannot be assigned.",
+      "d": "The compiler ignores the assignment and runs the function normally."
+    },
+    "answer": "c",
+    "explanation_md": "A `void` function call produces no value. Attempting to assign it to a variable is a compile error: \"void value not ignored as it ought to be.\" If you need a value from a function, its return type must be a non-void type such as `int`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show()\n{\n    std::cout << \"line1\\n\";\n    return;\n    std::cout << \"line2\\n\";\n}\n\nint main()\n{\n    show();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "line1",
+    "explanation_md": "The bare `return;` exits the function immediately after printing `line1`. The statement `std::cout << \"line2\\n\";` comes after `return` and is never reached. Only `line1` is printed."
+  }
+]

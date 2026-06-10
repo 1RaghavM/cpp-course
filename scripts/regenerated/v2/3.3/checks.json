@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to `std::cout` when the input is `4`? (Ignore `std::cerr` output.)\n\n```cpp\n#include <iostream>\n\nint double_it(int n)\n{\n    return n + n;\n}\n\nint add_five(int n)\n{\n    return n + 5;\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    int a = double_it(x);\n    std::cerr << \"after double: \" << a << \"\\n\";\n    int b = add_five(a);\n    std::cerr << \"after add_five: \" << b << \"\\n\";\n    std::cout << b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "13",
+    "explanation_md": "`double_it(4)` returns `4 + 4 = 8`. Then `add_five(8)` returns `8 + 5 = 13`. The `std::cerr` lines produce diagnostic output but are not part of `std::cout`. The cout output is `13`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have a three-function pipeline: `read_input` → `transform` → `report`. The final output is wrong. You add a `std::cerr` checkpoint after `transform` and see a correct intermediate value. Where is the bug most likely located?",
+    "options": {
+      "a": "In `read_input`, because that runs first",
+      "b": "In `transform`, because you checked after it",
+      "c": "In `report`, because the value entering `report` was correct",
+      "d": "Somewhere else in the program, unrelated to these three functions"
+    },
+    "answer": "c",
+    "explanation_md": "If the checkpoint after `transform` shows a correct value, then `read_input` and `transform` are working correctly. The wrong final output must be introduced by `report`, which runs after the last known-good checkpoint. This is the midpoint binary-search principle applied to a three-stage pipeline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it useful to temporarily replace a function body with a hardcoded return value during debugging?",
+    "options": {
+      "a": "It makes the program run faster",
+      "b": "It lets you confirm whether the bug is inside that function or in the code that calls it",
+      "c": "It avoids compiler warnings about unused variables",
+      "d": "It permanently removes the function from the program"
+    },
+    "answer": "b",
+    "explanation_md": "Replacing a function body with a known-good hardcoded return isolates whether the caller is handling the return value correctly. If the program behaves correctly with the stub, the caller is fine and the bug is inside the real function body. If the program still misbehaves, the bug is in the caller's logic."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "For input `6`, what does the following print to `std::cout`? (Ignore cerr output.)\n\n```cpp\n#include <iostream>\n\nint triple(int n)\n{\n    return n * 3;\n}\n\nint subtract_two(int n)\n{\n    return n - 2;\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    std::cerr << \"x = \" << x << \"\\n\";\n    int t = triple(x);\n    std::cerr << \"tripled = \" << t << \"\\n\";\n    std::cout << subtract_two(t) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "16",
+    "explanation_md": "`triple(6)` returns `6 * 3 = 18`. `subtract_two(18)` returns `18 - 2 = 16`. The cerr lines output diagnostic info to stderr and do not appear in stdout. The cout output is `16`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you remove `std::cerr` debug statements from your code?",
+    "options": {
+      "a": "As soon as you find the bug",
+      "b": "Before you fix the bug, to keep the code clean",
+      "c": "After the final test passes, all at once",
+      "d": "Never — leave them in for future use"
+    },
+    "answer": "c",
+    "explanation_md": "Removing debug statements before verification is confirmed can leave you blind if the fix was incomplete. The recommended strategy is to keep all debug output in place until the program passes the final test cleanly, then delete the debug statements together. This avoids re-adding them if another problem surfaces."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the purpose of a header guard?",
+    "options": {
+      "a": "To prevent a header from being included in more than one `.cpp` file in the whole project",
+      "b": "To prevent a header's contents from being processed more than once in the same translation unit",
+      "c": "To tell the linker not to export symbols from the header",
+      "d": "To mark declarations as safe to inline at call sites"
+    },
+    "answer": "b",
+    "explanation_md": "A header guard prevents the preprocessor from processing a header's content more than once within the same translation unit (single `.cpp` compilation). It does NOT prevent the header from being included in multiple `.cpp` files across the project — each `.cpp` is compiled independently and has its own preprocessor state."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assume the preprocessor processes the following lines in order. What is printed?\n\n```cpp\n#include <iostream>\n#ifndef MY_FLAG\n#define MY_FLAG\nstd::cout << \"defined\\n\";\n#endif\n#ifndef MY_FLAG\nstd::cout << \"again\\n\";\n#endif\nint main() { return 0; }\n```\n\n(Note: the `cout` lines are at file scope for illustration — imagine they are inside `main`.)",
+    "options": null,
+    "answer": "defined",
+    "explanation_md": "The first `#ifndef MY_FLAG` passes (macro not yet defined), so the block is entered, `MY_FLAG` is defined, and `\"defined\"` is printed. The second `#ifndef MY_FLAG` fails because `MY_FLAG` is now defined, so `\"again\"` is never printed."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The following header guard has a bug:\n\n```cpp\n#ifndef VECTOR_MATH_H\n#define VECTOR_MATH_HPP\n\nint dot(int ax, int ay, int bx, int by);\n\n#endif\n```",
+    "options": {
+      "a": "The macro name in `#define` does not match the one in `#ifndef`, so the guard never works",
+      "b": "Header guards must use `#ifdef`, not `#ifndef`",
+      "c": "The `#endif` must repeat the macro name: `#endif // VECTOR_MATH_H`",
+      "d": "The function declaration must be outside the guard"
+    },
+    "answer": "a",
+    "explanation_md": "`#ifndef` checks `VECTOR_MATH_H`, but `#define` defines `VECTOR_MATH_HPP`. They are different identifiers. On the first include, `VECTOR_MATH_H` is still undefined after the block runs (only `VECTOR_MATH_HPP` was defined), so the guard never fires. The second include also passes the `#ifndef` check, and the declarations are processed again."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given a header file at path `game/physics/collision.h`, which guard macro name best follows the convention described in the lesson?",
+    "options": {
+      "a": "`GUARD`",
+      "b": "`COLLISION_H`",
+      "c": "`GAME_PHYSICS_COLLISION_H`",
+      "d": "`game/physics/collision.h`"
+    },
+    "answer": "c",
+    "explanation_md": "The convention is to derive the macro name from the full file path, converting to uppercase and replacing non-alphanumeric characters with underscores. `GUARD` and `COLLISION_H` are too short and risk collisions with other files. The raw path string with slashes and dots is not a valid C++ identifier."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\n#define ALREADY_DEFINED\n\n#ifndef ALREADY_DEFINED\nint x = 10;\n#else\nint x = 42;\n#endif\n\nint main() {\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "`ALREADY_DEFINED` is defined before the `#ifndef` check. So `#ifndef ALREADY_DEFINED` is false, the `#else` branch is taken, and `x` is initialized to `42`. The program prints `42`."
+  }
+]

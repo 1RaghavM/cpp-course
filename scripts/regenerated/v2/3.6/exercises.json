@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Simulate Step-Through Tracing with std::cerr",
+    "prompt_md": "## Goal\nInstrument a multi-step computation with `std::cerr` trace messages to simulate what a debugger would show at each step, then print the final result to stdout.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\n- Stderr trace messages (not checked — only stdout is tested).\n- Stdout: one line containing the value of `step3`, which is `(a + b) * 2 - a`.\n\n## Requirements\n1. Compute the result in three named steps:\n   - `step1 = a + b`\n   - `step2 = step1 * 2`\n   - `step3 = step2 - a`\n2. After computing each step, print to `std::cerr`: `[step] step1=<value>`, `[step] step2=<value>`, `[step] step3=<value>` (one line each).\n3. Print only `step3` to stdout, followed by a newline.\n4. All work must be in `main`; no helper functions required.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int step1 = a + b;\n    // TODO: print \"[step] step1=<step1>\" to std::cerr\n\n    int step2 = step1 * 2;\n    // TODO: print \"[step] step2=<step2>\" to std::cerr\n\n    int step3 = step2 - a;\n    // TODO: print \"[step] step3=<step3>\" to std::cerr\n\n    std::cout << step3 << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int step1 = a + b;\n    std::cerr << \"[step] step1=\" << step1 << \"\\n\";\n\n    int step2 = step1 * 2;\n    std::cerr << \"[step] step2=\" << step2 << \"\\n\";\n\n    int step3 = step2 - a;\n    std::cerr << \"[step] step3=\" << step3 << \"\\n\";\n\n    std::cout << step3 << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3\n5\n",
+        "expected_stdout": "13\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n4\n",
+        "expected_stdout": "8\n"
+      },
+      {
+        "label": "Hidden: b is zero",
+        "is_sample": false,
+        "stdin": "7\n0\n",
+        "expected_stdout": "7\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Function: Stepped Calculation",
+    "prompt_md": "## Goal\nComplete the function `stepped_calc(int a, int b)` that returns `(a * b) + (a - b)` while printing intermediate step values to `std::cerr`.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\n- Stderr trace messages (not checked — only stdout is tested).\n- Stdout: one line containing the result of `stepped_calc(a, b)`.\n\n## Requirements\n1. Inside `stepped_calc`, compute two intermediate values:\n   - `product = a * b`\n   - `diff = a - b`\n2. Print each intermediate value to `std::cerr` as you compute it: `[step] product=<value>` and `[step] diff=<value>`.\n3. Return `product + diff`.\n4. `main` reads `a` and `b` from stdin, calls `stepped_calc(a, b)`, and prints the result to stdout.\n5. Edge cases: the hidden tests include `a = 0` and negative results.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement stepped_calc(int a, int b)\n// - compute product = a * b, print \"[step] product=<product>\" to std::cerr\n// - compute diff = a - b, print \"[step] diff=<diff>\" to std::cerr\n// - return product + diff\nint stepped_calc(int a, int b) {\n    return 0;  // replace with correct implementation\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << stepped_calc(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint stepped_calc(int a, int b) {\n    int product = a * b;\n    std::cerr << \"[step] product=\" << product << \"\\n\";\n    int diff = a - b;\n    std::cerr << \"[step] diff=\" << diff << \"\\n\";\n    return product + diff;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << stepped_calc(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "4\n3\n",
+        "expected_stdout": "13\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n5\n",
+        "expected_stdout": "-5\n"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "6\n6\n",
+        "expected_stdout": "36\n"
+      }
+    ]
+  }
+]

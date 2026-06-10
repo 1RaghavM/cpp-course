@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Simulate multi-file layout with forward declarations",
+    "prompt_md": "## Goal\nWrite a single-file program that demonstrates the multi-file pattern: forward declarations at the top, `main` in the middle, and function definitions at the bottom.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- Line 1: `Square: <n*n>`\n- Line 2: `Cube: <n*n*n>`\n\n## Requirements\n1. Place forward declarations for `int square(int x)` and `int cube(int x)` before `main`.\n2. `main` reads `n` and calls both functions, printing the results with the exact labels shown.\n3. Place the definitions of `square` and `cube` **after** `main` (simulating a second `.cpp` file).\n4. The hidden tests cover `n = 0`, `n = 1`, and `n = 5`.",
+    "starter_code": "#include <iostream>\n\n// TODO: add forward declarations for square and cube here\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    // TODO: print \"Square: \" followed by square(n)\n    // TODO: print \"Cube: \" followed by cube(n)\n    return 0;\n}\n\n// TODO: define int square(int x) — returns x * x\n// TODO: define int cube(int x)   — returns x * x * x\n",
+    "solution_code": "#include <iostream>\n\nint square(int x);\nint cube(int x);\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    std::cout << \"Cube: \" << cube(n) << \"\\n\";\n    return 0;\n}\n\nint square(int x)\n{\n    return x * x;\n}\n\nint cube(int x)\n{\n    return x * x * x;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=3",
+        "is_sample": true,
+        "stdin": "3\n",
+        "expected_stdout": "Square: 9\nCube: 27"
+      },
+      {
+        "label": "Hidden: n=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Square: 0\nCube: 0"
+      },
+      {
+        "label": "Hidden: n=5",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "Square: 25\nCube: 125"
+      }
+    ]
+  },
+  {
+    "title": "Complete a function that converts minutes to hours and minutes",
+    "prompt_md": "## Goal\nComplete the function `int totalMinutes(int hours, int mins)` which returns the total number of minutes represented by `hours` hours and `mins` minutes.\n\n## Input\n- Line 1: two integers `h` and `m` separated by a space (0 ≤ h ≤ 100, 0 ≤ m ≤ 59).\n\n## Output\n- One line: `Total minutes: <value>` where value is `h * 60 + m`.\n\n## Requirements\n1. Implement `int totalMinutes(int hours, int mins)` — return `hours * 60 + mins`.\n2. Do not change `main`.\n3. The hidden tests include `h=0, m=0` and `h=2, m=30`.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\nint totalMinutes(int hours, int mins);\n\nint main()\n{\n    int h;\n    int m;\n    std::cin >> h >> m;\n    std::cout << \"Total minutes: \" << totalMinutes(h, m) << \"\\n\";\n    return 0;\n}\n\n// TODO: implement int totalMinutes(int hours, int mins)\n// Return hours * 60 + mins\nint totalMinutes(int hours, int mins)\n{\n    return 0; // replace this line\n}\n",
+    "solution_code": "#include <iostream>\n\nint totalMinutes(int hours, int mins);\n\nint main()\n{\n    int h;\n    int m;\n    std::cin >> h >> m;\n    std::cout << \"Total minutes: \" << totalMinutes(h, m) << \"\\n\";\n    return 0;\n}\n\nint totalMinutes(int hours, int mins)\n{\n    return hours * 60 + mins;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1 hour 30 minutes",
+        "is_sample": true,
+        "stdin": "1 30\n",
+        "expected_stdout": "Total minutes: 90"
+      },
+      {
+        "label": "Hidden: 0 hours 0 minutes",
+        "is_sample": false,
+        "stdin": "0 0\n",
+        "expected_stdout": "Total minutes: 0"
+      },
+      {
+        "label": "Hidden: 2 hours 30 minutes",
+        "is_sample": false,
+        "stdin": "2 30\n",
+        "expected_stdout": "Total minutes: 150"
+      }
+    ]
+  }
+]

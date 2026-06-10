@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Watch Intermediate Values with std::cerr",
+    "prompt_md": "## Goal\nInstrument a function with `std::cerr` messages at each step to simulate watching intermediate values in a debugger, then print the final result to stdout.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\nLine 3: integer `c`.\n\n## Output\n- Stderr watch messages (not checked — only stdout is tested).\n- Stdout: one line containing the value of `compute(a, b, c)`, defined as `(a + b) * c - b`.\n\n## Requirements\n1. `compute(int a, int b, int c)` computes the result in named steps:\n   - `sum = a + b` — print `[watch] sum=<sum>` to `std::cerr`.\n   - `scaled = sum * c` — print `[watch] scaled=<scaled>` to `std::cerr`.\n   - `result = scaled - b` — print `[watch] result=<result>` to `std::cerr`.\n   - Return `result`.\n2. `main` reads `a`, `b`, `c` and prints `compute(a, b, c)` to stdout.\n3. Edge cases: hidden tests include `b = 0` and `c = 1`.",
+    "starter_code": "#include <iostream>\n\nint compute(int a, int b, int c) {\n    int sum = a + b;\n    // TODO: print \"[watch] sum=<sum>\" to std::cerr\n\n    int scaled = sum * c;\n    // TODO: print \"[watch] scaled=<scaled>\" to std::cerr\n\n    int result = scaled - b;\n    // TODO: print \"[watch] result=<result>\" to std::cerr\n\n    return result;\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << compute(a, b, c) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint compute(int a, int b, int c) {\n    int sum = a + b;\n    std::cerr << \"[watch] sum=\" << sum << \"\\n\";\n\n    int scaled = sum * c;\n    std::cerr << \"[watch] scaled=\" << scaled << \"\\n\";\n\n    int result = scaled - b;\n    std::cerr << \"[watch] result=\" << result << \"\\n\";\n\n    return result;\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << compute(a, b, c) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "2\n3\n4\n",
+        "expected_stdout": "17\n"
+      },
+      {
+        "label": "Hidden: b is zero",
+        "is_sample": false,
+        "stdin": "5\n0\n3\n",
+        "expected_stdout": "15\n"
+      },
+      {
+        "label": "Hidden: c is one",
+        "is_sample": false,
+        "stdin": "4\n6\n1\n",
+        "expected_stdout": "4\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Function: Watched Running Total",
+    "prompt_md": "## Goal\nComplete the function `watched_total(int a, int b, int c)` that adds the three values one at a time, printing each intermediate total to `std::cerr` to simulate a debugger watch, and returns the final sum.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\nLine 3: integer `c`.\n\n## Output\n- Stderr watch messages (not checked — only stdout is tested).\n- Stdout: one line containing `a + b + c`.\n\n## Requirements\n1. Inside `watched_total`, compute the sum incrementally:\n   - `t1 = a` — print `[watch] t1=<t1>` to `std::cerr`.\n   - `t2 = t1 + b` — print `[watch] t2=<t2>` to `std::cerr`.\n   - `t3 = t2 + c` — print `[watch] t3=<t3>` to `std::cerr`.\n   - Return `t3`.\n2. `main` reads `a`, `b`, `c` and prints the return value of `watched_total(a, b, c)` to stdout.\n3. Edge cases: the hidden tests include `a = 0` and all three values equal.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement watched_total(int a, int b, int c)\n// - t1 = a, print \"[watch] t1=<t1>\" to std::cerr\n// - t2 = t1 + b, print \"[watch] t2=<t2>\" to std::cerr\n// - t3 = t2 + c, print \"[watch] t3=<t3>\" to std::cerr\n// - return t3\nint watched_total(int a, int b, int c) {\n    return 0;  // replace with correct implementation\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << watched_total(a, b, c) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint watched_total(int a, int b, int c) {\n    int t1 = a;\n    std::cerr << \"[watch] t1=\" << t1 << \"\\n\";\n    int t2 = t1 + b;\n    std::cerr << \"[watch] t2=\" << t2 << \"\\n\";\n    int t3 = t2 + c;\n    std::cerr << \"[watch] t3=\" << t3 << \"\\n\";\n    return t3;\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << watched_total(a, b, c) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "1\n2\n3\n",
+        "expected_stdout": "6\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n8\n5\n",
+        "expected_stdout": "13\n"
+      },
+      {
+        "label": "Hidden: all equal",
+        "is_sample": false,
+        "stdin": "4\n4\n4\n",
+        "expected_stdout": "12\n"
+      }
+    ]
+  }
+]

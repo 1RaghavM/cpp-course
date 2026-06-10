@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Decompose a Sum-and-Difference Program",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints their sum and their difference on separate lines, using two separate functions.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space (-1000 ≤ a, b ≤ 1000).\n\n## Output\n- Line 1: `Sum: X` where `X` is `a + b`.\n- Line 2: `Diff: X` where `X` is `a - b`.\n\n## Requirements\n1. Define `int add(int a, int b)` that returns `a + b`.\n2. Define `int subtract(int a, int b)` that returns `a - b`.\n3. Forward declare both functions above `main`.\n4. Call each function from `main` and print the results in the format above.\n5. No other output.\n\n## Notes\n- Keep `main` short: read input, call functions, print results.",
+    "starter_code": "#include <iostream>\n\n// TODO: forward declarations of add and subtract\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    // TODO: call add and subtract, print \"Sum: X\" then \"Diff: X\"\n    return 0;\n}\n\n// TODO: definitions of add and subtract\n",
+    "solution_code": "#include <iostream>\n\nint add(int a, int b);\nint subtract(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Sum: \" << add(a, b) << \"\\n\";\n    std::cout << \"Diff: \" << subtract(a, b) << \"\\n\";\n    return 0;\n}\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint subtract(int a, int b) {\n    return a - b;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 3",
+        "is_sample": true,
+        "stdin": "10 3\n",
+        "expected_stdout": "Sum: 13\nDiff: 7"
+      },
+      {
+        "label": "Hidden: negative numbers",
+        "is_sample": false,
+        "stdin": "-5 -3\n",
+        "expected_stdout": "Sum: -8\nDiff: -2"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0 0\n",
+        "expected_stdout": "Sum: 0\nDiff: 0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Broken Decomposition",
+    "prompt_md": "## Goal\nThe program below should read two integers and print their sum, product, and the sum of the sum and product. It compiles and runs, but produces the wrong answer. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space.\n\n## Output\n- Line 1: `Sum: X` where `X` is `a + b`.\n- Line 2: `Product: X` where `X` is `a * b`.\n- Line 3: `Combined: X` where `X` is `(a + b) + (a * b)`.\n\n## Requirements\n1. The program must compile cleanly.\n2. All three output lines must be correct.\n3. There is exactly one logic bug — fix it.\n\n## Notes\n- The bug is in one of the helper functions.",
+    "starter_code": "#include <iostream>\n\nint sumOf(int a, int b);\nint productOf(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    int s = sumOf(a, b);\n    int p = productOf(a, b);\n    std::cout << \"Sum: \" << s << \"\\n\";\n    std::cout << \"Product: \" << p << \"\\n\";\n    std::cout << \"Combined: \" << sumOf(s, p) << \"\\n\";\n    return 0;\n}\n\nint sumOf(int a, int b) {\n    return a + b;\n}\n\nint productOf(int a, int b) {\n    return a + b;  // BUG: should multiply, not add\n}\n",
+    "solution_code": "#include <iostream>\n\nint sumOf(int a, int b);\nint productOf(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    int s = sumOf(a, b);\n    int p = productOf(a, b);\n    std::cout << \"Sum: \" << s << \"\\n\";\n    std::cout << \"Product: \" << p << \"\\n\";\n    std::cout << \"Combined: \" << sumOf(s, p) << \"\\n\";\n    return 0;\n}\n\nint sumOf(int a, int b) {\n    return a + b;\n}\n\nint productOf(int a, int b) {\n    return a * b;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 4",
+        "is_sample": true,
+        "stdin": "3 4\n",
+        "expected_stdout": "Sum: 7\nProduct: 12\nCombined: 19"
+      },
+      {
+        "label": "Hidden: 2 5",
+        "is_sample": false,
+        "stdin": "2 5\n",
+        "expected_stdout": "Sum: 7\nProduct: 10\nCombined: 17"
+      },
+      {
+        "label": "Hidden: 1 1",
+        "is_sample": false,
+        "stdin": "1 1\n",
+        "expected_stdout": "Sum: 2\nProduct: 1\nCombined: 3"
+      }
+    ]
+  }
+]

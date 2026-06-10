@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `#include <iostream>` do?",
+    "options": {
+      "a": "It imports only `std::cout` and `std::cin` into the current file.",
+      "b": "It instructs the preprocessor to paste the entire contents of the `iostream` header file into the source at that point.",
+      "c": "It tells the linker to link against the I/O library.",
+      "d": "It defines the `std` namespace."
+    },
+    "answer": "b",
+    "explanation_md": "`#include` is a preprocessor directive that performs a verbatim copy-paste of the named file. The compiler never sees `#include` — it only sees the pasted content. The entire `iostream` header is inserted, not just the names you happen to use."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\n#define MULTIPLIER 3\n\nint main()\n{\n    int x = 4;\n    std::cout << x * MULTIPLIER << \"\\n\";\n    std::cout << MULTIPLIER * MULTIPLIER << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n9",
+    "explanation_md": "The preprocessor replaces `MULTIPLIER` with `3` before compilation. `x * MULTIPLIER` becomes `4 * 3 = 12`. `MULTIPLIER * MULTIPLIER` becomes `3 * 3 = 9`. Each result is printed on its own line."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wanted to define a constant `SCALE` equal to 10 and use it in an expression. The program compiles but produces unexpected output. What is wrong?\n\n```cpp\n#include <iostream>\n\n#define SCALE 2 + 8\n\nint main()\n{\n    std::cout << 3 * SCALE << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`#define` names must be lowercase.",
+      "b": "The preprocessor expands `SCALE` to `2 + 8` before multiplication, so `3 * SCALE` becomes `3 * 2 + 8 = 14`, not 30.",
+      "c": "`#define` cannot be used with addition.",
+      "d": "The `#define` is missing a semicolon."
+    },
+    "answer": "b",
+    "explanation_md": "`#define` is a text substitution with no parentheses added automatically. `3 * SCALE` expands to `3 * 2 + 8`. Due to operator precedence, multiplication happens first: `6 + 8 = 14`. To get `30`, the definition should be `#define SCALE (2 + 8)` — wrapping the replacement in parentheses forces the intended grouping."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\n#define SHOW_EXTRA\n\nint main()\n{\n    std::cout << \"Line 1\\n\";\n#ifdef SHOW_EXTRA\n    std::cout << \"Line 2\\n\";\n#endif\n    std::cout << \"Line 3\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Line 1\nLine 2\nLine 3",
+    "explanation_md": "`SHOW_EXTRA` is defined (with no replacement value), so the preprocessor keeps the code between `#ifdef SHOW_EXTRA` and `#endif`. All three lines are compiled and printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer writes `#define COUNT 5;` (with a trailing semicolon). They then write `int total = COUNT * 2;`. What happens?",
+    "options": {
+      "a": "The program compiles and `total` equals 10.",
+      "b": "The preprocessor replaces `COUNT` with `5;`, producing `int total = 5; * 2;` — a syntax error.",
+      "c": "The preprocessor strips the semicolon automatically.",
+      "d": "The compiler ignores the trailing semicolon in the macro."
+    },
+    "answer": "b",
+    "explanation_md": "The preprocessor blindly substitutes `COUNT` with the text `5;`. The resulting line is `int total = 5; * 2;`, which is two statements: `int total = 5;` (valid) followed by `* 2;` (invalid — an expression statement starting with `*` with no left operand). This is a syntax error. Never put a semicolon in a `#define` replacement."
+  }
+]

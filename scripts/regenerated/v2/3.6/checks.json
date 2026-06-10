@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "You step through this program in a debugger, stepping *over* every line in `main`. What does the program print to stdout?\n\n```cpp\n#include <iostream>\n\nint double_it(int n) {\n    return n * 2;\n}\n\nint main() {\n    int x = 5;\n    int y = double_it(x);\n    std::cout << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "Stepping over `double_it(x)` still executes the function completely — it just does not pause inside it. The function returns `5 * 2 = 10`, so `y` becomes `10` and stdout receives `10`. Stepping over does not skip function calls; it runs them without stopping inside."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between **Step Over** and **Step Into** when the current line calls a function?",
+    "options": {
+      "a": "Step Over skips the function call entirely; Step Into runs it.",
+      "b": "Step Over executes the function and lands on the next line in the current function; Step Into follows the call inside the function.",
+      "c": "Step Over runs the rest of the program; Step Into pauses at every line.",
+      "d": "There is no difference — both execute the function and move to the next line."
+    },
+    "answer": "b",
+    "explanation_md": "Step Over runs the entire called function in one step and lands on the line after the call. Step Into follows execution inside the called function and pauses at its first line. Option a is wrong because Step Over still *runs* the function; it just does not stop inside it."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You are stepping through a program and you are currently inside a helper function. You have seen enough of the function and want to return to the caller without stepping through every remaining line of the helper. Which step command should you use?",
+    "options": {
+      "a": "Step Over — to skip the rest of the function.",
+      "b": "Step Into — to go deeper into any sub-calls.",
+      "c": "Step Out — to run the rest of the current function and pause in the caller.",
+      "d": "Restart — to begin the debugging session again."
+    },
+    "answer": "c",
+    "explanation_md": "Step Out continues execution until the current function returns, then pauses in the caller right after the call. It is the right command when you have finished investigating a function and want to return to where it was called. Step Over only advances one line at a time and would not skip to the return point."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "A programmer adds `std::cerr` messages to simulate what a debugger would show at each step. What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint add(int a, int b) {\n    std::cerr << \"[step] inside add a=\" << a << \" b=\" << b << \"\\n\";\n    int sum = a + b;\n    std::cerr << \"[step] sum=\" << sum << \"\\n\";\n    return sum;\n}\n\nint main() {\n    int result = add(6, 9);\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "The `std::cerr` lines go to stderr only. Stdout receives only the `std::cout << result` output, which is `6 + 9 = 15`. A common mistake is expecting cerr messages to appear in stdout."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you use **Step Into** instead of **Step Over** on a function call?",
+    "options": {
+      "a": "Always — you should always step into every function call.",
+      "b": "When you suspect the bug is inside the called function and you want to watch its internal computation.",
+      "c": "Only when the function has no parameters.",
+      "d": "Never — Step Over is sufficient for all debugging."
+    },
+    "answer": "b",
+    "explanation_md": "Step Into is most useful when the function call returns a wrong value and you want to see exactly which line inside that function is responsible. Stepping into every function call (option a) wastes time on well-understood functions. Step Over is sufficient when the function is known to be correct and you only care about its return value."
+  }
+]

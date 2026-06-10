@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assuming `std::cerr` and `std::cout` both print to the terminal in order, what does this program print to `std::cout` (not `std::cerr`) when input is `6`?\n\n```cpp\n#include <iostream>\n\nint triple(int n)\n{\n    return n + n;\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    std::cerr << \"x = \" << x << \"\\n\";\n    std::cout << triple(x) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "The function `triple` is supposed to compute `n * 3` but the body computes `n + n = n * 2`. With `x = 6`, the result is `6 + 6 = 12`, not `18`. The `std::cerr` line goes to the error stream, not stdout. The question asks about `std::cout` output only, which is `12`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You are debugging a program and you found a bug. Before fixing it, what should you do first according to the debugging process?",
+    "options": {
+      "a": "Immediately rewrite the function that contains the bug",
+      "b": "Make sure you can reliably reproduce the problem with a specific input",
+      "c": "Remove all `std::cerr` statements to keep the code clean",
+      "d": "Change several likely problem areas at once to save time"
+    },
+    "answer": "b",
+    "explanation_md": "The first step of the debugging process is reproduction: confirm that you can trigger the bug with a specific, known input. Without a reproducible test case you cannot verify your fix. Changing multiple things at once (option d) is also a common mistake — it leaves you unable to know which change fixed the problem."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `std::cerr` preferred over `std::cout` for debug output?",
+    "options": {
+      "a": "It is faster to type",
+      "b": "It keeps debug messages on a separate stream from the program's real output",
+      "c": "It writes to a file instead of the terminal",
+      "d": "It produces colored output on most terminals"
+    },
+    "answer": "b",
+    "explanation_md": "`std::cerr` uses the standard error stream. Directing debug messages there keeps them separate from `std::cout` (standard output), which carries the program's real results. This separation matters when a grader or test harness reads only stdout — debug messages on cerr won't pollute the captured output."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You fix a bug and your original failing test case now produces the correct output. Is the debugging process complete?",
+    "options": {
+      "a": "Yes — one passing test confirms the fix is complete",
+      "b": "No — you should also check whether the fix could have broken other behavior",
+      "c": "No — you must rewrite the entire program to be safe",
+      "d": "Yes, as long as the code compiles without warnings"
+    },
+    "answer": "b",
+    "explanation_md": "Step 4 of the debugging process is verification — not just confirming the original test case passes, but also considering whether your change could have introduced new bugs elsewhere. A minimal fix that solves one case can break an edge case you hadn't tested. Thinking about related paths is part of completing the process."
+  }
+]

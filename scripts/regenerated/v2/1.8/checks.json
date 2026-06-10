@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes the following program. Will it compile and run correctly?\n\n```cpp\n#include<iostream>\nint main(){int x=42;std::cout<<x<<'\\n';return 0;}\n```",
+    "options": {
+      "a": "No — the program is missing required newlines and will not compile.",
+      "b": "No — the compiler requires at least one space after `#include`.",
+      "c": "Yes — the compiler ignores whitespace between tokens and the program is valid.",
+      "d": "Yes — but only if the compiler is in lenient mode."
+    },
+    "answer": "c",
+    "explanation_md": "C++ compilers treat whitespace (spaces, tabs, newlines) as token delimiters, not as required formatting. As long as tokens are distinguishable, the program is syntactically valid regardless of spacing or line breaks. The program compiles and prints `42`. The formatting is poor for human readers, but the compiler does not care."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which placement of the opening brace matches the Allman style used in this course?\n\nOption A:\n```cpp\nint main() {\n    return 0;\n}\n```\n\nOption B:\n```cpp\nint main()\n{\n    return 0;\n}\n```",
+    "options": {
+      "a": "Option A (brace on the same line as the function header).",
+      "b": "Option B (brace on its own line, directly under the function header).",
+      "c": "Both are equally correct — the course has no brace-placement preference.",
+      "d": "Neither — the course requires the brace to be indented."
+    },
+    "answer": "b",
+    "explanation_md": "The Allman style places the opening brace on its own line, directly aligned with the function header. Option A is the K&R or \"One True Brace Style\" variant, which is common in other languages. Both compile correctly, but this course follows Allman style (Option B) for consistency."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (It compiles without errors.)\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 2; int b = 3;\n    std::cout << a + b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "Despite two statements on the same line (`int a = 2; int b = 3;`), the program is syntactically valid. `a` is `2` and `b` is `3`, so `a + b` is `5`. The formatting violates the \"one statement per line\" convention but does not affect the compiled output."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "How much whitespace (spaces or newlines) between tokens does C++ require in order to compile?",
+    "options": {
+      "a": "Exactly one space between every pair of tokens.",
+      "b": "None — zero or more whitespace between tokens is fine as long as they remain distinguishable.",
+      "c": "At least one newline after every statement.",
+      "d": "Exactly four spaces of indentation per level."
+    },
+    "answer": "b",
+    "explanation_md": "C++ only requires that adjacent tokens be separable — i.e., two identifiers or two keywords next to each other need at least one whitespace character so the compiler can tell them apart. Beyond that, zero or more whitespace characters between tokens is valid. Indentation, blank lines, and line breaks are purely conventions for human readers."
+  }
+]

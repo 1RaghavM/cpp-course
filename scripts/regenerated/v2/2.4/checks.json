@@ -1,0 +1,47 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(int a, int b)\n{\n    std::cout << a + b << \"\\n\";\n    std::cout << a - b << \"\\n\";\n}\n\nint main()\n{\n    show(10, 3);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "13\n7",
+    "explanation_md": "`show(10, 3)` copies `10` into `a` and `3` into `b`. The first output is `10 + 3 = 13`, the second is `10 - 3 = 7`. Arguments are matched to parameters by position."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you modify a parameter inside a function body?",
+    "options": {
+      "a": "The corresponding variable in the caller is also changed.",
+      "b": "Only the local copy is changed — the caller's variable is unaffected.",
+      "c": "The change persists into the next call to the same function.",
+      "d": "The compiler reports a warning."
+    },
+    "answer": "b",
+    "explanation_md": "Parameters are copies of the arguments passed in. Modifying a parameter changes only the local copy inside the function. The caller's variable remains unchanged, and the parameter is freshly initialized on the next call. This is called \"pass by value.\""
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint sub(int x, int y)\n{\n    return x - y;\n}\n\nint main()\n{\n    std::cout << sub(5, 2) << \"\\n\";\n    std::cout << sub(2, 5) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n-3",
+    "explanation_md": "`sub(5, 2)` computes `5 - 2 = 3`. `sub(2, 5)` computes `2 - 5 = -3`. Arguments are bound to parameters by position, so swapping the argument order swaps the operands of subtraction and changes the sign of the result."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function is declared as `int multiply(int a, int b)`. Which call is a compile error?",
+    "options": {
+      "a": "`multiply(3, 4)`",
+      "b": "`multiply(0, 0)`",
+      "c": "`multiply(5)`",
+      "d": "`multiply(-1, 100)`"
+    },
+    "answer": "c",
+    "explanation_md": "C++ requires the number of arguments to match the number of parameters exactly. `multiply(5)` provides only one argument for a function that expects two, causing a compile error. The other calls all supply two `int` arguments and are valid."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid bump(int n)\n{\n    n = n + 10;\n    std::cout << n << \"\\n\";\n}\n\nint main()\n{\n    int x = 5;\n    bump(x);\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15\n5",
+    "explanation_md": "`bump` receives a copy of `x` (value `5`), adds 10 to that copy to get `15`, and prints it. The original `x` in `main` is unaffected by the modification inside `bump`, so the second `std::cout` prints `5`."
+  }
+]

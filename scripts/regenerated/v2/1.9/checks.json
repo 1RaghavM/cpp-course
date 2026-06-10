@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << 7 / 2 << '\\n';\n    std::cout << 7 % 2 << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n1",
+    "explanation_md": "Both `7` and `2` are integer literals, so `/` performs integer division: `7 / 2` is `3` (the `.5` is dropped). The `%` operator gives the remainder: `7 % 2` is `1` because `7 = 3 * 2 + 1`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes what the `-` operator does in `int y = -x;` when `x` is `5`?",
+    "options": {
+      "a": "It subtracts `x` from zero and stores the result in `y`; `x` is unchanged.",
+      "b": "It modifies `x` in-place so `x` becomes `-5`, then copies the value to `y`.",
+      "c": "It is a syntax error because `-` requires two operands.",
+      "d": "It subtracts 1 from `x` and assigns the result to `y`."
+    },
+    "answer": "a",
+    "explanation_md": "The `-` here is the unary minus operator. It produces a new value (`-5`) without changing `x`. Then `=` stores that new value into `y`. Option b is wrong because unary minus never modifies its operand in place."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 10;\n    int b = 4;\n    std::cout << a / b << '\\n';\n    std::cout << a % b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2\n2",
+    "explanation_md": "`10 / 4` in integer division is `2` (the remainder `0.5` is truncated). `10 % 4` is `2` because `10 = 2 * 4 + 2`. Both values are printed on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes:\n\n```cpp\nint x = 5;\n-x;\nstd::cout << x << '\\n';\n```\n\nWhat is printed, and why?",
+    "options": {
+      "a": "`-5` — the unary minus negates `x` and changes it in place.",
+      "b": "`5` — the expression `-x` computes a new value but does not modify `x`.",
+      "c": "`0` — the statement `-x;` sets `x` to zero.",
+      "d": "The program does not compile because `-x;` is not a valid statement."
+    },
+    "answer": "b",
+    "explanation_md": "The unary minus expression `-x` evaluates to `-5` but the result is immediately discarded; `x` itself is never changed. The compiler may issue a warning about the unused result, but the program compiles and prints `5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the value of `result` after the following code runs?\n\n```cpp\nint result = 9 / 4 * 2;\n```",
+    "options": {
+      "a": "4 — integer division gives `9/4 = 2`, then `2 * 2 = 4`.",
+      "b": "4.5 — division produces `2.25`, multiplied by `2`.",
+      "c": "3 — integer division of `9` by `4*2` which is `8`.",
+      "d": "5 — standard rounding of `2.25 * 2`."
+    },
+    "answer": "a",
+    "explanation_md": "`*` and `/` have the same precedence and are left-associative, so the expression evaluates left to right: `9 / 4` is `2` (integer division drops the `.25`), then `2 * 2` is `4`. There is no floating-point rounding at any step."
+  }
+]

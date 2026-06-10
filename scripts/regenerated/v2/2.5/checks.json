@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show()\n{\n    int n = 5;\n    n = n + 3;\n    std::cout << n << \"\\n\";\n}\n\nint main()\n{\n    show();\n    show();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "8\n8",
+    "explanation_md": "Each call to `show` creates a fresh local variable `n` initialized to `5`, then adds 3 to get `8`, then prints it. When `show` returns, `n` is destroyed. The second call starts over with a new `n = 5`. There is no persistence between calls, so both calls print `8`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A variable declared inside a function body is destroyed when:",
+    "options": {
+      "a": "The program ends.",
+      "b": "The variable's value becomes zero.",
+      "c": "Execution reaches the closing `}` of the block it was declared in.",
+      "d": "Another function is called."
+    },
+    "answer": "c",
+    "explanation_md": "Local variables have automatic storage duration: they are created when their declaration is reached and destroyed when execution exits the surrounding block (the matching `}`). The program ending, the value changing, or another function being called have no effect on the lifetime of a local variable."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid f()\n{\n    int x = 1;\n    std::cout << x << \"\\n\";\n}\n\nvoid g()\n{\n    int x = 2;\n    std::cout << x << \"\\n\";\n}\n\nint main()\n{\n    f();\n    g();\n    f();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n2\n1",
+    "explanation_md": "`f` and `g` each have their own local `x`. They do not share state. `f()` prints its own `x = 1`, `g()` prints its own `x = 2`, and the second `f()` again creates a fresh `x = 1`. Three calls produce three independent outputs."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the following program fail to compile?\n\n```cpp\n#include <iostream>\n\nvoid compute()\n{\n    int result = 42;\n}\n\nint main()\n{\n    compute();\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`result` is destroyed when `compute` returns, so it is out of scope in `main`.",
+      "b": "You cannot declare variables inside non-`main` functions.",
+      "c": "`result` is a reserved keyword in C++.",
+      "d": "The value 42 is too large to be an `int`."
+    },
+    "answer": "a",
+    "explanation_md": "`result` is local to `compute`. When `compute` returns, `result` is destroyed and its name is no longer in scope. `main` has no knowledge of `result`, so the compiler reports an undeclared identifier error. To share the value, `compute` should return it and `main` should capture the return value."
+  }
+]

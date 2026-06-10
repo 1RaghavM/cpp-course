@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace a\n{\n    int value() { return 10; }\n}\n\nnamespace b\n{\n    int value() { return 20; }\n}\n\nint main()\n{\n    std::cout << a::value() << \"\\n\";\n    std::cout << b::value() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n20",
+    "explanation_md": "Each `value` function lives in its own namespace. `a::value()` returns 10 and `b::value()` returns 20. The `::` operator selects the namespace, so there is no ambiguity and both print on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why do C++ programs write `std::cout` instead of just `cout`?",
+    "options": {
+      "a": "`std::` tells the compiler to use the slow, safe output path.",
+      "b": "`cout` lives inside the `std` namespace; `std::` is the scope-resolution operator that identifies which namespace's `cout` to use.",
+      "c": "`std::cout` is required by the C++20 standard; older standards allowed plain `cout`.",
+      "d": "The `std::` prefix tells the compiler to include the `<iostream>` header automatically."
+    },
+    "answer": "b",
+    "explanation_md": "`std` is the namespace where the C++ Standard Library places all its names. Without `std::`, the compiler looks in the global namespace, where `cout` does not exist by default. The scope-resolution operator `::` says 'look inside `std` for the name `cout`'."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program compiles but does not print what the programmer intended. The programmer wanted to call their own `add` function, which adds 1 to each argument before summing. What is the bug?\n\n```cpp\n#include <iostream>\nusing namespace std;\n\nnamespace utils\n{\n    int add(int a, int b) { return (a + 1) + (b + 1); }\n}\n\nint main()\n{\n    cout << add(3, 4) << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`using namespace std;` pulls `std::add` into scope but does not make `utils::add` visible; the call finds no matching function.",
+      "b": "The programmer forgot to qualify the call; `add(3, 4)` calls no function because `utils::add` is not in scope, causing a compile error.",
+      "c": "The call resolves to `utils::add` correctly; the output is 9 as intended.",
+      "d": "`using namespace std;` is illegal when a namespace named `utils` is also defined."
+    },
+    "answer": "a",
+    "explanation_md": "`utils::add` is only visible as `utils::add` or inside the `utils` namespace block. `using namespace std;` brings `std` names into scope but does nothing for `utils`. The unqualified call `add(3, 4)` will fail to compile (no `add` in global or `std` scope), or if there were a `std::add` it would call the wrong one. The fix is `utils::add(3, 4)`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace math\n{\n    int square(int x) { return x * x; }\n}\n\nint main()\n{\n    std::cout << math::square(4) << \"\\n\";\n    std::cout << math::square(0) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "16\n0",
+    "explanation_md": "`math::square(4)` returns `4 * 4 = 16`. `math::square(0)` returns `0 * 0 = 0`. Both are printed on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the main risk of writing `using namespace std;` at the top of a large source file?",
+    "options": {
+      "a": "It causes every `std` function call to be twice as slow.",
+      "b": "It prevents you from defining any functions in the same file.",
+      "c": "Names you define (like `count` or `sort`) may silently collide with `std` names, causing ambiguity errors or unexpected function calls.",
+      "d": "It is illegal in C++20 and will produce a compiler error."
+    },
+    "answer": "c",
+    "explanation_md": "`using namespace std;` pulls all of `std`'s names into the current scope. If you then define a function with the same name as a standard one (like `std::count` or `std::sort`), the compiler may report an ambiguity error or silently call the wrong function. Fully qualifying names (`std::cout`) is always unambiguous and is the preferred style in non-trivial code."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print a Banner Using Functions",
+    "prompt_md": "## Goal\nWrite a program that prints a simple two-line banner by calling two helper functions from `main`.\n\n## Input\nNone. The program reads nothing from standard input.\n\n## Output\nPrint exactly two lines:\n```\n==========\nWelcome!\n```\n(no trailing blank lines)\n\n## Requirements\n1. Define a `void` function named `printBorder` that prints `==========` followed by a newline.\n2. Define a `void` function named `printMessage` that prints `Welcome!` followed by a newline.\n3. In `main`, call `printBorder` first, then `printMessage`.\n4. Both helper functions must be defined above `main` so they are visible when called.",
+    "starter_code": "#include <iostream>\n\n// TODO: define printBorder() here — prints \"==========\"\n\n// TODO: define printMessage() here — prints \"Welcome!\"\n\nint main()\n{\n    // TODO: call printBorder() then printMessage()\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printBorder()\n{\n    std::cout << \"==========\\n\";\n}\n\nvoid printMessage()\n{\n    std::cout << \"Welcome!\\n\";\n}\n\nint main()\n{\n    printBorder();\n    printMessage();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "==========\nWelcome!\n"
+      },
+      {
+        "label": "Hidden: output matches exactly",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "==========\nWelcome!\n"
+      },
+      {
+        "label": "Hidden: no extra blank lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "==========\nWelcome!\n"
+      }
+    ]
+  },
+  {
+    "title": "Function Call Order Bug",
+    "prompt_md": "## Goal\nThe program below should print a three-line greeting in this exact order:\n```\nHello!\nHow are you?\nGoodbye!\n```\nBut it prints them in the wrong order. Find and fix the single logic bug.\n\n## Input\nNone.\n\n## Output\nExactly three lines in the order shown above.\n\n## Requirements\n1. The three `void` functions (`sayHello`, `sayHow`, `sayBye`) must not be modified.\n2. Fix only the call order inside `main`.\n3. Each function must still be called exactly once.",
+    "starter_code": "#include <iostream>\n\nvoid sayHello()\n{\n    std::cout << \"Hello!\\n\";\n}\n\nvoid sayHow()\n{\n    std::cout << \"How are you?\\n\";\n}\n\nvoid sayBye()\n{\n    std::cout << \"Goodbye!\\n\";\n}\n\nint main()\n{\n    sayBye();\n    sayHello();\n    sayHow();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid sayHello()\n{\n    std::cout << \"Hello!\\n\";\n}\n\nvoid sayHow()\n{\n    std::cout << \"How are you?\\n\";\n}\n\nvoid sayBye()\n{\n    std::cout << \"Goodbye!\\n\";\n}\n\nint main()\n{\n    sayHello();\n    sayHow();\n    sayBye();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct order",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Hello!\nHow are you?\nGoodbye!\n"
+      },
+      {
+        "label": "Hidden: all three lines present",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Hello!\nHow are you?\nGoodbye!\n"
+      },
+      {
+        "label": "Hidden: exact match",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Hello!\nHow are you?\nGoodbye!\n"
+      }
+    ]
+  }
+]

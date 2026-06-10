@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint triple(int x)\n{\n    return x * 3;\n}\n\nint main()\n{\n    std::cout << triple(4) << \"\\n\";\n    std::cout << triple(2) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n6",
+    "explanation_md": "`triple(4)` returns `4 * 3 = 12` and `triple(2)` returns `2 * 3 = 6`. Each call runs the function body independently with its own argument, then returns the computed value directly to `std::cout`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `return 0;` at the end of `main` do?",
+    "options": {
+      "a": "It resets all variables to zero.",
+      "b": "It sends the exit code 0 (success) to the operating system.",
+      "c": "It makes the program print a zero before exiting.",
+      "d": "It is optional and has no effect."
+    },
+    "answer": "b",
+    "explanation_md": "`main` has return type `int`. The value returned from `main` is the program's exit code sent to the OS. Zero conventionally means success, and non-zero values signal errors. It does not print anything and is not optional — omitting it in pre-C++11 compilers causes undefined behaviour."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint half(int x)\n{\n    return x / 2;\n}\n\nint main()\n{\n    std::cout << half(7) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`7 / 2` in integer division truncates toward zero and gives `3`, not `3.5`. The fractional part is silently discarded because both operands are `int`. This is a common source of off-by-one style errors when learners expect a fraction."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `return` inside a value-returning function is correct?",
+    "options": {
+      "a": "A function can have at most one `return` statement.",
+      "b": "`return` ends the function immediately — no statement after it on the same path runs.",
+      "c": "The return value is optional; the function can fall off the end instead.",
+      "d": "`return` only works inside `main`."
+    },
+    "answer": "b",
+    "explanation_md": "`return` both specifies the value sent back to the caller AND terminates the function immediately. Any code after `return` in the same execution path is unreachable. A function can have multiple `return` statements on different branches, but each one exits immediately when reached."
+  }
+]

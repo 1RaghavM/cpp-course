@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "When designing a program, what should you decide before writing any C++ code?",
+    "options": {
+      "a": "Which compiler flags to use",
+      "b": "The exact inputs, outputs, and sub-tasks the program needs to perform",
+      "c": "How many lines of code the solution will take",
+      "d": "Which header files to include"
+    },
+    "answer": "b",
+    "explanation_md": "The first design step is to clearly state what the program receives (inputs), what it must produce (outputs), and what transformations need to happen in between (sub-tasks). Compiler flags and includes are implementation details that follow naturally once the plan is clear."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when given input `4 5`?\n\n```cpp\n#include <iostream>\n\nint area(int w, int h) { return w * h; }\nvoid printArea(int w, int h) {\n    std::cout << \"Area: \" << area(w, h) << \"\\n\";\n}\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n    printArea(w, h);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Area: 20",
+    "explanation_md": "`area(4, 5)` returns `20`. `printArea` prints `Area: ` followed by `20` and a newline. The decomposition here follows the design principle: a computation function and a display function each doing one job."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which approach best matches the bottom-up, incremental testing strategy described in the lesson?",
+    "options": {
+      "a": "Write the entire program, then run it once to see if it works",
+      "b": "Write only the most complex function first to get it out of the way",
+      "c": "Start with the smallest sub-task (e.g., just reading input and printing it back), verify it works, then add the next step",
+      "d": "Write `main` last so you know all the helpers compile first"
+    },
+    "answer": "c",
+    "explanation_md": "The lesson recommends adding and testing one piece at a time. Starting with the simplest verifiable thing (read input and echo it) means you have a known-good baseline. Each new step is tested before the next is added, so when something breaks you know exactly what changed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when given input `10 3`?\n\n```cpp\n#include <iostream>\n\nint sumAndDiff(int a, int b) { return (a + b) + (a - b); }\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << sumAndDiff(a, b) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`a + b = 13`, `a - b = 7`. `13 + 7 = 20`. Notice that `(a+b) + (a-b)` always simplifies to `2a`. With `a=10`, the result is `20`. The lesson point: naming the computation in a function makes it easy to test in isolation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `main` function that does input reading, three separate computations, and formatted output all in 40 lines — what design principle does that violate?",
+    "options": {
+      "a": "Functions should have at most two parameters",
+      "b": "Each distinct step should be a separate function; `main` should read, call, and print",
+      "c": "Programs must never exceed 20 lines",
+      "d": "Output must always be done inside the function that computes the value"
+    },
+    "answer": "b",
+    "explanation_md": "The lesson's third mistake covers exactly this: when `main` mixes reading, computing, and printing, the code is hard to follow and hard to fix. The remedy is decomposition — each distinct responsibility becomes its own named function, and `main` becomes a short sequence of readable calls."
+  }
+]

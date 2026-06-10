@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Trace the Call Chain Output",
+    "prompt_md": "## Goal\nWrite a program with three functions forming a chain: `main` calls `step1`, `step1` calls `step2`, and `step2` calls `step3`. Each function prints its own name and the value it received, so you can practice reading the call stack from top to bottom.\n\n## Input\nLine 1: a single integer `n`.\n\n## Output\nPrint exactly three lines:\n```\nstep1 received: <n>\nstep2 received: <n+1>\nstep3 received: <n+2>\n```\nNo extra blank lines.\n\n## Requirements\n1. `main` reads `n` from stdin and calls `step1(n)`.\n2. `step1(int x)` prints `step1 received: <x>` then calls `step2(x + 1)`.\n3. `step2(int x)` prints `step2 received: <x>` then calls `step3(x + 1)`.\n4. `step3(int x)` prints `step3 received: <x>` and returns.\n5. No function returns a value — all are `void`.\n6. The call stack at the moment `step3` executes should show four frames: `step3`, `step2`, `step1`, `main`.",
+    "starter_code": "#include <iostream>\n\nvoid step3(int x)\n{\n    // TODO: print \"step3 received: \" followed by x\n}\n\nvoid step2(int x)\n{\n    // TODO: print \"step2 received: \" followed by x, then call step3 with x+1\n}\n\nvoid step1(int x)\n{\n    // TODO: print \"step1 received: \" followed by x, then call step2 with x+1\n}\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    step1(n);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid step3(int x)\n{\n    std::cout << \"step3 received: \" << x << '\\n';\n}\n\nvoid step2(int x)\n{\n    std::cout << \"step2 received: \" << x << '\\n';\n    step3(x + 1);\n}\n\nvoid step1(int x)\n{\n    std::cout << \"step1 received: \" << x << '\\n';\n    step2(x + 1);\n}\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    step1(n);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=0",
+        "is_sample": true,
+        "stdin": "0\n",
+        "expected_stdout": "step1 received: 0\nstep2 received: 1\nstep3 received: 2"
+      },
+      {
+        "label": "Hidden: n=10",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "step1 received: 10\nstep2 received: 11\nstep3 received: 12"
+      },
+      {
+        "label": "Hidden: n=-5",
+        "is_sample": false,
+        "stdin": "-5\n",
+        "expected_stdout": "step1 received: -5\nstep2 received: -4\nstep3 received: -3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Broken Call Chain",
+    "prompt_md": "## Goal\nThe program below is supposed to read an integer `n`, compute `n + 100` in a helper function, then print the result via another function. It compiles and runs, but the output is wrong.\n\n## Input\nLine 1: a single integer `n`.\n\n## Output\nPrint exactly one line:\n```\nFinal: <n+100>\n```\n\n## Requirements\n1. `addHundred(int x)` should return `x + 100`.\n2. `printFinal(int value)` should print `Final: <value>`.\n3. `main` reads `n`, calls `addHundred`, and passes the result to `printFinal`.\n4. Find and fix the single logic bug — do not change the program structure.",
+    "starter_code": "#include <iostream>\n\nint addHundred(int x)\n{\n    return x + 10;  // should add 100\n}\n\nvoid printFinal(int value)\n{\n    std::cout << \"Final: \" << value << '\\n';\n}\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    printFinal(addHundred(n));\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint addHundred(int x)\n{\n    return x + 100;\n}\n\nvoid printFinal(int value)\n{\n    std::cout << \"Final: \" << value << '\\n';\n}\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    printFinal(addHundred(n));\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=0",
+        "is_sample": true,
+        "stdin": "0\n",
+        "expected_stdout": "Final: 100"
+      },
+      {
+        "label": "Hidden: n=50",
+        "is_sample": false,
+        "stdin": "50\n",
+        "expected_stdout": "Final: 150"
+      },
+      {
+        "label": "Hidden: n=-100",
+        "is_sample": false,
+        "stdin": "-100\n",
+        "expected_stdout": "Final: 0"
+      }
+    ]
+  }
+]
