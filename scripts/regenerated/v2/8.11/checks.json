@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    for (int i{1}; i <= 6; ++i) {\n        if (i == 4) break;\n        if (i % 2 == 0) continue;\n        std::cout << i << \" \";\n    }\n    std::cout << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 3",
+    "explanation_md": "The loop runs i=1,2,3,4... When i=1 (odd, not 4): prints 1. When i=2 (even): continue skips printing. When i=3 (odd, not 4): prints 3. When i=4: break exits the loop. So output is `1 3` followed by a newline. A common mistake is expecting 5 to be printed — but the break at i=4 exits before i ever reaches 5."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In a `for` loop, when `continue` executes, what happens next?",
+    "options": {
+      "a": "The loop exits immediately, like break.",
+      "b": "The end-expression runs, then the condition is re-evaluated.",
+      "c": "The condition is re-evaluated without running the end-expression.",
+      "d": "The loop restarts from the init-statement."
+    },
+    "answer": "b",
+    "explanation_md": "In a `for` loop, `continue` skips the rest of the loop body but still executes the end-expression (e.g. `++i`) before re-checking the condition. This is why `continue` in a `for` loop does not cause infinite loops the way it can in a `while` loop where forgetting to update the counter leads to looping forever."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print all odd numbers from 1 to 9, one per line. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    int i{1};\n    while (i <= 9) {\n        if (i % 2 == 0) {\n            continue;\n        }\n        std::cout << i << \"\\n\";\n        ++i;\n    }\n    return 0;\n}\n```",
+    "options": {
+      "a": "The condition `i % 2 == 0` should be `i % 2 != 0` to skip odds instead of evens.",
+      "b": "The `++i` should be placed before the `if` statement, not after `std::cout`.",
+      "c": "When `i` is even, `continue` skips `++i`, so `i` stays even and the loop runs forever.",
+      "d": "`break` should be used instead of `continue` to exit when i is even."
+    },
+    "answer": "c",
+    "explanation_md": "When `i` is even, `continue` jumps back to the while condition without executing `++i`. Since `i` never changes, the condition stays true and the loop runs forever. The fix is to place `++i` before the `if`/`continue`, so the counter always advances regardless of whether `continue` fires."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int sum{0};\n    for (int i{1}; i <= 10; ++i) {\n        if (sum >= 10) break;\n        sum += i;\n    }\n    std::cout << sum << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "After i=1: sum=1 (not >=10, continue). After i=2: sum=3. After i=3: sum=6. After i=4: sum=10. At the start of i=5: the condition `sum >= 10` is true (sum=10), so break fires. The loop exits with sum=10. Many learners expect the loop to add 5 after the break condition is met — but `break` exits before `sum += i` runs for i=5."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "If `break` is used inside an inner `for` loop that is itself inside an outer `for` loop, what happens?",
+    "options": {
+      "a": "Both the inner and outer loops exit immediately.",
+      "b": "Only the inner loop exits; the outer loop continues with its next iteration.",
+      "c": "The program terminates.",
+      "d": "The inner loop restarts from its init-statement."
+    },
+    "answer": "b",
+    "explanation_md": "`break` only exits the innermost enclosing loop (or switch). The outer loop is unaffected and continues with its next iteration. To exit multiple levels of loops, you would need additional logic — for example, a flag variable checked by the outer loop's condition."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Game Constants Printer",
+    "prompt_md": "## Goal\nWrite a program that uses `inline const` global constants to print a game configuration summary.\n\n## Input\nNone — the program reads nothing from stdin.\n\n## Output\nPrint exactly three lines:\n```\nMax players: 4\nMax score: 1000\nBoard size: 8\n```\n(Exact spacing, no trailing spaces, each line ends with a newline.)\n\n## Requirements\n1. Define three `inline const int` constants at global scope (outside `main`):\n   - `kMaxPlayers` with value `4`\n   - `kMaxScore` with value `1000`\n   - `kBoardSize` with value `8`\n2. Print each constant using its name (not a raw literal) in `main`.\n3. Do not use any variables in `main` — print directly from the constants.",
+    "starter_code": "#include <iostream>\n\n// TODO: define three inline const int constants:\n// kMaxPlayers = 4, kMaxScore = 1000, kBoardSize = 8\n\nint main() {\n    // TODO: print the three lines using the constants\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ninline const int kMaxPlayers = 4;\ninline const int kMaxScore   = 1000;\ninline const int kBoardSize  = 8;\n\nint main() {\n    std::cout << \"Max players: \" << kMaxPlayers << \"\\n\";\n    std::cout << \"Max score: \"   << kMaxScore   << \"\\n\";\n    std::cout << \"Board size: \"  << kBoardSize  << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: full output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Max players: 4\nMax score: 1000\nBoard size: 8\n"
+      },
+      {
+        "label": "Hidden: same output repeated check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Max players: 4\nMax score: 1000\nBoard size: 8\n"
+      },
+      {
+        "label": "Hidden: output line order and format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Max players: 4\nMax score: 1000\nBoard size: 8\n"
+      }
+    ]
+  },
+  {
+    "title": "Temperature Scale Converter",
+    "prompt_md": "## Goal\nComplete the function `int celsiusToFahrenheit(int c)` that converts a Celsius temperature to Fahrenheit using a shared constant for the offset.\n\n## Input\n- Line 1: a single integer Celsius temperature (-200 to 200 inclusive)\n\n## Output\nPrint exactly one line: the Fahrenheit equivalent as an integer, followed by a newline.\n- Conversion: `F = C * 9 / 5 + 32` (integer arithmetic)\n\n## Requirements\n1. Define `inline const int kFahrenheitOffset = 32;` at global scope.\n2. Complete `int celsiusToFahrenheit(int c)` using `kFahrenheitOffset` (not the literal `32`) in the formula.\n3. `main` reads one integer, calls `celsiusToFahrenheit`, and prints the result.\n4. Hidden tests cover: 0 C -> 32 F, 100 C -> 212 F, -40 C -> -40 F, -273 C -> -459 F.",
+    "starter_code": "#include <iostream>\n\ninline const int kFahrenheitOffset = 32;\n\n// TODO: implement celsiusToFahrenheit using kFahrenheitOffset.\n// Formula: F = C * 9 / 5 + kFahrenheitOffset\nint celsiusToFahrenheit(int c) {\n    return 0; // replace with correct formula\n}\n\nint main() {\n    int celsius;\n    std::cin >> celsius;\n    std::cout << celsiusToFahrenheit(celsius) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ninline const int kFahrenheitOffset = 32;\n\nint celsiusToFahrenheit(int c) {\n    return c * 9 / 5 + kFahrenheitOffset;\n}\n\nint main() {\n    int celsius;\n    std::cin >> celsius;\n    std::cout << celsiusToFahrenheit(celsius) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 100 C = 212 F",
+        "is_sample": true,
+        "stdin": "100\n",
+        "expected_stdout": "212\n"
+      },
+      {
+        "label": "Hidden: 0 C = 32 F",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "32\n"
+      },
+      {
+        "label": "Hidden: -40 C = -40 F",
+        "is_sample": false,
+        "stdin": "-40\n",
+        "expected_stdout": "-40\n"
+      }
+    ]
+  }
+]

@@ -288,3 +288,156 @@
       |                     ^
 1 warning generated.
 
+
+## 7.1 — pass
+- **warning**: 7_1_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_1_ex2_starter.cpp:11:13: warning: unused variable 'product' [-Wunused-variable]
+   11 |         int product { x * y };   // shadows outer product
+      |             ^~~~~~~
+1 warning generated.
+
+
+## 7.10 — pass
+- **warning**: 7_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_10_ex2_starter.cpp:7:29: warning: unused parameter 'c' [-Wunused-parameter]
+    7 | int celsiusToFahrenheit(int c) {
+      |                             ^
+1 warning generated.
+
+
+## 7.13 — pass
+- **warning**: 7_13_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_13_ex1_starter.cpp:10:9: warning: unused variable 'total' [-Wunused-variable]
+   10 |     int total{};
+      |         ^~~~~
+1 warning generated.
+
+- **warning**: 7_13_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_13_ex2_starter.cpp:5:9: warning: unused variable 'tempSum' [-Wunused-variable]
+    5 |     int tempSum{};
+      |         ^~~~~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_13_ex2_starter.cpp:13:9: warning: unused variable 'scoreSum' [-Wunused-variable]
+   13 |     int scoreSum{};
+      |         ^
+
+## 7.14 — pass
+- **warning**: 7_14_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_14_ex1_starter.cpp:6:9: warning: unused variable 'total' [-Wunused-variable]
+    6 |     int total = 0;
+      |         ^~~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_14_ex1_starter.cpp:7:10: warning: unused function 'record' [-Wunused-function]
+    7 |     void record(int v) { /* TODO: add v to 
+
+## 7.2 — pass
+- **warning**: 7_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_2_ex2_starter.cpp:7:24: warning: unused parameter 'cm' [-Wunused-parameter]
+    7 |     int cmToInches(int cm)
+      |                        ^
+1 warning generated.
+
+
+## 7.4 — pass
+- **warning**: 7_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_4_ex2_starter.cpp:5:20: warning: unused parameter 'val' [-Wunused-parameter]
+    5 | void updateMax(int val)
+      |                    ^
+1 warning generated.
+
+
+## 7.x — pass
+- **warning**: 7_x_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_x_ex1_starter.cpp:9:1: warning: non-void function does not return a value [-Wreturn-type]
+    9 | }
+      | ^
+1 warning generated.
+
+- **warning**: 7_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/7_x_ex2_starter.cpp:27:21: warning: unused parameter 'value' [-Wunused-parameter]
+   27 |     void record(int value)
+      |                     ^
+1 warning generated.
+
+
+## 8.10 — pass
+- **warning**: 8_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_10_ex2_starter.cpp:5:20: warning: unused parameter 'low' [-Wunused-parameter]
+    5 | int countEvens(int low, int high) {
+      |                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_10_ex2_starter.cpp:5:29: warning: unused parameter 'high' [-Wunused-parameter]
+    5 | int countEvens(int
+
+## 8.12 — pass
+- **warning**: 8_12_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_12_ex2_starter.cpp:7:24: warning: unused parameter 'value' [-Wunused-parameter]
+    7 | void validateRange(int value, int minVal, int maxVal) {
+      |                        ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_12_ex2_starter.cpp:7:35: warning: unused parameter 'minVal' [-Wunused-parameter
+
+## 8.14 — pass
+- **warning**: 8_14_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_14_ex2_starter.cpp:7:34: warning: unused parameter 'rng' [-Wunused-parameter]
+    7 | int count_in_range(std::mt19937& rng, int rolls, int lo, int hi)
+      |                                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_14_ex2_starter.cpp:7:43: warning: unused parameter 'rolls' [-W
+
+## 8.2 — pass
+- **warning**: 8_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_2_ex2_starter.cpp:4:23: warning: unused parameter 'n' [-Wunused-parameter]
+    4 | int absoluteValue(int n)
+      |                       ^
+1 warning generated.
+
+
+## 8.3 — pass
+- **warning**: 8_3_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_3_ex2_starter.cpp:10:11: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+   10 |     if (a = b)
+      |         ~~^~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_3_ex2_starter.cpp:10:11: note: place parentheses around the assignment to silence this warni
+
+## 8.4 — pass
+- **warning**: 8_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_4_ex1_starter.cpp:5:20: warning: unused variable 'debugMode' [-Wunused-variable]
+    5 |     constexpr bool debugMode { true };
+      |                    ^~~~~~~~~
+1 warning generated.
+
+- **warning**: 8_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_4_ex2_starter.cpp:3:15: warning: unused variable 'platformBits' [-Wunused-const-variable]
+    3 | constexpr int platformBits { 64 };
+      |               ^~~~~~~~~~~~
+1 warning generated.
+
+
+## 8.6 — pass
+- **warning**: 8_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_6_ex2_starter.cpp:3:27: warning: unused parameter 'level' [-Wunused-parameter]
+    3 | void printPermissions(int level) {
+      |                           ^
+1 warning generated.
+
+
+## 8.7 — pass
+- **warning**: 8_7_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_7_ex1_starter.cpp:11:1: warning: unused label 'is_positive' [-Wunused-label]
+   11 | is_positive:
+      | ^~~~~~~~~~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_7_ex1_starter.cpp:14:1: warning: unused label 'is_negative' [-Wunused-label]
+   14 | is_negative:
+      | ^~~~~~~~~~~~
+/Users/raghavmehta
+
+## 8.8 — pass
+- **warning**: 8_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_8_ex2_starter.cpp:5:26: warning: unused parameter 'sentinel' [-Wunused-parameter]
+    5 | int sumUntilSentinel(int sentinel) {
+      |                          ^
+1 warning generated.
+
+
+## 8.x — pass
+- **warning**: 8_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_x_ex2_starter.cpp:7:31: warning: unused parameter 'rng' [-Wunused-parameter]
+    7 | int first_below(std::mt19937& rng, int threshold, int max_draws)
+      |                               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_x_ex2_starter.cpp:7:40: warning: unused parameter 'threshold' [-Wu

@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 4 };\n\n    if (x > 0)\n        std::cout << \"A\\n\";\n        std::cout << \"B\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\nB",
+    "explanation_md": "Without braces, only the first statement after `if` is conditional. `A` prints because `x > 0` is true. `B` prints unconditionally because it is a separate statement outside the `if` body — indentation does not affect scope in C++."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { -2 };\n\n    if (x > 0)\n        std::cout << \"A\\n\";\n        std::cout << \"B\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "B",
+    "explanation_md": "`x` is -2, so `x > 0` is false. The `if` body (only the `A` line) is skipped. `B` is not inside the `if` — no braces — so it always executes regardless of the condition."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print `x is positive` when `x > 0` and `x is not positive` otherwise. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 5 };\n\n    if (x > 0)\n        std::cout << \"x is positive\\n\";\n    else\n        std::cout << \"x is not positive\\n\";\n        std::cout << \"x = \" << x << '\\n';\n\n    return 0;\n}\n```",
+    "options": {
+      "a": "The condition `x > 0` should be `x >= 0`",
+      "b": "The last `cout` is not inside the `else` block — it always runs due to missing braces",
+      "c": "You cannot use `<<` twice on the same line",
+      "d": "The `else` branch is missing a semicolon"
+    },
+    "answer": "b",
+    "explanation_md": "Without braces around the `else` body, only the first statement belongs to `else`. The `x = ...` line is a separate statement that always runs. Adding `{ }` around both branch bodies fixes it."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In a chain of `if / else if / else`, how many branches execute when the first condition is true?",
+    "options": {
+      "a": "All branches whose conditions are true",
+      "b": "Only the first branch whose condition is true",
+      "c": "The first branch and the final `else` branch",
+      "d": "All branches in order, skipping only false ones"
+    },
+    "answer": "b",
+    "explanation_md": "In an `if / else if / else` chain the conditions are tested top to bottom and execution enters the first true branch, then skips the rest. At most one branch runs."
+  }
+]

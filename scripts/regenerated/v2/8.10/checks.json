@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    for (int i{1}; i <= 4; ++i) {\n        std::cout << i * i << \" \";\n    }\n    std::cout << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 4 9 16",
+    "explanation_md": "The loop runs for i = 1, 2, 3, 4 (stops when i becomes 5 and 5 <= 4 is false). Each iteration prints i*i followed by a space: 1, 4, 9, 16. Then a newline is printed. A common mistake is expecting the output to include 25 (thinking i <= 4 allows i=5) — but 5 <= 4 is false so the body never runs for i=5."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A variable declared in the init-statement of a `for` loop (e.g. `for (int i{0}; ...)`) has what scope?",
+    "options": {
+      "a": "It is accessible anywhere in the function after the loop.",
+      "b": "It is accessible only inside the loop body and in the condition and end-expression.",
+      "c": "It is accessible from the point of declaration to the end of the file.",
+      "d": "It is accessible only on the first iteration."
+    },
+    "answer": "b",
+    "explanation_md": "A variable declared in the for-loop init-statement is scoped to the entire `for` statement — its body, condition, and end-expression — but not outside. Trying to access it after the closing brace is a compile error. This scoping is intentional and keeps loop counters from polluting the surrounding function."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    for (int i{10}; i > 0; i -= 4) {\n        std::cout << i << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n6\n2",
+    "explanation_md": "Starting at 10, each iteration subtracts 4: 10 (10>0 true), 6 (6>0 true), 2 (2>0 true), then -2 (-2>0 false, loop exits). So the output is 10, 6, 2 on separate lines. A common mistake is to expect 0 in the output, but when i becomes -2 the condition fails before printing."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the sum of integers from 1 to 5 (expected: `Sum: 15`). What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    int sum{0};\n    for (int i{1}; i < 5; ++i) {\n        sum += i;\n    }\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The variable `sum` should be declared inside the loop body.",
+      "b": "The condition should be `i <= 5` instead of `i < 5` to include 5.",
+      "c": "The end-expression should be `i++` not `++i`.",
+      "d": "The loop body should print `sum` on each iteration, not after the loop."
+    },
+    "answer": "b",
+    "explanation_md": "With `i < 5`, the loop runs for i = 1, 2, 3, 4 giving sum = 10, never adding 5. Changing to `i <= 5` makes the loop include 5, giving the correct sum of 15. Both `++i` and `i++` produce the same result in the end-expression of a for loop, so option c is not the bug."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which loop is generally the clearest choice when you need to iterate exactly N times with a counter?",
+    "options": {
+      "a": "do-while, because it guarantees at least one iteration.",
+      "b": "while, because it is more flexible.",
+      "c": "for, because all iteration control (init, condition, update) is visible in one line.",
+      "d": "goto, because it gives the most direct control."
+    },
+    "answer": "c",
+    "explanation_md": "The `for` loop is the idiomatic choice for counted iteration in C++ because the init-statement, condition, and end-expression appear together, making the loop's full contract visible at a glance. The `while` loop is equally powerful but scatters the counter setup and update across the function, making it harder to read when iteration count is known in advance."
+  }
+]

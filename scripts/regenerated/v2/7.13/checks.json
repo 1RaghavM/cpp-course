@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid printA() {\n    using std::cout;\n    cout << \"A\\n\";\n}\n\nint main() {\n    printA();\n    std::cout << \"B\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\nB",
+    "explanation_md": "The using declaration `using std::cout;` is scoped to `printA()`, so `cout` works inside it. Back in `main()`, the fully-qualified `std::cout` is used, which also works. Both lines print normally, producing `A` then `B`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    {\n        using namespace std;\n        cout << \"inner\\n\";\n    }\n    std::cout << \"outer\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "inner\nouter",
+    "explanation_md": "The `using namespace std;` directive is scoped to the inner block. Inside that block `cout` is accessible. Outside the block the directive no longer applies, but `std::cout` still works because it is fully qualified. Both lines print successfully."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is considered a bad practice and why?\n\n```cpp\n// option A — in a .cpp file:\nusing namespace std;\n\n// option B — in a header file:\nusing namespace std;\n```",
+    "options": {
+      "a": "Both are equally fine — using directives always stay within one translation unit.",
+      "b": "Option B is bad because every file that includes the header silently inherits all of std, risking name collisions.",
+      "c": "Option A is bad because it puts the compiler into a slow name-lookup mode.",
+      "d": "Neither is bad as long as the code compiles without errors."
+    },
+    "answer": "b",
+    "explanation_md": "A `using namespace` in a header pollutes every translation unit that includes it, making all names from `std` available without qualification everywhere — a major source of hard-to-diagnose ambiguity errors. In a self-contained `.cpp` file the blast radius is limited to that file, which is still not ideal but is far less harmful."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code should print `42` but it fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int cout = 42;\n    using std::cout;\n    std::cout << cout << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "You cannot use `std::cout` and a local variable in the same expression.",
+      "b": "The using declaration `using std::cout;` clashes with the local variable `cout` already declared in the same scope.",
+      "c": "`int cout` is a reserved identifier that cannot be used as a variable name.",
+      "d": "The `#include <iostream>` must appear after all `using` declarations."
+    },
+    "answer": "b",
+    "explanation_md": "A using declaration introduces a name into the current scope. Since `cout` is already declared as an `int` in the same scope, the compiler sees a redefinition and rejects it. The fix is to rename the local variable to something other than `cout`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A using declaration such as `using std::cout;` placed inside `main()` — which of the following best describes its effect?",
+    "options": {
+      "a": "It makes `cout` available in all functions in the same file.",
+      "b": "It makes `cout` available everywhere in the program after that point.",
+      "c": "It makes `cout` available only within the block where the declaration appears.",
+      "d": "It replaces `std::cout` with a new object named `cout`."
+    },
+    "answer": "c",
+    "explanation_md": "A using declaration respects normal C++ scope rules: it introduces the name into the current block scope and that name ceases to be visible once that block ends. It does not affect other functions or other scopes; `std::cout` and the introduced `cout` refer to the same underlying object — no new object is created."
+  }
+]

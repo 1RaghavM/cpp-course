@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum Two Numbers Using a Nested Block",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and uses a nested block to compute and print their sum.\n\n## Input\n- Line 1: integer `a` (-1000 ≤ a ≤ 1000)\n- Line 2: integer `b` (-1000 ≤ b ≤ 1000)\n\n## Output\nPrint exactly one line: `Sum: <value>` where `<value>` is `a + b`.\nExample: `Sum: 7`\n\n## Requirements\n1. Read `a` and `b` in `main()`.\n2. Use a nested block `{}` to declare a variable `sum` and compute `a + b` inside it.\n3. Print the result from inside the nested block before the block closes.\n4. After the nested block, `main()` should `return 0;`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    // TODO: open a nested block, compute sum = a + b inside it,\n    // print \"Sum: <sum>\", then close the block.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    {\n        int sum { a + b };\n        std::cout << \"Sum: \" << sum << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive numbers",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "Sum: 7"
+      },
+      {
+        "label": "Hidden: negative and positive",
+        "is_sample": false,
+        "stdin": "-5\n10\n",
+        "expected_stdout": "Sum: 5"
+      },
+      {
+        "label": "Hidden: both zero",
+        "is_sample": false,
+        "stdin": "0\n0\n",
+        "expected_stdout": "Sum: 0"
+      }
+    ]
+  },
+  {
+    "title": "Block Scope Lifetime Bug",
+    "prompt_md": "## Goal\nFind and fix the logic bug so the program prints the correct product.\n\n## Input\n- Line 1: integer `x` (1 ≤ x ≤ 100)\n- Line 2: integer `y` (1 ≤ y ≤ 100)\n\n## Output\nPrint exactly one line: `Product: <value>` where `<value>` is `x * y`.\nExample for inputs 4 and 5: `Product: 20`\n\n## Requirements\n1. The program currently compiles and runs but prints the wrong result.\n2. Find the single logic bug and fix it — do not restructure the program.\n3. The bug is NOT a missing include or a type error; it is a mistake in how the variables are used across block scopes.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n\n    int product { 0 };\n    {\n        int product { x * y };   // shadows outer product\n    }\n\n    std::cout << \"Product: \" << product << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n\n    int product { 0 };\n    {\n        product = x * y;   // assign to outer product instead of shadowing\n    }\n\n    std::cout << \"Product: \" << product << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 * 5",
+        "is_sample": true,
+        "stdin": "4\n5\n",
+        "expected_stdout": "Product: 20"
+      },
+      {
+        "label": "Hidden: 1 * 1 (minimum)",
+        "is_sample": false,
+        "stdin": "1\n1\n",
+        "expected_stdout": "Product: 1"
+      },
+      {
+        "label": "Hidden: 10 * 7",
+        "is_sample": false,
+        "stdin": "10\n7\n",
+        "expected_stdout": "Product: 70"
+      }
+    ]
+  }
+]

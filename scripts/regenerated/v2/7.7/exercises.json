@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Simulated Extern Sharing: Forward-Declare and Use a Global",
+    "prompt_md": "## Goal\nWrite a single-file program that simulates external-linkage sharing. A non-`const` global variable is defined at the top of the file, a helper function modifies it, and `main` uses a forward declaration of that function before calling it.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly two lines:\n```\nBefore: 0\nAfter: 3\n```\n\n## Requirements\n1. Declare a non-`const` global `int sharedValue` initialized to `0` at file scope (external linkage by default).\n2. Implement `void addOne()` after `main`'s forward declaration; it increments `sharedValue` by 1.\n3. Before `main`, write a forward declaration `void addOne();` (simulating a declaration from another file).\n4. In `main`, print `Before: <sharedValue>`, then call `addOne()` exactly 3 times (one call per line, no loop), then print `After: <sharedValue>`.\n5. Do not use any loop.",
+    "starter_code": "#include <iostream>\n\n// TODO: declare non-const global int sharedValue initialized to 0\n\nvoid addOne();  // forward declaration (as if addOne is defined in another file)\n\n// TODO: implement void addOne() that increments sharedValue by 1\n\nint main()\n{\n    // TODO: print \"Before: \" followed by sharedValue\n\n    // TODO: call addOne() 3 times (one per line)\n\n    // TODO: print \"After: \" followed by sharedValue\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint sharedValue { 0 };\n\nvoid addOne();\n\nvoid addOne()\n{\n    ++sharedValue;\n}\n\nint main()\n{\n    std::cout << \"Before: \" << sharedValue << '\\n';\n    addOne();\n    addOne();\n    addOne();\n    std::cout << \"After: \" << sharedValue << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: before=0 after=3",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Before: 0\nAfter: 3"
+      },
+      {
+        "label": "Hidden: output format check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Before: 0\nAfter: 3"
+      },
+      {
+        "label": "Hidden: global modified by function",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Before: 0\nAfter: 3"
+      }
+    ]
+  },
+  {
+    "title": "Find the External Linkage Declaration Bug",
+    "prompt_md": "## Goal\nThis single-file program simulates a two-file setup: `counter` is defined at file scope and a function `bump` modifies it. `main` is supposed to use the global `counter`, but the program prints `0` instead of `3`. Find and fix the one bug.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly one line:\n```\nCount: 3\n```\n\n## Requirements\n1. There is exactly one logic bug. Find it and fix it. Do not restructure the program.\n2. The fix involves the declaration of `counter` inside `main`.",
+    "starter_code": "#include <iostream>\n\nint counter { 0 };        // definition\n\nvoid bump();              // forward declaration for bump\n\nvoid bump()\n{\n    ++counter;\n}\n\nint main()\n{\n    int counter { 0 };    // supposed to refer to global counter\n    bump();\n    bump();\n    bump();\n    std::cout << \"Count: \" << counter << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint counter { 0 };        // definition\n\nvoid bump();              // forward declaration for bump\n\nvoid bump()\n{\n    ++counter;\n}\n\nint main()\n{\n    extern int counter;   // forward declaration — refers to global counter\n    bump();\n    bump();\n    bump();\n    std::cout << \"Count: \" << counter << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: count is 3",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Count: 3"
+      },
+      {
+        "label": "Hidden: output exact format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Count: 3"
+      },
+      {
+        "label": "Hidden: global counter used",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Count: 3"
+      }
+    ]
+  }
+]

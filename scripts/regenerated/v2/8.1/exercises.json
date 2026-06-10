@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Classify a Number as Positive, Negative, or Zero",
+    "prompt_md": "## Goal\nRead one integer and print exactly one line classifying it.\n\n## Input\n- Line 1: one integer N (-1000 ≤ N ≤ 1000)\n\n## Output\n- If N > 0: print `Positive`\n- If N < 0: print `Negative`\n- If N == 0: print `Zero`\n- No extra blank lines.\n\n## Requirements\n1. Use `if` / `else if` / `else` to branch on the three cases.\n2. Exactly one line of output for any input.\n3. Edge cases: N = 0, N = 1000, N = -1000.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: print \"Positive\", \"Negative\", or \"Zero\" based on n\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    if (n > 0)\n        std::cout << \"Positive\\n\";\n    else if (n < 0)\n        std::cout << \"Negative\\n\";\n    else\n        std::cout << \"Zero\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive number",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "Positive\n"
+      },
+      {
+        "label": "Hidden: negative number",
+        "is_sample": false,
+        "stdin": "-42\n",
+        "expected_stdout": "Negative\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Zero\n"
+      }
+    ]
+  },
+  {
+    "title": "Even or Odd Detector (fix the bug)",
+    "prompt_md": "## Goal\nThe program below is supposed to read one integer and print `Even` if it is divisible by 2, or `Odd` otherwise. It contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: one integer N (-100 ≤ N ≤ 100)\n\n## Output\n- Print exactly one line: `Even` or `Odd`.\n\n## Requirements\n1. The bug is a logic error — the program compiles and runs but produces wrong output.\n2. Do not add extra output lines.\n3. Edge cases: N = 0 (should be `Even`), N = -3 (should be `Odd`).",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // Bug: wrong condition — prints Even when it should print Odd and vice versa\n    if (n % 2 == 1)\n        std::cout << \"Even\\n\";\n    else\n        std::cout << \"Odd\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    if (n % 2 == 0)\n        std::cout << \"Even\\n\";\n    else\n        std::cout << \"Odd\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: even number",
+        "is_sample": true,
+        "stdin": "4\n",
+        "expected_stdout": "Even\n"
+      },
+      {
+        "label": "Hidden: odd number",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Odd\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Even\n"
+      }
+    ]
+  }
+]

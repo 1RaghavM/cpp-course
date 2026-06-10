@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint multiplier { 3 };\n\nint scale(int x)\n{\n    return x * multiplier;\n}\n\nint main()\n{\n    std::cout << scale(5) << '\\n';\n    multiplier = 10;\n    std::cout << scale(5) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15\n50",
+    "explanation_md": "The first call to `scale(5)` uses `multiplier = 3`, so it returns `15`. Then `multiplier` is changed to `10` in `main`. The second call returns `5 * 10 = 50`. This illustrates the hidden-dependency danger: `scale`'s output changes even though its argument did not."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is a non-`const` global variable harder to test than a function that takes a parameter?",
+    "options": {
+      "a": "Global variables have no type, so the compiler cannot check them.",
+      "b": "A function with a global dependency cannot be called without also setting up the global state, making isolated tests fragile.",
+      "c": "Global variables are not zero-initialized, so their values are unpredictable.",
+      "d": "The linker removes global variables from the binary to save space."
+    },
+    "answer": "b",
+    "explanation_md": "To test a function that reads a global, you must first set that global to the right value — and any other test that runs before or after might accidentally leave the global in a different state. A function that takes explicit parameters is self-contained: you pass in exactly what it needs and can test any combination independently."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is considered a safe and recommended alternative to a mutable global variable?",
+    "options": {
+      "a": "Declaring the variable `static` at file scope to hide it from other files.",
+      "b": "Passing the value as a function parameter and returning results.",
+      "c": "Making the variable `extern` so every file can access it cleanly.",
+      "d": "Naming the variable with a leading underscore to signal it is special."
+    },
+    "answer": "b",
+    "explanation_md": "Passing values explicitly as parameters and returning results is the primary alternative. It makes dependencies visible in function signatures, enables isolated testing, and eliminates the risk of a distant code path silently modifying shared state. Making a variable `static` or `extern` still leaves it mutable and global; it only changes visibility."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "The lesson warns against non-`const` global variables. Does this warning apply to `const int maxSize { 100 };` at file scope?",
+    "options": {
+      "a": "Yes — any global variable, `const` or not, should be avoided.",
+      "b": "No — `const` globals are immutable once initialized and do not carry the mutation hazard.",
+      "c": "Yes — `const` globals have external linkage and pollute the global namespace.",
+      "d": "No — but only if they are declared `static`."
+    },
+    "answer": "b",
+    "explanation_md": "The danger of non-`const` global variables is that any code can modify them at any time, creating hidden dependencies. `const` globals cannot be modified after initialization, so the mutation risk does not apply. They are a legitimate and encouraged tool for program-wide constants."
+  }
+]

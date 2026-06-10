@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int i{3};\n    do {\n        std::cout << i << \"\\n\";\n        --i;\n    } while (i > 3);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "The body always runs at least once, so `3` is printed. After the body, the condition `i > 3` is checked: `i` is now `2`, so `2 > 3` is false and the loop exits. A `while` loop with the same condition would print nothing, but a do-while guarantees one execution."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is true about the do-while loop in C++?",
+    "options": {
+      "a": "The condition is checked before the body executes the first time.",
+      "b": "A semicolon is required after the closing parenthesis of the while condition.",
+      "c": "Variables declared inside the loop body can be used in the while condition.",
+      "d": "A do-while loop always runs exactly once."
+    },
+    "answer": "b",
+    "explanation_md": "The do-while is unique in requiring a semicolon after `while (condition);`. The condition is checked *after* the body (eliminating option a). Variables declared inside the body go out of scope before the condition is evaluated (eliminating option c). The body runs *at least* once, but may repeat if the condition stays true (eliminating option d)."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should keep asking for a number until the user enters something in the range 1–5, then print it. What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    do {\n        int n{};\n        std::cout << \"Enter 1-5: \";\n        std::cin >> n;\n    } while (n < 1 || n > 5);\n    return 0;\n}\n```",
+    "options": {
+      "a": "The loop body should use a `while` loop instead of `do`.",
+      "b": "`n` is declared inside the loop body so it is out of scope in the `while` condition.",
+      "c": "The condition `n < 1 || n > 5` is inverted; it should be `n >= 1 && n <= 5`.",
+      "d": "There is a missing semicolon after the closing brace of the loop body."
+    },
+    "answer": "b",
+    "explanation_md": "`n` is declared inside the `do { }` block. The `while (n < 1 || n > 5)` condition is outside that block, so `n` is not in scope — this is a compile error. The fix is to declare `n` before the `do` keyword."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x{0};\n    do {\n        x += 2;\n    } while (x < 6);\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "6",
+    "explanation_md": "Starting at 0, the body adds 2 each iteration: after iteration 1 x=2 (2<6 true, continue), after iteration 2 x=4 (4<6 true, continue), after iteration 3 x=6 (6<6 false, exit). The program then prints 6. A common mistake is to expect 8 by assuming one extra iteration runs after the condition becomes false — the loop exits as soon as the condition is false."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer a do-while loop over a regular while loop?",
+    "options": {
+      "a": "When the loop body may need to execute zero times.",
+      "b": "When you want the loop to run a fixed, known number of times.",
+      "c": "When the loop body must always execute at least once before the condition is checked.",
+      "d": "When the condition involves a comparison of two variables."
+    },
+    "answer": "c",
+    "explanation_md": "The defining characteristic of do-while is that the body always runs at least once because the condition is only checked after the first execution. For zero-iteration cases, use a `while` loop. For a fixed count, a `for` loop is usually clearest. The kind of comparison in the condition doesn't dictate which loop to use."
+  }
+]

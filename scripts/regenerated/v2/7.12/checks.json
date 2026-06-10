@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint x = 1;\n\nvoid f() {\n    int x = 2;\n    std::cout << x << \"\\n\";\n    std::cout << ::x << \"\\n\";\n}\n\nint main() {\n    f();\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2\n1\n1",
+    "explanation_md": "Inside `f`, local `x = 2` shadows the global. `x` prints 2, `::x` accesses the global directly and prints 1. Back in `main`, local scope of `f` is gone, and the unqualified `x` refers to the global again: 1."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid inc() {\n    static int n = 10;\n    n += 5;\n    std::cout << n << \"\\n\";\n}\n\nint main() {\n    inc();\n    inc();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15\n20",
+    "explanation_md": "`n` is initialised to 10 once. First call: `n = 10 + 5 = 15`. Second call: `n = 15 + 5 = 20`. Static duration means `n` keeps its value between calls."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A variable is declared as `static int count = 0;` inside a function. Which of the following correctly describes it?",
+    "options": {
+      "a": "Block scope, automatic duration, no linkage.",
+      "b": "Block scope, static duration, no linkage.",
+      "c": "Global scope, static duration, internal linkage.",
+      "d": "Global scope, automatic duration, external linkage."
+    },
+    "answer": "b",
+    "explanation_md": "A `static` local has block scope (only visible inside the function) and static duration (it persists for the program's lifetime). It has no linkage — the linker never sees it. Option c describes a `static` variable at global scope, not inside a function."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `const int kVal = 5;` at global (namespace) scope is correct?",
+    "options": {
+      "a": "It has external linkage, so every file that includes it shares one object.",
+      "b": "It has internal linkage by default in C++, so each including translation unit gets its own copy.",
+      "c": "It has no linkage, just like a local variable.",
+      "d": "It has external linkage only if declared `extern const int kVal = 5;`."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, `const` (and `constexpr`) variables at namespace scope have internal linkage by default. Each translation unit that includes the definition gets its own private copy. To share a single object across translation units, use `inline const int kVal = 5;` instead."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `gCounter` to be private to `counter.cpp` and not visible from other files, but a colleague's file accidentally defines another `gCounter` at global scope and the program links without error — meaning both files share the same `gCounter`. What is wrong with `counter.cpp`?\n\n```cpp\n// counter.cpp\nint gCounter = 0;\n\nvoid increment() {\n    ++gCounter;\n}\n```",
+    "options": {
+      "a": "`gCounter` needs `const` to prevent accidental modification.",
+      "b": "`gCounter` has external linkage because it is a non-const global without `static`, so it is visible and linkable from other translation units.",
+      "c": "`gCounter` should be declared `inline` to prevent the duplicate-definition error.",
+      "d": "Functions cannot access global variables directly; they must be passed as parameters."
+    },
+    "answer": "b",
+    "explanation_md": "A plain non-`const` global variable has external linkage by default. Any other translation unit can declare `extern int gCounter;` and access the same object, or another definition can accidentally collide. To give `gCounter` internal linkage (private to `counter.cpp`), add `static`: `static int gCounter = 0;`. Then no other file can link to it."
+  }
+]

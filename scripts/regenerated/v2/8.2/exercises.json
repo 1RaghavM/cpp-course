@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Grade Letter from Score",
+    "prompt_md": "## Goal\nRead one integer score and print the corresponding letter grade on one line.\n\n## Input\n- Line 1: one integer score (0 ≤ score ≤ 100)\n\n## Output\n- Print exactly one line: the letter grade.\n- Grading: score >= 90 → `A`, score >= 80 → `B`, score >= 70 → `C`, score >= 60 → `D`, otherwise → `F`.\n\n## Requirements\n1. Use an `if` / `else if` / `else` block with braces around every branch body.\n2. Exactly one letter is printed for any valid input.\n3. Edge cases: score = 90 (boundary for A), score = 59 (F), score = 0.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int score {};\n    std::cin >> score;\n\n    // TODO: print the letter grade using if/else if/else with blocks\n    // >= 90 -> A, >= 80 -> B, >= 70 -> C, >= 60 -> D, else -> F\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int score {};\n    std::cin >> score;\n\n    if (score >= 90)\n    {\n        std::cout << \"A\\n\";\n    }\n    else if (score >= 80)\n    {\n        std::cout << \"B\\n\";\n    }\n    else if (score >= 70)\n    {\n        std::cout << \"C\\n\";\n    }\n    else if (score >= 60)\n    {\n        std::cout << \"D\\n\";\n    }\n    else\n    {\n        std::cout << \"F\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: B grade",
+        "is_sample": true,
+        "stdin": "85\n",
+        "expected_stdout": "B\n"
+      },
+      {
+        "label": "Hidden: boundary A (90)",
+        "is_sample": false,
+        "stdin": "90\n",
+        "expected_stdout": "A\n"
+      },
+      {
+        "label": "Hidden: F grade",
+        "is_sample": false,
+        "stdin": "45\n",
+        "expected_stdout": "F\n"
+      }
+    ]
+  },
+  {
+    "title": "Absolute Value (complete the function)",
+    "prompt_md": "## Goal\nComplete the function `int absoluteValue(int n)` so it returns the absolute value of `n` without using any standard library functions.\n\n## Input\n- Line 1: one integer N (-1000 ≤ N ≤ 1000)\n\n## Output\n- Print exactly one line: the absolute value of N.\n\n## Requirements\n1. Implement `absoluteValue` using an `if`/`else` block.\n2. Do not use `std::abs` or any other library function.\n3. Edge cases: N = 0 (returns 0), N = -1000 (returns 1000), N = 1000 (returns 1000).",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function using if/else — return the absolute value of n\nint absoluteValue(int n)\n{\n    return 0; // replace this\n}\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n    std::cout << absoluteValue(n) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint absoluteValue(int n)\n{\n    if (n < 0)\n        return -n;\n    else\n        return n;\n}\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n    std::cout << absoluteValue(n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: negative input",
+        "is_sample": true,
+        "stdin": "-7\n",
+        "expected_stdout": "7\n"
+      },
+      {
+        "label": "Hidden: positive input",
+        "is_sample": false,
+        "stdin": "42\n",
+        "expected_stdout": "42\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0\n"
+      }
+    ]
+  }
+]

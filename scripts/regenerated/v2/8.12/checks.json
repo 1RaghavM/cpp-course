@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which header must be included to use `std::exit` and `std::abort`?",
+    "options": {
+      "a": "`<iostream>`",
+      "b": "`<cstdlib>`",
+      "c": "`<cassert>`",
+      "d": "`<stdexcept>`"
+    },
+    "answer": "b",
+    "explanation_md": "`std::exit`, `std::abort`, `EXIT_SUCCESS`, and `EXIT_FAILURE` are all declared in `<cstdlib>`. `<iostream>` provides stream I/O, `<cassert>` provides `assert()`, and `<stdexcept>` provides exception types — none of those declare the halt functions."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between `std::exit(0)` and `std::abort()` in terms of cleanup?",
+    "options": {
+      "a": "`std::abort` flushes output buffers; `std::exit` does not.",
+      "b": "`std::exit` performs cleanup (flushes buffers); `std::abort` terminates immediately with no cleanup.",
+      "c": "Both perform identical cleanup steps.",
+      "d": "`std::exit` only works when called from `main`; `std::abort` works anywhere."
+    },
+    "answer": "b",
+    "explanation_md": "`std::exit` performs cleanup before terminating: it flushes and closes standard streams. `std::abort` signals abnormal termination without any cleanup — buffers may not be flushed and the output visible before the abort can be incomplete. Both can be called from any function, not just `main`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to stdout? (Assume input is `-5`.)\n\n```cpp\n#include <iostream>\n#include <cstdlib>\nint main() {\n    int n{};\n    std::cin >> n;\n    if (n < 0) {\n        std::cerr << \"negative\\n\";\n        std::exit(1);\n    }\n    std::cout << \"value: \" << n << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "",
+    "explanation_md": "When n = -5, the condition `n < 0` is true, so the error message is written to `std::cerr` (standard error, not stdout) and `std::exit(1)` terminates the program. The line `std::cout << \"value: \" << n` is never reached. Nothing is printed to stdout. A common mistake is assuming `std::cerr` output appears on stdout — it does not."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `Result: 5` when given inputs `10` and `2`, and exit with an error message if the divisor is 0. What is wrong?\n\n```cpp\n#include <iostream>\n#include <cstdlib>\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n    if (b == 0) {\n        std::cout << \"Error: division by zero.\\n\";\n        std::exit(EXIT_SUCCESS);\n    }\n    std::cout << \"Result: \" << a / b << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`std::exit` cannot be called from `main`; use `return` instead.",
+      "b": "The error case calls `std::exit(EXIT_SUCCESS)` which reports success (0); it should call `std::exit(EXIT_FAILURE)` to signal an error.",
+      "c": "The error message should be sent to `std::cerr`, not `std::cout`.",
+      "d": "`EXIT_FAILURE` is not defined without including `<cstdlib>`."
+    },
+    "answer": "b",
+    "explanation_md": "The logic bug is using `EXIT_SUCCESS` (value 0) to report a fatal error condition. The operating system interprets exit code 0 as success, so callers and scripts will not know the program failed. The fix is `std::exit(EXIT_FAILURE)`. Writing the error to `std::cerr` (option c) would be better style but is not the stated bug — the program still exits with the wrong code, which is the logical error."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is `std::abort` the appropriate choice over `std::exit`?",
+    "options": {
+      "a": "Any time you need to exit before reaching the end of `main`.",
+      "b": "When a user enters invalid input that you want to reject.",
+      "c": "When an internal invariant is violated — something that should be impossible in a correct program.",
+      "d": "When you want to exit with a specific non-zero exit code."
+    },
+    "answer": "c",
+    "explanation_md": "`std::abort` signals abnormal termination reserved for situations that indicate a bug in the program — unreachable code paths, violated invariants, or logic that should never execute. For expected error conditions (like bad user input), `std::exit(EXIT_FAILURE)` with an explanatory message is appropriate. `std::exit` is also the correct choice when you need a specific non-zero exit code."
+  }
+]

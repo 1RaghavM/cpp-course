@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between `if` and `if constexpr`?",
+    "options": {
+      "a": "`if constexpr` evaluates its condition at compile time; `if` evaluates it at runtime",
+      "b": "`if constexpr` is faster because it uses SIMD instructions",
+      "c": "`if constexpr` allows the condition to be a string literal",
+      "d": "`if constexpr` automatically generates both branches"
+    },
+    "answer": "a",
+    "explanation_md": "`if constexpr` requires the condition to be a constant expression — something the compiler can evaluate before the program runs. The non-taken branch is discarded entirely from the binary. Plain `if` evaluates its condition at runtime and keeps both branches in the generated code."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    constexpr bool release { true };\n\n    if constexpr (release)\n        std::cout << \"Release\\n\";\n    else\n        std::cout << \"Debug\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Release",
+    "explanation_md": "`release` is a `constexpr bool` with value `true`. The compiler evaluates the condition at compile time, keeps the `Release` branch, and discards the `Debug` branch entirely. At runtime, only `Release\\n` is printed."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code will not compile. What is the problem?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x {};\n    std::cin >> x;\n\n    if constexpr (x > 0)\n        std::cout << \"Positive\\n\";\n\n    return 0;\n}\n```",
+    "options": {
+      "a": "`std::cin` is not allowed inside `main`",
+      "b": "`x > 0` is not a constant expression because `x` is a runtime variable",
+      "c": "`if constexpr` requires C++23 or later",
+      "d": "The `else` branch is missing"
+    },
+    "answer": "b",
+    "explanation_md": "`if constexpr` requires its condition to be evaluable at compile time (a constant expression). `x` is read from `cin` at runtime, so `x > 0` is not a constant expression. Replace `if constexpr` with plain `if` here."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When `if constexpr (condition)` is false, what happens to the `then` branch?",
+    "options": {
+      "a": "It executes at startup to register callbacks",
+      "b": "It is compiled but never called",
+      "c": "It is discarded by the compiler and produces no machine code",
+      "d": "It is converted to a no-op instruction"
+    },
+    "answer": "c",
+    "explanation_md": "The entire discarded branch is removed during compilation — no machine instructions are emitted for it. This is the key difference from a runtime `if`, where both branches exist in the binary and the CPU simply never visits the false one."
+  }
+]

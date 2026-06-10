@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 1;\n    switch (x) {\n        case 1:\n            std::cout << \"A\\n\";\n            [[fallthrough]];\n        case 2:\n            std::cout << \"B\\n\";\n            break;\n        case 3:\n            std::cout << \"C\\n\";\n            break;\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\nB",
+    "explanation_md": "Case 1 prints `A`, then `[[fallthrough]]` intentionally drops into case 2, which prints `B` and then breaks. Case 3 is never reached."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the compiler reject variable declarations between case labels that lack enclosing braces?\n\n```cpp\nswitch (n) {\n    case 1:\n        int val = 42;\n        break;\n    case 2:\n        // val is technically in scope here\n        break;\n}\n```",
+    "options": {
+      "a": "The `int` keyword is not allowed inside a switch body",
+      "b": "A jump to `case 2` would bypass the initialization of `val`, leaving it uninitialized",
+      "c": "`val` must be declared before the switch statement",
+      "d": "Each case label defines a separate scope, so `val` would go out of scope at the next `case`"
+    },
+    "answer": "b",
+    "explanation_md": "The entire switch body is one scope. Jumping to `case 2` skips the `int val = 42;` initializer, but `val` is still in scope and could be read uninitialized. C++ forbids such jumps across initializations. The fix is to wrap the case body in `{ }` to make `val` local to that block."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int n = 3;\n    switch (n) {\n        case 3:\n            std::cout << \"three\\n\";\n            break;\n        case 2:\n            std::cout << \"two\\n\";\n            [[fallthrough]];\n        case 1:\n            std::cout << \"one\\n\";\n            break;\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "three",
+    "explanation_md": "`n` is 3, so `case 3:` matches. It prints `three` and breaks. `case 2:` and `case 1:` are never reached. The `[[fallthrough]]` in case 2 only matters if case 2 is actually entered."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the purpose of the `[[fallthrough]]` attribute in C++17?",
+    "options": {
+      "a": "It forces the switch to restart from the first case",
+      "b": "It documents intentional fallthrough and silences compiler warnings about missing `break`",
+      "c": "It makes the case body execute even if the value does not match",
+      "d": "It prevents any variable declarations inside that case body"
+    },
+    "answer": "b",
+    "explanation_md": "`[[fallthrough]]` tells both the compiler and human readers that the absence of `break` is deliberate. Compilers that warn about implicit fallthrough (`-Wimplicit-fallthrough`) treat an annotated fallthrough as intentional and suppress the warning. It does not change runtime behavior — execution still falls through as it would without a `break`."
+  }
+]

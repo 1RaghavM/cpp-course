@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 5 };\n\n    if (x > 0);\n        std::cout << \"Positive\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Positive",
+    "explanation_md": "The semicolon immediately after `if (x > 0)` is a null statement — it is the entire body of the `if`. The `cout` line is a separate statement that always runs regardless of the condition."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to check whether `n` equals 10. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int n { 7 };\n\n    if (n = 10)\n        std::cout << \"n is 10\\n\";\n    else\n        std::cout << \"n is not 10\\n\";\n\n    return 0;\n}\n```",
+    "options": {
+      "a": "`int n { 7 }` should be `int n = 7`",
+      "b": "`n = 10` is an assignment, not a comparison — it sets `n` to 10 and the condition is always true",
+      "c": "The `else` branch is unreachable and causes a compile error",
+      "d": "`std::cout` requires `#include <string>`"
+    },
+    "answer": "b",
+    "explanation_md": "`n = 10` assigns 10 to `n` and evaluates to 10, which is non-zero (true). The condition is always true regardless of `n`'s original value. The fix is `n == 10`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nbool isOdd(int n)\n{\n    return n % 2 != 0;\n}\n\nint main()\n{\n    int x { 4 };\n\n    if (isOdd(x) == false)\n        std::cout << \"Even\\n\";\n    else\n        std::cout << \"Odd\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Even",
+    "explanation_md": "`4 % 2` is 0, so `isOdd(4)` returns false. `false == false` is true, so the `then` branch runs and prints `Even`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you avoid writing `if (condition == true)` in C++?",
+    "options": {
+      "a": "It causes a compile error because `bool` cannot be compared with `==`",
+      "b": "It adds no information and a typo (`== false`) silently inverts the logic",
+      "c": "It makes the program run slower at runtime",
+      "d": "It is only valid inside function templates"
+    },
+    "answer": "b",
+    "explanation_md": "`if (condition)` and `if (condition == true)` behave identically. The `== true` form is redundant, and if a programmer accidentally writes `== false` instead, the entire condition is silently negated — a logic bug with no compile error."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which compiler flag helps detect the accidental null statement `if (x > 0);`?",
+    "options": {
+      "a": "`-std=c++20`",
+      "b": "`-O2`",
+      "c": "`-Wall`",
+      "d": "`-fno-exceptions`"
+    },
+    "answer": "c",
+    "explanation_md": "`-Wall` (and `-Wextra`) enables extra diagnostics including warnings about empty bodies after `if` and assignment used as a truth value. `-std=c++20` sets the language standard; `-O2` controls optimization; `-fno-exceptions` disables exception handling."
+  }
+]

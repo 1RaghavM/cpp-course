@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ninline int doubled(int x) {\n    return x * 2;\n}\n\nint main() {\n    std::cout << doubled(5) << \"\\n\";\n    std::cout << doubled(0) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n0",
+    "explanation_md": "`doubled(5)` returns `10` and `doubled(0)` returns `0`. The `inline` keyword does not change the function's behaviour — it only affects linkage when the function is defined in a header included by multiple files."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary purpose of the `inline` keyword on a function definition in modern C++?",
+    "options": {
+      "a": "It forces the compiler to substitute the function body at every call site, eliminating the function call overhead.",
+      "b": "It allows the function to be defined in a header file and included by multiple translation units without violating the one-definition rule.",
+      "c": "It makes the function visible only within the current translation unit (internal linkage).",
+      "d": "It tells the linker to export the function symbol so other files can call it."
+    },
+    "answer": "b",
+    "explanation_md": "The modern meaning of `inline` is about the ODR: it permits a full definition to appear in multiple translation units, with the linker merging them. The compiler decides whether to inline calls on its own — your `inline` keyword is no longer a reliable hint for that. Option c describes `static`, not `inline`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a correct way to define a global constant `kLimit = 50` in a header file so that it can be included by multiple `.cpp` files without a linker error?",
+    "options": {
+      "a": "`const int kLimit = 50;`",
+      "b": "`extern const int kLimit = 50;`",
+      "c": "`inline const int kLimit = 50;`",
+      "d": "`static const int kLimit = 50;`"
+    },
+    "answer": "c",
+    "explanation_md": "`inline const int kLimit = 50;` in a header gives every including translation unit the same definition and the linker merges them into one object — the intended behaviour. Option a creates a separate `const int` in each translation unit (which actually works for `const` in C++ because they get internal linkage by default, but it wastes memory). Option d gives internal linkage (each TU gets its own copy). Option b is a declaration, not a definition."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wrote a small helper in a header and included it in two `.cpp` files. The project links cleanly when only one file includes the header, but fails with a linker error when both do. What is wrong?\n\n```cpp\n// helpers.h\n#pragma once\n\nint clamp(int v, int lo, int hi) {\n    if (v < lo) return lo;\n    if (v > hi) return hi;\n    return v;\n}\n```",
+    "options": {
+      "a": "The function is missing a `return` statement on the default path.",
+      "b": "The function definition is in a header without `inline`, so each including translation unit defines `clamp`, causing a multiple-definition linker error.",
+      "c": "`#pragma once` must be replaced with a traditional include guard for functions to link correctly.",
+      "d": "The function parameters need `const` qualifiers to be safe in a header."
+    },
+    "answer": "b",
+    "explanation_md": "A non-`inline` function definition in a header violates the one-definition rule when the header is included by more than one translation unit. Each `.cpp` file compiles its own copy of `clamp`, and the linker sees two definitions with external linkage — an error. Adding `inline` to the function lets the linker merge the identical definitions."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ninline const int kBase = 10;\n\nint main() {\n    int x = kBase + 5;\n    std::cout << x << \"\\n\";\n    std::cout << kBase << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15\n10",
+    "explanation_md": "`kBase` is an `inline const int` with value `10`. `x = 10 + 5 = 15`, printed first. Then `kBase` itself prints `10`. The `inline` keyword does not change the value or how it is used in expressions."
+  }
+]

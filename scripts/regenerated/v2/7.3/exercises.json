@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Scope Quiz: Track Which Variable Is Visible",
+    "prompt_md": "## Goal\nWrite a program that reads one integer and prints it twice: once from inside a nested block and once from the outer block, demonstrating block scope.\n\n## Input\n- Line 1: integer `n` (1 ≤ n ≤ 1000)\n\n## Output\nPrint exactly two lines:\n- Line 1: `Inner: <n>` — printed from inside a nested block\n- Line 2: `Outer: <n>` — printed from the outer block after the nested block ends\n\nBoth lines must print the same value (the value read from stdin).\nExample for n=42:\n```\nInner: 42\nOuter: 42\n```\n\n## Requirements\n1. Read `n` in the outer block of `main()`.\n2. Open a nested block. Inside it, define a variable `copy` initialized to `n`, then print `Inner: <copy>`.\n3. After the nested block closes, print `Outer: <n>` using the outer `n` (not `copy`).\n4. `copy` must be defined only inside the nested block — it must not be visible after the block closes.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: open a nested block\n    //   inside it: declare int copy { n }; and print \"Inner: <copy>\"\n    // after the block: print \"Outer: <n>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    {\n        int copy { n };\n        std::cout << \"Inner: \" << copy << '\\n';\n    }\n\n    std::cout << \"Outer: \" << n << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=42",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Inner: 42\nOuter: 42"
+      },
+      {
+        "label": "Hidden: n=1 (minimum)",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Inner: 1\nOuter: 1"
+      },
+      {
+        "label": "Hidden: n=999",
+        "is_sample": false,
+        "stdin": "999\n",
+        "expected_stdout": "Inner: 999\nOuter: 999"
+      }
+    ]
+  },
+  {
+    "title": "Local Variable Automatic Duration Bug",
+    "prompt_md": "## Goal\nFind and fix the bug so the program correctly prints the absolute difference of two integers.\n\n## Input\n- Line 1: integer `a` (-1000 ≤ a ≤ 1000)\n- Line 2: integer `b` (-1000 ≤ b ≤ 1000)\n\n## Output\nPrint exactly one line: `Diff: <value>` where `<value>` is the absolute difference `|a - b|`.\nExample for a=10, b=3: `Diff: 7`\nExample for a=3, b=10: `Diff: 7`\n\n## Requirements\n1. The program compiles and runs but sometimes prints a wrong (negative) difference.\n2. Find the single logic bug — do not rewrite the structure of the program.\n3. The bug relates to how a local variable is used across blocks.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int diff { a - b };\n\n    // Bug: we try to fix negative diff but operate on the wrong variable\n    {\n        int diff { b - a };   // shadow: only exists here\n        if (diff < 0)\n            diff = -diff;\n    }\n\n    std::cout << \"Diff: \" << diff << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int diff { a - b };\n\n    {\n        if (diff < 0)\n            diff = -diff;\n    }\n\n    std::cout << \"Diff: \" << diff << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 - 3 = 7",
+        "is_sample": true,
+        "stdin": "10\n3\n",
+        "expected_stdout": "Diff: 7"
+      },
+      {
+        "label": "Hidden: 3 - 10 = 7 (negative diff fixed)",
+        "is_sample": false,
+        "stdin": "3\n10\n",
+        "expected_stdout": "Diff: 7"
+      },
+      {
+        "label": "Hidden: equal values = 0",
+        "is_sample": false,
+        "stdin": "5\n5\n",
+        "expected_stdout": "Diff: 0"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Countdown to Zero",
+    "prompt_md": "## Goal\nRead an integer N from stdin and print a countdown from N down to 0, one number per line.\n\n## Input\nLine 1: one integer N (0 ≤ N ≤ 10).\n\n## Output\nPrint N+1 lines: N, N-1, N-2, ..., 1, 0 (each on its own line).\n\n## Requirements\n1. Use a `while` loop.\n2. Include 0 in the output.\n3. When N = 0, print exactly one line: `0`.\n4. No trailing spaces; each number is followed by a newline.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: use a while loop to print n, n-1, ..., 1, 0\n    // each on its own line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    while (n >= 0) {\n        std::cout << n << \"\\n\";\n        --n;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: countdown from 3",
+        "is_sample": true,
+        "stdin": "3\n",
+        "expected_stdout": "3\n2\n1\n0\n"
+      },
+      {
+        "label": "Hidden: N = 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: N = 5",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "5\n4\n3\n2\n1\n0\n"
+      }
+    ]
+  },
+  {
+    "title": "Running Sum Until Sentinel (Complete the Function)",
+    "prompt_md": "## Goal\nComplete the function `sumUntilSentinel(int sentinel)` that reads integers from stdin one at a time using a `while` loop and returns the sum of all values read **before** encountering the sentinel value.\n\n## Input\nA sequence of integers, one per line. The sequence ends with the sentinel value (which is not included in the sum). The sentinel is always present.\n\n## Output\nPrint exactly one line: `Sum: X` where X is the sum of all integers before the sentinel.\n\n## Requirements\n1. Implement `sumUntilSentinel` using a `while` loop that reads one integer per iteration.\n2. Stop reading (exit the loop) when the value read equals the sentinel.\n3. The sentinel value itself must NOT be added to the sum.\n4. `main()` calls `sumUntilSentinel(0)` — the sentinel is always 0.\n5. If the very first value is 0, the sum is 0.\n\n## Notes\n- Use `std::cin >> value` inside the loop to read each integer.",
+    "starter_code": "#include <iostream>\n\n// Returns the sum of all integers read until sentinel is encountered.\n// The sentinel itself is not included in the sum.\nint sumUntilSentinel(int sentinel) {\n    int sum = 0;\n    // TODO: use a while loop to read integers until the sentinel is read\n    // Add each value to sum, but stop when value == sentinel\n    return sum;\n}\n\nint main() {\n    std::cout << \"Sum: \" << sumUntilSentinel(0) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint sumUntilSentinel(int sentinel) {\n    int sum = 0;\n    int value;\n    std::cin >> value;\n    while (value != sentinel) {\n        sum += value;\n        std::cin >> value;\n    }\n    return sum;\n}\n\nint main() {\n    std::cout << \"Sum: \" << sumUntilSentinel(0) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1+2+3 then sentinel",
+        "is_sample": true,
+        "stdin": "1\n2\n3\n0\n",
+        "expected_stdout": "Sum: 6\n"
+      },
+      {
+        "label": "Hidden: sentinel first (sum = 0)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Sum: 0\n"
+      },
+      {
+        "label": "Hidden: includes negatives",
+        "is_sample": false,
+        "stdin": "10\n-4\n7\n-1\n0\n",
+        "expected_stdout": "Sum: 12\n"
+      }
+    ]
+  }
+]

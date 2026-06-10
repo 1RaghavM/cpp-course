@@ -1,0 +1,47 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 3;\n    switch (x)\n    {\n        case 1: std::cout << \"one\\n\"; break;\n        case 2: std::cout << \"two\\n\"; break;\n        case 3: std::cout << \"three\\n\";\n        case 4: std::cout << \"four\\n\"; break;\n        default: std::cout << \"other\\n\"; break;\n    }\n}\n```",
+    "options": null,
+    "answer": "three\nfour",
+    "explanation_md": "`case 3` matches and prints `three`, but there is no `break` after it. Execution falls through into `case 4`, printing `four` before hitting the `break` there. This is the classic switch fallthrough trap: a missing `break` is a silent logic bug, not a compile error. The fix is adding `break;` after `case 3`'s body (or writing `[[fallthrough]];` if fallthrough is intentional)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    for (int i = 0; i < 5; ++i)\n    {\n        if (i == 3)\n            break;\n        if (i % 2 == 0)\n            continue;\n        std::cout << i << '\\n';\n    }\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "The loop runs `i = 0, 1, 2, 3`. For `i = 0`: even, `continue` skips the print. For `i = 1`: odd, prints `1`. For `i = 2`: even, `continue` skips. For `i = 3`: `break` exits the loop immediately. So only `1` is printed. The interaction of `break` and `continue` together is what makes this tricky."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes a menu loop:\n\n```cpp\nint choice;\ndo {\n    std::cout << \"Enter 1-3: \";\n    std::cin >> choice;\n} while (choice < 1 || choice > 3);\n```\n\nWhich statement best describes why `do while` is a better fit here than a plain `while`?",
+    "options": {
+      "a": "`do while` loops run faster than `while` loops.",
+      "b": "The menu prompt must be shown at least once before checking the condition; `do while` guarantees the body runs before the first condition test.",
+      "c": "`while` cannot read from `std::cin` without additional setup.",
+      "d": "`do while` automatically validates the input type, while `while` does not."
+    },
+    "answer": "b",
+    "explanation_md": "`while` checks the condition before the first iteration. If you used `while (choice < 1 || choice > 3)`, `choice` would be uninitialized (or hold a stale value) the first time the condition is evaluated — undefined behavior or an accidental exit. `do while` runs the body first, letting the user enter a value, and only then checks whether to repeat."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to print all numbers from 1 to N (inclusive). What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int n;\n    std::cin >> n;\n    for (int i = 1; i < n; ++i)\n        std::cout << i << '\\n';\n}\n```",
+    "options": {
+      "a": "The loop variable should be declared outside the `for` statement.",
+      "b": "The loop condition `i < n` stops one iteration early; `i <= n` is needed to include N itself.",
+      "c": "The increment `++i` should be `i++` to avoid a compiler error.",
+      "d": "The loop should start at `i = 0` to cover all values."
+    },
+    "answer": "b",
+    "explanation_md": "With `i < n`, the last value printed is `n - 1`. For N = 5, it prints 1, 2, 3, 4 and stops before reaching 5. Changing the condition to `i <= n` includes N in the output. This is the classic off-by-one error: confusing a strict inequality with an inclusive one."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <random>\n#include <iostream>\nint main()\n{\n    std::mt19937 rng{ 99u };\n    std::uniform_int_distribution<int> d{ 0, 2 };\n    std::cout << d(rng) << '\\n';\n    std::cout << d(rng) << '\\n';\n    std::cout << d(rng) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1\n1\n0",
+    "explanation_md": "`std::mt19937` seeded with `99u` produces a fixed deterministic sequence. For `uniform_int_distribution{0, 2}`, the first three draws are 1, 1, 0. This underlines the reproducibility property: the same seed always yields the same sequence, which is essential when writing tests that include random-number exercises."
+  }
+]

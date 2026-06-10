@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Numbers Skipping Multiples of a Divisor",
+    "prompt_md": "## Goal\nWrite a program that reads N and D, then prints the integers from 1 to N inclusive, skipping any that are multiples of D.\n\n## Input\n- Line 1: integer N (1 <= N <= 20)\n- Line 2: integer D (2 <= D <= N)\n\n## Output\nPrint the surviving integers separated by spaces on one line, followed by a newline. If no integers survive (all are multiples of D), print an empty line.\n\n## Requirements\n1. Use a `for` loop from 1 to N inclusive.\n2. Use `continue` to skip values where `i % D == 0`.\n3. Print each non-skipped value followed by a space.\n4. Print a newline after all values.\n5. Edge cases covered by hidden tests: D == 2 (skip all evens), a range where every number is a multiple of D.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{}, d{};\n    std::cin >> n >> d;\n\n    // TODO: use a for loop from 1 to n.\n    // Use continue to skip multiples of d.\n    // Print each non-skipped value followed by a space.\n\n    std::cout << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{}, d{};\n    std::cin >> n >> d;\n\n    for (int i{1}; i <= n; ++i) {\n        if (i % d == 0) {\n            continue;\n        }\n        std::cout << i << \" \";\n    }\n    std::cout << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: skip multiples of 3 up to 9",
+        "is_sample": true,
+        "stdin": "9\n3\n",
+        "expected_stdout": "1 2 4 5 7 8 "
+      },
+      {
+        "label": "Hidden: skip evens up to 8",
+        "is_sample": false,
+        "stdin": "8\n2\n",
+        "expected_stdout": "1 3 5 7 "
+      },
+      {
+        "label": "Hidden: single value that is a multiple",
+        "is_sample": false,
+        "stdin": "4\n4\n",
+        "expected_stdout": "1 2 3 "
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Find First Value Above Threshold",
+    "prompt_md": "## Goal\nThe program below is supposed to read N integers and print the first one that is greater than a threshold T, then stop. If no value exceeds T, print `None`. It contains exactly one logic bug — find and fix it.\n\n## Input\n- Line 1: integer N (1 <= N <= 10), then integer T on the same line.\n- Lines 2..N+1: one integer per line.\n\n## Output\nPrint exactly one line: either `Found: V` where V is the first value greater than T, or `None` if no such value exists.\n\n## Requirements\n1. Use `break` to exit as soon as the first qualifying value is found.\n2. After the loop, print `Found: V` if a qualifying value was found, or `None` otherwise.\n3. Hidden tests cover: qualifying value in the first position, qualifying value in the last position, no qualifying value.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{}, threshold{};\n    std::cin >> n >> threshold;\n\n    int found{-1};\n    bool foundOne{false};\n\n    for (int i{0}; i < n; ++i) {\n        int val{};\n        std::cin >> val;\n        if (val > threshold) {\n            found = val;\n            foundOne = true;\n            // bug: missing break, loop keeps overwriting found\n        }\n    }\n\n    if (foundOne) {\n        std::cout << \"Found: \" << found << \"\\n\";\n    } else {\n        std::cout << \"None\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{}, threshold{};\n    std::cin >> n >> threshold;\n\n    int found{-1};\n    bool foundOne{false};\n\n    for (int i{0}; i < n; ++i) {\n        int val{};\n        std::cin >> val;\n        if (val > threshold) {\n            found = val;\n            foundOne = true;\n            break;\n        }\n    }\n\n    if (foundOne) {\n        std::cout << \"Found: \" << found << \"\\n\";\n    } else {\n        std::cout << \"None\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: first qualifying value at position 2",
+        "is_sample": true,
+        "stdin": "4 10\n5\n15\n20\n8\n",
+        "expected_stdout": "Found: 15"
+      },
+      {
+        "label": "Hidden: qualifying value in first position",
+        "is_sample": false,
+        "stdin": "3 5\n99\n7\n3\n",
+        "expected_stdout": "Found: 99"
+      },
+      {
+        "label": "Hidden: no qualifying value",
+        "is_sample": false,
+        "stdin": "3 100\n10\n20\n30\n",
+        "expected_stdout": "None"
+      }
+    ]
+  }
+]

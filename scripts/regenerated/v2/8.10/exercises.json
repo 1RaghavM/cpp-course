@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum of Multiples Using For Loop",
+    "prompt_md": "## Goal\nWrite a program that reads an integer N and a divisor D, then prints the sum of all multiples of D in the range 1 through N inclusive.\n\n## Input\n- Line 1: integer N (1 <= N <= 1000)\n- Line 2: integer D (1 <= D <= N)\n\n## Output\nPrint exactly one line: `Sum: S` where S is the computed sum.\n\n## Requirements\n1. Use a `for` loop to iterate i from 1 to N inclusive.\n2. Add i to the running sum whenever i is evenly divisible by D (i.e. `i % D == 0`).\n3. Print the result as `Sum: S` (capital S, colon, space, the number, newline).\n4. Edge cases covered by hidden tests: D == N (only one multiple), D == 1 (all values are multiples).",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{}, d{};\n    std::cin >> n >> d;\n\n    int sum{0};\n    // TODO: use a for loop from 1 to n (inclusive).\n    // Add i to sum whenever i is divisible by d.\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{}, d{};\n    std::cin >> n >> d;\n\n    int sum{0};\n    for (int i{1}; i <= n; ++i) {\n        if (i % d == 0) {\n            sum += i;\n        }\n    }\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: multiples of 3 up to 9",
+        "is_sample": true,
+        "stdin": "9\n3\n",
+        "expected_stdout": "Sum: 18"
+      },
+      {
+        "label": "Hidden: D equals N (single multiple)",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "Sum: 7"
+      },
+      {
+        "label": "Hidden: D equals 1 (all values)",
+        "is_sample": false,
+        "stdin": "5\n1\n",
+        "expected_stdout": "Sum: 15"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Function: Count Even Numbers in Range",
+    "prompt_md": "## Goal\nComplete the function `countEvens` that counts how many even integers exist in the inclusive range [low, high], then print the result.\n\n## Input\n- Line 1: two space-separated integers `low` and `high` (-100 <= low <= high <= 100).\n\n## Output\nPrint exactly one line: `Count: C` where C is the number of even integers in [low, high] inclusive.\n\n## Requirements\n1. Implement `countEvens(int low, int high)` using a `for` loop that iterates from `low` to `high` inclusive.\n2. Count integers i where `i % 2 == 0`. (Recall that in C++, `%` on negative numbers can yield negative remainders — use `i % 2 == 0` which still correctly identifies even numbers.)\n3. Return the count from the function.\n4. `main` reads the two integers, calls `countEvens`, and prints the result as `Count: C`.\n5. Edge cases covered by hidden tests: low == high when that value is odd, a range containing only negative numbers.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function using a for loop.\n// Return the count of even integers in [low, high] inclusive.\nint countEvens(int low, int high) {\n    return 0; // replace with your implementation\n}\n\nint main() {\n    int low{}, high{};\n    std::cin >> low >> high;\n    std::cout << \"Count: \" << countEvens(low, high) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint countEvens(int low, int high) {\n    int count{0};\n    for (int i{low}; i <= high; ++i) {\n        if (i % 2 == 0) {\n            ++count;\n        }\n    }\n    return count;\n}\n\nint main() {\n    int low{}, high{};\n    std::cin >> low >> high;\n    std::cout << \"Count: \" << countEvens(low, high) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: range 1 to 10",
+        "is_sample": true,
+        "stdin": "1 10\n",
+        "expected_stdout": "Count: 5"
+      },
+      {
+        "label": "Hidden: single odd value",
+        "is_sample": false,
+        "stdin": "3 3\n",
+        "expected_stdout": "Count: 0"
+      },
+      {
+        "label": "Hidden: negative range",
+        "is_sample": false,
+        "stdin": "-6 -1\n",
+        "expected_stdout": "Count: 3"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid test()\n{\n    int x { 5 };\n    x = x + 1;\n    std::cout << x << '\\n';\n}\n\nint main()\n{\n    test();\n    test();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "6\n6",
+    "explanation_md": "`x` is a local variable with automatic duration. It is created and initialized to 5 each time `test` is called, incremented to 6, then destroyed when `test` returns. The second call starts fresh — `x` is again 5, then 6. Both calls print `6`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In C++, when does a local variable with automatic storage duration get destroyed?\n\n- a. When the program exits `main()`.\n- b. When the variable is assigned the value `0`.\n- c. When execution leaves the block the variable was defined in.\n- d. At the end of the file where the variable is declared.",
+    "options": {
+      "a": "When the program exits `main()`.",
+      "b": "When the variable is assigned the value `0`.",
+      "c": "When execution leaves the block the variable was defined in.",
+      "d": "At the end of the file where the variable is declared."
+    },
+    "answer": "c",
+    "explanation_md": "Automatic storage duration means the variable is created when execution enters its enclosing block and destroyed when execution leaves that block. It has nothing to do with the value being zero or the program ending; it is determined purely by block entry and exit."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `42`. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    {\n        int answer { 42 };\n    }\n    std::cout << answer << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`answer` is not initialized to a valid value inside the block.",
+      "b": "`answer` is defined inside the inner block and is out of scope when `std::cout` tries to use it.",
+      "c": "The inner block needs a `return` statement to pass `answer` back to the outer block.",
+      "d": "`std::cout` cannot print `int` values directly."
+    },
+    "answer": "b",
+    "explanation_md": "A variable's scope ends at the closing brace of the block it was defined in. `answer` is defined inside the inner block, so it no longer exists after that block closes. Accessing it after the `}` is a compile-time error. Move the definition outside the inner block to fix it."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 3 };\n    {\n        int x { 7 };\n        std::cout << x << '\\n';\n    }\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7\n3",
+    "explanation_md": "The inner block declares a new `x` initialized to 7, which is a separate variable that shadows the outer `x`. Inside the inner block the inner `x` (7) is visible. After the block closes, the inner `x` is destroyed and the outer `x` (3) is visible again."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A variable's scope in C++ begins:\n\n- a. At the top of the function it is defined in, regardless of where the definition appears.\n- b. At the point of definition and ends at the closing brace of its enclosing block.\n- c. At the first line of `main()` for all local variables.\n- d. At the start of the file for all variables defined outside of a namespace.",
+    "options": {
+      "a": "At the top of the function it is defined in, regardless of where the definition appears.",
+      "b": "At the point of definition and ends at the closing brace of its enclosing block.",
+      "c": "At the first line of `main()` for all local variables.",
+      "d": "At the start of the file for all variables defined outside of a namespace."
+    },
+    "answer": "b",
+    "explanation_md": "Unlike some other languages (JavaScript's `var`, for example), C++ does not hoist variable declarations. A local variable's scope starts exactly where it is defined and ends at the `}` that closes its enclosing block. Using the name before the definition is a compile error."
+  }
+]
