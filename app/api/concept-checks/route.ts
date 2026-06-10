@@ -37,6 +37,10 @@ export async function POST(request: NextRequest) {
     correct,
   });
   if (error) {
+    // Postgres FK violation — the checkId doesn't reference a known concept check
+    if (error.code === "23503") {
+      return NextResponse.json({ error: "Unknown checkId" }, { status: 400 });
+    }
     return NextResponse.json({ error: "Failed to record attempt" }, { status: 500 });
   }
 
