@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A class has a `double* m_data` member pointing to heap memory. The compiler-generated copy constructor is used. After `MyClass b{a}`, which statement is true?",
+    "options": {
+      "a": "`b.m_data` points to a new heap block with the same values as `a.m_data`.",
+      "b": "`b.m_data` holds the same address as `a.m_data`, pointing to the same heap block.",
+      "c": "`b.m_data` is null because the compiler cannot copy pointers.",
+      "d": "The compiler refuses to compile the copy construction."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler-generated copy constructor performs memberwise copy, which for a pointer member copies the address value — not the pointed-to data. Both `a.m_data` and `b.m_data` hold the same address, meaning both objects share one heap block."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? Assume no crashes.\n\n```cpp\n#include <iostream>\nstruct Pair {\n    int* m_ptr;\n    Pair(int v) : m_ptr{new int{v}} {}\n    ~Pair() { delete m_ptr; }\n    // no custom copy constructor\n};\nint main() {\n    Pair a{10};\n    Pair b{a};       // shallow copy\n    *b.m_ptr = 99;\n    std::cout << *a.m_ptr << '\\n';\n}\n```",
+    "options": null,
+    "answer": "99",
+    "explanation_md": "The default copy constructor copies the pointer itself, so `b.m_ptr` and `a.m_ptr` point to the same `int`. Writing `99` through `b.m_ptr` changes the shared value, so reading through `a.m_ptr` also gives `99`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does the Rule of Three say about classes that manage heap resources?",
+    "options": {
+      "a": "Every class needs exactly three constructors.",
+      "b": "If you provide a custom destructor, you almost certainly also need a custom copy constructor and a custom copy-assignment operator.",
+      "c": "You must write three deep-copy functions for every class.",
+      "d": "Classes with raw pointers must override all three comparison operators."
+    },
+    "answer": "b",
+    "explanation_md": "The Rule of Three says that the destructor, copy constructor, and copy-assignment operator form a group: if you need to write one (because the class owns a resource), you almost certainly need all three. Omitting the copy constructor or copy-assignment operator leaves the compiler-generated shallow versions in place, which are unsafe for classes that own heap memory."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The deep copy assignment operator below has a critical bug. What is it?\n\n```cpp\nMyArray& operator=(const MyArray& rhs) {\n    m_size = rhs.m_size;\n    m_data = new int[m_size];\n    for (int i = 0; i < m_size; ++i)\n        m_data[i] = rhs.m_data[i];\n    return *this;\n}\n```",
+    "options": {
+      "a": "The for loop should count down, not up.",
+      "b": "The old `m_data` is not deleted before the new allocation, causing a memory leak.",
+      "c": "Returning `*this` is incorrect — it should return `rhs`.",
+      "d": "There is no bug; this is a correct deep copy."
+    },
+    "answer": "b",
+    "explanation_md": "Before allocating new storage, the operator must `delete[] m_data` to free the block that `m_data` currently points to. Without that line, every assignment leaves the old block unreachable on the heap — a memory leak. There is also no self-assignment guard, which would cause reading freed memory if `a = a` were called."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is it safe to rely on the compiler-generated copy constructor (i.e., NOT write your own)?",
+    "options": {
+      "a": "When the class has any member that is a pointer.",
+      "b": "When the class owns heap memory managed through a raw pointer.",
+      "c": "When all members are value types or standard library containers that already handle their own copying.",
+      "d": "Only when the class has exactly one data member."
+    },
+    "answer": "c",
+    "explanation_md": "Standard library types (`std::string`, `std::vector`, etc.) implement deep copy in their own copy constructors, so a class that uses only these (plus plain value types) is safe with the compiler-generated copy constructor — it just calls each member's own copy constructor in turn."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Parse and Sum Command-Line-Style Tokens from Stdin",
+    "prompt_md": "## Goal\nWrite a program that reads a line of space-separated integers (simulating command-line argument parsing), converts each token to an integer, and prints their sum.\n\n## Input\n- Line 1: integer N (1 <= N <= 10) — the number of tokens\n- Line 2: N space-separated integers\n\n## Output\nPrint exactly one line: `Sum: X` where X is the sum of all N integers.\n\n## Requirements\n1. Read the integers one by one using `std::cin`.\n2. Accumulate the sum in a loop.\n3. Print in the format `Sum: X`.\n4. Edge case: N = 1 (single argument).\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int sum = 0;\n    // TODO: read n integers from cin and accumulate their sum\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        sum += val;\n    }\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three arguments",
+        "is_sample": true,
+        "stdin": "3\n10 20 30\n",
+        "expected_stdout": "Sum: 60"
+      },
+      {
+        "label": "Hidden: single argument",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "Sum: 42"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "4\n-5 10 -3 8\n",
+        "expected_stdout": "Sum: 10"
+      }
+    ]
+  },
+  {
+    "title": "Command-Line Argument Router (Stdin Simulation)",
+    "prompt_md": "## Goal\nComplete the function `dispatch` that selects and calls the correct operation based on a command name string.\n\n## Input\n- Line 1: command name — one of `double`, `square`, `negate`\n- Line 2: one integer N\n\n## Output\nPrint exactly one line: the result of applying the command to N.\n- `double N` → print `2*N`\n- `square N` → print `N*N`\n- `negate N` → print `-N`\n\n## Requirements\n1. `dispatch(const std::string& cmd, int n)` takes the command name and value, applies the correct operation, and returns the result.\n2. The function must handle all three valid command names.\n3. `main` reads the command and value from stdin, calls `dispatch`, and prints the result.\n4. You may assume the command name is always one of the three valid names.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement this function\n// Returns the result of applying cmd to n\n// cmd is one of: \"double\", \"square\", \"negate\"\nint dispatch(const std::string& cmd, int n) {\n    return 0;  // replace this\n}\n\nint main() {\n    std::string cmd;\n    int n;\n    std::cin >> cmd >> n;\n    std::cout << dispatch(cmd, n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint dispatch(const std::string& cmd, int n) {\n    if (cmd == \"double\")  return 2 * n;\n    if (cmd == \"square\")  return n * n;\n    if (cmd == \"negate\")  return -n;\n    return 0;\n}\n\nint main() {\n    std::string cmd;\n    int n;\n    std::cin >> cmd >> n;\n    std::cout << dispatch(cmd, n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: double",
+        "is_sample": true,
+        "stdin": "double\n7\n",
+        "expected_stdout": "14"
+      },
+      {
+        "label": "Hidden: square",
+        "is_sample": false,
+        "stdin": "square\n5\n",
+        "expected_stdout": "25"
+      },
+      {
+        "label": "Hidden: negate",
+        "is_sample": false,
+        "stdin": "negate\n8\n",
+        "expected_stdout": "-8"
+      }
+    ]
+  }
+]

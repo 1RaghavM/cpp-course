@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Process Mixed Shape Array via Base Pointer",
+    "prompt_md": "## Goal\nWrite a program that creates one `Circle` and one `Rectangle` object, stores their addresses in a `Shape*` array, and prints each shape's color and a type label.\n\n## Input\nNo input — all data is hardcoded.\n\n## Output\nPrint exactly two lines:\n```\nCircle color: red\nRectangle color: blue\n```\n\n## Requirements\n1. Define a `Shape` base class with a `std::string color` member and a constructor that accepts the color.\n2. Define a `Circle` class inheriting from `Shape` with a `double radius` member.\n3. Define a `Rectangle` class inheriting from `Shape` with `double width` and `double height` members.\n4. In `main`, create a `Circle{\"red\", 5.0}` and a `Rectangle{\"blue\", 4.0, 3.0}`.\n5. Store both addresses in a `Shape*` array of size 2.\n6. Loop over the array and print `Circle color: <color>` for index 0 and `Rectangle color: <color>` for index 1.\n7. Do not use virtual functions.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Shape {\npublic:\n    std::string color;\n    // TODO: add constructor that accepts a color string\n};\n\nclass Circle : public Shape {\npublic:\n    double radius;\n    // TODO: add constructor that accepts color and radius\n};\n\nclass Rectangle : public Shape {\npublic:\n    double width;\n    double height;\n    // TODO: add constructor that accepts color, width, height\n};\n\nint main() {\n    Circle c{\"red\", 5.0};\n    Rectangle r{\"blue\", 4.0, 3.0};\n\n    Shape* shapes[2] = { &c, &r };\n\n    // TODO: loop over shapes and print:\n    //   \"Circle color: \" + shapes[0]->color\n    //   \"Rectangle color: \" + shapes[1]->color\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Shape {\npublic:\n    std::string color;\n    Shape(std::string c) : color(c) {}\n};\n\nclass Circle : public Shape {\npublic:\n    double radius;\n    Circle(std::string c, double r) : Shape(c), radius(r) {}\n};\n\nclass Rectangle : public Shape {\npublic:\n    double width;\n    double height;\n    Rectangle(std::string c, double w, double h)\n        : Shape(c), width(w), height(h) {}\n};\n\nint main() {\n    Circle c{\"red\", 5.0};\n    Rectangle r{\"blue\", 4.0, 3.0};\n\n    Shape* shapes[2] = { &c, &r };\n\n    std::cout << \"Circle color: \" << shapes[0]->color << \"\\n\";\n    std::cout << \"Rectangle color: \" << shapes[1]->color << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Circle color: red\nRectangle color: blue"
+      },
+      {
+        "label": "Hidden: verify no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Circle color: red\nRectangle color: blue"
+      },
+      {
+        "label": "Hidden: output matches exactly",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Circle color: red\nRectangle color: blue"
+      }
+    ]
+  },
+  {
+    "title": "Report Animals via Base Reference",
+    "prompt_md": "## Goal\nComplete the function `reportAnimal` that takes a `const Animal&` and prints a formatted description.\n\n## Input\nNo input — all data is hardcoded in `main`.\n\n## Output\nPrint exactly two lines:\n```\nAnimal: Buddy\nAnimal: Whiskers\n```\n\n## Requirements\n1. `reportAnimal` must accept a `const Animal&` parameter.\n2. It must print `Animal: ` followed by the animal's `name` member, then a newline.\n3. `main` creates an `Animal{\"Buddy\"}` and a `Cat{\"Whiskers\"}` and calls `reportAnimal` on each.\n4. Both calls must go through the base reference — no derived-type overloads.\n5. A `Cat` must publicly inherit from `Animal` and use `Animal`'s constructor via the member-initializer list.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Animal {\npublic:\n    std::string name;\n    Animal(std::string n) : name(n) {}\n};\n\nclass Cat : public Animal {\npublic:\n    Cat(std::string n) : Animal(n) {}\n};\n\n// TODO: implement reportAnimal so it accepts a const Animal& and prints\n//       \"Animal: \" followed by the name, then a newline\nvoid reportAnimal(const Animal& a) {\n    // TODO\n}\n\nint main() {\n    Animal a{\"Buddy\"};\n    Cat c{\"Whiskers\"};\n    reportAnimal(a);\n    reportAnimal(c);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Animal {\npublic:\n    std::string name;\n    Animal(std::string n) : name(n) {}\n};\n\nclass Cat : public Animal {\npublic:\n    Cat(std::string n) : Animal(n) {}\n};\n\nvoid reportAnimal(const Animal& a) {\n    std::cout << \"Animal: \" << a.name << \"\\n\";\n}\n\nint main() {\n    Animal a{\"Buddy\"};\n    Cat c{\"Whiskers\"};\n    reportAnimal(a);\n    reportAnimal(c);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Animal: Buddy\nAnimal: Whiskers"
+      },
+      {
+        "label": "Hidden: output order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Animal: Buddy\nAnimal: Whiskers"
+      },
+      {
+        "label": "Hidden: exact match",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Animal: Buddy\nAnimal: Whiskers"
+      }
+    ]
+  }
+]

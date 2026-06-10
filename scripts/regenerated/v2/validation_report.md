@@ -646,6 +646,30 @@
 1 warning generated.
 
 
+## 19.1 — pass
+- **warning**: 19_1_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/19_1_ex2_starter.cpp:9:9: warning: unused variable 'tmp' [-Wunused-variable]
+    9 |     int tmp = *a;
+      |         ^~~
+1 warning generated.
+
+
+## 19.2 — pass
+- **warning**: 19_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/19_2_ex2_starter.cpp:5:24: warning: unused parameter 'arr' [-Wunused-parameter]
+    5 | void reverseArray(int* arr, int size) {
+      |                        ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/19_2_ex2_starter.cpp:5:33: warning: unused parameter 'size' [-Wunused-parameter]
+    5 | void rever
+
+## 19.4 — pass
+- **warning**: 19_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/19_4_ex2_starter.cpp:5:21: warning: unused parameter 'pp' [-Wunused-parameter]
+    5 | void addToAll(int** pp, int delta) {
+      |                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/19_4_ex2_starter.cpp:5:29: warning: unused parameter 'delta' [-Wunused-parameter]
+    5 | void addToAll(in
+
 ## 2.10 — pass
 - **warning**: 2_10_ex2_starter: compiler warnings:
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/2_10_ex2_starter.cpp:7:21: warning: unused parameter 'value' [-Wunused-parameter]
@@ -701,6 +725,247 @@
       |                ^
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/2_x_ex2_starter.cpp:14:23: warning: unused parameter 'w' [-Wunused-parameter]
    14 | int volume(int l, int w, int 
+
+## 20.2 — pass
+- **warning**: 20_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_2_ex1_starter.cpp:8:10: warning: unused variable 'arr' [-Wunused-variable]
+    8 |     int* arr = nullptr;
+      |          ^~~
+1 warning generated.
+
+- **warning**: 20_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_2_ex2_starter.cpp:5:21: warning: unused parameter 'arr' [-Wunused-parameter]
+    5 | int computeMin(int* arr, int n) {
+      |                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_2_ex2_starter.cpp:5:30: warning: unused parameter 'n' [-Wunused-parameter]
+    5 | int computeMin(int* ar
+
+## 20.3 — pass
+- **warning**: 20_3_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_3_ex1_starter.cpp:4:15: warning: unused parameter 'base' [-Wunused-parameter]
+    4 | int power(int base, int exp) {
+      |               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_3_ex1_starter.cpp:4:25: warning: unused parameter 'exp' [-Wunused-parameter]
+    4 | int power(int base, int exp)
+
+## 20.4 — pass
+- **warning**: 20_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_4_ex2_starter.cpp:7:33: warning: unused parameter 'cmd' [-Wunused-parameter]
+    7 | int dispatch(const std::string& cmd, int n) {
+      |                                 ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_4_ex2_starter.cpp:7:42: warning: unused parameter 'n' [-Wunused-parameter]
+    7 
+
+## 20.5 — pass
+- **warning**: 20_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_5_ex1_starter.cpp:6:14: warning: unused parameter 'count' [-Wunused-parameter]
+    6 | int sumN(int count, ...) {
+      |              ^
+1 warning generated.
+
+
+## 20.6 — pass
+- **warning**: 20_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_6_ex2_starter.cpp:6:22: warning: unused parameter 'f' [-Wunused-parameter]
+    6 | int applyTwice(int (*f)(int), int val) {
+      |                      ^
+1 warning generated.
+
+
+## 20.x — pass
+- **warning**: 20_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_x_ex2_starter.cpp:6:13: warning: unused parameter 'a' [-Wunused-parameter]
+    6 | int gcd(int a, int b) {
+      |             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/20_x_ex2_starter.cpp:6:20: warning: unused parameter 'b' [-Wunused-parameter]
+    6 | int gcd(int a, int b) {
+      |           
+
+## 21.1 — pass
+- **warning**: 21_1_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_1_ex1_starter.cpp:10:28: warning: unused parameter 'lhs' [-Wunused-parameter]
+   10 | Vec2 operator+(const Vec2& lhs, const Vec2& rhs) {
+      |                            ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_1_ex1_starter.cpp:10:45: warning: unused parameter 'rhs' [-Wunused-parameter]
+  
+
+## 21.10 — pass
+- **warning**: 21_10_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_10_ex1_starter.cpp:4:9: warning: private field 'm_lo' is not used [-Wunused-private-field]
+    4 |     int m_lo{};
+      |         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_10_ex1_starter.cpp:5:9: warning: private field 'm_hi' is not used [-Wunused-private-field]
+    5 |     int m_hi{};
+      
+- **warning**: 21_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_10_ex2_starter.cpp:8:27: warning: unused parameter 'x' [-Wunused-parameter]
+    8 |     double operator()(int x) { return 0.0; }
+      |                           ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_10_ex2_starter.cpp:4:9: warning: private field 'm_sum' is not used [-Wunused-private-fiel
+
+## 21.11 — pass
+- **warning**: 21_11_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_11_ex1_starter.cpp:5:11: warning: private field 'm_degrees' is not used [-Wunused-private-field]
+    5 |     float m_degrees;
+      |           ^
+1 warning generated.
+
+
+## 21.12 — pass
+- **warning**: 21_12_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_12_ex1_starter.cpp:9:39: warning: unused parameter 'rhs' [-Wunused-parameter]
+    9 |     Point3D& operator=(const Point3D& rhs) {
+      |                                       ^
+1 warning generated.
+
+- **warning**: 21_12_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_12_ex2_starter.cpp:9:39: warning: unused parameter 'rhs' [-Wunused-parameter]
+    9 |     Counter& operator=(const Counter& rhs) {
+      |                                       ^
+1 warning generated.
+
+
+## 21.13 — pass
+- **warning**: 21_13_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_13_ex1_starter.cpp:14:32: warning: unused parameter 'src' [-Wunused-parameter]
+   14 |     IntBuffer(const IntBuffer& src) {
+      |                                ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_13_ex1_starter.cpp:19:43: warning: unused parameter 'rhs' [-Wunused-parameter]
+   19 |  
+
+## 21.14 — pass
+- **warning**: 21_14_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_14_ex1_starter.cpp:11:33: warning: unused parameter 'rhs' [-Wunused-parameter]
+   11 |     bool operator==(const Pair& rhs) const {
+      |                                 ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_14_ex1_starter.cpp:16:33: warning: unused parameter 'rhs' [-Wunused-parameter]
+ 
+- **warning**: 21_14_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_14_ex2_starter.cpp:6:29: warning: unused parameter 'size' [-Wunused-parameter]
+    6 | T findMax(const T* arr, int size) {
+      |                             ^
+1 warning generated.
+
+
+## 21.2 — pass
+- **warning**: 21_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_2_ex1_starter.cpp:16:42: warning: unused parameter 'a' [-Wunused-parameter]
+   16 | Temperature operator+(const Temperature& a, const Temperature& b) {
+      |                                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_2_ex1_starter.cpp:16:64: warning: unused parameter 
+- **warning**: 21_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_2_ex2_starter.cpp:19:30: warning: unused parameter 'p' [-Wunused-parameter]
+   19 | Pixel operator*(const Pixel& p, int scale) {
+      |                              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_2_ex2_starter.cpp:19:37: warning: unused parameter 'scale' [-Wunused-parameter]
+   19 
+
+## 21.3 — pass
+- **warning**: 21_3_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_3_ex1_starter.cpp:16:36: warning: unused parameter 'a' [-Wunused-parameter]
+   16 | Duration operator+(const Duration& a, const Duration& b) {
+      |                                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_3_ex1_starter.cpp:16:55: warning: unused parameter 'b' [-Wunused-p
+
+## 21.4 — pass
+- **warning**: 21_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_4_ex1_starter.cpp:15:61: warning: unused parameter 'f' [-Wunused-parameter]
+   15 | std::ostream& operator<<(std::ostream& out, const Fraction& f) {
+      |                                                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_4_ex1_starter.cpp:20:54: warning: u
+- **warning**: 21_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_4_ex2_starter.cpp:10:58: warning: unused parameter 'c' [-Wunused-parameter]
+   10 | std::ostream& operator<<(std::ostream& out, const Color& c) {
+      |                                                          ^
+1 warning generated.
+
+
+## 21.5 — pass
+- **warning**: 21_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_5_ex1_starter.cpp:11:36: warning: unused parameter 'rhs' [-Wunused-parameter]
+   11 |     Money& operator+=(const Money& rhs) {
+      |                                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_5_ex1_starter.cpp:17:34: warning: unused parameter 'rhs' [-Wunused-parameter]
+   
+
+## 21.7 — pass
+- **warning**: 21_7_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_7_ex1_starter.cpp:8:33: warning: unused parameter 'rhs' [-Wunused-parameter]
+    8 |     bool operator==(const Pair& rhs) const { return false; }
+      |                                 ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_7_ex1_starter.cpp:11:32: warning: unused parameter 'rhs' [-Wunused
+
+## 21.9 — pass
+- **warning**: 21_9_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_9_ex1_starter.cpp:12:25: warning: unused parameter 'i' [-Wunused-parameter]
+   12 |     int& operator[](int i) { return m_data[0]; }
+      |                         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_9_ex1_starter.cpp:15:31: warning: unused parameter 'i' [-Wunused-parameter]
+   15 |    
+- **warning**: 21_9_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_9_ex2_starter.cpp:11:25: warning: unused parameter 'i' [-Wunused-parameter]
+   11 |     int& operator[](int i) { return m_scores[0]; }
+      |                         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_9_ex2_starter.cpp:12:31: warning: unused parameter 'i' [-Wunused-parameter]
+   12 |  
+
+## 21.x — pass
+- **warning**: 21_x_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_x_ex1_starter.cpp:12:37: warning: unused parameter 'rhs' [-Wunused-parameter]
+   12 |     bool operator==(const Vector2D& rhs) const {
+      |                                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_x_ex1_starter.cpp:17:37: warning: unused parameter 'rhs' [-Wunused-parame
+- **warning**: 21_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_x_ex2_starter.cpp:15:16: warning: reference to stack memory associated with local variable 'old' returned [-Wreturn-stack-address]
+   15 |         return old;                  // BUG: returning reference to local
+      |                ^~~
+1 warning generated.
+
+
+## 21.y — pass
+- **warning**: 21_y_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_y_ex1_starter.cpp:11:30: warning: unused parameter 'value' [-Wunused-parameter]
+   11 |     IntStack& operator+=(int value) {
+      |                              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_y_ex1_starter.cpp:19:61: warning: unused parameter 's' [-Wunused-parameter]
+   19 | std::
+- **warning**: 21_y_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/21_y_ex2_starter.cpp:11:30: warning: unused parameter 'src' [-Wunused-parameter]
+   11 |     IntStack(const IntStack& src) : m_count{0} {
+      |                              ^
+1 warning generated.
+
+
+## 22.2 — pass
+- **warning**: 22_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/22_2_ex1_starter.cpp:7:18: warning: unused parameter 'x' [-Wunused-parameter]
+    7 | void record(int& x) {
+      |                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/22_2_ex1_starter.cpp:12:19: warning: unused parameter 'x' [-Wunused-parameter]
+   12 | void record(int&& x) {
+      |        
+- **warning**: 22_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/22_2_ex2_starter.cpp:7:23: warning: unused parameter 'val' [-Wunused-parameter]
+    7 | void accumulate(int&& val) {
+      |                       ^
+1 warning generated.
+
+
+## 22.4 — pass
+- **warning**: 22_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/22_4_ex2_starter.cpp:5:32: warning: unused parameter 'a' [-Wunused-parameter]
+    5 | void swap_strings(std::string& a, std::string& b) {
+      |                                ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/22_4_ex2_starter.cpp:5:48: warning: unused parameter 'b' [-Wunused-parameter]
+   
+
+## 22.x — pass
+- **warning**: 22_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/22_x_ex2_starter.cpp:6:51: warning: unused parameter 'p' [-Wunused-parameter]
+    6 | std::shared_ptr<int> process(std::unique_ptr<int> p) {
+      |                                                   ^
+1 warning generated.
+
 
 ## 3.10 — pass
 - **warning**: 3_10_ex1_starter: compiler warnings:

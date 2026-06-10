@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nint main() {\n    try {\n        throw std::invalid_argument(\"bad\");\n    } catch (const std::runtime_error& e) {\n        std::cout << \"runtime\\n\";\n    } catch (const std::invalid_argument& e) {\n        std::cout << \"invalid\\n\";\n    }\n    std::cout << \"end\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "invalid\nend",
+    "explanation_md": "`std::invalid_argument` does not match `std::runtime_error` (they are siblings in the hierarchy, not parent-child), so the first catch is skipped. The second catch matches. After the catch block finishes, execution continues to `\"end\"`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have two catch clauses: `catch (const std::exception& e)` and `catch (const std::runtime_error& e)`. You want `runtime_error` to be handled specifically. Which order is correct?",
+    "options": {
+      "a": "`std::exception` first, then `std::runtime_error`",
+      "b": "`std::runtime_error` first, then `std::exception`",
+      "c": "Order does not matter; C++ always picks the most specific match",
+      "d": "You cannot have both; the compiler rejects duplicate base-class catches"
+    },
+    "answer": "b",
+    "explanation_md": "Catch clauses are tried in written order, top to bottom. If `std::exception` comes first, it will match `std::runtime_error` (which derives from it) and the specific handler is never reached. Always order from most-derived to most-base."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nvoid f() { throw std::runtime_error(\"err\"); }\nint main() {\n    try {\n        f();\n        std::cout << \"after f\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << e.what() << \"\\n\";\n    }\n    std::cout << \"done\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "err\ndone",
+    "explanation_md": "`f()` throws, so `\"after f\"` is never reached. The catch block runs and prints `e.what()` which is `\"err\"`. After the catch, execution continues to `\"done\"`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What can you legally throw in C++?",
+    "options": {
+      "a": "Only objects derived from `std::exception`",
+      "b": "Only objects of class type; primitive types like `int` are forbidden",
+      "c": "Any copyable value: integers, strings, class objects, and so on",
+      "d": "Only pointers to exception objects"
+    },
+    "answer": "c",
+    "explanation_md": "C++ allows throwing any copyable type, including plain `int`, `double`, `std::string`, or any class object. However, best practice is to throw objects derived from `std::exception` so callers can catch them with a single `catch (const std::exception&)` handler."
+  }
+]

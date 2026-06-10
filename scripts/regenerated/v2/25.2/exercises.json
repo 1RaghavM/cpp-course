@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Polymorphic Area Calculator",
+    "prompt_md": "## Goal\nWrite a program that stores a `Circle` and a `Rectangle` in a `Shape*` array and prints each object's area using virtual dispatch.\n\n## Input\nNo input — all data is hardcoded.\n\n## Output\nPrint exactly two lines (use `3.14159` as pi):\n```\n78.5397\n12\n```\n\n## Requirements\n1. Define a `Shape` base class with a `virtual double area() const` that returns `0.0`.\n2. Define `Circle` inheriting from `Shape` with a `double radius` member; `area()` returns `3.14159 * radius * radius`.\n3. Define `Rectangle` inheriting from `Shape` with `double w` and `double h` members; `area()` returns `w * h`.\n4. In `main`, create `Circle{5.0}` and `Rectangle{4.0, 3.0}`.\n5. Store both addresses in `Shape* shapes[2]`.\n6. Loop and print each `shapes[i]->area()` on its own line.\n7. No explicit type checks or casts — rely purely on virtual dispatch.",
+    "starter_code": "#include <iostream>\n\nclass Shape {\npublic:\n    // TODO: declare virtual area() const returning 0.0\n};\n\nclass Circle : public Shape {\npublic:\n    double radius;\n    Circle(double r) : radius(r) {}\n    // TODO: override area() to return 3.14159 * radius * radius\n};\n\nclass Rectangle : public Shape {\npublic:\n    double w, h;\n    Rectangle(double w, double h) : w(w), h(h) {}\n    // TODO: override area() to return w * h\n};\n\nint main() {\n    Circle c{5.0};\n    Rectangle r{4.0, 3.0};\n    Shape* shapes[2] = { &c, &r };\n    for (int i = 0; i < 2; ++i) {\n        // TODO: print shapes[i]->area() followed by newline\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Shape {\npublic:\n    virtual double area() const { return 0.0; }\n};\n\nclass Circle : public Shape {\npublic:\n    double radius;\n    Circle(double r) : radius(r) {}\n    double area() const { return 3.14159 * radius * radius; }\n};\n\nclass Rectangle : public Shape {\npublic:\n    double w, h;\n    Rectangle(double w, double h) : w(w), h(h) {}\n    double area() const { return w * h; }\n};\n\nint main() {\n    Circle c{5.0};\n    Rectangle r{4.0, 3.0};\n    Shape* shapes[2] = { &c, &r };\n    for (int i = 0; i < 2; ++i) {\n        std::cout << shapes[i]->area() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: circle and rectangle areas",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "78.5397\n12"
+      },
+      {
+        "label": "Hidden: same run again",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "78.5397\n12"
+      },
+      {
+        "label": "Hidden: exact output match",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "78.5397\n12"
+      }
+    ]
+  },
+  {
+    "title": "Speak Through Base Reference",
+    "prompt_md": "## Goal\nComplete the function `makeSpeak` that accepts a `const Animal&` and calls the animal's `speak()` method, demonstrating polymorphism.\n\n## Input\nNo input — all data is hardcoded in `main`.\n\n## Output\nPrint exactly three lines:\n```\nGeneric sound\nWoof!\nMeow!\n```\n\n## Requirements\n1. `Animal` has `virtual void speak() const` printing `Generic sound`.\n2. `Dog` inherits from `Animal`; its `speak()` prints `Woof!`.\n3. `Cat` inherits from `Animal`; its `speak()` prints `Meow!`.\n4. Complete `makeSpeak(const Animal& a)` — it must call `a.speak()` and nothing else.\n5. `main` calls `makeSpeak` with an `Animal`, a `Dog`, and a `Cat` (in that order).",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Generic sound\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const { std::cout << \"Woof!\\n\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    void speak() const { std::cout << \"Meow!\\n\"; }\n};\n\n// TODO: implement makeSpeak — accept a const Animal& and call speak()\nvoid makeSpeak(const Animal& a) {\n    // TODO\n}\n\nint main() {\n    Animal a;\n    Dog d;\n    Cat c;\n    makeSpeak(a);\n    makeSpeak(d);\n    makeSpeak(c);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Generic sound\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const { std::cout << \"Woof!\\n\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    void speak() const { std::cout << \"Meow!\\n\"; }\n};\n\nvoid makeSpeak(const Animal& a) {\n    a.speak();\n}\n\nint main() {\n    Animal a;\n    Dog d;\n    Cat c;\n    makeSpeak(a);\n    makeSpeak(d);\n    makeSpeak(c);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three animal sounds",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Generic sound\nWoof!\nMeow!"
+      },
+      {
+        "label": "Hidden: exact lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Generic sound\nWoof!\nMeow!"
+      },
+      {
+        "label": "Hidden: no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Generic sound\nWoof!\nMeow!"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Log Destructor Calls Through Base Pointer",
+    "prompt_md": "## Goal\nComplete the destructor declarations so that deleting a `Dog*` through an `Animal*` calls both `~Dog` and `~Animal` in the correct order.\n\n## Input\nNo input — all data is hardcoded.\n\n## Output\nPrint exactly two lines:\n```\n~Dog\n~Animal\n```\n\n## Requirements\n1. `Animal` must have a `virtual` destructor that prints `~Animal`.\n2. `Dog` inherits from `Animal` and has a destructor (with `override`) that prints `~Dog`.\n3. `main` allocates a `Dog` with `new`, stores it in an `Animal*`, then calls `delete`.\n4. Both destructors must run in the correct order (derived first, then base).",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    // TODO: declare virtual destructor that prints \"~Animal\"\n};\n\nclass Dog : public Animal {\npublic:\n    // TODO: declare destructor with override that prints \"~Dog\"\n};\n\nint main() {\n    Animal* p = new Dog{};\n    delete p;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual ~Animal() { std::cout << \"~Animal\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    ~Dog() override { std::cout << \"~Dog\\n\"; }\n};\n\nint main() {\n    Animal* p = new Dog{};\n    delete p;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: derived then base destructor",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "~Dog\n~Animal"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "~Dog\n~Animal"
+      },
+      {
+        "label": "Hidden: exact order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "~Dog\n~Animal"
+      }
+    ]
+  },
+  {
+    "title": "Count Objects with Virtual Destructor",
+    "prompt_md": "## Goal\nComplete the `Widget` class so that a static counter tracks live objects, and the final count is printed after all objects are destroyed.\n\n## Input\nNo input — all data is hardcoded.\n\n## Output\nPrint exactly two lines:\n```\nLive: 2\nLive: 0\n```\n\n## Requirements\n1. `Widget` has a `static int count` member initialized to 0.\n2. The constructor increments `count`; the destructor decrements `count`.\n3. `Widget` has a `virtual ~Widget()` (so it works correctly when deleted through a `Widget*`).\n4. `Button` inherits from `Widget` publicly; it adds no extra data or logic.\n5. `main` creates two `Widget*` (one pointing to a `Widget`, one to a `Button`) using `new`, prints `Live: ` + current count, then deletes both, then prints `Live: ` + current count.",
+    "starter_code": "#include <iostream>\n\nclass Widget {\npublic:\n    static int count;\n\n    Widget() { ++count; }\n    // TODO: declare virtual destructor that decrements count\n\n    static int liveCount() { return count; }\n};\n\nint Widget::count = 0;\n\nclass Button : public Widget {\npublic:\n    // inherits constructor and destructor from Widget\n};\n\nint main() {\n    Widget* w1 = new Widget{};\n    Widget* w2 = new Button{};\n    std::cout << \"Live: \" << Widget::liveCount() << \"\\n\";\n    delete w1;\n    delete w2;\n    std::cout << \"Live: \" << Widget::liveCount() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Widget {\npublic:\n    static int count;\n\n    Widget() { ++count; }\n    virtual ~Widget() { --count; }\n\n    static int liveCount() { return count; }\n};\n\nint Widget::count = 0;\n\nclass Button : public Widget {\npublic:\n    // inherits constructor and destructor from Widget\n};\n\nint main() {\n    Widget* w1 = new Widget{};\n    Widget* w2 = new Button{};\n    std::cout << \"Live: \" << Widget::liveCount() << \"\\n\";\n    delete w1;\n    delete w2;\n    std::cout << \"Live: \" << Widget::liveCount() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2 live then 0",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Live: 2\nLive: 0"
+      },
+      {
+        "label": "Hidden: same counts",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Live: 2\nLive: 0"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Live: 2\nLive: 0"
+      }
+    ]
+  }
+]

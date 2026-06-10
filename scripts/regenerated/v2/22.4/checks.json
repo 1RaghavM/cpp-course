@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string a = \"hello\";\n    std::string b = std::move(a);\n    std::cout << b << \"\\n\";\n    std::cout << a.empty() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "hello\n1",
+    "explanation_md": "`b` receives the moved string and holds \"hello\". After the move, `a` is in a valid but unspecified state — typically empty for `std::string`. `a.empty()` returns `true` (1). This is the most common outcome but technically implementation-defined; learncpp treats the empty state as the standard result."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `std::move` actually do at runtime?",
+    "options": {
+      "a": "It immediately transfers the contents of the object to the destination",
+      "b": "It performs a static_cast to an rvalue reference, enabling the move constructor to be selected",
+      "c": "It copies the object and marks the original for deletion",
+      "d": "It calls the destructor on the source object"
+    },
+    "answer": "b",
+    "explanation_md": "`std::move` is purely a cast — it produces an rvalue reference from its argument, signalling to overload resolution that the move constructor/assignment should be preferred. No data moves inside `std::move` itself; the actual resource transfer happens in the move constructor or move assignment operator that is subsequently called."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you NOT write `return std::move(localVar);` in a function that returns by value?",
+    "options": {
+      "a": "It causes a compile error because move is not allowed in return statements",
+      "b": "It disables Named Return Value Optimization (NRVO), forcing a move where zero-cost construction could have occurred",
+      "c": "It makes the function return a dangling reference",
+      "d": "It only works if the return type is a pointer"
+    },
+    "answer": "b",
+    "explanation_md": "The compiler can often construct the return value directly in the caller's storage (NRVO), bypassing any copy or move. Writing `std::move(localVar)` in the return expression tells the compiler the object is an rvalue, which prevents NRVO — you get a move when you could have gotten nothing. Just write `return localVar;`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer expects a move but gets a copy instead. What is wrong?\n\n```cpp\n#include <string>\n#include <iostream>\n\nvoid consume(std::string s) {\n    std::cout << s << \"\\n\";\n}\n\nint main() {\n    const std::string msg = \"data\";\n    consume(std::move(msg));\n    return 0;\n}\n```",
+    "options": {
+      "a": "`consume` should take `std::string&&` not `std::string`",
+      "b": "`msg` is const, so `std::move` produces `const string&&` which binds to the copy constructor instead",
+      "c": "`std::move` cannot be called on a local variable",
+      "d": "`const std::string` cannot be passed to a function at all"
+    },
+    "answer": "b",
+    "explanation_md": "`std::move` casts `msg` to `const std::string&&`. The move constructor of `std::string` requires a non-const `string&&` because it modifies the source. The compiler finds no move constructor match, so it falls back to the copy constructor (`const string&` binds to `const string&&`). The result is a copy, not a move."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nvoid take(std::unique_ptr<int> p) {\n    std::cout << *p << \"\\n\";\n}\n\nint main() {\n    auto p = std::make_unique<int>(77);\n    take(std::move(p));\n    std::cout << (p ? \"not null\" : \"null\") << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "77\nnull",
+    "explanation_md": "`std::move(p)` casts `p` to an rvalue reference. `unique_ptr`'s move constructor transfers ownership into the `take` parameter. After the call, `p` is null (the null state is guaranteed by `unique_ptr`'s move constructor). The ternary prints \"null\"."
+  }
+]

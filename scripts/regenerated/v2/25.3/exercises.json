@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Add override to a Vehicle Hierarchy",
+    "prompt_md": "## Goal\nComplete the `Car` and `Truck` classes so they properly override `describe()` with the `override` specifier and produce the correct output.\n\n## Input\nNo input — all data is hardcoded.\n\n## Output\nPrint exactly three lines:\n```\nVehicle\nCar\nTruck\n```\n\n## Requirements\n1. `Vehicle` has `virtual void describe() const` that prints `Vehicle`.\n2. `Car` inherits from `Vehicle` and overrides `describe()` with `override`, printing `Car`.\n3. `Truck` inherits from `Vehicle` and overrides `describe()` with `override`, printing `Truck`.\n4. `main` creates `Vehicle v`, `Car c`, `Truck t` and calls `describe()` through `Vehicle*` pointers for each.\n5. All three `describe()` overrides must use the `override` specifier.",
+    "starter_code": "#include <iostream>\n\nclass Vehicle {\npublic:\n    virtual void describe() const { std::cout << \"Vehicle\\n\"; }\n};\n\nclass Car : public Vehicle {\npublic:\n    // TODO: override describe() with override specifier, print \"Car\"\n};\n\nclass Truck : public Vehicle {\npublic:\n    // TODO: override describe() with override specifier, print \"Truck\"\n};\n\nint main() {\n    Vehicle v;\n    Car c;\n    Truck t;\n    Vehicle* ptrs[3] = { &v, &c, &t };\n    for (int i = 0; i < 3; ++i)\n        ptrs[i]->describe();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Vehicle {\npublic:\n    virtual void describe() const { std::cout << \"Vehicle\\n\"; }\n};\n\nclass Car : public Vehicle {\npublic:\n    void describe() const override { std::cout << \"Car\\n\"; }\n};\n\nclass Truck : public Vehicle {\npublic:\n    void describe() const override { std::cout << \"Truck\\n\"; }\n};\n\nint main() {\n    Vehicle v;\n    Car c;\n    Truck t;\n    Vehicle* ptrs[3] = { &v, &c, &t };\n    for (int i = 0; i < 3; ++i)\n        ptrs[i]->describe();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three lines",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Vehicle\nCar\nTruck"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Vehicle\nCar\nTruck"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Vehicle\nCar\nTruck"
+      }
+    ]
+  },
+  {
+    "title": "Missing override Causes Silent Bug",
+    "prompt_md": "## Goal\nFind and fix the bug in the program below. It should print `Dog` and `Cat` but prints `Animal` and `Animal`.\n\n## Input\nNo input.\n\n## Output\n```\nDog\nCat\n```\n\n## Requirements\n1. The bug is exactly one missing `const` on an override signature, causing neither `Dog::speak` nor `Cat::speak` to actually override `Animal::speak`.\n2. The fix must add `const` to the affected function(s) and optionally add `override` specifiers.\n3. The program must compile without errors after the fix.\n4. Do not change `main` or the base class signature.\n\n## Notes\n- The bug is a silent logic bug: the code compiles but produces wrong output.",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Animal\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() { std::cout << \"Dog\\n\"; }  // bug: missing const\n};\n\nclass Cat : public Animal {\npublic:\n    void speak() { std::cout << \"Cat\\n\"; }  // bug: missing const\n};\n\nint main() {\n    Dog d;\n    Cat c;\n    Animal* ptrs[2] = { &d, &c };\n    ptrs[0]->speak();\n    ptrs[1]->speak();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Animal\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const override { std::cout << \"Dog\\n\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    void speak() const override { std::cout << \"Cat\\n\"; }\n};\n\nint main() {\n    Dog d;\n    Cat c;\n    Animal* ptrs[2] = { &d, &c };\n    ptrs[0]->speak();\n    ptrs[1]->speak();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Dog then Cat",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Dog\nCat"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Dog\nCat"
+      },
+      {
+        "label": "Hidden: no extra lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Dog\nCat"
+      }
+    ]
+  }
+]

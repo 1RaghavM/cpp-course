@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Integer Division with Exceptions",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints their integer quotient, throwing and catching a `std::runtime_error` when the divisor is zero.\n\n## Input\n- Line 1: integer `a` (-1000 ≤ a ≤ 1000)\n- Line 2: integer `b` (-1000 ≤ b ≤ 1000)\n\n## Output\n- If `b != 0`: print exactly `Result: X` where X is `a / b` (integer division, truncated toward zero)\n- If `b == 0`: the division function must throw a `std::runtime_error` with any message; the `catch` block must print exactly `Error: division by zero`\n\n## Requirements\n1. Implement a function `int safe_divide(int a, int b)` that throws `std::runtime_error` when `b == 0`.\n2. Call `safe_divide` inside a `try` block in `main`.\n3. The `catch` clause must catch `const std::runtime_error&`.\n4. On success, print `Result: X` followed by a newline.\n5. On error, print `Error: division by zero` followed by a newline.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\n// TODO: implement safe_divide(int a, int b)\n// - returns a / b when b != 0\n// - throws std::runtime_error when b == 0\nint safe_divide(int a, int b) {\n    return 0; // replace this\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: wrap the call to safe_divide in a try/catch block\n    // On success, print: Result: X\n    // On std::runtime_error, print: Error: division by zero\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nint safe_divide(int a, int b) {\n    if (b == 0)\n        throw std::runtime_error(\"division by zero\");\n    return a / b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    try {\n        int result = safe_divide(a, b);\n        std::cout << \"Result: \" << result << \"\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"Error: division by zero\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal division",
+        "is_sample": true,
+        "stdin": "10\n2\n",
+        "expected_stdout": "Result: 5\n"
+      },
+      {
+        "label": "Hidden: division by zero",
+        "is_sample": false,
+        "stdin": "7\n0\n",
+        "expected_stdout": "Error: division by zero\n"
+      },
+      {
+        "label": "Hidden: negative dividend",
+        "is_sample": false,
+        "stdin": "-9\n3\n",
+        "expected_stdout": "Result: -3\n"
+      }
+    ]
+  },
+  {
+    "title": "Positive-Only Accumulator",
+    "prompt_md": "## Goal\nWrite a program that accumulates a sum of integers from stdin, but the addition function throws when a negative number is encountered, and the program prints the partial sum collected so far.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Lines 2..N+1: one integer per line (each between -1000 and 1000)\n\n## Output\n- If all N integers are non-negative: print `Sum: X` where X is their total\n- If any integer is negative: the function `add_positive` must throw a `std::runtime_error`; the catch block must print `Stopped at negative. Partial sum: X` where X is the sum accumulated before the first negative value\n\n## Requirements\n1. The program contains a bug: `add_positive` always returns 0 without updating `total` and without throwing. Fix it so it adds `val` to `total` when `val >= 0`, and throws `std::runtime_error` when `val < 0`.\n2. The catch block must print exactly `Stopped at negative. Partial sum: X`.\n3. When no negative is found, print `Sum: X`.\n\n## Notes\n- This is a fix-the-bug exercise. Find and correct the single logic error in `add_positive`.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\n// BUG: this function has a logic error — find it and fix it\nvoid add_positive(int val, int& total) {\n    // should throw std::runtime_error if val < 0\n    // should add val to total if val >= 0\n    return; // bug: does nothing\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int total = 0;\n    try {\n        for (int i = 0; i < n; ++i) {\n            int x;\n            std::cin >> x;\n            add_positive(x, total);\n        }\n        std::cout << \"Sum: \" << total << \"\\n\";\n    } catch (const std::runtime_error&) {\n        std::cout << \"Stopped at negative. Partial sum: \" << total << \"\\n\";\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nvoid add_positive(int val, int& total) {\n    if (val < 0)\n        throw std::runtime_error(\"negative value\");\n    total += val;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int total = 0;\n    try {\n        for (int i = 0; i < n; ++i) {\n            int x;\n            std::cin >> x;\n            add_positive(x, total);\n        }\n        std::cout << \"Sum: \" << total << \"\\n\";\n    } catch (const std::runtime_error&) {\n        std::cout << \"Stopped at negative. Partial sum: \" << total << \"\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all positive",
+        "is_sample": true,
+        "stdin": "3\n4\n5\n6\n",
+        "expected_stdout": "Sum: 15\n"
+      },
+      {
+        "label": "Hidden: negative in middle",
+        "is_sample": false,
+        "stdin": "4\n3\n7\n-1\n5\n",
+        "expected_stdout": "Stopped at negative. Partial sum: 10\n"
+      },
+      {
+        "label": "Hidden: negative first",
+        "is_sample": false,
+        "stdin": "2\n-5\n3\n",
+        "expected_stdout": "Stopped at negative. Partial sum: 0\n"
+      }
+    ]
+  }
+]

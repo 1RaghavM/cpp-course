@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following code print? (Assume `INT_MAX` is 2147483647 on this platform and signed overflow is UB — but consider what a naive mental model would predict.)\n\n```cpp\n#include <iostream>\n#include <climits>\nint main() {\n    std::string s = (sizeof(int) == 4) ? \"32-bit int\" : \"other\";\n    std::cout << s << '\\n';\n}\n```",
+    "options": null,
+    "answer": "32-bit int",
+    "explanation_md": "On virtually all mainstream platforms `sizeof(int)` is 4, so the ternary selects `\"32-bit int\"`. This is a simple size check with a deterministic result on common hardware; no UB is involved."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `using namespace std;` considered harmful inside header files?",
+    "options": {
+      "a": "It prevents the standard library from being used at all",
+      "b": "It makes compile times significantly longer for every file",
+      "c": "It pollutes the namespace of every translation unit that includes the header, risking name collisions",
+      "d": "It only works in .cpp files, causing a compile error in headers"
+    },
+    "answer": "c",
+    "explanation_md": "A `using namespace std;` directive in a header is injected into every file that includes it. This can cause ambiguous symbol errors or silently call the wrong overload when user-defined names clash with std names. Using `std::` prefix explicitly avoids this."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes the purpose of `#pragma once` at the top of a header file?",
+    "options": {
+      "a": "It tells the compiler to optimize the file for speed",
+      "b": "It prevents the header's contents from being processed more than once per translation unit",
+      "c": "It marks the header as part of the C++ standard library",
+      "d": "It forces the file to be included before any other header"
+    },
+    "answer": "b",
+    "explanation_md": "`#pragma once` is an include guard: the compiler skips subsequent inclusions of the same file. Without it, a header included transitively through multiple paths would be processed multiple times, causing duplicate definition errors."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The following program is intended to print `Hello` and flush the output, but it runs noticeably slower than expected in a tight loop. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    for (int i = 0; i < 100000; ++i) {\n        std::cout << \"Hello\" << std::endl;\n    }\n}\n```",
+    "options": {
+      "a": "`std::endl` flushes the buffer on every iteration, causing excessive I/O overhead",
+      "b": "The loop variable `i` should be `std::size_t`, not `int`",
+      "c": "`std::cout` is not thread-safe and corrupts output in loops",
+      "d": "The string literal `\"Hello\"` is re-evaluated on each iteration"
+    },
+    "answer": "a",
+    "explanation_md": "`std::endl` outputs `'\\n'` AND flushes the underlying buffer. Flushing 100,000 times is expensive. Replacing `std::endl` with `'\\n'` allows the output to be buffered and written in large chunks, which is dramatically faster."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In modern C++, which approach is preferred for managing heap-allocated objects?",
+    "options": {
+      "a": "Always use raw `new` and `delete` for maximum control",
+      "b": "Use `malloc` and `free` for compatibility with C",
+      "c": "Use `std::unique_ptr` or `std::shared_ptr` so ownership and cleanup are automatic",
+      "d": "Avoid heap allocation entirely and only use stack variables"
+    },
+    "answer": "c",
+    "explanation_md": "Smart pointers tie object lifetime to scope via RAII: the destructor calls `delete` automatically, even if an exception is thrown. Raw `new`/`delete` requires every exit path to explicitly free, which is error-prone. Stack-only allocation isn't always feasible for large or long-lived objects."
+  }
+]

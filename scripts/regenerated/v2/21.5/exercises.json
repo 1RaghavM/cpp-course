@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Implement operator+= and operator+ as Member Functions",
+    "prompt_md": "## Goal\nAdd member function overloads for `operator+=` and `operator+` to a `Money` class, then read two amounts and print their sum.\n\n## Input\nLine 1: two space-separated integers — cents for money A and cents for money B.\n\n## Output\nOne line: `Total: C` where C is the sum in cents.\n\n## Requirements\n1. `Money` stores a private `int m_cents`.\n2. Implement `Money& operator+=(const Money& rhs)` as a member function that adds `rhs.m_cents` to `this->m_cents` and returns `*this`.\n3. Implement `Money operator+(const Money& rhs) const` as a member function that returns a new `Money` without modifying either operand.\n4. Read two integers, construct two `Money` objects, add them with `operator+`, and print `Total: C`.\n5. Verify: after `Money a{50}; Money b{30}; Money c = a + b;`, the value of `a.cents()` is still 50 (a is not modified).",
+    "starter_code": "#include <iostream>\n\nclass Money {\n    int m_cents{};\npublic:\n    Money(int cents) : m_cents{cents} {}\n    int cents() const { return m_cents; }\n\n    // TODO: implement operator+= as a member function\n    // Add rhs.m_cents to this->m_cents and return *this\n    Money& operator+=(const Money& rhs) {\n        return *this;  // replace this\n    }\n\n    // TODO: implement operator+ as a const member function\n    // Return a new Money whose value is this->m_cents + rhs.m_cents\n    Money operator+(const Money& rhs) const {\n        return Money{0};  // replace this\n    }\n};\n\nint main() {\n    int ca, cb;\n    std::cin >> ca >> cb;\n    Money a{ca}, b{cb};\n    Money total = a + b;\n    std::cout << \"Total: \" << total.cents() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Money {\n    int m_cents{};\npublic:\n    Money(int cents) : m_cents{cents} {}\n    int cents() const { return m_cents; }\n\n    Money& operator+=(const Money& rhs) {\n        m_cents += rhs.m_cents;\n        return *this;\n    }\n\n    Money operator+(const Money& rhs) const {\n        return Money{m_cents + rhs.m_cents};\n    }\n};\n\nint main() {\n    int ca, cb;\n    std::cin >> ca >> cb;\n    Money a{ca}, b{cb};\n    Money total = a + b;\n    std::cout << \"Total: \" << total.cents() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic sum",
+        "is_sample": true,
+        "stdin": "150 75\n",
+        "expected_stdout": "Total: 225"
+      },
+      {
+        "label": "Hidden: one zero",
+        "is_sample": false,
+        "stdin": "0 99\n",
+        "expected_stdout": "Total: 99"
+      },
+      {
+        "label": "Hidden: both large",
+        "is_sample": false,
+        "stdin": "1000 2000\n",
+        "expected_stdout": "Total: 3000"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Member operator+ Mutates Left Operand",
+    "prompt_md": "## Goal\nThe program adds two `Point` objects using a member `operator+`, then prints both the original point and the result. Find and fix the one logic bug.\n\n## Input\nLine 1: four space-separated integers `x1 y1 x2 y2` — coordinates of point A followed by point B.\n\n## Output\nTwo lines:\n- `A: x1 y1` (original A, unchanged after the addition)\n- `Sum: sx sy` (the sum of A and B)\n\n## Requirements\n1. `operator+` must not modify either operand — it should return a new `Point`.\n2. After `Point s = a + b`, `a.x()` must still equal `x1` and `a.y()` must still equal `y1`.\n3. The hidden tests fail on the buggy version and pass once fixed.\n4. Edge cases: both points at origin; one negative coordinate.",
+    "starter_code": "#include <iostream>\n\nclass Point {\n    int m_x{}, m_y{};\npublic:\n    Point(int x, int y) : m_x{x}, m_y{y} {}\n    int x() const { return m_x; }\n    int y() const { return m_y; }\n\n    // Bug: this modifies *this instead of returning a new Point\n    Point& operator+(const Point& rhs) {\n        m_x += rhs.m_x;\n        m_y += rhs.m_y;\n        return *this;\n    }\n};\n\nint main() {\n    int x1, y1, x2, y2;\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Point a{x1, y1}, b{x2, y2};\n    Point s = a + b;\n    std::cout << \"A: \" << a.x() << \" \" << a.y() << \"\\n\";\n    std::cout << \"Sum: \" << s.x() << \" \" << s.y() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Point {\n    int m_x{}, m_y{};\npublic:\n    Point(int x, int y) : m_x{x}, m_y{y} {}\n    int x() const { return m_x; }\n    int y() const { return m_y; }\n\n    Point operator+(const Point& rhs) const {\n        return Point{m_x + rhs.m_x, m_y + rhs.m_y};\n    }\n};\n\nint main() {\n    int x1, y1, x2, y2;\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Point a{x1, y1}, b{x2, y2};\n    Point s = a + b;\n    std::cout << \"A: \" << a.x() << \" \" << a.y() << \"\\n\";\n    std::cout << \"Sum: \" << s.x() << \" \" << s.y() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic addition",
+        "is_sample": true,
+        "stdin": "1 2 3 4\n",
+        "expected_stdout": "A: 1 2\nSum: 4 6"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-3 5 3 -5\n",
+        "expected_stdout": "A: -3 5\nSum: 0 0"
+      },
+      {
+        "label": "Hidden: both at origin",
+        "is_sample": false,
+        "stdin": "0 0 0 0\n",
+        "expected_stdout": "A: 0 0\nSum: 0 0"
+      }
+    ]
+  }
+]

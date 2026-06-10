@@ -1,0 +1,56 @@
+[
+  {
+    "title": "FAQ Classifier",
+    "prompt_md": "## Goal\nWrite a program that reads C++ FAQ topic codes and prints the matching category name.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Lines 2..N+1: one uppercase topic code per line. Valid codes and their categories:\n  - `UB` → `undefined behavior`\n  - `RAII` → `resource management`\n  - `HEADERS` → `build system`\n  - `NAMESPACE` → `naming`\n  - `SMART` → `resource management`\n\n## Output\nFor each code, print the category on its own line.\n\n## Requirements\n1. All five codes must map correctly.\n2. Note that both `RAII` and `SMART` map to `resource management`.\n3. One result per line, no trailing spaces.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string code;\n        std::cin >> code;\n        // TODO: print the category for each code\n        // UB        -> undefined behavior\n        // RAII      -> resource management\n        // HEADERS   -> build system\n        // NAMESPACE -> naming\n        // SMART     -> resource management\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string code;\n        std::cin >> code;\n        if (code == \"UB\") {\n            std::cout << \"undefined behavior\\n\";\n        } else if (code == \"RAII\" || code == \"SMART\") {\n            std::cout << \"resource management\\n\";\n        } else if (code == \"HEADERS\") {\n            std::cout << \"build system\\n\";\n        } else if (code == \"NAMESPACE\") {\n            std::cout << \"naming\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all five codes",
+        "is_sample": true,
+        "stdin": "5\nUB\nRAII\nHEADERS\nNAMESPACE\nSMART\n",
+        "expected_stdout": "undefined behavior\nresource management\nbuild system\nnaming\nresource management"
+      },
+      {
+        "label": "Hidden: resource management twice",
+        "is_sample": false,
+        "stdin": "2\nRAII\nSMART\n",
+        "expected_stdout": "resource management\nresource management"
+      },
+      {
+        "label": "Hidden: single undefined behavior",
+        "is_sample": false,
+        "stdin": "1\nUB\n",
+        "expected_stdout": "undefined behavior"
+      }
+    ]
+  },
+  {
+    "title": "Include Guard Checker",
+    "prompt_md": "## Goal\nComplete the function `hasIncludeGuard` that checks whether a simplified header file representation includes a proper include guard.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), number of header file descriptions.\n- For each header: two lines:\n  - Line 1: `yes` or `no` indicating whether `#pragma once` is present at the top.\n  - Line 2: `yes` or `no` indicating whether a matching `#ifndef`/`#define`/`#endif` guard is present.\n\n## Output\nFor each header, print `guarded` if either (or both) protection mechanisms are present, otherwise print `unguarded`.\n\n## Requirements\n1. A header is `guarded` if `pragma_once` is `yes` OR `ifndef_guard` is `yes` (or both).\n2. A header is `unguarded` only if both are `no`.\n3. One result per line.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement hasIncludeGuard\n// Returns true if pragma_once == \"yes\" OR ifndef_guard == \"yes\"\nbool hasIncludeGuard(const std::string& pragma_once, const std::string& ifndef_guard) {\n    return false; // replace this stub\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string pragma_once, ifndef_guard;\n        std::cin >> pragma_once >> ifndef_guard;\n        std::cout << (hasIncludeGuard(pragma_once, ifndef_guard) ? \"guarded\" : \"unguarded\") << '\\n';\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nbool hasIncludeGuard(const std::string& pragma_once, const std::string& ifndef_guard) {\n    return pragma_once == \"yes\" || ifndef_guard == \"yes\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string pragma_once, ifndef_guard;\n        std::cin >> pragma_once >> ifndef_guard;\n        std::cout << (hasIncludeGuard(pragma_once, ifndef_guard) ? \"guarded\" : \"unguarded\") << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three headers",
+        "is_sample": true,
+        "stdin": "3\nyes\nno\nno\nyes\nno\nno\n",
+        "expected_stdout": "guarded\nguarded\nunguarded"
+      },
+      {
+        "label": "Hidden: both guards present",
+        "is_sample": false,
+        "stdin": "2\nyes\nyes\nno\nno\n",
+        "expected_stdout": "guarded\nunguarded"
+      },
+      {
+        "label": "Hidden: all unguarded",
+        "is_sample": false,
+        "stdin": "1\nno\nno\n",
+        "expected_stdout": "unguarded"
+      }
+    ]
+  }
+]

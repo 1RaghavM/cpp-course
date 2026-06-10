@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Report` class has a `void print(const Formatter& fmt) const` method that uses `fmt` only within that function body and stores no `Formatter` member. What relationship does `Report` have with `Formatter`?",
+    "options": {
+      "a": "Composition — Formatter is used inside Report.",
+      "b": "Aggregation — Report holds a non-owning reference.",
+      "c": "Association — Report stores a navigational pointer to Formatter.",
+      "d": "Dependency — Report uses Formatter transiently, storing nothing."
+    },
+    "answer": "d",
+    "explanation_md": "A dependency is characterized by using another object only for the duration of a function call with no member variable storing it. Since Report has no Formatter member, the relationship ends when print() returns."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\nstruct Logger {\n    int count{0};\n    void log(const std::string& m) {\n        ++count;\n        std::cout << m << \"\\n\";\n    }\n};\nstruct Worker {\n    void run(Logger& lg) {\n        lg.log(\"start\");\n        lg.log(\"end\");\n    }\n};\nint main() {\n    Logger lg;\n    Worker w;\n    w.run(lg);\n    std::cout << lg.count << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "start\nend\n2",
+    "explanation_md": "run() calls lg.log() twice, printing \"start\" and \"end\" and incrementing lg.count to 2. Because lg is passed by reference (not by value), the count is updated on the original Logger, so the final print outputs 2."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key distinction between a dependency and an association?",
+    "options": {
+      "a": "Dependencies use pointers; associations use references.",
+      "b": "Dependencies involve a function parameter only; associations store the pointer/reference as a class member.",
+      "c": "Associations are always bidirectional; dependencies are always unidirectional.",
+      "d": "Dependencies require the helper object to be heap-allocated."
+    },
+    "answer": "b",
+    "explanation_md": "The defining distinction is where the reference lives. A dependency uses the other object only within a function call (as a parameter) and stores nothing. An association stores a pointer or reference as a class member that persists between calls."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The intent is to log a message using a local Logger, but the program has a bug. What is it?\n\n```cpp\n#include <iostream>\n#include <string>\nstruct Logger {\n    void log(const std::string& msg) {\n        std::cout << msg << \"\\n\";\n    }\n};\nstruct Printer {\n    Logger* lg;\n    void print(const std::string& msg) {\n        lg->log(msg);\n    }\n};\nint main() {\n    Printer p;\n    Logger local;\n    p.lg = &local;\n    p.print(\"Hello\");\n}\n```",
+    "options": {
+      "a": "Logger::log takes a std::string by const reference, which is incompatible with string literals.",
+      "b": "Printer::lg is uninitialized until the assignment in main(), making the class fragile and promoting a temporary dependency to a stored association.",
+      "c": "p.print should be called before assigning p.lg.",
+      "d": "Logger must be heap-allocated with new for the pointer to be valid."
+    },
+    "answer": "b",
+    "explanation_md": "The code works in this specific main(), but storing Logger* as a Printer member is a design problem: the pointer is uninitialized at construction and can become dangling if local is destroyed while Printer is still alive. Since the Logger is only needed for one print call, it should be passed as a parameter dependency instead of stored as a member."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Counter {\n    int n{0};\n    void increment() { ++n; }\n};\nvoid tick(Counter c) {   // passed by value\n    c.increment();\n    c.increment();\n}\nint main() {\n    Counter c;\n    tick(c);\n    std::cout << c.n << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "0",
+    "explanation_md": "tick() receives a copy of c (passed by value). The two increments happen on the copy, which is discarded when tick() returns. The original c in main() is never modified, so c.n remains 0."
+  }
+]

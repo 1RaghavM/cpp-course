@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print if the input is `42\\nHello World\\n`?\n\n```cpp\n#include <iostream>\n#include <string>\nint main() {\n    int n;\n    std::cin >> n;\n    std::string line;\n    std::getline(std::cin, line);\n    std::cout << n << \"|\" << line << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "42|",
+    "explanation_md": "After `std::cin >> n` reads `42`, the `'\\n'` remains in the buffer. `std::getline` immediately consumes that newline and returns an empty string. So `line` is `\"\"` and the output is `42|` (with nothing after the pipe). The `Hello World` line is never read."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You need to read a full name that may contain spaces (e.g. `Jane Doe`). Which approach is correct?",
+    "options": {
+      "a": "`std::cin >> name;` — it reads everything until newline.",
+      "b": "`std::getline(std::cin, name);` — it reads until the newline, including spaces.",
+      "c": "`std::cin.get(name, 100);` — it reads up to 100 characters.",
+      "d": "`std::cin >> name >> rest;` and concatenate."
+    },
+    "answer": "b",
+    "explanation_md": "`>>` on a `std::string` stops at the first whitespace, so it reads only `Jane`. `std::getline` reads until the newline and includes spaces, giving `Jane Doe`. Option c is for `char` arrays. Option d would put `Jane` in `name` and `Doe` in `rest` — closer but not a single variable."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Input: `cat dog\\n`. What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\nint main() {\n    std::string a, b;\n    std::cin >> a >> b;\n    std::cout << b << \" \" << a << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "dog cat",
+    "explanation_md": "`>>` skips whitespace between tokens. `a` gets `\"cat\"` and `b` gets `\"dog\"`. The output reverses them: `dog cat`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After `std::cin >> n` (where n is an int), you call `std::cin.ignore()`. What does `ignore()` discard by default?",
+    "options": {
+      "a": "All remaining characters in the buffer up to and including the next newline.",
+      "b": "Exactly one character from the buffer.",
+      "c": "All whitespace characters until the next non-whitespace character.",
+      "d": "The entire buffer contents."
+    },
+    "answer": "b",
+    "explanation_md": "Called with no arguments, `std::cin.ignore()` discards exactly one character. To discard everything through the next newline you must pass a count and delimiter: `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')`. The no-argument form is often sufficient when you know exactly one `'\\n'` follows the previous read."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to read an integer and then a full sentence, and print them. But the sentence is always empty. What is the bug?\n\n```cpp\n#include <iostream>\n#include <string>\nint main() {\n    int n;\n    std::cin >> n;\n    std::string sentence;\n    std::getline(std::cin, sentence);\n    std::cout << n << \": \" << sentence << \"\\n\";\n}\n```",
+    "options": {
+      "a": "`std::getline` does not work after `>>`; you must use `std::cin.get()` instead.",
+      "b": "The `'\\n'` left in the buffer by `>>` is immediately consumed by `std::getline`, returning an empty string.",
+      "c": "`std::cin` and `std::getline` cannot share the same stream object.",
+      "d": "`std::string` cannot be passed to `std::getline` — it requires a `char` array."
+    },
+    "answer": "b",
+    "explanation_md": "`>>` leaves the newline in the buffer. `std::getline` reads up to and discards the next `'\\n'`, which it finds immediately, so `sentence` is empty. The fix is to call `std::cin.ignore()` (or the max-limit version) between the `>>` and the `std::getline`."
+  }
+]

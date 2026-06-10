@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\nclass Base {\npublic:\n    int x = 10;\n    void show() { std::cout << \"x=\" << x << \"\\n\"; }\n};\nclass Derived : public Base {\npublic:\n    int y = 20;\n};\nint main() {\n    Derived d;\n    d.x = 5;\n    d.show();\n    std::cout << d.y << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "x=5\n20",
+    "explanation_md": "`d.x = 5` modifies the inherited `x` member. `show()` prints `x=5` using that value. Then `d.y` is `20`. The output is `x=5` then `20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you write `class B : A` (no access specifier) for a `class` (not `struct`)?",
+    "options": {
+      "a": "It defaults to `public` inheritance — same as `class B : public A`",
+      "b": "It defaults to `private` inheritance — public members of `A` become inaccessible outside `B`",
+      "c": "It is a compile error — the specifier is mandatory",
+      "d": "It defaults to `protected` inheritance"
+    },
+    "answer": "b",
+    "explanation_md": "For `class` (as opposed to `struct`), omitting the access specifier defaults to `private` inheritance. This makes all inherited public members inaccessible outside the derived class. Always write `public` explicitly to get the standard open inheritance."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code should print `Hello from Alice` but it prints the wrong thing. What is the bug?\n\n```cpp\n#include <iostream>\n#include <string>\nclass Greeter {\npublic:\n    std::string name = \"Unknown\";\n    void greet() { std::cout << \"Hello from \" << name << \"\\n\"; }\n};\nclass Employee : public Greeter {\npublic:\n    std::string name = \"Alice\"; // line 9\n    int id = 42;\n};\nint main() {\n    Employee e;\n    e.greet();\n}\n```",
+    "options": {
+      "a": "`Employee` does not have permission to add members with the same name as the base",
+      "b": "`Employee::name` hides `Greeter::name`; `greet()` uses `Greeter::name` which is still `\"Unknown\"`",
+      "c": "The `greet()` function is not inherited because it is not virtual",
+      "d": "`std::string` default initialization is not guaranteed to work in derived classes"
+    },
+    "answer": "b",
+    "explanation_md": "`Employee` declares its own `name` member which *hides* (not replaces) `Greeter::name`. The `greet()` function belongs to `Greeter` and uses `Greeter::name`, which was never assigned `\"Alice\"`. The fix is to remove line 9 and instead assign `e.name = \"Alice\"` in main, or set it through the inherited member."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Inside a member function of a derived class, can you directly access the inherited public members of the base class?",
+    "options": {
+      "a": "No — you must use the base class name as a qualifier: `Base::member`",
+      "b": "Yes — inherited public members are accessible by name without any qualifier",
+      "c": "Only if the base class member is declared `static`",
+      "d": "Only if the derived class re-declares the member"
+    },
+    "answer": "b",
+    "explanation_md": "Inside a derived class member function, inherited public (and protected) members are in scope and can be used by name directly, exactly as if they were declared in the derived class itself. The `Base::` qualifier is only needed to disambiguate when the member name is hidden."
+  }
+]

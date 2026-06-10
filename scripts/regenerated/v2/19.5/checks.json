@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can you NOT dereference a `void*` pointer directly?",
+    "options": {
+      "a": "`void*` always holds a null address",
+      "b": "The compiler does not know the type (and thus the size or representation) of the object at that address",
+      "c": "`void*` can only be used with `malloc`, not with `new`",
+      "d": "Dereferencing a `void*` is allowed only inside a `static_cast`"
+    },
+    "answer": "b",
+    "explanation_md": "A `void*` carries an address but no type information. The compiler needs to know the type to determine how many bytes to read and how to interpret them. Without a type, dereference is rejected at compile time. You must `static_cast` to a concrete pointer type first."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 100;\n    void* vp = &x;\n    int* ip = static_cast<int*>(vp);\n    *ip += 23;\n    std::cout << x << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "123",
+    "explanation_md": "`vp` holds the address of `x`. Casting it back to `int*` and dereferencing gives access to `x` itself. Adding 23 modifies `x` to 123, and then printing `x` shows 123."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program compiles, but has undefined behavior. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    double d = 2.5;\n    void* vp = &d;\n    int* ip = static_cast<int*>(vp);\n    std::cout << *ip << \"\\n\";\n}\n```",
+    "options": {
+      "a": "A `double*` cannot be assigned to a `void*`",
+      "b": "The `void*` is cast back to `int*` but the object is actually a `double` — reading double bytes as int is undefined behavior",
+      "c": "The `static_cast` from `void*` to `int*` is a compile error",
+      "d": "The program is correct; `*ip` prints the integer part of 2.5, which is 2"
+    },
+    "answer": "b",
+    "explanation_md": "The address stored in `vp` points to a `double`. Casting to `int*` and dereferencing interprets the raw bits of the `double` as an `int`. This is undefined behavior — `double` and `int` have different sizes and representations. The actual output is implementation-defined garbage, not 2."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is true about mixing `malloc`/`free` with `new`/`delete`?",
+    "options": {
+      "a": "It is safe as long as you always cast the pointer to the correct type first",
+      "b": "Memory from `malloc` must be freed with `free`; memory from `new` must be freed with `delete` — mixing them is undefined behavior",
+      "c": "`free` calls the destructor just like `delete` does, so they are interchangeable",
+      "d": "You can use `delete` on a `malloc` block as long as you cast it to `void*` first"
+    },
+    "answer": "b",
+    "explanation_md": "`malloc`/`free` and `new`/`delete` use separate allocator mechanisms. `delete` also calls the object's destructor, which `free` does not. Mixing them (e.g., `free`-ing a `new` allocation) is undefined behavior regardless of casting."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <cstring>\nint main() {\n    int src = 77;\n    int dst = 0;\n    std::memcpy(&dst, &src, sizeof(int));\n    std::cout << dst << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "77",
+    "explanation_md": "`memcpy` copies exactly `sizeof(int)` bytes from the address of `src` to the address of `dst`. Both are `int` objects of the same size, so the bytes are interpreted correctly. After the copy, `dst` holds the same bit pattern as `src`, which represents 77."
+  }
+]

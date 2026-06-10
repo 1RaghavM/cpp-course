@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    std::cout << \"a\";\n    std::cout << \"b\";\n    std::cerr << \"c\";\n    std::cout << \"d\";\n}\n```\n\n(Assume stdout and stderr both go to the terminal. Give just the characters printed to stdout.)",
+    "options": null,
+    "answer": "abd",
+    "explanation_md": "`std::cerr` writes to standard error, which is a separate stream from `std::cout`'s standard output. The three `std::cout` writes produce `abd` on stdout; `c` appears on stderr. The question asks only about stdout."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `std::cerr` unbuffered while `std::cout` is buffered by default?",
+    "options": {
+      "a": "Because cerr is older than cout and the old design didn't support buffering.",
+      "b": "So that error and diagnostic messages appear immediately, even if the program crashes before the buffer would be flushed.",
+      "c": "Because cerr can only hold one character at a time.",
+      "d": "Because cerr is connected to a different file descriptor that the OS doesn't buffer."
+    },
+    "answer": "b",
+    "explanation_md": "The purpose of `std::cerr` is to deliver messages even under abnormal program termination. Buffered output might be lost if the program crashes before the buffer is flushed. `std::cout` is buffered for performance — fewer OS calls — because losing a few lines of normal output on a crash is acceptable; losing an error message is not."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes the relationship between `std::istream` and `std::cin`?",
+    "options": {
+      "a": "`std::cin` is a type; `std::istream` is an instance of that type.",
+      "b": "`std::istream` is a class; `std::cin` is a global object of type `std::istream`.",
+      "c": "`std::istream` and `std::cin` are both type aliases for the same built-in type.",
+      "d": "`std::cin` is a macro that expands to `std::istream::get()`."
+    },
+    "answer": "b",
+    "explanation_md": "`std::istream` is a class defined in `<iostream>`. `std::cin` is a pre-defined global object of that class (technically `std::basic_istream<char>`) that the runtime connects to the program's standard input. You can pass `std::cin` wherever an `std::istream&` is expected."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\nvoid print(std::ostream& out, int n) {\n    out << n << \"\\n\";\n}\nint main() {\n    print(std::cout, 7);\n    print(std::cout, 3);\n}\n```",
+    "options": null,
+    "answer": "7\n3",
+    "explanation_md": "`std::cout` is an `std::ostream`, so it can be passed as an `std::ostream&`. Each call writes the integer followed by a newline, producing two lines: `7` then `3`."
+  }
+]

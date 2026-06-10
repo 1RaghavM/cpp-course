@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Pair<T> with operator== and operator!=",
+    "prompt_md": "## Goal\nComplete the `Pair<T>` template class so it supports `operator==` and `operator!=` for comparing two pairs of the same type.\n\n## Input\n- Line 1: two integers A1 and A2 (the first pair)\n- Line 2: two integers B1 and B2 (the second pair)\n\n## Output\n- Line 1: `equal: 1` if the pairs are equal, `equal: 0` otherwise\n- Line 2: `not_equal: 1` if the pairs are not equal, `not_equal: 0` otherwise\n\n## Requirements\n1. `Pair<T>` has member variables `m_first` and `m_second` of type `T`.\n2. Constructor takes two `T` arguments.\n3. `bool operator==(const Pair& rhs) const` returns true if both members match.\n4. `bool operator!=(const Pair& rhs) const` returns the negation of `operator==`.\n5. The sample test uses two identical pairs (both should be equal).\n6. Hidden tests include cases where pairs differ.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Pair {\n    T m_first;\n    T m_second;\npublic:\n    Pair(T a, T b) : m_first{a}, m_second{b} {}\n\n    // TODO: implement operator== — returns true if both members are equal\n    bool operator==(const Pair& rhs) const {\n        return false; // stub\n    }\n\n    // TODO: implement operator!= using operator==\n    bool operator!=(const Pair& rhs) const {\n        return false; // stub\n    }\n};\n\nint main() {\n    int a1, a2, b1, b2;\n    std::cin >> a1 >> a2 >> b1 >> b2;\n    Pair<int> A{a1, a2};\n    Pair<int> B{b1, b2};\n    std::cout << \"equal: \"     << (A == B) << '\\n';\n    std::cout << \"not_equal: \" << (A != B) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Pair {\n    T m_first;\n    T m_second;\npublic:\n    Pair(T a, T b) : m_first{a}, m_second{b} {}\n\n    bool operator==(const Pair& rhs) const {\n        return m_first == rhs.m_first && m_second == rhs.m_second;\n    }\n\n    bool operator!=(const Pair& rhs) const {\n        return !(*this == rhs);\n    }\n};\n\nint main() {\n    int a1, a2, b1, b2;\n    std::cin >> a1 >> a2 >> b1 >> b2;\n    Pair<int> A{a1, a2};\n    Pair<int> B{b1, b2};\n    std::cout << \"equal: \"     << (A == B) << '\\n';\n    std::cout << \"not_equal: \" << (A != B) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: equal pairs",
+        "is_sample": true,
+        "stdin": "3 7\n3 7\n",
+        "expected_stdout": "equal: 1\nnot_equal: 0\n"
+      },
+      {
+        "label": "Hidden: different pairs",
+        "is_sample": false,
+        "stdin": "1 2\n1 3\n",
+        "expected_stdout": "equal: 0\nnot_equal: 1\n"
+      },
+      {
+        "label": "Hidden: both zero",
+        "is_sample": false,
+        "stdin": "0 0\n0 0\n",
+        "expected_stdout": "equal: 1\nnot_equal: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Template findMax — Complete the Function",
+    "prompt_md": "## Goal\nComplete the `findMax` function template so it returns the largest element in an array of any type that defines `operator>`. The exercise combines function templates with operator overloading by also overloading `operator>` for a `Score` struct.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10) — number of integers\n- Line 2: N integers\n\n## Output\n- Print exactly one line: `max: <value>` where `<value>` is the largest integer.\n\n## Requirements\n1. `template <typename T> T findMax(const T* arr, int size)` — iterates through the array and returns the largest element using `operator>`.\n2. The function must work for any `T` that defines `operator>`.\n3. `main` reads N integers into an `int` array, calls `findMax`, and prints the result.\n4. Hidden tests include N=1 and the maximum at different positions.\n\n## Notes\n- Only `<iostream>` is needed. Do not use `std::max` or `std::max_element`.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement findMax template\n// It takes a pointer to an array and its size, returns the largest element.\ntemplate <typename T>\nT findMax(const T* arr, int size) {\n    return arr[0]; // stub — replace with real implementation\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int arr[10];\n    for (int i = 0; i < n; ++i) std::cin >> arr[i];\n    std::cout << \"max: \" << findMax(arr, n) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT findMax(const T* arr, int size) {\n    T best = arr[0];\n    for (int i = 1; i < size; ++i) {\n        if (arr[i] > best)\n            best = arr[i];\n    }\n    return best;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int arr[10];\n    for (int i = 0; i < n; ++i) std::cin >> arr[i];\n    std::cout << \"max: \" << findMax(arr, n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 elements, max in middle",
+        "is_sample": true,
+        "stdin": "5\n3 9 1 7 2\n",
+        "expected_stdout": "max: 9\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "max: 42\n"
+      },
+      {
+        "label": "Hidden: max at last position",
+        "is_sample": false,
+        "stdin": "4\n1 2 3 100\n",
+        "expected_stdout": "max: 100\n"
+      }
+    ]
+  }
+]

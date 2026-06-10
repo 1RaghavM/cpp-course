@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Parse CSV Line",
+    "prompt_md": "## Goal\nWrite a program that reads a single line containing exactly three space-separated values — a name (one word), an integer, and a double — and prints them reformatted.\n\n## Input\nLine 1: a single line with format `name integer double` (e.g. `Alice 3 9.5`).\n\n## Output\nPrint exactly one line: `name scored integer with avg double` where the double is shown with exactly 2 decimal places.\n\nExample — input `Alice 3 9.5` → output: `Alice scored 3 with avg 9.50`\n\n## Requirements\n1. Read the whole line with `std::getline`.\n2. Parse the three fields from that string using `std::istringstream`.\n3. Print the double with `std::fixed` and `std::setprecision(2)`.\n4. Hidden tests use different names, integers, and doubles including a double that is a whole number.",
+    "starter_code": "#include <iostream>\n#include <sstream>\n#include <string>\n#include <iomanip>\n\nint main() {\n    std::string line;\n    std::getline(std::cin, line);\n\n    // TODO: use std::istringstream to extract name, count, and avg from line\n    std::string name;\n    int count = 0;\n    double avg = 0.0;\n\n    // TODO: print the formatted output\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <sstream>\n#include <string>\n#include <iomanip>\n\nint main() {\n    std::string line;\n    std::getline(std::cin, line);\n\n    std::istringstream iss(line);\n    std::string name;\n    int count = 0;\n    double avg = 0.0;\n    iss >> name >> count >> avg;\n\n    std::cout << name << \" scored \" << count\n              << \" with avg \"\n              << std::fixed << std::setprecision(2) << avg << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "Alice 3 9.5\n",
+        "expected_stdout": "Alice scored 3 with avg 9.50\n"
+      },
+      {
+        "label": "Hidden: whole-number double",
+        "is_sample": false,
+        "stdin": "Bob 10 7.0\n",
+        "expected_stdout": "Bob scored 10 with avg 7.00\n"
+      },
+      {
+        "label": "Hidden: different name and values",
+        "is_sample": false,
+        "stdin": "Charlie 1 100.123\n",
+        "expected_stdout": "Charlie scored 1 with avg 100.12\n"
+      }
+    ]
+  },
+  {
+    "title": "Build Formatted Label",
+    "prompt_md": "## Goal\nComplete the function `makeLabel` that takes a string key and an integer value and returns a formatted label string like `key=0042`.\n\n## Input\n- Line 1: one word (the key, length 1–10).\n- Line 2: one integer (0 ≤ value ≤ 9999).\n\n## Output\nPrint exactly one line: the result of `makeLabel(key, value)` — that is, `key=VVVV` where VVVV is the value zero-padded to 4 digits.\n\nExample — input `score\\n42` → output: `score=0042`\n\n## Requirements\n1. Function signature: `std::string makeLabel(const std::string& key, int value)`.\n2. Inside `makeLabel`, use `std::ostringstream` with `std::setfill('0')` and `std::setw(4)` to format the value.\n3. Hidden tests use value=0 and value=9999.",
+    "starter_code": "#include <iostream>\n#include <sstream>\n#include <string>\n#include <iomanip>\n\n// TODO: implement makeLabel using std::ostringstream\nstd::string makeLabel(const std::string& key, int value) {\n    return \"\"; // TODO\n}\n\nint main() {\n    std::string key;\n    int value;\n    std::cin >> key >> value;\n    std::cout << makeLabel(key, value) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <sstream>\n#include <string>\n#include <iomanip>\n\nstd::string makeLabel(const std::string& key, int value) {\n    std::ostringstream oss;\n    oss << key << \"=\" << std::setfill('0') << std::setw(4) << value;\n    return oss.str();\n}\n\nint main() {\n    std::string key;\n    int value;\n    std::cin >> key >> value;\n    std::cout << makeLabel(key, value) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: score 42",
+        "is_sample": true,
+        "stdin": "score\n42\n",
+        "expected_stdout": "score=0042\n"
+      },
+      {
+        "label": "Hidden: value=0",
+        "is_sample": false,
+        "stdin": "level\n0\n",
+        "expected_stdout": "level=0000\n"
+      },
+      {
+        "label": "Hidden: value=9999",
+        "is_sample": false,
+        "stdin": "count\n9999\n",
+        "expected_stdout": "count=9999\n"
+      }
+    ]
+  }
+]

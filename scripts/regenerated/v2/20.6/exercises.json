@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Lambda-Powered Number Classifier",
+    "prompt_md": "## Goal\nWrite a program that reads N integers and uses lambdas to count how many are positive, how many are negative, and how many are zero.\n\n## Input\n- Line 1: integer N (1 <= N <= 10)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly three lines:\n- `Positive: X`\n- `Negative: X`\n- `Zero: X`\n\n## Requirements\n1. Define three lambdas: `isPositive`, `isNegative`, and `isZero`, each taking one `int` and returning `bool`.\n2. Loop over the N input values and use the lambdas to increment the appropriate counter.\n3. Print the three counts in the specified format.\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: define three lambdas: isPositive, isNegative, isZero\n    // each takes one int and returns bool\n\n    int n;\n    std::cin >> n;\n\n    int pos = 0, neg = 0, zero = 0;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        // TODO: use the lambdas to increment pos, neg, or zero\n    }\n\n    std::cout << \"Positive: \" << pos  << \"\\n\";\n    std::cout << \"Negative: \" << neg  << \"\\n\";\n    std::cout << \"Zero: \"     << zero << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    auto isPositive = [](int x) { return x > 0; };\n    auto isNegative = [](int x) { return x < 0; };\n    auto isZero     = [](int x) { return x == 0; };\n\n    int n;\n    std::cin >> n;\n\n    int pos = 0, neg = 0, zero = 0;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        if (isPositive(val)) ++pos;\n        else if (isNegative(val)) ++neg;\n        else if (isZero(val)) ++zero;\n    }\n\n    std::cout << \"Positive: \" << pos  << \"\\n\";\n    std::cout << \"Negative: \" << neg  << \"\\n\";\n    std::cout << \"Zero: \"     << zero << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed values",
+        "is_sample": true,
+        "stdin": "5\n3\n-1\n0\n7\n-2\n",
+        "expected_stdout": "Positive: 2\nNegative: 2\nZero: 1"
+      },
+      {
+        "label": "Hidden: all zero",
+        "is_sample": false,
+        "stdin": "3\n0\n0\n0\n",
+        "expected_stdout": "Positive: 0\nNegative: 0\nZero: 3"
+      },
+      {
+        "label": "Hidden: all positive",
+        "is_sample": false,
+        "stdin": "4\n1\n2\n3\n4\n",
+        "expected_stdout": "Positive: 4\nNegative: 0\nZero: 0"
+      }
+    ]
+  },
+  {
+    "title": "Complete a Higher-Order Lambda Function",
+    "prompt_md": "## Goal\nComplete the function `applyTwice` that applies a given integer transformation lambda to a value twice.\n\n## Input\n- Line 1: operation name — one of `double`, `increment`\n- Line 2: one integer N\n\n## Output\nPrint exactly one line: the result of applying the operation to N twice in sequence.\n- `double`: multiply by 2 each time\n- `increment`: add 1 each time\n\n## Requirements\n1. `applyTwice(int (*f)(int), int val)` calls `f(val)` and then `f` on that result.\n2. The function must return `f(f(val))`.\n3. `main` reads the operation and value, defines the appropriate lambda, and passes it to `applyTwice`.\n4. Edge: `double` on N=3 gives 12; `increment` on N=5 gives 7.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement this function\n// Applies f to val, then applies f to the result\nint applyTwice(int (*f)(int), int val) {\n    return val;  // replace this\n}\n\nint main() {\n    std::string op;\n    int n;\n    std::cin >> op >> n;\n\n    int result = 0;\n    if (op == \"double\")\n        result = applyTwice([](int x) { return x * 2; }, n);\n    else if (op == \"increment\")\n        result = applyTwice([](int x) { return x + 1; }, n);\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint applyTwice(int (*f)(int), int val) {\n    return f(f(val));\n}\n\nint main() {\n    std::string op;\n    int n;\n    std::cin >> op >> n;\n\n    int result = 0;\n    if (op == \"double\")\n        result = applyTwice([](int x) { return x * 2; }, n);\n    else if (op == \"increment\")\n        result = applyTwice([](int x) { return x + 1; }, n);\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: double 3",
+        "is_sample": true,
+        "stdin": "double\n3\n",
+        "expected_stdout": "12"
+      },
+      {
+        "label": "Hidden: increment 5",
+        "is_sample": false,
+        "stdin": "increment\n5\n",
+        "expected_stdout": "7"
+      },
+      {
+        "label": "Hidden: double 10",
+        "is_sample": false,
+        "stdin": "double\n10\n",
+        "expected_stdout": "40"
+      }
+    ]
+  }
+]

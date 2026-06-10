@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Template Pair: store and retrieve two values",
+    "prompt_md": "## Goal\nComplete the template class `Pair<T>` so it stores two values and correctly reports the larger.\n\n## Input\nLine 1: two space-separated integers (the pair values).\n\n## Output\nPrint exactly two lines:\n- `First: <value>`\n- `Second: <value>`\n\nThen print whether first or second is larger (or equal):\n- `Larger: <value>` if they differ\n- `Equal` if they are the same\n\n## Requirements\n1. `Pair<T>` is a class template with one type parameter `T`.\n2. Constructor `Pair(T a, T b)` stores both values.\n3. `T first() const` and `T second() const` return the stored values.\n4. `T larger() const` returns the larger value; if equal, return either (both are the same).\n5. Implement all members inside the class body.\n\n## Notes\n- Edge case: both values equal → print `Equal`.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Pair {\n    T first_;\n    T second_;\npublic:\n    // TODO: implement constructor Pair(T a, T b)\n    Pair(T a, T b) : first_{a}, second_{b} {}\n\n    // TODO: implement T first() const — return the first stored value\n    T first() const { return T{}; }\n\n    // TODO: implement T second() const — return the second stored value\n    T second() const { return T{}; }\n\n    // TODO: implement T larger() const — return the larger of first_ and second_\n    T larger() const { return T{}; }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    Pair<int> p{a, b};\n    std::cout << \"First: \"  << p.first()  << \"\\n\";\n    std::cout << \"Second: \" << p.second() << \"\\n\";\n\n    if (p.first() == p.second())\n        std::cout << \"Equal\\n\";\n    else\n        std::cout << \"Larger: \" << p.larger() << \"\\n\";\n\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Pair {\n    T first_;\n    T second_;\npublic:\n    Pair(T a, T b) : first_{a}, second_{b} {}\n    T first()  const { return first_; }\n    T second() const { return second_; }\n    T larger() const { return (first_ >= second_) ? first_ : second_; }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    Pair<int> p{a, b};\n    std::cout << \"First: \"  << p.first()  << \"\\n\";\n    std::cout << \"Second: \" << p.second() << \"\\n\";\n\n    if (p.first() == p.second())\n        std::cout << \"Equal\\n\";\n    else\n        std::cout << \"Larger: \" << p.larger() << \"\\n\";\n\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic two values",
+        "is_sample": true,
+        "stdin": "3 7\n",
+        "expected_stdout": "First: 3\nSecond: 7\nLarger: 7"
+      },
+      {
+        "label": "Hidden: first is larger",
+        "is_sample": false,
+        "stdin": "10 2\n",
+        "expected_stdout": "First: 10\nSecond: 2\nLarger: 10"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "First: 5\nSecond: 5\nEqual"
+      }
+    ]
+  },
+  {
+    "title": "Fix the bug: template Box scaled() returns wrong value",
+    "prompt_md": "## Goal\nThe program defines a template class `Box<T>` with a member function `scaled()` defined outside the class body. It should read a value and a scale factor, then print `Scaled: <value * factor>`. The program compiles but produces wrong output — find and fix the single logic bug.\n\n## Input\nLine 1: two space-separated integers — the value and scale factor.\n\n## Output\nPrint exactly one line: `Scaled: <result>`\n\n## Requirements\n1. The bug is in the body of `Box<T>::scaled()` — do not change the class declaration or main.\n2. After the fix, `scaled(factor)` must return `value_ * factor`.\n3. The fix is a one-character or one-word change.\n\n## Notes\n- Hidden tests: scale factor of 0 (result is 0) and negative scale factor.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Box {\n    T value_;\npublic:\n    explicit Box(T v) : value_{v} {}\n    T scaled(T factor) const;\n};\n\ntemplate <typename T>\nT Box<T>::scaled(T factor) const {\n    return value_ + factor;   // BUG: wrong operator\n}\n\nint main() {\n    int v, s;\n    std::cin >> v >> s;\n    Box<int> b{v};\n    std::cout << \"Scaled: \" << b.scaled(s) << \"\\n\";\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Box {\n    T value_;\npublic:\n    explicit Box(T v) : value_{v} {}\n    T scaled(T factor) const;\n};\n\ntemplate <typename T>\nT Box<T>::scaled(T factor) const {\n    return value_ * factor;\n}\n\nint main() {\n    int v, s;\n    std::cin >> v >> s;\n    Box<int> b{v};\n    std::cout << \"Scaled: \" << b.scaled(s) << \"\\n\";\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic scaling",
+        "is_sample": true,
+        "stdin": "6 3\n",
+        "expected_stdout": "Scaled: 18"
+      },
+      {
+        "label": "Hidden: scale by zero",
+        "is_sample": false,
+        "stdin": "9 0\n",
+        "expected_stdout": "Scaled: 0"
+      },
+      {
+        "label": "Hidden: negative scale",
+        "is_sample": false,
+        "stdin": "4 -2\n",
+        "expected_stdout": "Scaled: -8"
+      }
+    ]
+  }
+]

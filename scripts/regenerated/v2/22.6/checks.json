@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    auto a = std::make_shared<int>(10);\n    auto b = a;\n    auto c = a;\n    std::cout << a.use_count() << \"\\n\";\n    b.reset();\n    std::cout << a.use_count() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n2",
+    "explanation_md": "After `b = a` and `c = a`, three `shared_ptr`s point to the same int — `use_count()` is 3. `b.reset()` decrements the count to 2 and sets `b` to null. `a.use_count()` then returns 2."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `std::make_shared<T>()` preferred over `std::shared_ptr<T>(new T())`?",
+    "options": {
+      "a": "make_shared avoids the extra heap allocation for the control block, improving performance",
+      "b": "make_shared is the only way to create a shared_ptr — the constructor from raw pointer does not exist",
+      "c": "make_shared prevents the reference count from exceeding 1",
+      "d": "make_shared forces the object to be stored on the stack instead of the heap"
+    },
+    "answer": "a",
+    "explanation_md": "`std::make_shared<T>` allocates the managed object and the control block in a single memory allocation, while `shared_ptr<T>(new T())` requires two separate allocations. The single-allocation form is faster, more cache-friendly, and avoids a potential exception-safety leak."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you move a `std::shared_ptr` with `std::move` instead of copying it?",
+    "options": {
+      "a": "The reference count increases by one in both the source and destination",
+      "b": "The source becomes null and the reference count stays the same — ownership transfers, not shares",
+      "c": "The reference count drops to zero and the managed object is deleted",
+      "d": "A compiler error occurs because shared_ptr cannot be moved"
+    },
+    "answer": "b",
+    "explanation_md": "Moving a `shared_ptr` transfers the existing counted reference to the destination without atomic increment. The source is left null. The reference count does not change. This is different from copying, which increments the count. If you want two shared owners, copy — do not move."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code causes a double-free crash. What is the bug?\n\n```cpp\n#include <memory>\n\nint main() {\n    int* raw = new int(42);\n    std::shared_ptr<int> a(raw);\n    std::shared_ptr<int> b(raw); // second owner\n    return 0;\n}\n```",
+    "options": {
+      "a": "`shared_ptr` cannot be constructed from `int*`",
+      "b": "Each shared_ptr creates its own control block; both think they are the sole owner and each calls delete",
+      "c": "The reference count overflows when two shared_ptrs point to the same raw pointer",
+      "d": "`raw` should be declared `const int*` to avoid the double-delete"
+    },
+    "answer": "b",
+    "explanation_md": "Constructing two independent `shared_ptr`s from the same raw pointer gives each its own control block with a reference count of 1. They have no knowledge of each other. When both destruct, each calls `delete raw`, causing undefined behavior (double-free). The fix is: create one `shared_ptr` with `make_shared` and copy it."
+  }
+]

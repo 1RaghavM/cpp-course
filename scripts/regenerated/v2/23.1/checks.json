@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes a **composition** relationship?",
+    "options": {
+      "a": "The outer object holds a pointer to an independently-owned inner object.",
+      "b": "The outer object creates and destroys the inner object as part of its own lifetime.",
+      "c": "Two objects know about each other but neither owns the other.",
+      "d": "One object passes another as a function parameter."
+    },
+    "answer": "b",
+    "explanation_md": "Composition means the inner object's lifetime is entirely managed by the outer object — it is created and destroyed with it. Option a describes aggregation, option c describes association, and option d describes dependency."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Engine {\n    int hp;\n    Engine(int h) : hp{h} {}\n    ~Engine() { std::cout << \"Engine gone\\n\"; }\n};\nstruct Car {\n    Engine engine;\n    Car(int h) : engine{h} {}\n    ~Car() { std::cout << \"Car gone\\n\"; }\n};\nint main() {\n    Car c{200};\n}\n```",
+    "options": null,
+    "answer": "Car gone\nEngine gone",
+    "explanation_md": "Member destructors run after the enclosing class destructor body. The `Car` destructor body prints \"Car gone\", then the `Engine` sub-object destructor prints \"Engine gone\". This is composition — Engine's lifetime is bound to Car's lifetime."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Classroom` class stores `std::vector<Student*> students`. A `School` creates `Student` objects and then adds pointers to them into a `Classroom`. What relationship does `Classroom` have with `Student`?",
+    "options": {
+      "a": "Composition — Classroom owns the Student objects.",
+      "b": "Aggregation — Classroom holds references to Students it does not own.",
+      "c": "Dependency — Classroom uses Student only inside a function.",
+      "d": "Inheritance — Student extends Classroom."
+    },
+    "answer": "b",
+    "explanation_md": "Storing a non-owning pointer to an externally managed object is aggregation. Classroom holds references to the Students but does not create or destroy them. If it were composition, it would store `std::vector<Student>` by value."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to print a student's name, but it exhibits undefined behavior. Which option correctly identifies the bug?\n\n```cpp\n#include <iostream>\n#include <string>\nstruct Student { std::string name; };\nstruct Classroom {\n    Student* enrolled;\n};\nint main() {\n    Classroom room;\n    {\n        Student s{\"Alice\"};\n        room.enrolled = &s;\n    } // s destroyed here\n    std::cout << room.enrolled->name << \"\\n\";\n}\n```",
+    "options": {
+      "a": "Student should be stored by value inside Classroom for composition.",
+      "b": "room.enrolled is a dangling pointer because s was destroyed before it was used.",
+      "c": "std::string requires a special copy constructor inside Student.",
+      "d": "The inner block does not create a new scope, so s is still alive."
+    },
+    "answer": "b",
+    "explanation_md": "s is destroyed at the closing brace of the inner block. room.enrolled still points to that memory, making it a dangling pointer. Accessing it is undefined behavior. Inner blocks do create new scopes in C++, so option d is wrong."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Logger` object is passed as a parameter to a function `generate(Logger& logger)`. The function uses it to write one line and then returns. What is this relationship?",
+    "options": {
+      "a": "Composition",
+      "b": "Aggregation",
+      "c": "Association",
+      "d": "Dependency"
+    },
+    "answer": "d",
+    "explanation_md": "Dependency is the weakest relationship: one object uses another in a brief, local scope without storing it as a member. Since `Logger` is only used for the duration of the function call and not stored anywhere, this is a dependency."
+  }
+]

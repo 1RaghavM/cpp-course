@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Vector2D with Arithmetic and Comparison Operators",
+    "prompt_md": "## Goal\nImplement `operator+`, `operator==`, and `operator!=` for `Vector2D` so it supports addition and equality comparisons.\n\n## Input\n- Line 1: two integers x1 y1 (first vector)\n- Line 2: two integers x2 y2 (second vector)\n\n## Output\n- Line 1: `sum: <x> <y>` — result of adding the two vectors\n- Line 2: `equal: 1` or `equal: 0`\n- Line 3: `not_equal: 1` or `not_equal: 0`\n\n## Requirements\n1. `Vector2D` has `int m_x` and `int m_y`.\n2. Constructor takes two `int` arguments.\n3. `friend Vector2D operator+(const Vector2D& a, const Vector2D& b)` — adds component-wise, returns new `Vector2D`.\n4. `bool operator==(const Vector2D& rhs) const` — both components match.\n5. `bool operator!=(const Vector2D& rhs) const` — negation of `operator==`.\n6. `void print(const char* label) const` — prints `label: x y\\n`.\n7. Hidden tests include vectors that are equal to their own sum (zeros).\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\nclass Vector2D {\n    int m_x, m_y;\npublic:\n    Vector2D(int x, int y) : m_x{x}, m_y{y} {}\n\n    // TODO: implement friend operator+\n    friend Vector2D operator+(const Vector2D& a, const Vector2D& b);\n\n    // TODO: implement operator==\n    bool operator==(const Vector2D& rhs) const {\n        return false; // stub\n    }\n\n    // TODO: implement operator!= using operator==\n    bool operator!=(const Vector2D& rhs) const {\n        return false; // stub\n    }\n\n    void print(const char* label) const {\n        std::cout << label << \": \" << m_x << ' ' << m_y << '\\n';\n    }\n};\n\nVector2D operator+(const Vector2D& a, const Vector2D& b) {\n    return Vector2D{0, 0}; // stub\n}\n\nint main() {\n    int x1, y1, x2, y2;\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Vector2D A{x1, y1};\n    Vector2D B{x2, y2};\n    (A + B).print(\"sum\");\n    std::cout << \"equal: \"     << (A == B) << '\\n';\n    std::cout << \"not_equal: \" << (A != B) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Vector2D {\n    int m_x, m_y;\npublic:\n    Vector2D(int x, int y) : m_x{x}, m_y{y} {}\n\n    friend Vector2D operator+(const Vector2D& a, const Vector2D& b);\n\n    bool operator==(const Vector2D& rhs) const {\n        return m_x == rhs.m_x && m_y == rhs.m_y;\n    }\n\n    bool operator!=(const Vector2D& rhs) const {\n        return !(*this == rhs);\n    }\n\n    void print(const char* label) const {\n        std::cout << label << \": \" << m_x << ' ' << m_y << '\\n';\n    }\n};\n\nVector2D operator+(const Vector2D& a, const Vector2D& b) {\n    return Vector2D{a.m_x + b.m_x, a.m_y + b.m_y};\n}\n\nint main() {\n    int x1, y1, x2, y2;\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Vector2D A{x1, y1};\n    Vector2D B{x2, y2};\n    (A + B).print(\"sum\");\n    std::cout << \"equal: \"     << (A == B) << '\\n';\n    std::cout << \"not_equal: \" << (A != B) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: different vectors",
+        "is_sample": true,
+        "stdin": "1 2\n3 4\n",
+        "expected_stdout": "sum: 4 6\nequal: 0\nnot_equal: 1\n"
+      },
+      {
+        "label": "Hidden: equal vectors",
+        "is_sample": false,
+        "stdin": "5 5\n5 5\n",
+        "expected_stdout": "sum: 10 10\nequal: 1\nnot_equal: 0\n"
+      },
+      {
+        "label": "Hidden: zero vectors",
+        "is_sample": false,
+        "stdin": "0 0\n0 0\n",
+        "expected_stdout": "sum: 0 0\nequal: 1\nnot_equal: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Counter with Prefix/Postfix ++ — Fix the Bug",
+    "prompt_md": "## Goal\nThe `Counter` class below implements prefix and postfix `operator++`, but the postfix version has a bug that produces the wrong output. Find and fix the one logic bug.\n\n## Input\n- Line 1: a single integer — the initial counter value\n\n## Output\n- Line 1: `pre: <val>` — value of counter after one prefix increment\n- Line 2: `post: <val>` — the value returned by postfix increment (the old value)\n- Line 3: `final: <val>` — the counter's value after both increments\n\n## Requirements\n1. Prefix `++` increments `m_val` and returns `*this` by reference.\n2. Postfix `++` saves the old value, increments `m_val`, and returns the old value by value.\n3. For input `5`: pre should be `6`, post should be `6` (the old value before the second increment), final should be `7`.\n4. The bug is that the postfix operator currently returns a reference to a local variable (causing wrong values), not a value return.",
+    "starter_code": "#include <iostream>\n\nstruct Counter {\n    int m_val;\n    Counter(int v) : m_val{v} {}\n\n    Counter& operator++() {          // prefix\n        ++m_val;\n        return *this;\n    }\n\n    Counter& operator++(int) {       // postfix — BUG: wrong return type\n        Counter old{m_val};\n        ++m_val;\n        return old;                  // BUG: returning reference to local\n    }\n\n    int value() const { return m_val; }\n};\n\nint main() {\n    int start;\n    std::cin >> start;\n    Counter c{start};\n    Counter pre = ++c;\n    std::cout << \"pre: \"   << pre.value()       << '\\n';\n    Counter post = c++;\n    std::cout << \"post: \"  << post.value()      << '\\n';\n    std::cout << \"final: \" << c.value()         << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Counter {\n    int m_val;\n    Counter(int v) : m_val{v} {}\n\n    Counter& operator++() {\n        ++m_val;\n        return *this;\n    }\n\n    Counter operator++(int) {\n        Counter old{m_val};\n        ++m_val;\n        return old;\n    }\n\n    int value() const { return m_val; }\n};\n\nint main() {\n    int start;\n    std::cin >> start;\n    Counter c{start};\n    Counter pre = ++c;\n    std::cout << \"pre: \"   << pre.value()  << '\\n';\n    Counter post = c++;\n    std::cout << \"post: \"  << post.value() << '\\n';\n    std::cout << \"final: \" << c.value()    << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: start=5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "pre: 6\npost: 6\nfinal: 7\n"
+      },
+      {
+        "label": "Hidden: start=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "pre: 1\npost: 1\nfinal: 2\n"
+      },
+      {
+        "label": "Hidden: start=99",
+        "is_sample": false,
+        "stdin": "99\n",
+        "expected_stdout": "pre: 100\npost: 100\nfinal: 101\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Doctor-Patient Association",
+    "prompt_md": "## Goal\nSimulate a doctor-patient association where a `Doctor` can be assigned different patients over time and reports who it is treating.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), number of patients.\n- Lines 2..N+1: one patient name per line.\n- Line N+2: integer M (1 ≤ M ≤ N), the patient index (0-based) the doctor treats first.\n- Line N+3: integer K (0 ≤ K < N, K ≠ M), the patient index the doctor is reassigned to.\n\n## Output\nPrint two lines:\n1. `Treating: <first patient name>`\n2. `Treating: <second patient name>`\n\n## Requirements\n1. Define `struct Patient` with a `std::string name` member.\n2. Define `class Doctor` with a `Patient* current{nullptr}` member.\n3. `Doctor` must have `void assign(Patient* p)` that sets `current = p`.\n4. `Doctor` must have `void report() const` that prints `Treating: <name>` if current is non-null, otherwise `No patient`.\n5. Doctor must not own or delete any Patient.\n6. Store all Patient objects in a `std::vector<Patient>` in main().",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Patient {\n    std::string name;\n};\n\nclass Doctor {\n    Patient* current{nullptr};\npublic:\n    // TODO: implement assign(Patient* p)\n    void assign(Patient* p) {\n        current = p;\n    }\n    // TODO: implement report() const\n    void report() const {\n        // print \"Treating: <name>\" if current != nullptr, else \"No patient\"\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Patient> patients(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> patients[static_cast<std::size_t>(i)].name;\n    int m{}, k{};\n    std::cin >> m >> k;\n    Doctor doc;\n    doc.assign(&patients[static_cast<std::size_t>(m)]);\n    doc.report();\n    doc.assign(&patients[static_cast<std::size_t>(k)]);\n    doc.report();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Patient {\n    std::string name;\n};\n\nclass Doctor {\n    Patient* current{nullptr};\npublic:\n    void assign(Patient* p) {\n        current = p;\n    }\n    void report() const {\n        if (current)\n            std::cout << \"Treating: \" << current->name << \"\\n\";\n        else\n            std::cout << \"No patient\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Patient> patients(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> patients[static_cast<std::size_t>(i)].name;\n    int m{}, k{};\n    std::cin >> m >> k;\n    Doctor doc;\n    doc.assign(&patients[static_cast<std::size_t>(m)]);\n    doc.report();\n    doc.assign(&patients[static_cast<std::size_t>(k)]);\n    doc.report();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: reassign doctor",
+        "is_sample": true,
+        "stdin": "3\nAlice\nBob\nCarol\n0\n2\n",
+        "expected_stdout": "Treating: Alice\nTreating: Carol"
+      },
+      {
+        "label": "Hidden: single reassignment",
+        "is_sample": false,
+        "stdin": "2\nZara\nLiam\n1\n0\n",
+        "expected_stdout": "Treating: Liam\nTreating: Zara"
+      },
+      {
+        "label": "Hidden: 5 patients",
+        "is_sample": false,
+        "stdin": "5\nAnna\nBen\nCara\nDan\nElla\n4\n1\n",
+        "expected_stdout": "Treating: Ella\nTreating: Ben"
+      }
+    ]
+  },
+  {
+    "title": "Course-Instructor Bidirectional Association",
+    "prompt_md": "## Goal\nComplete the `assign` function that sets up a bidirectional association between a `Course` and an `Instructor`.\n\n## Input\n- Line 1: course title.\n- Line 2: instructor name.\n\n## Output\nPrint exactly two lines:\n1. `Course: <title> taught by <instructor name>`\n2. `Instructor: <instructor name> teaching <title>`\n\n## Requirements\n1. `struct Course` has `std::string title` and `Instructor* instructor{nullptr}`.\n2. `struct Instructor` has `std::string name` and `Course* teaching{nullptr}`.\n3. Complete the `void assign(Course& c, Instructor& instr)` free function that sets both pointers.\n4. `printCourse(const Course&)` prints line 1; `printInstructor(const Instructor&)` prints line 2.\n5. Neither Course nor Instructor owns the other; both are stack-allocated in main().\n\n## Notes\n- Use a forward declaration for `Course` so `Instructor` can hold a `Course*`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nstruct Course;  // forward declaration\n\nstruct Instructor {\n    std::string name;\n    Course* teaching{nullptr};\n};\n\nstruct Course {\n    std::string title;\n    Instructor* instructor{nullptr};\n};\n\nvoid assign(Course& c, Instructor& instr) {\n    // TODO: set c.instructor = &instr and instr.teaching = &c\n    c.instructor = nullptr;\n    instr.teaching = nullptr;\n}\n\nvoid printCourse(const Course& c) {\n    std::cout << \"Course: \" << c.title\n              << \" taught by \" << (c.instructor ? c.instructor->name : \"nobody\")\n              << \"\\n\";\n}\n\nvoid printInstructor(const Instructor& instr) {\n    std::cout << \"Instructor: \" << instr.name\n              << \" teaching \" << (instr.teaching ? instr.teaching->title : \"nothing\")\n              << \"\\n\";\n}\n\nint main() {\n    Course c;\n    Instructor i;\n    std::cin >> c.title >> i.name;\n    assign(c, i);\n    printCourse(c);\n    printInstructor(i);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Course;  // forward declaration\n\nstruct Instructor {\n    std::string name;\n    Course* teaching{nullptr};\n};\n\nstruct Course {\n    std::string title;\n    Instructor* instructor{nullptr};\n};\n\nvoid assign(Course& c, Instructor& instr) {\n    c.instructor = &instr;\n    instr.teaching = &c;\n}\n\nvoid printCourse(const Course& c) {\n    std::cout << \"Course: \" << c.title\n              << \" taught by \" << (c.instructor ? c.instructor->name : \"nobody\")\n              << \"\\n\";\n}\n\nvoid printInstructor(const Instructor& instr) {\n    std::cout << \"Instructor: \" << instr.name\n              << \" teaching \" << (instr.teaching ? instr.teaching->title : \"nothing\")\n              << \"\\n\";\n}\n\nint main() {\n    Course c;\n    Instructor i;\n    std::cin >> c.title >> i.name;\n    assign(c, i);\n    printCourse(c);\n    printInstructor(i);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic assignment",
+        "is_sample": true,
+        "stdin": "Calculus\nDrSmith\n",
+        "expected_stdout": "Course: Calculus taught by DrSmith\nInstructor: DrSmith teaching Calculus"
+      },
+      {
+        "label": "Hidden: different names",
+        "is_sample": false,
+        "stdin": "Physics\nProfJones\n",
+        "expected_stdout": "Course: Physics taught by ProfJones\nInstructor: ProfJones teaching Physics"
+      },
+      {
+        "label": "Hidden: single word each",
+        "is_sample": false,
+        "stdin": "History\nAlba\n",
+        "expected_stdout": "Course: History taught by Alba\nInstructor: Alba teaching History"
+      }
+    ]
+  }
+]

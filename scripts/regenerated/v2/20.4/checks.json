@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A program is run with: `./tool 10 20 30`\n\nWhat is the value of `argc` inside `main`?",
+    "options": {
+      "a": "3",
+      "b": "4",
+      "c": "0",
+      "d": "1"
+    },
+    "answer": "b",
+    "explanation_md": "`argc` counts all entries in `argv`, including `argv[0]` (the program name). With three user arguments, there are 4 total entries, so `argc == 4`. A common mistake is to forget that `argv[0]` is counted."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `argv[0]` typically contain?",
+    "options": {
+      "a": "The first user-supplied argument",
+      "b": "The program name or path",
+      "c": "The number of arguments as a string",
+      "d": "An empty string"
+    },
+    "answer": "b",
+    "explanation_md": "`argv[0]` is always the program name or the path used to invoke it. User-supplied arguments begin at `argv[1]`. This is why checking for a user argument requires `argc >= 2`, not `argc >= 1`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print the first user argument, but it has a bug. What is it?\n\n```cpp\n#include <iostream>\nint main(int argc, char* argv[]) {\n    if (argc == 1) {\n        std::cout << argv[1] << \"\\n\";\n    } else {\n        std::cout << \"No argument\\n\";\n    }\n}\n```",
+    "options": {
+      "a": "`argv[1]` should be `argv[0]` since arguments are 0-indexed",
+      "b": "The condition is inverted: `argc == 1` means zero user arguments, so `argv[1]` doesn't exist",
+      "c": "`argc` should be compared with `> 0` to check if any arguments exist",
+      "d": "`char* argv[]` should be written as `char** argv` for the program to compile"
+    },
+    "answer": "b",
+    "explanation_md": "`argc == 1` means only `argv[0]` (the program name) is present — no user arguments. Accessing `argv[1]` in this branch is undefined behavior. The condition should be `argc == 2` (or `argc > 1`) to confirm a user argument exists. The else branch should print when no argument is given."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "If the program is compiled and run as `./prog add 5 3`, and `main` is:\n\n```cpp\n#include <iostream>\n#include <string>\nint main(int argc, char* argv[]) {\n    std::cout << argc << \"\\n\";\n    std::cout << argv[2] << \"\\n\";\n}\n```\n\nWhat does it print?",
+    "options": null,
+    "answer": "4\n5",
+    "explanation_md": "The invocation has 4 tokens: `./prog`, `add`, `5`, `3`. So `argc == 4`. `argv[2]` is the third token, which is `\"5\"` (a string). The output is `4` then `5` on separate lines."
+  }
+]

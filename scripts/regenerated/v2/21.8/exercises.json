@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Prefix and Postfix Increment for a Step Counter",
+    "prompt_md": "## Goal\nImplement prefix `operator++` and postfix `operator++` for a `StepCounter` class that tracks the number of steps taken.\n\n## Input\n- Line 1: initial step count (0 ≤ N ≤ 1000).\n- Line 2: number of prefix increments P (0 ≤ P ≤ 10).\n- Line 3: number of postfix increments Q (0 ≤ Q ≤ 10).\n\n## Output\n- Line 1: the value returned by the last `++counter` call (or the initial value if P = 0).\n- Line 2: the value returned by the last `counter++` call (or the value after prefix increments if Q = 0).\n- Line 3: the final counter value after all increments.\n\n## Requirements\n1. Prefix `operator++` must return `*this` by reference after incrementing.\n2. Postfix `operator++` must save a copy, call prefix `++(*this)`, and return the old copy by value.\n3. The value returned by each prefix call is the already-incremented value.\n4. The value returned by each postfix call is the value before the increment.\n5. If P = 0, output the initial value on line 1. If Q = 0, output the value after prefix increments on line 2.\n6. Hidden tests include P = 0, Q = 0, and both non-zero.",
+    "starter_code": "#include <iostream>\n\nclass StepCounter {\n    int m_steps{};\npublic:\n    explicit StepCounter(int steps) : m_steps{ steps } {}\n    int get() const { return m_steps; }\n\n    // TODO: implement prefix operator++ — increment m_steps and return *this by reference\n    StepCounter& operator++() { return *this; }\n\n    // TODO: implement postfix operator++ — save copy, call ++(*this), return old copy by value\n    StepCounter operator++(int) { return *this; }\n};\n\nint main() {\n    int init{}, p{}, q{};\n    std::cin >> init >> p >> q;\n    StepCounter counter{ init };\n\n    int lastPrefix = counter.get();\n    for (int i = 0; i < p; ++i)\n        lastPrefix = (++counter).get();\n\n    int lastPostfix = counter.get();\n    for (int i = 0; i < q; ++i)\n        lastPostfix = (counter++).get();\n\n    std::cout << lastPrefix << '\\n';\n    std::cout << lastPostfix << '\\n';\n    std::cout << counter.get() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass StepCounter {\n    int m_steps{};\npublic:\n    explicit StepCounter(int steps) : m_steps{ steps } {}\n    int get() const { return m_steps; }\n\n    StepCounter& operator++() {\n        ++m_steps;\n        return *this;\n    }\n\n    StepCounter operator++(int) {\n        StepCounter old{ *this };\n        ++(*this);\n        return old;\n    }\n};\n\nint main() {\n    int init{}, p{}, q{};\n    std::cin >> init >> p >> q;\n    StepCounter counter{ init };\n\n    int lastPrefix = counter.get();\n    for (int i = 0; i < p; ++i)\n        lastPrefix = (++counter).get();\n\n    int lastPostfix = counter.get();\n    for (int i = 0; i < q; ++i)\n        lastPostfix = (counter++).get();\n\n    std::cout << lastPrefix << '\\n';\n    std::cout << lastPostfix << '\\n';\n    std::cout << counter.get() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 prefix, 2 postfix from 0",
+        "is_sample": true,
+        "stdin": "0\n3\n2",
+        "expected_stdout": "3\n4\n5"
+      },
+      {
+        "label": "Hidden: no prefix increments",
+        "is_sample": false,
+        "stdin": "10\n0\n3",
+        "expected_stdout": "10\n12\n13"
+      },
+      {
+        "label": "Hidden: no postfix increments",
+        "is_sample": false,
+        "stdin": "5\n4\n0",
+        "expected_stdout": "9\n9\n9"
+      }
+    ]
+  },
+  {
+    "title": "Complete Decrement Operators for a Countdown Timer",
+    "prompt_md": "## Goal\nComplete prefix `operator--` and postfix `operator--` for a `Countdown` class so a timer can tick down correctly.\n\n## Input\n- Line 1: starting countdown value (1 ≤ N ≤ 100).\n- Line 2: number of times to call prefix `--timer` (0 ≤ A ≤ 10).\n- Line 3: number of times to call `timer--` (postfix) (0 ≤ B ≤ 10).\n\n## Output\n- Line 1: sum of values returned by each prefix `--timer` call (0 if A = 0).\n- Line 2: sum of values returned by each `timer--` call (0 if B = 0).\n- Line 3: final timer value.\n\n## Requirements\n1. Complete `Countdown& operator--()` — decrement `m_val` by 1 and return `*this`.\n2. Complete `Countdown operator--(int)` — save a copy, call `--(*this)`, return old copy by value.\n3. Do not add extra members or change `main()`.\n4. Hidden tests include A = 0 and B = 0.",
+    "starter_code": "#include <iostream>\n\nclass Countdown {\n    int m_val{};\npublic:\n    explicit Countdown(int v) : m_val{ v } {}\n    int get() const { return m_val; }\n\n    // TODO: implement prefix operator-- — decrement m_val and return *this by reference\n    Countdown& operator--() { return *this; }\n\n    // TODO: implement postfix operator-- — save copy, call --(*this), return old copy by value\n    Countdown operator--(int) { return *this; }\n};\n\nint main() {\n    int start{}, a{}, b{};\n    std::cin >> start >> a >> b;\n    Countdown timer{ start };\n\n    int sumPrefix = 0;\n    for (int i = 0; i < a; ++i)\n        sumPrefix += (--timer).get();\n\n    int sumPostfix = 0;\n    for (int i = 0; i < b; ++i)\n        sumPostfix += (timer--).get();\n\n    std::cout << sumPrefix << '\\n';\n    std::cout << sumPostfix << '\\n';\n    std::cout << timer.get() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Countdown {\n    int m_val{};\npublic:\n    explicit Countdown(int v) : m_val{ v } {}\n    int get() const { return m_val; }\n\n    Countdown& operator--() {\n        --m_val;\n        return *this;\n    }\n\n    Countdown operator--(int) {\n        Countdown old{ *this };\n        --(*this);\n        return old;\n    }\n};\n\nint main() {\n    int start{}, a{}, b{};\n    std::cin >> start >> a >> b;\n    Countdown timer{ start };\n\n    int sumPrefix = 0;\n    for (int i = 0; i < a; ++i)\n        sumPrefix += (--timer).get();\n\n    int sumPostfix = 0;\n    for (int i = 0; i < b; ++i)\n        sumPostfix += (timer--).get();\n\n    std::cout << sumPrefix << '\\n';\n    std::cout << sumPostfix << '\\n';\n    std::cout << timer.get() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2 prefix, 3 postfix from 10",
+        "is_sample": true,
+        "stdin": "10\n2\n3",
+        "expected_stdout": "17\n21\n5"
+      },
+      {
+        "label": "Hidden: only prefix decrements",
+        "is_sample": false,
+        "stdin": "5\n3\n0",
+        "expected_stdout": "9\n0\n2"
+      },
+      {
+        "label": "Hidden: only postfix decrements",
+        "is_sample": false,
+        "stdin": "8\n0\n4",
+        "expected_stdout": "0\n26\n4"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nclass Box {\npublic:\n    T value;\n    Box(T v) : value{v} {}\n    void show() const { std::cout << value * 2 << \"\\n\"; }\n};\nint main() {\n    Box<int> a{5};\n    Box<double> b{1.5};\n    a.show();\n    b.show();\n}\n```",
+    "options": null,
+    "answer": "10\n3",
+    "explanation_md": "`Box<int>` stores `int` 5 and prints `5 * 2 = 10`. `Box<double>` stores `double` 1.5 and prints `1.5 * 2 = 3` — because `std::cout` outputs `3` for the `double` value `3.0` by default (no decimal point for whole-number doubles with default stream settings)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You define a template class `Pair<T>` with a member function `larger()` implemented outside the class. Which qualifier is correct?",
+    "options": {
+      "a": "`T Pair::larger() const`",
+      "b": "`T Pair<T>::larger() const`",
+      "c": "`template<T> T Pair::larger() const`",
+      "d": "`T T::larger() const`"
+    },
+    "answer": "b",
+    "explanation_md": "Out-of-class member definitions for a template class require `ClassName<T>::` as the qualifier so the compiler knows which template's scope to enter. Option (a) omits `<T>` and is a compile error; (c) and (d) are syntactically invalid."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A colleague puts the member function bodies of `template <typename T> class Stack` into `Stack.cpp` and includes only `Stack.h`. What happens at link time?",
+    "options": {
+      "a": "Everything works because the linker can find template instantiations across translation units.",
+      "b": "A linker error occurs: the instantiation symbols are undefined.",
+      "c": "The compiler silently ignores the `.cpp` file and generates the functions inline.",
+      "d": "Only member functions called in `main.cpp` are undefined; others link fine."
+    },
+    "answer": "b",
+    "explanation_md": "Template definitions must be visible to the compiler at every point of instantiation, which means they must live in the header. Placing them in a separate `.cpp` means no translation unit that instantiates `Stack<int>` can see them, causing unresolved symbol errors at link time."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nclass Wrap {\n    T v_;\npublic:\n    Wrap(T v) : v_{v} {}\n    T get() const { return v_; }\n};\ntemplate <typename T>\nT Wrap<T>::get() const { return v_; }  // duplicate definition\nint main() {\n    Wrap<int> w{7};\n    std::cout << w.get() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "COMPILE_ERROR",
+    "explanation_md": "The member function `get()` is defined twice — once inline in the class body and once outside. This is a redefinition error. The program does not compile. The answer `COMPILE_ERROR` reflects what a learner should predict when they spot duplicate definitions."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `10` but it does not compile. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nclass Doubler {\n    T val_;\npublic:\n    Doubler(T v) : val_{v} {}\n    T doubled() const;\n};\ntemplate <typename T>\nT Doubler::doubled() const { return val_ * 2; }\nint main() {\n    Doubler<int> d{5};\n    std::cout << d.doubled() << \"\\n\";\n}\n```",
+    "options": {
+      "a": "`val_ * 2` requires `T` to support `operator*`, which is not guaranteed.",
+      "b": "The out-of-class definition uses `Doubler::` instead of `Doubler<T>::`, so the compiler cannot resolve the scope.",
+      "c": "The constructor should take `const T&` instead of `T` by value.",
+      "d": "`template <typename T>` is missing before the out-of-class definition."
+    },
+    "answer": "b",
+    "explanation_md": "The qualifier on the out-of-class definition must be `Doubler<T>::doubled()` — including the template argument `<T>`. Without it, `Doubler` is an incomplete type name in this context and the compiler cannot find the class scope."
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "When you statically link a library into your executable, what happens to the library code?",
+    "options": {
+      "a": "The entire library file is copied byte-for-byte into the executable",
+      "b": "Only the object files that satisfy unresolved symbols are copied into the executable",
+      "c": "The library remains a separate file and is loaded at runtime",
+      "d": "The library source code is recompiled into your executable"
+    },
+    "answer": "b",
+    "explanation_md": "Static linking is selective: the linker walks the archive and copies only the object files whose symbols are actually referenced. `a` is wrong because unused code is left behind. `c` describes dynamic linking. `d` is wrong because linking works on compiled object files, not source."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program compiled against `libfoo.so` runs on the developer's machine but fails with \"cannot open shared object file\" on another machine. What is the most likely cause?",
+    "options": {
+      "a": "The executable was built with `-Wall` and that flag is not supported everywhere",
+      "b": "The dynamic library `libfoo.so` is not present or not in a searched path on the target machine",
+      "c": "The executable is too large to run on the target machine",
+      "d": "The header file `foo.h` was not installed on the target machine"
+    },
+    "answer": "b",
+    "explanation_md": "A dynamic library must be findable at runtime (in system paths, RPATH, or LD_LIBRARY_PATH). The executable itself records only the library name, not its location. Headers and compile flags are irrelevant at runtime."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Given these two files compiled as a static library and then linked into `main.cpp`, what does the following program print?\n\n```cpp\n// mathutils.h\nint add(int a, int b);\n\n// main.cpp\n#include <iostream>\n#include \"mathutils.h\"\nint main() {\n    std::cout << add(10, 32) << '\\n';\n}\n\n// mathutils.cpp (archived into libmathutils.a)\nint add(int a, int b) { return a + b; }\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "`add(10, 32)` returns `10 + 32 = 42`. The static library provides the implementation of `add`; the linker copies that definition into the final binary and the call resolves normally."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "On a GNU/Linux system using `ld`, you run:\n```\ng++ -lmylib main.cpp -o app\n```\nThe build fails with undefined reference errors for symbols from `mylib`. The same command with `-lmylib` moved to the end succeeds. Why?",
+    "options": {
+      "a": "Libraries must always be specified before source files on all linkers",
+      "b": "GNU ld resolves symbols left-to-right and discards archive members that satisfy no currently-unresolved symbols",
+      "c": "The `-o` flag must appear before the source file",
+      "d": "GNU ld does not support static libraries listed before `.cpp` files"
+    },
+    "answer": "b",
+    "explanation_md": "GNU ld processes the command line left to right. When it sees `-lmylib` before `main.cpp`, no symbols from `main.cpp` are unresolved yet, so it skips the archive. Moving `-lmylib` after `main.cpp` ensures those symbols are already in the unresolved set when the archive is scanned."
+  }
+]

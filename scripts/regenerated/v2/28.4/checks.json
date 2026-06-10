@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <sstream>\nint main() {\n    std::ostringstream oss;\n    oss << \"x=\" << 5;\n    std::string s = oss.str();\n    oss << \"+\";\n    std::cout << s << \"\\n\";\n    std::cout << oss.str() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "x=5\nx=5+",
+    "explanation_md": "`s` is captured after writing `\"x=\"` and `5`, so `s` is `\"x=5\"`. After that, `\"+\"` is appended to the `ostringstream`. `oss.str()` reflects the full accumulated string `\"x=5+\"`. `s` is a plain `std::string` copy and does not change when the stream changes."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which header is required for `std::istringstream`?",
+    "options": {
+      "a": "`<iostream>`",
+      "b": "`<string>`",
+      "c": "`<sstream>`",
+      "d": "`<strstream>`"
+    },
+    "answer": "c",
+    "explanation_md": "`std::istringstream`, `std::ostringstream`, and `std::stringstream` are all declared in `<sstream>`. `<iostream>` provides the terminal streams. `<strstream>` is a deprecated C++ header unrelated to string streams."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <sstream>\n#include <string>\nint main() {\n    std::string data = \"10 20 30\";\n    std::istringstream iss(data);\n    int a, b, c;\n    iss >> a >> b >> c;\n    std::cout << a + b + c << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "60",
+    "explanation_md": "`std::istringstream` wraps the string `\"10 20 30\"`. Extracting with `>>` parses the three space-separated integers: `a=10`, `b=20`, `c=30`. Their sum is `60`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to return a string representation of `val` formatted to 2 decimal places, but it always returns `\"\"`. What is the bug?\n\n```cpp\n#include <sstream>\n#include <iomanip>\n#include <string>\nstd::string fmt(double val) {\n    std::ostringstream oss;\n    std::string s = oss.str();   // capture here\n    oss << std::fixed << std::setprecision(2) << val;\n    return s;\n}\n```",
+    "options": {
+      "a": "`std::fixed` is not valid for `std::ostringstream`; it only works with `std::cout`.",
+      "b": "`oss.str()` is called before any data is written to `oss`, so `s` is always empty.",
+      "c": "`<sstream>` must be included after `<iomanip>` for the manipulators to work.",
+      "d": "`std::ostringstream` cannot store floating-point values."
+    },
+    "answer": "b",
+    "explanation_md": "`oss.str()` is called on the empty stream, before the write. `s` captures `\"\"` and the subsequent writes to `oss` have no effect on `s`. Moving `std::string s = oss.str();` to *after* the `oss << ...` line fixes the bug."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have a `std::stringstream ss` that has been read to EOF. You want to reuse it for new content. What must you do?",
+    "options": {
+      "a": "Just call `ss.str(\"\")` — that is sufficient.",
+      "b": "Call `ss.clear()` then `ss.str(\"\")` — clear error flags first, then reset content.",
+      "c": "Call `ss.str(\"\")` then `ss.clear()` — reset content first, then clear error flags.",
+      "d": "Declare a new `std::stringstream` — reuse is not possible."
+    },
+    "answer": "c",
+    "explanation_md": "Both steps are needed. The order is: `ss.str(\"\")` replaces the underlying string (empty it), then `ss.clear()` clears the error and EOF flags. Clearing flags first is harmless, but resetting content first is the idiomatic pattern because after the string is empty there is nothing to read, making the clear of flags the last step before the stream is usable again. Reuse is perfectly supported."
+  }
+]
