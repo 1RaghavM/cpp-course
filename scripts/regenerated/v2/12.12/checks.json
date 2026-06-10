@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint& larger(int& a, int& b) {\n    return (a >= b) ? a : b;\n}\nint main() {\n    int x { 3 }, y { 7 };\n    larger(x, y) = 50;\n    std::cout << x << ' ' << y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3 50",
+    "explanation_md": "`larger(x, y)` returns a reference to `y` because `y >= x`. Assigning 50 to that reference writes 50 into `y`. `x` is unchanged at 3. Output is `3 50`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is returning a reference to a local variable undefined behavior?",
+    "options": {
+      "a": "Because local variables are always `const`",
+      "b": "Because the local variable is destroyed when the function returns, leaving a dangling reference",
+      "c": "Because references can only refer to global variables",
+      "d": "Because the compiler copies local variables before returning"
+    },
+    "answer": "b",
+    "explanation_md": "Local variables live on the stack and are destroyed when the function exits. A reference to that variable becomes dangling — it refers to memory that has been freed. Using the dangling reference is undefined behavior. References can refer to any variable (local, global, parameter) as long as that variable outlives the reference."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the main advantage of return-by-address over return-by-reference?",
+    "options": {
+      "a": "Return-by-address is always faster",
+      "b": "The function can return `nullptr` to signal \"not found\"",
+      "c": "Pointers are safer because they cannot dangle",
+      "d": "The caller does not need to dereference the result"
+    },
+    "answer": "b",
+    "explanation_md": "A reference cannot be null, so a function returning a reference cannot signal \"nothing found\". A pointer can be `nullptr`, making return-by-address the natural choice for search functions that may come up empty. Pointers are not inherently safer — a dangling pointer is just as dangerous as a dangling reference."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function has a critical bug. What is it?\n\n```cpp\n#include <iostream>\nint* getLocal() {\n    int val { 42 };\n    return &val;\n}\nint main() {\n    int* p { getLocal() };\n    std::cout << *p << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`val` should be a `const int` before taking its address",
+      "b": "The function returns the address of a local variable that is destroyed on return",
+      "c": "`int*` return type should be `const int*`",
+      "d": "`*p` should be `p` to print the address"
+    },
+    "answer": "b",
+    "explanation_md": "`val` is a local variable destroyed when `getLocal` returns. The returned pointer points to freed stack memory. Using `*p` afterward is undefined behavior — the compiler may even warn about this. The fix is to return by value or to operate on an object passed in by the caller."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nconst int& smaller(const int& a, const int& b) {\n    return (a <= b) ? a : b;\n}\nint main() {\n    int p { 5 }, q { 2 };\n    std::cout << smaller(p, q) << '\\n';\n    std::cout << smaller(q, p) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2\n2",
+    "explanation_md": "Both calls return a const reference to the smaller argument. `smaller(p, q)` returns a reference to `q` (value 2). `smaller(q, p)` also returns a reference to `q` (still value 2). So both lines print 2."
+  }
+]

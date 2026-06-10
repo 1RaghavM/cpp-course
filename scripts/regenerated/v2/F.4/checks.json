@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nconstexpr int square(int x) { return x * x; }\nconstexpr int hyp_sq(int a, int b) { return square(a) + square(b); }\nint main() {\n    constexpr int h = hyp_sq(3, 4);\n    std::cout << h << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "25",
+    "explanation_md": "`square(3)` = 9, `square(4)` = 16, sum = 25. Both `square` and `hyp_sq` are `constexpr` and called with constant arguments, so `h` is 25 at compile time."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between `const int n = f();` and `constexpr int n = f();` when `f()` is a regular (non-`constexpr`) function?",
+    "options": {
+      "a": "Both store the same value; the keywords are interchangeable.",
+      "b": "`const int n = f();` is legal — `n` cannot be modified but is initialized at runtime. `constexpr int n = f();` is a compile error because `f()` is not a constant expression.",
+      "c": "`constexpr int n = f();` is legal and forces `f` to be called at compile time.",
+      "d": "`const int n = f();` makes `n` available as an array size; `constexpr` does not."
+    },
+    "answer": "b",
+    "explanation_md": "`const` only prevents modification after initialization; the initializer can be a runtime value. `constexpr` on a variable requires its initializer to be a compile-time constant expression—so calling a non-`constexpr` function to initialize a `constexpr` variable is a compile error."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nconstexpr T twice(T x) { return x + x; }\nint main() {\n    constexpr int a = twice(5);\n    constexpr double b = twice(1.5);\n    std::cout << a << \" \" << b << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10 3",
+    "explanation_md": "`twice<int>(5)` = 10. `twice<double>(1.5)` = 3.0. Both are compile-time constants. Printing a `double` with value exactly 3.0 using `<<` gives `3` (no decimal point by default in `std::cout`). The output is `10 3`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `len` to be usable as an array size. What is wrong?\n\n```cpp\nint get_len() { return 16; }\nint main() {\n    constexpr int len = get_len();\n    int buf[len];\n}\n```",
+    "options": {
+      "a": "`get_len` has no return type annotation.",
+      "b": "`constexpr int len = get_len();` is a compile error because `get_len` is not `constexpr`.",
+      "c": "`int buf[len]` requires `len` to be a `static constexpr`.",
+      "d": "Returning 16 from a function causes an integer narrowing warning."
+    },
+    "answer": "b",
+    "explanation_md": "`constexpr` on a variable requires its initializer to be a compile-time constant expression. `get_len()` is a plain function with no `constexpr` label, so calling it produces a runtime value—not a constant expression. Fix: add `constexpr` to `get_len`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `constexpr` function calls another helper function. When does the chain become unable to produce a compile-time constant?",
+    "options": {
+      "a": "When the helper function has more than one parameter.",
+      "b": "When the helper function is not marked `constexpr`.",
+      "c": "When the helper function uses a loop.",
+      "d": "When the return type is `double` rather than `int`."
+    },
+    "answer": "b",
+    "explanation_md": "The compile-time evaluation chain breaks as soon as any called function is not `constexpr`. Loops, multiple parameters, and `double` return types are all fine inside `constexpr` functions."
+  }
+]

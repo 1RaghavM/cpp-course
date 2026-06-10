@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x { 5 };\n    const int* ptr { &x };\n    x = 20;\n    std::cout << *ptr << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "A pointer-to-const only prevents modifying `x` *through* `ptr`. The variable `x` itself is not const, so `x = 20` is perfectly valid. Since `ptr` still points at `x`, dereferencing it after the assignment yields 20."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which declaration creates a **const pointer** to a non-const `int`?\n\n```cpp\nint x { 5 };\n```",
+    "options": {
+      "a": "`const int* ptr { &x };`",
+      "b": "`int* const ptr { &x };`",
+      "c": "`const int* const ptr { &x };`",
+      "d": "`int const ptr { x };`"
+    },
+    "answer": "b",
+    "explanation_md": "Reading right-to-left: `int* const ptr` means `ptr` is const (the pointer cannot be reseated) and it points to a non-const `int` (the value can be changed). Option (a) is a pointer to const int, and option (c) is a const pointer to const int."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to print `10`, but it does not compile. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    const int y { 10 };\n    int* ptr { &y };\n    std::cout << *ptr << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`const int y` should be `int y` to take its address",
+      "b": "`int* ptr` should be `const int* ptr` because `y` is const",
+      "c": "`*ptr` should be `ptr` without the dereference",
+      "d": "You cannot print through a pointer at all"
+    },
+    "answer": "b",
+    "explanation_md": "A `const int` variable's address has type `const int*`. Assigning it to a plain `int*` would allow modifying a const variable through the pointer, so the compiler rejects it. Changing `int* ptr` to `const int* ptr` fixes the compile error."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `const int* p = &x;`, which statement about `p` is true?",
+    "options": {
+      "a": "`x` cannot be modified at all",
+      "b": "`p` itself cannot be reseated to point at another variable",
+      "c": "`x` cannot be modified *through* `p`, but `x` itself is not const",
+      "d": "`p` must point at a variable declared with `const`"
+    },
+    "answer": "c",
+    "explanation_md": "`const int* p` restricts what *this pointer* can do — it cannot write through `p` — but imposes no restriction on `x` directly or on other pointers to `x`. The pointer `p` can also be reseated freely since only the pointer-to-const variant was used, not a const pointer."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int a { 1 };\n    int b { 2 };\n    int* const ptr { &a };\n    *ptr = 99;\n    std::cout << a << ' ' << b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "99 2",
+    "explanation_md": "`int* const ptr` is a const pointer: `ptr` cannot be reseated, but the value it points at *can* be modified. So `*ptr = 99` writes 99 into `a`. `b` is untouched. Output is `99 2`."
+  }
+]

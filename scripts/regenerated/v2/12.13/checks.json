@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nvoid bump(int& x, int delta) {\n    x = x + delta;\n}\n\nint main() {\n    int a = 10;\n    bump(a, 3);\n    bump(a, -1);\n    std::cout << a << '\\n';\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "`a` starts at 10. After `bump(a, 3)`, `a` is 13. After `bump(a, -1)`, `a` is 12. Because `x` is a non-const reference, both calls write back through the reference to the caller's variable. Learners who expect 9 (10 + 3 - 1 applied to separate copies) forget that non-const references alias the caller's variable, not a copy."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which parameter convention prevents a function from accidentally modifying the caller's variable while still avoiding an expensive copy?",
+    "options": {
+      "a": "Pass by value",
+      "b": "Pass by non-const reference",
+      "c": "Pass by const reference",
+      "d": "Pass by pointer"
+    },
+    "answer": "c",
+    "explanation_md": "A `const T&` parameter binds directly to the caller's variable (no copy) but the compiler rejects any attempt to write through it. Pass by value avoids modification but creates a copy. Non-const reference allows modification. A pointer can also avoid copies, but does not prevent modification unless it is `const T*`, and it does not clearly signal read-only intent the way `const T&` does."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The function below is supposed to swap two integers in place, but after calling it `a` and `b` are unchanged. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid mySwap(int a, int b) {\n    int tmp = a;\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int x = 1, y = 2;\n    mySwap(x, y);\n    std::cout << x << ' ' << y << '\\n';\n}\n```",
+    "options": {
+      "a": "`tmp` is not initialised before use",
+      "b": "`a` and `b` are passed by value, so the swap happens on copies, not the caller's variables",
+      "c": "The assignment `a = b` overwrites the original value of `a` before it is saved",
+      "d": "`mySwap` needs to return the swapped values"
+    },
+    "answer": "b",
+    "explanation_md": "Parameters `a` and `b` are copies of `x` and `y`. The swap modifies the copies perfectly correctly, but those copies are discarded when the function returns, leaving `x` and `y` unchanged. The fix is to change the parameters to `int& a, int& b`. Option c is a common distractor but is wrong — `tmp = a` saves the value before the reassignment."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nvoid fill(int* out, int value) {\n    *out = value;\n}\n\nint main() {\n    int result = 99;\n    fill(&result, 7);\n    std::cout << result << '\\n';\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`fill` dereferences `out` and writes `value` through the pointer, overwriting whatever `result` held before the call. The initial value of 99 is irrelevant once the out parameter writes 7. Learners who expect 99 mistakenly think the original value of `result` is preserved because the function does not return anything."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function must produce two independent integer results and write them back to the caller. Which approach is most idiomatic at this point in the course (no structs yet)?",
+    "options": {
+      "a": "Return both values as a single `int` using bit manipulation",
+      "b": "Use two non-const reference out parameters",
+      "c": "Use two `const int&` parameters",
+      "d": "Make the function return the first value and use a global variable for the second"
+    },
+    "answer": "b",
+    "explanation_md": "Two non-const reference out parameters (`int& outA, int& outB`) let the function write both results directly into the caller's variables — the standard pre-struct idiom. `const int&` parameters are read-only and cannot be written to. Bit manipulation and global variables are poor substitutes that sacrifice clarity and correctness."
+  }
+]

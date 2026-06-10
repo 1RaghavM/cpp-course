@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Constexpr GCD via Euclid",
+    "prompt_md": "## Goal\nWrite a `constexpr` function `gcd(int a, int b)` using the Euclidean algorithm. Print the GCD of a compile-time constant pair and of a pair read from stdin.\n\n## Input\n- Line 1: two positive integers A and B separated by a space (1 <= A, B <= 100000).\n\n## Output\n- Line 1: `Compile-time GCD(12, 8): 4`\n- Line 2: `Runtime GCD(A, B): <result>`\n\n## Requirements\n1. `gcd` must be `constexpr`.\n2. Use the Euclidean algorithm: repeatedly replace `(a, b)` with `(b, a % b)` until `b == 0`; the result is `a`.\n3. `constexpr int ct = gcd(12, 8);` must compile and equal 4.\n4. A and B are always positive.\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement constexpr int gcd(int a, int b)\n// Use the Euclidean algorithm: gcd(a, 0) = a; gcd(a, b) = gcd(b, a % b)\nconstexpr int gcd(int a, int b) {\n    (void)a; (void)b;\n    return 1;  // stub\n}\n\nint main() {\n    constexpr int ct = gcd(12, 8);\n    std::cout << \"Compile-time GCD(12, 8): \" << ct << \"\\n\";\n\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Runtime GCD(\" << a << \", \" << b << \"): \" << gcd(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconstexpr int gcd(int a, int b) {\n    while (b != 0) {\n        int t = b;\n        b = a % b;\n        a = t;\n    }\n    return a;\n}\n\nint main() {\n    constexpr int ct = gcd(12, 8);\n    std::cout << \"Compile-time GCD(12, 8): \" << ct << \"\\n\";\n\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Runtime GCD(\" << a << \", \" << b << \"): \" << gcd(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: GCD(36, 24)",
+        "is_sample": true,
+        "stdin": "36 24\n",
+        "expected_stdout": "Compile-time GCD(12, 8): 4\nRuntime GCD(36, 24): 12"
+      },
+      {
+        "label": "Hidden: coprime numbers",
+        "is_sample": false,
+        "stdin": "7 13\n",
+        "expected_stdout": "Compile-time GCD(12, 8): 4\nRuntime GCD(7, 13): 1"
+      },
+      {
+        "label": "Hidden: one divides the other",
+        "is_sample": false,
+        "stdin": "100 25\n",
+        "expected_stdout": "Compile-time GCD(12, 8): 4\nRuntime GCD(100, 25): 25"
+      }
+    ]
+  },
+  {
+    "title": "Constexpr Absolute Value Template — Complete the Function",
+    "prompt_md": "## Goal\nComplete the function template `cabs` that returns the absolute value of its argument. It must work for both `int` and `double` at compile time and runtime.\n\n## Input\n- Line 1: one integer (may be negative).\n- Line 2: one floating-point number (may be negative; one decimal place).\n\n## Output\n- Line 1: `Int abs: <result>` (integer, no decimal point).\n- Line 2: `Double abs: <result>` (one decimal place, use `std::fixed` and `std::setprecision(1)`).\n\n## Requirements\n1. The function signature is `template <typename T> constexpr T cabs(T x)` — do not change it.\n2. For negative input, return the negated value; for non-negative, return the value unchanged.\n3. `constexpr int ci = cabs(-5);` must compile (already in `main`).\n4. `constexpr double cd = cabs(-2.5);` must compile (already in `main`).\n\n## Notes\n- Use `#include <iomanip>` for `std::fixed` and `std::setprecision`.\n",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// Complete this function template.\n// Returns the absolute value of x for any numeric type T.\ntemplate <typename T>\nconstexpr T cabs(T x) {\n    // TODO: return x if x >= 0, else return -x\n    (void)x;\n    return T{};  // stub\n}\n\nint main() {\n    constexpr int ci = cabs(-5);\n    constexpr double cd = cabs(-2.5);\n    (void)ci; (void)cd;  // used below via runtime calls too\n\n    int n;\n    std::cin >> n;\n    double d;\n    std::cin >> d;\n\n    std::cout << \"Int abs: \" << cabs(n) << \"\\n\";\n    std::cout << \"Double abs: \" << std::fixed << std::setprecision(1) << cabs(d) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\ntemplate <typename T>\nconstexpr T cabs(T x) {\n    return x < T{0} ? -x : x;\n}\n\nint main() {\n    constexpr int ci = cabs(-5);\n    constexpr double cd = cabs(-2.5);\n    (void)ci; (void)cd;\n\n    int n;\n    std::cin >> n;\n    double d;\n    std::cin >> d;\n\n    std::cout << \"Int abs: \" << cabs(n) << \"\\n\";\n    std::cout << \"Double abs: \" << std::fixed << std::setprecision(1) << cabs(d) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: negative int and double",
+        "is_sample": true,
+        "stdin": "-7\n-3.5\n",
+        "expected_stdout": "Int abs: 7\nDouble abs: 3.5"
+      },
+      {
+        "label": "Hidden: already positive",
+        "is_sample": false,
+        "stdin": "4\n1.2\n",
+        "expected_stdout": "Int abs: 4\nDouble abs: 1.2"
+      },
+      {
+        "label": "Hidden: zero values",
+        "is_sample": false,
+        "stdin": "0\n0.0\n",
+        "expected_stdout": "Int abs: 0\nDouble abs: 0.0"
+      }
+    ]
+  }
+]

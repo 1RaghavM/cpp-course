@@ -146,6 +146,161 @@
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_8_ex2_starter.cpp:4:25: warning: unused parameter 'val' [-Wunused-parameter]
     4 | void printPair(T key, U val)
 
+## 12.10 — pass
+- **warning**: 12_10_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_10_ex1_starter.cpp:5:18: warning: unused parameter 'ptr' [-Wunused-parameter]
+    5 | void triple(int* ptr) {
+      |                  ^
+1 warning generated.
+
+- **warning**: 12_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_10_ex2_starter.cpp:5:31: warning: unused parameter 'ptr' [-Wunused-parameter]
+    5 | void incrementIfPositive(int* ptr) {
+      |                               ^
+1 warning generated.
+
+
+## 12.11 — pass
+- **warning**: 12_11_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_11_ex1_starter.cpp:5:21: warning: unused parameter 'pp1' [-Wunused-parameter]
+    5 | void swapPtrs(int** pp1, int** pp2) {
+      |                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_11_ex1_starter.cpp:5:32: warning: unused parameter 'pp2' [-Wunused-parameter]
+    5 | void swapPtrs(
+- **warning**: 12_11_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_11_ex2_starter.cpp:4:25: warning: parameter 'result' set but not used [-Wunused-but-set-parameter]
+    4 | void pointToLarger(int* result, int* pa, int* pb) {
+      |                         ^
+1 warning generated.
+
+
+## 12.12 — pass
+- **warning**: 12_12_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_12_ex1_starter.cpp:6:27: warning: unused parameter 'b' [-Wunused-parameter]
+    6 | int& minimum(int& a, int& b, int& c) {
+      |                           ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_12_ex1_starter.cpp:6:35: warning: unused parameter 'c' [-Wunused-parameter]
+    6 | int& minimu
+- **warning**: 12_12_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_12_ex2_starter.cpp:5:29: warning: unused parameter 'a' [-Wunused-parameter]
+    5 | int* findFirstPositive(int* a, int* b, int* c) {
+      |                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_12_ex2_starter.cpp:5:37: warning: unused parameter 'b' [-Wunused-parameter]
+    5 |
+
+## 12.13 — pass
+- **warning**: 12_13_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_13_ex1_starter.cpp:5:22: warning: unused parameter 'total' [-Wunused-parameter]
+    5 | void accumulate(int& total, int delta) {
+      |                      ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_13_ex1_starter.cpp:5:33: warning: unused parameter 'delta' [-Wunused-parameter]
+    5 | void a
+
+## 12.14 — pass
+- **warning**: 12_14_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_14_ex2_starter.cpp:5:29: warning: unused parameter 'y' [-Wunused-parameter]
+    5 | int& largerRef(int& x, int& y) {
+      |                             ^
+1 warning generated.
+
+
+## 12.15 — pass
+- **warning**: 12_15_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_15_ex1_starter.cpp:7:50: warning: unused parameter 'arr' [-Wunused-parameter]
+    7 | std::optional<int> findFirstDivisible(const int* arr, int size, int divisor) {
+      |                                                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_15_ex1_starter.cpp:7:59: warni
+
+## 12.2 — pass
+- **warning**: 12_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_2_ex2_starter.cpp:4:20: warning: unused parameter 'a' [-Wunused-parameter]
+    4 | int computeSum(int a, int b)
+      |                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_2_ex2_starter.cpp:4:27: warning: unused parameter 'b' [-Wunused-parameter]
+    4 | int computeSum(int a, int b)
+ 
+
+## 12.4 — pass
+- **warning**: 12_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_4_ex2_starter.cpp:4:22: warning: unused parameter 'x' [-Wunused-parameter]
+    4 | int maxOf(const int& x, const int& y)
+      |                      ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_4_ex2_starter.cpp:4:36: warning: unused parameter 'y' [-Wunused-parameter]
+    4 | int maxOf(const int
+
+## 12.5 — pass
+- **warning**: 12_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_5_ex1_starter.cpp:4:17: warning: unused parameter 'value' [-Wunused-parameter]
+    4 | void clamp(int& value, int lo, int hi) {
+      |                 ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_5_ex1_starter.cpp:4:28: warning: unused parameter 'lo' [-Wunused-parameter]
+    4 | void clamp(int& 
+
+## 12.6 — pass
+- **warning**: 12_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_6_ex1_starter.cpp:4:29: warning: unused parameter 'a' [-Wunused-parameter]
+    4 | void printLarger(const int& a, const int& b) {
+      |                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_6_ex1_starter.cpp:4:43: warning: unused parameter 'b' [-Wunused-parameter]
+    4 | voi
+- **warning**: 12_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_6_ex2_starter.cpp:5:30: warning: unused parameter 'a' [-Wunused-parameter]
+    5 | int countNegative(const int& a, const int& b, const int& c) {
+      |                              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_6_ex2_starter.cpp:5:44: warning: unused parameter 'b' [-Wunused-parame
+
+## 12.7 — pass
+- **warning**: 12_7_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_7_ex1_starter.cpp:5:28: warning: unused parameter 'p' [-Wunused-parameter]
+    5 | void doubleViaPointer(int* p) {
+      |                            ^
+1 warning generated.
+
+
+## 12.8 — pass
+- **warning**: 12_8_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_8_ex1_starter.cpp:5:21: warning: unused parameter 'p' [-Wunused-parameter]
+    5 | void safePrint(int* p) {
+      |                     ^
+1 warning generated.
+
+- **warning**: 12_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_8_ex2_starter.cpp:5:25: warning: unused parameter 'a' [-Wunused-parameter]
+    5 | int* firstPositive(int& a, int& b, int& c) {
+      |                         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_8_ex2_starter.cpp:5:33: warning: unused parameter 'b' [-Wunused-parameter]
+    5 | int* firs
+
+## 12.9 — pass
+- **warning**: 12_9_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_9_ex1_starter.cpp:4:9: warning: unused variable 'a' [-Wunused-variable]
+    4 |     int a { 10 };
+      |         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_9_ex1_starter.cpp:5:9: warning: unused variable 'b' [-Wunused-variable]
+    5 |     int b { 20 };
+      |         ^
+2 warnings generated.
+
+- **warning**: 12_9_ex1_solution: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_9_ex1_solution.cpp:9:16: warning: variable 'ptr3' set but not used [-Wunused-but-set-variable]
+    9 |     const int* ptr3 { &a }; // pointer to const: can reseat, cannot modify
+      |                ^
+1 warning generated.
+
+
+## 12.x — pass
+- **warning**: 12_x_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_x_ex1_starter.cpp:12:28: warning: unused parameter 'n' [-Wunused-parameter]
+   12 | int& findMax(int* arr, int n) {
+      |                            ^
+1 warning generated.
+
+- **warning**: 12_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_x_ex2_starter.cpp:7:38: warning: unused parameter 'keys' [-Wunused-parameter]
+    7 | std::optional<int> lookup(const int* keys, const int* values, int size, int target) {
+      |                                      ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/12_x_ex2_starter.cpp:7:55: warning: un
+
 ## 13.12 — pass
 - **warning**: 13_12_ex2_starter: compiler warnings:
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/13_12_ex2_starter.cpp:10:28: warning: unused parameter 'p' [-Wunused-parameter]

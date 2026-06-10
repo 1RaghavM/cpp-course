@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly distinguishes `const` from `constexpr` on a variable?",
+    "options": {
+      "a": "`const` variables are always evaluated at compile time; `constexpr` variables may be evaluated at runtime.",
+      "b": "`constexpr` variables require a compile-time constant initializer; `const` variables may be initialized at runtime.",
+      "c": "`const` and `constexpr` are interchangeable when the initializer is a literal.",
+      "d": "`constexpr` prevents modification only at runtime, while `const` prevents modification only at compile time."
+    },
+    "answer": "b",
+    "explanation_md": "`const` prevents modification but does not require a compile-time initializer—you can write `const int n = get_runtime_value();`. `constexpr` requires the initializer to be a compile-time constant expression. When the initializer is a literal, both `const` and `constexpr` work, but only `constexpr` guarantees the variable is usable in constant-expression contexts like array sizes."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nconstexpr int tri(int n) {\n    int s = 0;\n    for (int i = 1; i <= n; ++i) s += i;\n    return s;\n}\nint main() {\n    constexpr int a = tri(4);\n    constexpr int b = tri(5);\n    std::cout << a << \" \" << b << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10 15",
+    "explanation_md": "`tri(4)` = 1+2+3+4 = 10. `tri(5)` = 1+2+3+4+5 = 15. Both are compile-time constants. Output is `10 15`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program has this call chain: `constexpr int result = outer(5);` where `outer` calls `inner`, and `inner` is a plain (non-`constexpr`) function. What happens?",
+    "options": {
+      "a": "The program compiles and runs; `result` is evaluated at runtime instead.",
+      "b": "The program fails to compile because `inner` is not `constexpr`.",
+      "c": "The program compiles; `inner` is automatically promoted to `constexpr`.",
+      "d": "The program compiles but emits a warning about the non-`constexpr` call."
+    },
+    "answer": "b",
+    "explanation_md": "Assigning to a `constexpr` variable forces compile-time evaluation. If `outer` calls `inner` and `inner` is not `constexpr`, the compiler cannot evaluate the chain at compile time—so the initialization of `result` is a compile error. The fix is to mark `inner` as `constexpr`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nconsteval int must_ct(int x) { return x * 10; }\nconstexpr int may_ct(int x) { return x * 10; }\nint main() {\n    int n = 3;\n    std::cout << may_ct(n) << \"\\n\";\n    constexpr int m = may_ct(4);\n    std::cout << m << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "30\n40",
+    "explanation_md": "`may_ct(n)` is a `constexpr` function called with a runtime `int` — legal, evaluates at runtime to 30. `may_ct(4)` initializes a `constexpr int` — 4 is a constant expression, so it evaluates to 40 at compile time. `must_ct` is never called, so its existence does not affect compilation."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to use `table_size` as an array size. What is wrong?\n\n```cpp\nint compute_size() { return 64; }\nint main() {\n    constexpr int table_size = compute_size();\n    int table[table_size];\n}\n```",
+    "options": {
+      "a": "`table_size` should be declared `static constexpr`.",
+      "b": "`compute_size()` is not `constexpr`, so its return value is not a constant expression; the `constexpr` variable declaration is a compile error.",
+      "c": "Array sizes must be `unsigned int`, not `int`.",
+      "d": "`int table[table_size]` requires `table_size` to be declared at global scope."
+    },
+    "answer": "b",
+    "explanation_md": "`constexpr int table_size = compute_size();` requires `compute_size()` to return a compile-time constant, but `compute_size` is not marked `constexpr`. Fix: add `constexpr` to `compute_size`. Once both are `constexpr`, `table_size` is a valid constant expression and can be used as an array size."
+  }
+]

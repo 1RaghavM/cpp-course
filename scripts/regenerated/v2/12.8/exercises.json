@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Pointer Print",
+    "prompt_md": "## Goal\nWrite a function `safePrint` that takes a pointer to `int` and prints its value if the pointer is non-null, or prints `null` if it is null.\n\n## Input\nLine 1: integer `flag` (1 means use a real pointer; 0 means use a null pointer).\nLine 2 (only when flag is 1): integer `value` to point at.\n\n## Output\nPrint exactly one line: the pointed-to integer if non-null, or the word `null` if the pointer is null.\n\n## Requirements\n1. The function signature must be `void safePrint(int* p)`.\n2. If `p != nullptr`, print `*p` followed by a newline.\n3. If `p == nullptr`, print `null` followed by a newline.\n4. `main` reads `flag`; when `flag == 1` it also reads `value`, sets `p = &value`, and calls `safePrint(p)`; when `flag == 0` it calls `safePrint(nullptr)`.\n5. Edge case: flag is 0 (null path).\n6. Edge case: value is negative.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement safePrint\n// Print *p if p is non-null, otherwise print \"null\"\nvoid safePrint(int* p) {\n    // your code here\n}\n\nint main() {\n    int flag;\n    std::cin >> flag;\n    if (flag == 1) {\n        int value;\n        std::cin >> value;\n        safePrint(&value);\n    } else {\n        safePrint(nullptr);\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid safePrint(int* p) {\n    if (p != nullptr) {\n        std::cout << *p << '\\n';\n    } else {\n        std::cout << \"null\\n\";\n    }\n}\n\nint main() {\n    int flag;\n    std::cin >> flag;\n    if (flag == 1) {\n        int value;\n        std::cin >> value;\n        safePrint(&value);\n    } else {\n        safePrint(nullptr);\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: non-null pointer",
+        "is_sample": true,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42"
+      },
+      {
+        "label": "Hidden: null pointer",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "null"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "1\n-8\n",
+        "expected_stdout": "-8"
+      }
+    ]
+  },
+  {
+    "title": "Find First Positive",
+    "prompt_md": "## Goal\nComplete the function `firstPositive` that searches three integers and returns a pointer to the first one that is strictly greater than zero, or `nullptr` if none qualify.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\nLine 3: integer `c`.\n\n## Output\nPrint exactly one line: the first positive integer found (checking a then b then c in order), or `none` if all are non-positive.\n\n## Requirements\n1. The function signature must be `int* firstPositive(int& a, int& b, int& c)`.\n2. Return `&a` if `a > 0`, else `&b` if `b > 0`, else `&c` if `c > 0`, else `nullptr`.\n3. `main` reads three integers, calls `firstPositive`, null-checks the result, and prints the dereferenced value or `none`.\n4. Edge case: all non-positive (print `none`).\n5. Edge case: first value is already positive (return immediately).",
+    "starter_code": "#include <iostream>\n\n// TODO: implement firstPositive\n// Return a pointer to the first of a, b, c that is > 0, or nullptr if none\nint* firstPositive(int& a, int& b, int& c) {\n    return nullptr; // replace this\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    int* result = firstPositive(a, b, c);\n    if (result != nullptr) {\n        std::cout << *result << '\\n';\n    } else {\n        std::cout << \"none\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint* firstPositive(int& a, int& b, int& c) {\n    if (a > 0) return &a;\n    if (b > 0) return &b;\n    if (c > 0) return &c;\n    return nullptr;\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    int* result = firstPositive(a, b, c);\n    if (result != nullptr) {\n        std::cout << *result << '\\n';\n    } else {\n        std::cout << \"none\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: second is positive",
+        "is_sample": true,
+        "stdin": "-3\n5\n-1\n",
+        "expected_stdout": "5"
+      },
+      {
+        "label": "Hidden: all non-positive",
+        "is_sample": false,
+        "stdin": "0\n-2\n-9\n",
+        "expected_stdout": "none"
+      },
+      {
+        "label": "Hidden: first is positive",
+        "is_sample": false,
+        "stdin": "7\n3\n-1\n",
+        "expected_stdout": "7"
+      }
+    ]
+  }
+]

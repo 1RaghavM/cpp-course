@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Find First Divisible",
+    "prompt_md": "## Goal\nWrite a function `findFirstDivisible` that searches an array of integers for the first element divisible by a given divisor and returns it as a `std::optional<int>`.\n\n## Input\n- Line 1: integers `n` and `d` separated by a space — array size (1 ≤ n ≤ 20) and divisor (1 ≤ d ≤ 100).\n- Line 2: `n` integers separated by spaces — the array elements.\n\n## Output\n- If a divisible element is found: print `Found: <value>` where `<value>` is the first element divisible by `d`.\n- If none found: print `Not found`.\n\n## Requirements\n1. Implement `std::optional<int> findFirstDivisible(const int* arr, int size, int divisor)` that returns the first element divisible by `divisor`, or `std::nullopt` if none exists.\n2. In `main`, check whether the returned optional has a value and print accordingly.\n3. Hidden tests include cases where no element is divisible and cases where the first element is divisible.",
+    "starter_code": "#include <iostream>\n#include <optional>\n\n// TODO: implement findFirstDivisible\n// Return the first element in arr[0..size-1] divisible by divisor,\n// or std::nullopt if none exists.\nstd::optional<int> findFirstDivisible(const int* arr, int size, int divisor) {\n    // TODO\n    return std::nullopt;\n}\n\nint main() {\n    int n, d;\n    std::cin >> n >> d;\n\n    int arr[20];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    auto result = findFirstDivisible(arr, n, d);\n\n    if (result)\n        std::cout << \"Found: \" << *result << '\\n';\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <optional>\n\nstd::optional<int> findFirstDivisible(const int* arr, int size, int divisor) {\n    for (int i = 0; i < size; ++i)\n        if (arr[i] % divisor == 0) return arr[i];\n    return std::nullopt;\n}\n\nint main() {\n    int n, d;\n    std::cin >> n >> d;\n\n    int arr[20];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    auto result = findFirstDivisible(arr, n, d);\n\n    if (result)\n        std::cout << \"Found: \" << *result << '\\n';\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: found in the middle",
+        "is_sample": true,
+        "stdin": "5 3\n1 2 9 4 5\n",
+        "expected_stdout": "Found: 9"
+      },
+      {
+        "label": "Hidden: none divisible",
+        "is_sample": false,
+        "stdin": "4 7\n1 2 3 4\n",
+        "expected_stdout": "Not found"
+      },
+      {
+        "label": "Hidden: first element divisible",
+        "is_sample": false,
+        "stdin": "3 5\n10 3 7\n",
+        "expected_stdout": "Found: 10"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Dereferencing Without Checking",
+    "prompt_md": "## Goal\nThe program below searches an array for a value greater than a threshold and prints it. It has one logic bug — it dereferences the optional without checking whether it has a value. Find and fix the bug.\n\n## Input\n- Line 1: integers `n` and `threshold` separated by a space (1 ≤ n ≤ 10).\n- Line 2: `n` integers separated by spaces.\n\n## Output\n- If a value greater than `threshold` is found: print `First above threshold: <value>`.\n- If none: print `None above threshold`.\n\n## Requirements\n1. The function `findAbove` must remain unchanged — only fix the calling code in `main`.\n2. When the optional is empty, print `None above threshold` instead of dereferencing.\n3. When the optional has a value, print `First above threshold: <value>`.\n4. Hidden tests include cases where no element exceeds the threshold.",
+    "starter_code": "#include <iostream>\n#include <optional>\n\nstd::optional<int> findAbove(const int* arr, int size, int threshold) {\n    for (int i = 0; i < size; ++i)\n        if (arr[i] > threshold) return arr[i];\n    return std::nullopt;\n}\n\nint main() {\n    int n, threshold;\n    std::cin >> n >> threshold;\n\n    int arr[10];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    auto result = findAbove(arr, n, threshold);\n    // bug: always dereferences result without checking\n    std::cout << \"First above threshold: \" << *result << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <optional>\n\nstd::optional<int> findAbove(const int* arr, int size, int threshold) {\n    for (int i = 0; i < size; ++i)\n        if (arr[i] > threshold) return arr[i];\n    return std::nullopt;\n}\n\nint main() {\n    int n, threshold;\n    std::cin >> n >> threshold;\n\n    int arr[10];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    auto result = findAbove(arr, n, threshold);\n    if (result)\n        std::cout << \"First above threshold: \" << *result << '\\n';\n    else\n        std::cout << \"None above threshold\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: found",
+        "is_sample": true,
+        "stdin": "4 5\n2 8 3 7\n",
+        "expected_stdout": "First above threshold: 8"
+      },
+      {
+        "label": "Hidden: none above threshold",
+        "is_sample": false,
+        "stdin": "3 10\n1 5 9\n",
+        "expected_stdout": "None above threshold"
+      },
+      {
+        "label": "Hidden: threshold zero, first element qualifies",
+        "is_sample": false,
+        "stdin": "3 0\n3 1 4\n",
+        "expected_stdout": "First above threshold: 3"
+      }
+    ]
+  }
+]

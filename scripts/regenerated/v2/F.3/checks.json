@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between a `constexpr` function and a `consteval` function?",
+    "options": {
+      "a": "`consteval` functions run faster at runtime because they skip the function call overhead.",
+      "b": "A `constexpr` function may be evaluated at runtime; a `consteval` function must always be evaluated at compile time.",
+      "c": "`consteval` functions can call non-`constexpr` helper functions; `constexpr` functions cannot.",
+      "d": "A `consteval` function can only return integer types."
+    },
+    "answer": "b",
+    "explanation_md": "`consteval` declares an immediate function: every call must be a compile-time constant expression. If it is not, the compiler emits an error. `constexpr` functions have a fallback to runtime when called with runtime arguments. Options a, c, and d are all incorrect."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\nconsteval int triple(int x) { return x * 3; }\nint main() {\n    constexpr int a = triple(4);\n    constexpr int b = triple(triple(2));\n    std::cout << a << \" \" << b << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "12 18",
+    "explanation_md": "`triple(4)` = 12. `triple(2)` = 6, then `triple(6)` = 18. Both are compile-time calls (arguments are constant expressions), so `consteval` is satisfied. The program prints `12 18`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants a guaranteed compile-time hash. What is wrong?\n\n```cpp\nint compute(int x) { return x * 31; }  // not constexpr\nconsteval int hash_it(int x) {\n    return compute(x) + 1;\n}\nint main() {\n    constexpr int h = hash_it(5);\n}\n```",
+    "options": {
+      "a": "`consteval` functions are not allowed to return `int`.",
+      "b": "`compute` is not `constexpr`, so calling it inside `consteval hash_it` is a compile error.",
+      "c": "`hash_it(5)` must be assigned to a plain `int`, not `constexpr int`.",
+      "d": "`consteval` functions cannot call any other function."
+    },
+    "answer": "b",
+    "explanation_md": "A `consteval` function body must only call `constexpr` (or `consteval`) functions, because its body must be evaluable at compile time. `compute` is a plain (non-`constexpr`) function, so calling it inside `hash_it` is a compile error. Fix: mark `compute` as `constexpr`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is `std::is_constant_evaluated()` most useful?",
+    "options": {
+      "a": "Inside a `consteval` function to check whether the call is valid.",
+      "b": "Inside a `constexpr` function to choose between a compile-time algorithm and a runtime implementation.",
+      "c": "Inside any function to check whether the program is in debug mode.",
+      "d": "Inside `main()` to detect whether optimization flags were passed to the compiler."
+    },
+    "answer": "b",
+    "explanation_md": "`std::is_constant_evaluated()` returns `true` when the enclosing expression is a constant expression (compile-time evaluation). It is most useful inside a `constexpr` function where you want different logic at compile time versus runtime — for example, a pure-arithmetic path at compile time and a library call at runtime."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Will this program compile? If yes, what does it print?\n\n```cpp\n#include <iostream>\nconsteval int add_ce(int a, int b) { return a + b; }\nconstexpr int add_cx(int a, int b) { return a + b; }\nint main() {\n    int x = 3;\n    std::cout << add_cx(x, 4) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "The program compiles and prints `7`. `add_ce` is `consteval` but it is never called in `main`, so its existence causes no error. `add_cx` is `constexpr` and is called with `x` (a runtime `int`) — that is legal because `constexpr` functions can run at runtime. The result is `3 + 4 = 7`."
+  }
+]
