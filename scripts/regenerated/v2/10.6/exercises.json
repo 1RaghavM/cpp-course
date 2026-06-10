@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compute Average with Floating-Point Division",
+    "prompt_md": "## Goal\nRead two integers from stdin and print their average as a decimal value using `static_cast`.\n\n## Input\n- Line 1: integer A (-1000 ≤ A ≤ 1000)\n- Line 2: integer B (-1000 ≤ B ≤ 1000)\n\n## Output\n- Print exactly one line: `Average: X` where X is the floating-point average of A and B, formatted with one decimal place.\n\n## Requirements\n1. You must use `static_cast<double>` on at least one operand before dividing to avoid integer division.\n2. Use `std::fixed` and `std::setprecision(1)` to format the output to exactly one decimal place.\n3. The average of 3 and 4 must print `Average: 3.5`, not `Average: 3` or `Average: 4`.\n4. Negative values must be handled correctly: average of -1 and 1 is `0.0`.\n\n## Notes\n- Include `<iomanip>` for `std::fixed` and `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    // TODO: compute the average using static_cast<double> so that\n    //       floating-point division is used, then print with 1 decimal place\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    double avg { static_cast<double>(a + b) / 2 };\n    std::cout << std::fixed << std::setprecision(1)\n              << \"Average: \" << avg << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "Average: 3.5\n"
+      },
+      {
+        "label": "Hidden: negative values cancel",
+        "is_sample": false,
+        "stdin": "-1\n1\n",
+        "expected_stdout": "Average: 0.0\n"
+      },
+      {
+        "label": "Hidden: same integers",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "Average: 7.0\n"
+      }
+    ]
+  },
+  {
+    "title": "ASCII Value Inspector",
+    "prompt_md": "## Goal\nComplete the function `charToAscii` that takes a `char` and returns its ASCII value as an `int`, using `static_cast`.\n\n## Input\n- Line 1: a single printable character (no whitespace).\n\n## Output\n- Print exactly one line: `ASCII: N` where N is the integer ASCII value of the character.\n\n## Requirements\n1. Implement `charToAscii(char c)` that returns `static_cast<int>(c)`.\n2. The `main` function reads one character and prints `ASCII: ` followed by the return value of `charToAscii`.\n3. For input `A`, output must be `ASCII: 65`.\n4. For input `a`, output must be `ASCII: 97`.\n5. For input `0`, output must be `ASCII: 48`.\n\n## Notes\n- The function must use `static_cast`, not a C-style cast.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function using static_cast\n//       it should return the integer ASCII value of c\nint charToAscii(char c)\n{\n    return 0; // placeholder\n}\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n    std::cout << \"ASCII: \" << charToAscii(c) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint charToAscii(char c)\n{\n    return static_cast<int>(c);\n}\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n    std::cout << \"ASCII: \" << charToAscii(c) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: uppercase A",
+        "is_sample": true,
+        "stdin": "A\n",
+        "expected_stdout": "ASCII: 65\n"
+      },
+      {
+        "label": "Hidden: lowercase a",
+        "is_sample": false,
+        "stdin": "a\n",
+        "expected_stdout": "ASCII: 97\n"
+      },
+      {
+        "label": "Hidden: digit character 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "ASCII: 48\n"
+      }
+    ]
+  }
+]

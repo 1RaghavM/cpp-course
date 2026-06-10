@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Validate and Echo an Integer Input",
+    "prompt_md": "## Goal\nRead one integer from stdin and print it if it is valid and positive, or print an error message if extraction fails or the value is not positive.\n\n## Input\nLine 1: anything the user types (may or may not be a valid integer).\n\n## Output\n- If the extraction fails (non-integer input): print `Error: not a number`\n- If the extraction succeeds but the value is <= 0: print `Error: must be positive`\n- If the extraction succeeds and value > 0: print `Value: N` where N is the integer.\n\n## Requirements\n1. Use `if (!(std::cin >> n))` to detect extraction failure.\n2. On extraction failure, call `std::cin.clear()` and `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')` before printing the error.\n3. Separately check `n <= 0` after a successful extraction.\n4. Print exactly one line of output.\n\n## Notes\n- Include `<limits>` for `std::numeric_limits`.",
+    "starter_code": "#include <iostream>\n#include <limits>\n\nint main() {\n    int n;\n    // TODO: attempt to read n\n    // If extraction fails: clear + ignore, print \"Error: not a number\"\n    // If n <= 0: print \"Error: must be positive\"\n    // Otherwise: print \"Value: N\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <limits>\n\nint main() {\n    int n;\n    if (!(std::cin >> n)) {\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        std::cout << \"Error: not a number\\n\";\n    } else if (n <= 0) {\n        std::cout << \"Error: must be positive\\n\";\n    } else {\n        std::cout << \"Value: \" << n << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: valid positive integer",
+        "is_sample": true,
+        "stdin": "42",
+        "expected_stdout": "Value: 42"
+      },
+      {
+        "label": "Hidden: non-integer input",
+        "is_sample": false,
+        "stdin": "abc",
+        "expected_stdout": "Error: not a number"
+      },
+      {
+        "label": "Hidden: zero is not positive",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "Error: must be positive"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug in readScore",
+    "prompt_md": "## Goal\nThe program below reads an integer score (0–100) from stdin. It is supposed to print the score if valid, or an appropriate error message. It has a bug: it clears the fail state but forgets to discard the bad input, causing the range-check branch to run on garbage. Find and fix the bug.\n\n## Input\nLine 1: one value (integer or non-integer).\n\n## Output\n- Non-integer input: `Error: invalid input`\n- Integer outside [0, 100]: `Error: out of range`\n- Valid integer in [0, 100]: `Score: N`\n\n## Requirements\n1. Do not change `main`'s structure, only fix the bug in the error-handling block.\n2. `readScore(-1)` is out of range.\n3. `readScore(101)` is out of range.\n4. `readScore(0)` and `readScore(100)` are valid.",
+    "starter_code": "#include <iostream>\n#include <limits>\n\nint main() {\n    int n;\n    if (!(std::cin >> n)) {\n        std::cin.clear();\n        // BUG: missing ignore — bad input stays in buffer\n        // After fix, the next read attempts should work correctly\n        // For this exercise, just print the error and return\n        std::cout << \"Error: invalid input\\n\";\n        return 1;\n    }\n    if (n < 0 || n > 100) {\n        std::cout << \"Error: out of range\\n\";\n        return 1;\n    }\n    std::cout << \"Score: \" << n << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <limits>\n\nint main() {\n    int n;\n    if (!(std::cin >> n)) {\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        std::cout << \"Error: invalid input\\n\";\n        return 1;\n    }\n    if (n < 0 || n > 100) {\n        std::cout << \"Error: out of range\\n\";\n        return 1;\n    }\n    std::cout << \"Score: \" << n << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: valid score",
+        "is_sample": true,
+        "stdin": "85",
+        "expected_stdout": "Score: 85"
+      },
+      {
+        "label": "Hidden: non-integer triggers error",
+        "is_sample": false,
+        "stdin": "xyz",
+        "expected_stdout": "Error: invalid input"
+      },
+      {
+        "label": "Hidden: out of range",
+        "is_sample": false,
+        "stdin": "150",
+        "expected_stdout": "Error: out of range"
+      }
+    ]
+  }
+]

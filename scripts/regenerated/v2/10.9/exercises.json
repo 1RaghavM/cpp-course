@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Deduced Return Type Chain",
+    "prompt_md": "## Goal\nWrite two functions with `auto` return types: `double_value` and `quadruple_value`, then read an integer from stdin and print the results of calling both.\n\n## Input\n- Line 1: one integer `n` (the value to process).\n\n## Output\n- Line 1: `Double: D` where `D` is `n * 2`.\n- Line 2: `Quad: Q` where `Q` is `n * 4` (computed by calling `double_value` twice via `quadruple_value`).\n\n## Requirements\n1. `double_value(int x)` must use `auto` as its return type and return `x * 2`.\n2. `quadruple_value(int x)` must use `auto` as its return type and call `double_value` inside its body.\n3. Both function definitions must appear before `main` so the compiler can deduce their return types.\n4. Print exactly the format shown: `Double: ` and `Quad: ` (capital D and Q, colon, space, no trailing spaces).",
+    "starter_code": "#include <iostream>\n\n// TODO: replace this stub with the correct implementation\n// double_value should return x * 2\nauto double_value(int x)\n{\n    return x;  // TODO: fix this\n}\n\n// TODO: replace this stub with the correct implementation\n// quadruple_value should call double_value to compute x * 4\nauto quadruple_value(int x)\n{\n    return x;  // TODO: fix this\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Double: \" << double_value(n) << '\\n';\n    std::cout << \"Quad: \"   << quadruple_value(n) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nauto double_value(int x)\n{\n    return x * 2;\n}\n\nauto quadruple_value(int x)\n{\n    return double_value(x) * 2;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Double: \" << double_value(n) << '\\n';\n    std::cout << \"Quad: \"   << quadruple_value(n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n = 5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Double: 10\nQuad: 20"
+      },
+      {
+        "label": "Hidden: n = 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Double: 2\nQuad: 4"
+      },
+      {
+        "label": "Hidden: n = -3",
+        "is_sample": false,
+        "stdin": "-3\n",
+        "expected_stdout": "Double: -6\nQuad: -12"
+      }
+    ]
+  },
+  {
+    "title": "Integer Average with Auto Return Type",
+    "prompt_md": "## Goal\nA function `average` is provided. It contains exactly one logic bug. Find and fix it so it returns the correct floating-point average of two integers.\n\n## Input\n- Line 1: integer `a`.\n- Line 2: integer `b`.\n\n## Output\n- Print exactly one line: `Average: X` where `X` is the decimal average of `a` and `b`, printed with one decimal place.\n- Example: `a = 3`, `b = 4` → `Average: 3.5`.\n\n## Requirements\n1. The `average` function uses `auto` return type — do not change the return type spelling.\n2. The bug causes integer division, discarding the fractional part.\n3. Fix the formula so the result is a floating-point value.\n4. Use `std::fixed` and `std::setprecision(1)` (already included in the starter) to format output.\n5. Do not change the function signature.\n\n## Notes\n- `#include <iomanip>` is already present in the starter.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nauto average(int a, int b)\n{\n    return (a + b) / 2;  // BUG: integer division discards fractional part\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Average: \"\n              << std::fixed << std::setprecision(1)\n              << average(a, b) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nauto average(int a, int b)\n{\n    return (a + b) / 2.0;\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Average: \"\n              << std::fixed << std::setprecision(1)\n              << average(a, b) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "Average: 3.5"
+      },
+      {
+        "label": "Hidden: 6 and 6",
+        "is_sample": false,
+        "stdin": "6\n6\n",
+        "expected_stdout": "Average: 6.0"
+      },
+      {
+        "label": "Hidden: 1 and 4",
+        "is_sample": false,
+        "stdin": "1\n4\n",
+        "expected_stdout": "Average: 2.5"
+      }
+    ]
+  }
+]

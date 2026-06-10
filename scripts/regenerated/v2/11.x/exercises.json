@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Overloaded Formatter with Default Argument",
+    "prompt_md": "## Goal\nWrite two overloads of `format` and use a default argument to make a common calling pattern concise. The program reads a number and prints a labelled result.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- Print exactly two lines:\n  - Line 1: `value: <n>` (from calling `format(n)` using the default label)\n  - Line 2: `number: <n>` (from calling `format(n, \"number\")`)\n\n## Requirements\n1. Write `void format(int x, const char* label = \"value\")` that prints `<label>: <x>` followed by a newline.\n2. Write `void format(double x, const char* label = \"value\")` that prints `<label>: <x>` followed by a newline.\n3. `main` calls `format(n)` then `format(n, \"number\")` where `n` is the integer read from stdin.\n4. Hidden tests use various integers including negative values.",
+    "starter_code": "#include <iostream>\n\nvoid format(int x, const char* label = \"value\") {\n    std::cout << label << \": \" << x << '\\n';\n}\n\nvoid format(double x, const char* label = \"value\") {\n    std::cout << label << \": \" << x << '\\n';\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    format(n);              // should print: value: <n>\n    format(n, \"number\");    // should print: number: <n>\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid format(int x, const char* label = \"value\") {\n    std::cout << label << \": \" << x << '\\n';\n}\n\nvoid format(double x, const char* label = \"value\") {\n    std::cout << label << \": \" << x << '\\n';\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    format(n);\n    format(n, \"number\");\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive integer",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "value: 42\nnumber: 42"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "value: 0\nnumber: 0"
+      },
+      {
+        "label": "Hidden: negative integer",
+        "is_sample": false,
+        "stdin": "-7\n",
+        "expected_stdout": "value: -7\nnumber: -7"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Template with Non-Type Parameter Cap",
+    "prompt_md": "## Goal\nThe program below uses a function template with a non-type parameter to cap a value from below (a lower bound). It should read one integer and print the result of applying a lower bound of `5`. There is one logic bug — find and fix it.\n\n## Input\n- Line 1: one integer `v` (may be negative, zero, or positive; magnitude up to 1000).\n\n## Output\n- Print exactly one line: `max(v, 5)` — the larger of `v` and `5`.\n\n## Requirements\n1. The function template uses `template <int N>` and returns the value clamped to a lower bound of `N`.\n2. For `v >= N`, output `v`; for `v < N`, output `N`.\n3. The program calls `lowerBound<5>(v)` and prints the result.\n4. Hidden tests include values equal to the bound, below the bound, and well above the bound.",
+    "starter_code": "#include <iostream>\n\ntemplate <int N>\nint lowerBound(int x) {\n    if (x < N) return x;  // bug: should return N, not x\n    return x;\n}\n\nint main() {\n    int v;\n    std::cin >> v;\n    std::cout << lowerBound<5>(v) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <int N>\nint lowerBound(int x) {\n    if (x < N) return N;\n    return x;\n}\n\nint main() {\n    int v;\n    std::cin >> v;\n    std::cout << lowerBound<5>(v) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value below bound",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "5"
+      },
+      {
+        "label": "Hidden: value equal to bound",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "5"
+      },
+      {
+        "label": "Hidden: value above bound",
+        "is_sample": false,
+        "stdin": "20\n",
+        "expected_stdout": "20"
+      }
+    ]
+  }
+]

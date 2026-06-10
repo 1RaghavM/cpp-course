@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Assert Preconditions in a Factorial Function",
+    "prompt_md": "## Goal\nWrite a `factorial` function with an `assert` precondition that enforces `n >= 0`, then call it from `main` with valid inputs only.\n\n## Input\n- Line 1: integer N (the test guarantees 0 <= N <= 10 so the assertion never fires in the test cases).\n\n## Output\nPrint exactly one line: `N! = F` where F is the factorial of N.\n\n## Requirements\n1. Implement `int factorial(int n)` that:\n   - Calls `assert(n >= 0)` as its first statement.\n   - Returns 1 for n == 0.\n   - Returns n * factorial(n-1) for n > 0, OR uses a loop — either is acceptable.\n2. In `main`, read N and print `N! = factorial(N)` with the exact format shown.\n3. Include `<cassert>` for `assert`.\n4. Edge case: N = 0 must print `0! = 1`.\n\n## Notes\n- Test inputs are guaranteed to be valid integers in [0, 10] so the assert never fires during grading.",
+    "starter_code": "#include <iostream>\n#include <cassert>\n\n// TODO: implement factorial(int n)\n// - assert(n >= 0) as the first statement\n// - return 1 for n == 0, otherwise return n * factorial(n-1)\nint factorial(int n) {\n    return 1; // replace this stub\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    // TODO: print \"N! = factorial(N)\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cassert>\n\nint factorial(int n) {\n    assert(n >= 0);\n    if (n == 0) return 1;\n    int result = 1;\n    for (int i = 2; i <= n; ++i)\n        result *= i;\n    return result;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << n << \"! = \" << factorial(n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5! = 120",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "5! = 120"
+      },
+      {
+        "label": "Hidden: 0! = 1",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "0! = 1"
+      },
+      {
+        "label": "Hidden: 10! = 3628800",
+        "is_sample": false,
+        "stdin": "10",
+        "expected_stdout": "10! = 3628800"
+      }
+    ]
+  },
+  {
+    "title": "Complete assertedClamp with static_assert Size Check",
+    "prompt_md": "## Goal\nComplete `assertedClamp` that uses `assert` to enforce `lo <= hi`, and add a `static_assert` that verifies `sizeof(int) >= 4`.\n\n## Input\n- Line 1: three integers `val lo hi` separated by spaces. The test guarantees `lo <= hi`.\n\n## Output\nPrint exactly one line: the clamped value.\n\n## Requirements\n1. At file scope (before `main`), add `static_assert(sizeof(int) >= 4, \"int too small\")` — this must compile and pass silently.\n2. Complete `int assertedClamp(int val, int lo, int hi)` that:\n   - Calls `assert(lo <= hi)` as its first statement.\n   - Returns `lo` if `val < lo`.\n   - Returns `hi` if `val > hi`.\n   - Returns `val` otherwise.\n3. In `main`, read `val`, `lo`, `hi` and print the clamped value.\n4. Edge case: `val == lo` returns `lo`; `val == hi` returns `hi`.",
+    "starter_code": "#include <iostream>\n#include <cassert>\n\n// TODO: add static_assert that sizeof(int) >= 4\n\n// TODO: complete assertedClamp\n// - assert(lo <= hi) as first statement\n// - clamp val to [lo, hi]\nint assertedClamp(int val, int lo, int hi) {\n    return val; // replace this\n}\n\nint main() {\n    int val, lo, hi;\n    std::cin >> val >> lo >> hi;\n    std::cout << assertedClamp(val, lo, hi) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cassert>\n\nstatic_assert(sizeof(int) >= 4, \"int too small\");\n\nint assertedClamp(int val, int lo, int hi) {\n    assert(lo <= hi);\n    if (val < lo) return lo;\n    if (val > hi) return hi;\n    return val;\n}\n\nint main() {\n    int val, lo, hi;\n    std::cin >> val >> lo >> hi;\n    std::cout << assertedClamp(val, lo, hi) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value within range",
+        "is_sample": true,
+        "stdin": "5 1 10",
+        "expected_stdout": "5"
+      },
+      {
+        "label": "Hidden: value below lo",
+        "is_sample": false,
+        "stdin": "-5 0 100",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: value above hi",
+        "is_sample": false,
+        "stdin": "200 0 100",
+        "expected_stdout": "100"
+      }
+    ]
+  }
+]

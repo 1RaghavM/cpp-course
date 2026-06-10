@@ -45,6 +45,107 @@
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/1_x_ex2_starter.cpp:5:37: warning: unused parameter 'divisor' [-Wunused-parameter]
     5 | 
 
+## 10.2 — pass
+- **warning**: 10_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_2_ex2_starter.cpp:6:26: warning: unused parameter 'a' [-Wunused-parameter]
+    6 | int countTrueValues(bool a, bool b, bool c) {
+      |                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_2_ex2_starter.cpp:6:34: warning: unused parameter 'b' [-Wunused-parameter]
+    6 | int cou
+
+## 10.4 — pass
+- **warning**: 10_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_4_ex2_starter.cpp:4:27: warning: unused parameter 'value' [-Wunused-parameter]
+    4 | bool isSafeConversion(int value) {
+      |                           ^
+1 warning generated.
+
+
+## 10.5 — pass
+- **warning**: 10_5_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_5_ex2_starter.cpp:10:11: warning: comparison of integers of different signs: 'int' and 'unsigned int' [-Wsign-compare]
+   10 |     if (a < b) {
+      |         ~ ^ ~
+1 warning generated.
+
+
+## 10.6 — pass
+- **warning**: 10_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_6_ex2_starter.cpp:5:22: warning: unused parameter 'c' [-Wunused-parameter]
+    5 | int charToAscii(char c)
+      |                      ^
+1 warning generated.
+
+
+## 10.8 — pass
+- **warning**: 10_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_8_ex2_starter.cpp:4:19: warning: unused parameter 'score' [-Wunused-parameter]
+    4 | char classify(int score)
+      |                   ^
+1 warning generated.
+
+
+## 10.x — pass
+- **warning**: 10_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_x_ex2_starter.cpp:5:33: warning: unused parameter 'lo' [-Wunused-parameter]
+    5 | auto clamp_value(int value, int lo, int hi)
+      |                                 ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/10_x_ex2_starter.cpp:5:41: warning: unused parameter 'hi' [-Wunused-parameter]
+    5 | 
+
+## 11.10 — pass
+- **warning**: 11_10_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_10_ex1_starter.cpp:6:16: warning: unused parameter 'b' [-Wunused-parameter]
+    6 | T myMin(T a, T b) {
+      |                ^
+1 warning generated.
+
+- **warning**: 11_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_10_ex2_starter.cpp:4:11: warning: unused parameter 'x' [-Wunused-parameter]
+    4 | T myAbs(T x) {
+      |           ^
+1 warning generated.
+
+
+## 11.2 — pass
+- **warning**: 11_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_2_ex1_starter.cpp:4:15: warning: unused parameter 'x' [-Wunused-parameter]
+    4 | int scale(int x) {
+      |               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_2_ex1_starter.cpp:9:21: warning: unused parameter 'x' [-Wunused-parameter]
+    9 | double scale(double x) {
+      |             
+- **warning**: 11_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_2_ex2_starter.cpp:6:29: warning: unused parameter 'code' [-Wunused-parameter]
+    6 | std::string formatLabel(int code) {
+      |                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_2_ex2_starter.cpp:12:32: warning: unused parameter 'val' [-Wunused-parameter]
+   12 | std::str
+
+## 11.4 — pass
+- **warning**: 11_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_4_ex2_starter.cpp:6:18: warning: unused parameter 'x' [-Wunused-parameter]
+    6 | int safeRoot(int x) {
+      |                  ^
+1 warning generated.
+
+
+## 11.6 — pass
+- **warning**: 11_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_6_ex2_starter.cpp:4:14: warning: unused parameter 'value' [-Wunused-parameter]
+    4 | T clampVal(T value, T lo, T hi)
+      |              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_6_ex2_starter.cpp:4:23: warning: unused parameter 'lo' [-Wunused-parameter]
+    4 | T clampVal(T value, T lo, T 
+
+## 11.8 — pass
+- **warning**: 11_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_8_ex2_starter.cpp:4:18: warning: unused parameter 'key' [-Wunused-parameter]
+    4 | void printPair(T key, U val)
+      |                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/11_8_ex2_starter.cpp:4:25: warning: unused parameter 'val' [-Wunused-parameter]
+    4 | void printPair(T key, U val)
+
 ## 13.12 — pass
 - **warning**: 13_12_ex2_starter: compiler warnings:
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/13_12_ex2_starter.cpp:10:28: warning: unused parameter 'p' [-Wunused-parameter]
@@ -441,3 +542,62 @@
     7 | int first_below(std::mt19937& rng, int threshold, int max_draws)
       |                               ^
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/8_x_ex2_starter.cpp:7:40: warning: unused parameter 'threshold' [-Wu
+
+## 9.1 — pass
+- **warning**: 9_1_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_1_ex1_starter.cpp:4:16: warning: unused parameter 'n' [-Wunused-parameter]
+    4 | int square(int n) {
+      |                ^
+1 warning generated.
+
+
+## 9.2 — pass
+- **warning**: 9_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_2_ex1_starter.cpp:5:22: warning: unused parameter 'score' [-Wunused-parameter]
+    5 | char letterGrade(int score) {
+      |                      ^
+1 warning generated.
+
+- **warning**: 9_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_2_ex2_starter.cpp:12:21: warning: unused parameter 'lo' [-Wunused-parameter]
+   12 | int branchCount(int lo, int hi) {
+      |                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_2_ex2_starter.cpp:12:29: warning: unused parameter 'hi' [-Wunused-parameter]
+   12 | int branchCount(int lo
+
+## 9.4 — pass
+- **warning**: 9_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_4_ex1_starter.cpp:5:18: warning: unused parameter 'n' [-Wunused-parameter]
+    5 | int safeSqrt(int n) {
+      |                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_4_ex1_starter.cpp:16:9: warning: unused variable 'result' [-Wunused-variable]
+   16 |     int result = safeSqrt(n);
+      | 
+- **warning**: 9_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_4_ex2_starter.cpp:4:20: warning: unused parameter 'a' [-Wunused-parameter]
+    4 | int safeModulo(int a, int b) {
+      |                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_4_ex2_starter.cpp:4:27: warning: unused parameter 'b' [-Wunused-parameter]
+    4 | int safeModulo(int a, int b) {
+
+## 9.5 — pass
+- **warning**: 9_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_5_ex1_starter.cpp:5:9: warning: unused variable 'n' [-Wunused-variable]
+    5 |     int n;
+      |         ^
+1 warning generated.
+
+
+## 9.6 — pass
+- **warning**: 9_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_6_ex1_starter.cpp:7:19: warning: unused parameter 'n' [-Wunused-parameter]
+    7 | int factorial(int n) {
+      |                   ^
+1 warning generated.
+
+- **warning**: 9_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_6_ex2_starter.cpp:9:32: warning: unused parameter 'lo' [-Wunused-parameter]
+    9 | int assertedClamp(int val, int lo, int hi) {
+      |                                ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_6_ex2_starter.cpp:9:40: warning: unused parameter 'hi' [-Wunused-parameter]
+    9 | in

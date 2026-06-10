@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which pair of declarations can coexist as valid overloads?",
+    "options": {
+      "a": "`int  foo(int x)` and `void foo(int x)` — different return types",
+      "b": "`void foo(int x)` and `void foo(const int x)` — const on value parameter",
+      "c": "`void foo(int x)` and `void foo(double x)` — different parameter types",
+      "d": "`void foo(int n)` and `void foo(int count)` — different parameter names"
+    },
+    "answer": "c",
+    "explanation_md": "Only changing the parameter type creates a distinct signature. Return type (a), `const` on a value parameter (b), and parameter names (d) are all excluded from the overload signature, so those pairs would cause redefinition errors."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(int x, int y) { std::cout << \"ii\\n\"; }\nvoid show(double x)     { std::cout << \"d\\n\"; }\nvoid show(int x)        { std::cout << \"i\\n\"; }\n\nint main() {\n    show(3.0);\n    show(7);\n    show(1, 2);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "d\ni\nii",
+    "explanation_md": "`show(3.0)` — the literal `3.0` is a `double`, exact match to `show(double)` → `d`. `show(7)` — `7` is `int`, exact match to `show(int)` → `i`. `show(1, 2)` — two `int` arguments, matches `show(int, int)` → `ii`. Each call selects the overload whose signature matches the argument types."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "Why does the following code fail to compile?\n\n```cpp\nusing Length = int;\n\nvoid measure(int x) {}\nvoid measure(Length x) {}\n```",
+    "options": {
+      "a": "`using` aliases cannot be used as parameter types",
+      "b": "`Length` is just another name for `int`, so both declarations have the same signature",
+      "c": "The function name `measure` is a reserved identifier",
+      "d": "You need a return type mismatch to trigger the error"
+    },
+    "answer": "b",
+    "explanation_md": "A type alias created with `using` (or `typedef`) does not create a new type — it's just a second name for the same type. So `measure(int)` and `measure(Length)` are identical signatures, causing a redefinition error. To get distinct overloads based on semantic units you'd need genuinely distinct types."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer wants to write `void print(int n)` and `void print(int count)` as two separate overloads handling different meanings of the argument. Will this compile?",
+    "options": {
+      "a": "Yes — different parameter names create distinct overloads",
+      "b": "Yes — but only if the function bodies are different",
+      "c": "No — parameter names are not part of the overload signature",
+      "d": "No — you cannot have two `void` functions with the same name"
+    },
+    "answer": "c",
+    "explanation_md": "Parameter names are purely for readability inside the function body. The overload signature consists of the function name and the types (and count) of its parameters — not their names. Both declarations resolve to `print(int)`, which is a conflict. If you need different behavior based on meaning, you need different parameter types or different function names."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid tag(int)         { std::cout << \"A\\n\"; }\nvoid tag(int, double) { std::cout << \"B\\n\"; }\nvoid tag(double, int) { std::cout << \"C\\n\"; }\n\nint main() {\n    tag(1, 2.0);\n    tag(1.0, 2);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "B\nC",
+    "explanation_md": "`tag(1, 2.0)`: first arg is `int`, second is `double` — exact match to `tag(int, double)` → `B`. `tag(1.0, 2)`: first arg is `double`, second is `int` — exact match to `tag(double, int)` → `C`. The order of parameter types matters; `(int, double)` and `(double, int)` are different signatures."
+  }
+]

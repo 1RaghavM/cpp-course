@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Character Arithmetic with Promotion",
+    "prompt_md": "## Goal\nWrite a program that reads a lowercase letter and an integer offset, then prints the letter shifted forward in the alphabet by that offset.\n\n## Input\n- Line 1: a single lowercase ASCII letter (e.g., `a`, `m`, `z`).\n- Line 2: a non-negative integer offset (0 ≤ offset ≤ 25).\n\n## Output\n- One line: the original character, a space, `+`, a space, the offset, ` = `, and the resulting character.\n- Example: `a + 3 = d`\n\n## Requirements\n1. Read the character and offset separately using `std::cin`.\n2. Compute the result by adding the offset to the character value (integral promotion converts `char` to `int`, so store the result in an `int` first, then cast back with `static_cast<char>(result)`).\n3. The result character is always a lowercase letter (inputs guarantee no wrap-around past 'z').\n4. Hidden tests cover offset = 0 (no change) and a letter near the end of the alphabet.\n\n## Notes\n- `static_cast<char>(x)` converts an `int` back to a `char` explicitly; this will be taught in detail later but is needed here to avoid a narrowing warning.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    char letter;\n    int offset;\n    std::cin >> letter >> offset;\n\n    // TODO: compute shifted character\n    // Step 1: int result = letter + offset;  (promotion happens here)\n    // Step 2: char shifted = static_cast<char>(result);\n    // Step 3: print in format:  letter + offset = shifted\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    char letter;\n    int offset;\n    std::cin >> letter >> offset;\n\n    int result = letter + offset;   // char promoted to int before addition\n    char shifted = static_cast<char>(result);\n\n    std::cout << letter << \" + \" << offset << \" = \" << shifted << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a + 3",
+        "is_sample": true,
+        "stdin": "a\n3",
+        "expected_stdout": "a + 3 = d"
+      },
+      {
+        "label": "Hidden: zero offset",
+        "is_sample": false,
+        "stdin": "m\n0",
+        "expected_stdout": "m + 0 = m"
+      },
+      {
+        "label": "Hidden: letter near end of alphabet",
+        "is_sample": false,
+        "stdin": "w\n2",
+        "expected_stdout": "w + 2 = y"
+      }
+    ]
+  },
+  {
+    "title": "Sum Booleans as Integers",
+    "prompt_md": "## Goal\nComplete the function `countTrueValues` that receives three `bool` parameters and returns their sum as an `int`, exploiting the fact that `true` promotes to `1` and `false` promotes to `0`.\n\n## Input\n- Line 1: three values, each `0` or `1`, separated by spaces.\n\n## Output\n- One line: `True count: N` where N is how many of the three values were `1`.\n\n## Requirements\n1. Implement `int countTrueValues(bool a, bool b, bool c)` by adding the three booleans (they promote to int automatically).\n2. `main` reads three integers (0 or 1), converts them to `bool` for the call, and prints the result.\n3. Hidden tests cover all-false (0 0 0) and all-true (1 1 1) cases.\n4. Do not use any conditional statements — rely solely on integral promotion from bool to int.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function\n// Return the count of 'true' values among a, b, c\n// Hint: add them directly — bool promotes to int\nint countTrueValues(bool a, bool b, bool c) {\n    return 0; // TODO: replace with correct implementation\n}\n\nint main() {\n    int x, y, z;\n    std::cin >> x >> y >> z;\n\n    bool a = x;\n    bool b = y;\n    bool c = z;\n\n    int count = countTrueValues(a, b, c);\n    std::cout << \"True count: \" << count << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint countTrueValues(bool a, bool b, bool c) {\n    return a + b + c;  // each bool promotes to int (true->1, false->0)\n}\n\nint main() {\n    int x, y, z;\n    std::cin >> x >> y >> z;\n\n    bool a = x;\n    bool b = y;\n    bool c = z;\n\n    int count = countTrueValues(a, b, c);\n    std::cout << \"True count: \" << count << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two true",
+        "is_sample": true,
+        "stdin": "1 0 1",
+        "expected_stdout": "True count: 2"
+      },
+      {
+        "label": "Hidden: all false",
+        "is_sample": false,
+        "stdin": "0 0 0",
+        "expected_stdout": "True count: 0"
+      },
+      {
+        "label": "Hidden: all true",
+        "is_sample": false,
+        "stdin": "1 1 1",
+        "expected_stdout": "True count: 3"
+      }
+    ]
+  }
+]

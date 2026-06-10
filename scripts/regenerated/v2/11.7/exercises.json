@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Generic minimum with explicit type call",
+    "prompt_md": "## Goal\nWrite a function template `minVal` that returns the smaller of two values. The program reads two doubles, prints the result using implicit deduction, then prints the result again using an explicit `<double>` type argument.\n\n## Input\nLine 1: two space-separated doubles.\n\n## Output\nExact two lines:\n```\ndeduced: <smaller_value>\nexplicit: <smaller_value>\n```\n\n## Requirements\n1. Define `template <typename T> T minVal(T a, T b)` that returns `a` if `a < b`, otherwise `b`.\n2. Call `minVal(a, b)` (deduced) for the first line and `minVal<double>(a, b)` (explicit) for the second.\n3. Both calls must produce the same result.\n4. Edge cases covered by hidden tests: both values equal, negative values.\n\n## Notes\n- Do not use `std::min` from `<algorithm>` — implement the logic yourself.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define template <typename T> T minVal(T a, T b)\n// Return a if a < b, otherwise return b\n\nint main()\n{\n    double a, b;\n    std::cin >> a >> b;\n\n    // TODO: Print two lines:\n    // \"deduced: \" << minVal(a, b)\n    // \"explicit: \" << minVal<double>(a, b)\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT minVal(T a, T b)\n{\n    return (a < b) ? a : b;\n}\n\nint main()\n{\n    double a, b;\n    std::cin >> a >> b;\n    std::cout << \"deduced: \"  << minVal(a, b)         << '\\n';\n    std::cout << \"explicit: \" << minVal<double>(a, b)  << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3.5 and 7.2",
+        "is_sample": true,
+        "stdin": "3.5 7.2",
+        "expected_stdout": "deduced: 3.5\nexplicit: 3.5\n"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5.0 5.0",
+        "expected_stdout": "deduced: 5\nexplicit: 5\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-4.0 -1.0",
+        "expected_stdout": "deduced: -4\nexplicit: -4\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the wrong instantiation type",
+    "prompt_md": "## Goal\nFind and fix the single bug in this program so it prints the correct average.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact one line:\n```\naverage: 4.5\n```\n\n## Requirements\n1. The program uses a function template `average` that computes `(a + b) / 2` for type `T`.\n2. There is **one bug** — find and fix it. Do not change anything else.\n3. The bug is that the wrong explicit type argument is used, causing integer truncation instead of floating-point division.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nT average(T a, T b)\n{\n    return (a + b) / 2;\n}\n\nint main()\n{\n    // Bug: <int> is used — integer division truncates (4+5)/2 = 4, not 4.5\n    std::cout << \"average: \" << average<int>(4.0, 5.0) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT average(T a, T b)\n{\n    return (a + b) / 2;\n}\n\nint main()\n{\n    // Fixed: use <double> so division is floating-point\n    std::cout << \"average: \" << average<double>(4.0, 5.0) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: average of 4.0 and 5.0",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "average: 4.5\n"
+      },
+      {
+        "label": "Hidden: same output check 2",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "average: 4.5\n"
+      },
+      {
+        "label": "Hidden: same output check 3",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "average: 4.5\n"
+      }
+    ]
+  }
+]

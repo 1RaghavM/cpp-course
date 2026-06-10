@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    double d = 3.9;\n    int i = d;\n    std::cout << i << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "When a `double` is converted to `int`, the fractional part is **truncated** (dropped), not rounded. `3.9` loses the `.9` and becomes `3`. This is true for any positive float-to-int conversion: `3.1`, `3.5`, and `3.9` all become `3`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    double d = -3.7;\n    int i = d;\n    std::cout << i << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "-3",
+    "explanation_md": "Truncation for float-to-int conversion is toward zero, not toward negative infinity. `-3.7` truncated toward zero gives `-3`, not `-4`. This is a common surprise for programmers expecting floor-style rounding."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these numeric conversions can silently lose information?",
+    "options": {
+      "a": "`short` to `int`",
+      "b": "`int` to `long`",
+      "c": "`int` to `double`",
+      "d": "`double` to `int`"
+    },
+    "answer": "d",
+    "explanation_md": "Converting `double` to `int` discards the fractional part and can produce incorrect results for values outside the `int` range. The other three are widening conversions that preserve all information: `short→int`, `int→long`, and `int→double` (for typical int sizes) are all safe."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why might converting a large `int` to `float` lose precision?",
+    "options": {
+      "a": "`float` is a 16-bit type that cannot store values larger than 32767.",
+      "b": "`float` has only 24 bits of mantissa precision, so large integers that require more bits cannot be represented exactly.",
+      "c": "`int` and `float` use different byte orders, causing the bits to be interpreted incorrectly.",
+      "d": "Integer-to-float conversion is illegal in C++ and always produces zero."
+    },
+    "answer": "b",
+    "explanation_md": "`float` stores values as a sign bit, 8-bit exponent, and 24-bit mantissa. Integers that need more than 24 significant bits (those larger than 2^24 = 16,777,216) cannot be represented exactly and are rounded to the nearest representable `float`. `double` has 53 bits of mantissa and handles all `int`-range values exactly."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer expects this program to print `499`, but it prints `498`. What is the cause?\n\n```cpp\n#include <iostream>\nint main() {\n    double price = 4.99;\n    int cents = price * 100;\n    std::cout << cents << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The `*` operator cannot be used between `double` and `int` (100).",
+      "b": "`price * 100` produces approximately `498.999...` due to floating-point representation, and truncation during the conversion to `int` then discards the fractional part giving `498`.",
+      "c": "`price` should be declared as `float`, not `double`, to avoid this truncation.",
+      "d": "Integer variables cannot store values derived from floating-point arithmetic."
+    },
+    "answer": "b",
+    "explanation_md": "`4.99` cannot be represented exactly in binary floating-point, so `4.99 * 100` evaluates to something like `498.9999999...` rather than exactly `499.0`. When this result is converted to `int`, truncation drops the fractional part and yields `498`. This is a combination of floating-point imprecision and float-to-int truncation."
+  }
+]

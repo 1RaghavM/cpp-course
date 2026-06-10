@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Generic absolute value template",
+    "prompt_md": "## Goal\nWrite a function template `absVal` that returns the absolute value of a number, then use it in a program that reads one value, prints its absolute value, and prints double the absolute value.\n\n## Input\nLine 1: a single number. The hidden tests use integers and doubles; the sample uses an integer.\n\n## Output\nExact two lines:\n```\nabs: <absolute_value>\ndouble: <twice_absolute_value>\n```\n\n## Requirements\n1. Define `template <typename T> T absVal(T x)` that returns `-x` if `x < 0`, otherwise `x`.\n2. `main` reads one value using `std::cin`, calls `absVal`, prints `abs: ` followed by the result, then prints `double: ` followed by twice the result.\n3. Use the template for both integer and double inputs — do not write separate overloads.\n4. Edge cases covered by hidden tests: negative integer, positive double.\n\n## Notes\n- `#include <iostream>` is sufficient; do not use `<cmath>` or `<cstdlib>`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define template <typename T> T absVal(T x)\n// Return -x if x < 0, otherwise return x\n\nint main()\n{\n    // The hidden tests call this program with int and with double.\n    // Read a double so both cases work without recompiling.\n    double value;\n    std::cin >> value;\n\n    // TODO: Call absVal(value), store result, print two lines:\n    // \"abs: \" << result\n    // \"double: \" << result*2\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT absVal(T x)\n{\n    return (x < 0) ? -x : x;\n}\n\nint main()\n{\n    double value;\n    std::cin >> value;\n    double result = absVal(value);\n    std::cout << \"abs: \" << result << '\\n';\n    std::cout << \"double: \" << result * 2 << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: negative integer",
+        "is_sample": true,
+        "stdin": "-7",
+        "expected_stdout": "abs: 7\ndouble: 14\n"
+      },
+      {
+        "label": "Hidden: positive double",
+        "is_sample": false,
+        "stdin": "3.5",
+        "expected_stdout": "abs: 3.5\ndouble: 7\n"
+      },
+      {
+        "label": "Hidden: negative double",
+        "is_sample": false,
+        "stdin": "-2.5",
+        "expected_stdout": "abs: 2.5\ndouble: 5\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the generic clamp function",
+    "prompt_md": "## Goal\nComplete the function template `clampVal` so that it clamps a value to a `[lo, hi]` range, then read three values from stdin and print the clamped result.\n\n## Input\nLine 1: three space-separated doubles: `value lo hi`\n\n## Output\nExact one line: the clamped value.\n\n## Requirements\n1. Complete `template <typename T> T clampVal(T value, T lo, T hi)` so it:\n   - Returns `lo` if `value < lo`\n   - Returns `hi` if `value > hi`\n   - Returns `value` otherwise\n2. `main` reads three `double` values, calls `clampVal(value, lo, hi)`, and prints the result.\n3. Edge cases covered by hidden tests: value below range, value above range, value in range.\n\n## Notes\n- Do not use `std::clamp` from `<algorithm>` — implement the logic yourself.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nT clampVal(T value, T lo, T hi)\n{\n    // TODO: return lo if value < lo,\n    //        return hi if value > hi,\n    //        otherwise return value\n    return T{};\n}\n\nint main()\n{\n    double value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << clampVal(value, lo, hi) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT clampVal(T value, T lo, T hi)\n{\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\nint main()\n{\n    double value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << clampVal(value, lo, hi) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value in range",
+        "is_sample": true,
+        "stdin": "5.0 1.0 10.0",
+        "expected_stdout": "5\n"
+      },
+      {
+        "label": "Hidden: value below range",
+        "is_sample": false,
+        "stdin": "-3.0 0.0 10.0",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: value above range",
+        "is_sample": false,
+        "stdin": "15.0 0.0 10.0",
+        "expected_stdout": "10\n"
+      }
+    ]
+  }
+]

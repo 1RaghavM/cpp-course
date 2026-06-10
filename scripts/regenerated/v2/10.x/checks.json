@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a { 7 };\n    int b { 2 };\n    double result { a / b };\n    std::cout << result << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`a / b` evaluates as `int / int` (integer division) before the result is stored in `double`, giving `3`, not `3.5`. The conversion to `double` happens after truncation. Learners who expect `3.5` forget that the division type is determined by the operands, not the destination variable."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does `int x { 3.7 };` produce a compile error while `int x = 3.7;` only silently truncates?",
+    "options": {
+      "a": "Brace-initialization forbids narrowing conversions; `=` initialization permits them silently",
+      "b": "Brace-initialization always calls a constructor, so it rejects floating-point literals",
+      "c": "`=` initialization performs a runtime check and prints a warning",
+      "d": "The two forms are equivalent — both should produce a compile error"
+    },
+    "answer": "a",
+    "explanation_md": "Brace-initialization `{}` is designed to be safe by prohibiting narrowing conversions (those that can lose information). Converting `3.7` to `int` discards the fractional part and is therefore a narrowing conversion, which `{}` rejects at compile time. The `=` form applies implicit conversion silently."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nauto scale(int x)\n{\n    return x * 2.0;\n}\nint main()\n{\n    std::cout << scale(3) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "6",
+    "explanation_md": "`x * 2.0` is `int * double`, which arithmetic conversions promote to `double`. `3 * 2.0 = 6.0`. The default stream output for `6.0` (a whole-number double) is `6` with no decimal point. Learners who expect `6.0` or `6.00` are wrong because `std::cout` strips trailing zeros unless `std::fixed` is used."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `ratio` to return the floating-point ratio of `a` to `b`. What is the bug?\n\n```cpp\n#include <iostream>\ndouble ratio(int a, int b)\n{\n    return a / b;\n}\nint main()\n{\n    std::cout << ratio(5, 2) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The return type `double` should be `auto` when dividing two `int` values",
+      "b": "`a / b` performs integer division before the result is converted to `double`, discarding the fractional part",
+      "c": "The function should use `static_cast<int>(a)` to prevent narrowing",
+      "d": "The bug is that `int` parameters cannot be used in a function that returns `double`"
+    },
+    "answer": "b",
+    "explanation_md": "`a / b` is `int / int`, so integer division truncates to `2` before conversion to `double` yields `2.0`. The fix is `static_cast<double>(a) / b` or `(double)a / b`, which forces floating-point division from the start."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the purpose of `using Milliseconds = long long;` in C++?",
+    "options": {
+      "a": "It creates a new distinct type; assigning a `long long` to a `Milliseconds` variable is a compile error",
+      "b": "It creates an alias so `Milliseconds` and `long long` are completely interchangeable; it adds no new type checking",
+      "c": "It generates a faster runtime representation of `long long` for timing code",
+      "d": "It is equivalent to `#define Milliseconds long long` and expands via the preprocessor"
+    },
+    "answer": "b",
+    "explanation_md": "A type alias created with `using` (or `typedef`) does not introduce a new type — it is simply another name for the same underlying type. `Milliseconds` and `long long` are interchangeable everywhere. The benefit is readability and intent documentation, not type safety."
+  }
+]

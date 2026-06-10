@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(int a, int b = 10, int c = 20)\n{\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n}\n\nint main()\n{\n    show(1);\n    show(1, 2);\n    show(1, 2, 3);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 10 20\n1 2 20\n1 2 3",
+    "explanation_md": "When fewer arguments than parameters are provided, the compiler fills in defaults from right to left. `show(1)` uses `b=10` and `c=20`; `show(1,2)` uses `c=20`; `show(1,2,3)` overrides everything."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which function declaration is **invalid** in C++?\n\n```cpp\n// A\nvoid f(int x, int y = 5, int z = 10);\n// B\nvoid f(int x = 1, int y = 5, int z = 10);\n// C\nvoid f(int x = 1, int y, int z = 10);\n// D\nvoid f(int x, int y, int z = 10);\n```",
+    "options": {
+      "a": "A",
+      "b": "B",
+      "c": "C",
+      "d": "D"
+    },
+    "answer": "c",
+    "explanation_md": "C is invalid because `y` has no default but follows `x` which does. Once a parameter has a default, all parameters to its right must also have defaults. A, B, and D are all valid."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to print `3 10 7` but it prints something else. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid print3(int a = 0, int b = 10, int c = 0)\n{\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n}\n\nint main()\n{\n    print3(3, 7);   // intended: a=3, b=10, c=7\n    return 0;\n}\n```",
+    "options": {
+      "a": "The call `print3(3, 7)` passes 3 as `a` and 7 as `b`, giving output `3 7 0` — you cannot skip `b` to reach `c`.",
+      "b": "Default arguments cannot be used with functions that have three parameters.",
+      "c": "The value 7 is implicitly converted to a float, causing incorrect output.",
+      "d": "The default value for `b` overrides the passed value, always printing 10."
+    },
+    "answer": "a",
+    "explanation_md": "Arguments are matched left to right. `print3(3, 7)` sets `a=3` and `b=7`, leaving `c` at its default `0`. There is no way to skip `b`; you must call `print3(3, 10, 7)` to get the intended output."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Where should the default argument be placed when a function is declared in a header and defined in a `.cpp` file?",
+    "options": {
+      "a": "On the definition in the `.cpp` file only.",
+      "b": "On the declaration in the header file only.",
+      "c": "On both the declaration and the definition.",
+      "d": "It does not matter — the compiler finds it in either place."
+    },
+    "answer": "b",
+    "explanation_md": "Callers only see the header (declaration), so the default must appear there. Placing it only on the definition means callers won't know about it and will get a compile error when they omit the argument. Putting it on both is also a compile error (redeclaration of a default)."
+  }
+]

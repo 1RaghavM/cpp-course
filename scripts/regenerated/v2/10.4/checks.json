@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which initialization is a narrowing conversion and will cause a compiler error with list initialization?",
+    "options": {
+      "a": "`int i{42};`",
+      "b": "`double d{3.14};`",
+      "c": "`char c{300};`",
+      "d": "`long l{100};`"
+    },
+    "answer": "c",
+    "explanation_md": "`300` does not fit in `char` (range −128 to 127 on typical platforms). Brace initialization detects that this integer constant is out of range and produces a compiler error. The other three are safe: `42` fits in `int`, `3.14` fits in `double`, and `100` fits in `long`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which initialization compiles cleanly because of the constexpr exception to narrowing?",
+    "options": {
+      "a": "`int x = 300; char c{x};` — because x is an int variable",
+      "b": "`constexpr int val = 50; char c{val};` — because 50 fits in char and the value is known at compile time",
+      "c": "`constexpr double d = 3.0; int i{d};` — because 3.0 can be converted to 3",
+      "d": "`double d = 3.14; float f{d};` — because 3.14 fits in a float"
+    },
+    "answer": "b",
+    "explanation_md": "The constexpr exception allows an integer constant to initialize a smaller integer type when the value provably fits in the target type's range. `50` fits in `char`, so `char c{val}` is allowed. Option (c) fails because `double`→`int` is always narrowing regardless of constexpr. Options (a) and (d) also involve narrowing conversions without a valid exception."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x{};\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0",
+    "explanation_md": "Empty brace initialization `{}` value-initializes the variable. For numeric types, value-initialization means zero. So `x` is initialized to `0` and prints `0`. This is different from `int x;` (no initializer), which leaves `x` uninitialized with an indeterminate value."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code compiles but silently loses data. What is the bug and how would list initialization have caught it?\n\n```cpp\n#include <iostream>\nint main() {\n    double temp = 98.6;\n    int rounded = temp;  // programmer intends the integer part\n    std::cout << rounded << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The `double` value `98.6` is converted to `int` via truncation, silently dropping `.6`. Writing `int rounded{temp};` would have made the compiler reject this narrowing.",
+      "b": "`double` cannot be assigned to `int` with `=`; you must use `static_cast` instead.",
+      "c": "`std::cout` cannot print an `int` derived from a `double` conversion.",
+      "d": "The variable name `rounded` is reserved in C++ and causes undefined behavior."
+    },
+    "answer": "a",
+    "explanation_md": "Copy-initialization with `=` accepts narrowing conversions silently. `98.6` is truncated to `98` without any diagnostic. Using `int rounded{temp};` would force the compiler to emit an error because `double`→`int` is a narrowing conversion — the fractional part cannot be preserved."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the PRIMARY advantage of list initialization `{}` over copy-initialization `=` for variable declarations?",
+    "options": {
+      "a": "List initialization runs faster at runtime because it avoids a copy.",
+      "b": "List initialization forbids narrowing conversions at compile time, catching potential value loss before the program runs.",
+      "c": "List initialization allows you to use keywords like `auto` that copy-initialization does not support.",
+      "d": "List initialization is required for all types in C++20; copy-initialization is deprecated."
+    },
+    "answer": "b",
+    "explanation_md": "The key benefit of list initialization is compile-time detection of narrowing conversions. When you use `{}`, the compiler must issue an error if the initializer could lose information due to the type mismatch. Copy-initialization (`=`) silently allows narrowing, leaving bugs to be discovered at runtime."
+  }
+]

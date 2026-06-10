@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Arithmetic Conversion Type Explorer",
+    "prompt_md": "## Goal\nWrite a program that reads an integer and a double, then prints the result of their sum and their quotient, demonstrating that arithmetic conversions cause the integer to be treated as a double.\n\n## Input\n- Line 1: an integer `n` and a double `d` separated by a space (1 ≤ n ≤ 1000, 0.1 ≤ d ≤ 100.0).\n\n## Output\n- Line 1: `Sum: X` where X is n + d, printed with exactly 2 decimal places.\n- Line 2: `Quotient: Y` where Y is n / d, printed with exactly 2 decimal places.\n\n## Requirements\n1. Read `n` as `int` and `d` as `double`.\n2. Compute the sum and quotient using the variables directly — do NOT cast or convert manually. Let the usual arithmetic conversions promote `n` to `double` automatically.\n3. Store results in `double` variables before printing.\n4. Use `std::fixed` and `std::setprecision(2)` from `<iomanip>`.\n5. Hidden tests include n = 1, d = 3.0 (quotient = 0.33) and n = 7, d = 2.0 (quotient = 3.50).\n\n## Notes\n- The arithmetic conversions mean `int + double` is always `double + double`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int n;\n    double d;\n    std::cin >> n >> d;\n\n    // TODO: compute sum (n + d) -- arithmetic conversion makes n into double\n    // TODO: compute quotient (n / d) -- arithmetic conversion makes n into double\n    // TODO: print Sum: and Quotient: with 2 decimal places\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int n;\n    double d;\n    std::cin >> n >> d;\n\n    // n is converted to double by usual arithmetic conversions\n    double sum = n + d;\n    double quotient = n / d;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    std::cout << \"Quotient: \" << quotient << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 and 2.0",
+        "is_sample": true,
+        "stdin": "5 2.0",
+        "expected_stdout": "Sum: 7.00\nQuotient: 2.50"
+      },
+      {
+        "label": "Hidden: 1 and 3.0",
+        "is_sample": false,
+        "stdin": "1 3.0",
+        "expected_stdout": "Sum: 4.00\nQuotient: 0.33"
+      },
+      {
+        "label": "Hidden: 7 and 2.0",
+        "is_sample": false,
+        "stdin": "7 2.0",
+        "expected_stdout": "Sum: 9.00\nQuotient: 3.50"
+      }
+    ]
+  },
+  {
+    "title": "Silent Signed-Unsigned Bug",
+    "prompt_md": "## Goal\nThe program below is supposed to print `a is smaller` when integer `a` is less than unsigned integer `b`. It prints the wrong branch for negative values of `a`. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers on one line: a signed integer `a` and a non-negative integer `b` (−100 ≤ a ≤ 100, 0 ≤ b ≤ 100).\n\n## Output\n- One line: `a is smaller` if a < b (as true signed arithmetic), or `a is not smaller` otherwise.\n\n## Requirements\n1. The bug is caused by the usual arithmetic conversions converting the signed `a` to `unsigned` before comparison, making negative values wrap to large positive numbers.\n2. Fix the comparison so it works correctly for negative values of `a`. Use the simplest fix: declare `b` as `int` instead of `unsigned int`.\n3. Do not change the output format.\n4. Hidden tests include a = -1, b = 5 (a is smaller) and a = 3, b = 2 (a is not smaller).\n\n## Notes\n- The signed/unsigned mismatch in comparisons is a classic C++ trap caused by arithmetic conversions.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a;\n    unsigned int b;\n    std::cin >> a >> b;\n\n    // BUG: a is converted to unsigned int before comparison\n    // negative values of a become very large unsigned numbers\n    if (a < b) {\n        std::cout << \"a is smaller\\n\";\n    } else {\n        std::cout << \"a is not smaller\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a;\n    int b;  // fix: declare as int so comparison uses signed arithmetic\n    std::cin >> a >> b;\n\n    if (a < b) {\n        std::cout << \"a is smaller\\n\";\n    } else {\n        std::cout << \"a is not smaller\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2 and 5 (a is smaller)",
+        "is_sample": true,
+        "stdin": "2 5",
+        "expected_stdout": "a is smaller"
+      },
+      {
+        "label": "Hidden: -1 and 5 (a is smaller, negative a)",
+        "is_sample": false,
+        "stdin": "-1 5",
+        "expected_stdout": "a is smaller"
+      },
+      {
+        "label": "Hidden: 3 and 2 (a is not smaller)",
+        "is_sample": false,
+        "stdin": "3 2",
+        "expected_stdout": "a is not smaller"
+      }
+    ]
+  }
+]

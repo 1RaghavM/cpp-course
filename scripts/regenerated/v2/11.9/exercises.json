@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Repeat a Character N Times Using a Non-Type Template",
+    "prompt_md": "## Goal\nWrite a function template `repeatChar` that prints a given character exactly `N` times on one line, where `N` is a non-type template parameter.\n\n## Input\n- Line 1: a single character `c`.\n\n## Output\n- Print `c` exactly `N` times with no spaces, followed by a newline.\n- The program must call `repeatChar` three times with `N = 4`, `N = 7`, and `N = 2`, using the character read from stdin each time.\n\n## Requirements\n1. `repeatChar` must be a function template with `template <int N>`.\n2. The character is passed as a function argument (regular parameter), not as a template argument.\n3. The program reads one character from stdin and calls `repeatChar<4>(c)`, `repeatChar<7>(c)`, and `repeatChar<2>(c)` in that order.\n4. Each call prints on its own line.",
+    "starter_code": "#include <iostream>\n\n// TODO: write a function template with a non-type parameter int N\n// that prints the given character N times followed by a newline\n\nint main() {\n    char c;\n    std::cin >> c;\n    // TODO: call repeatChar<4>(c), repeatChar<7>(c), repeatChar<2>(c)\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <int N>\nvoid repeatChar(char c) {\n    for (int i = 0; i < N; ++i)\n        std::cout << c;\n    std::cout << '\\n';\n}\n\nint main() {\n    char c;\n    std::cin >> c;\n    repeatChar<4>(c);\n    repeatChar<7>(c);\n    repeatChar<2>(c);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: asterisk",
+        "is_sample": true,
+        "stdin": "*\n",
+        "expected_stdout": "****\n*******\n**"
+      },
+      {
+        "label": "Hidden: letter x",
+        "is_sample": false,
+        "stdin": "x\n",
+        "expected_stdout": "xxxx\nxxxxxxx\nxx"
+      },
+      {
+        "label": "Hidden: digit 9",
+        "is_sample": false,
+        "stdin": "9\n",
+        "expected_stdout": "9999\n9999999\n99"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Mixed-Type Clamp with Non-Type Bound",
+    "prompt_md": "## Goal\nThe program below uses a function template `clampTo` with a non-type upper bound `N` to clamp an integer to the range `[-N, N]`. It should read one integer, clamp it, and print the result. There is one logic bug — find and fix it.\n\n## Input\n- Line 1: one integer `v` (may be negative, zero, or positive; magnitude up to 1000).\n\n## Output\n- Print exactly one line: the clamped value.\n\n## Requirements\n1. The function template uses `template <int N>` and clamps to `[-N, N]`.\n2. For `v` below `-N`, output `-N`; for `v` above `N`, output `N`; otherwise output `v`.\n3. The program calls `clampTo<50>(v)` and prints the result.\n4. The hidden tests include values at the bounds, inside the range, and well outside the range.",
+    "starter_code": "#include <iostream>\n\ntemplate <int N>\nint clampTo(int value) {\n    if (value < -N) return -N;\n    if (value < N)  return N;   // bug is here\n    return value;\n}\n\nint main() {\n    int v;\n    std::cin >> v;\n    std::cout << clampTo<50>(v) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <int N>\nint clampTo(int value) {\n    if (value < -N) return -N;\n    if (value > N)  return N;\n    return value;\n}\n\nint main() {\n    int v;\n    std::cin >> v;\n    std::cout << clampTo<50>(v) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value above upper bound",
+        "is_sample": true,
+        "stdin": "200\n",
+        "expected_stdout": "50"
+      },
+      {
+        "label": "Hidden: value inside range",
+        "is_sample": false,
+        "stdin": "30\n",
+        "expected_stdout": "30"
+      },
+      {
+        "label": "Hidden: value below lower bound",
+        "is_sample": false,
+        "stdin": "-100\n",
+        "expected_stdout": "-50"
+      }
+    ]
+  }
+]

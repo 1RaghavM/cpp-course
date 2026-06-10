@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nvoid show(int x)    { std::cout << \"int\"    << '\\n'; }\nvoid show(double x) { std::cout << \"double\" << '\\n'; }\nint main() {\n    show(1);\n    show(2.0);\n    show(3.0f);\n}\n```",
+    "options": null,
+    "answer": "int\ndouble\ndouble",
+    "explanation_md": "`show(1)` matches `show(int)` exactly. `show(2.0)` is a `double` literal — exact match to `show(double)`. `show(3.0f)` is a `float`; there is no exact match so the compiler promotes it to `double` (a standard floating-point promotion), selecting `show(double)`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have two overloads: `void f(int)` and `void f(double)`. A caller writes `f(42L)` (a `long` literal). What happens?",
+    "options": {
+      "a": "Calls `f(int)` — `long` is converted to `int` automatically.",
+      "b": "Calls `f(double)` — `long` is converted to `double` automatically.",
+      "c": "Compile error: the call is ambiguous because both conversions have equal priority.",
+      "d": "Compile error: `long` cannot be converted to either `int` or `double`."
+    },
+    "answer": "c",
+    "explanation_md": "Converting `long` to `int` and converting `long` to `double` are both standard conversions and have equal priority. Neither overload is a better match, so the call is ambiguous and the compiler rejects it. The fix is to add a `void f(long)` overload or to cast the argument explicitly."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nT triple(T x) { return x * 3; }\nint main() {\n    std::cout << triple(4)   << '\\n';\n    std::cout << triple(1.5) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "12\n4.5",
+    "explanation_md": "`triple(4)` instantiates `triple<int>`, returning `4 * 3 = 12`. `triple(1.5)` instantiates `triple<double>`, returning `1.5 * 3 = 4.5`. Each produces a separate compiled function from the same template."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best explains why function template definitions must be in header files?",
+    "options": {
+      "a": "Templates use special syntax that only the header preprocessor understands.",
+      "b": "The compiler generates real functions from templates at each call site and needs the full definition visible there.",
+      "c": "The linker cannot merge template instantiations from different `.cpp` files.",
+      "d": "Templates must be `inline`, and `inline` functions are only valid in headers."
+    },
+    "answer": "b",
+    "explanation_md": "A function template is a recipe, not a function. The compiler must see the complete recipe at the exact point it encounters a call like `triple(4)` in order to generate `triple<int>`. If the definition is in a different translation unit, the compiler has no recipe and the instantiation fails. The linker *can* merge duplicate instantiations (option c is false); the problem occurs earlier, at compile time."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print the smaller of two integers, but it prints the wrong value. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <int N>\nint capAt(int x) {\n    if (x > N) return x;  // intended: return N when x exceeds cap\n    return x;\n}\nint main() {\n    std::cout << capAt<10>(25) << '\\n';\n}\n```",
+    "options": {
+      "a": "Non-type template parameters cannot be used in `if` conditions.",
+      "b": "The `if` branch returns `x` instead of `N` when `x > N`.",
+      "c": "The template argument `10` should be passed as a function argument, not a template argument.",
+      "d": "`capAt` must accept a `const int` parameter, not `int`."
+    },
+    "answer": "b",
+    "explanation_md": "When `x > N`, the intent is to return the cap `N`, but the code returns `x` — the uncapped value. The fix is `if (x > N) return N;`. Non-type template parameters work fine in conditions (option a is wrong), and the rest of the code is structurally correct."
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Given:\n\n```cpp\nvoid f(int x)    {}\nvoid f(double x) = delete;\n```\n\nWhat happens when you call `f(3.14)`?",
+    "options": {
+      "a": "`f(int)` is called after the compiler skips the deleted overload",
+      "b": "Compile error: the deleted `f(double)` wins resolution, then the call is rejected",
+      "c": "Runtime error when the deleted function is reached",
+      "d": "The call is silently ignored because the function is deleted"
+    },
+    "answer": "b",
+    "explanation_md": "A deleted function still participates in overload resolution. `f(3.14)` passes a `double`, which is an exact match for `f(double)`. That overload wins — and because it is deleted, the compiler immediately emits 'use of deleted function'. The compiler does not fall through to `f(int)`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(int x)  { std::cout << x << \"\\n\"; }\nvoid show(bool x) = delete;\n\nint main() {\n    show(42);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "`show(42)` — `42` is an `int` literal, exact match to `show(int)`. The deleted `show(bool)` overload is not relevant because `int` is not `bool`. Only if you passed `true` or `false` would the deleted overload be selected (and produce a compile error)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between omitting a `double` overload and providing a deleted `double` overload?",
+    "options": {
+      "a": "No difference — both prevent calling the function with a `double`",
+      "b": "Omitting it causes a compile error; deleting it allows silent conversion",
+      "c": "Omitting it lets `f(3.14)` silently call `f(int)` via conversion; deleting it makes `f(3.14)` a compile error",
+      "d": "Deleting it removes the function from the program entirely"
+    },
+    "answer": "c",
+    "explanation_md": "Without a `double` overload, the compiler finds `f(int)` as the only candidate and applies a standard conversion to call it — silently. With a deleted `double` overload, that overload wins resolution and the call is rejected at compile time. `= delete` is the tool for explicitly forbidding specific argument types."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer wants `process(bool)` to be a compile error. What is wrong with this code?\n\n```cpp\nvoid process(int x) { /* ... */ }\nvoid process(int x) = delete;  // intended to block bool calls\n```",
+    "options": {
+      "a": "You cannot delete a function that already has a definition",
+      "b": "Both declarations have identical signatures — this attempts to delete the already-defined `int` overload, not add a new `bool` overload",
+      "c": "`= delete` is only valid on the function's first declaration and cannot appear twice",
+      "d": "You must delete the `bool` overload specifically: `void process(bool) = delete;`"
+    },
+    "answer": "d",
+    "explanation_md": "The developer wrote `void process(int x) = delete` which conflicts with the existing `process(int)` definition (same signature, two different definitions). To block `bool` calls specifically, you need `void process(bool x) = delete;` — a deleted overload with the parameter type you want to reject."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer `= delete` over simply not providing an overload?",
+    "options": {
+      "a": "Always — deleted overloads are always safer than missing overloads",
+      "b": "When you want the compiler to silently pick a nearby overload via conversion",
+      "c": "When you want implicit conversion to another overload to proceed normally",
+      "d": "When implicit conversion would silently produce wrong results and you want a hard compile error instead"
+    },
+    "answer": "d",
+    "explanation_md": "The purpose of `= delete` is to turn a silent implicit-conversion call into a hard compile error. If a missing overload would cause the compiler to silently choose a worse match and produce incorrect behavior, `= delete` makes the programmer deal with the type mismatch explicitly. If you're fine with conversion or if no call would be attempted, omitting the overload is simpler."
+  }
+]

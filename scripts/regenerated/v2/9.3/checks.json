@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int total = 9;\n    int count = 4;\n    double avg = total / count;\n    std::cout << avg << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2",
+    "explanation_md": "`total / count` is `9 / 4 = 2` because both operands are `int`, so C++ performs integer division (truncation toward zero). The result `2` is then converted to `double` when assigned to `avg`, giving `2.0`. `std::cout` prints this as `2`. The fix is `static_cast<double>(total) / count` which gives `2.25`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Consider this condition: `if (x > 0 || x < 100)`. When is this condition false?",
+    "options": {
+      "a": "When x is between 0 and 100 (exclusive).",
+      "b": "Never — it is always true for any integer x.",
+      "c": "When x equals exactly 0 or exactly 100.",
+      "d": "When x is negative."
+    },
+    "answer": "b",
+    "explanation_md": "For any integer `x`, either `x > 0` is true (positive numbers) or `x < 100` is true (numbers below 100) — and for values between 0 and 100, both are true. There is no integer that is simultaneously not greater than 0 AND not less than 100. The programmer almost certainly meant `&&` (to express \"between 0 and 100\"), not `||`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    for (int i = 1; i < 4; ++i)\n        std::cout << i << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n2\n3",
+    "explanation_md": "The loop starts at `i = 1` and continues while `i < 4`, so it iterates with `i = 1, 2, 3` and stops before `i = 4`. If the intent was to print 1 through 4, the condition should be `i <= 4`. This is a classic off-by-one error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to return `true` only when `n` is in the range [1, 100] (inclusive). What is the bug?\n\n```cpp\nbool inRange(int n) {\n    if (n >= 1 || n <= 100)\n        return true;\n    return false;\n}\n```",
+    "options": {
+      "a": "The comparison operators `>=` and `<=` should be `>` and `<`.",
+      "b": "The logical operator `||` should be `&&`; the current condition is always true.",
+      "c": "The function should return `int`, not `bool`.",
+      "d": "The return value `true` should be `1`."
+    },
+    "answer": "b",
+    "explanation_md": "Using `||` (OR) means the condition fires when `n >= 1` OR `n <= 100` — which is true for every integer (any number is either at least 1 or at most 100). The correct operator is `&&` (AND): `n >= 1 && n <= 100` fires only when both conditions hold simultaneously, which is the range [1, 100]."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What silent bug does an uninitialized `int` variable introduce?",
+    "options": {
+      "a": "The program always crashes with a segfault before reaching the variable.",
+      "b": "The compiler replaces the variable with zero at compile time.",
+      "c": "The variable contains whatever value happens to be in memory at that address, producing unpredictable output.",
+      "d": "The variable is automatically set to INT_MAX as a guard value."
+    },
+    "answer": "c",
+    "explanation_md": "An uninitialized local variable in C++ does not have a defined value — it contains whatever bytes were already in that memory location from a previous operation. This can look like zero in debug builds and produce completely different values in release builds or on different machines, making the bug hard to reproduce. Always initialize variables at declaration."
+  }
+]
