@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { applyAttempt } from "@/lib/content/review";
 
 export const dynamic = "force-dynamic";
 
 // ---------------------------------------------------------------------------
 // POST /api/concept-checks — record a concept-check attempt
 // body: { checkId: string, correct: boolean } → 204
+// Phase B: also upserts concept_check_reviews atomically via the RPC.
 // ---------------------------------------------------------------------------
 
 export async function POST(request: NextRequest) {
@@ -31,14 +33,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { error } = await supabase.from("concept_check_attempts").insert({
-    user_id: user.id,
-    check_id: checkId,
-    correct,
-  });
-  if (error) {
-    // Postgres FK violation — the checkId doesn't reference a known concept check
-    if (error.code === "23503") {
+  try {
+    await applyAttempt(supabase, user.id, checkId, correct, new Date());
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "unknown";
+    if (message.includes("23503")) {
       return NextResponse.json({ error: "Unknown checkId" }, { status: 400 });
     }
     return NextResponse.json({ error: "Failed to record attempt" }, { status: 500 });
