@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Box\n{\n    int length;\n    int width;\n    int height;\n};\n\nint main()\n{\n    Box b{ 4, 3, 2 };\n    std::cout << b.length << ' ' << b.width << ' ' << b.height << '\\n';\n    std::cout << b.length * b.width * b.height << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4 3 2\n24",
+    "explanation_md": "The aggregate initializer maps values left-to-right: `length=4`, `width=3`, `height=2`. The first line prints those three values space-separated. The second line prints their product `4*3*2 = 24`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Score\n{\n    int value;\n    int bonus;\n};\n\nint main()\n{\n    Score s{ 80 };\n    std::cout << s.value << ' ' << s.bonus << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "80 0",
+    "explanation_md": "When fewer initializers are provided than there are members, the remaining members are value-initialized. For `int`, value-initialization means zero. So `value` becomes `80` and `bonus` becomes `0`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a valid C++20 designated initializer for `struct Point { int x; int y; };`?",
+    "options": {
+      "a": "`Point p{ .y = 4, .x = 3 };`  — designators in any order",
+      "b": "`Point p{ .x = 3, .y = 4 };`  — designators in declaration order",
+      "c": "`Point p{ x: 3, y: 4 };`  — colon syntax",
+      "d": "`Point p{ x = 3, y = 4 };`  — no leading dot"
+    },
+    "answer": "b",
+    "explanation_md": "C++20 designated initializers use `.member = value` syntax and must appear in the same order as the struct's member declarations. Out-of-order designators are ill-formed in C++ (unlike C99 which permits reordering). Options (a), (c), and (d) are all invalid C++ syntax."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer intends to create a `Rect` with width 10 and height 3, but the output is wrong. What is the bug?\n\n```cpp\n#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\nint main()\n{\n    Rect r{ 3, 10 };    // intended: width=10, height=3\n    std::cout << \"area=\" << r.width * r.height << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Line 11: aggregate initializer cannot be used with a named struct",
+      "b": "Line 11: the values are in the wrong order — first value goes to `width`, second to `height`",
+      "c": "Line 7: `height` needs an explicit type annotation to accept `10`",
+      "d": "Line 13: member access requires `->` not `.` for struct variables"
+    },
+    "answer": "b",
+    "explanation_md": "Aggregate initialization assigns values to members in declaration order. `Rect{ 3, 10 }` sets `width=3` and `height=10`, the opposite of the programmer's intent. The fix is `Rect r{ 10, 3 }` or using a designated initializer `Rect r{ .width = 10, .height = 3 }` which makes the intent explicit."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the result of `Point p{};` for `struct Point { int x; int y; };`?",
+    "options": {
+      "a": "Undefined behavior — `x` and `y` are uninitialized",
+      "b": "`x` and `y` are both value-initialized to `0`",
+      "c": "Compilation error — you must provide explicit values",
+      "d": "`x` is `0` but `y` is indeterminate"
+    },
+    "answer": "b",
+    "explanation_md": "An empty brace initializer `{}` value-initializes every member. For `int` members that means zero-initialization. This is a safe and idiomatic way to create a zero-state struct when you do not yet have values to assign."
+  }
+]

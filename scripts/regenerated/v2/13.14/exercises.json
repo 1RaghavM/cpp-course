@@ -1,0 +1,56 @@
+[
+  {
+    "title": "CTAD with Point",
+    "prompt_md": "## Goal\nDefine a class template `Point<T>` with two members `x` and `y`, then use CTAD to construct a `Point` from two values read from input and print them back on one line.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing the two integers separated by a single space, followed by a newline.\n\n## Requirements\n1. Define `template <typename T> struct Point { T x; T y; };` at file scope.\n2. Read two `int` values from `std::cin` into local variables.\n3. Construct a `Point` using CTAD \u2014 write `Point p{ a, b };` (no angle brackets).\n4. Print `p.x`, a single space, and `p.y`, followed by a newline.\n\n## Notes\nAssume a C++20 compiler so that aggregate CTAD works without an explicit deduction guide.",
+    "starter_code": "#include <iostream>\n\n// TODO: define class template Point<T> here\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    // TODO: construct a Point using CTAD and print its members\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Point\n{\n    T x;\n    T y;\n};\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    Point p{ a, b };\n    std::cout << p.x << ' ' << p.y << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "3 4\n",
+        "expected_stdout": "3 4\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "-1 1\n",
+        "expected_stdout": "-1 1\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "0 0\n",
+        "expected_stdout": "0 0\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Complete maxOf using a Pair",
+    "prompt_md": "## Goal\nComplete the function `maxOf` that takes a `Pair<int>` and returns the larger of its two members. The function template `Pair<T>` and `main` are provided. You must fill in `maxOf` with the exact signature shown, then `main` will read two integers, build a `Pair` via CTAD, call `maxOf`, and print the result.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing a single integer \u2014 the larger of the two input numbers \u2014 followed by a newline. If the two are equal, print that value.\n\n## Requirements\n1. Implement the function with the exact signature `int maxOf(const Pair<int>& p)`.\n2. Return the larger of `p.first` and `p.second`. If they are equal, return either.\n3. Do not modify the `Pair` template, the `main` function, or any other code.\n4. Use only `if`/`else` or `?:` \u2014 no `<algorithm>` includes are necessary.\n\n## Notes\nThis exercise combines class templates (13.13), CTAD (13.14), and passing structs by const reference (13.10).",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Pair\n{\n    T first;\n    T second;\n};\n\n// TODO: implement maxOf with the exact signature below.\n// The stub returns 0 so the starter compiles; replace it with the real logic.\nint maxOf(const Pair<int>& p)\n{\n    (void)p;\n    return 0;\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    Pair p{ a, b };\n    std::cout << maxOf(p) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Pair\n{\n    T first;\n    T second;\n};\n\nint maxOf(const Pair<int>& p)\n{\n    return (p.first >= p.second) ? p.first : p.second;\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    Pair p{ a, b };\n    std::cout << maxOf(p) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "3 8\n",
+        "expected_stdout": "8\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "10 -4\n",
+        "expected_stdout": "10\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "5 5\n",
+        "expected_stdout": "5\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

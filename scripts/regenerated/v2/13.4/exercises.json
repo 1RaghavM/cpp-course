@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Implement colorName",
+    "prompt_md": "## Goal\nDefine an unscoped enumeration `Color` with the enumerators `red`, `green`, `blue` (in that order). Then implement the helper function `std::string_view colorName(Color c)` that returns the lowercase name of the color (`\"red\"`, `\"green\"`, or `\"blue\"`). `main` reads an integer 0..2, converts it to a `Color`, and prints `colorName` of that color followed by a newline.\n\n## Input\n- A single line with one integer `n` (0 ≤ n ≤ 2).\n\n## Output\n- Exactly one line containing the lowercase name of the matching color, followed by a newline. Example: input `0` produces `red`.\n\n## Requirements\n1. Define `enum Color { red, green, blue, };` at file scope.\n2. Implement exactly this function signature: `std::string_view colorName(Color c)`.\n3. The function must return `\"red\"`, `\"green\"`, or `\"blue\"` for the corresponding enumerator. Return a fallback string (e.g. `\"unknown\"`) for out-of-range values to keep the function safe.\n4. Hidden tests cover the smallest input (`0` -> `red`) and the largest input (`2` -> `blue`).\n\n## Notes\n- Include `<string_view>`.\n- Do not use `enum class`.\n",
+    "starter_code": "#include <iostream>\n#include <string_view>\n\n// TODO: Define enum Color with enumerators red, green, blue\n\n// TODO: Implement std::string_view colorName(Color c)\n//       Return \"red\", \"green\", or \"blue\" depending on the enumerator.\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: Convert n to Color with static_cast\n    // TODO: Print colorName(c) followed by '\\n'\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string_view>\n\nenum Color\n{\n    red,\n    green,\n    blue,\n};\n\nstd::string_view colorName(Color c)\n{\n    switch (c)\n    {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n    }\n    return \"unknown\";\n}\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    Color c { static_cast<Color>(n) };\n    std::cout << colorName(c) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "green (sample)",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "green\n"
+      },
+      {
+        "label": "smallest input (red)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "red\n"
+      },
+      {
+        "label": "largest input (blue)",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "blue\n"
+      }
+    ]
+  },
+  {
+    "title": "Implement statusFromName",
+    "prompt_md": "## Goal\nGiven the enumeration\n\n```cpp\nenum Status\n{\n    ok,\n    warn,\n    fail,\n    unknownStatus,\n};\n```\n\nimplement the helper function `Status statusFromName(std::string_view name)` that returns the matching enumerator for `\"ok\"`, `\"warn\"`, or `\"fail\"`, and returns `unknownStatus` for any other input. The provided `main` reads one word from stdin, calls `statusFromName`, and prints the underlying integer value of the returned status on a single line (relying on the implicit enum-to-int conversion from the previous lesson).\n\n## Input\n- A single line containing one whitespace-free word.\n\n## Output\n- Exactly one line containing the integer value of the returned `Status`, followed by a newline. `ok` -> `0`, `warn` -> `1`, `fail` -> `2`, anything else -> `3`.\n\n## Requirements\n1. Implement exactly this function signature: `Status statusFromName(std::string_view name)`.\n2. Use `std::string_view` for the parameter (do not change it to `std::string` or `const char*`).\n3. The comparison `name == \"ok\"` (etc.) using `==` is the recommended form.\n4. Do not modify `main`, the `Status` enumeration, or the output format.\n5. Hidden tests cover a recognized name and an unrecognized word.\n\n## Notes\n- This exercise combines the lesson's string-to-enum pattern with the previous lesson's implicit enum-to-int conversion, used by `main` when printing.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nenum Status\n{\n    ok,\n    warn,\n    fail,\n    unknownStatus,\n};\n\nStatus statusFromName(std::string_view name)\n{\n    // TODO: return ok, warn, fail, or unknownStatus based on name\n    (void)name;\n    return unknownStatus;\n}\n\nint main()\n{\n    std::string word {};\n    std::cin >> word;\n\n    Status s { statusFromName(word) };\n    std::cout << s << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nenum Status\n{\n    ok,\n    warn,\n    fail,\n    unknownStatus,\n};\n\nStatus statusFromName(std::string_view name)\n{\n    if (name == \"ok\")   return ok;\n    if (name == \"warn\") return warn;\n    if (name == \"fail\") return fail;\n    return unknownStatus;\n}\n\nint main()\n{\n    std::string word {};\n    std::cin >> word;\n\n    Status s { statusFromName(word) };\n    std::cout << s << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "warn -> 1 (sample)",
+        "is_sample": true,
+        "stdin": "warn\n",
+        "expected_stdout": "1\n"
+      },
+      {
+        "label": "recognized name (fail -> 2)",
+        "is_sample": false,
+        "stdin": "fail\n",
+        "expected_stdout": "2\n"
+      },
+      {
+        "label": "unrecognized word -> 3",
+        "is_sample": false,
+        "stdin": "banana\n",
+        "expected_stdout": "3\n"
+      }
+    ]
+  }
+]

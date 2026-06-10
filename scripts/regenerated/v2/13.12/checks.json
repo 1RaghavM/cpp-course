@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Box {\n    int width{ 10 };\n    int height{ 5 };\n};\n\nint main() {\n    Box b{ 20, 8 };\n    Box* ptr{ &b };\n    ptr->width = 30;\n    std::cout << b.width << ' ' << b.height << '\\n';\n    std::cout << (*ptr).height << '\\n';\n}\n```",
+    "options": null,
+    "answer": "30 8\n8\n",
+    "explanation_md": "`ptr` points to `b`. `ptr->width = 30` modifies `b.width` through the pointer. After the assignment, `b.width` is `30` and `b.height` is still `8`. `(*ptr).height` dereferences `ptr` to get `b`, then accesses `.height`, which is `8`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this code?\n\n```cpp\n#include <iostream>\n\nstruct Point { int x{ 0 }; int y{ 0 }; };\n\nint main() {\n    Point p{ 3, 7 };\n    Point* ptr{ &p };\n    std::cout << *ptr.x << '\\n';\n}\n```",
+    "options": {
+      "a": "`Point*` cannot point to a local variable.",
+      "b": "`*ptr.x` is parsed as `*(ptr.x)`, which tries to apply `.x` to a pointer — a compile error.",
+      "c": "Default member initializers prevent `Point` from being pointed to.",
+      "d": "`std::cout` cannot print the result of a dereference."
+    },
+    "answer": "b",
+    "explanation_md": "`.` has higher precedence than `*`, so `*ptr.x` parses as `*(ptr.x)`. Since `ptr` is a pointer (not a struct), it has no `.x` member, causing a compile error. The correct expressions are `(*ptr).x` or, more idiomatically, `ptr->x`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `Point p{ 1, 2 }; Point* ptr{ &p }; Point& ref{ p };`, which three expressions all access the same `x` member?",
+    "options": {
+      "a": "`p.x`, `ptr.x`, `ref->x`",
+      "b": "`p.x`, `ptr->x`, `ref.x`",
+      "c": "`p->x`, `ptr->x`, `ref.x`",
+      "d": "`p.x`, `*ptr.x`, `ref.x`"
+    },
+    "answer": "b",
+    "explanation_md": "Values and references use `.`, pointers use `->`. So `p.x` (value), `ptr->x` (pointer), and `ref.x` (reference) all access the same member. Option `a` is wrong because `ptr.x` and `ref->x` swap the operators. Option `c` is wrong because `p->x` treats a value as a pointer. Option `d` has the precedence bug `*ptr.x`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Node {\n    int value{ 0 };\n};\n\nvoid doubleValue(Node* n) {\n    if (n != nullptr)\n        n->value *= 2;\n}\n\nint main() {\n    Node a{ .value = 5 };\n    doubleValue(&a);\n    doubleValue(nullptr);\n    std::cout << a.value << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10\n",
+    "explanation_md": "`doubleValue(&a)` passes a valid pointer; inside the function the null check passes and `a.value` becomes `10`. `doubleValue(nullptr)` passes null; the null check fails so nothing happens. `a.value` is `10` when printed."
+  }
+]

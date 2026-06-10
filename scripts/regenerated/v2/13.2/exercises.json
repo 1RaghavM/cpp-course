@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Define a Suit enum and print its index",
+    "prompt_md": "## Goal\nDefine an unscoped enumeration `Suit` with the enumerators `clubs`, `diamonds`, `hearts`, `spades` (in that order, starting at 0). Read one integer from stdin (0..3) representing a suit index, store it in a `Suit` variable, and print the underlying integer value of that variable on a single line.\n\n## Input\n- A single line with one integer `i` (0 ≤ i ≤ 3).\n\n## Output\n- Exactly one line containing the integer value of the chosen suit (0 for clubs, 1 for diamonds, 2 for hearts, 3 for spades), terminated by a single newline.\n\n## Requirements\n1. Define `enum Suit { clubs, diamonds, hearts, spades, };` at file scope.\n2. Inside `main`, declare a `Suit` variable and assign one of its enumerators using a `switch` on the input integer.\n3. Print the variable directly with `std::cout`; the implicit conversion will produce the underlying integer.\n4. The hidden tests cover the smallest input (`0`) and the largest input (`3`).\n\n## Notes\n- Do not use `static_cast` or `enum class`.\n",
+    "starter_code": "#include <iostream>\n\n// TODO: Define enum Suit with enumerators clubs, diamonds, hearts, spades\n\nint main()\n{\n    int i {};\n    std::cin >> i;\n\n    // TODO: declare a Suit variable\n    // TODO: assign the matching enumerator using a switch\n    // TODO: print the variable and a newline\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nenum Suit\n{\n    clubs,\n    diamonds,\n    hearts,\n    spades,\n};\n\nint main()\n{\n    int i {};\n    std::cin >> i;\n\n    Suit s { clubs };\n    switch (i)\n    {\n        case 0: s = clubs;    break;\n        case 1: s = diamonds; break;\n        case 2: s = hearts;   break;\n        case 3: s = spades;   break;\n        default: s = clubs;   break;\n    }\n\n    std::cout << s << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "hearts (sample)",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "2\n"
+      },
+      {
+        "label": "smallest input (clubs)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "largest input (spades)",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "3\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete nextDay using a switch",
+    "prompt_md": "## Goal\nImplement the function `Day nextDay(Day d)` that returns the day after `d`, wrapping around so that the day after `sunday` is `monday`. The provided `main` reads the input integer (0..6), calls your `nextDay`, and prints the underlying integer of the result on a single line.\n\nThe enumeration is defined as:\n\n```cpp\nenum Day\n{\n    monday,\n    tuesday,\n    wednesday,\n    thursday,\n    friday,\n    saturday,\n    sunday,\n};\n```\n\n## Input\n- A single line with one integer `n` (0 ≤ n ≤ 6) representing the current day's index.\n\n## Output\n- Exactly one line containing the integer value of the next day. For example, input `0` (monday) produces output `1` (tuesday). Input `6` (sunday) produces output `0` (monday). Always end with a newline.\n\n## Requirements\n1. Implement exactly this function signature: `Day nextDay(Day d)`. Do not change the parameter or return type.\n2. Use a `switch` (or equivalent control flow) to return the next enumerator for every case.\n3. `nextDay(sunday)` must return `monday`. This wrap-around case is covered by a hidden test.\n4. Do not modify `main`, the definition of `Day`, or the output format.\n\n## Notes\n- Combine this lesson's concept (unscoped enumeration values) with the earlier lesson on program-defined types — `Day` is a program-defined type and you are writing a function whose parameter and return type both use it.\n",
+    "starter_code": "#include <iostream>\n\nenum Day\n{\n    monday,\n    tuesday,\n    wednesday,\n    thursday,\n    friday,\n    saturday,\n    sunday,\n};\n\nDay nextDay(Day d)\n{\n    // TODO: return the day after d, wrapping sunday back to monday\n    return d;\n}\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    Day today { monday };\n    switch (n)\n    {\n        case 0: today = monday;    break;\n        case 1: today = tuesday;   break;\n        case 2: today = wednesday; break;\n        case 3: today = thursday;  break;\n        case 4: today = friday;    break;\n        case 5: today = saturday;  break;\n        case 6: today = sunday;    break;\n        default: today = monday;   break;\n    }\n\n    Day tomorrow { nextDay(today) };\n    std::cout << tomorrow << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nenum Day\n{\n    monday,\n    tuesday,\n    wednesday,\n    thursday,\n    friday,\n    saturday,\n    sunday,\n};\n\nDay nextDay(Day d)\n{\n    switch (d)\n    {\n        case monday:    return tuesday;\n        case tuesday:   return wednesday;\n        case wednesday: return thursday;\n        case thursday:  return friday;\n        case friday:    return saturday;\n        case saturday:  return sunday;\n        case sunday:    return monday;\n    }\n    return monday;\n}\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    Day today { monday };\n    switch (n)\n    {\n        case 0: today = monday;    break;\n        case 1: today = tuesday;   break;\n        case 2: today = wednesday; break;\n        case 3: today = thursday;  break;\n        case 4: today = friday;    break;\n        case 5: today = saturday;  break;\n        case 6: today = sunday;    break;\n        default: today = monday;   break;\n    }\n\n    Day tomorrow { nextDay(today) };\n    std::cout << tomorrow << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "monday -> tuesday (sample)",
+        "is_sample": true,
+        "stdin": "0\n",
+        "expected_stdout": "1\n"
+      },
+      {
+        "label": "wrap-around sunday -> monday",
+        "is_sample": false,
+        "stdin": "6\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "middle of the week (thursday -> friday)",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "4\n"
+      }
+    ]
+  }
+]

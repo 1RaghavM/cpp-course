@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `template <typename T> struct Pair { T first; T second; };`, why does the line `Pair p{ 1, 2 };` fail to compile (without CTAD)?",
+    "options": {
+      "a": "Because `Pair` is a template, not a type, so the compiler needs `Pair<int>` to know which instantiation to use.",
+      "b": "Because aggregate initialization is not allowed for templated structs.",
+      "c": "Because the template parameter `T` cannot be deduced as `int` from integer literals.",
+      "d": "Because `1` and `2` need to be the same type for `Pair` to compile."
+    },
+    "answer": "a",
+    "explanation_md": "A class template is a recipe for generating types, not a type itself. Without explicit template arguments the compiler has no type to substitute for `T` and reports `missing template arguments before 'p'`. Aggregate initialization works fine on instantiated templates, and although the next lesson introduces CTAD, by default the brackets are required."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nstruct Box\n{\n    T value;\n};\n\nint main()\n{\n    Box<int> a{ 10 };\n    Box<int> b{ 32 };\n    std::cout << a.value + b.value << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "`Box<int>` instantiates a concrete struct with one `int` member named `value`. `a.value` is 10 and `b.value` is 32, so the sum printed is 42. Both variables share the same instantiated type because they use the same template argument."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does a class template usually need to be defined in a header file rather than a `.cpp` file?",
+    "options": {
+      "a": "Header files compile faster than `.cpp` files.",
+      "b": "The compiler must see the full template body at every point of use to instantiate it for the specific type argument.",
+      "c": "C++ forbids templates in `.cpp` files.",
+      "d": "Linkers refuse to link any symbol whose definition lives in a `.cpp` file."
+    },
+    "answer": "b",
+    "explanation_md": "Class templates are stencils — the compiler produces concrete code only when it sees both the template definition and the type argument together. If the template lives only in a `.cpp` file, other translation units that use it see no definition to instantiate from, and the resulting symbols never get generated, leading to a linker error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this code?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nstruct Pair { T first; T second; };\n\nint main()\n{\n    Pair<int> a{ 1, 2 };\n    Pair<long> b = a;\n    std::cout << b.first << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Aggregate initialization with braces is not allowed inside `main`.",
+      "b": "`Pair<int>` and `Pair<long>` are unrelated types — there is no implicit conversion between different instantiations.",
+      "c": "`first` and `second` cannot be the same type.",
+      "d": "The template definition is missing a `typename` keyword inside the body."
+    },
+    "answer": "b",
+    "explanation_md": "Different instantiations of the same template are different types. `Pair<int>` and `Pair<long>` share the source recipe but the type system treats them as unrelated, just as `int` and `long` are unrelated. Copying one into the other requires explicitly constructing the target type member-by-member."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Tagged { T value; U tag; };\n\nint main()\n{\n    Tagged<int, char> e{ 7, 'X' };\n    std::cout << e.tag << e.value << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "X7",
+    "explanation_md": "`Tagged<int, char>` instantiates a struct where `value` is `int` and `tag` is `char`. `e.tag` prints the character `X` and `e.value` prints `7`; without any separator they appear adjacent on one line."
+  }
+]

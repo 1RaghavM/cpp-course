@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Season { spring, summer, autumn, winter };\n\nstd::ostream& operator<<(std::ostream& out, Season s)\n{\n    switch (s)\n    {\n        case spring: out << \"spring\"; break;\n        case summer: out << \"summer\"; break;\n        case autumn: out << \"autumn\"; break;\n        case winter: out << \"winter\"; break;\n    }\n    return out;\n}\n\nint main()\n{\n    Season s{ autumn };\n    std::cout << \"Season: \" << s << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Season: autumn",
+    "explanation_md": "The `operator<<` overload matches `Season` and runs the `case autumn:` branch, writing `\"autumn\"` to `out`. The function returns `out`, so the chain `<< s << '\\n'` works correctly and the final newline is also printed."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program compiles but does not behave as intended. Which line contains the bug?\n\n```cpp\n#include <iostream>\n#include <string>\n\nenum Pet { cat, dog, fish };\n\nstd::istream& operator>>(std::istream& in, Pet p)\n{\n    std::string token;\n    in >> token;\n    if (token == \"cat\")  p = cat;\n    else if (token == \"dog\")  p = dog;\n    else                      p = fish;\n    return in;\n}\n\nint main()\n{\n    Pet myPet{ fish };\n    std::cin >> myPet;\n    std::cout << static_cast<int>(myPet) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Line 6: the return type should be `std::ostream&`",
+      "b": "Line 6: the parameter `p` should be `Pet&` not `Pet`",
+      "c": "Line 8: `std::string token` should be declared outside the function",
+      "d": "Line 15: `return in` should be `return in >> p`"
+    },
+    "answer": "b",
+    "explanation_md": "Because `p` is passed by value, every assignment (`p = cat`, etc.) modifies only the local copy. The caller's `myPet` is never updated. Changing the parameter to `Pet& p` makes the function write back to the original variable."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must `operator<<` return `std::ostream&` rather than `void`?",
+    "options": {
+      "a": "Because `std::ostream` has no copy constructor, so it must be passed and returned by reference",
+      "b": "So that multiple `<<` calls can be chained in one expression, e.g. `std::cout << a << b`",
+      "c": "Because `void` return type is reserved for `operator>>` only",
+      "d": "To allow the compiler to inline the function at the call site"
+    },
+    "answer": "b",
+    "explanation_md": "Chaining works because `std::cout << a << b` is parsed as `(std::cout << a) << b`. The first `<<` must return the stream so the second `<<` has something to operate on. If the return type were `void`, the chain would fail to compile. Option (a) is also true but is the reason the parameter and return use reference, not why a reference is returned at all."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Rank { ace, two, three };\n\nstd::ostream& operator<<(std::ostream& out, Rank r)\n{\n    if (r == ace)   out << \"ace\";\n    if (r == two)   out << \"two\";\n    if (r == three) out << \"three\";\n    return out;\n}\n\nint main()\n{\n    std::cout << ace << ' ' << three << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "ace three",
+    "explanation_md": "Each `<<` with a `Rank` calls the overload. `ace` matches the first `if`, printing `\"ace\"`. `three` matches the third `if`, printing `\"three\"`. A space literal is printed between them, and `'\\n'` ends the line."
+  }
+]
