@@ -147,10 +147,19 @@ async function main(): Promise<void> {
       if (existsSync(exercisesPath)) {
         const { data: oldExercises } = await supabase.from("exercises").select("id").eq("lesson_id", lessonId);
         if (oldExercises && oldExercises.length > 0) {
+          const oldIds = oldExercises.map((e) => e.id);
+          // Submissions reference exercises by FK — drop orphan submissions before
+          // replacing the exercises, since the new exercise IDs and test cases make
+          // historical submissions on the old prompts meaningless.
+          const { error: subDelErr } = await supabase
+            .from("submissions")
+            .delete()
+            .in("exercise_id", oldIds);
+          if (subDelErr) throw new Error(`submissions delete: ${subDelErr.message}`);
           const { error: tcDelErr } = await supabase
             .from("test_cases")
             .delete()
-            .in("exercise_id", oldExercises.map((e) => e.id));
+            .in("exercise_id", oldIds);
           if (tcDelErr) throw new Error(`test_cases delete: ${tcDelErr.message}`);
         }
         const { error: exDelErr } = await supabase.from("exercises").delete().eq("lesson_id", lessonId);
