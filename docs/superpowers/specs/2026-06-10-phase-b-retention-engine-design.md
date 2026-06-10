@@ -57,7 +57,7 @@ app/dashboard/review/page.tsx               — NEW: review session page
 components/dashboard/ReviewDueCard.tsx      — NEW: dashboard widget
 components/lesson/ChapterQuiz.tsx           — NEW: .x-tab content
 components/review/ReviewSession.tsx         — NEW: shared session UI for review + chapter quiz
-components/lesson/LessonClient.tsx          — MODIFIED: detect .x slug, render Chapter Quiz tab
+app/(app)/lessons/[slug]/LessonClient.tsx   — MODIFIED: detect .x slug, render Chapter Quiz tab
 
 supabase/migrations/20260610120000_concept_check_reviews.sql  — table + RPC + RLS
 
@@ -131,10 +131,10 @@ All endpoints require `requireAuth(supabase)`. All return JSON.
 
 **`POST /api/concept-checks`** *(extended)*
 ```
-Request:  { checkId, userAnswer }
-Response: { correct, explanationMd }
+Request:  { checkId, correct }
+Response: 204 (unchanged shape)
 ```
-Grades the answer (existing logic), then calls the `record_check_attempt` RPC which inserts into `concept_check_attempts` and upserts `concept_check_reviews` atomically.
+The client already grades the answer in `components/lesson/ConceptChecks.tsx` and POSTs the boolean. Phase B extends this route to call the `record_check_attempt` RPC instead of a direct insert — the RPC writes both `concept_check_attempts` and `concept_check_reviews` atomically.
 
 **`GET /api/review/due`**
 ```
@@ -148,10 +148,10 @@ Called twice in a typical session: once by `ReviewDueCard` (uses `count` only) a
 
 **`POST /api/review/attempt`**
 ```
-Request:  { checkId, userAnswer }
-Response: { correct, explanationMd }
+Request:  { checkId, correct }
+Response: 204
 ```
-Same shape and same internal helper as `POST /api/concept-checks`. Kept as a separate route so per-surface analytics ("attempts from review vs. lesson") are trivial to split later.
+Same shape and same internal helper as `POST /api/concept-checks` (`ReviewSession` grades on the client like the existing lesson UI does). Kept as a separate route so per-surface analytics ("attempts from review vs. lesson") are trivial to split later.
 
 **`GET /api/chapters/[number]/quiz`**
 ```
@@ -200,10 +200,10 @@ Response: {
 ## Data flow (cold-start cases)
 
 **A. First attempt on a lesson page.**
-1. User answers an MCQ on `/dashboard/lessons/4-3` → client POSTs `/api/concept-checks`.
-2. Route: auth → load check → grade → call `record_check_attempt` RPC.
-3. RPC inserts an attempts row and upserts a reviews row using `initialReviewState`: correct → `intervalIndex = 1, next_due = today + 3d`; incorrect → `intervalIndex = 0, next_due = today + 1d`.
-4. Response surfaces the explanation; client reveals it.
+1. User answers an MCQ on `/lessons/4-3` → `ConceptChecks.tsx` grades client-side and POSTs `{ checkId, correct }` to `/api/concept-checks`.
+2. Route: auth → load existing reviews row (if any) → compute new `ReviewState` in TS → call `record_check_attempt(check_id, interval_index, next_due, last_correct)` RPC.
+3. RPC inserts an attempts row and upserts a reviews row using the precomputed values. First attempt: correct → `intervalIndex = 1, next_due = today + 3d`; incorrect → `intervalIndex = 0, next_due = today + 1d`.
+4. 204 response. Client reveals the explanation it already had loaded.
 
 **B. Daily review.**
 1. Dashboard loads → `ReviewDueCard` fetches `/api/review/due`.
