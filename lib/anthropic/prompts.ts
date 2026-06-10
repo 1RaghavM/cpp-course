@@ -102,35 +102,22 @@ export function shouldGenerateExercises(chapterNumber: string): boolean {
 export type Exercise2Format = "fix_the_bug" | "complete_the_function";
 
 /**
- * Build the prompt for generating exercises with Sonnet 4.6.
- * Takes chapter context to generate more relevant exercises.
+ * Static system block for exercise generation. Identical across all lessons so
+ * the ephemeral prompt cache hits on consecutive calls; all per-lesson data
+ * (lesson title, chapter, prior lessons, exercise-2 format) lives in the user
+ * message instead.
  */
-export function buildExercisePrompt(
-  lessonTitle: string,
-  summaryMd: string,
-  chapterNumber: string,
-  chapterTitle: string,
-  priorTitles: string[],
-  exercise2Format: Exercise2Format,
-): PromptPayload {
-  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none — this is the first lesson)";
-
-  const exercise2Spec =
-    exercise2Format === "fix_the_bug"
-      ? `- Exercise 2: fix-the-bug — starter_code is a COMPLETE program (no TODOs) that compiles cleanly but contains exactly ONE planted logic bug related to this lesson's concept. prompt_md describes what the program SHOULD do and states that the code contains one bug to find and fix — do not reveal the bug's location or nature. Hidden test cases must fail on the buggy version and pass once fixed. solution_code is the corrected program.`
-      : `- Exercise 2: complete-the-function — starter_code contains a complete main() plus exactly one function with a TODO stub for the learner to implement. prompt_md names the exact function signature. The exercise combines the lesson concept with one prior concept from the prior lessons list above.`;
-
-  const systemText = `Design 2 C++ exercises for the lesson "${lessonTitle}" from Chapter ${chapterNumber}: ${chapterTitle}.
+const EXERCISE_SYSTEM = `Design 2 C++ exercises for the lesson named in the user message.
 
 CONCEPT BOUNDARY (CRITICAL):
-The student has completed ONLY these prior lessons in this chapter: [${priorList}].
-Exercises MUST only use C++ features and concepts that appear in the lesson summary below OR in the prior lessons listed above. Do NOT use any concept, function, keyword, or library feature introduced in later lessons. If cin/cout has not been covered yet, do not require cin/cout. If functions have not been covered yet, write all logic in main(). If a concept is not in the summary or prior lessons list, assume the student does not know it.
+The student has completed ONLY the prior lessons listed in the user message.
+Exercises MUST only use C++ features and concepts that appear in the lesson summary in the user message OR in the prior lessons listed there. Do NOT use any concept, function, keyword, or library feature introduced in later lessons. If cin/cout has not been covered yet, do not require cin/cout. If functions have not been covered yet, write all logic in main(). If a concept is not in the summary or prior lessons list, assume the student does not know it.
 
 EXERCISE DESIGN PRINCIPLES:
 - Exercises must directly test concepts from the lesson summary
 - Difficulty should match the chapter level (early chapters = simpler exercises)
 - Exercise 1: guided — smaller scope, closer to the lesson example
-${exercise2Spec}
+- Exercise 2: follow the EXERCISE 2 FORMAT directive given in the user message.
 
 Each exercise must:
 - Be original (not from LeetCode or learncpp)
@@ -189,13 +176,32 @@ OUTPUT: a JSON array conforming to this schema for each exercise:
   ]
 }`;
 
+/**
+ * Build the prompt for generating exercises with Sonnet 4.6.
+ * Takes chapter context to generate more relevant exercises.
+ */
+export function buildExercisePrompt(
+  lessonTitle: string,
+  summaryMd: string,
+  chapterNumber: string,
+  chapterTitle: string,
+  priorTitles: string[],
+  exercise2Format: Exercise2Format,
+): PromptPayload {
+  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none — this is the first lesson)";
+
+  const exercise2Spec =
+    exercise2Format === "fix_the_bug"
+      ? `- Exercise 2: fix-the-bug — starter_code is a COMPLETE program (no TODOs) that compiles cleanly but contains exactly ONE planted logic bug related to this lesson's concept. prompt_md describes what the program SHOULD do and states that the code contains one bug to find and fix — do not reveal the bug's location or nature. Hidden test cases must fail on the buggy version and pass once fixed. solution_code is the corrected program.`
+      : `- Exercise 2: complete-the-function — starter_code contains a complete main() plus exactly one function with a TODO stub for the learner to implement. prompt_md names the exact function signature. The exercise combines the lesson concept with one prior concept from the prior lessons list above.`;
+
   return {
     model: MODEL_SONNET,
-    system: [withCache({ type: "text", text: systemText })],
+    system: [withCache({ type: "text", text: EXERCISE_SYSTEM })],
     messages: [
       {
         role: "user",
-        content: `Chapter: ${chapterNumber} - ${chapterTitle}\nLesson: ${lessonTitle}\n\nLesson summary:\n\n${summaryMd}`,
+        content: `Chapter: ${chapterNumber} - ${chapterTitle}\nLesson: ${lessonTitle}\nPrior lessons completed: [${priorList}]\n\nEXERCISE 2 FORMAT:\n${exercise2Spec}\n\nLesson summary:\n\n${summaryMd}`,
       },
     ],
     maxTokens: 8192,
@@ -216,22 +222,17 @@ export interface ConceptCheckItem {
 }
 
 /**
- * Build the prompt for generating 3-5 concept-check questions with Sonnet 4.6.
- * Takes the finished lesson body so checks test exactly what was taught.
+ * Static system block for concept-check generation. Identical across all
+ * lessons so the ephemeral prompt cache hits on consecutive calls; all
+ * per-lesson data (lesson title, prior lessons, lesson body) lives in the
+ * user message instead.
  */
-export function buildConceptCheckPrompt(
-  lessonTitle: string,
-  summaryMd: string,
-  priorTitles: string[],
-): PromptPayload {
-  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none)";
-
-  const systemText = `Design 3-5 concept-check questions for the C++ lesson "${lessonTitle}".
+const CONCEPT_CHECK_SYSTEM = `Design 3-5 concept-check questions for the C++ lesson named in the user message.
 
 PURPOSE: Quick formative checks shown right after the learner reads the lesson. Each question must target a real MISCONCEPTION — something a learner plausibly believes that is wrong — not trivia recall. Good misconception genres: integer division truncation, narrowing conversions, copy vs reference semantics, operator precedence surprises, uninitialized reads, off-by-one errors, scope/shadowing confusion, implicit conversions.
 
 CONCEPT BOUNDARY (CRITICAL):
-The learner has completed only these prior lessons: [${priorList}], plus the lesson body below. Use ONLY concepts, syntax, and library features that appear in those sources. If a feature is not in the lesson body or prior lessons list, the learner does not know it.
+The learner has completed only the prior lessons listed in the user message, plus the lesson body provided there. Use ONLY concepts, syntax, and library features that appear in those sources. If a feature is not in the lesson body or prior lessons list, the learner does not know it.
 
 QUESTION KINDS:
 - "predict_output": a code snippet (<= 12 lines) that compiles cleanly and prints deterministic output; the learner types the exact stdout. "options" must be null; "answer" is the exact expected stdout.
@@ -246,13 +247,24 @@ RULES:
 - Output ONLY a JSON array, no prose before or after, with each element conforming to:
 { "kind": "predict_output" | "spot_bug" | "mcq", "prompt_md": "string", "options": {"a": "string", "b": "string"} | null, "answer": "string", "explanation_md": "string" }`;
 
+/**
+ * Build the prompt for generating 3-5 concept-check questions with Sonnet 4.6.
+ * Takes the finished lesson body so checks test exactly what was taught.
+ */
+export function buildConceptCheckPrompt(
+  lessonTitle: string,
+  summaryMd: string,
+  priorTitles: string[],
+): PromptPayload {
+  const priorList = priorTitles.length > 0 ? priorTitles.join(", ") : "(none)";
+
   return {
     model: MODEL_SONNET,
-    system: [withCache({ type: "text", text: systemText })],
+    system: [withCache({ type: "text", text: CONCEPT_CHECK_SYSTEM })],
     messages: [
       {
         role: "user",
-        content: `Lesson body:\n\n${summaryMd}\n\nWrite the concept checks.`,
+        content: `Lesson: ${lessonTitle}\nPrior lessons completed: [${priorList}]\n\nLesson body:\n\n${summaryMd}\n\nWrite the concept checks.`,
       },
     ],
     maxTokens: 4096,
