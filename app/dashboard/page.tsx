@@ -2,6 +2,7 @@ import { SectionCards } from "@/components/section-cards"
 import { StatsHeatmap } from "@/components/stats/StatsHeatmap"
 import { ResumeHeroCard } from "@/components/dashboard/ResumeHeroCard"
 import { CurriculumProgressCard } from "@/components/dashboard/CurriculumProgressCard"
+import { ReviewDueCard } from "@/components/dashboard/ReviewDueCard"
 import { requireServerSession } from "@/lib/auth/require-auth"
 import { createServiceClient } from "@/lib/supabase/server"
 import { buildCurriculum, flattenLessons } from "@/lib/dashboard/curriculum"
@@ -16,7 +17,7 @@ import type { LessonStatus, DashboardProgress } from "@/lib/dashboard/types"
 export const dynamic = "force-dynamic"
 
 export default async function Page() {
-  const { supabase } = await requireServerSession()
+  const { supabase, userId } = await requireServerSession()
   const serviceClient = createServiceClient()
   const today = new Date().toISOString().slice(0, 10)
 
@@ -157,6 +158,9 @@ export default async function Page() {
         lessonsCompletedThisWeek={lessonsCompletedThisWeek}
         weeklyGoal={weeklyGoal}
       />
+      <div className="px-4 lg:px-6">
+        <ReviewDueCard supabase={supabase} userId={userId} />
+      </div>
       <div className="px-4 lg:px-6">
         <CurriculumProgressCard
           curriculum={curriculum}
