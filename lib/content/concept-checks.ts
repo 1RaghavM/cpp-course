@@ -60,7 +60,13 @@ export async function loadWarmupChecks(
   lesson: Lesson,
   max = 3,
 ): Promise<WarmupCheck[]> {
-  const { data: chapters } = await supabase.from("chapters").select("id, sort_order");
+  const { data: chapters, error: chaptersError } = await supabase
+    .from("chapters")
+    .select("id, sort_order");
+  if (chaptersError) {
+    console.error("loadWarmupChecks: chapters query failed:", chaptersError.message);
+    return [];
+  }
   const current = (chapters ?? []).find((c) => c.id === lesson.chapter_id);
   if (!current) return [];
 
@@ -68,7 +74,10 @@ export async function loadWarmupChecks(
     .filter((c) => c.sort_order < current.sort_order && c.sort_order >= current.sort_order - 2)
     .map((c) => c.id);
 
-  const [{ data: sameChapter }, { data: prevChapters }] = await Promise.all([
+  const [
+    { data: sameChapter, error: sameChapterError },
+    { data: prevChapters, error: prevChaptersError },
+  ] = await Promise.all([
     supabase
       .from("lessons")
       .select("id, number, sort_order")
@@ -76,23 +85,41 @@ export async function loadWarmupChecks(
       .lt("sort_order", lesson.sort_order),
     priorChapterIds.length > 0
       ? supabase.from("lessons").select("id, number, sort_order").in("chapter_id", priorChapterIds)
-      : Promise.resolve({ data: [] as Array<{ id: string; number: string; sort_order: number }> }),
+      : Promise.resolve({
+          data: [] as Array<{ id: string; number: string; sort_order: number }>,
+          error: null,
+        }),
   ]);
+  if (sameChapterError) {
+    console.error("loadWarmupChecks: same-chapter lessons query failed:", sameChapterError.message);
+    return [];
+  }
+  if (prevChaptersError) {
+    console.error(
+      "loadWarmupChecks: previous-chapters lessons query failed:",
+      prevChaptersError.message,
+    );
+    return [];
+  }
 
   const priorLessons = [...(prevChapters ?? []), ...(sameChapter ?? [])];
   if (priorLessons.length === 0) return [];
   const numberByLessonId = new Map(priorLessons.map((l) => [l.id, l.number]));
 
-  const { data: checks } = await supabase
+  const { data: checks, error: checksError } = await supabase
     .from("concept_checks")
     .select("*")
     .in(
       "lesson_id",
       priorLessons.map((l) => l.id),
     );
+  if (checksError) {
+    console.error("loadWarmupChecks: concept_checks query failed:", checksError.message);
+    return [];
+  }
   if (!checks || checks.length === 0) return [];
 
-  const { data: attempts } = await supabase
+  const { data: attempts, error: attemptsError } = await supabase
     .from("concept_check_attempts")
     .select("check_id, correct, answered_at")
     .eq("user_id", userId)
@@ -101,6 +128,11 @@ export async function loadWarmupChecks(
       checks.map((c) => c.id),
     )
     .order("answered_at", { ascending: false });
+  if (attemptsError) {
+    // Attempts are enhancement data only — log and continue, treating every
+    // candidate as unseen rather than dropping valid warm-up checks.
+    console.error("loadWarmupChecks: attempts query failed:", attemptsError.message);
+  }
 
   // Latest attempt per check (rows are newest-first).
   const latest = new Map<string, { correct: boolean; answered_at: string }>();
