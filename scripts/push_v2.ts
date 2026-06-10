@@ -83,6 +83,7 @@ async function main(): Promise<void> {
 
   let pushed = 0;
   let skipped = 0;
+  let failed = 0;
 
   for (const lessonNum of lessonDirs) {
     if (status[lessonNum] !== "pass" && !force) {
@@ -95,100 +96,110 @@ async function main(): Promise<void> {
     const dir = resolve(V2_ROOT, lessonNum);
     console.log(`\n[${lessonNum}] (id: ${lessonId})`);
 
-    const { data: lesson, error: lessonError } = await supabase
-      .from("lessons")
-      .select("id, learncpp_title")
-      .eq("id", lessonId)
-      .single();
-    if (lessonError || !lesson) {
-      console.error(`  not found in DB: ${lessonError?.message}`);
-      continue;
-    }
-
-    // 1. Summary
-    const summaryMd = readFileSync(resolve(dir, "summary.md"), "utf-8");
-    const { error: upErr } = await supabase
-      .from("lessons")
-      .update({
-        summary_md: summaryMd,
-        summary_generated_at: new Date().toISOString(),
-        summary_model: MODEL,
-      })
-      .eq("id", lessonId);
-    if (upErr) {
-      console.error(`  summary update failed: ${upErr.message}`);
-      continue;
-    }
-    console.log(`  summary updated (${summaryMd.length} chars)`);
-
-    // 2. Concept checks: replace
-    const checksPath = resolve(dir, "checks.json");
-    const { error: ccDelErr } = await supabase.from("concept_checks").delete().eq("lesson_id", lessonId);
-    if (ccDelErr) console.error(`  concept_checks delete failed: ${ccDelErr.message}`);
-    if (existsSync(checksPath)) {
-      const checks = JSON.parse(readFileSync(checksPath, "utf-8")) as CheckItem[];
-      const rows = checks.map((c, i) => ({
-        lesson_id: lessonId,
-        kind: c.kind,
-        prompt_md: c.prompt_md,
-        options: c.options,
-        answer: c.answer,
-        explanation_md: c.explanation_md,
-        position: i + 1,
-        generated_model: MODEL,
-      }));
-      const { error: ccInsErr } = await supabase.from("concept_checks").insert(rows);
-      if (ccInsErr) console.error(`  concept_checks insert failed: ${ccInsErr.message}`);
-      else console.log(`  ${rows.length} concept checks inserted`);
-    }
-
-    // 3. Exercises + test cases: replace (same order as push_regenerated.ts)
-    const exercisesPath = resolve(dir, "exercises.json");
-    if (existsSync(exercisesPath)) {
-      const { data: oldExercises } = await supabase.from("exercises").select("id").eq("lesson_id", lessonId);
-      if (oldExercises && oldExercises.length > 0) {
-        await supabase.from("test_cases").delete().in("exercise_id", oldExercises.map((e) => e.id));
+    try {
+      const { data: lesson, error: lessonError } = await supabase
+        .from("lessons")
+        .select("id, learncpp_title")
+        .eq("id", lessonId)
+        .single();
+      if (lessonError || !lesson) {
+        throw new Error(`lesson-not-found: ${lessonError?.message}`);
       }
-      await supabase.from("exercises").delete().eq("lesson_id", lessonId);
 
-      const exercises = JSON.parse(readFileSync(exercisesPath, "utf-8")) as ExerciseItem[];
-      for (let i = 0; i < exercises.length; i++) {
-        const ex = exercises[i]!;
-        const { data: insertedEx, error: exInsErr } = await supabase
-          .from("exercises")
-          .insert({
-            lesson_id: lessonId,
-            title: ex.title,
-            prompt_md: ex.prompt_md,
-            starter_code: ex.starter_code,
-            solution_code: ex.solution_code,
-            difficulty: ex.difficulty ?? "practice",
-            sort_order: i + 1,
-            generated_model: MODEL,
-          })
-          .select("id")
-          .single();
-        if (exInsErr || !insertedEx) {
-          console.error(`  exercise "${ex.title}" insert failed: ${exInsErr?.message}`);
-          continue;
-        }
-        const tcRows = ex.test_cases.map((tcase, j) => ({
-          exercise_id: insertedEx.id,
-          label: tcase.label,
-          is_sample: tcase.is_sample,
-          stdin: tcase.stdin,
-          expected_stdout: tcase.expected_stdout,
-          sort_order: j + 1,
+      // 1. Summary
+      const summaryMd = readFileSync(resolve(dir, "summary.md"), "utf-8");
+      const { error: upErr } = await supabase
+        .from("lessons")
+        .update({
+          summary_md: summaryMd,
+          summary_generated_at: new Date().toISOString(),
+          summary_model: MODEL,
+        })
+        .eq("id", lessonId);
+      if (upErr) {
+        throw new Error(`summary update: ${upErr.message}`);
+      }
+      console.log(`  summary updated (${summaryMd.length} chars)`);
+
+      // 2. Concept checks: replace
+      const checksPath = resolve(dir, "checks.json");
+      const { error: ccDelErr } = await supabase.from("concept_checks").delete().eq("lesson_id", lessonId);
+      if (ccDelErr) throw new Error(`concept_checks delete: ${ccDelErr.message}`);
+      if (existsSync(checksPath)) {
+        const checks = JSON.parse(readFileSync(checksPath, "utf-8")) as CheckItem[];
+        const rows = checks.map((c, i) => ({
+          lesson_id: lessonId,
+          kind: c.kind,
+          prompt_md: c.prompt_md,
+          options: c.options,
+          answer: c.answer,
+          explanation_md: c.explanation_md,
+          position: i + 1,
+          generated_model: MODEL,
         }));
-        const { error: tcInsErr } = await supabase.from("test_cases").insert(tcRows);
-        if (tcInsErr) console.error(`  test_cases insert failed: ${tcInsErr.message}`);
-        else console.log(`  exercise "${ex.title}" + ${tcRows.length} test cases`);
+        const { error: ccInsErr } = await supabase.from("concept_checks").insert(rows);
+        if (ccInsErr) throw new Error(`concept_checks insert: ${ccInsErr.message}`);
+        console.log(`  ${rows.length} concept checks inserted`);
       }
+
+      // 3. Exercises + test cases: replace (same order as push_regenerated.ts)
+      const exercisesPath = resolve(dir, "exercises.json");
+      if (existsSync(exercisesPath)) {
+        const { data: oldExercises } = await supabase.from("exercises").select("id").eq("lesson_id", lessonId);
+        if (oldExercises && oldExercises.length > 0) {
+          const { error: tcDelErr } = await supabase
+            .from("test_cases")
+            .delete()
+            .in("exercise_id", oldExercises.map((e) => e.id));
+          if (tcDelErr) throw new Error(`test_cases delete: ${tcDelErr.message}`);
+        }
+        const { error: exDelErr } = await supabase.from("exercises").delete().eq("lesson_id", lessonId);
+        if (exDelErr) throw new Error(`exercises delete: ${exDelErr.message}`);
+
+        const exercises = JSON.parse(readFileSync(exercisesPath, "utf-8")) as ExerciseItem[];
+        for (let i = 0; i < exercises.length; i++) {
+          const ex = exercises[i]!;
+          const { data: insertedEx, error: exInsErr } = await supabase
+            .from("exercises")
+            .insert({
+              lesson_id: lessonId,
+              title: ex.title,
+              prompt_md: ex.prompt_md,
+              starter_code: ex.starter_code,
+              solution_code: ex.solution_code,
+              difficulty: ex.difficulty ?? "practice",
+              sort_order: i + 1,
+              generated_model: MODEL,
+            })
+            .select("id")
+            .single();
+          if (exInsErr || !insertedEx) {
+            throw new Error(`exercise insert "${ex.title}": ${exInsErr?.message}`);
+          }
+          const tcRows = ex.test_cases.map((tcase, j) => ({
+            exercise_id: insertedEx.id,
+            label: tcase.label,
+            is_sample: tcase.is_sample,
+            stdin: tcase.stdin,
+            expected_stdout: tcase.expected_stdout,
+            sort_order: j + 1,
+          }));
+          const { error: tcInsErr } = await supabase.from("test_cases").insert(tcRows);
+          if (tcInsErr) throw new Error(`test_cases insert "${ex.title}": ${tcInsErr.message}`);
+          console.log(`  exercise "${ex.title}" + ${tcRows.length} test cases`);
+        }
+      }
+
+      pushed++;
+    } catch (err) {
+      failed++;
+      console.error(`[${lessonNum}] FAILED: ${err instanceof Error ? err.message : String(err)}`);
     }
-    pushed++;
   }
 
-  console.log(`\nDone. pushed=${pushed} skipped=${skipped}`);
+  console.log(`\nDone. pushed=${pushed} skipped=${skipped} failed=${failed}`);
+
+  if (failed > 0) process.exit(1);
 }
 
 main();
