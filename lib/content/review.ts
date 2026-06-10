@@ -89,7 +89,7 @@ export async function loadDueReviewQueue(
     .order("interval_index", { ascending: true })
     .limit(max);
 
-  if (error) throw new Error(`loadDueReviewQueue failed: ${error.message}`);
+  if (error) throw new Error(`loadDueReviewQueue failed: ${error.code ?? ""} ${error.message}`);
 
   return (data ?? [])
     .filter(
@@ -117,7 +117,7 @@ export async function applyAttempt(
     .eq("check_id", checkId)
     .maybeSingle();
 
-  if (readError) throw new Error(`applyAttempt read failed: ${readError.message}`);
+  if (readError) throw new Error(`applyAttempt read failed: ${readError.code ?? ""} ${readError.message}`);
 
   const newState: ReviewState = existing
     ? advanceReviewState(
@@ -145,5 +145,5 @@ export async function applyAttempt(
     } as never,
   );
 
-  if (rpcError) throw new Error(`applyAttempt rpc failed: ${rpcError.message}`);
+  if (rpcError) throw new Error(`applyAttempt rpc failed: ${rpcError.code ?? ""} ${rpcError.message}`);
 }
