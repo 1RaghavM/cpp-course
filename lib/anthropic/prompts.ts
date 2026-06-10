@@ -158,7 +158,7 @@ GOOD prompt_md: Goal says "Complete struct FixedBuffer so static_assert rejects 
 STARTER CODE:
 - Must compile cleanly with g++ -std=c++20 -Wall -Wextra (warnings on a fix_the_bug starter are tolerated only when they ARE the planted bug; otherwise treat warnings as errors)
 - For fix_the_bug: complete, compiling, runnable program — the bug is a LOGIC bug; the starter must not fail to compile and must not exhibit undefined behavior
-- For complete_the_function: include #include lines and a main() that reads stdin and calls the student's code; TODO stub must let the file compile (e.g. `return T{};`)
+- For complete_the_function: include #include lines and a main() that reads stdin and calls the student's code; TODO stub must let the file compile (e.g. \`return T{};\`)
 - TODO comments must name exactly what to fill in
 
 SOLUTION CODE:
