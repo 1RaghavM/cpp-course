@@ -83,8 +83,18 @@ function extractCppBlocks(markdown: string): string[] {
   return blocks;
 }
 
+const LETTER_CHAPTER_EFFECTIVE: Record<string, number> = {
+  O: 7,
+  F: 12,
+  A: 29,
+  B: 29,
+  C: 29,
+};
+
 function chapterOf(lessonNumber: string): number {
-  const n = parseInt(lessonNumber.split(".")[0]!, 10);
+  const head = lessonNumber.split(".")[0]!;
+  if (head in LETTER_CHAPTER_EFFECTIVE) return LETTER_CHAPTER_EFFECTIVE[head]!;
+  const n = parseInt(head, 10);
   return Number.isNaN(n) ? 0 : n;
 }
 
