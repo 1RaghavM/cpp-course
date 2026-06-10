@@ -154,6 +154,69 @@ export interface Database {
         };
         Relationships: [];
       };
+      concept_checks: {
+        Row: {
+          id: string;
+          lesson_id: string;
+          kind: string;
+          prompt_md: string;
+          options: Json | null;
+          answer: string;
+          explanation_md: string;
+          position: number;
+          generated_at: string;
+          generated_model: string | null;
+        };
+        Insert: {
+          id?: string;
+          lesson_id: string;
+          kind: string;
+          prompt_md: string;
+          options?: Json | null;
+          answer: string;
+          explanation_md: string;
+          position: number;
+          generated_at?: string;
+          generated_model?: string | null;
+        };
+        Update: {
+          id?: string;
+          lesson_id?: string;
+          kind?: string;
+          prompt_md?: string;
+          options?: Json | null;
+          answer?: string;
+          explanation_md?: string;
+          position?: number;
+          generated_at?: string;
+          generated_model?: string | null;
+        };
+        Relationships: [];
+      };
+      concept_check_attempts: {
+        Row: {
+          id: string;
+          user_id: string;
+          check_id: string;
+          correct: boolean;
+          answered_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          check_id: string;
+          correct: boolean;
+          answered_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          check_id?: string;
+          correct?: boolean;
+          answered_at?: string;
+        };
+        Relationships: [];
+      };
       submissions: {
         Row: {
           id: string;
@@ -547,6 +610,8 @@ export type Chapter = Database["public"]["Tables"]["chapters"]["Row"];
 export type Lesson = Database["public"]["Tables"]["lessons"]["Row"];
 export type Exercise = Database["public"]["Tables"]["exercises"]["Row"];
 export type TestCase = Database["public"]["Tables"]["test_cases"]["Row"];
+export type ConceptCheck = Database["public"]["Tables"]["concept_checks"]["Row"];
+export type ConceptCheckAttempt = Database["public"]["Tables"]["concept_check_attempts"]["Row"];
 export type Submission = Database["public"]["Tables"]["submissions"]["Row"];
 export type Progress = Database["public"]["Tables"]["progress"]["Row"];
 export type Conversation = Database["public"]["Tables"]["conversations"]["Row"];
