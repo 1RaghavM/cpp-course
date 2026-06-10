@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
+import { ChapterQuiz } from "@/components/lesson/ChapterQuiz";
 import { CheckCircle2, Circle, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
@@ -125,6 +126,7 @@ interface SubmissionResponse {
 }
 
 interface Props {
+  slug: string;
   lesson: LessonData;
   exercises: ExerciseData[];
   initialExerciseIndex?: number;
@@ -135,6 +137,7 @@ interface Props {
 }
 
 export default function LessonClient({
+  slug,
   lesson,
   exercises,
   initialExerciseIndex = 0,
@@ -144,6 +147,8 @@ export default function LessonClient({
   warmupChecks = [],
 }: Props) {
   const router = useRouter();
+  const isChapterSummary = slug.endsWith("-x");
+  const chapterNumber = isChapterSummary ? slug.slice(0, -2) : null;
   const editorRef = useRef<MonacoEditorHandle>(null);
 
   const [activeExerciseIndex] = useState(initialExerciseIndex);
@@ -368,6 +373,11 @@ export default function LessonClient({
                     <TabResourcesIcon />
                     Resources
                   </TabsTrigger>
+                  {isChapterSummary && (
+                    <TabsTrigger value="chapter-quiz" className="flex-none px-3 py-2.5 text-sm gap-2 border-none!">
+                      Chapter quiz
+                    </TabsTrigger>
+                  )}
                 </TabsList>
               )}
 
@@ -471,6 +481,12 @@ export default function LessonClient({
                   />
                 </div>
               </TabsContent>
+
+              {isChapterSummary && chapterNumber && (
+                <TabsContent value="chapter-quiz" className="flex-1 overflow-y-auto p-4">
+                  <ChapterQuiz chapterNumber={chapterNumber} lessonId={lesson.id} />
+                </TabsContent>
+              )}
             </Tabs>
           </div>
         </ResizablePanel>

@@ -172,6 +172,7 @@ export default async function LessonPage({ params, searchParams }: PageProps) {
 
   return (
     <LessonClient
+      slug={slug}
       lesson={{
         id: lesson.id,
         number: lesson.number,
