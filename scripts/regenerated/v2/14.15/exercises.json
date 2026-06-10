@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Copy Constructor Calls",
+    "prompt_md": "## Goal\nComplete the function `howManyCopies` that returns the number of times the copy constructor of `Tracked` was called since the last reset.\n\n## Input\nLine 1: an integer `N` (1 ≤ N ≤ 10).\nLines 2..N+1: one integer per line — values to store in `Tracked` objects.\n\n## Output\nFor each of the N values, print one line in the format `val=<value> copies=<count>` where `<count>` is the number of copy-constructor calls triggered by creating that `Tracked` from the integer (direct-list initialization, no copies expected) and then assigning a copy of it to a second variable.\n\n## Requirements\n1. `Tracked` has a static counter `s_copies` that the copy constructor increments.\n2. `howManyCopies()` returns the current value of `s_copies` and then resets it to zero.\n3. For each input integer, construct a `Tracked t{v}` (direct-list — no copy) and then `Tracked u = t` (copy — one copy). Print the result of `howManyCopies()` after both constructions.\n4. Expected output per line: `val=<value> copies=1`.\n\n## Notes\n- Do not use `std::vector` or `std::array`.\n- `main` reads all input and calls your function.",
+    "starter_code": "#include <iostream>\n\nstruct Tracked {\n    int val;\n    static int s_copies;\n\n    Tracked(int v) : val{v} {}\n    Tracked(const Tracked& other) : val{other.val} {\n        ++s_copies;\n    }\n};\nint Tracked::s_copies = 0;\n\n// TODO: implement howManyCopies()\n// Returns the current copy count and resets it to zero.\nint howManyCopies() {\n    return 0; // replace this\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        Tracked t{v};\n        Tracked u = t;\n        std::cout << \"val=\" << u.val << \" copies=\" << howManyCopies() << \"\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Tracked {\n    int val;\n    static int s_copies;\n\n    Tracked(int v) : val{v} {}\n    Tracked(const Tracked& other) : val{other.val} {\n        ++s_copies;\n    }\n};\nint Tracked::s_copies = 0;\n\nint howManyCopies() {\n    int count = Tracked::s_copies;\n    Tracked::s_copies = 0;\n    return count;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        Tracked t{v};\n        Tracked u = t;\n        std::cout << \"val=\" << u.val << \" copies=\" << howManyCopies() << \"\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three values",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "val=10 copies=1\nval=20 copies=1\nval=30 copies=1"
+      },
+      {
+        "label": "Hidden: single value",
+        "is_sample": false,
+        "stdin": "1\n99\n",
+        "expected_stdout": "val=99 copies=1"
+      },
+      {
+        "label": "Hidden: five values",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5\n",
+        "expected_stdout": "val=1 copies=1\nval=2 copies=1\nval=3 copies=1\nval=4 copies=1\nval=5 copies=1"
+      }
+    ]
+  },
+  {
+    "title": "Factory Function with Elision",
+    "prompt_md": "## Goal\nFind and fix the single logic bug in the program below. The program is supposed to use a factory function that constructs `Point` objects and then prints their coordinates, but the output is wrong.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: two integers per line separated by a space — `x` and `y`.\n\n## Output\nFor each pair, print `(x, y)` on its own line, e.g. `(3, 7)`.\n\n## Requirements\n1. The factory function `makePoint(int x, int y)` must return a `Point` object by value.\n2. The bug is a logic error (the program compiles and runs, but prints wrong values).\n3. After fixing, each line of output must be `(<x>, <y>)` with a space after the comma.\n4. Edge case: input values can be negative.",
+    "starter_code": "#include <iostream>\n\nstruct Point {\n    int x;\n    int y;\n    Point(int px, int py) : x{px}, y{py} {}\n};\n\nPoint makePoint(int x, int y) {\n    return Point{y, x};   // bug is here\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int x, y;\n        std::cin >> x >> y;\n        Point p = makePoint(x, y);\n        std::cout << \"(\" << p.x << \", \" << p.y << \")\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Point {\n    int x;\n    int y;\n    Point(int px, int py) : x{px}, y{py} {}\n};\n\nPoint makePoint(int x, int y) {\n    return Point{x, y};\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int x, y;\n        std::cin >> x >> y;\n        Point p = makePoint(x, y);\n        std::cout << \"(\" << p.x << \", \" << p.y << \")\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two points",
+        "is_sample": true,
+        "stdin": "2\n3 7\n1 -4\n",
+        "expected_stdout": "(3, 7)\n(1, -4)"
+      },
+      {
+        "label": "Hidden: single point",
+        "is_sample": false,
+        "stdin": "1\n0 0\n",
+        "expected_stdout": "(0, 0)"
+      },
+      {
+        "label": "Hidden: five points with negatives",
+        "is_sample": false,
+        "stdin": "5\n-1 2\n3 -4\n5 6\n-7 -8\n9 10\n",
+        "expected_stdout": "(-1, 2)\n(3, -4)\n(5, 6)\n(-7, -8)\n(9, 10)"
+      }
+    ]
+  }
+]

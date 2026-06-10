@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Vault Inspector",
+    "prompt_md": "## Goal\nComplete class `Vault` so that `Inspector::check` (a friend member function) can read the private balance and print it.\n\n## Input\nLine 1: integer B (0 ≤ B ≤ 1000000) — the initial balance.\n\n## Output\nPrint exactly one line: `Balance: <B>`.\n\n## Requirements\n1. `Vault` must store its balance as a private integer member `m_balance`.\n2. `Vault` must declare `void Inspector::check(const Vault& v)` as a friend member function.\n3. For the friend declaration to compile, `Inspector` must be fully defined before `Vault` defines the friendship, and `Inspector::check` must be defined after `Vault` is fully defined.\n4. `Inspector::check` prints `Balance: <m_balance>` followed by a newline.\n5. Edge case: B = 0 should print `Balance: 0`.",
+    "starter_code": "#include <iostream>\n\nclass Vault;  // forward declaration so Inspector can declare check(const Vault&)\n\n// Inspector is fully defined first so Vault can name Inspector::check as a friend\nclass Inspector {\npublic:\n    void check(const Vault& v);  // declared here; defined after Vault\n};\n\nclass Vault {\n    // TODO: declare private int member m_balance\npublic:\n    Vault(int balance) /* TODO: initialize m_balance */ {}\n\n    // TODO: declare Inspector::check as a friend member function\n};\n\n// TODO: define Inspector::check — print \"Balance: \" + v.m_balance + newline\nvoid Inspector::check(const Vault& v) {\n    // TODO\n}\n\nint main() {\n    int b;\n    std::cin >> b;\n    Vault vault{ b };\n    Inspector inspector;\n    inspector.check(vault);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Vault;\n\nclass Inspector {\npublic:\n    void check(const Vault& v);\n};\n\nclass Vault {\n    int m_balance;\npublic:\n    Vault(int balance) : m_balance{ balance } {}\n    friend void Inspector::check(const Vault& v);\n};\n\nvoid Inspector::check(const Vault& v) {\n    std::cout << \"Balance: \" << v.m_balance << \"\\n\";\n}\n\nint main() {\n    int b;\n    std::cin >> b;\n    Vault vault{ b };\n    Inspector inspector;\n    inspector.check(vault);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 500", "is_sample": true, "stdin": "500\n", "expected_stdout": "Balance: 500" },
+      { "label": "Hidden: 0", "is_sample": false, "stdin": "0\n", "expected_stdout": "Balance: 0" },
+      { "label": "Hidden: 1000000", "is_sample": false, "stdin": "1000000\n", "expected_stdout": "Balance: 1000000" }
+    ]
+  },
+  {
+    "title": "Two-Class Temperature Bug",
+    "prompt_md": "## Goal\nThe program below models a `Thermometer` that reads a temperature stored in a `TempSensor`. It compiles and runs but prints the wrong output. Find and fix the one logic bug.\n\n## Input\nLine 1: integer T (-100 ≤ T ≤ 100) — temperature in Celsius.\n\n## Output\nPrint exactly one line: `Reading: <T>`.\n\n## Requirements\n1. `Thermometer` is a friend class of `TempSensor`.\n2. `Thermometer::read` should return the sensor's stored value `m_temp`.\n3. The bug is a logic error — the program compiles and runs but prints the wrong value.\n4. Hidden tests include negative temperatures and zero.",
+    "starter_code": "#include <iostream>\n\nclass Thermometer;\n\nclass TempSensor {\n    int m_temp;\npublic:\n    TempSensor(int t) : m_temp{ t } {}\n    friend class Thermometer;\n};\n\nclass Thermometer {\npublic:\n    int read(const TempSensor& s) {\n        return s.m_temp + 1;  // BUG: off by one\n    }\n};\n\nint main() {\n    int t;\n    std::cin >> t;\n    TempSensor sensor{ t };\n    Thermometer therm;\n    std::cout << \"Reading: \" << therm.read(sensor) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Thermometer;\n\nclass TempSensor {\n    int m_temp;\npublic:\n    TempSensor(int t) : m_temp{ t } {}\n    friend class Thermometer;\n};\n\nclass Thermometer {\npublic:\n    int read(const TempSensor& s) {\n        return s.m_temp;\n    }\n};\n\nint main() {\n    int t;\n    std::cin >> t;\n    TempSensor sensor{ t };\n    Thermometer therm;\n    std::cout << \"Reading: \" << therm.read(sensor) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 25", "is_sample": true, "stdin": "25\n", "expected_stdout": "Reading: 25" },
+      { "label": "Hidden: 0", "is_sample": false, "stdin": "0\n", "expected_stdout": "Reading: 0" },
+      { "label": "Hidden: -10", "is_sample": false, "stdin": "-10\n", "expected_stdout": "Reading: -10" }
+    ]
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\n    int m_val;\npublic:\n    Box(int v) : m_val{ v } {}\n    Box(const Box& src) : m_val{ src.m_val } {\n        std::cout << \"copy\\n\";\n    }\n    int get() const { return m_val; }\n};\n\nvoid show(Box b) {\n    std::cout << b.get() << \"\\n\";\n}\n\nint main() {\n    Box b{ 5 };\n    show(b);\n}\n```",
+    "options": null,
+    "answer": "copy\n5",
+    "explanation_md": "`show` takes its parameter by value. Passing `b` to `show` invokes the copy constructor, which prints `copy`. Then `show` prints `b.get()` which is 5. Output is `copy` then `5` on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must the copy constructor's parameter be a reference (e.g., `const T&`) rather than a value (`T`)?",
+    "options": {
+      "a": "References are faster, so it is a performance optimization.",
+      "b": "Taking the parameter by value would require calling the copy constructor to make the copy, causing infinite recursion.",
+      "c": "`const` references are the only way to access private members of another object.",
+      "d": "The compiler automatically adds `&` if you forget it, so it doesn't matter."
+    },
+    "answer": "b",
+    "explanation_md": "If the copy constructor took its argument by value, constructing that argument would require another copy, which would require another copy — infinite recursion. C++ requires the copy constructor parameter to be a reference specifically to avoid this. The `const` qualifier is there because the copy constructor should not modify the source object."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "How many times does the copy constructor run?\n\n```cpp\n#include <iostream>\n\nclass Tag {\n    int m_n;\npublic:\n    Tag(int n) : m_n{ n } {}\n    Tag(const Tag& t) : m_n{ t.m_n } {\n        std::cout << \"C\";\n    }\n};\n\nvoid use(const Tag& t) {}\nvoid copy(Tag t) {}\n\nint main() {\n    Tag a{ 1 };\n    Tag b{ a };   // (1)\n    use(b);       // (2)\n    copy(b);      // (3)\n    std::cout << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "CC",
+    "explanation_md": "Step (1): `Tag b{ a }` — copy constructor runs, prints `C`. Step (2): `use(b)` passes by `const` reference — no copy, no output. Step (3): `copy(b)` passes by value — copy constructor runs, prints `C`. Total output: `CC` followed by the newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following does NOT invoke the copy constructor?",
+    "options": {
+      "a": "`Point b{ a };` where `a` is a `Point`.",
+      "b": "`Point c = a;` where `a` is a `Point`.",
+      "c": "Passing a `Point` to a function that takes `const Point&`.",
+      "d": "Passing a `Point` to a function that takes `Point` by value."
+    },
+    "answer": "c",
+    "explanation_md": "Passing by `const` reference shares access to the original object without creating a copy, so the copy constructor is not called. Options a and b both initialize a new object from an existing one, invoking the copy constructor. Option d passes by value, which requires constructing a new copy of the argument."
+  }
+]

@@ -334,6 +334,143 @@
    11 | Rect makeRect(int w, int h)
   
 
+## 14.10 — pass
+- **warning**: 14_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_10_ex2_starter.cpp:9:15: warning: unused parameter 'x' [-Wunused-parameter]
+    9 |     Point(int x, int y)
+      |               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_10_ex2_starter.cpp:9:22: warning: unused parameter 'y' [-Wunused-parameter]
+    9 |     Point(int x, int y)
+      |       
+
+## 14.12 — pass
+- **warning**: 14_12_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_12_ex2_starter.cpp:23:27: warning: unused parameter 'speed' [-Wunused-parameter]
+   23 | Velocity makeVelocity(int speed, std::string dir) {
+      |                           ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_12_ex2_starter.cpp:23:46: warning: unused parameter 'dir' [-Wunused-parameter
+
+## 14.13 — fail
+- **error**: summary example 7: uses dynamic allocation (new) (chapter 19 concept) in chapter 14
+
+## 14.16 — pass
+- **warning**: 14_16_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_16_ex1_starter.cpp:7:29: warning: unused parameter 'v' [-Wunused-parameter]
+    7 |     explicit Celsius(double v) : m_val{0.0} { /* replace 0.0 with v */ }
+      |                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_16_ex1_starter.cpp:11:12: warning: private field 'm_val' is
+
+## 14.5 — pass
+- **warning**: 14_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_5_ex1_starter.cpp:9:28: warning: unused parameter 'c' [-Wunused-parameter]
+    9 |     void setCelsius(double c) {
+      |                            ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_5_ex1_starter.cpp:6:12: warning: private field 'm_celsius' is not used [-Wunused-private-field]
+    6 
+
+## 14.6 — pass
+- **warning**: 14_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_6_ex1_starter.cpp:13:23: warning: unused parameter 'v' [-Wunused-parameter]
+   13 |     void setLevel(int v) {
+      |                       ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_6_ex1_starter.cpp:5:9: warning: private field 'm_level' is not used [-Wunused-private-field]
+    5 |     int m_
+
+## 14.7 — pass
+- **warning**: 14_7_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_7_ex1_starter.cpp:9:37: warning: unused parameter 'name' [-Wunused-parameter]
+    9 |     void setName(const std::string& name) {
+      |                                     ^
+1 warning generated.
+
+
+## 14.8 — pass
+- **warning**: 14_8_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_8_ex1_starter.cpp:16:26: warning: unused parameter 'd' [-Wunused-parameter]
+   16 |     void applyDamage(int d) {
+      |                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_8_ex1_starter.cpp:20:24: warning: unused parameter 'h' [-Wunused-parameter]
+   20 |     void applyHeal(in
+
+## 14.9 — pass
+- **warning**: 14_9_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_9_ex1_starter.cpp:9:19: warning: unused parameter 'width' [-Wunused-parameter]
+    9 |     Rectangle(int width, int height) {
+      |                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_9_ex1_starter.cpp:9:30: warning: unused parameter 'height' [-Wunused-parameter]
+    9 |     Rectangl
+
+## 14.x — pass
+- **warning**: 14_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/14_x_ex2_starter.cpp:6:30: warning: unused parameter 'c' [-Wunused-parameter]
+    6 |     explicit Temperature(int c) : m_celsius{0} { /* store c in m_celsius */ }
+      |                              ^
+1 warning generated.
+
+
+## 15.10 — pass
+- **warning**: 15_10_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_10_ex1_starter.cpp:4:9: warning: private field 'm_val' is not used [-Wunused-private-field]
+    4 |     int m_val;
+      |         ^
+1 warning generated.
+
+
+## 15.2 — pass
+- **warning**: 15_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_2_ex1_starter.cpp:18:12: warning: private field 'm_celsius' is not used [-Wunused-private-field]
+   18 |     double m_celsius{0.0};
+      |            ^
+1 warning generated.
+
+
+## 15.3 — pass
+- **warning**: summary is 696 words (target 800-1200)
+- **warning**: 15_3_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_3_ex1_starter.cpp:17:11: warning: private field 'm_state' is not used [-Wunused-private-field]
+   17 |     State m_state{State::Red};
+      |           ^
+1 warning generated.
+
+
+## 15.4 — fail
+- **error**: summary example 7: uses dynamic allocation (new) (chapter 19 concept) in chapter 15
+- **warning**: 15_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_4_ex1_starter.cpp:12:9: warning: private field 'm_id' is not used [-Wunused-private-field]
+   12 |     int m_id;
+      |         ^
+1 warning generated.
+
+
+## 15.5 — pass
+- **warning**: 15_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_5_ex1_starter.cpp:14:19: warning: unused parameter 'val' [-Wunused-parameter]
+   14 |     void update(T val) { /* TODO */ }
+      |                   ^
+1 warning generated.
+
+
+## 15.8 — pass
+- **warning**: 15_8_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_8_ex1_starter.cpp:6:14: warning: unused parameter 'w' [-Wunused-parameter]
+    6 |     Rect(int w, int h) /* TODO: initialize m_width and m_height */ {}
+      |              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_8_ex1_starter.cpp:6:21: warning: unused parameter 'h' [-Wunused-parameter]
+   
+- **warning**: 15_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_8_ex2_starter.cpp:15:34: warning: unused parameter 'a' [-Wunused-parameter]
+   15 | int distanceBetween(const Point& a, const Point& b) {
+      |                                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_8_ex2_starter.cpp:15:50: warning: unused parameter 'b' [-Wunused-paramete
+
+## 15.9 — pass
+- **warning**: 15_9_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_9_ex1_starter.cpp:14:15: warning: unused parameter 'balance' [-Wunused-parameter]
+   14 |     Vault(int balance) /* TODO: initialize m_balance */ {}
+      |               ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_9_ex1_starter.cpp:20:36: warning: unused parameter 'v' [-Wunused-parameter]
+   20
+
 ## 2.10 — pass
 - **warning**: 2_10_ex2_starter: compiler warnings:
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/2_10_ex2_starter.cpp:7:21: warning: unused parameter 'value' [-Wunused-parameter]

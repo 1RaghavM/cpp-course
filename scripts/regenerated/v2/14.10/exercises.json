@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle with Initializer List",
+    "prompt_md": "## Goal\nComplete the `Rectangle` class so that it uses a member initializer list to set its width and height.\n\n## Input\nLine 1: two integers W and H (1 ≤ W, H ≤ 1000), separated by a space.\n\n## Output\nPrint exactly one line: `Area: X` where X is W * H.\n\n## Requirements\n1. The class must have two `private` `int` members: `m_width` and `m_height`.\n2. The constructor must use a member initializer list (not assignment in the body) to set both members.\n3. Provide a `const` member function `area()` that returns the product of width and height.\n4. `main()` reads W and H, creates a `Rectangle`, and prints the area.\n",
+    "starter_code": "#include <iostream>\n\nclass Rectangle {\n    int m_width;\n    int m_height;\npublic:\n    // TODO: write a constructor that takes width and height\n    // and uses a member initializer list to set m_width and m_height\n    Rectangle(int width, int height);\n\n    int area() const { return m_width * m_height; }\n};\n\n// TODO: implement the constructor using a member initializer list\nRectangle::Rectangle(int width, int height)\n{\n    // replace this body with a member initializer list\n    m_width = width;\n    m_height = height;\n}\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rectangle {\n    int m_width;\n    int m_height;\npublic:\n    Rectangle(int width, int height)\n        : m_width{ width }, m_height{ height }\n    {}\n\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "4 5\n",
+        "expected_stdout": "Area: 20\n"
+      },
+      {
+        "label": "Hidden: square",
+        "is_sample": false,
+        "stdin": "7 7\n",
+        "expected_stdout": "Area: 49\n"
+      },
+      {
+        "label": "Hidden: large values",
+        "is_sample": false,
+        "stdin": "100 1000\n",
+        "expected_stdout": "Area: 100000\n"
+      }
+    ]
+  },
+  {
+    "title": "Immutable Point",
+    "prompt_md": "## Goal\nComplete the function `makePoint` that returns a `Point` object constructed from two `const int` coordinates.\n\n## Input\nLine 1: two integers X and Y (-1000 ≤ X, Y ≤ 1000), separated by a space.\n\n## Output\nPrint exactly one line: `Point(X, Y)` using the actual coordinate values.\n\n## Requirements\n1. The `Point` class must have two `const int` members: `m_x` and `m_y`.\n2. The constructor must use a member initializer list to initialize both `const` members (required — `const` members cannot be assigned in the constructor body).\n3. Provide `const` member functions `getX()` and `getY()` that return the respective coordinates.\n4. Implement `makePoint(int x, int y)` to construct and return a `Point`.\n5. `main()` reads X and Y, calls `makePoint`, and prints the result in the format shown.\n6. Edge case: negative coordinates must be printed correctly (e.g., `Point(-3, 7)`).\n",
+    "starter_code": "#include <iostream>\n\nclass Point {\n    const int m_x;\n    const int m_y;\npublic:\n    // TODO: replace the stub initializer list with m_x{ x }, m_y{ y }\n    // const members MUST be initialized in the initializer list\n    Point(int x, int y)\n        : m_x{ 0 }, m_y{ 0 }  // stub — replace 0, 0 with x, y\n    {}\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\n// TODO: implement makePoint — construct and return a Point from x and y\nPoint makePoint(int x, int y) {\n    return Point{ 0, 0 }; // replace 0, 0 with x, y\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n    Point p{ makePoint(x, y) };\n    std::cout << \"Point(\" << p.getX() << \", \" << p.getY() << \")\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Point {\n    const int m_x;\n    const int m_y;\npublic:\n    Point(int x, int y)\n        : m_x{ x }, m_y{ y }\n    {}\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nPoint makePoint(int x, int y) {\n    return Point{ x, y };\n}\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n    Point p{ makePoint(x, y) };\n    std::cout << \"Point(\" << p.getX() << \", \" << p.getY() << \")\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive coordinates",
+        "is_sample": true,
+        "stdin": "3 7\n",
+        "expected_stdout": "Point(3, 7)\n"
+      },
+      {
+        "label": "Hidden: negative coordinates",
+        "is_sample": false,
+        "stdin": "-3 7\n",
+        "expected_stdout": "Point(-3, 7)\n"
+      },
+      {
+        "label": "Hidden: both negative",
+        "is_sample": false,
+        "stdin": "-10 -20\n",
+        "expected_stdout": "Point(-10, -20)\n"
+      }
+    ]
+  }
+]

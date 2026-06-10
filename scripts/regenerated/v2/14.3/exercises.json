@@ -1,0 +1,56 @@
+[
+  {
+    "title": "BankAccount Member Functions",
+    "prompt_md": "## Goal\nWrite a program with a `BankAccount` class that tracks a balance and supports deposit and withdrawal operations.\n\n## Input\n- Line 1: a double, the initial balance.\n- Line 2: an integer N (1 ≤ N ≤ 10), the number of operations.\n- Lines 3..N+2: each line has the format `D <amount>` (deposit) or `W <amount>` (withdraw), where `<amount>` is a positive double.\n\n## Output\nAfter each operation, print the current balance on its own line with exactly 2 decimal places.\nAfter all operations, print:\n```\nFinal: <balance>\n```\nwith 2 decimal places.\n\n## Requirements\n1. Define `class BankAccount` with `public` member `double balance`.\n2. Define `void deposit(double amount)` that adds `amount` to `balance`.\n3. Define `void withdraw(double amount)` that subtracts `amount` from `balance`.\n4. `withdraw` does not check for negative balance; just subtract.\n5. N = 1 and N = 10 are both valid.\n\n## Notes\n- Use `std::fixed` and `std::setprecision(2)` for all output.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass BankAccount {\npublic:\n    double balance;\n\n    // TODO: implement: balance += amount\n    void deposit(double amount) {\n        (void)amount;  // remove this line and add your implementation\n    }\n\n    // TODO: implement: balance -= amount\n    void withdraw(double amount) {\n        (void)amount;  // remove this line and add your implementation\n    }\n};\n\nint main() {\n    double initial;\n    std::cin >> initial;\n    BankAccount acct;\n    acct.balance = initial;\n\n    int n;\n    std::cin >> n;\n    std::cout << std::fixed << std::setprecision(2);\n    for (int i = 0; i < n; ++i) {\n        char op;\n        double amount;\n        std::cin >> op >> amount;\n        if (op == 'D') {\n            acct.deposit(amount);\n        } else {\n            acct.withdraw(amount);\n        }\n        std::cout << acct.balance << \"\\n\";\n    }\n    std::cout << \"Final: \" << acct.balance << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass BankAccount {\npublic:\n    double balance;\n\n    void deposit(double amount) {\n        balance += amount;\n    }\n\n    void withdraw(double amount) {\n        balance -= amount;\n    }\n};\n\nint main() {\n    double initial;\n    std::cin >> initial;\n    BankAccount acct;\n    acct.balance = initial;\n\n    int n;\n    std::cin >> n;\n    std::cout << std::fixed << std::setprecision(2);\n    for (int i = 0; i < n; ++i) {\n        char op;\n        double amount;\n        std::cin >> op >> amount;\n        if (op == 'D') {\n            acct.deposit(amount);\n        } else {\n            acct.withdraw(amount);\n        }\n        std::cout << acct.balance << \"\\n\";\n    }\n    std::cout << \"Final: \" << acct.balance << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: deposit then withdraw",
+        "is_sample": true,
+        "stdin": "100.00\n2\nD 50.00\nW 30.00\n",
+        "expected_stdout": "150.00\n120.00\nFinal: 120.00"
+      },
+      {
+        "label": "Hidden: single deposit",
+        "is_sample": false,
+        "stdin": "0.00\n1\nD 200.00\n",
+        "expected_stdout": "200.00\nFinal: 200.00"
+      },
+      {
+        "label": "Hidden: multiple operations",
+        "is_sample": false,
+        "stdin": "500.00\n3\nW 100.00\nD 75.50\nW 200.00\n",
+        "expected_stdout": "400.00\n475.50\n275.50\nFinal: 275.50"
+      }
+    ]
+  },
+  {
+    "title": "Odometer Class — Fix the Bug",
+    "prompt_md": "## Goal\nThe `Odometer` class tracks total kilometers driven. It should accumulate distances correctly. Find and fix the one logic bug.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 5), the number of trips.\n- Lines 2..N+1: one integer per line, the distance of each trip in kilometers.\n\n## Output\nAfter each trip, print the cumulative distance:\n```\nOdometer: <total>\n```\n\n## Requirements\n1. Fix the single logic bug in `addTrip`; do not change anything else.\n2. N = 1 must work correctly.\n3. The odometer starts at 0 and increases after each trip.",
+    "starter_code": "#include <iostream>\n\nclass Odometer {\npublic:\n    int totalKm;\n\n    void addTrip(int km) {\n        totalKm = km;  // bug: should accumulate, not replace\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Odometer odo;\n    odo.totalKm = 0;\n    for (int i = 0; i < n; ++i) {\n        int km;\n        std::cin >> km;\n        odo.addTrip(km);\n        std::cout << \"Odometer: \" << odo.totalKm << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Odometer {\npublic:\n    int totalKm;\n\n    void addTrip(int km) {\n        totalKm += km;\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Odometer odo;\n    odo.totalKm = 0;\n    for (int i = 0; i < n; ++i) {\n        int km;\n        std::cin >> km;\n        odo.addTrip(km);\n        std::cout << \"Odometer: \" << odo.totalKm << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three trips",
+        "is_sample": true,
+        "stdin": "3\n100\n200\n50\n",
+        "expected_stdout": "Odometer: 100\nOdometer: 300\nOdometer: 350"
+      },
+      {
+        "label": "Hidden: single trip",
+        "is_sample": false,
+        "stdin": "1\n75\n",
+        "expected_stdout": "Odometer: 75"
+      },
+      {
+        "label": "Hidden: five trips",
+        "is_sample": false,
+        "stdin": "5\n10\n20\n30\n40\n50\n",
+        "expected_stdout": "Odometer: 10\nOdometer: 30\nOdometer: 60\nOdometer: 100\nOdometer: 150"
+      }
+    ]
+  }
+]

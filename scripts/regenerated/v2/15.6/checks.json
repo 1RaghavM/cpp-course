@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\npublic:\n    static inline int s_count{ 0 };\n    Counter() { ++s_count; }\n};\n\nint main() {\n    Counter a;\n    Counter b;\n    Counter c;\n    std::cout << Counter::s_count << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "Every `Counter` constructor increments the single shared `s_count`. Three objects are created (`a`, `b`, `c`), so `s_count` ends up as 3. Because `s_count` is static, there is only one copy shared by all instances — each constructor call increments that same variable."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\npublic:\n    static inline int s_val{ 10 };\n};\n\nint main() {\n    Box x;\n    Box y;\n    x.s_val = 42;\n    std::cout << y.s_val << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "There is only one `s_val` regardless of how many `Box` objects exist. Writing `x.s_val = 42` modifies that single shared variable. Reading `y.s_val` reads the same variable, so it prints `42`. This surprises many learners who expect each object to have its own copy."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class has a non-`inline` static member variable declared inside the class body as `static int s_count;`. Which statement is true?",
+    "options": {
+      "a": "The declaration inside the class is both the declaration and the definition — no other line is needed.",
+      "b": "An out-of-class definition such as `int MyClass::s_count{ 0 };` is required to allocate storage.",
+      "c": "The variable is destroyed when the last object of the class is destroyed.",
+      "d": "Each object gets its own copy of `s_count`."
+    },
+    "answer": "b",
+    "explanation_md": "For a non-`inline` static member, the declaration inside the class only introduces the name; actual storage is allocated by the out-of-class definition (`int MyClass::s_count{ 0 };`). Without it, the linker reports an undefined reference. Option (a) is wrong because in-class declaration is not a definition for non-`inline` statics. Options (c) and (d) are wrong — static members have static storage duration (they live for the entire program) and there is only one shared copy."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the correct way to access a `public` static member variable `s_total` of class `Inventory` when you have an `Inventory` object named `inv`?",
+    "options": {
+      "a": "Only `Inventory::s_total` is correct; `inv.s_total` is a compile error.",
+      "b": "Only `inv.s_total` is correct; `Inventory::s_total` is a compile error.",
+      "c": "Both `Inventory::s_total` and `inv.s_total` are valid and refer to the same variable.",
+      "d": "`inv->s_total` is the only correct syntax."
+    },
+    "answer": "c",
+    "explanation_md": "C++ allows accessing a static member either through the class name (`Inventory::s_total`) or through an object (`inv.s_total`). Both compile and both refer to the exact same single variable — using an object name is just syntactic sugar. `Inventory::s_total` is preferred in practice because it makes the static nature explicit and avoids confusion."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to count how many `Widget` objects have been created and print the count, but it does not compile. What is wrong?\n\n```cpp\n#include <iostream>\n\nclass Widget {\npublic:\n    static int s_count;\n    Widget() { ++s_count; }\n};\n\nint main() {\n    Widget w1;\n    Widget w2;\n    std::cout << Widget::s_count << \"\\n\";\n}\n```",
+    "options": {
+      "a": "`static int s_count;` inside the class is a syntax error; static members cannot be declared inside a class body.",
+      "b": "`Widget::s_count` is not a valid way to access a static member — you must use an object.",
+      "c": "There is no out-of-class definition for `s_count`, so the linker cannot find its storage.",
+      "d": "The constructor increments `s_count` before it is initialized, causing undefined behavior."
+    },
+    "answer": "c",
+    "explanation_md": "For a non-`inline` static member, the in-class `static int s_count;` is only a declaration — it does not allocate storage. A definition like `int Widget::s_count{ 0 };` outside the class body is required. Without it, the linker reports an undefined symbol. The fix is to add `int Widget::s_count{ 0 };` at namespace scope, or to change the declaration to `static inline int s_count{ 0 };`."
+  }
+]

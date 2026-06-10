@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass T {\npublic:\n    T(int id) : m_id{id} { std::cout << \"C\" << m_id << '\\n'; }\n    ~T() { std::cout << \"D\" << m_id << '\\n'; }\nprivate:\n    int m_id;\n};\nint main() {\n    T a{1};\n    T b{2};\n}\n```",
+    "options": null,
+    "answer": "C1\nC2\nD2\nD1",
+    "explanation_md": "Objects are constructed in the order they are declared: `a` first (prints `C1`), then `b` (prints `C2`). At the closing brace of `main`, they are destroyed in *reverse* order: `b` is destroyed first (prints `D2`), then `a` (prints `D1`). Destruction order is always the reverse of construction order."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When does the destructor of a local (stack) variable run?",
+    "options": {
+      "a": "When the program calls `delete` on the object",
+      "b": "When the object goes out of scope — at the closing brace of the block where it was declared",
+      "c": "Only when the program exits `main`",
+      "d": "Only if the constructor ran without throwing an exception"
+    },
+    "answer": "b",
+    "explanation_md": "For stack (automatic) objects, the compiler inserts destructor calls automatically at the point where the variable goes out of scope — the closing `}` of the enclosing block. This is independent of `delete` (which is for heap objects), of whether `main` has finished, and of how the constructor completed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class `Widget` holds only an `int` and a `double` as data members. Should you write a custom destructor for it?",
+    "options": {
+      "a": "Yes — every class should have an explicit destructor for clarity",
+      "b": "No — the compiler-generated destructor already destroys `int` and `double` members correctly",
+      "c": "Yes — otherwise the `int` and `double` will not be zeroed out",
+      "d": "No — destructors are only needed for classes with virtual functions"
+    },
+    "answer": "b",
+    "explanation_md": "The compiler generates a destructor that destroys each data member in reverse order of declaration. For plain types like `int` and `double`, \"destroying\" them means nothing special. You only need a custom destructor when the class owns an external resource (file handle, raw pointer, etc.) that the compiler does not know how to release."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass R {\npublic:\n    R()  { std::cout << \"open\\n\"; }\n    ~R() { std::cout << \"close\\n\"; }\n};\nvoid run() {\n    R r;\n    std::cout << \"work\\n\";\n}\nint main() {\n    run();\n    std::cout << \"done\\n\";\n}\n```",
+    "options": null,
+    "answer": "open\nwork\nclose\ndone",
+    "explanation_md": "`r` is constructed when `run()` starts (prints `open`). Inside `run()`, `work` is printed. When `run()` returns, `r` goes out of scope and the destructor fires (prints `close`). Control returns to `main`, which prints `done`. The destructor runs before `run()` returns to its caller."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary danger of calling `obj.~MyClass()` explicitly on a stack object?",
+    "options": {
+      "a": "The destructor body runs twice: once explicitly and once when the object goes out of scope, potentially double-releasing a resource",
+      "b": "The compiler will refuse to compile code that calls the destructor explicitly",
+      "c": "The object's data members are zeroed out but the object remains in scope",
+      "d": "It prevents the constructor from being called again on the same memory"
+    },
+    "answer": "a",
+    "explanation_md": "Explicitly calling the destructor of a stack object does not prevent the compiler from also calling it when the object goes out of scope. For a class that frees a resource in its destructor, this means the resource is released twice — undefined behavior. Explicit destructor calls are only legitimate in advanced placement-new scenarios."
+  }
+]

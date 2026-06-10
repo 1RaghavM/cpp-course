@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Temperature Class with Private Storage",
+    "prompt_md": "## Goal\nComplete a `Temperature` class that stores a temperature in Celsius privately and provides public member functions to set and get the value in both Celsius and Fahrenheit.\n\n## Input\n- Line 1: a floating-point number representing the temperature in Celsius.\n\n## Output\n- Line 1: `Celsius: <value>` where `<value>` is printed with exactly one decimal place.\n- Line 2: `Fahrenheit: <value>` where `<value>` is the Fahrenheit equivalent, printed with exactly one decimal place.\n\nConversion: F = C * 9.0 / 5.0 + 32.0\n\n## Requirements\n1. `Temperature` must store the value in a `private` member `m_celsius` of type `double`.\n2. Provide a `public` member function `void setCelsius(double c)` that sets the stored value.\n3. Provide a `public` member function `double getCelsius() const` that returns the stored Celsius value.\n4. Provide a `public` member function `double getFahrenheit() const` that converts and returns the Fahrenheit equivalent.\n5. `main()` must read the input, call `setCelsius`, then print both values with `std::fixed` and `std::setprecision(1)`.\n6. Direct access to `m_celsius` from outside the class must not compile.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\nprivate:\n    double m_celsius{ 0.0 };  // TODO: this member is already declared; do not change it\n\npublic:\n    void setCelsius(double c) {\n        // TODO: store c in m_celsius\n    }\n\n    double getCelsius() const {\n        // TODO: return m_celsius\n        return 0.0;\n    }\n\n    double getFahrenheit() const {\n        // TODO: return m_celsius * 9.0 / 5.0 + 32.0\n        return 0.0;\n    }\n};\n\nint main() {\n    double input;\n    std::cin >> input;\n\n    Temperature t;\n    t.setCelsius(input);\n\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\nprivate:\n    double m_celsius{ 0.0 };\n\npublic:\n    void setCelsius(double c)    { m_celsius = c; }\n    double getCelsius() const    { return m_celsius; }\n    double getFahrenheit() const { return m_celsius * 9.0 / 5.0 + 32.0; }\n};\n\nint main() {\n    double input;\n    std::cin >> input;\n\n    Temperature t;\n    t.setCelsius(input);\n\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 0 Celsius",
+        "is_sample": true,
+        "stdin": "0",
+        "expected_stdout": "Celsius: 0.0\nFahrenheit: 32.0"
+      },
+      {
+        "label": "Hidden: 100 Celsius",
+        "is_sample": false,
+        "stdin": "100",
+        "expected_stdout": "Celsius: 100.0\nFahrenheit: 212.0"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-40",
+        "expected_stdout": "Celsius: -40.0\nFahrenheit: -40.0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Vault Access",
+    "prompt_md": "## Goal\nThe following program models a `Vault` class and is supposed to allow deposits, restrict withdrawals (no going below zero), and print the balance. It compiles and runs but produces wrong output for some inputs. Find and fix the one logic bug.\n\n## Input\n- Line 1: integer deposit amount.\n- Line 2: integer withdrawal amount.\n\n## Output\n- Line 1: `Balance: <amount>` after the deposit and withdrawal are processed.\n- If the withdrawal would make the balance negative, do not apply it and print `Balance: <deposit amount>` instead.\n\n## Requirements\n1. The class must keep `m_balance` private.\n2. `deposit(int amount)` must add `amount` to the balance.\n3. `withdraw(int amount)` must subtract `amount` only if the result would be >= 0.\n4. `getBalance() const` must return the current balance.\n5. The bug is a logic error — the program compiles cleanly but does not correctly enforce the withdrawal restriction.\n\n## Notes\n- Do not change the class structure; only fix the logic error.",
+    "starter_code": "#include <iostream>\n\nclass Vault {\nprivate:\n    int m_balance{ 0 };\n\npublic:\n    void deposit(int amount)  { m_balance += amount; }\n\n    void withdraw(int amount) {\n        // Bug: the condition is wrong\n        if (m_balance > amount)\n            m_balance -= amount;\n    }\n\n    int getBalance() const { return m_balance; }\n};\n\nint main() {\n    int dep, wd;\n    std::cin >> dep >> wd;\n\n    Vault v;\n    v.deposit(dep);\n    v.withdraw(wd);\n\n    std::cout << \"Balance: \" << v.getBalance() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Vault {\nprivate:\n    int m_balance{ 0 };\n\npublic:\n    void deposit(int amount)  { m_balance += amount; }\n\n    void withdraw(int amount) {\n        if (m_balance >= amount)\n            m_balance -= amount;\n    }\n\n    int getBalance() const { return m_balance; }\n};\n\nint main() {\n    int dep, wd;\n    std::cin >> dep >> wd;\n\n    Vault v;\n    v.deposit(dep);\n    v.withdraw(wd);\n\n    std::cout << \"Balance: \" << v.getBalance() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: withdraw leaves exact zero",
+        "is_sample": true,
+        "stdin": "100\n100",
+        "expected_stdout": "Balance: 0"
+      },
+      {
+        "label": "Hidden: withdrawal exceeds balance",
+        "is_sample": false,
+        "stdin": "50\n75",
+        "expected_stdout": "Balance: 50"
+      },
+      {
+        "label": "Hidden: normal withdrawal",
+        "is_sample": false,
+        "stdin": "200\n80",
+        "expected_stdout": "Balance: 120"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Val {\n    int n{10};\n    void set(int n) { this->n = n; }\n    void print() const { std::cout << n << '\\n'; }\n};\nint main() {\n    Val v;\n    v.set(42);\n    v.print();\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "Inside `set`, `this->n` refers to the member `n`, while the bare `n` refers to the parameter. Without `this->`, both sides of the assignment would name the parameter (a no-op). With `this->`, the member is correctly updated to 42, which `print()` then outputs."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Cfg {\n    int a{0}, b{0};\n    Cfg& setA(int v) { a = v; return *this; }\n    Cfg& setB(int v) { b = v; return *this; }\n    void show() const { std::cout << a << ' ' << b << '\\n'; }\n};\nint main() {\n    Cfg c;\n    c.setA(5).setB(9).show();\n}\n```",
+    "options": null,
+    "answer": "5 9",
+    "explanation_md": "`setA(5)` stores 5 and returns a reference to `c`. `.setB(9)` is then called on that same `c`, storing 9. Finally `.show()` prints both members, giving `5 9`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Inside a `const` member function, what is the type of `this`?",
+    "options": {
+      "a": "`ClassName*` — a mutable pointer to the object",
+      "b": "`const ClassName*` — a pointer to a const object",
+      "c": "`ClassName* const` — a const pointer to a mutable object",
+      "d": "`const ClassName* const` — a const pointer to a const object"
+    },
+    "answer": "b",
+    "explanation_md": "In a `const` member function, `this` has type `const ClassName*`. This prevents the function from modifying any data members through `this`. The pointer itself is also implicitly const (you cannot reassign `this`), but the standard describes the effective type as `const ClassName*` for access purposes."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is meant to chain two calls and print `3 7`, but it prints the wrong values. What is the bug?\n\n```cpp\n#include <iostream>\nstruct P {\n    int x{0}, y{0};\n    P setX(int v) { x = v; return *this; }\n    P setY(int v) { y = v; return *this; }\n    void show() { std::cout << x << ' ' << y << '\\n'; }\n};\nint main() {\n    P p;\n    p.setX(3).setY(7).show();\n}\n```",
+    "options": {
+      "a": "`show()` should be marked `const`",
+      "b": "`setX` and `setY` return `P` by value instead of `P&` by reference, so `setY` modifies a temporary copy, not `p`",
+      "c": "The initializers `{0}` are not valid C++20",
+      "d": "`this->x` and `this->y` should be used instead of bare `x` and `y`"
+    },
+    "answer": "b",
+    "explanation_md": "Returning `P` by value copies the object before returning. The `.setY(7)` call modifies that copy, not the original `p`. When `.show()` is eventually called on the original `p`, `y` is still 0. The fix is to return `P&` (reference) from both setters."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following statements about `this` is correct?",
+    "options": {
+      "a": "`this` is available inside static member functions",
+      "b": "`this` holds the value of the first data member",
+      "c": "`this` is a pointer to the object on which the member function was called",
+      "d": "You must always write `this->` to access member variables"
+    },
+    "answer": "c",
+    "explanation_md": "`this` is an implicit pointer parameter whose value is the address of the calling object. It is not available in static functions (no object), it does not hold member data directly, and explicit `this->` is only required to disambiguate names — bare member names already implicitly use `this`."
+  }
+]

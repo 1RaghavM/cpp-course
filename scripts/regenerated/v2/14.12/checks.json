@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Point {\n    int m_x;\n    int m_y;\npublic:\n    Point(int x, int y)\n        : m_x{ x }, m_y{ y }\n    {\n        std::cout << \"primary\\n\";\n    }\n\n    Point()\n        : Point{ 0, 0 }\n    {\n        std::cout << \"delegating\\n\";\n    }\n};\n\nint main() {\n    Point p;\n}\n```",
+    "options": null,
+    "answer": "primary\ndelegating",
+    "explanation_md": "When `Point p` is constructed using the no-argument constructor, it delegates to `Point{ 0, 0 }`. The primary constructor runs first and prints `primary`. After the primary constructor completes, control returns to the delegating constructor's body, which prints `delegating`. Order is always: delegated-to constructor first, then delegating constructor's body."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a valid delegating constructor?",
+    "options": {
+      "a": "`Foo(int x) : Foo{ x, 0 }, m_extra{ 1 } {}` — delegates and also initializes a member.",
+      "b": "`Foo() : Foo{ 42 } {}` — delegates to a constructor taking one int.",
+      "c": "`Foo() : Foo{} {}` — delegates to itself.",
+      "d": "`Foo(int x, int y) : Foo{ x } {}, Foo{ y } {}` — delegates to two constructors."
+    },
+    "answer": "b",
+    "explanation_md": "Option b is valid: the no-argument constructor delegates to `Foo(int)` with the value 42. Option a is invalid because delegation and member initialization cannot coexist in the same initializer list. Option c creates a delegation cycle (delegates to itself), which is a compile error. Option d is syntactically invalid — you can only delegate to one constructor."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "Why does this code fail to compile?\n\n```cpp\nclass Box {\n    int m_w;\n    int m_h;\npublic:\n    Box(int w, int h) : m_w{ w }, m_h{ h } {}\n    Box(int side) : Box{ side, side }, m_w{ side } {}\n};\n```",
+    "options": {
+      "a": "The delegating constructor `Box(int side)` uses the same member name as the primary constructor.",
+      "b": "A delegating constructor cannot also list member initializations in the same initializer list.",
+      "c": "`m_w` is initialized twice, which causes a runtime crash.",
+      "d": "You cannot delegate from a one-argument constructor to a two-argument constructor."
+    },
+    "answer": "b",
+    "explanation_md": "C++ prohibits mixing a delegation call (`Box{ side, side }`) with member initializations (`m_w{ side }`) in the same initializer list. If you delegate, the delegation must be the only entry. Any additional member setup must go inside the constructor body (as assignment). This is a compile error, not a runtime issue."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When using a delegating constructor, when does the delegating constructor's body execute?",
+    "options": {
+      "a": "Before the delegated-to constructor runs.",
+      "b": "At the same time as the delegated-to constructor, in parallel.",
+      "c": "After the delegated-to constructor completes fully.",
+      "d": "The body never runs — it is replaced by the delegated-to constructor's body."
+    },
+    "answer": "c",
+    "explanation_md": "The delegated-to constructor runs first and must complete before the delegating constructor's body executes. This means the object is fully initialized (by the primary constructor) before any additional logic in the delegating constructor's body runs."
+  }
+]

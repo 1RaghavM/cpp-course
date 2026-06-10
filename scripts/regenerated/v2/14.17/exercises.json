@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Constexpr Rectangle Area",
+    "prompt_md": "## Goal\nFind and fix the single logic bug in the program. The program creates `Rectangle` objects and prints their areas, but the output is wrong.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: two integers per line — `width` and `height` of a rectangle.\n\n## Output\nFor each rectangle, print one line: `area=<width*height>`.\n\n## Requirements\n1. `Rectangle` has a `constexpr` constructor taking `width` and `height`.\n2. `area()` is a `constexpr` const member function that must return `width * height`.\n3. The bug: `area()` currently computes `width + height` instead of `width * height`.\n4. After fixing, `Rectangle{3,4}.area()` must equal `12` (verified by `static_assert` in the solution).\n5. Edge case: width=1 height=1 must print `area=1`.",
+    "starter_code": "#include <iostream>\n\nclass Rectangle {\npublic:\n    constexpr Rectangle(int w, int h) : m_w{w}, m_h{h} {}\n    constexpr int area() const { return m_w + m_h; }  // bug: should multiply\nprivate:\n    int m_w, m_h;\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n        Rectangle r{w, h};\n        std::cout << \"area=\" << r.area() << \"\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rectangle {\npublic:\n    constexpr Rectangle(int w, int h) : m_w{w}, m_h{h} {}\n    constexpr int area() const { return m_w * m_h; }\nprivate:\n    int m_w, m_h;\n};\n\nstatic_assert(Rectangle{3, 4}.area() == 12, \"area must be 12\");\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n        Rectangle r{w, h};\n        std::cout << \"area=\" << r.area() << \"\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three rectangles",
+        "is_sample": true,
+        "stdin": "3\n3 4\n5 2\n1 1\n",
+        "expected_stdout": "area=12\narea=10\narea=1"
+      },
+      {
+        "label": "Hidden: single rectangle",
+        "is_sample": false,
+        "stdin": "1\n7 8\n",
+        "expected_stdout": "area=56"
+      },
+      {
+        "label": "Hidden: five rectangles",
+        "is_sample": false,
+        "stdin": "5\n1 10\n2 3\n4 4\n6 7\n10 10\n",
+        "expected_stdout": "area=10\narea=6\narea=16\narea=42\narea=100"
+      }
+    ]
+  },
+  {
+    "title": "Compile-Time Color Mixer",
+    "prompt_md": "## Goal\nComplete the function `blend(Color a, Color b)` that returns a new `Color` whose components are the integer averages of the two input colors.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: six integers per line — `r1 g1 b1 r2 g2 b2`, the components of two colors to blend.\n\n## Output\nFor each pair, print one line: `(<r>,<g>,<b>)` where each component is `(component1 + component2) / 2` (integer division).\n\n## Requirements\n1. `Color` is a constexpr aggregate with three `int` members: `r`, `g`, `b`.\n2. `blend(Color a, Color b)` must be `constexpr` and return a `Color` with each component computed as `(a.component + b.component) / 2`.\n3. Component values are in range 0–255.\n4. Edge case: identical colors must blend to themselves (e.g. `128 64 32 128 64 32` → `(128,64,32)`).\n\n## Notes\n- Do not use `std::vector` or `std::array`.",
+    "starter_code": "#include <iostream>\n\nstruct Color {\n    int r, g, b;\n};\n\n// TODO: implement blend as a constexpr function.\n// Returns a Color whose r, g, b are each the integer average of a and b.\nconstexpr Color blend(Color a, Color b) {\n    // Replace the line below with the correct implementation.\n    return Color{(a.r + b.r) / 2, 0, 0}; // TODO: fix g and b components\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int r1, g1, b1, r2, g2, b2;\n        std::cin >> r1 >> g1 >> b1 >> r2 >> g2 >> b2;\n        Color c = blend(Color{r1, g1, b1}, Color{r2, g2, b2});\n        std::cout << \"(\" << c.r << \",\" << c.g << \",\" << c.b << \")\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Color {\n    int r, g, b;\n};\n\nconstexpr Color blend(Color a, Color b) {\n    return Color{(a.r + b.r) / 2, (a.g + b.g) / 2, (a.b + b.b) / 2};\n}\n\nstatic_assert(blend(Color{0, 0, 0}, Color{100, 200, 50}).g == 100,\n              \"blend g-component must be 100\");\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int r1, g1, b1, r2, g2, b2;\n        std::cin >> r1 >> g1 >> b1 >> r2 >> g2 >> b2;\n        Color c = blend(Color{r1, g1, b1}, Color{r2, g2, b2});\n        std::cout << \"(\" << c.r << \",\" << c.g << \",\" << c.b << \")\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two blends",
+        "is_sample": true,
+        "stdin": "2\n0 0 0 100 200 50\n255 0 0 0 0 255\n",
+        "expected_stdout": "(50,100,25)\n(127,0,127)"
+      },
+      {
+        "label": "Hidden: identical colors",
+        "is_sample": false,
+        "stdin": "1\n128 64 32 128 64 32\n",
+        "expected_stdout": "(128,64,32)"
+      },
+      {
+        "label": "Hidden: three blends with extremes",
+        "is_sample": false,
+        "stdin": "3\n0 0 0 0 0 0\n255 255 255 255 255 255\n100 150 200 50 50 50\n",
+        "expected_stdout": "(0,0,0)\n(255,255,255)\n(75,100,125)"
+      }
+    ]
+  }
+]

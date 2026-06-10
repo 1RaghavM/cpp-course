@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Clamped Health Points",
+    "prompt_md": "## Goal\nComplete a `Hero` class that maintains a health points invariant: HP stays in the range [0, maxHp]. Provide a setter that enforces this and a getter that returns the current value.\n\n## Input\n- Line 1: integer `maxHp` (1 <= maxHp <= 1000) — the hero's maximum HP.\n- Line 2: integer `damage` — damage to apply (may be any integer).\n- Line 3: integer `heal` — healing to apply (may be any integer).\n\nThe hero starts at full HP (`maxHp`). Apply damage first, then healing.\n\n## Output\n- Line 1: `HP after damage: <value>` (clamped to [0, maxHp]).\n- Line 2: `HP after heal: <value>` (clamped to [0, maxHp]).\n\n## Requirements\n1. `Hero` must store `m_hp` and `m_maxHp` as private `int` members.\n2. Constructor takes `int maxHp` and sets both `m_hp` and `m_maxHp` to `maxHp`.\n3. `void applyDamage(int d)` subtracts `d` from `m_hp`, then clamps `m_hp` to `[0, m_maxHp]`.\n4. `void applyHeal(int h)` adds `h` to `m_hp`, then clamps `m_hp` to `[0, m_maxHp]`.\n5. `int getHp() const` returns the current `m_hp`.\n6. Edge cases tested: damage exceeds maxHp (HP = 0), heal when already at max (HP stays at maxHp).",
+    "starter_code": "#include <iostream>\n\nclass Hero {\nprivate:\n    int m_hp{ 0 };\n    int m_maxHp{ 0 };\n\npublic:\n    Hero(int maxHp) : m_hp{ maxHp }, m_maxHp{ maxHp } {}\n\n    int getHp() const {\n        // TODO: return m_hp\n        return m_hp;\n    }\n\n    void applyDamage(int d) {\n        // TODO: subtract d from m_hp, clamp to [0, m_maxHp]\n    }\n\n    void applyHeal(int h) {\n        // TODO: add h to m_hp, clamp to [0, m_maxHp]\n    }\n};\n\nint main() {\n    int maxHp, damage, heal;\n    std::cin >> maxHp >> damage >> heal;\n\n    Hero hero{ maxHp };\n    hero.applyDamage(damage);\n    std::cout << \"HP after damage: \" << hero.getHp() << '\\n';\n    hero.applyHeal(heal);\n    std::cout << \"HP after heal: \" << hero.getHp() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Hero {\nprivate:\n    int m_hp{ 0 };\n    int m_maxHp{ 0 };\n\npublic:\n    Hero(int maxHp) : m_hp{ maxHp }, m_maxHp{ maxHp } {}\n\n    int getHp() const { return m_hp; }\n\n    void applyDamage(int d) {\n        m_hp -= d;\n        if (m_hp < 0)      m_hp = 0;\n        if (m_hp > m_maxHp) m_hp = m_maxHp;\n    }\n\n    void applyHeal(int h) {\n        m_hp += h;\n        if (m_hp < 0)      m_hp = 0;\n        if (m_hp > m_maxHp) m_hp = m_maxHp;\n    }\n};\n\nint main() {\n    int maxHp, damage, heal;\n    std::cin >> maxHp >> damage >> heal;\n\n    Hero hero{ maxHp };\n    hero.applyDamage(damage);\n    std::cout << \"HP after damage: \" << hero.getHp() << '\\n';\n    hero.applyHeal(heal);\n    std::cout << \"HP after heal: \" << hero.getHp() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal damage and heal",
+        "is_sample": true,
+        "stdin": "100\n30\n20",
+        "expected_stdout": "HP after damage: 70\nHP after heal: 90"
+      },
+      {
+        "label": "Hidden: damage exceeds maxHp",
+        "is_sample": false,
+        "stdin": "50\n200\n10",
+        "expected_stdout": "HP after damage: 0\nHP after heal: 10"
+      },
+      {
+        "label": "Hidden: heal at max HP",
+        "is_sample": false,
+        "stdin": "100\n0\n999",
+        "expected_stdout": "HP after damage: 100\nHP after heal: 100"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Protected Counter",
+    "prompt_md": "## Goal\nThe following program uses a `SafeCounter` that should only ever increment (never decrement). It compiles and runs but produces wrong output. Find and fix the one logic bug.\n\n## Input\n- Line 1: integer `a` — first value to add.\n- Line 2: integer `b` — second value to add.\n\n## Output\n- Line 1: `Count: <value>` after adding `a` and `b`. Negative inputs are silently ignored.\n\n## Requirements\n1. `SafeCounter` stores `m_count` privately.\n2. `add(int n)` increases `m_count` by `n` only if `n > 0`; negative or zero values are ignored.\n3. `getCount() const` returns the current count.\n4. The bug is a logic error — the program compiles and runs but does not correctly ignore non-positive values.",
+    "starter_code": "#include <iostream>\n\nclass SafeCounter {\nprivate:\n    int m_count{ 0 };\n\npublic:\n    void add(int n) {\n        // Bug: wrong comparison lets negatives through\n        if (n >= 0)\n            m_count += n;\n    }\n\n    int getCount() const { return m_count; }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    SafeCounter sc;\n    sc.add(a);\n    sc.add(b);\n\n    std::cout << \"Count: \" << sc.getCount() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass SafeCounter {\nprivate:\n    int m_count{ 0 };\n\npublic:\n    void add(int n) {\n        if (n > 0)\n            m_count += n;\n    }\n\n    int getCount() const { return m_count; }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    SafeCounter sc;\n    sc.add(a);\n    sc.add(b);\n\n    std::cout << \"Count: \" << sc.getCount() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: both positive",
+        "is_sample": true,
+        "stdin": "10\n5",
+        "expected_stdout": "Count: 15"
+      },
+      {
+        "label": "Hidden: zero is ignored",
+        "is_sample": false,
+        "stdin": "7\n0",
+        "expected_stdout": "Count: 7"
+      },
+      {
+        "label": "Hidden: negative is ignored",
+        "is_sample": false,
+        "stdin": "3\n-2",
+        "expected_stdout": "Count: 3"
+      }
+    ]
+  }
+]

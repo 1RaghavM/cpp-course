@@ -1,0 +1,56 @@
+[
+  {
+    "title": "OOP vs Procedural: Identify the Style",
+    "prompt_md": "## Goal\nRead a description code pattern and print whether it demonstrates OOP style or procedural style, then print the reason.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 4), the number of scenarios.\n- Lines 2..N+1: each line is one of the following codes:\n  - `A` — A struct whose behavior lives in standalone functions that take the struct by reference.\n  - `B` — A class where functions are defined inside the class and operate on its own data.\n  - `C` — A standalone function that computes a result from two plain integer parameters with no struct or class.\n  - `D` — A class with a private data member that can only be changed through a member function.\n\n## Output\nFor each scenario, print one line:\n- `A: Procedural`\n- `B: OOP`\n- `C: Procedural`\n- `D: OOP`\n\n## Requirements\n1. Print exactly the lines shown above for each input code.\n2. N can be 1 to 4; handle all combinations.\n3. Codes always appear in the set {A, B, C, D}.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string code;\n        std::cin >> code;\n        // TODO: print \"<code>: OOP\" or \"<code>: Procedural\"\n        // A -> Procedural, B -> OOP, C -> Procedural, D -> OOP\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string code;\n        std::cin >> code;\n        if (code == \"A\" || code == \"C\") {\n            std::cout << code << \": Procedural\\n\";\n        } else {\n            std::cout << code << \": OOP\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two scenarios",
+        "is_sample": true,
+        "stdin": "2\nA\nB\n",
+        "expected_stdout": "A: Procedural\nB: OOP"
+      },
+      {
+        "label": "Hidden: all four codes",
+        "is_sample": false,
+        "stdin": "4\nA\nB\nC\nD\n",
+        "expected_stdout": "A: Procedural\nB: OOP\nC: Procedural\nD: OOP"
+      },
+      {
+        "label": "Hidden: single OOP entry",
+        "is_sample": false,
+        "stdin": "1\nD\n",
+        "expected_stdout": "D: OOP"
+      }
+    ]
+  },
+  {
+    "title": "Procedural to OOP Migration Bug",
+    "prompt_md": "## Goal\nThe program below tracks a simple score counter. It is supposed to start at zero, apply two increases, and print the final score. Find and fix the one logic bug.\n\n## Input\nNo input — the program uses hard-coded values.\n\n## Output\nPrint exactly one line:\n```\nFinal score: 15\n```\n\n## Requirements\n1. The program must print `Final score: 15` (capital F, colon, space, no trailing blank lines).\n2. The bug is a single logic error — the program compiles as-is.\n3. Do not add or remove functions; only fix the bug.",
+    "starter_code": "#include <iostream>\n\nstruct Score {\n    int value;\n};\n\nvoid addPoints(Score& s, int pts) {\n    s.value = pts;  // bug: should accumulate, not replace\n}\n\nint main() {\n    Score s;\n    s.value = 0;\n    addPoints(s, 10);\n    addPoints(s, 5);\n    std::cout << \"Final score: \" << s.value << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Score {\n    int value;\n};\n\nvoid addPoints(Score& s, int pts) {\n    s.value += pts;\n}\n\nint main() {\n    Score s;\n    s.value = 0;\n    addPoints(s, 10);\n    addPoints(s, 5);\n    std::cout << \"Final score: \" << s.value << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: fixed score is 15",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Final score: 15"
+      },
+      {
+        "label": "Hidden: same program, same fix",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Final score: 15"
+      },
+      {
+        "label": "Hidden: verify accumulation not replacement",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Final score: 15"
+      }
+    ]
+  }
+]

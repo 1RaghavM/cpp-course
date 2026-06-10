@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\n    double m_side;\npublic:\n    Box(double s) : m_side{ s } {}\n    friend double volume(const Box& b);\n};\n\ndouble volume(const Box& b) {\n    return b.m_side * b.m_side * b.m_side;\n}\n\nint main() {\n    Box cube{ 3.0 };\n    std::cout << volume(cube) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "27",
+    "explanation_md": "`volume` is a friend non-member function of `Box`, so it can access the private `m_side`. With `m_side = 3.0`, the volume is 3 × 3 × 3 = 27. It is called as a free function `volume(cube)`, not as a method. Note that `std::cout` prints `27` for `27.0` with default formatting."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given this class:\n\n```cpp\nclass Vault {\n    int m_secret{ 42 };\n    friend void peek(const Vault& v);\n};\n```\n\nHow do you correctly call `peek` on a `Vault` object named `v`?",
+    "options": {
+      "a": "`v.peek();`",
+      "b": "`Vault::peek(v);`",
+      "c": "`peek(v);`",
+      "d": "`v->peek();`"
+    },
+    "answer": "c",
+    "explanation_md": "`peek` is a friend *non-member* function — it is a free function, not a member of `Vault`. Free functions are called without a class-name prefix or dot operator. The correct call is `peek(v)`. Options (a) and (b) would be correct only if `peek` were a member function; option (d) would require `v` to be a pointer."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Wallet {\n    int m_balance{ 100 };\npublic:\n    friend int getBalance();\n};\n\nint getBalance() {\n    return m_balance;  // accessing private member\n}\n\nint main() {\n    Wallet w;\n    std::cout << getBalance() << \"\\n\";\n}\n```",
+    "options": {
+      "a": "Friend functions cannot access private members; the `friend` declaration is pointless.",
+      "b": "`getBalance` is declared as a friend but takes no parameter, so it has no way to access `m_balance` of any specific `Wallet` object.",
+      "c": "`friend` can only be used inside a `private:` section of the class.",
+      "d": "`getBalance()` must be defined inside the class body when it is declared as a friend."
+    },
+    "answer": "b",
+    "explanation_md": "A friend non-member function has no `this` pointer. To access `m_balance`, it must receive a `Wallet` object as a parameter — for example `int getBalance(const Wallet& w)`. Without a parameter, there is no object from which to read `m_balance`, and the free-floating `m_balance` in the function body is undefined. The fix is to add a `const Wallet& w` parameter and return `w.m_balance`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Tag {\n    int m_val;\npublic:\n    Tag(int v) : m_val{ v } {}\n    friend std::ostream& operator<<(std::ostream& out, const Tag& t) {\n        out << \"Tag(\" << t.m_val << \")\";\n        return out;\n    }\n};\n\nint main() {\n    Tag t1{ 5 };\n    Tag t2{ 9 };\n    std::cout << t1 << \" \" << t2 << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "Tag(5) Tag(9)",
+    "explanation_md": "The friend `operator<<` prints `Tag(<value>)` for each object and returns `out` to allow chaining. The chain `std::cout << t1 << \" \" << t2 << \"\\n\"` first prints `Tag(5)`, then a space, then `Tag(9)`, then a newline. Returning `out` from `operator<<` is what makes chaining possible."
+  }
+]

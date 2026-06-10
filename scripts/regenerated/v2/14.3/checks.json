@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\npublic:\n    int value;\n    void increment() { value += 1; }\n    void add(int n)   { value += n; }\n};\n\nint main() {\n    Counter a;\n    a.value = 0;\n    Counter b;\n    b.value = 10;\n    a.increment();\n    b.add(5);\n    a.add(b.value);\n    std::cout << a.value << \"\\n\";\n    std::cout << b.value << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "16\n15",
+    "explanation_md": "`a.value` starts at 0, then `a.increment()` makes it 1, then `b.add(5)` makes `b.value` = 15, then `a.add(b.value)` adds 15 to `a.value` giving 16. `b.value` is 15. Member functions operate on their own object's data — `a` and `b` are independent."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This `setWidth` function is supposed to update the member `width`, but it doesn't. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Box {\npublic:\n    int width;\n    void setWidth(int width) {\n        width = width;\n    }\n};\n\nint main() {\n    Box b;\n    b.width = 5;\n    b.setWidth(20);\n    std::cout << b.width << \"\\n\";  // prints 5, expected 20\n}\n```",
+    "options": {
+      "a": "The member function must be declared `static` to modify a data member.",
+      "b": "The parameter `width` shadows the member `width`; `width = width` assigns the parameter to itself and leaves the member unchanged.",
+      "c": "Member functions cannot have parameters with the same type as a data member.",
+      "d": "The `setWidth` function should return `int`, not `void`."
+    },
+    "answer": "b",
+    "explanation_md": "When a parameter has the same name as a data member, the parameter wins inside the function body. `width = width` reads and writes the parameter — the member is never touched. The fix is `this->width = width` or renaming the parameter to something like `newWidth`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Inside a member function, how does the function access the object's data members?",
+    "options": {
+      "a": "It must receive the object as an explicit first argument.",
+      "b": "It can access data members directly by name, because the function is implicitly called on a specific object.",
+      "c": "It must use the `::` scope operator to reach the data members.",
+      "d": "It can only access data members that are declared `static`."
+    },
+    "answer": "b",
+    "explanation_md": "Member functions have direct access to the calling object's data members by name. The object is an implicit receiver — when you write `r.area()`, `width` inside `area()` refers to `r.width` automatically. No explicit argument, no `::` operator needed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Temperature {\npublic:\n    double celsius;\n    double toFahrenheit() {\n        return celsius * 9.0 / 5.0 + 32.0;\n    }\n};\n\nint main() {\n    Temperature t;\n    t.celsius = 0.0;\n    std::cout << t.toFahrenheit() << \"\\n\";\n    t.celsius = 100.0;\n    std::cout << t.toFahrenheit() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "32\n212",
+    "explanation_md": "0°C × 9/5 + 32 = 32°F. 100°C × 9/5 + 32 = 212°F. The member function `toFahrenheit()` operates on whatever `celsius` value the object currently holds, so calling it again after changing `celsius` gives the new result."
+  }
+]

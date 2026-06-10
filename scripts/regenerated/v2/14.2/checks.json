@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\npublic:\n    int side;\n    int volume() { return side * side * side; }\n};\n\nint main() {\n    Box a;\n    a.side = 3;\n    Box b;\n    b.side = 2;\n    a.side = 4;\n    std::cout << a.volume() << \"\\n\";\n    std::cout << b.volume() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "64\n8",
+    "explanation_md": "`a.side` is set to 3 then overwritten to 4, so `a.volume()` = 4³ = 64. `b.side` is 2 and is never changed, so `b.volume()` = 2³ = 8. The two objects are independent — changing `a.side` has no effect on `b.side`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `12` but it does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Rectangle {\n    double width;\n    double height;\n    double area() { return width * height; }\n};\n\nint main() {\n    Rectangle r;\n    r.width  = 4.0;\n    r.height = 3.0;\n    std::cout << r.area() << \"\\n\";\n}\n```",
+    "options": {
+      "a": "The class is missing a constructor; you must define one before setting members.",
+      "b": "The members `width`, `height`, and `area()` are private by default in a `class`, so `main` cannot access them.",
+      "c": "The semicolon after the closing `}` is missing.",
+      "d": "`double area()` must be declared `static` to be called from `main`."
+    },
+    "answer": "b",
+    "explanation_md": "Unlike `struct`, members of a `class` are `private` by default. Adding `public:` before the member declarations fixes the error. No constructor, no `static`, and the semicolon is present."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the **only** syntactic difference between `struct` and `class` in C++?",
+    "options": {
+      "a": "`struct` cannot have member functions; `class` can.",
+      "b": "`struct` members are `public` by default; `class` members are `private` by default.",
+      "c": "`class` supports templates but `struct` does not.",
+      "d": "`struct` must be initialized with aggregate syntax; `class` cannot."
+    },
+    "answer": "b",
+    "explanation_md": "The only difference is the default access specifier. Both `struct` and `class` support member functions, templates, constructors, and all other OOP features. The convention is to use `struct` for plain data and `class` when you want to control access."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Point {\n    int x;\n    int y;\n};\n\nclass Label {\npublic:\n    int x;\n    int y;\n};\n\nint main() {\n    Point p;  p.x = 1;  p.y = 2;\n    Label l;  l.x = 1;  l.y = 2;\n    std::cout << p.x + l.x << \"\\n\";\n    std::cout << p.y + l.y << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "2\n4",
+    "explanation_md": "Both `struct` and `class` with `public:` behave identically for member access. `p.x + l.x = 1 + 1 = 2` and `p.y + l.y = 2 + 2 = 4`. There is no behavioral difference here."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer `class` over `struct` in C++ by convention?",
+    "options": {
+      "a": "Whenever the type has more than two data members.",
+      "b": "Whenever you want to control which members the outside world can access, or when the type has meaningful behavior.",
+      "c": "Only when the type needs a constructor.",
+      "d": "Whenever you want to avoid writing `public:` repeatedly."
+    },
+    "answer": "b",
+    "explanation_md": "The convention is: `struct` for plain data aggregates, `class` for types with controlled access or meaningful behavior. Member count and constructors are not the deciding factor — it is about signaling intent to readers."
+  }
+]

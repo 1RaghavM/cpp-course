@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Vec {\n    int x, y;\n};\nconstexpr Vec scale(Vec v, int factor) {\n    return Vec{v.x * factor, v.y * factor};\n}\nint main() {\n    constexpr Vec a{2, 3};\n    constexpr Vec b = scale(a, 4);\n    std::cout << b.x << \" \" << b.y << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "8 12",
+    "explanation_md": "`Vec` is an aggregate, so `constexpr Vec a{2, 3}` is valid without any explicit `constexpr` constructor. `scale` is a `constexpr` function: given compile-time arguments, it produces a compile-time result `{2*4, 3*4}` = `{8, 12}`. The program prints `8 12`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes the difference between `const` and `constexpr` for a class object?\n\n```cpp\nstruct Point { int x, y; };\nconst Point a{1, 2};       // A\nconstexpr Point b{3, 4};   // B\n```",
+    "options": {
+      "a": "`const` objects can be used in `static_assert`; `constexpr` objects cannot.",
+      "b": "`const` means the object's value cannot change at runtime; `constexpr` additionally means it is evaluated at compile time and can be used in constant expressions.",
+      "c": "Both `const` and `constexpr` objects are evaluated at compile time.",
+      "d": "`constexpr` objects can be modified after initialization; `const` objects cannot."
+    },
+    "answer": "b",
+    "explanation_md": "`const` only promises immutability — the value may still be computed at runtime. `constexpr` guarantees compile-time evaluation and allows the object to appear in constant expressions like `static_assert` conditions, array sizes, and template arguments. Option A is backwards. Option C is wrong because `const` alone does not imply compile-time evaluation."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The student wants to verify at compile time that the area of a unit square is 1. The program does not compile. What is the bug?\n\n```cpp\nclass Square {\npublic:\n    constexpr Square(int side) : m_side{side} {}\n    int area() const { return m_side * m_side; }\nprivate:\n    int m_side;\n};\nstatic_assert(Square{1}.area() == 1, \"unit square\");\n```",
+    "options": {
+      "a": "`static_assert` cannot be used outside of a function body.",
+      "b": "`Square{1}` is not a constant expression because the constructor body is not constexpr-compatible.",
+      "c": "`area()` is not marked `constexpr`, so calling it in a constant expression is ill-formed.",
+      "d": "The constructor must be marked `explicit` before it can be used in `static_assert`."
+    },
+    "answer": "c",
+    "explanation_md": "Even though `Square{1}` is a constexpr-constructed object, `area()` is not marked `constexpr`. Calling a non-`constexpr` member function in a constant expression is ill-formed. The fix is to add `constexpr` to `area()`: `constexpr int area() const { return m_side * m_side; }`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Does this compile, and if so what does it print?\n\n```cpp\n#include <iostream>\nstruct Pair {\n    int first, second;\n};\nconstexpr Pair swap(Pair p) {\n    return Pair{p.second, p.first};\n}\nint main() {\n    constexpr Pair p{10, 20};\n    constexpr Pair q = swap(p);\n    static_assert(q.first == 20);\n    std::cout << q.first << \" \" << q.second << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "20 10",
+    "explanation_md": "`Pair` is an aggregate so `constexpr Pair p{10, 20}` requires no explicit constexpr constructor. `swap` is `constexpr` and called with a compile-time argument, producing `{20, 10}`. The `static_assert` passes at compile time. The program prints `20 10`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student marks a constructor `constexpr` but the class still cannot be used in a `static_assert`. Which situation most likely explains this?\n\n```cpp\nclass Timer {\npublic:\n    constexpr Timer(int ms) : m_ms{ms} {}\n    int elapsed() const;   // defined elsewhere, reads a hardware register\nprivate:\n    int m_ms;\n};\nstatic_assert(Timer{100}.elapsed() == 100); // error\n```",
+    "options": {
+      "a": "The constructor is marked `constexpr` but `elapsed()` is not, so it cannot be called in a constant expression.",
+      "b": "Constructors marked `constexpr` cannot accept integer arguments.",
+      "c": "The `private` member prevents compile-time use.",
+      "d": "`static_assert` requires the argument to be a `bool`, not an `int`."
+    },
+    "answer": "a",
+    "explanation_md": "Constructing `Timer{100}` is valid at compile time because the constructor is `constexpr`. However, calling `elapsed()` in a `static_assert` requires that `elapsed()` also be marked `constexpr`. Since it is not, the expression is not a constant expression and the `static_assert` is ill-formed."
+  }
+]

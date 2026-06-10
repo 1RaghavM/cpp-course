@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Rectangle Area via Friend",
+    "prompt_md": "## Goal\nComplete class `Rect` and the friend function `perimeter(const Rect& r)` so that `perimeter` returns the perimeter of the rectangle using its private members.\n\n## Input\nLine 1: two integers W and H separated by a space (1 ≤ W, H ≤ 1000) — width and height.\n\n## Output\nPrint exactly one line: `Perimeter: <value>` where value is `2 * (W + H)`.\n\n## Requirements\n1. `Rect` must store width and height as `private` integer members `m_width` and `m_height`.\n2. `Rect` must declare `perimeter` as a `friend` non-member function.\n3. `perimeter(const Rect& r)` must access `m_width` and `m_height` directly (not through getters) and return `2 * (r.m_width + r.m_height)`.\n4. `main()` reads W and H, constructs a `Rect`, calls `perimeter`, and prints the result.\n5. Edge case: W = H = 1 should print `Perimeter: 4`.",
+    "starter_code": "#include <iostream>\n\nclass Rect {\n    // TODO: declare private int members m_width and m_height\npublic:\n    Rect(int w, int h) /* TODO: initialize m_width and m_height */ {}\n\n    // TODO: declare perimeter as a friend non-member function\n};\n\n// TODO: define int perimeter(const Rect& r) — access private members directly\nint perimeter(const Rect& r) {\n    return 0; // TODO\n}\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n    Rect r{ w, h };\n    std::cout << \"Perimeter: \" << perimeter(r) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rect {\n    int m_width;\n    int m_height;\npublic:\n    Rect(int w, int h) : m_width{ w }, m_height{ h } {}\n    friend int perimeter(const Rect& r);\n};\n\nint perimeter(const Rect& r) {\n    return 2 * (r.m_width + r.m_height);\n}\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n    Rect r{ w, h };\n    std::cout << \"Perimeter: \" << perimeter(r) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 5x3", "is_sample": true, "stdin": "5 3\n", "expected_stdout": "Perimeter: 16" },
+      { "label": "Hidden: 1x1", "is_sample": false, "stdin": "1 1\n", "expected_stdout": "Perimeter: 4" },
+      { "label": "Hidden: 100x200", "is_sample": false, "stdin": "100 200\n", "expected_stdout": "Perimeter: 600" }
+    ]
+  },
+  {
+    "title": "Point Distance Friend",
+    "prompt_md": "## Goal\nComplete the friend function `distanceBetween(const Point& a, const Point& b)` that computes the integer Manhattan distance between two `Point` objects using their private members.\n\n## Input\nLine 1: four integers x1 y1 x2 y2 separated by spaces.\n\n## Output\nPrint exactly one line: `Distance: <value>` where value is `|x1 - x2| + |y1 - y2|` (Manhattan distance, always non-negative).\n\n## Requirements\n1. `Point` stores `m_x` and `m_y` as `private` integer members.\n2. `Point` declares `distanceBetween` as a `friend` non-member function.\n3. `distanceBetween(const Point& a, const Point& b)` computes and returns `|a.m_x - b.m_x| + |a.m_y - b.m_y|`.\n4. Use the standard library `std::abs` (from `<cstdlib>` or `<cmath>`) for absolute value, or compute it manually.\n5. Edge case: same point (0 0 0 0) should print `Distance: 0`.",
+    "starter_code": "#include <iostream>\n#include <cstdlib>\n\nclass Point {\n    int m_x;\n    int m_y;\npublic:\n    Point(int x, int y) : m_x{ x }, m_y{ y } {}\n\n    // TODO: declare distanceBetween as a friend non-member function\n};\n\n// TODO: implement int distanceBetween(const Point& a, const Point& b)\n// Use a.m_x, a.m_y, b.m_x, b.m_y directly\nint distanceBetween(const Point& a, const Point& b) {\n    return 0; // TODO\n}\n\nint main() {\n    int x1, y1, x2, y2;\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Point p1{ x1, y1 };\n    Point p2{ x2, y2 };\n    std::cout << \"Distance: \" << distanceBetween(p1, p2) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cstdlib>\n\nclass Point {\n    int m_x;\n    int m_y;\npublic:\n    Point(int x, int y) : m_x{ x }, m_y{ y } {}\n    friend int distanceBetween(const Point& a, const Point& b);\n};\n\nint distanceBetween(const Point& a, const Point& b) {\n    return std::abs(a.m_x - b.m_x) + std::abs(a.m_y - b.m_y);\n}\n\nint main() {\n    int x1, y1, x2, y2;\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Point p1{ x1, y1 };\n    Point p2{ x2, y2 };\n    std::cout << \"Distance: \" << distanceBetween(p1, p2) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: (1,2) to (4,6)", "is_sample": true, "stdin": "1 2 4 6\n", "expected_stdout": "Distance: 7" },
+      { "label": "Hidden: same point", "is_sample": false, "stdin": "0 0 0 0\n", "expected_stdout": "Distance: 0" },
+      { "label": "Hidden: negative coords", "is_sample": false, "stdin": "-3 -4 3 4\n", "expected_stdout": "Distance: 14" }
+    ]
+  }
+]

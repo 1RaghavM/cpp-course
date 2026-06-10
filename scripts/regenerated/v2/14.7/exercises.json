@@ -1,0 +1,56 @@
+[
+  {
+    "title": "String Label with Const Reference Getter",
+    "prompt_md": "## Goal\nComplete a `Label` class that stores a string name privately and exposes it through a `const` reference getter. The program reads a string and an integer, sets and uses the label to print output.\n\n## Input\n- Line 1: a single word (no spaces) representing a label name.\n- Line 2: a positive integer `n`.\n\n## Output\n- Print exactly `n` lines, each containing the label name followed by a colon and the line number (1-indexed).\n- Format: `<name>: <number>`\n\n## Requirements\n1. `Label` must store the name in a `private` member `m_name` of type `std::string`.\n2. Provide `void setName(const std::string& name)` that stores the name.\n3. Provide `const std::string& getName() const` that returns a `const` reference to `m_name`.\n4. `main()` reads the word and integer, calls `setName`, then loops `n` times printing the required output.\n5. Tested edge cases: N = 1, N = 5.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Label {\nprivate:\n    std::string m_name{};\n\npublic:\n    void setName(const std::string& name) {\n        // TODO: store name in m_name\n    }\n\n    const std::string& getName() const {\n        // TODO: return a const reference to m_name\n        return m_name;\n    }\n};\n\nint main() {\n    std::string word;\n    int n;\n    std::cin >> word >> n;\n\n    Label lbl;\n    lbl.setName(word);\n\n    for (int i = 1; i <= n; ++i) {\n        std::cout << lbl.getName() << \": \" << i << '\\n';\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Label {\nprivate:\n    std::string m_name{};\n\npublic:\n    void setName(const std::string& name) { m_name = name; }\n    const std::string& getName() const    { return m_name; }\n};\n\nint main() {\n    std::string word;\n    int n;\n    std::cin >> word >> n;\n\n    Label lbl;\n    lbl.setName(word);\n\n    for (int i = 1; i <= n; ++i) {\n        std::cout << lbl.getName() << \": \" << i << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 lines",
+        "is_sample": true,
+        "stdin": "alpha\n3",
+        "expected_stdout": "alpha: 1\nalpha: 2\nalpha: 3"
+      },
+      {
+        "label": "Hidden: single line",
+        "is_sample": false,
+        "stdin": "beta\n1",
+        "expected_stdout": "beta: 1"
+      },
+      {
+        "label": "Hidden: five lines",
+        "is_sample": false,
+        "stdin": "gamma\n5",
+        "expected_stdout": "gamma: 1\ngamma: 2\ngamma: 3\ngamma: 4\ngamma: 5"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Tank Level Ref",
+    "prompt_md": "## Goal\nThe following program stores a fuel level in a `Tank` class and is supposed to print the level after it has been doubled by assigning through a returned non-const reference. It compiles and runs but prints the wrong value. Find and fix the one logic bug.\n\n## Input\n- Line 1: integer `level` — the initial fuel level.\n\n## Output\n- Line 1: `Level: <value>` where `<value>` is `level * 2`.\n\n## Requirements\n1. `Tank` stores `m_level` privately.\n2. `getLevel()` (non-const) returns a non-const reference to `m_level`.\n3. `main()` reads the integer, assigns `level * 2` through the returned reference, then prints the result.\n4. The bug is a logic error — the program compiles cleanly but prints the wrong value.",
+    "starter_code": "#include <iostream>\n\nclass Tank {\nprivate:\n    int m_level{ 0 };\n\npublic:\n    int& getLevel() { return m_level; }\n};\n\nint main() {\n    int level;\n    std::cin >> level;\n\n    Tank t;\n    // Bug: should assign level * 2, but accidentally assigns level + 2\n    t.getLevel() = level + 2;\n\n    std::cout << \"Level: \" << t.getLevel() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Tank {\nprivate:\n    int m_level{ 0 };\n\npublic:\n    int& getLevel() { return m_level; }\n};\n\nint main() {\n    int level;\n    std::cin >> level;\n\n    Tank t;\n    t.getLevel() = level * 2;\n\n    std::cout << \"Level: \" << t.getLevel() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: level 5",
+        "is_sample": true,
+        "stdin": "5",
+        "expected_stdout": "Level: 10"
+      },
+      {
+        "label": "Hidden: level 0",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "Level: 0"
+      },
+      {
+        "label": "Hidden: level 50",
+        "is_sample": false,
+        "stdin": "50",
+        "expected_stdout": "Level: 100"
+      }
+    ]
+  }
+]

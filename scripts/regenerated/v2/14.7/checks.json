@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\nprivate:\n    int m_val{ 10 };\npublic:\n    int& getVal()       { return m_val; }\n    const int& getVal() const { return m_val; }\n};\n\nint main() {\n    Box b;\n    b.getVal() = 25;\n    std::cout << b.getVal() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "25",
+    "explanation_md": "The non-const `getVal()` returns a non-const reference to `m_val`. Assigning 25 through that reference stores 25 directly into `m_val`. The second call to `getVal()` (again the non-const overload, since `b` is not const) returns the updated value, which is printed as `25`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it dangerous for a public member function to return a non-const reference to a private data member?",
+    "options": {
+      "a": "It causes a compile error because private members cannot be referred to outside the class.",
+      "b": "It allows callers to modify the private member directly, bypassing any invariants the setter enforces.",
+      "c": "It creates a dangling reference once the function returns.",
+      "d": "It only works when the object is `const`."
+    },
+    "answer": "b",
+    "explanation_md": "A non-const reference gives the caller direct write access. The caller can assign any value through it — including values that violate the class's invariants — without going through a setter. This effectively makes the member public. Return `const&` when callers only need to read, or return by value for cheap types."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `setViaRef` to change the stored value to 42, but the value stays at 0. What is wrong?\n\n```cpp\n#include <iostream>\n\nclass Holder {\nprivate:\n    int m_x{ 0 };\npublic:\n    const int& getX() { return m_x; }\n};\n\nint main() {\n    Holder h;\n    // attempt to set m_x to 42 via the returned reference\n    const int& r = h.getX();\n    // r = 42;  // (this would be a compile error)\n    std::cout << h.getX() << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The member function is missing `const` at the end of its declaration.",
+      "b": "`getX()` returns a `const int&`, so the caller cannot assign through it — to allow assignment, return `int&` instead.",
+      "c": "You cannot bind a returned reference to a local `const int&` variable.",
+      "d": "The in-class initializer `{ 0 }` prevents the member from ever changing."
+    },
+    "answer": "b",
+    "explanation_md": "Because `getX()` returns a `const int&`, any attempt to assign through the reference is a compile error. To allow callers to modify the member through the returned reference, the function must return `int&` (without `const`). The comment in the code even notes that the assignment would fail to compile."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer returning a data member by `const&` instead of by value from a getter?",
+    "options": {
+      "a": "Always — returning by reference is faster in every case.",
+      "b": "For small cheap types like `int` and `double`.",
+      "c": "For large types like `std::string` where copying is expensive and read-only access is sufficient.",
+      "d": "Only when the member is `static`."
+    },
+    "answer": "c",
+    "explanation_md": "For small types (int, double, bool), return by value — the copy is cheap and avoids reference lifetime issues. For large types like `std::string`, returning `const&` avoids an unnecessary copy while still preventing the caller from modifying the stored data."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Pair {\nprivate:\n    int m_a{ 1 };\n    int m_b{ 2 };\npublic:\n    const int& first()  const { return m_a; }\n    const int& second() const { return m_b; }\n};\n\nint main() {\n    const Pair p;\n    std::cout << p.first() << ' ' << p.second() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 2",
+    "explanation_md": "Both `first()` and `second()` are `const` member functions, so they can be called on the `const Pair p`. They return `const int&` references to `m_a` and `m_b` which hold `1` and `2` respectively. The output is `1 2` with a newline."
+  }
+]

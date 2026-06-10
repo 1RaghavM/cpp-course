@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Convenience Constructors for a Clock",
+    "prompt_md": "## Goal\nAdd a delegating constructor to `Clock` so it can be constructed from hours only, defaulting minutes and seconds to 0.\n\n## Input\nLine 1: three integers H M S (0 ≤ H ≤ 23, 0 ≤ M ≤ 59, 0 ≤ S ≤ 59).\nLine 2: one integer H2 (0 ≤ H2 ≤ 23).\n\n## Output\nPrint exactly two lines:\n- Line 1: `H:M:S` using the full three-value constructor (zero-padded to two digits for minutes and seconds).\n- Line 2: `H2:00:00` using the hour-only constructor.\n\n## Requirements\n1. `Clock` has a primary constructor `Clock(int h, int m, int s)` that stores all three values.\n2. Add a delegating constructor `Clock(int h)` that delegates to the primary constructor with minutes = 0 and seconds = 0.\n3. Implement `print()` as a `const` member function that prints in `H:MM:SS` format (hours unpadded, minutes and seconds zero-padded to 2 digits).\n4. Edge cases: H = 0 prints `0:00:00`; single-digit minutes/seconds must be padded (e.g., M = 5 prints `05`).\n",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Clock {\n    int m_hours;\n    int m_minutes;\n    int m_seconds;\npublic:\n    Clock(int h, int m, int s)\n        : m_hours{ h }, m_minutes{ m }, m_seconds{ s }\n    {}\n\n    // TODO: replace this stub body with a delegation to Clock{ h, 0, 0 }\n    // The delegating constructor should call Clock(h, 0, 0) from its initializer list\n    Clock(int h)\n        : Clock{ h, 1, 1 }  // stub — replace 1, 1 with 0, 0\n    {}\n\n    void print() const {\n        std::cout << m_hours << \":\"\n                  << std::setw(2) << std::setfill('0') << m_minutes << \":\"\n                  << std::setw(2) << std::setfill('0') << m_seconds << \"\\n\";\n    }\n};\n\nint main() {\n    int h{}, m{}, s{}, h2{};\n    std::cin >> h >> m >> s >> h2;\n    Clock c1{ h, m, s };\n    Clock c2{ h2 };\n    c1.print();\n    c2.print();\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Clock {\n    int m_hours;\n    int m_minutes;\n    int m_seconds;\npublic:\n    Clock(int h, int m, int s)\n        : m_hours{ h }, m_minutes{ m }, m_seconds{ s }\n    {}\n\n    Clock(int h)\n        : Clock{ h, 0, 0 }\n    {}\n\n    void print() const {\n        std::cout << m_hours << \":\"\n                  << std::setw(2) << std::setfill('0') << m_minutes << \":\"\n                  << std::setw(2) << std::setfill('0') << m_seconds << \"\\n\";\n    }\n};\n\nint main() {\n    int h{}, m{}, s{}, h2{};\n    std::cin >> h >> m >> s >> h2;\n    Clock c1{ h, m, s };\n    Clock c2{ h2 };\n    c1.print();\n    c2.print();\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic time",
+        "is_sample": true,
+        "stdin": "9 5 30\n14\n",
+        "expected_stdout": "9:05:30\n14:00:00\n"
+      },
+      {
+        "label": "Hidden: zero hours",
+        "is_sample": false,
+        "stdin": "0 0 0\n0\n",
+        "expected_stdout": "0:00:00\n0:00:00\n"
+      },
+      {
+        "label": "Hidden: max values",
+        "is_sample": false,
+        "stdin": "23 59 59\n23\n",
+        "expected_stdout": "23:59:59\n23:00:00\n"
+      }
+    ]
+  },
+  {
+    "title": "Velocity from Speed and Direction",
+    "prompt_md": "## Goal\nComplete the function `makeVelocity` that constructs a `Velocity` with a given speed and direction string.\n\n## Input\nLine 1: an integer speed S (1 ≤ S ≤ 1000).\nLine 2: a direction string (one of: `north`, `south`, `east`, `west`).\n\n## Output\nPrint exactly one line: `Speed: S Direction: D` where S is the speed and D is the direction.\n\n## Requirements\n1. `Velocity` has a primary constructor `Velocity(int speed, std::string dir)` using a member initializer list.\n2. `Velocity` also has a delegating constructor `Velocity(int speed)` that delegates with direction `\"north\"`.\n3. Implement `makeVelocity(int speed, std::string dir)` to construct and return a `Velocity`.\n4. Provide `const` member functions `getSpeed()` and `getDir()` returning the respective values.\n5. `main()` uses `makeVelocity` to build the object and prints the result.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Velocity {\n    int m_speed;\n    std::string m_dir;\npublic:\n    Velocity(int speed, std::string dir)\n        : m_speed{ speed }, m_dir{ dir }\n    {}\n\n    // TODO: replace the stub delegation target with \"north\"\n    // This delegating constructor should call Velocity(speed, \"north\")\n    Velocity(int speed)\n        : Velocity{ speed, \"south\" }  // stub — replace \"south\" with \"north\"\n    {}\n\n    int getSpeed() const { return m_speed; }\n    const std::string& getDir() const { return m_dir; }\n};\n\n// TODO: implement makeVelocity — construct and return a Velocity from speed and dir\nVelocity makeVelocity(int speed, std::string dir) {\n    return Velocity{ 0, \"\" }; // replace with correct implementation\n}\n\nint main() {\n    int s{};\n    std::string d{};\n    std::cin >> s >> d;\n    Velocity v{ makeVelocity(s, d) };\n    std::cout << \"Speed: \" << v.getSpeed() << \" Direction: \" << v.getDir() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Velocity {\n    int m_speed;\n    std::string m_dir;\npublic:\n    Velocity(int speed, std::string dir)\n        : m_speed{ speed }, m_dir{ dir }\n    {}\n\n    Velocity(int speed)\n        : Velocity{ speed, \"north\" }\n    {}\n\n    int getSpeed() const { return m_speed; }\n    const std::string& getDir() const { return m_dir; }\n};\n\nVelocity makeVelocity(int speed, std::string dir) {\n    return Velocity{ speed, dir };\n}\n\nint main() {\n    int s{};\n    std::string d{};\n    std::cin >> s >> d;\n    Velocity v{ makeVelocity(s, d) };\n    std::cout << \"Speed: \" << v.getSpeed() << \" Direction: \" << v.getDir() << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: east direction",
+        "is_sample": true,
+        "stdin": "50\neast\n",
+        "expected_stdout": "Speed: 50 Direction: east\n"
+      },
+      {
+        "label": "Hidden: north direction",
+        "is_sample": false,
+        "stdin": "100\nnorth\n",
+        "expected_stdout": "Speed: 100 Direction: north\n"
+      },
+      {
+        "label": "Hidden: south direction",
+        "is_sample": false,
+        "stdin": "200\nsouth\n",
+        "expected_stdout": "Speed: 200 Direction: south\n"
+      }
+    ]
+  }
+]

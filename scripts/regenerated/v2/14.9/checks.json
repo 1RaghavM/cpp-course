@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\nprivate:\n    int m_side;\npublic:\n    Box(int side) { m_side = side; }\n    int getSide() const { return m_side; }\n};\n\nint main() {\n    Box b{ 7 };\n    std::cout << b.getSide() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "The constructor `Box(int side)` runs with argument `7` when `Box b{ 7 }` is created, storing `7` in `m_side`. `getSide()` returns the stored value, which `std::cout` prints as `7`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a correct constructor declaration for a class named `Sensor`?",
+    "options": {
+      "a": "`void Sensor(int id) { m_id = id; }`",
+      "b": "`Sensor Sensor(int id) { m_id = id; }`",
+      "c": "`Sensor(int id) { m_id = id; }`",
+      "d": "`int Sensor(int id) { m_id = id; }`"
+    },
+    "answer": "c",
+    "explanation_md": "A constructor is declared with only the class name and a parameter list — no return type at all, not even `void`. Options a, b, and d all include a return type, which is a compile error for constructors."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <string>\n\nclass Label {\nprivate:\n    std::string m_text;\npublic:\n    Label() { m_text = \"default\"; }\n    Label(const std::string& t) { m_text = t; }\n    const std::string& getText() const { return m_text; }\n};\n\nint main() {\n    Label a;\n    Label b{ \"hello\" };\n    std::cout << a.getText() << '\\n';\n    std::cout << b.getText() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "default\nhello",
+    "explanation_md": "`Label a` calls the zero-argument constructor, setting `m_text` to `\"default\"`. `Label b{ \"hello\" }` calls the one-argument constructor, setting `m_text` to `\"hello\"`. Each `getText()` returns the respective string."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When exactly does a constructor run?",
+    "options": {
+      "a": "The first time any member function is called on the object.",
+      "b": "Automatically, once, at the moment the object is created.",
+      "c": "Whenever the programmer calls `obj.ClassName()` explicitly.",
+      "d": "At the end of the block in which the object is declared."
+    },
+    "answer": "b",
+    "explanation_md": "A constructor runs automatically, exactly once, at the moment the object comes into existence — before any other code can touch the object. You never call it explicitly by name after the object exists. This is what guarantees that the object is in a valid state from the very start."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer expects `p.getY()` to return a reliable value, but it exhibits undefined behavior. What is the problem?\n\n```cpp\n#include <iostream>\n\nclass Point {\nprivate:\n    int m_x;\n    int m_y;\npublic:\n    Point(int x) { m_x = x; }\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nint main() {\n    Point p{ 3 };\n    std::cout << p.getX() << ' ' << p.getY() << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`m_x` and `m_y` are private, so the constructor cannot assign to them.",
+      "b": "The constructor only initializes `m_x`; `m_y` is never set, so reading it is undefined behavior.",
+      "c": "The constructor must be declared `const` to set member values.",
+      "d": "`Point` needs a destructor to clean up `m_x` and `m_y`."
+    },
+    "answer": "b",
+    "explanation_md": "`m_y` has no in-class initializer and the constructor body only assigns `m_x`. Reading an uninitialized variable is undefined behavior — the program may print anything. The fix is to add `m_y = 0;` (or a suitable default) to the constructor, or add an in-class initializer `int m_y{ 0 };`."
+  }
+]
