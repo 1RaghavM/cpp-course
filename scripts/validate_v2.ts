@@ -50,7 +50,7 @@ const TOKEN_RULES: TokenRule[] = [
   { pattern: /\btemplate\b/, name: "template", introducedInChapter: 11 },
   { pattern: /\benum\b/, name: "enum", introducedInChapter: 13 },
   { pattern: /\bstruct\b/, name: "struct", introducedInChapter: 13 },
-  { pattern: /(?<!enum\s)\bclass\b/, name: "class", introducedInChapter: 14 },
+  { pattern: /\bclass\s+\w+\s*[{:]/, name: "class definition", introducedInChapter: 14 },
   { pattern: /std::vector\b/, name: "std::vector", introducedInChapter: 16 },
   { pattern: /std::array\b/, name: "std::array", introducedInChapter: 17 },
   { pattern: /\bnew\b/, name: "dynamic allocation (new)", introducedInChapter: 19 },
@@ -223,9 +223,31 @@ function validateLesson(lessonNumber: string): Issue[] {
         lintCode(code, chapterNum, `${label} prompt snippet ${j + 1}`, issues),
       );
 
+      // Pass 1: schema shape check
+      let shapeOk = true;
+      ex.test_cases.forEach((tcase, j) => {
+        if (typeof tcase.stdin !== "string") {
+          issues.push({ severity: "error", message: `${label} test ${j + 1}: missing "stdin" field (got ${typeof tcase.stdin})` });
+          shapeOk = false;
+        }
+        if (typeof tcase.expected_stdout !== "string") {
+          issues.push({ severity: "error", message: `${label} test ${j + 1}: missing "expected_stdout" field` });
+          shapeOk = false;
+        }
+        if (typeof tcase.label !== "string" || !tcase.label) {
+          issues.push({ severity: "error", message: `${label} test ${j + 1}: missing "label" field` });
+          shapeOk = false;
+        }
+        if (typeof tcase.is_sample !== "boolean") {
+          issues.push({ severity: "error", message: `${label} test ${j + 1}: missing or non-boolean "is_sample" field` });
+          shapeOk = false;
+        }
+      });
+
+      // Pass 2: compile and run (only when shape is valid)
       compileCpp(ex.starter_code, `${safe}_ex${i + 1}_starter`, issues);
       const bin = compileCpp(ex.solution_code, `${safe}_ex${i + 1}_solution`, issues);
-      if (bin) {
+      if (bin && shapeOk) {
         ex.test_cases.forEach((tcase, j) => {
           const actual = normalise(runBinary(bin, tcase.stdin));
           const expected = normalise(tcase.expected_stdout);
