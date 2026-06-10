@@ -59,11 +59,19 @@ export function ConceptCheckCard({ check }: { check: ConceptCheckClient }) {
         ? selected === check.answer
         : normalizeOutput(typed) === normalizeOutput(check.answer);
     setResult(correct ? "correct" : "incorrect");
-    void fetch("/api/concept-checks", {
+    fetch("/api/concept-checks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ checkId: check.id, correct }),
-    });
+    })
+      .then((res) => {
+        if (!res.ok) {
+          console.error(`Failed to record concept-check attempt: ${res.status} ${res.statusText}`);
+        }
+      })
+      .catch((err: unknown) => {
+        console.error("Failed to record concept-check attempt:", err);
+      });
   };
 
   return (
