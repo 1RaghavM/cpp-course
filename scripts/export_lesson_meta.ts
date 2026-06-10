@@ -73,7 +73,7 @@ async function main(): Promise<void> {
       chapterNumber: chapter.number,
       chapterTitle,
       priorTitles: chapterLessons.slice(0, idx).map((l) => l.my_title ?? l.learncpp_title),
-      tags: lesson.tags,
+      tags: lesson.tags ?? [],
       withContent: shouldGenerateExercises(chapter.number),
       exercise2Format: idx % 2 === 0 ? "fix_the_bug" : "complete_the_function",
     }));

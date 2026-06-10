@@ -18,7 +18,7 @@
  */
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const V2_ROOT = resolve(__dirname, "regenerated", "v2");
@@ -42,7 +42,7 @@ const TOKEN_RULES: TokenRule[] = [
   { pattern: /\bconstexpr\b/, name: "constexpr", introducedInChapter: 5 },
   { pattern: /std::string\b/, name: "std::string", introducedInChapter: 5 },
   { pattern: /std::string_view\b/, name: "std::string_view", introducedInChapter: 5 },
-  { pattern: /\?\s*[^:]+\s*:/, name: "ternary operator", introducedInChapter: 6 },
+  { pattern: /\b\w+\s*\?\s*[^:?\n]{1,40}\s*:\s*[^;{}]/, name: "ternary operator", introducedInChapter: 6 },
   { pattern: /\bfor\s*\(/, name: "for loop", introducedInChapter: 8 },
   { pattern: /\bwhile\s*\(/, name: "while loop", introducedInChapter: 8 },
   { pattern: /\bswitch\s*\(/, name: "switch", introducedInChapter: 8 },
@@ -250,6 +250,8 @@ function validateLesson(lessonNumber: string): Issue[] {
 function main(): void {
   // Fail fast if g++ is unavailable.
   execFileSync("g++", ["--version"], { encoding: "utf-8" });
+
+  rmSync(BUILD_DIR, { recursive: true, force: true });
 
   const args = process.argv.slice(2);
   const li = args.indexOf("--lessons");
