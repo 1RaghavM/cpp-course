@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    std::unique_ptr<int> a = std::make_unique<int>(99);\n    std::unique_ptr<int> b = std::move(a);\n    if (!a) std::cout << \"a is null\\n\";\n    std::cout << *b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "a is null\n99",
+    "explanation_md": "After `std::move(a)`, `a` is left holding `nullptr` (empty). The `!a` check is true, printing \"a is null\". `b` now owns the integer value 99, so `*b` prints 99."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does `std::unique_ptr` have its copy constructor deleted?",
+    "options": {
+      "a": "To prevent accidental memory leaks when copying the pointer value",
+      "b": "To enforce the invariant that only one unique_ptr owns a resource at a time",
+      "c": "Because the standard library forgot to implement it",
+      "d": "To improve runtime performance by avoiding deep copies"
+    },
+    "answer": "b",
+    "explanation_md": "The entire design of `unique_ptr` rests on the invariant of single ownership. If copying were allowed, two `unique_ptr`s would both try to `delete` the same pointer when they destruct, causing a double-free crash. Option `a` is wrong because a copy would not leak — it would double-delete."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens to heap memory managed by a `std::unique_ptr` when the `unique_ptr` goes out of scope?",
+    "options": {
+      "a": "The memory is leaked until the process exits",
+      "b": "The destructor automatically calls delete on the managed pointer",
+      "c": "The programmer must still call delete manually",
+      "d": "The memory is freed only if no other pointer points to it"
+    },
+    "answer": "b",
+    "explanation_md": "The whole purpose of a smart pointer is RAII (Resource Acquisition Is Initialization): the destructor releases the resource. `unique_ptr`'s destructor calls `delete` unconditionally. The programmer does not call `delete` manually, and there is no reference counting involved — option `d` describes `shared_ptr` behavior."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    std::unique_ptr<int> p = std::make_unique<int>(3);\n    std::cout << *p << \"\\n\";\n    p.reset(); // releases the managed object\n    if (!p) std::cout << \"p is empty\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\np is empty",
+    "explanation_md": "`*p` dereferences the managed integer (3). `p.reset()` calls `delete` on the internal pointer and sets it to `nullptr`, leaving `p` empty. The boolean check `!p` is true for a null `unique_ptr`."
+  }
+]

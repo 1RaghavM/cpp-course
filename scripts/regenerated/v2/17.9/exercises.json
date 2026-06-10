@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Find Maximum via Pointer Walk",
+    "prompt_md": "## Goal\nRead N integers into a C-style array, then use a pointer-based loop (no subscript operator `[]`) to find and print the maximum value.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- One line: `Max: M` where M is the largest integer.\n\n## Requirements\n1. Declare `int data[10]{}` and read N values.\n2. Use a pointer-and-count loop with `++p` to walk the array — not subscript `[]`.\n3. Track the running maximum and print `Max: M`.\n4. Hidden tests cover N = 1, all equal values, and a mix of negatives.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    // TODO: use pointer arithmetic (++p) to find the maximum\n    // Do NOT use data[i] subscript in the search loop\n    int maxVal = data[0];\n    // ...\n\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    int maxVal = data[0];\n    int* end = data + n;\n    for (int* p = data + 1; p != end; ++p) {\n        if (*p > maxVal)\n            maxVal = *p;\n    }\n\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: five values",
+        "is_sample": true,
+        "stdin": "5\n3\n8\n1\n6\n4",
+        "expected_stdout": "Max: 8"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n-7",
+        "expected_stdout": "Max: -7"
+      },
+      {
+        "label": "Hidden: all equal",
+        "is_sample": false,
+        "stdin": "4\n5\n5\n5\n5",
+        "expected_stdout": "Max: 5"
+      }
+    ]
+  },
+  {
+    "title": "Pointer Offset Sum",
+    "prompt_md": "## Goal\nThe program reads N integers and is supposed to print the sum of elements at even indices (0, 2, 4, ...) using pointer arithmetic, but contains one planted bug.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- One line: `Even-index sum: S` where S is the sum of elements at indices 0, 2, 4, ...\n\n## Requirements\n1. The starter code compiles and runs but gives the wrong answer due to one logic bug.\n2. Fix the bug so the sum is computed over elements at even indices (0, 2, 4, ...).\n3. Hidden tests cover N = 1, N = 2, and an array where all even-index elements are zero.\n\n## Notes\n- The pointer advances by 2 per iteration to step over odd-indexed elements.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    int sum = 0;\n    int* end = data + n;\n    for (int* p = data; p < end; p += 1) {  // bug: step should be 2\n        sum += *p;\n    }\n\n    std::cout << \"Even-index sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    int sum = 0;\n    int* end = data + n;\n    for (int* p = data; p < end; p += 2) {\n        sum += *p;\n    }\n\n    std::cout << \"Even-index sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: five values",
+        "is_sample": true,
+        "stdin": "5\n1\n2\n3\n4\n5",
+        "expected_stdout": "Even-index sum: 9"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n7",
+        "expected_stdout": "Even-index sum: 7"
+      },
+      {
+        "label": "Hidden: four elements",
+        "is_sample": false,
+        "stdin": "4\n10\n20\n30\n40",
+        "expected_stdout": "Even-index sum: 40"
+      }
+    ]
+  }
+]

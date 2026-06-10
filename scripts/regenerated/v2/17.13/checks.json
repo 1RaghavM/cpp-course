@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nint main()\n{\n    std::array<std::array<int, 3>, 2> m = {{\n        {10, 20, 30},\n        {40, 50, 60}\n    }};\n    std::cout << m.size() << '\\n';\n    std::cout << m[0].size() << '\\n';\n    std::cout << m[1][0] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2\n3\n40",
+    "explanation_md": "`m.size()` returns the number of rows (2). `m[0].size()` returns the number of columns in the first row (3). `m[1][0]` is row 1, column 0, which is 40. A common mistake is thinking `m.size()` gives the total number of elements (6), but it gives the count of the outermost dimension."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have `std::array<std::array<int, 5>, 4> grid`. Which expression gives the column count (5)?",
+    "options": {
+      "a": "`grid.size()`",
+      "b": "`grid[0].size()`",
+      "c": "`sizeof(grid) / sizeof(int)`",
+      "d": "`grid.length()`"
+    },
+    "answer": "b",
+    "explanation_md": "`grid.size()` returns the outer dimension (4 rows). The column count is the size of any single row: `grid[0].size()` returns 5. `sizeof(grid)/sizeof(int)` gives the total element count (20), not just the column count. `std::array` does not have a `.length()` member."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fills a 2×3 grid with the value 7 and prints all elements, but something is wrong:\n\n```cpp\n#include <array>\n#include <iostream>\nint main()\n{\n    std::array<std::array<int, 3>, 2> g{};\n    for (std::size_t r = 0; r < g.size(); ++r)\n        for (std::size_t c = 0; c < g.size(); ++c)  // BUG here\n            g[r][c] = 7;\n    for (const auto& row : g)\n    {\n        for (int v : row) std::cout << v << ' ';\n        std::cout << '\\n';\n    }\n    return 0;\n}\n```",
+    "options": {
+      "a": "Using `std::size_t` instead of `int` for the loop index is the error",
+      "b": "The inner loop uses `g.size()` (row count = 2) instead of `g[r].size()` (column count = 3), so column 2 is never set",
+      "c": "The range-based for loop in the print section cannot iterate a `std::array` of `std::array`",
+      "d": "`g{}` does not zero-initialize a nested `std::array`"
+    },
+    "answer": "b",
+    "explanation_md": "`g.size()` returns 2 (the row count). Using it as the column limit means the inner loop only runs for c = 0 and c = 1, leaving column 2 zero-initialized. The correct expression is `g[r].size()` (or the constant 3). Options (a), (c), and (d) are all incorrect: `std::size_t` is fine, range-based for works on nested `std::array`, and `{}` does zero-initialize aggregates."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you write `for (const auto& row : grid)` rather than `for (auto row : grid)` when iterating over a 2D `std::array`?",
+    "options": {
+      "a": "Only `const auto&` is valid syntax for range-based for over a `std::array`",
+      "b": "`auto row` copies each inner `std::array` on every iteration, which is wasteful and means modifications won't affect the original",
+      "c": "`auto row` would deduce a pointer type and cause undefined behavior",
+      "d": "`const auto&` automatically unlocks `std::array`'s hidden parallel iteration mode"
+    },
+    "answer": "b",
+    "explanation_md": "Without `&`, `auto row` deduces as `std::array<int, N>` and a full copy of each inner array is made each loop iteration. For small arrays the cost is minor, but any writes go to the copy, not the original. `const auto&` binds a const reference to each row — no copy, no risk of accidentally writing to the wrong object."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nusing Row = std::array<int, 2>;\nusing Grid = std::array<Row, 3>;\nint main()\n{\n    Grid g = {{{1,2},{3,4},{5,6}}};\n    int sum = 0;\n    for (const auto& row : g)\n        for (int v : row)\n            sum += v;\n    std::cout << sum << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "21",
+    "explanation_md": "The grid contains 1+2+3+4+5+6 = 21. The range-based for loops visit every element: outer loop over 3 rows, inner loop over 2 columns each. `sum` accumulates all 6 values, giving 21."
+  }
+]

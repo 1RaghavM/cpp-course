@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Apply Bonus via Reference Wrappers",
+    "prompt_md": "## Goal\nRead 4 score variables, then use a `std::array` of `std::reference_wrapper<int>` to add a bonus to each score and print the updated values.\n\n## Input\n- Line 1: 4 integers separated by spaces (the initial scores).\n- Line 2: 1 integer (the bonus to add to every score).\n\n## Output\n- 4 integers separated by spaces on one line (the scores after the bonus is added).\n\n## Requirements\n1. Declare 4 named `int` variables (e.g. `s0`, `s1`, `s2`, `s3`) and read them from stdin.\n2. Store references to all four in `std::array<std::reference_wrapper<int>, 4> refs`.\n3. Use a range-based for loop with `int& v` to add the bonus to each score through the array.\n4. Print the 4 original variables (not the array) separated by spaces with a trailing newline.\n5. Sample: `10 20 30 40` with bonus `5` produces `15 25 35 45`.\n6. Hidden test: bonus is 0. Hidden test: bonus is negative.",
+    "starter_code": "#include <array>\n#include <functional>\n#include <iostream>\n\nint main() {\n    int s0 {}, s1 {}, s2 {}, s3 {};\n    std::cin >> s0 >> s1 >> s2 >> s3;\n    int bonus {};\n    std::cin >> bonus;\n\n    // TODO: create refs as std::array<std::reference_wrapper<int>, 4>\n    //       wrapping s0, s1, s2, s3\n\n    // TODO: use a range-based for loop with int& v to add bonus to each\n\n    std::cout << s0 << ' ' << s1 << ' ' << s2 << ' ' << s3 << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <functional>\n#include <iostream>\n\nint main() {\n    int s0 {}, s1 {}, s2 {}, s3 {};\n    std::cin >> s0 >> s1 >> s2 >> s3;\n    int bonus {};\n    std::cin >> bonus;\n\n    std::array<std::reference_wrapper<int>, 4> refs {\n        std::ref(s0), std::ref(s1), std::ref(s2), std::ref(s3)\n    };\n\n    for (int& v : refs) {\n        v += bonus;\n    }\n\n    std::cout << s0 << ' ' << s1 << ' ' << s2 << ' ' << s3 << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive bonus",
+        "is_sample": true,
+        "stdin": "10 20 30 40\n5\n",
+        "expected_stdout": "15 25 35 45"
+      },
+      {
+        "label": "Hidden: zero bonus",
+        "is_sample": false,
+        "stdin": "7 14 21 28\n0\n",
+        "expected_stdout": "7 14 21 28"
+      },
+      {
+        "label": "Hidden: negative bonus",
+        "is_sample": false,
+        "stdin": "100 200 300 400\n-10\n",
+        "expected_stdout": "90 190 290 390"
+      }
+    ]
+  },
+  {
+    "title": "Find Maximum via Reference Wrapper Array",
+    "prompt_md": "## Goal\nThe program below is supposed to build an array of reference wrappers, then find the maximum value by iterating over the array. Find and fix the logic bug.\n\n## Input\n- Line 1: 3 integers separated by spaces.\n\n## Output\n- Line 1: `Max: X` where X is the largest of the 3 integers.\n\n## Requirements\n1. The three integers are stored in named variables `a`, `b`, `c`.\n2. References to all three are stored in `std::array<std::reference_wrapper<int>, 3>`.\n3. The bug is a logic bug — the starter compiles cleanly.\n4. Hidden test: maximum at index 0. Hidden test: all values equal.",
+    "starter_code": "#include <array>\n#include <functional>\n#include <iostream>\n\nint main() {\n    int a {}, b {}, c {};\n    std::cin >> a >> b >> c;\n\n    std::array<std::reference_wrapper<int>, 3> refs {\n        std::ref(a), std::ref(b), std::ref(c)\n    };\n\n    int maxVal = 0;  // BUG: wrong initial value\n    for (int v : refs) {\n        if (v > maxVal) {\n            maxVal = v;\n        }\n    }\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <functional>\n#include <iostream>\n\nint main() {\n    int a {}, b {}, c {};\n    std::cin >> a >> b >> c;\n\n    std::array<std::reference_wrapper<int>, 3> refs {\n        std::ref(a), std::ref(b), std::ref(c)\n    };\n\n    int maxVal = refs[0].get();  // FIX: initialize with first element\n    for (int v : refs) {\n        if (v > maxVal) {\n            maxVal = v;\n        }\n    }\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3 7 5\n",
+        "expected_stdout": "Max: 7"
+      },
+      {
+        "label": "Hidden: max at index 0",
+        "is_sample": false,
+        "stdin": "99 10 50\n",
+        "expected_stdout": "Max: 99"
+      },
+      {
+        "label": "Hidden: all negative values",
+        "is_sample": false,
+        "stdin": "-4 -1 -9\n",
+        "expected_stdout": "Max: -1"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build and Return a Filtered Vector",
+    "prompt_md": "## Goal\nWrite a function `keepPositives` that takes a `std::vector<int>` by value and returns a new `std::vector<int>` containing only the elements that are greater than zero, in the same order.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), the number of integers.\n- Line 2: N space-separated integers (each in the range -100 to 100).\n\n## Output\n- Print the positive elements separated by spaces on one line, followed by a newline.\n- If there are no positive elements, print an empty line.\n\n## Requirements\n1. `keepPositives` must be declared as `std::vector<int> keepPositives(std::vector<int> v)`.\n2. Return the result by value (do not use an out-parameter).\n3. Elements equal to zero are NOT included in the result.\n4. Hidden tests include: all negatives (empty result), all positives, mixed values including zero.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement keepPositives\n// Takes a vector of ints by value and builds a filtered result vector\n// containing only the elements > 0.\nstd::vector<int> keepPositives(std::vector<int> v)\n{\n    std::vector<int> result;\n    // TODO: fill result with elements from v that are > 0\n    return result;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n\n    std::vector<int> positives { keepPositives(data) };\n    for (int i = 0; i < static_cast<int>(positives.size()); ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << positives[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nstd::vector<int> keepPositives(std::vector<int> v)\n{\n    std::vector<int> result;\n    for (int i = 0; i < static_cast<int>(v.size()); ++i)\n    {\n        if (v[i] > 0)\n            result.push_back(v[i]);\n    }\n    return result;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n\n    std::vector<int> positives { keepPositives(data) };\n    for (int i = 0; i < static_cast<int>(positives.size()); ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << positives[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed values",
+        "is_sample": true,
+        "stdin": "6\n-3 5 0 2 -1 8\n",
+        "expected_stdout": "5 2 8\n"
+      },
+      {
+        "label": "Hidden: all negative and zero",
+        "is_sample": false,
+        "stdin": "4\n-1 -5 0 -3\n",
+        "expected_stdout": "\n"
+      },
+      {
+        "label": "Hidden: all positive",
+        "is_sample": false,
+        "stdin": "3\n7 4 9\n",
+        "expected_stdout": "7 4 9\n"
+      }
+    ]
+  },
+  {
+    "title": "Double and Return",
+    "prompt_md": "## Goal\nThis program is supposed to read N integers, double each one, and print the results separated by spaces. Find and fix the single logic bug.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Line 2: N space-separated integers.\n\n## Output\n- Print each value doubled, separated by spaces, on one line followed by a newline.\n\n## Requirements\n1. The bug is a logic error — the code compiles and runs, but prints the wrong output.\n2. The function `doubleValues` must remain as-is in structure; only fix the bug.\n3. Hidden tests include N=1 and inputs with negative numbers.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nstd::vector<int> doubleValues(std::vector<int> v)\n{\n    std::vector<int> result;\n    for (int i = 0; i < static_cast<int>(v.size()); ++i)\n        result.push_back(v[i] * 2);\n    return result;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    std::vector<int> doubled;\n    doubleValues(nums);  // return value is discarded\n\n    for (int i = 0; i < static_cast<int>(doubled.size()); ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << doubled[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nstd::vector<int> doubleValues(std::vector<int> v)\n{\n    std::vector<int> result;\n    for (int i = 0; i < static_cast<int>(v.size()); ++i)\n        result.push_back(v[i] * 2);\n    return result;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    std::vector<int> doubled { doubleValues(nums) };\n\n    for (int i = 0; i < static_cast<int>(doubled.size()); ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << doubled[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic doubling",
+        "is_sample": true,
+        "stdin": "4\n1 3 5 7\n",
+        "expected_stdout": "2 6 10 14\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n9\n",
+        "expected_stdout": "18\n"
+      },
+      {
+        "label": "Hidden: including negative numbers",
+        "is_sample": false,
+        "stdin": "5\n-2 0 4 -1 3\n",
+        "expected_stdout": "-4 0 8 -2 6\n"
+      }
+    ]
+  }
+]

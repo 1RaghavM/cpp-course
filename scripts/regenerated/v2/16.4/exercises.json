@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compute the Average of a Vector via a Function",
+    "prompt_md": "## Goal\nWrite a function `average` that accepts a `const std::vector<int>&` and returns the average of its elements as a `double`. Read a vector from stdin, call the function, and print the result.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- One line: `Average: X.XX` where X.XX is the average printed with exactly 2 decimal places.\n\n## Requirements\n1. Implement `double average(const std::vector<int>& v)` — it must use the `const&` parameter form.\n2. The function computes the sum of all elements divided by the count.\n3. Use `std::fixed` and `std::setprecision(2)` from `<iomanip>` to format the output.\n4. N is at least 1, so division by zero cannot occur.\n5. The hidden tests check a single-element vector and a vector whose average is not a whole number.\n\n## Notes\n- Include `<iomanip>` for `std::fixed` and `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <vector>\n\n// TODO: implement average — must take a const reference parameter\ndouble average(const std::vector<int>& v)\n{\n    return 0.0; // replace this stub\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    std::cout << \"Average: \"\n              << std::fixed << std::setprecision(2)\n              << average(nums) << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <vector>\n\ndouble average(const std::vector<int>& v)\n{\n    int sum = 0;\n    for (int i = 0; i < std::ssize(v); ++i)\n        sum += v[i];\n    return static_cast<double>(sum) / static_cast<double>(std::ssize(v));\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    std::cout << \"Average: \"\n              << std::fixed << std::setprecision(2)\n              << average(nums) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: four elements",
+        "is_sample": true,
+        "stdin": "4\n10\n20\n30\n40\n",
+        "expected_stdout": "Average: 25.00"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n7\n",
+        "expected_stdout": "Average: 7.00"
+      },
+      {
+        "label": "Hidden: non-whole average",
+        "is_sample": false,
+        "stdin": "3\n1\n2\n3\n",
+        "expected_stdout": "Average: 2.00"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Function: Scale a Vector In Place",
+    "prompt_md": "## Goal\nComplete the function `scaleBy` that multiplies every element of a `std::vector<int>` by a given factor. The function modifies the vector in place (no return value).\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50).\n- Line 2: integer `factor`.\n- Lines 3..N+2: one integer per line (the vector elements).\n\n## Output\n- N lines, each containing one scaled element.\n\n## Requirements\n1. Implement `void scaleBy(std::vector<int>& v, int factor)` — must take a **non-const** reference because it modifies the vector.\n2. Multiply each element `v[i]` by `factor` using the subscript operator.\n3. `main()` reads the input, calls `scaleBy`, then prints each element on its own line.\n4. The hidden tests include factor=1 (no change) and a negative factor.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement scaleBy — multiply every element by factor\n// The parameter must be a non-const reference so you can modify the vector\nvoid scaleBy(std::vector<int>& v, int factor)\n{\n    // your code here\n}\n\nint main()\n{\n    int n, factor;\n    std::cin >> n >> factor;\n\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n\n    scaleBy(data, factor);\n\n    for (int i = 0; i < std::ssize(data); ++i)\n        std::cout << data[i] << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nvoid scaleBy(std::vector<int>& v, int factor)\n{\n    for (int i = 0; i < std::ssize(v); ++i)\n        v[i] *= factor;\n}\n\nint main()\n{\n    int n, factor;\n    std::cin >> n >> factor;\n\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n\n    scaleBy(data, factor);\n\n    for (int i = 0; i < std::ssize(data); ++i)\n        std::cout << data[i] << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: factor 3",
+        "is_sample": true,
+        "stdin": "4\n3\n2\n5\n8\n10\n",
+        "expected_stdout": "6\n15\n24\n30"
+      },
+      {
+        "label": "Hidden: factor 1 (no change)",
+        "is_sample": false,
+        "stdin": "3\n1\n7\n14\n21\n",
+        "expected_stdout": "7\n14\n21"
+      },
+      {
+        "label": "Hidden: negative factor",
+        "is_sample": false,
+        "stdin": "3\n-2\n1\n2\n3\n",
+        "expected_stdout": "-2\n-4\n-6"
+      }
+    ]
+  }
+]

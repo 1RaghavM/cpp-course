@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Temp {\n    double v{};\n    Temp operator-() const { return Temp{ -v }; }\n};\nint main() {\n    Temp t{ 5.0 };\n    Temp u = -t;\n    std::cout << t.v << ' ' << u.v << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5 -5",
+    "explanation_md": "`operator-` returns a new `Temp` with the negated value; it does not modify `t`. So `t.v` stays `5.0` and `u.v` is `-5.0`. The output is `5 -5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have a class `Handle` that wraps a resource. You want `!h` to return `true` when the handle is invalid. Which return type is most appropriate for `Handle::operator!()`?",
+    "options": {
+      "a": "`Handle` — return a negated copy of the object",
+      "b": "`bool` — return whether the handle is in a falsy state",
+      "c": "`int` — return 0 or 1 as a numeric boolean",
+      "d": "`void` — no return value is needed for a unary operator"
+    },
+    "answer": "b",
+    "explanation_md": "`operator!` should return `bool` so it integrates naturally with `if` conditions and logical expressions. Returning `Handle` or `int` is legal but confusing, and `void` is incorrect because the expression `!h` must have a usable value."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Flags {\n    bool active{ false };\n    bool operator!() const { return !active; }\n};\nint main() {\n    Flags a{};\n    Flags b{ true };\n    std::cout << !a << ' ' << !b << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1 0",
+    "explanation_md": "`a.active` is `false`, so `!a` returns `!false` which is `true` (printed as `1`). `b.active` is `true`, so `!b` returns `!true` which is `false` (printed as `0`). Output is `1 0`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should `operator-()` (unary minus) be declared `const`?",
+    "options": {
+      "a": "Because `const` is required for all operator overloads",
+      "b": "So the operator can be called on `const` objects and does not mutate the original",
+      "c": "So the return value is immutable and cannot be assigned to",
+      "d": "Because unary operators automatically have `const` applied by the compiler"
+    },
+    "answer": "b",
+    "explanation_md": "Unary minus should produce a new negated value without changing the source object. Marking it `const` enforces that the function cannot modify `*this`, and also allows it to be called on `const`-qualified objects. The other options are incorrect: `const` is not required for all overloads, it does not affect the return value's mutability, and the compiler does not add it automatically."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code intends to negate a `Vec2` and print the result, but it prints the wrong output. What is the bug?\n\n```cpp\n#include <iostream>\nstruct Vec2 {\n    int x{}; int y{};\n    Vec2 operator-() const { return *this; }\n};\nint main() {\n    Vec2 v{ 3, -7 };\n    Vec2 w = -v;\n    std::cout << w.x << ' ' << w.y << '\\n';\n}\n```",
+    "options": {
+      "a": "`operator-` is not marked `const`, so it cannot be called",
+      "b": "`operator-` returns `*this` instead of a new object with negated components",
+      "c": "The struct members must be `double`, not `int`, for negation to work",
+      "d": "`w` must be declared as a reference: `Vec2& w = -v;`"
+    },
+    "answer": "b",
+    "explanation_md": "The body returns `*this` (a copy of the original), so `-v` is identical to `v`. The fix is `return Vec2{ -x, -y };`. The function is correctly marked `const`, integer types negate fine, and returning a reference to a temporary would be a different problem."
+  }
+]

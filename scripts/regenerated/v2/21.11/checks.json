@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Score {\n    int m_val;\npublic:\n    Score(int v) : m_val{v} {}\n    operator int() const { return m_val * 2; }\n};\nint main() {\n    Score s{7};\n    int x = s;\n    std::cout << x << '\\n';\n}\n```",
+    "options": null,
+    "answer": "14",
+    "explanation_md": "`operator int()` returns `m_val * 2`, which is `7 * 2 = 14`. The assignment `int x = s` triggers the implicit conversion operator."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the correct way to declare a typecast operator that converts a class to `double`?",
+    "options": {
+      "a": "`double operator double() const;`",
+      "b": "`operator double() const;`",
+      "c": "`double operator()() const;`",
+      "d": "`explicit double operator double() const;`"
+    },
+    "answer": "b",
+    "explanation_md": "The target type is embedded in the function name — there is no separate return-type declaration. Writing `double` before `operator` is a syntax error. `explicit` can optionally precede `operator`, but never a return type."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is meant to print `1` only when the object holds a positive value, but it prints `1` for zero too. What is wrong?\n\n```cpp\n#include <iostream>\nclass Positive {\n    int m_val;\npublic:\n    Positive(int v) : m_val{v} {}\n    operator bool() const { return m_val >= 0; }\n};\nint main() {\n    Positive z{0};\n    if (z) std::cout << 1 << '\\n';\n    else   std::cout << 0 << '\\n';\n}\n```",
+    "options": {
+      "a": "`operator bool()` should not be `const`.",
+      "b": "The conversion condition uses `>= 0` but should use `> 0` to exclude zero.",
+      "c": "`operator bool()` must return an `int`, not a `bool`.",
+      "d": "The `if (z)` expression does not call `operator bool()`."
+    },
+    "answer": "b",
+    "explanation_md": "`>= 0` returns `true` for zero, but the intent is 'positive', which means strictly greater than zero. The fix is `return m_val > 0;`. The other options are all false — `const` is fine, `bool` is the right return type, and `if (z)` does invoke `operator bool()`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it usually a good idea to mark a user-defined conversion operator `explicit`?",
+    "options": {
+      "a": "It makes the conversion faster at runtime.",
+      "b": "It prevents the compiler from calling the conversion implicitly, avoiding silent type coercions.",
+      "c": "It allows the conversion to modify the object.",
+      "d": "It is required for the conversion operator to compile."
+    },
+    "answer": "b",
+    "explanation_md": "`explicit` suppresses implicit conversion chains (like `MyClass -> int -> double`) that can silently accept wrong-typed arguments in function calls. It has no effect on runtime speed and does not alter `const`-ness; it simply requires the programmer to write an explicit cast."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Box {\n    int m_items;\npublic:\n    Box(int n) : m_items{n} {}\n    explicit operator bool() const { return m_items > 0; }\n};\nint main() {\n    Box empty{0};\n    Box full{3};\n    std::cout << (full ? \"yes\" : \"no\") << '\\n';\n    std::cout << (empty ? \"yes\" : \"no\") << '\\n';\n}\n```",
+    "options": null,
+    "answer": "yes\nno",
+    "explanation_md": "The ternary operator `?:` is a boolean context — `explicit operator bool()` is still called there even without an explicit cast. `full` has 3 items so `operator bool()` returns `true` → `\"yes\"`. `empty` has 0 so it returns `false` → `\"no\"`."
+  }
+]

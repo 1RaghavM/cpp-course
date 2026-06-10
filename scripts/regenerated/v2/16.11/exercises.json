@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Drain a Stack and Print Sum",
+    "prompt_md": "## Goal\nRead N integers, push them onto a vector-stack, then drain the stack and print the sum of all elements.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10).\n- Lines 2 through N+1: one integer per line.\n\n## Output\n- Print exactly one line: `Sum: X` where X is the sum of all N integers.\n\n## Requirements\n1. Use `push_back` to add each integer to a `std::vector<int>`.\n2. Drain the vector using `back()` and `pop_back()` inside a `while (!v.empty())` loop, accumulating the sum.\n3. Hidden tests use N=1 (single element) and N=5 with negative values.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        v.push_back(x);\n    }\n\n    int sum = 0;\n    // TODO: drain the vector as a stack using back() and pop_back(),\n    //       accumulating the sum\n\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> v;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        v.push_back(x);\n    }\n\n    int sum = 0;\n    while (!v.empty())\n    {\n        sum += v.back();\n        v.pop_back();\n    }\n\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three values",
+        "is_sample": true,
+        "stdin": "3\n4\n7\n2\n",
+        "expected_stdout": "Sum: 13\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n99\n",
+        "expected_stdout": "Sum: 99\n"
+      },
+      {
+        "label": "Hidden: negatives included",
+        "is_sample": false,
+        "stdin": "5\n10\n-3\n6\n-2\n4\n",
+        "expected_stdout": "Sum: 15\n"
+      }
+    ]
+  },
+  {
+    "title": "Matching Parentheses Counter — Fix the Bug",
+    "prompt_md": "## Goal\nFix the one logic bug in this program that uses a vector as a stack to count properly matched parenthesis pairs in a string.\n\n## Input\n- Line 1: a single string of `(` and `)` characters (1–20 characters, no spaces).\n\n## Output\n- Print exactly one line: `Pairs: N` where N is the number of matched pairs.\n\n## Requirements\n1. For every `(`, push it onto the stack. For every `)`, pop one `(` if the stack is non-empty and increment a counter.\n2. The bug causes the program to print the wrong count.\n3. Do not change the overall structure — only fix the logical error in the loop body.\n4. Hidden tests: a string with no pairs (`)))`) and a fully nested string like `(((`.  \n   Note: `(((` has 0 pairs because there are no `)` to close them.\n\n## Notes\n- The starter compiles and runs, but produces incorrect output for some inputs.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint main()\n{\n    std::string s;\n    std::cin >> s;\n\n    std::vector<char> stack;\n    int pairs = 0;\n\n    for (int i = 0; i < (int)s.size(); ++i)\n    {\n        if (s[i] == '(')\n        {\n            stack.push_back('(');\n        }\n        else if (s[i] == ')')\n        {\n            ++pairs;             // bug: increments before checking stack\n            if (!stack.empty())\n                stack.pop_back();\n        }\n    }\n\n    std::cout << \"Pairs: \" << pairs << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint main()\n{\n    std::string s;\n    std::cin >> s;\n\n    std::vector<char> stack;\n    int pairs = 0;\n\n    for (int i = 0; i < (int)s.size(); ++i)\n    {\n        if (s[i] == '(')\n        {\n            stack.push_back('(');\n        }\n        else if (s[i] == ')' && !stack.empty())\n        {\n            stack.pop_back();\n            ++pairs;\n        }\n    }\n\n    std::cout << \"Pairs: \" << pairs << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two matched pairs",
+        "is_sample": true,
+        "stdin": "(())\n",
+        "expected_stdout": "Pairs: 2\n"
+      },
+      {
+        "label": "Hidden: no opening parens",
+        "is_sample": false,
+        "stdin": ")))\n",
+        "expected_stdout": "Pairs: 0\n"
+      },
+      {
+        "label": "Hidden: no closing parens",
+        "is_sample": false,
+        "stdin": "(((\n",
+        "expected_stdout": "Pairs: 0\n"
+      }
+    ]
+  }
+]

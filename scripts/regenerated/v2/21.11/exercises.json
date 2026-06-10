@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Temperature Wrapper with Explicit Float Conversion",
+    "prompt_md": "## Goal\nComplete the `Celsius` class so it stores a temperature and provides an `explicit` conversion to `float`.\n\n## Input\n- Line 1: a floating-point number (the temperature in Celsius, e.g. `36.5`)\n\n## Output\n- Print exactly one line: `Temp: <value>` where `<value>` is the temperature printed with one decimal place.\n- Example: `Temp: 36.5`\n\n## Requirements\n1. `Celsius` must have a constructor that takes a single `float`.\n2. Provide `explicit operator float() const` that returns the stored temperature.\n3. In `main`, read the float, construct a `Celsius`, then use `static_cast<float>` to retrieve the value and print it.\n4. Use `std::fixed` and `std::setprecision(1)` for output formatting.\n5. The implicit conversion `float f = celsius_object;` must NOT compile (i.e. the operator must be `explicit`).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Celsius {\n    float m_degrees;\npublic:\n    Celsius(float d) : m_degrees{d} {} // constructor given — do not change\n    // TODO: implement explicit operator float() const\n};\n\nint main() {\n    float input;\n    std::cin >> input;\n    Celsius temp{input};\n    // TODO: use static_cast<float> to retrieve the value and assign to val\n    float val = 0.0f; // replace this line\n    std::cout << \"Temp: \" << std::fixed << std::setprecision(1) << val << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Celsius {\n    float m_degrees;\npublic:\n    Celsius(float d) : m_degrees{d} {}\n    explicit operator float() const { return m_degrees; }\n};\n\nint main() {\n    float input;\n    std::cin >> input;\n    Celsius temp{input};\n    float val = static_cast<float>(temp);\n    std::cout << \"Temp: \" << std::fixed << std::setprecision(1) << val << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal temperature",
+        "is_sample": true,
+        "stdin": "36.5\n",
+        "expected_stdout": "Temp: 36.5\n"
+      },
+      {
+        "label": "Hidden: zero degrees",
+        "is_sample": false,
+        "stdin": "0.0\n",
+        "expected_stdout": "Temp: 0.0\n"
+      },
+      {
+        "label": "Hidden: negative temperature",
+        "is_sample": false,
+        "stdin": "-10.5\n",
+        "expected_stdout": "Temp: -10.5\n"
+      }
+    ]
+  },
+  {
+    "title": "Fraction to Double — Fix the Bug",
+    "prompt_md": "## Goal\nThe program below defines a `Fraction` class with an `operator double()` conversion, then prints the decimal value of a fraction read from stdin. It compiles and runs, but it prints the wrong answer. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers separated by a space — numerator and denominator (denominator is never zero).\n\n## Output\n- Print exactly one line: `Value: <result>` where `<result>` is the decimal value of the fraction with four decimal places.\n- Example for input `1 4`: `Value: 0.2500`\n\n## Requirements\n1. The conversion operator must perform true floating-point division.\n2. `std::fixed` and `std::setprecision(4)` are already used in `main` — do not change the output code.\n3. The bug is in the conversion operator, not in `main`.\n4. Hidden tests include fractions that are not exact powers of two.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Fraction {\n    int m_num;\n    int m_den;\npublic:\n    Fraction(int num, int den) : m_num{num}, m_den{den} {}\n\n    operator double() const {\n        return m_num / m_den;  // BUG: integer division loses the fractional part\n    }\n};\n\nint main() {\n    int n, d;\n    std::cin >> n >> d;\n    Fraction f{n, d};\n    double val = f;\n    std::cout << \"Value: \" << std::fixed << std::setprecision(4) << val << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Fraction {\n    int m_num;\n    int m_den;\npublic:\n    Fraction(int num, int den) : m_num{num}, m_den{den} {}\n\n    operator double() const {\n        return static_cast<double>(m_num) / m_den;\n    }\n};\n\nint main() {\n    int n, d;\n    std::cin >> n >> d;\n    Fraction f{n, d};\n    double val = f;\n    std::cout << \"Value: \" << std::fixed << std::setprecision(4) << val << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1/4",
+        "is_sample": true,
+        "stdin": "1 4\n",
+        "expected_stdout": "Value: 0.2500\n"
+      },
+      {
+        "label": "Hidden: 1/3",
+        "is_sample": false,
+        "stdin": "1 3\n",
+        "expected_stdout": "Value: 0.3333\n"
+      },
+      {
+        "label": "Hidden: 7/2",
+        "is_sample": false,
+        "stdin": "7 2\n",
+        "expected_stdout": "Value: 3.5000\n"
+      }
+    ]
+  }
+]

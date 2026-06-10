@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <array>\nint main()\n{\n    std::array<int, 4> a { 3, 1, 4, 2 };\n    int n = static_cast<int>(a.size());\n    for (int i = 0; i < n - 1; ++i)\n    {\n        int minIdx = i;\n        for (int j = i + 1; j < n; ++j)\n            if (a[j] < a[minIdx]) minIdx = j;\n        int tmp = a[i]; a[i] = a[minIdx]; a[minIdx] = tmp;\n    }\n    for (int i = 0; i < n; ++i)\n        std::cout << a[i] << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 2 3 4 \n",
+    "explanation_md": "Selection sort finds the minimum of the unsorted suffix and swaps it into position on each pass. After four elements, one fewer pass than the size, the array is fully sorted as `1 2 3 4`. The trailing space before the newline comes from printing each element followed by `' '`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In selection sort, the inner loop starts at `j = i + 1` instead of `j = 0`. Why?",
+    "options": {
+      "a": "Positions 0 through i-1 are already in their correct sorted positions and need not be reconsidered.",
+      "b": "Starting at 0 would cause an out-of-bounds access.",
+      "c": "The compiler requires the inner loop to start after the outer loop variable.",
+      "d": "It avoids comparing an element with itself, which is undefined behaviour."
+    },
+    "answer": "a",
+    "explanation_md": "After each pass of the outer loop, the prefix `0..i-1` holds the final sorted values. Re-scanning them could swap a smaller element back into the prefix, destroying the sorted order. Starting `j` at `i+1` limits the search to the still-unsorted suffix."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below is supposed to print the sorted array `2 5 7 9` but prints the wrong result. What is the bug?\n\n```cpp\n#include <iostream>\n#include <array>\nint main()\n{\n    std::array<int, 4> a { 9, 5, 2, 7 };\n    int n = static_cast<int>(a.size());\n    for (int i = 0; i < n - 1; ++i)\n    {\n        int minIdx = i;\n        for (int j = 0; j < n; ++j)  // bug is here\n        {\n            if (a[j] < a[minIdx])\n                minIdx = j;\n        }\n        int tmp = a[i]; a[i] = a[minIdx]; a[minIdx] = tmp;\n    }\n    for (int i = 0; i < n; ++i)\n        std::cout << a[i] << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The inner loop starts at `j = 0` instead of `j = i + 1`, so it rescans the already-sorted prefix and can move elements backward.",
+      "b": "The outer loop bound should be `i < n` instead of `i < n - 1`.",
+      "c": "The swap uses a temporary variable, which corrupts one of the values.",
+      "d": "The array is initialised with braces, which is not allowed for `std::array`."
+    },
+    "answer": "a",
+    "explanation_md": "When `j` starts at 0, the inner loop considers already-sorted positions, potentially selecting a minimum that lies inside the sorted prefix. Swapping it back into position `i` breaks the sorted order built by earlier passes. The fix is `j = i + 1`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "How many total element comparisons does selection sort perform on an array of 5 elements?",
+    "options": {
+      "a": "4 + 3 + 2 + 1 = 10",
+      "b": "5 + 5 + 5 + 5 = 20",
+      "c": "5 * 5 = 25",
+      "d": "1 + 2 + 3 + 4 = 10 (same answer, wrong reasoning: it counts swaps, not comparisons)"
+    },
+    "answer": "a",
+    "explanation_md": "Pass 0 scans 4 elements (indices 1-4), pass 1 scans 3, pass 2 scans 2, pass 3 scans 1. Total: 4+3+2+1 = 10 comparisons. This is n*(n-1)/2, confirming the O(n²) behaviour."
+  }
+]

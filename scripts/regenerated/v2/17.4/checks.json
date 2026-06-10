@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nstruct Point { int x {}; int y {}; };\nint main() {\n    std::array<Point, 2> pts { 10, 20, 30, 40 };\n    std::cout << pts[0].x << ' ' << pts[1].y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10 40",
+    "explanation_md": "Brace elision distributes the 4 values across 2 `Point` objects: `pts[0] = {10, 20}` and `pts[1] = {30, 40}`. So `pts[0].x` is 10 and `pts[1].y` is 40."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have `struct Point { int x {}; int y {}; };`. What does `std::array<Point, 3> pts { 1, 2, 3 };` produce for `pts[2].x`?",
+    "options": {
+      "a": "3 — the third listed value goes to `pts[2].x`",
+      "b": "0 — brace elision fills `pts[0]={1,2}`, `pts[1]={3,0}`, leaving `pts[2].x` zero-initialized",
+      "c": "Compile error — not enough values",
+      "d": "Undefined behavior — reading an uninitialized field"
+    },
+    "answer": "b",
+    "explanation_md": "With brace elision, values are distributed field-by-field: `pts[0].x=1`, `pts[0].y=2`, `pts[1].x=3`. Only 3 values are provided for 6 fields (3 Points × 2 fields each), so the remaining fields are zero-initialized. `pts[2].x` and `pts[2].y` are both 0. This is not a compile error — missing initializers are zero-filled."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nstruct RGB { int r {}; int g {}; int b {}; };\nint main() {\n    std::array<RGB, 2> colors { RGB{255, 0, 0}, RGB{0, 255, 0} };\n    for (const RGB& c : colors) {\n        std::cout << c.r + c.g + c.b << '\\n';\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "255\n255",
+    "explanation_md": "The first color is pure red `{255, 0, 0}`, so `r+g+b = 255`. The second is pure green `{0, 255, 0}`, so `r+g+b = 255` again. Each sum is printed on its own line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which initialization syntax is safest and always works for a `std::array` of structs, including structs with user-provided constructors?",
+    "options": {
+      "a": "Flat brace elision: `std::array<Point, 2> pts { 1, 2, 3, 4 };`",
+      "b": "Explicit per-element syntax: `std::array<Point, 2> pts { Point{1,2}, Point{3,4} };`",
+      "c": "Both are equivalent — brace elision always works for any struct",
+      "d": "Neither — you must use assignment after declaration"
+    },
+    "answer": "b",
+    "explanation_md": "Explicit per-element initialization always works for any aggregate or constructible type. Brace elision only works for aggregates (no user-provided constructors, base classes, or private members). When in doubt, use explicit syntax."
+  }
+]

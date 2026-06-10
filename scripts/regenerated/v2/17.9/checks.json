@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int arr[4]{ 10, 20, 30, 40 };\n    int* p = arr + 1;\n    std::cout << *p       << '\\n';\n    std::cout << *(p + 2) << '\\n';\n    std::cout << p[0]     << '\\n';\n}\n```",
+    "options": null,
+    "answer": "20\n40\n20",
+    "explanation_md": "`p = arr + 1` points to `arr[1]` (value 20). `*(p + 2)` is `arr[3]` (value 40). `p[0]` is `*(p + 0)` which is still `arr[1]` = 20."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `int arr[5]{ 1,2,3,4,5 };`, which expression is equivalent to `arr[3]`?",
+    "options": {
+      "a": "`*(arr + 3)`",
+      "b": "`*(arr) + 3`",
+      "c": "`*arr + 3`",
+      "d": "`*(arr) * 3`"
+    },
+    "answer": "a",
+    "explanation_md": "The subscript `arr[i]` is defined as `*(arr + i)`, so `arr[3]` is `*(arr + 3)`. Option b and c both add 3 to the dereferenced value `*arr` (which is 1), giving 4 — a different result entirely."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int nums[3]{ 5, 10, 15 };\n    int* end = nums + 3;\n    int sum = 0;\n    for (int* p = nums; p != end; ++p)\n        sum += *p;\n    std::cout << sum << '\\n';\n}\n```",
+    "options": null,
+    "answer": "30",
+    "explanation_md": "The pointer walks from `nums[0]` to `nums[2]` (stopping when it equals `nums + 3`), accumulating 5 + 10 + 15 = 30."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which operation on pointers is undefined behavior?",
+    "options": {
+      "a": "Forming the address one past the last element of an array.",
+      "b": "Dereferencing the pointer one past the last element.",
+      "c": "Using `!=` to compare two pointers into the same array.",
+      "d": "Using `++` to advance a pointer to the next element."
+    },
+    "answer": "b",
+    "explanation_md": "Forming `arr + n` (one-past-the-end) is explicitly allowed by the standard and is used as a sentinel. Dereferencing that address — reading or writing through `*(arr + n)` — is undefined behavior because no valid object lives there."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the last element but instead prints the first. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int data[4]{ 7, 14, 21, 28 };\n    int* p = data;\n    std::cout << *(p + 0) << '\\n';  // intended: print last element\n}\n```",
+    "options": {
+      "a": "`p` should be `const int*` to access array elements.",
+      "b": "The offset should be 3, not 0, to reach the last element of a 4-element array.",
+      "c": "`p` must be incremented with `++p` before dereferencing.",
+      "d": "Using `*` on a pointer to an array is invalid."
+    },
+    "answer": "b",
+    "explanation_md": "`p` points to `data[0]`. Adding 0 gives the same address, so `*(p + 0)` is `data[0]` = 7. To reach the last element of a 4-element array, the offset must be 3: `*(p + 3)` = 28."
+  }
+]

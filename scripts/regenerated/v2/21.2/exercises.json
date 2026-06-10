@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Overload operator+ and operator- for a Temperature Class",
+    "prompt_md": "## Goal\nOverload `operator+` and `operator-` as friend functions for a `Temperature` class that stores a value in Celsius.\n\n## Input\nLine 1: two space-separated integers `a` and `b` (the two temperatures in Celsius).\n\n## Output\nTwo lines:\n- `Sum: S` where S is `a + b`\n- `Diff: D` where D is `a - b`\n\n## Requirements\n1. `Temperature` stores its value as a private `int m_celsius`.\n2. Overload `operator+` and `operator-` as friend free functions, each taking two `const Temperature&` parameters and returning a `Temperature` by value.\n3. Add a public accessor `int celsius() const` that returns `m_celsius`.\n4. Read two integers, construct two `Temperature` objects, compute sum and difference, and print as specified.",
+    "starter_code": "#include <iostream>\n\nclass Temperature {\n    int m_celsius{};\npublic:\n    Temperature(int c) : m_celsius{c} {}\n    int celsius() const { return m_celsius; }\n\n    // TODO: declare friend operator+ and friend operator-\n    // Each takes two const Temperature& and returns Temperature by value\n    friend Temperature operator+(const Temperature& a, const Temperature& b);\n    friend Temperature operator-(const Temperature& a, const Temperature& b);\n};\n\n// TODO: implement operator+ — return Temperature with summed celsius values\nTemperature operator+(const Temperature& a, const Temperature& b) {\n    return Temperature{0};  // replace this\n}\n\n// TODO: implement operator- — return Temperature with differenced celsius values\nTemperature operator-(const Temperature& a, const Temperature& b) {\n    return Temperature{0};  // replace this\n}\n\nint main() {\n    int va, vb;\n    std::cin >> va >> vb;\n    Temperature a{va}, b{vb};\n    Temperature s = a + b;\n    Temperature d = a - b;\n    std::cout << \"Sum: \" << s.celsius() << \"\\n\";\n    std::cout << \"Diff: \" << d.celsius() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Temperature {\n    int m_celsius{};\npublic:\n    Temperature(int c) : m_celsius{c} {}\n    int celsius() const { return m_celsius; }\n\n    friend Temperature operator+(const Temperature& a, const Temperature& b);\n    friend Temperature operator-(const Temperature& a, const Temperature& b);\n};\n\nTemperature operator+(const Temperature& a, const Temperature& b) {\n    return Temperature{a.m_celsius + b.m_celsius};\n}\n\nTemperature operator-(const Temperature& a, const Temperature& b) {\n    return Temperature{a.m_celsius - b.m_celsius};\n}\n\nint main() {\n    int va, vb;\n    std::cin >> va >> vb;\n    Temperature a{va}, b{vb};\n    Temperature s = a + b;\n    Temperature d = a - b;\n    std::cout << \"Sum: \" << s.celsius() << \"\\n\";\n    std::cout << \"Diff: \" << d.celsius() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic values",
+        "is_sample": true,
+        "stdin": "20 5\n",
+        "expected_stdout": "Sum: 25\nDiff: 15"
+      },
+      {
+        "label": "Hidden: negative result",
+        "is_sample": false,
+        "stdin": "3 10\n",
+        "expected_stdout": "Sum: 13\nDiff: -7"
+      },
+      {
+        "label": "Hidden: both zero",
+        "is_sample": false,
+        "stdin": "0 0\n",
+        "expected_stdout": "Sum: 0\nDiff: 0"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Overload operator* for a Pixel Color",
+    "prompt_md": "## Goal\nComplete `operator*` for a `Pixel` class that scales each RGB channel by an integer factor.\n\n## Input\nLine 1: three space-separated integers `r`, `g`, `b` (0–255 each).\nLine 2: one integer `scale` (1–10).\n\n## Output\nOne line: `R G B` — the scaled pixel's channels, each clamped to a maximum of 255.\n\n## Requirements\n1. `Pixel` stores private `int m_r`, `m_g`, `m_b`.\n2. Complete the friend function `operator*(const Pixel& p, int scale)` that returns a new `Pixel` with each channel multiplied by `scale` and clamped to 255.\n3. A helper free function `clamp255(int v)` that returns `v` if `v <= 255`, else `255`, is already provided — use it.\n4. Also provide `operator*(int scale, const Pixel& p)` so both orders compile (both orderings must produce identical output for the same inputs).\n5. Edge case: scale of 1 leaves the pixel unchanged.",
+    "starter_code": "#include <iostream>\n\nint clamp255(int v) { return v <= 255 ? v : 255; }\n\nclass Pixel {\n    int m_r{}, m_g{}, m_b{};\npublic:\n    Pixel(int r, int g, int b) : m_r{r}, m_g{g}, m_b{b} {}\n    int r() const { return m_r; }\n    int g() const { return m_g; }\n    int b() const { return m_b; }\n\n    friend Pixel operator*(const Pixel& p, int scale);\n    friend Pixel operator*(int scale, const Pixel& p);\n};\n\n// TODO: implement operator*(const Pixel& p, int scale)\n// Each channel = clamp255(channel * scale)\nPixel operator*(const Pixel& p, int scale) {\n    return Pixel{0, 0, 0};  // replace this\n}\n\n// TODO: implement operator*(int scale, const Pixel& p) — reuse the other overload\nPixel operator*(int scale, const Pixel& p) {\n    return Pixel{0, 0, 0};  // replace this\n}\n\nint main() {\n    int r, g, b, s;\n    std::cin >> r >> g >> b;\n    std::cin >> s;\n    Pixel px{r, g, b};\n    Pixel result = px * s;\n    std::cout << result.r() << \" \" << result.g() << \" \" << result.b() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint clamp255(int v) { return v <= 255 ? v : 255; }\n\nclass Pixel {\n    int m_r{}, m_g{}, m_b{};\npublic:\n    Pixel(int r, int g, int b) : m_r{r}, m_g{g}, m_b{b} {}\n    int r() const { return m_r; }\n    int g() const { return m_g; }\n    int b() const { return m_b; }\n\n    friend Pixel operator*(const Pixel& p, int scale);\n    friend Pixel operator*(int scale, const Pixel& p);\n};\n\nPixel operator*(const Pixel& p, int scale) {\n    return Pixel{clamp255(p.m_r * scale), clamp255(p.m_g * scale), clamp255(p.m_b * scale)};\n}\n\nPixel operator*(int scale, const Pixel& p) {\n    return p * scale;\n}\n\nint main() {\n    int r, g, b, s;\n    std::cin >> r >> g >> b;\n    std::cin >> s;\n    Pixel px{r, g, b};\n    Pixel result = px * s;\n    std::cout << result.r() << \" \" << result.g() << \" \" << result.b() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: scale by 2",
+        "is_sample": true,
+        "stdin": "100 50 25\n2\n",
+        "expected_stdout": "200 100 50"
+      },
+      {
+        "label": "Hidden: clamp triggers",
+        "is_sample": false,
+        "stdin": "200 100 50\n3\n",
+        "expected_stdout": "255 255 150"
+      },
+      {
+        "label": "Hidden: scale 1 unchanged",
+        "is_sample": false,
+        "stdin": "10 20 30\n1\n",
+        "expected_stdout": "10 20 30"
+      }
+    ]
+  }
+]

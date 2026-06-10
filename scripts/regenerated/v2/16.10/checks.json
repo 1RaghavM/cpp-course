@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v;\n    v.reserve(5);\n    v.push_back(10);\n    v.push_back(20);\n    std::cout << v.size() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "2",
+    "explanation_md": "`reserve(5)` sets capacity to at least 5 but does not add any elements — size stays 0. The two `push_back` calls bring size to 2. Capacity (≥5) is not printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After calling `v.resize(3)` on a vector that previously had 10 elements, which statement is true?\n\na) `v.size()` is 10 and `v.capacity()` is 3\nb) `v.size()` is 3 and `v.capacity()` is at least 3 (typically still 10)\nc) `v.size()` is 3 and `v.capacity()` is guaranteed to be exactly 3\nd) `v.size()` is 0 because resize clears the vector",
+    "options": {
+      "a": "`v.size()` is 10 and `v.capacity()` is 3",
+      "b": "`v.size()` is 3 and `v.capacity()` is at least 3 (typically still 10)",
+      "c": "`v.size()` is 3 and `v.capacity()` is guaranteed to be exactly 3",
+      "d": "`v.size()` is 0 because resize clears the vector"
+    },
+    "answer": "b",
+    "explanation_md": "`resize` changes size to the requested count and keeps (at least) the existing capacity — shrinking does not free memory. The standard does not require capacity to decrease, so option (c) is wrong. Option (d) is entirely wrong; resize never clears the vector."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v(4, 7);\n    v.resize(6);\n    v.resize(2);\n    std::cout << v[0] << ' ' << v[1] << ' ' << v.size() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "7 7 2",
+    "explanation_md": "The vector starts as {7,7,7,7}. `resize(6)` grows it to {7,7,7,7,0,0} (new elements value-initialised). `resize(2)` shrinks it to {7,7}. Printing indices 0 and 1 gives 7 7, and `size()` is 2."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary purpose of `v.reserve(n)` on a `std::vector`?\n\na) It sets the number of elements in the vector to `n`, filling new slots with 0\nb) It prevents the vector from ever growing beyond `n` elements\nc) It pre-allocates memory for at least `n` elements without changing the element count\nd) It copies the first `n` elements of the vector into a new allocation",
+    "options": {
+      "a": "It sets the number of elements in the vector to `n`, filling new slots with 0",
+      "b": "It prevents the vector from ever growing beyond `n` elements",
+      "c": "It pre-allocates memory for at least `n` elements without changing the element count",
+      "d": "It copies the first `n` elements of the vector into a new allocation"
+    },
+    "answer": "c",
+    "explanation_md": "`reserve` is purely a performance hint: it ensures the capacity is at least `n` so subsequent `push_back` calls up to that count will not cause reallocations. Size is unchanged. It imposes no upper bound on growth (option b is wrong), and it is not `resize` (option a)."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code tries to print the first element after reserving space, but has a bug:\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v;\n    v.reserve(10);\n    v[0] = 42;\n    std::cout << v[0] << '\\n';\n}\n```",
+    "options": {
+      "a": "`reserve` is not allowed on a default-constructed vector",
+      "b": "`v[0]` is an out-of-bounds access because `reserve` does not add elements",
+      "c": "The vector should use `v.at(0)` instead of `v[0]` after `reserve`",
+      "d": "Assigning through `operator[]` is not allowed on `int` elements"
+    },
+    "answer": "b",
+    "explanation_md": "`reserve(10)` allocates memory but does not add any elements — `v.size()` is still 0. Accessing `v[0]` is out of bounds and undefined behaviour. To make this work, call `v.resize(1)` (or `v.push_back(42)`) before the subscript access."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (Assume `std::size_t` is a 64-bit unsigned type.)\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v;\n    std::cout << v.size() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0",
+    "explanation_md": "A default-constructed `std::vector` is empty. `.size()` returns `0` (as a `std::size_t`). Even though `std::size_t` is unsigned, the value `0` prints normally as `0`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is the following loop dangerous?\n\n```cpp\nstd::vector<int> v { 1, 2, 3 };\nfor (std::size_t i = v.size() - 1; i >= 0; --i)\n{\n    std::cout << v[i] << '\\n';\n}\n```",
+    "options": {
+      "a": "The loop increments instead of decrementing",
+      "b": "An unsigned variable can never be less than 0, so the condition is always true and the loop never stops",
+      "c": "Accessing `v[i]` with a `std::size_t` index is undefined behavior",
+      "d": "The initial value `v.size() - 1` will overflow because `v` is empty"
+    },
+    "answer": "b",
+    "explanation_md": "Because `std::size_t` is unsigned, the condition `i >= 0` is always true — an unsigned integer can never hold a negative value. When `i` is `0` and we execute `--i`, it wraps around to the maximum value of `std::size_t`, causing an infinite loop with out-of-bounds access."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these is the safest way to write a forward loop over a `std::vector<int> v` using an integer index?",
+    "options": {
+      "a": "`for (int i = 0; i < v.size(); ++i)`",
+      "b": "`for (std::size_t i = 0; i < v.size(); ++i)`",
+      "c": "`for (int i = 0; i < std::ssize(v); ++i)`",
+      "d": "`for (unsigned i = 0; i < v.size(); ++i)`"
+    },
+    "answer": "c",
+    "explanation_md": "Option c uses `std::ssize(v)` which returns a signed integer, so the comparison is signed vs signed — no implicit conversion, no wrapping risk. Option a compares signed `int` to unsigned `size_t`, generating a compiler warning. Option b uses `std::size_t` which is fine for forward loops but causes the infinite-loop bug if you ever decrement the counter. Option d has the same wrapping risk as option b."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to return the last element of the vector. What is the bug?\n\n```cpp\n#include <vector>\n\nint lastElement(const std::vector<int>& v)\n{\n    return v[v.size()];\n}\n```",
+    "options": {
+      "a": "The function should return by reference, not by value",
+      "b": "`v.size()` is one past the last valid index; should be `v.size() - 1`",
+      "c": "`std::size_t` cannot be used as an array index",
+      "d": "The vector parameter must be passed by value for subscript to work"
+    },
+    "answer": "b",
+    "explanation_md": "For a vector of size N, valid indices are 0 through N−1. `v.size()` equals N, which is one past the last valid index. Accessing `v[v.size()]` is undefined behavior. The correct expression is `v[v.size() - 1]`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 10, 20, 30, 40 };\n    int len = static_cast<int>(v.size());\n    std::cout << len << '\\n';\n    std::cout << v[len - 1] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4\n40",
+    "explanation_md": "`v.size()` returns 4, cast to `int` as 4. `len - 1` is 3, which is the last valid index. `v[3]` is 40. This demonstrates the safe pattern: cast `.size()` to `int`, then use the signed `len - 1` without any underflow risk."
+  }
+]

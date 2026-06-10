@@ -471,6 +471,181 @@
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/15_9_ex1_starter.cpp:20:36: warning: unused parameter 'v' [-Wunused-parameter]
    20
 
+## 16.10 — pass
+- **warning**: 16_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_10_ex2_starter.cpp:8:46: warning: unused parameter 'data' [-Wunused-parameter]
+    8 | double cappedAverage(const std::vector<int>& data, int cap)
+      |                                              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_10_ex2_starter.cpp:8:56: warning: unused parameter '
+
+## 16.2 — pass
+- **warning**: 16_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_2_ex2_starter.cpp:6:35: warning: unused parameter 'count' [-Wunused-parameter]
+    6 | std::vector<int> makeRepeated(int count, int value)
+      |                                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_2_ex2_starter.cpp:6:46: warning: unused parameter 'value' [-Wunused-par
+
+## 16.4 — pass
+- **warning**: 16_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_4_ex1_starter.cpp:6:40: warning: unused parameter 'v' [-Wunused-parameter]
+    6 | double average(const std::vector<int>& v)
+      |                                        ^
+1 warning generated.
+
+- **warning**: 16_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_4_ex2_starter.cpp:6:32: warning: unused parameter 'v' [-Wunused-parameter]
+    6 | void scaleBy(std::vector<int>& v, int factor)
+      |                                ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_4_ex2_starter.cpp:6:39: warning: unused parameter 'factor' [-Wunused-parameter]
+    
+
+## 16.5 — pass
+- **warning**: 16_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_5_ex1_starter.cpp:7:49: warning: unused parameter 'v' [-Wunused-parameter]
+    7 | std::vector<int> keepPositives(std::vector<int> v)
+      |                                                 ^
+1 warning generated.
+
+
+## 16.6 — pass
+- **warning**: 16_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_6_ex2_starter.cpp:9:9: warning: unused variable 'len' [-Wunused-variable]
+    9 |     int len { static_cast<int>(v.size()) };
+      |         ^~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_6_ex2_starter.cpp:6:40: warning: unused parameter 'threshold' [-Wunused-parameter]
+    6 | int countAbove(st
+
+## 16.8 — pass
+- **warning**: 16_8_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/16_8_ex2_starter.cpp:7:34: warning: unused parameter 'v' [-Wunused-parameter]
+    7 | void doubleAll(std::vector<int>& v)
+      |                                  ^
+1 warning generated.
+
+
+## 17.1 — pass
+- **warning**: 17_1_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_1_ex1_starter.cpp:6:24: warning: unused variable 'nums' [-Wunused-variable]
+    6 |     std::array<int, 5> nums {};
+      |                        ^~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_1_ex1_starter.cpp:10:9: warning: unused variable 'sum' [-Wunused-variable]
+   10 |     int sum = 0;
+  
+
+## 17.10 — pass
+- **warning**: 17_10_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_10_ex2_starter.cpp:4:25: warning: unused parameter 's' [-Wunused-parameter]
+    4 | int cstrLen(const char* s) {
+      |                         ^
+1 warning generated.
+
+
+## 17.12 — pass
+- **warning**: 17_12_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_12_ex1_starter.cpp:5:9: warning: unused variable 'grid' [-Wunused-variable]
+    5 |     int grid[3][4]{};
+      |         ^~~~
+1 warning generated.
+
+- **warning**: 17_12_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_12_ex2_starter.cpp:4:16: warning: unused parameter 'row' [-Wunused-parameter]
+    4 | int rowMax(int row[], int cols)
+      |                ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_12_ex2_starter.cpp:4:27: warning: unused parameter 'cols' [-Wunused-parameter]
+    4 | int rowMax(int row[], in
+
+## 17.13 — pass
+- **warning**: 17_13_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_13_ex1_starter.cpp:6:39: warning: unused variable 'grid' [-Wunused-variable]
+    6 |     std::array<std::array<int, 3>, 2> grid{};
+      |                                       ^~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_13_ex1_starter.cpp:10:39: warning: unused variable 'transposed' [-Wunuse
+
+## 17.2 — pass
+- **warning**: 17_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_2_ex1_starter.cpp:5:24: warning: unused variable 'nums' [-Wunused-variable]
+    5 |     std::array<int, 6> nums {};
+      |                        ^~~~
+1 warning generated.
+
+- **warning**: 17_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_2_ex2_starter.cpp:6:35: warning: unused parameter 'arr' [-Wunused-parameter]
+    6 | int countAbove(std::array<int, 5> arr, int threshold) {
+      |                                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_2_ex2_starter.cpp:6:44: warning: unused parameter 'threshold' [-Wunus
+
+## 17.3 — pass
+- **warning**: 17_3_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_3_ex1_starter.cpp:6:39: warning: unused parameter 'arr' [-Wunused-parameter]
+    6 | void reverseArray(std::array<int, 5>& arr) {
+      |                                       ^
+1 warning generated.
+
+
+## 17.4 — pass
+- **warning**: 17_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_4_ex1_starter.cpp:10:26: warning: unused variable 'pts' [-Wunused-variable]
+   10 |     std::array<Point, 3> pts {};
+      |                          ^~~
+1 warning generated.
+
+- **warning**: 17_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_4_ex2_starter.cpp:11:29: warning: unused parameter 'a' [-Wunused-parameter]
+   11 | int manhattanDistance(Point a, Point b) {
+      |                             ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_4_ex2_starter.cpp:11:38: warning: unused parameter 'b' [-Wunused-parameter]
+   11 | int ma
+
+## 17.6 — pass
+- **warning**: 17_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_6_ex1_starter.cpp:7:30: warning: unused variable 'temps' [-Wunused-variable]
+    7 |     std::array<int, NumDays> temps{};
+      |                              ^~~~~
+1 warning generated.
+
+- **warning**: 17_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_6_ex2_starter.cpp:11:58: warning: unused parameter 'stats' [-Wunused-parameter]
+   11 | int getStat(const std::array<int, statIdx(Stat::Count)>& stats, Stat which) {
+      |                                                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_6_ex2_starter.cpp:11:
+
+## 17.7 — pass
+- **warning**: 17_7_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_7_ex1_starter.cpp:7:9: warning: unused variable 'data' [-Wunused-variable]
+    7 |     int data[20]{};
+      |         ^~~~
+1 warning generated.
+
+
+## 17.8 — pass
+- **warning**: 17_8_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_8_ex1_starter.cpp:4:25: warning: unused parameter 'arr' [-Wunused-parameter]
+    4 | int sumArray(const int* arr, int count) {
+      |                         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_8_ex1_starter.cpp:4:34: warning: unused parameter 'count' [-Wunused-parameter]
+    4 | int su
+
+## 17.x — pass
+- **warning**: 17_x_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_x_ex1_starter.cpp:9:24: warning: unused variable 'arr' [-Wunused-variable]
+    9 |     std::array<int, 5> arr{};
+      |                        ^~~
+1 warning generated.
+
+- **warning**: 17_x_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_x_ex2_starter.cpp:5:35: warning: unused parameter 'table' [-Wunused-parameter]
+    5 | int countStartingWith(const char* table[], int size, char target)
+      |                                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/17_x_ex2_starter.cpp:5:48: warning: unused parameter 'size' 
+
+## 18.2 — pass
+- **warning**: 18_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/18_2_ex2_starter.cpp:7:47: warning: unused parameter 'target' [-Wunused-parameter]
+    7 | auto findFirst(const std::vector<int>& v, int target)
+      |                                               ^
+1 warning generated.
+
+
 ## 2.10 — pass
 - **warning**: 2_10_ex2_starter: compiler warnings:
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/2_10_ex2_starter.cpp:7:21: warning: unused parameter 'value' [-Wunused-parameter]

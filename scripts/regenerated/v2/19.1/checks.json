@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int* p = new int{3};\n    int* q = p;\n    *q = 99;\n    std::cout << *p << \"\\n\";\n    delete p;\n    p = nullptr;\n}\n```",
+    "options": null,
+    "answer": "99",
+    "explanation_md": "`p` and `q` both point to the same heap-allocated `int`. Writing `*q = 99` modifies that object, so reading `*p` afterwards yields `99`. They are two pointers to one location, not two separate copies."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After the following code runs, what is the state of the heap block that was allocated?\n\n```cpp\nint* p = new int{10};\ndelete p;\np = nullptr;\n```",
+    "options": {
+      "a": "The block is freed and `p` is a null pointer — safe to use `p` as a guard",
+      "b": "The block is freed, but `p` still points to the old address",
+      "c": "Setting `p = nullptr` automatically frees the block",
+      "d": "The block remains allocated until the program exits"
+    },
+    "answer": "a",
+    "explanation_md": "`delete p` frees the heap block. Then `p = nullptr` makes `p` a null pointer, so any subsequent dereference (`*p`) will crash visibly rather than silently reading freed memory. Option b describes what happens without the null assignment; c and d are both false."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program contains one bug. What is it?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 7;\n    int* p = &x;\n    delete p;\n    std::cout << \"done\\n\";\n}\n```",
+    "options": {
+      "a": "The pointer `p` is never set to `nullptr` after `delete`",
+      "b": "`delete` is called on a stack variable, which is undefined behavior",
+      "c": "`x` should be declared `const` before taking its address",
+      "d": "The program prints `done` but should print `7`"
+    },
+    "answer": "b",
+    "explanation_md": "`x` lives on the stack, not the heap. `delete` must only be used on memory returned by `new`. Passing a stack address to `delete` is undefined behavior — the heap's bookkeeper has no record of that address. Option a describes a style recommendation, not the actual bug here."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int* a = new int{1};\n    int* b = new int{2};\n    *a += *b;\n    delete b;\n    b = nullptr;\n    std::cout << *a << \"\\n\";\n    delete a;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`*a` is initialised to 1 and `*b` to 2. `*a += *b` adds 2 into the location `a` points to, making `*a == 3`. Then `b` is freed (and nulled), and `*a` is printed before `a` is freed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes a **memory leak**?",
+    "options": {
+      "a": "Reading from memory after it has been `delete`d",
+      "b": "Allocating heap memory with `new` and never calling `delete` on that pointer",
+      "c": "Declaring more local variables than the stack can hold",
+      "d": "Calling `delete` on the same pointer twice"
+    },
+    "answer": "b",
+    "explanation_md": "A memory leak occurs when heap memory is allocated but the corresponding `delete` is never called, so the block is never returned to the system. Option a describes a use-after-free, option c describes a stack overflow, and option d describes a double-delete."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Planet Distance Lookup with Enum Index",
+    "prompt_md": "## Goal\nRead a planet index from stdin and print its average distance from the Sun in astronomical units (AU) using an enum-indexed vector.\n\n## Input\n- Line 1: a single integer `n` (0 ≤ n ≤ 7) representing a planet index.\n\n## Output\n- Print exactly one line: `Distance: X AU` where X is the distance for that planet.\n\n## Requirements\n1. Define an unscoped enum `Planet` with values `mercury`, `venus`, `earth`, `mars`, `jupiter`, `saturn`, `uranus`, `neptune`, and a sentinel `numPlanets`.\n2. Create a `std::vector<double>` of size `numPlanets` and assign these AU values by enum index: mercury=0.39, venus=0.72, earth=1.00, mars=1.52, jupiter=5.20, saturn=9.58, uranus=19.22, neptune=30.05.\n3. Read `n` from stdin, use it as the subscript, and print the result with exactly 2 decimal places.\n4. Hidden tests use n=0 (mercury) and n=7 (neptune).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <vector>\n\nenum Planet { mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, numPlanets };\n\nint main()\n{\n    // TODO: create a vector<double> of size numPlanets and fill it with AU values\n    // mercury=0.39, venus=0.72, earth=1.00, mars=1.52,\n    // jupiter=5.20, saturn=9.58, uranus=19.22, neptune=30.05\n\n    int n{};\n    std::cin >> n;\n\n    // TODO: print \"Distance: X AU\" with 2 decimal places using the enum index\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <vector>\n\nenum Planet { mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, numPlanets };\n\nint main()\n{\n    std::vector<double> au(numPlanets);\n    au[mercury]  = 0.39;\n    au[venus]    = 0.72;\n    au[earth]    = 1.00;\n    au[mars]     = 1.52;\n    au[jupiter]  = 5.20;\n    au[saturn]   = 9.58;\n    au[uranus]   = 19.22;\n    au[neptune]  = 30.05;\n\n    int n{};\n    std::cin >> n;\n\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Distance: \" << au[n] << \" AU\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: earth (index 2)",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "Distance: 1.00 AU\n"
+      },
+      {
+        "label": "Hidden: mercury (index 0)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Distance: 0.39 AU\n"
+      },
+      {
+        "label": "Hidden: neptune (index 7)",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Distance: 30.05 AU\n"
+      }
+    ]
+  },
+  {
+    "title": "Quarterly Sales Report — Fix the Bug",
+    "prompt_md": "## Goal\nFix the one logic bug in this program that reads four quarterly sales figures and prints the total.\n\n## Input\n- Line 1: integer `q1`. Line 2: integer `q2`. Line 3: integer `q3`. Line 4: integer `q4`.\n\n## Output\n- Print exactly one line: `Total: N` where N is the sum of all four quarters.\n\n## Requirements\n1. The program uses an enum `Quarter { q1, q2, q3, q4, numQuarters }` and a vector sized with `numQuarters`.\n2. The bug causes only three quarters to be summed instead of four.\n3. After your fix, hidden tests must pass with various input combinations.\n4. Do not change the enum, the vector, or the output format — only fix the loop.\n\n## Notes\n- The bug is a logic error (wrong loop bound); the starter compiles and runs but produces wrong output.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nenum Quarter { q1, q2, q3, q4, numQuarters };\n\nint main()\n{\n    std::vector<int> sales(numQuarters);\n\n    for (int i = 0; i < numQuarters; ++i)\n        std::cin >> sales[i];\n\n    int total = 0;\n    for (int i = 0; i < numQuarters - 1; ++i)  // bug is here\n        total += sales[i];\n\n    std::cout << \"Total: \" << total << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nenum Quarter { q1, q2, q3, q4, numQuarters };\n\nint main()\n{\n    std::vector<int> sales(numQuarters);\n\n    for (int i = 0; i < numQuarters; ++i)\n        std::cin >> sales[i];\n\n    int total = 0;\n    for (int i = 0; i < numQuarters; ++i)\n        total += sales[i];\n\n    std::cout << \"Total: \" << total << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: four equal quarters",
+        "is_sample": true,
+        "stdin": "100\n100\n100\n100\n",
+        "expected_stdout": "Total: 400\n"
+      },
+      {
+        "label": "Hidden: varied values",
+        "is_sample": false,
+        "stdin": "50\n75\n120\n90\n",
+        "expected_stdout": "Total: 335\n"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0\n0\n0\n0\n",
+        "expected_stdout": "Total: 0\n"
+      }
+    ]
+  }
+]

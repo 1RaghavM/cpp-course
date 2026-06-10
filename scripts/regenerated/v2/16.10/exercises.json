@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Read N Integers and Print Them in Reverse",
+    "prompt_md": "## Goal\nRead N integers from stdin into a `std::vector<int>`, then print them in reverse order, one per line.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20).\n- Lines 2 through N+1: one integer per line.\n\n## Output\n- Print exactly N lines: the integers in reverse order (last-entered first).\n\n## Requirements\n1. Build the vector using `push_back` inside a loop — do not construct with a fixed size.\n2. After reading all N integers, iterate from the last element to the first and print each on its own line.\n3. Hidden tests use N=1 (single element) and N=5 with negative values.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> nums;\n    // TODO: use push_back in a loop to read n integers\n\n    // TODO: print the integers in reverse order, one per line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> nums;\n    nums.reserve(n);\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    for (int i = n - 1; i >= 0; --i)\n        std::cout << nums[i] << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three integers",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "30\n20\n10\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42\n"
+      },
+      {
+        "label": "Hidden: five values including negatives",
+        "is_sample": false,
+        "stdin": "5\n-3\n7\n0\n-1\n5\n",
+        "expected_stdout": "5\n-1\n0\n7\n-3\n"
+      }
+    ]
+  },
+  {
+    "title": "Capped Average — Complete the Function",
+    "prompt_md": "## Goal\nComplete the function `cappedAverage` that takes a `std::vector<int>` by const reference and an integer cap, resizes the internal working copy so it contains only the first `cap` elements (or all elements if the vector is smaller than `cap`), then returns the average of those elements as a `double`.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20).\n- Line 2: N space-separated integers.\n- Line 3: integer `cap` (1 ≤ cap ≤ 20).\n\n## Output\n- Print exactly one line: the average rounded to 2 decimal places, e.g. `Average: 3.50`.\n\n## Requirements\n1. The function signature must be `double cappedAverage(const std::vector<int>& data, int cap)`.\n2. Inside the function, make a local copy of `data`, then call `resize` on the copy so it has `min(cap, (int)data.size())` elements.\n3. Sum the elements of the resized copy and divide by its new size to get the average.\n4. `main` reads N, reads N integers, reads cap, calls `cappedAverage`, and prints the result.\n5. Hidden tests: cap larger than N (use all elements); cap=1.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <vector>\n\n// TODO: complete this function\n// It should make a local copy of data, resize it to min(cap, data.size()),\n// then return the average of the resized copy as a double.\ndouble cappedAverage(const std::vector<int>& data, int cap)\n{\n    return 0.0; // replace with your implementation\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    int cap{};\n    std::cin >> cap;\n\n    double avg = cappedAverage(nums, cap);\n    std::cout << std::fixed << std::setprecision(2) << \"Average: \" << avg << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <vector>\n\ndouble cappedAverage(const std::vector<int>& data, int cap)\n{\n    std::vector<int> copy = data;\n    int newSize = (cap < (int)copy.size()) ? cap : (int)copy.size();\n    copy.resize(newSize);\n\n    double sum = 0.0;\n    for (int i = 0; i < (int)copy.size(); ++i)\n        sum += copy[i];\n\n    return sum / (double)copy.size();\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    int cap{};\n    std::cin >> cap;\n\n    double avg = cappedAverage(nums, cap);\n    std::cout << std::fixed << std::setprecision(2) << \"Average: \" << avg << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: cap smaller than N",
+        "is_sample": true,
+        "stdin": "5\n10 20 30 40 50\n3\n",
+        "expected_stdout": "Average: 20.00\n"
+      },
+      {
+        "label": "Hidden: cap larger than N (use all)",
+        "is_sample": false,
+        "stdin": "3\n6 9 12\n10\n",
+        "expected_stdout": "Average: 9.00\n"
+      },
+      {
+        "label": "Hidden: cap=1",
+        "is_sample": false,
+        "stdin": "4\n7 3 5 1\n1\n",
+        "expected_stdout": "Average: 7.00\n"
+      }
+    ]
+  }
+]

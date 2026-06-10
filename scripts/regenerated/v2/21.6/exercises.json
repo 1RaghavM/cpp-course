@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Negate a 2D Integer Vector",
+    "prompt_md": "## Goal\nOverload `operator-()` (unary minus) and `operator!()` for a `Vec2` struct so that negation flips both components and `!` returns whether both components are zero.\n\n## Input\n- Line 1: two integers `x` and `y` (each in range -100 to 100), separated by a space.\n\n## Output\n- Line 1: the negated vector printed as `x y`.\n- Line 2: `zero` if the original vector was (0, 0), otherwise `nonzero`.\n\n## Requirements\n1. `operator-()` must be a `const` member function that returns a new `Vec2` with both components negated.\n2. `operator!()` must be a `const` member function that returns `bool` — `true` when both `x` and `y` are `0`.\n3. Do not modify the original `Vec2` object inside either operator.\n4. The negated vector must be computed from the original, not from a separate variable.\n5. Hidden tests include the zero vector (0 0) and a vector with one zero component (0 5).",
+    "starter_code": "#include <iostream>\n\nstruct Vec2 {\n    int x{};\n    int y{};\n\n    // TODO: replace this stub with the real negation — return Vec2{ -x, -y }\n    Vec2 operator-() const { return *this; }\n\n    // TODO: replace this stub — return true when x == 0 && y == 0\n    bool operator!() const { return false; }\n};\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n    Vec2 v{ x, y };\n    Vec2 neg = -v;\n    std::cout << neg.x << ' ' << neg.y << '\\n';\n    std::cout << (!v ? \"zero\" : \"nonzero\") << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Vec2 {\n    int x{};\n    int y{};\n\n    Vec2 operator-() const {\n        return Vec2{ -x, -y };\n    }\n\n    bool operator!() const {\n        return x == 0 && y == 0;\n    }\n};\n\nint main() {\n    int x{}, y{};\n    std::cin >> x >> y;\n    Vec2 v{ x, y };\n    Vec2 neg = -v;\n    std::cout << neg.x << ' ' << neg.y << '\\n';\n    std::cout << (!v ? \"zero\" : \"nonzero\") << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic nonzero vector",
+        "is_sample": true,
+        "stdin": "3 -7",
+        "expected_stdout": "-3 7\nnonzero"
+      },
+      {
+        "label": "Hidden: zero vector",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "0 0\nzero"
+      },
+      {
+        "label": "Hidden: one zero component",
+        "is_sample": false,
+        "stdin": "0 5",
+        "expected_stdout": "0 -5\nnonzero"
+      }
+    ]
+  },
+  {
+    "title": "Complete applyNegation: Negate Elements in a Fixed Array",
+    "prompt_md": "## Goal\nComplete `Celsius::operator-()` and the function `applyNegation` that fills an output array with the negated value of each element.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5).\n- Lines 2..N+1: one integer per line representing a temperature value.\n\n## Output\n- N lines, each containing the negated temperature value.\n\n## Requirements\n1. Complete `Celsius::operator-()` as a `const` member function returning a new `Celsius` with the negated value.\n2. Complete `applyNegation(const Celsius arr[], int n, Celsius out[])` so that `out[i] = -arr[i]` for each `i` in `[0, n)`.\n3. Each output temperature is printed on its own line as a plain integer.\n4. Hidden tests include negative inputs (which negate to positive) and N = 1.",
+    "starter_code": "#include <iostream>\n\nstruct Celsius {\n    int value{};\n\n    // TODO: implement — return a new Celsius with negated value\n    Celsius operator-() const { return *this; }\n};\n\n// TODO: fill out[i] with the negation of arr[i] for each i in [0, n)\nvoid applyNegation(const Celsius arr[], int n, Celsius out[]) {\n    for (int i = 0; i < n; ++i)\n        out[i] = arr[i]; // TODO: fix this line\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    Celsius temps[5]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> temps[i].value;\n    Celsius result[5]{};\n    applyNegation(temps, n, result);\n    for (int i = 0; i < n; ++i)\n        std::cout << result[i].value << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Celsius {\n    int value{};\n\n    Celsius operator-() const {\n        return Celsius{ -value };\n    }\n};\n\nvoid applyNegation(const Celsius arr[], int n, Celsius out[]) {\n    for (int i = 0; i < n; ++i)\n        out[i] = -arr[i];\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    Celsius temps[5]{};\n    for (int i = 0; i < n; ++i)\n        std::cin >> temps[i].value;\n    Celsius result[5]{};\n    applyNegation(temps, n, result);\n    for (int i = 0; i < n; ++i)\n        std::cout << result[i].value << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three temperatures",
+        "is_sample": true,
+        "stdin": "3\n10\n-5\n0",
+        "expected_stdout": "-10\n5\n0"
+      },
+      {
+        "label": "Hidden: single negative temperature",
+        "is_sample": false,
+        "stdin": "1\n-20",
+        "expected_stdout": "20"
+      },
+      {
+        "label": "Hidden: five mixed temperatures",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5",
+        "expected_stdout": "-1\n-2\n-3\n-4\n-5"
+      }
+    ]
+  }
+]

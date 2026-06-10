@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print First and Last Elements of a Vector",
+    "prompt_md": "## Goal\nRead N integers into a `std::vector<int>` and print the first and last elements.\n\n## Input\n- Line 1: integer N (2 ≤ N ≤ 100), the number of integers that follow.\n- Lines 2..N+1: one integer per line.\n\n## Output\n- Line 1: `First: X` where X is the first element.\n- Line 2: `Last: Y` where Y is the last element.\n- No extra blank lines.\n\n## Requirements\n1. Store all N integers in a `std::vector<int>` before printing anything.\n2. Use index `0` for the first element and index `N-1` for the last element.\n3. The output labels are exactly `First: ` and `Last: ` (capital F/L, colon, one space).\n4. N is guaranteed to be at least 2, so first and last are always different elements.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    std::vector<int> values;\n    // TODO: read n integers into values using a for loop and push_back,\n    // or resize + index assignment\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        values.push_back(x);\n    }\n\n    // TODO: print the first and last elements in the format shown\n    std::cout << \"First: \" << /* your code here */ 0 << '\\n';\n    std::cout << \"Last: \"  << /* your code here */ 0 << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    std::vector<int> values;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        values.push_back(x);\n    }\n\n    std::cout << \"First: \" << values[0]       << '\\n';\n    std::cout << \"Last: \"  << values[n - 1]   << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "5\n3\n7\n1\n9\n4\n",
+        "expected_stdout": "First: 3\nLast: 4"
+      },
+      {
+        "label": "Hidden: two elements",
+        "is_sample": false,
+        "stdin": "2\n42\n99\n",
+        "expected_stdout": "First: 42\nLast: 99"
+      },
+      {
+        "label": "Hidden: first equals last value different positions",
+        "is_sample": false,
+        "stdin": "4\n-5\n10\n20\n-5\n",
+        "expected_stdout": "First: -5\nLast: -5"
+      }
+    ]
+  },
+  {
+    "title": "Find the Off-By-One Bug",
+    "prompt_md": "## Goal\nThe program below reads N integers and is supposed to print the element at the middle index (using integer division: index `N/2`). It contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 99, always odd so there is a clear middle).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- One line: `Middle: X` where X is the element at index `N/2`.\n\n## Requirements\n1. The middle index is computed as `N / 2` (integer division).\n2. Output format is exactly `Middle: X`.\n3. The bug is a logic error related to array indexing — do not change the program structure, only fix the one bug.\n4. The hidden tests check the correct middle element is printed for various odd-length sequences.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n\n    // BUG: there is one logic error in the index used below\n    int mid_index = n / 2 + 1;\n    std::cout << \"Middle: \" << data[mid_index] << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n\n    int mid_index = n / 2;\n    std::cout << \"Middle: \" << data[mid_index] << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 elements",
+        "is_sample": true,
+        "stdin": "5\n10\n20\n30\n40\n50\n",
+        "expected_stdout": "Middle: 30"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n77\n",
+        "expected_stdout": "Middle: 77"
+      },
+      {
+        "label": "Hidden: 7 elements",
+        "is_sample": false,
+        "stdin": "7\n2\n4\n6\n8\n10\n12\n14\n",
+        "expected_stdout": "Middle: 8"
+      }
+    ]
+  }
+]

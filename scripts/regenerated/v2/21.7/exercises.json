@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compare Integer Pairs Lexicographically",
+    "prompt_md": "## Goal\nOverload `operator==` and `operator<` for a `Pair` struct that holds two integers, using lexicographic ordering (compare `a` first, break ties by `b`).\n\n## Input\n- Line 1: four integers `a1 b1 a2 b2` separated by spaces, representing two `Pair` objects.\n\n## Output\n- Line 1: `1` if the pairs are equal, `0` otherwise.\n- Line 2: `1` if the first pair is less than the second, `0` otherwise.\n\n## Requirements\n1. `operator==` must return `true` only when both `a` and `b` are equal.\n2. `operator<` must use lexicographic ordering: compare `a` first; if equal, compare `b`.\n3. Both operators must be `const` member functions.\n4. Hidden tests include equal pairs and pairs where only `b` differs.",
+    "starter_code": "#include <iostream>\n\nstruct Pair {\n    int a{};\n    int b{};\n\n    // TODO: overload operator== — true when both a and b are equal\n    bool operator==(const Pair& rhs) const { return false; }\n\n    // TODO: overload operator< — lexicographic: compare a first, then b\n    bool operator<(const Pair& rhs) const { return false; }\n};\n\nint main() {\n    int a1{}, b1{}, a2{}, b2{};\n    std::cin >> a1 >> b1 >> a2 >> b2;\n    Pair p{ a1, b1 };\n    Pair q{ a2, b2 };\n    std::cout << (p == q) << '\\n';\n    std::cout << (p < q) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Pair {\n    int a{};\n    int b{};\n\n    bool operator==(const Pair& rhs) const {\n        return a == rhs.a && b == rhs.b;\n    }\n\n    bool operator<(const Pair& rhs) const {\n        if (a != rhs.a) return a < rhs.a;\n        return b < rhs.b;\n    }\n};\n\nint main() {\n    int a1{}, b1{}, a2{}, b2{};\n    std::cin >> a1 >> b1 >> a2 >> b2;\n    Pair p{ a1, b1 };\n    Pair q{ a2, b2 };\n    std::cout << (p == q) << '\\n';\n    std::cout << (p < q) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: different a values",
+        "is_sample": true,
+        "stdin": "1 5 2 3",
+        "expected_stdout": "0\n1"
+      },
+      {
+        "label": "Hidden: equal pairs",
+        "is_sample": false,
+        "stdin": "3 7 3 7",
+        "expected_stdout": "1\n0"
+      },
+      {
+        "label": "Hidden: same a, different b",
+        "is_sample": false,
+        "stdin": "4 2 4 9",
+        "expected_stdout": "0\n1"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Comparison Operator Bug in Temperature Range Check",
+    "prompt_md": "## Goal\nThe program below reads a temperature and checks whether it is within a `[low, high]` range. It should print `in range` or `out of range`, but it has a logic bug. Find and fix it.\n\n## Input\n- Line 1: three integers `low high temp`, separated by spaces.\n\n## Output\n- `in range` if `low <= temp <= high`, otherwise `out of range`.\n\n## Requirements\n1. The program contains exactly one logic bug related to a comparison operator.\n2. The fix must not change the overall structure — only correct the buggy expression.\n3. Hidden tests cover the boundary values (temp == low, temp == high) and a temp below low.",
+    "starter_code": "#include <iostream>\n\nstruct TempRange {\n    int low{};\n    int high{};\n\n    bool operator<(const TempRange& rhs) const {\n        return low < rhs.low;\n    }\n\n    // checks whether value is in [low, high]\n    bool contains(int value) const {\n        return value > low && value < high;  // BUG: should allow boundary values\n    }\n};\n\nint main() {\n    int low{}, high{}, temp{};\n    std::cin >> low >> high >> temp;\n    TempRange range{ low, high };\n    std::cout << (range.contains(temp) ? \"in range\" : \"out of range\") << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct TempRange {\n    int low{};\n    int high{};\n\n    bool operator<(const TempRange& rhs) const {\n        return low < rhs.low;\n    }\n\n    bool contains(int value) const {\n        return value >= low && value <= high;\n    }\n};\n\nint main() {\n    int low{}, high{}, temp{};\n    std::cin >> low >> high >> temp;\n    TempRange range{ low, high };\n    std::cout << (range.contains(temp) ? \"in range\" : \"out of range\") << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value inside range",
+        "is_sample": true,
+        "stdin": "10 30 20",
+        "expected_stdout": "in range"
+      },
+      {
+        "label": "Hidden: value at boundary low",
+        "is_sample": false,
+        "stdin": "10 30 10",
+        "expected_stdout": "in range"
+      },
+      {
+        "label": "Hidden: value below low",
+        "is_sample": false,
+        "stdin": "10 30 5",
+        "expected_stdout": "out of range"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\n    int m_vol{};\npublic:\n    Box(int v) : m_vol{v} {}\n    friend Box operator+(const Box& a, const Box& b);\n    int vol() const { return m_vol; }\n};\n\nBox operator+(const Box& a, const Box& b) {\n    return Box{a.m_vol + b.m_vol};\n}\n\nint main() {\n    Box x{10}, y{25};\n    Box z = x + y;\n    std::cout << z.vol() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "35",
+    "explanation_md": "The friend `operator+` accesses `m_vol` directly (private access), sums 10+25=35, and returns `Box{35}`. `z.vol()` returns 35."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why do arithmetic operators like `operator+` use `const T&` parameters rather than `T` parameters?",
+    "options": {
+      "a": "Because `operator+` can only accept `const` arguments at the call site",
+      "b": "To avoid unnecessary copies of each operand on every call to the operator",
+      "c": "Because non-const references would allow callers to pass rvalue expressions",
+      "d": "The compiler requires `const` references specifically for overloaded operators"
+    },
+    "answer": "b",
+    "explanation_md": "Taking by `const T&` passes a reference to the existing object with no copy. Taking by value `T` would make a full copy of each operand every time the operator is called, which is wasteful. `const` ensures the function promises not to modify its arguments."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class `Color` has private fields `r`, `g`, `b`. Which declaration inside the class correctly grants `operator+` private access?",
+    "options": {
+      "a": "`Color operator+(const Color& a, const Color& b);`",
+      "b": "`friend Color operator+(const Color& a, const Color& b);`",
+      "c": "`static Color operator+(const Color& a, const Color& b);`",
+      "d": "`public: Color operator+(const Color& a, const Color& b);`"
+    },
+    "answer": "b",
+    "explanation_md": "The `friend` keyword in a class declaration grants the named external function access to private and protected members. Option (a) without `friend` is just a member function declaration (wrong signature for a binary op). `static` and `public` do not confer friend access."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass N {\n    int m_v{};\npublic:\n    N(int v) : m_v{v} {}\n    friend N operator+(const N& a, const N& b);\n    int v() const { return m_v; }\n};\n\nN operator+(const N& a, const N& b) {\n    return N{a.m_v + b.m_v};\n}\n\nint main() {\n    N a{3}, b{4}, c{5};\n    N r = a + b + c;\n    std::cout << r.v() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "`a + b + c` is `(a + b) + c` = `N{7} + N{5}` = `N{12}`. Each call to `operator+` returns a new object by value, enabling chaining."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is intended to add two `Score` objects but has a bug:\n\n```cpp\n#include <iostream>\n\nclass Score {\n    int m_pts{};\npublic:\n    Score(int p) : m_pts{p} {}\n    friend Score& operator+(Score& a, const Score& b);\n    int pts() const { return m_pts; }\n};\n\nScore& operator+(Score& a, const Score& b) {\n    a.m_pts += b.m_pts;\n    return a;\n}\n\nint main() {\n    Score s1{10}, s2{20};\n    Score s3 = s1 + s2;\n    std::cout << s1.pts() << \" \" << s3.pts() << \"\\n\";\n    return 0;\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "`friend` functions cannot take non-const reference parameters",
+      "b": "The operator modifies `a` in-place and returns a reference to it, so `s1` is mutated and `s3` is an alias for `s1` — `a + b` should return a new object by value, not modify the left operand",
+      "c": "The `Score` class needs a default constructor for the operator to work",
+      "d": "Binary operators can only be defined as member functions, not friend functions"
+    },
+    "answer": "b",
+    "explanation_md": "Arithmetic `operator+` must return a *new* value, not mutate an operand. This implementation changes `s1` and returns a reference to it, so after the call `s1.pts()` is 30 and `s3` is just another name for `s1`. The fix: `return Score{a.m_pts + b.m_pts};` with a by-value return and `const Score&` for the first parameter."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A class `Distance` has a private field `m_meters` and a public accessor `double meters() const`. Which approach lets you write `operator+` as a normal (non-friend) free function?",
+    "options": {
+      "a": "Access `m_meters` directly — private fields are visible to free functions in the same file",
+      "b": "Use the public `meters()` accessor to read the value and construct the result",
+      "c": "Declare `operator+` inside the class body without `friend`",
+      "d": "Add `static` to the function signature so it can bypass access control"
+    },
+    "answer": "b",
+    "explanation_md": "A normal free function can only access `public` members. Since `meters()` is public, it provides exactly the data needed. `m_meters` is private and inaccessible without a `friend` declaration. `static` has no effect on access control."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Kg {\n    int m_val{};\npublic:\n    Kg(int v) : m_val{v} {}\n    int val() const { return m_val; }\n};\n\nKg operator+(const Kg& a, const Kg& b) {\n    return Kg{a.val() + b.val()};\n}\n\nint main() {\n    Kg x{4}, y{7};\n    Kg z = x + y;\n    std::cout << z.val() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "11",
+    "explanation_md": "`operator+` uses the public `val()` accessor to read 4 and 7, sums them to 11, and returns `Kg{11}`. No friend access is needed because `val()` is public."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Angle {\n    double m_deg{};\npublic:\n    Angle(double d) : m_deg{d} {}\n};\n\nAngle operator+(const Angle& a, const Angle& b) {\n    return Angle{a.m_deg + b.m_deg};\n}\n\nint main() {\n    Angle a{30.0}, b{45.0};\n    Angle r = a + b;\n    return 0;\n}\n```",
+    "options": {
+      "a": "Binary operators must be defined inside the class body as member functions",
+      "b": "`operator+` is a normal free function that tries to access private `m_deg` — this requires either a public accessor or a `friend` declaration",
+      "c": "The constructor parameter must be `int`, not `double`",
+      "d": "`Angle` objects cannot be returned by value from a free function"
+    },
+    "answer": "b",
+    "explanation_md": "`m_deg` is private. A normal free function has no access to private members. The fix is either to add a public `double deg() const { return m_deg; }` accessor and use it in the operator, or to add `friend Angle operator+(const Angle&, const Angle&);` inside the `Angle` class."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer a normal free function over a friend function for an overloaded operator?",
+    "options": {
+      "a": "Always — friend functions are deprecated in modern C++",
+      "b": "When the class already provides public accessors that expose all the data the operator needs",
+      "c": "When you need the operator to modify one of its operands",
+      "d": "Only when both operands are the same type"
+    },
+    "answer": "b",
+    "explanation_md": "If the class exposes the required data through public accessors, a normal free function works without any coupling to the class's private implementation. Friend functions are appropriate when no suitable public accessor exists. Friends are not deprecated — they are just a stronger coupling than necessary when public accessors suffice."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Meter {\n    int m_v{};\npublic:\n    Meter(int v) : m_v{v} {}\n    int v() const { return m_v; }\n};\n\nMeter operator+(const Meter& a, const Meter& b) {\n    return Meter{a.v() + b.v()};\n}\n\nint main() {\n    Meter a{10};\n    Meter b{20};\n    Meter c{30};\n    std::cout << (a + b + c).v() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "60",
+    "explanation_md": "`a + b` = `Meter{30}`, then `Meter{30} + c` = `Meter{60}`. The result is a temporary, and `.v()` returns 60. Chaining works because each call returns a new value."
+  }
+]

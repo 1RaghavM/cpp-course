@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum a vector using iterators",
+    "prompt_md": "## Goal\nRead N integers and compute their sum using an iterator-based loop, then print the result.\n\n## Input\n- Line 1: integer N (1 <= N <= 20)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly one line: `Sum: <value>` followed by a newline.\n\n## Requirements\n1. Store the integers in a `std::vector<int>`.\n2. Compute the sum using a `for` loop that starts at `v.begin()` and stops at `v.end()`, dereferencing the iterator to access each element.\n3. Do not use integer indexing (`v[i]`) or range-based for loops in the summation loop.\n4. Print `Sum: ` (capital S, colon, space) followed by the total.\n5. N = 1 must work correctly.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n\n    int sum = 0;\n    // TODO: use an iterator loop (begin/end) to accumulate sum\n    // for (auto it = v.begin(); it != v.end(); ++it)\n    //     sum += ???;\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n\n    int sum = 0;\n    for (auto it = v.begin(); it != v.end(); ++it)\n        sum += *it;\n\n    std::cout << \"Sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: four integers",
+        "is_sample": true,
+        "stdin": "4\n10\n20\n30\n40\n",
+        "expected_stdout": "Sum: 100\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n7\n",
+        "expected_stdout": "Sum: 7\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "3\n-5\n3\n-2\n",
+        "expected_stdout": "Sum: -4\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the iterator-based find function",
+    "prompt_md": "## Goal\nComplete the function `findFirst` that searches a `std::vector<int>` for a target value using iterators and returns the iterator pointing at the first match, or `v.end()` if not found.\n\n## Input\n- Line 1: integer N (1 <= N <= 20)\n- Lines 2..N+1: one integer per line (the vector values)\n- Line N+2: integer T (the target to search for)\n\n## Output\nIf the target is found, print `Found: <index>` where `<index>` is the 0-based position of the first occurrence, followed by a newline.\nIf the target is not found, print `Not found` followed by a newline.\n\n## Requirements\n1. Implement `auto findFirst(const std::vector<int>& v, int target)` using an iterator loop that starts at `v.begin()` and stops at `v.end()`.\n2. Return the iterator pointing at the first element equal to `target`, or `v.end()` if no element matches.\n3. In `main`, call `findFirst` and compute the 0-based index using iterator subtraction: `it - v.begin()`.\n4. Handle: target not present, target at first position, target at last position.\n\n## Notes\n- Iterator subtraction `it - v.begin()` gives the 0-based index for `std::vector` iterators.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement findFirst\n// It should search v for target using an iterator loop.\n// Return an iterator to the first matching element, or v.end() if not found.\nauto findFirst(const std::vector<int>& v, int target)\n{\n    // TODO: write iterator loop here\n    return v.end();  // placeholder\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n    int target;\n    std::cin >> target;\n\n    auto it = findFirst(v, target);\n    if (it != v.end())\n        std::cout << \"Found: \" << (it - v.begin()) << '\\n';\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nauto findFirst(const std::vector<int>& v, int target)\n{\n    for (auto it = v.begin(); it != v.end(); ++it)\n        if (*it == target)\n            return it;\n    return v.end();\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n    int target;\n    std::cin >> target;\n\n    auto it = findFirst(v, target);\n    if (it != v.end())\n        std::cout << \"Found: \" << (it - v.begin()) << '\\n';\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: target present",
+        "is_sample": true,
+        "stdin": "5\n10\n20\n30\n20\n50\n20\n",
+        "expected_stdout": "Found: 1\n"
+      },
+      {
+        "label": "Hidden: target not found",
+        "is_sample": false,
+        "stdin": "4\n1\n2\n3\n4\n99\n",
+        "expected_stdout": "Not found\n"
+      },
+      {
+        "label": "Hidden: target at first position",
+        "is_sample": false,
+        "stdin": "3\n7\n8\n9\n7\n",
+        "expected_stdout": "Found: 0\n"
+      }
+    ]
+  }
+]

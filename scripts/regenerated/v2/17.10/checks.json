@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const char word[]{ \"cat\" };\n    std::cout << sizeof(word) << '\\n';\n    std::cout << word[0] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "4\nc",
+    "explanation_md": "`\"cat\"` has three letters plus a null terminator, so `sizeof(word)` is 4. `word[0]` is the first character `'c'`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You declare `char buf[5]{ \"Hello\" };` in C++. What happens?",
+    "options": {
+      "a": "The array stores `H e l l o` with no null terminator, which is valid.",
+      "b": "This is a compile error or truncates the string because `\"Hello\"` requires 6 bytes (5 letters + null terminator) but the array has only 5 slots.",
+      "c": "The array is automatically resized to 6 to fit the null terminator.",
+      "d": "The null terminator is placed at `buf[4]` by overwriting the last letter."
+    },
+    "answer": "b",
+    "explanation_md": "`\"Hello\"` requires 6 `char` slots: `H`, `e`, `l`, `l`, `o`, `\\0`. A `char[5]` only has 5. In C++, this is ill-formed — the compiler will reject it or warn about the truncated initializer. Always allocate at least `length + 1` for the null terminator."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const char text[]{ \"abc\" };\n    int len = 0;\n    for (const char* p = text; *p != '\\0'; ++p)\n        ++len;\n    std::cout << len << '\\n';\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "The loop counts characters until the null terminator. `\"abc\"` has three characters (`a`, `b`, `c`) followed by `\\0`. The loop increments `len` 3 times before `*p` equals `\\0`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is wrong with this code?\n\n```cpp\nchar a[]{ \"dog\" };\nchar b[]{ \"dog\" };\nif (a == b)\n    std::cout << \"same\\n\";\nelse\n    std::cout << \"different\\n\";\n```",
+    "options": {
+      "a": "C-style strings cannot be stored in arrays.",
+      "b": "`a` and `b` decay to pointers; `a == b` compares addresses (always false), not string content.",
+      "c": "The `else` branch is unreachable because the strings are identical.",
+      "d": "`a == b` compares the first characters only, not the whole string."
+    },
+    "answer": "b",
+    "explanation_md": "`a` and `b` are two separate arrays in different memory locations. When used in the `==` expression, they decay to `char*` pointers to those locations. The pointers are different, so the comparison is always false — it never compares the actual characters. Use `std::strcmp(a, b) == 0` or convert to `std::string` to compare content."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print `Hi` but instead prints garbage after it. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    char msg[10];\n    msg[0] = 'H';\n    msg[1] = 'i';\n    std::cout << msg << '\\n';\n}\n```",
+    "options": {
+      "a": "`msg` should be declared as `const char[]`.",
+      "b": "`msg` is not null-terminated; there is no `\\0` after `msg[1]`, so `std::cout` reads past `i` until a random zero byte.",
+      "c": "`msg[0]` and `msg[1]` cannot be assigned individually; the array must be initialized with a string literal.",
+      "d": "The array size 10 is too large for a 2-character string."
+    },
+    "answer": "b",
+    "explanation_md": "`msg` is not zero-initialized, so the bytes after `msg[1]` contain garbage. `std::cout` reads characters until it finds a `\\0`, so it prints `Hi` followed by whatever undefined bytes come next. The fix is either `char msg[10]{}` (zero-initialize all bytes) or explicitly write `msg[2] = '\\0'`."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "C-style Array Min and Max",
+    "prompt_md": "## Goal\nRead N integers into a C-style array, then print the minimum and maximum values.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- Line 1: `Min: M` where M is the smallest value.\n- Line 2: `Max: X` where X is the largest value.\n\n## Requirements\n1. Declare a C-style array of size 20 (`int data[20]`) and use only the first N elements.\n2. Read N integers from stdin into consecutive slots starting at index 0.\n3. Find the minimum and maximum by iterating indices 0 through N-1.\n4. Print exactly two lines in the format shown.\n5. Hidden tests cover N = 1 (single element), all identical values, and a mix of negative and positive integers.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[20]{};\n\n    // TODO: read n integers into data[0..n-1]\n\n    // TODO: find min and max among data[0..n-1]\n\n    // TODO: print \"Min: M\" and \"Max: X\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[20]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    int minVal = data[0];\n    int maxVal = data[0];\n    for (int i = 1; i < n; ++i) {\n        if (data[i] < minVal) minVal = data[i];\n        if (data[i] > maxVal) maxVal = data[i];\n    }\n\n    std::cout << \"Min: \" << minVal << '\\n';\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: five values",
+        "is_sample": true,
+        "stdin": "5\n3\n7\n1\n9\n4",
+        "expected_stdout": "Min: 1\nMax: 9"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42",
+        "expected_stdout": "Min: 42\nMax: 42"
+      },
+      {
+        "label": "Hidden: negative and positive mix",
+        "is_sample": false,
+        "stdin": "4\n-5\n3\n-1\n2",
+        "expected_stdout": "Min: -5\nMax: 3"
+      }
+    ]
+  },
+  {
+    "title": "Reverse a C-style Array",
+    "prompt_md": "## Goal\nThe program reads N integers into a C-style array and prints them in reverse order, but there is one planted bug to find and fix.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- One line containing the N integers in reverse order, separated by spaces, with no trailing space.\n\n## Requirements\n1. The starter code compiles and runs but produces the wrong output due to a single logic bug.\n2. Find and fix the bug so the output is the integers in reverse order.\n3. Hidden tests cover N = 1, N = 2, and an array where all values are the same.\n\n## Notes\n- The reversal must print values from index N-1 down to 0 on a single line separated by spaces.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    for (int i = 0; i < n; ++i) {  // bug: should iterate in reverse\n        if (i > 0) std::cout << ' ';\n        std::cout << data[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int data[10]{};\n    for (int i = 0; i < n; ++i) {\n        std::cin >> data[i];\n    }\n\n    for (int i = n - 1; i >= 0; --i) {\n        if (i < n - 1) std::cout << ' ';\n        std::cout << data[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three values",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30",
+        "expected_stdout": "30 20 10"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n99",
+        "expected_stdout": "99"
+      },
+      {
+        "label": "Hidden: five values",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5",
+        "expected_stdout": "5 4 3 2 1"
+      }
+    ]
+  }
+]
