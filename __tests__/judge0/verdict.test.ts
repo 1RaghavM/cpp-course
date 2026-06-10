@@ -26,6 +26,11 @@ describe("evaluateTestCases output normalisation", () => {
     expect(verdict.testResults[0]?.passed).toBe(false);
   });
 
+  it("fails when leading whitespace on an inner line differs", () => {
+    const verdict = evaluateTestCases(tc("a\n  b"), [accepted("a\nb")]);
+    expect(verdict.overallStatus).toBe("wrong_answer");
+  });
+
   it("fails when internal blank lines differ", () => {
     const verdict = evaluateTestCases(tc("a\n\nb"), [accepted("a\nb")]);
     expect(verdict.overallStatus).toBe("wrong_answer");
