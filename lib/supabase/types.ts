@@ -217,6 +217,36 @@ export interface Database {
         };
         Relationships: [];
       };
+      concept_check_reviews: {
+        Row: {
+          id: string;
+          user_id: string;
+          check_id: string;
+          interval_index: number;
+          next_due: string;
+          last_correct: boolean;
+          last_answered_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          check_id: string;
+          interval_index: number;
+          next_due: string;
+          last_correct: boolean;
+          last_answered_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          check_id?: string;
+          interval_index?: number;
+          next_due?: string;
+          last_correct?: boolean;
+          last_answered_at?: string;
+        };
+        Relationships: [];
+      };
       submissions: {
         Row: {
           id: string;
@@ -612,6 +642,7 @@ export type Exercise = Database["public"]["Tables"]["exercises"]["Row"];
 export type TestCase = Database["public"]["Tables"]["test_cases"]["Row"];
 export type ConceptCheck = Database["public"]["Tables"]["concept_checks"]["Row"];
 export type ConceptCheckAttempt = Database["public"]["Tables"]["concept_check_attempts"]["Row"];
+export type ConceptCheckReview = Database["public"]["Tables"]["concept_check_reviews"]["Row"];
 export type Submission = Database["public"]["Tables"]["submissions"]["Row"];
 export type Progress = Database["public"]["Tables"]["progress"]["Row"];
 export type Conversation = Database["public"]["Tables"]["conversations"]["Row"];
