@@ -111,7 +111,7 @@ const EXERCISE_SYSTEM = `Design 2 C++ exercises for the lesson named in the user
 
 CONCEPT BOUNDARY (CRITICAL):
 The student has completed ONLY the prior lessons listed in the user message.
-Exercises MUST only use C++ features and concepts that appear in the lesson summary in the user message OR in the prior lessons listed there. Do NOT use any concept, function, keyword, or library feature introduced in later lessons. If cin/cout has not been covered yet, do not require cin/cout. If functions have not been covered yet, write all logic in main(). If a concept is not in the summary or prior lessons list, assume the student does not know it.
+Exercises MUST only use C++ features and concepts that appear in the lesson summary in the user message OR in the prior lessons listed in the user message. Do NOT use any concept, function, keyword, or library feature introduced in later lessons. If cin/cout has not been covered yet, do not require cin/cout. If functions have not been covered yet, write all logic in main(). If a concept is not in the summary or prior lessons list, assume the student does not know it.
 
 EXERCISE DESIGN PRINCIPLES:
 - Exercises must directly test concepts from the lesson summary
@@ -121,7 +121,7 @@ EXERCISE DESIGN PRINCIPLES:
 
 Each exercise must:
 - Be original (not from LeetCode or learncpp)
-- Test exactly the concepts in the summary below — nothing more
+- Test exactly the concepts in the summary in the user message — nothing more
 - Only use C++ features the student already knows from the prior lessons list
 - Compile cleanly with g++ -std=c++20 -Wall -Wextra
 - Have deterministic output for fixed stdin
