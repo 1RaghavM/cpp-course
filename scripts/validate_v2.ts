@@ -50,7 +50,7 @@ const TOKEN_RULES: TokenRule[] = [
   { pattern: /\btemplate\b/, name: "template", introducedInChapter: 11 },
   { pattern: /\benum\b/, name: "enum", introducedInChapter: 13 },
   { pattern: /\bstruct\b/, name: "struct", introducedInChapter: 13 },
-  { pattern: /\bclass\b/, name: "class", introducedInChapter: 14 },
+  { pattern: /(?<!enum\s)\bclass\b/, name: "class", introducedInChapter: 14 },
   { pattern: /std::vector\b/, name: "std::vector", introducedInChapter: 16 },
   { pattern: /std::array\b/, name: "std::array", introducedInChapter: 17 },
   { pattern: /\bnew\b/, name: "dynamic allocation (new)", introducedInChapter: 19 },
