@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base { public: virtual ~Base() = default; };\nclass A : public Base { public: void hello() const { std::cout << \"A\\n\"; } };\nclass B : public Base { public: void hello() const { std::cout << \"B\\n\"; } };\n\nint main() {\n    A a;\n    Base* p = &a;\n    if (A* pa = dynamic_cast<A*>(p)) { pa->hello(); }\n    if (B* pb = dynamic_cast<B*>(p)) { pb->hello(); }\n    else { std::cout << \"not B\\n\"; }\n}\n```",
+    "options": null,
+    "answer": "A\nnot B",
+    "explanation_md": "`p` points to an `A` object. `dynamic_cast<A*>(p)` succeeds (returns a valid pointer), so `pa->hello()` prints `A`. `dynamic_cast<B*>(p)` fails because `*p` is an `A`, not a `B` — it returns `nullptr`. The `else` branch prints `not B`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `dynamic_cast<Derived*>(base_ptr)` return when the object pointed to by `base_ptr` is NOT a `Derived` or a class derived from `Derived`?",
+    "options": {
+      "a": "A pointer to the `Base` sub-object of the nearest compatible type.",
+      "b": "`nullptr`.",
+      "c": "An uninitialized pointer — behavior is undefined.",
+      "d": "It throws `std::bad_cast`."
+    },
+    "answer": "b",
+    "explanation_md": "For pointer casts, `dynamic_cast` returns `nullptr` on failure. Throwing `std::bad_cast` is the behavior for reference casts (e.g. `dynamic_cast<Derived&>(base_ref)`), not pointer casts. Always check the returned pointer for `nullptr` before using it."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can `dynamic_cast` only be used with polymorphic classes?",
+    "options": {
+      "a": "Non-polymorphic classes do not support inheritance.",
+      "b": "The cast relies on RTTI stored alongside the vtable, which only exists for classes with at least one virtual function.",
+      "c": "Non-polymorphic class pointers are incompatible with the `dynamic_cast` operator syntax.",
+      "d": "The linker strips type information for non-polymorphic classes to reduce binary size."
+    },
+    "answer": "b",
+    "explanation_md": "`dynamic_cast` performs a runtime type check using RTTI (Run-Time Type Information). RTTI is only generated for polymorphic classes — those with at least one virtual function — because it is stored alongside the vtable. Applying `dynamic_cast` to a non-polymorphic class is a compile error."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function receives an `Animal*` and calls `dynamic_cast<Dog*>`, `dynamic_cast<Cat*>`, and `dynamic_cast<Bird*>` in a chain. A senior developer flags this code. What is their most likely concern?",
+    "options": {
+      "a": "The function performs three runtime casts, each of which may throw an exception.",
+      "b": "The behavior differs per derived type, suggesting a virtual function in the base class would be more appropriate.",
+      "c": "`dynamic_cast` cannot be used more than once on the same pointer.",
+      "d": "The casts run in the wrong order and will always return `nullptr`."
+    },
+    "answer": "b",
+    "explanation_md": "A long `dynamic_cast` chain that dispatches differently per derived type is a code smell. If each derived type has distinct behavior for the same conceptual operation, that operation belongs in a virtual function in the base class. `dynamic_cast` is appropriate when you need derived-only functionality that genuinely cannot be expressed through the base interface."
+  }
+]

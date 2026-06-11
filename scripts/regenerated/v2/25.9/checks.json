@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual std::string id() const { return \"Base\"; }\n};\n\nclass Derived : public Base {\npublic:\n    std::string id() const override { return \"Derived\"; }\n};\n\nvoid report(Base b) {\n    std::cout << b.id() << \"\\n\";\n}\n\nint main() {\n    Derived d;\n    report(d);\n}\n```",
+    "options": null,
+    "answer": "Base",
+    "explanation_md": "`report` takes `Base` by value. When `d` is passed, it is sliced: only the `Base` portion is copied into parameter `b`. The vtable pointer in `b` is for `Base`, so `b.id()` dispatches to `Base::id`, printing `\"Base\"`. Changing the parameter to `const Base&` would fix this."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does object slicing happen when a derived object is assigned to a base-class value?",
+    "options": {
+      "a": "The base class destructor runs on the derived members during the copy.",
+      "b": "The copy constructor of the base class only copies base-class data members, discarding derived members.",
+      "c": "The compiler cannot determine the runtime type during a value copy.",
+      "d": "Virtual functions are disabled when an object is copied."
+    },
+    "answer": "b",
+    "explanation_md": "When you copy-construct or assign a derived object into a base-class variable, the base class's copy constructor (or copy-assignment operator) runs. It only knows about and copies the base-class data members. Derived members are simply not copied — they are sliced away. The vtable pointer is then set to point at the base vtable, not the derived vtable."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Shape {\npublic:\n    virtual std::string kind() const { return \"Shape\"; }\n};\n\nclass Square : public Shape {\npublic:\n    std::string kind() const override { return \"Square\"; }\n};\n\nint main() {\n    Square sq;\n    const Shape& ref = sq;  // reference, not value\n    std::cout << ref.kind() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "Square",
+    "explanation_md": "`ref` is a `const Shape&` that binds to `sq`. A reference does not copy the object — it is an alias for the same `Square` in memory. Virtual dispatch follows the vtable of the actual object, which is `Square`'s, so `ref.kind()` returns `\"Square\"`. This is the correct way to avoid slicing."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly stores a heterogeneous collection of `Animal`-derived objects without slicing?",
+    "options": {
+      "a": "`std::vector<Animal> zoo;`",
+      "b": "`std::vector<Animal&> zoo;`",
+      "c": "`std::vector<Animal*> zoo;`",
+      "d": "`Animal zoo[10];`"
+    },
+    "answer": "c",
+    "explanation_md": "Option (a) slices every element to `Animal` on insertion. Option (b) is ill-formed — standard containers cannot store references. Option (d) is a plain array of `Animal` values, which also slices. Option (c) stores pointers; the actual `Dog` or `Cat` objects live elsewhere and are not copied, so their derived data and vtable pointers are preserved."
+  }
+]

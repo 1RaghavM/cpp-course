@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "After finishing the curriculum, what is the most effective way to solidify your C++ skills?",
+    "options": {
+      "a": "Read the entire C++ standard before writing any more code.",
+      "b": "Write a real project from scratch — the concrete decisions and mistakes teach more than continued reading.",
+      "c": "Memorize all the syntax rules before attempting any project.",
+      "d": "Wait until you have learned concurrency and templates before writing anything substantial."
+    },
+    "answer": "b",
+    "explanation_md": "Deliberate practice on real code is the most effective skill-builder after a curriculum. Reading deepens knowledge, but writing forces you to synthesize and apply multiple concepts at once. Mistakes made on your own code and the subsequent debugging are high-value learning events that reading alone cannot provide."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n#include <stdexcept>\n#include <string>\n\nstruct Task {\n    std::string name;\n    void run() const {\n        if (name.empty())\n            throw std::invalid_argument(\"empty\");\n        std::cout << name << \"\\n\";\n    }\n};\n\nint main() {\n    auto t = std::make_unique<Task>();\n    t->name = \"go\";\n    try {\n        t->run();\n    } catch (const std::exception& e) {\n        std::cout << \"err: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "go",
+    "explanation_md": "`t->name` is set to `\"go\"` before `run()` is called. `name` is not empty, so no exception is thrown. `run()` prints `name` (\"go\") followed by `\"\\n\"`. The catch block is never reached."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which tool helps detect undefined behavior such as out-of-bounds array access and use of uninitialized memory at runtime?",
+    "options": {
+      "a": "std::static_assert",
+      "b": "AddressSanitizer (-fsanitize=address) and UBSan (-fsanitize=undefined)",
+      "c": "The noexcept specifier",
+      "d": "std::optional"
+    },
+    "answer": "b",
+    "explanation_md": "AddressSanitizer (ASan) and Undefined Behavior Sanitizer (UBSan) are compiler instrumentation tools that insert runtime checks for memory errors and UB. They catch bugs that silently corrupt data or produce wrong output in release builds. `static_assert` only runs at compile time; `noexcept` and `std::optional` address different concerns."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it worthwhile to study headers like `<algorithm>` and `<numeric>` after finishing the curriculum?",
+    "options": {
+      "a": "Standard library algorithms are faster than hand-written loops in every case.",
+      "b": "They provide tested, readable, named operations (sort, accumulate, find_if, transform) that replace boilerplate loops and communicate intent clearly.",
+      "c": "You must use standard algorithms to compile C++20 programs.",
+      "d": "Standard algorithms avoid the need to learn templates."
+    },
+    "answer": "b",
+    "explanation_md": "Standard library algorithms encode common iteration patterns with well-known names. `std::accumulate` is more readable than a for-loop summing values; `std::find_if` communicates a search clearly. They are also well-tested. Using them where they fit reduces bugs and improves code readability — though hand-written loops are not wrong when they are clearer."
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n\nstruct Bomb {\n    ~Bomb() { throw std::runtime_error(\"boom\"); }\n};\n\nint main() {\n    try {\n        Bomb b;\n        throw std::runtime_error(\"first\");\n    } catch (const std::exception& e) {\n        std::cout << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "terminate called",
+    "explanation_md": "When `throw std::runtime_error(\"first\")` begins unwinding, `~Bomb()` runs and throws a second exception. Two simultaneous active exceptions cause `std::terminate` to be called, ending the program before the catch block is ever reached. The output is an implementation-defined termination message, not \"first\"."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes code that is **exception-safe**?",
+    "options": {
+      "a": "It never throws any exception under any circumstances.",
+      "b": "Any exception that escapes leaves the program in a valid, consistent state with no resource leaks.",
+      "c": "All exceptions are caught by a catch-all handler before reaching main.",
+      "d": "It uses try/catch blocks around every function call."
+    },
+    "answer": "b",
+    "explanation_md": "Exception safety is about program correctness when exceptions propagate, not about suppressing them. Option b is the standard definition: the program remains valid and leak-free even when an exception escapes. Option a confuses \"exception-safe\" with \"exception-free\"; options c and d describe patterns that may mask errors rather than guarantee correctness."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to allocate a buffer, process it, and release it safely. What is the bug?\n\n```cpp\n#include <stdexcept>\n\nvoid process(bool fail) {\n    int* buf = new int[50];\n    if (fail)\n        throw std::runtime_error(\"failed\");\n    delete[] buf;\n}\n```",
+    "options": {
+      "a": "delete[] should be delete because buf is a single int.",
+      "b": "When fail is true, the exception propagates before delete[] buf runs, leaking the allocation.",
+      "c": "new int[50] should use std::malloc instead.",
+      "d": "The function should return the pointer rather than deleting it."
+    },
+    "answer": "b",
+    "explanation_md": "When `fail` is true, `throw` transfers control out of the function before `delete[] buf` is reached. The allocated memory is never freed. The fix is RAII — storing `buf` in a `std::unique_ptr<int[]>` ensures `delete[]` runs automatically during stack unwinding regardless of which path is taken."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is using exceptions for **routine** control flow (e.g., table lookup misses that happen frequently) considered a bad practice?",
+    "options": {
+      "a": "Exceptions are undefined behavior outside of try blocks.",
+      "b": "The zero-cost model means zero-cost only for the non-throwing path; actually throwing is expensive and dominates runtime when done frequently.",
+      "c": "The compiler removes catch blocks when it detects frequent throws.",
+      "d": "Exceptions can only be thrown once per program run."
+    },
+    "answer": "b",
+    "explanation_md": "On typical platforms, the zero-cost exception model makes calls to functions that do not throw essentially free. However, actually throwing requires stack unwinding, table lookups, and destructor calls — work that can take hundreds of microseconds. When \"exceptional\" events happen in tight loops, that overhead dominates and the zero-cost benefit is lost entirely."
+  }
+]

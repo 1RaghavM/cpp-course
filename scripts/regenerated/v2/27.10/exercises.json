@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Detect move_if_noexcept Behavior",
+    "prompt_md": "## Goal\nWrite a program that reads a type selector and prints whether `std::move_if_noexcept` would move or copy an object of that type.\n\n## Input\n- Line 1: integer selector (1 or 2).\n\n## Output\nFor selector 1, print `Safe: move`.\nFor selector 2, print `Risky: copy`.\n\n## Requirements\n1. Define struct `Safe` with a `noexcept` move constructor and a copy constructor (both print nothing — they just need to exist).\n2. Define struct `Risky` with a move constructor (not `noexcept`) and a copy constructor.\n3. Use `std::is_same_v` and `decltype(std::move_if_noexcept(obj))` to detect at compile time whether the call returns an rvalue or lvalue reference — print `move` or `copy` accordingly.\n4. For selector 1 instantiate `Safe`; for selector 2 instantiate `Risky`.\n5. The check must be compile-time (using `if constexpr` or template logic), not based on runtime behavior.",
+    "starter_code": "#include <iostream>\n#include <utility>\n#include <type_traits>\n\nstruct Safe {\n    Safe() = default;\n    Safe(Safe&&) noexcept = default;\n    Safe(const Safe&) = default;\n};\n\nstruct Risky {\n    Risky() = default;\n    Risky(Risky&&) {} // not noexcept\n    Risky(const Risky&) = default;\n};\n\n// TODO: implement will_move<T>() — return true if move_if_noexcept(T{}) is\n// an rvalue reference (i.e. a move will happen), false if it is a const lvalue ref.\ntemplate <typename T>\nbool will_move() {\n    return false; // replace this\n}\n\nint main() {\n    int sel;\n    std::cin >> sel;\n    if (sel == 1) {\n        std::cout << \"Safe: \" << (will_move<Safe>() ? \"move\" : \"copy\") << \"\\n\";\n    } else {\n        std::cout << \"Risky: \" << (will_move<Risky>() ? \"move\" : \"copy\") << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <utility>\n#include <type_traits>\n\nstruct Safe {\n    Safe() = default;\n    Safe(Safe&&) noexcept = default;\n    Safe(const Safe&) = default;\n};\n\nstruct Risky {\n    Risky() = default;\n    Risky(Risky&&) {} // not noexcept\n    Risky(const Risky&) = default;\n};\n\ntemplate <typename T>\nbool will_move() {\n    T obj{};\n    // move_if_noexcept returns T&& when noexcept-movable, const T& otherwise\n    return std::is_rvalue_reference_v<decltype(std::move_if_noexcept(obj))>;\n}\n\nint main() {\n    int sel;\n    std::cin >> sel;\n    if (sel == 1) {\n        std::cout << \"Safe: \" << (will_move<Safe>() ? \"move\" : \"copy\") << \"\\n\";\n    } else {\n        std::cout << \"Risky: \" << (will_move<Risky>() ? \"move\" : \"copy\") << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: noexcept type moves",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "Safe: move"
+      },
+      {
+        "label": "Hidden: throwing move type copies",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "Risky: copy"
+      },
+      {
+        "label": "Hidden: noexcept type moves again",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Safe: move"
+      }
+    ]
+  },
+  {
+    "title": "Generic Relocate with move_if_noexcept",
+    "prompt_md": "## Goal\nComplete the function `transfer_first` that moves (or copies, if the move might throw) the first element of a source array into a destination variable, using `std::move_if_noexcept`.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), the number of integers.\n- Lines 2..N+1: one integer per line.\n\n## Output\nPrint two lines:\n- `transferred: V` where V is the first integer.\n- `remaining: R1 R2 ...` for the remaining N-1 integers in order, separated by spaces. If N=1, print `remaining:` (no integers after the colon, just the label followed by a newline).\n\n## Requirements\n1. Read N integers into a `std::vector<int>`.\n2. Call `transfer_first(vec, dest)` where `dest` is an `int` variable. The function assigns `std::move_if_noexcept(vec[0])` to `dest`.\n3. After the call, print `transferred: dest_value` then `remaining: ` followed by elements vec[1..N-1] separated by spaces.\n4. `int` is a scalar — `move_if_noexcept` on an `int` is the same as move (scalars are always safe).\n5. Edge case: N=1 — `remaining:` is printed with nothing after the colon (just the label and newline).",
+    "starter_code": "#include <iostream>\n#include <utility>\n#include <vector>\n\n// TODO: implement transfer_first — it should assign move_if_noexcept(src[0]) to dest.\nvoid transfer_first(std::vector<int>& src, int& dest) {\n    // replace this body\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n\n    int dest = 0;\n    transfer_first(v, dest);\n\n    std::cout << \"transferred: \" << dest << \"\\n\";\n    std::cout << \"remaining:\";\n    for (int i = 1; i < n; ++i)\n        std::cout << \" \" << v[i];\n    std::cout << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <utility>\n#include <vector>\n\nvoid transfer_first(std::vector<int>& src, int& dest) {\n    dest = std::move_if_noexcept(src[0]);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n\n    int dest = 0;\n    transfer_first(v, dest);\n\n    std::cout << \"transferred: \" << dest << \"\\n\";\n    std::cout << \"remaining:\";\n    for (int i = 1; i < n; ++i)\n        std::cout << \" \" << v[i];\n    std::cout << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three elements",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "transferred: 10\nremaining: 20 30"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "transferred: 42\nremaining:"
+      },
+      {
+        "label": "Hidden: five elements",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5\n",
+        "expected_stdout": "transferred: 1\nremaining: 2 3 4 5"
+      }
+    ]
+  }
+]

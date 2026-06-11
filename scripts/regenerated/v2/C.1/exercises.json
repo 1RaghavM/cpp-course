@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Task Runner with Exception Safety",
+    "prompt_md": "## Goal\nWrite a program that reads a list of task names and runs each one, catching exceptions for empty names.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5).\n- Lines 2..N+1: one task name per line. A name of `.` represents an empty task (should throw).\n\n## Output\nFor each task, print one line:\n- `running: NAME` if the name is not `.`.\n- `error: empty name` if the name is `.`.\n\n## Requirements\n1. Define class `Task` with a `std::string name_` member and `void run() const` that throws `std::runtime_error(\"empty name\")` when `name_` is empty, otherwise prints `running: ` followed by the name.\n2. Store tasks in a `std::vector<Task>` constructed from the input (replace `.` with empty string when storing).\n3. Catch `const std::runtime_error&` in main and print `error: ` followed by `e.what()`.\n4. Edge cases: all names valid (no error lines); all `.` (all error lines); mixed.",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nclass Task {\n    std::string name_;\npublic:\n    explicit Task(std::string name) : name_(std::move(name)) {}\n    // TODO: implement run() — throw std::runtime_error(\"empty name\") if name_ is empty,\n    // otherwise print \"running: \" followed by name_\n    void run() const {\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<Task> tasks;\n    for (int i = 0; i < n; ++i) {\n        std::string s;\n        std::cin >> s;\n        tasks.emplace_back(s == \".\" ? \"\" : s);\n    }\n    for (const auto& t : tasks) {\n        try {\n            t.run();\n        } catch (const std::runtime_error& e) {\n            std::cout << \"error: \" << e.what() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nclass Task {\n    std::string name_;\npublic:\n    explicit Task(std::string name) : name_(std::move(name)) {}\n    void run() const {\n        if (name_.empty())\n            throw std::runtime_error(\"empty name\");\n        std::cout << \"running: \" << name_ << \"\\n\";\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<Task> tasks;\n    for (int i = 0; i < n; ++i) {\n        std::string s;\n        std::cin >> s;\n        tasks.emplace_back(s == \".\" ? \"\" : s);\n    }\n    for (const auto& t : tasks) {\n        try {\n            t.run();\n        } catch (const std::runtime_error& e) {\n            std::cout << \"error: \" << e.what() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed valid and empty tasks",
+        "is_sample": true,
+        "stdin": "3\ncompile\n.\ntest\n",
+        "expected_stdout": "running: compile\nerror: empty name\nrunning: test"
+      },
+      {
+        "label": "Hidden: all valid tasks",
+        "is_sample": false,
+        "stdin": "2\nbuild\nlink\n",
+        "expected_stdout": "running: build\nrunning: link"
+      },
+      {
+        "label": "Hidden: all empty tasks",
+        "is_sample": false,
+        "stdin": "2\n.\n.\n",
+        "expected_stdout": "error: empty name\nerror: empty name"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Dangling Pointer Bug",
+    "prompt_md": "## Goal\nThis program has one bug: a pointer is used after the object it points to has been destroyed. Find and fix the bug so the program prints the correct value.\n\n## Input\nNo input.\n\n## Output\nPrint exactly one line: `value: 42`\n\n## Requirements\n1. The program contains exactly one bug — a use-after-destroy (dangling pointer) logic error.\n2. The fix should store the value before the pointed-to object is destroyed, not extend the object's lifetime.\n3. Do not restructure main — only change the one line that reads the dangling pointer.",
+    "starter_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    const int* ptr = nullptr;\n    {\n        auto p = std::make_unique<int>(42);\n        ptr = p.get(); // ptr now points into p's storage\n    } // p is destroyed here — ptr is dangling\n    // BUG: reading through a dangling pointer\n    std::cout << \"value: \" << *ptr << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int value = 0;\n    {\n        auto p = std::make_unique<int>(42);\n        value = *p; // copy the value before p is destroyed\n    }\n    std::cout << \"value: \" << value << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: prints value: 42",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "value: 42"
+      },
+      {
+        "label": "Hidden: same expected output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "value: 42"
+      },
+      {
+        "label": "Hidden: consistent output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "value: 42"
+      }
+    ]
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between `std::optional<T>` and `std::expected<T, E>`?",
+    "options": {
+      "a": "std::optional can hold any type; std::expected only holds integers.",
+      "b": "std::optional signals value-or-nothing; std::expected signals value-or-a-specific-error, preserving the reason for failure.",
+      "c": "std::expected is faster because it avoids heap allocation.",
+      "d": "std::optional is for runtime errors; std::expected is for compile-time errors."
+    },
+    "answer": "b",
+    "explanation_md": "`std::optional` models absence — it tells you *whether* a value exists but not *why* it is missing. `std::expected<T, E>` models either a success value of type `T` or an error value of type `E`, preserving the error reason. Use `optional` when absence is normal and unremarkable; use `expected` when callers must handle or propagate error information."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `std::println(\"value: {}\", x)` do compared to `std::cout << \"value: \" << x << \"\\n\";`?",
+    "options": {
+      "a": "They are identical — println is just an alias for cout.",
+      "b": "println uses the std::format syntax for type-safe formatted output and automatically appends a newline, making the call more concise.",
+      "c": "println writes to stderr; cout writes to stdout.",
+      "d": "println is slower because it allocates a temporary string."
+    },
+    "answer": "b",
+    "explanation_md": "`std::println` combines `std::format`-style type-safe placeholder formatting with automatic newline appending. It is more concise than chaining `cout` insertions and safer than `printf` (wrong argument types are compile errors). Both write to stdout by default."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the purpose of `std::ranges::to<std::vector>()` in C++23?",
+    "options": {
+      "a": "It converts a std::vector into a raw array.",
+      "b": "It materializes a lazy range view into an owned std::vector container.",
+      "c": "It sorts a range and stores the result in a new vector.",
+      "d": "It reserves capacity in an existing vector."
+    },
+    "answer": "b",
+    "explanation_md": "Range views in C++20 are lazy — they do not allocate storage. `std::ranges::to<std::vector>()` iterates the view and constructs an owned `std::vector` from its elements. This is the idiomatic C++23 way to bridge lazy range pipelines and code that needs a concrete container."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You call `auto r = some_expected_fn();` and `r` holds an error. What happens if you write `int val = *r;`?",
+    "options": {
+      "a": "val is set to 0, the default for int.",
+      "b": "A std::bad_expected_access exception is thrown.",
+      "c": "It is undefined behavior — dereferencing a failed std::expected has no defined outcome.",
+      "d": "The program prints the error message and continues."
+    },
+    "answer": "c",
+    "explanation_md": "Dereferencing a failed `std::expected` with `operator*` is undefined behavior. If you want an exception on failure, call `.value()` instead — it throws `std::bad_expected_access<E>`. Always check `if (r)` or use `.value()` rather than `*r` when you have not verified that the result holds a value."
+  }
+]

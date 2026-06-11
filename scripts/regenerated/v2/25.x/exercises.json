@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Chapter 25 Polymorphism Review",
+    "prompt_md": "## Goal\nComplete a small hierarchy that uses virtual functions, a virtual destructor, and `operator<<` via a virtual `print` method.\n\n## Input\nNo input.\n\n## Output\nPrint exactly three lines:\n```\nVehicle\nCar: sedan\nBike: mountain\n```\n\n## Requirements\n1. `Vehicle` has a `virtual void print(std::ostream& out) const` writing `Vehicle`, a virtual destructor, and a `friend operator<<` calling `print`.\n2. `Car` has a `std::string kind_`. Override `print` to write `Car: ` followed by `kind_`. Constructor: `Car(const std::string& k)`.\n3. `Bike` has a `std::string style_`. Override `print` to write `Bike: ` followed by `style_`. Constructor: `Bike(const std::string& s)`.\n4. `main` creates `Vehicle v`, `Car c{\"sedan\"}`, `Bike b{\"mountain\"}` and stores them in a `Vehicle* arr[3]`. Loop and print each.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Vehicle {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Vehicle\"; }\n    virtual ~Vehicle() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Vehicle& v) {\n        v.print(out); return out;\n    }\n};\n\nclass Car : public Vehicle {\n    std::string kind_;\npublic:\n    Car(const std::string& k) : kind_(k) {}\n    // TODO: override print to write \"Car: \" followed by kind_\n};\n\nclass Bike : public Vehicle {\n    std::string style_;\npublic:\n    Bike(const std::string& s) : style_(s) {}\n    // TODO: override print to write \"Bike: \" followed by style_\n};\n\nint main() {\n    Vehicle v;\n    Car c{\"sedan\"};\n    Bike b{\"mountain\"};\n    Vehicle* arr[3] = {&v, &c, &b};\n    for (int i = 0; i < 3; ++i)\n        std::cout << *arr[i] << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Vehicle {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Vehicle\"; }\n    virtual ~Vehicle() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Vehicle& v) {\n        v.print(out); return out;\n    }\n};\n\nclass Car : public Vehicle {\n    std::string kind_;\npublic:\n    Car(const std::string& k) : kind_(k) {}\n    void print(std::ostream& out) const override { out << \"Car: \" << kind_; }\n};\n\nclass Bike : public Vehicle {\n    std::string style_;\npublic:\n    Bike(const std::string& s) : style_(s) {}\n    void print(std::ostream& out) const override { out << \"Bike: \" << style_; }\n};\n\nint main() {\n    Vehicle v;\n    Car c{\"sedan\"};\n    Bike b{\"mountain\"};\n    Vehicle* arr[3] = {&v, &c, &b};\n    for (int i = 0; i < 3; ++i)\n        std::cout << *arr[i] << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three types",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Vehicle\nCar: sedan\nBike: mountain"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Vehicle\nCar: sedan\nBike: mountain"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Vehicle\nCar: sedan\nBike: mountain"
+      }
+    ]
+  },
+  {
+    "title": "Dynamic Cast Type Check",
+    "prompt_md": "## Goal\nComplete `identifyType` so it uses `dynamic_cast` to return the correct type label for any `Entity` pointer.\n\n## Input\nLine 1: integer `n` (1, 2, or 3). 1 = `Player`, 2 = `Enemy`, 3 = `NPC`.\n\n## Output\nPrint exactly one line: `Player`, `Enemy`, or `NPC`.\n\n## Requirements\n1. `Entity` has a virtual destructor.\n2. `Player`, `Enemy`, and `NPC` each derive from `Entity`.\n3. Complete `identifyType(Entity* e)` to:\n   - Return `\"Player\"` if `e` points to a `Player`.\n   - Return `\"Enemy\"` if `e` points to an `Enemy`.\n   - Return `\"NPC\"` if `e` points to an `NPC`.\n   - Return `\"Unknown\"` otherwise.\n4. `main` reads `n`, creates the matching object on the stack, and calls `identifyType`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Entity { public: virtual ~Entity() = default; };\nclass Player : public Entity {};\nclass Enemy  : public Entity {};\nclass NPC    : public Entity {};\n\n// TODO: complete using dynamic_cast\nstd::string identifyType(Entity* e) {\n    return \"Unknown\";  // TODO: replace with dynamic_cast checks\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    if (n == 1) { Player p; std::cout << identifyType(&p) << \"\\n\"; }\n    else if (n == 2) { Enemy e;  std::cout << identifyType(&e) << \"\\n\"; }\n    else             { NPC np;   std::cout << identifyType(&np) << \"\\n\"; }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Entity { public: virtual ~Entity() = default; };\nclass Player : public Entity {};\nclass Enemy  : public Entity {};\nclass NPC    : public Entity {};\n\nstd::string identifyType(Entity* e) {\n    if (dynamic_cast<Player*>(e)) return \"Player\";\n    if (dynamic_cast<Enemy*>(e))  return \"Enemy\";\n    if (dynamic_cast<NPC*>(e))    return \"NPC\";\n    return \"Unknown\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    if (n == 1) { Player p; std::cout << identifyType(&p) << \"\\n\"; }\n    else if (n == 2) { Enemy e;  std::cout << identifyType(&e) << \"\\n\"; }\n    else             { NPC np;   std::cout << identifyType(&np) << \"\\n\"; }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Player",
+        "is_sample": true,
+        "stdin": "1",
+        "expected_stdout": "Player"
+      },
+      {
+        "label": "Hidden: Enemy",
+        "is_sample": false,
+        "stdin": "2",
+        "expected_stdout": "Enemy"
+      },
+      {
+        "label": "Hidden: NPC",
+        "is_sample": false,
+        "stdin": "3",
+        "expected_stdout": "NPC"
+      }
+    ]
+  }
+]

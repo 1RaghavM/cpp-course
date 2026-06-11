@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best explains why virtual destructors are required in a polymorphic base class?",
+    "options": {
+      "a": "Without them, the constructor of the derived class is skipped during object creation.",
+      "b": "Without them, deleting a derived object through a base pointer calls only the base destructor, leading to resource leaks.",
+      "c": "Without them, virtual function dispatch stops working for the entire hierarchy.",
+      "d": "Without them, the compiler refuses to compile any derived class."
+    },
+    "answer": "b",
+    "explanation_md": "When you `delete base_ptr` where `base_ptr` points to a derived object, C++ calls the destructor of the static type unless the destructor is virtual. A non-virtual destructor means only `Base::~Base()` runs; the derived destructor (which may free resources) is skipped. Declaring the destructor `virtual` ensures `delete` calls the most-derived destructor first, then unwinds the chain."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Widget {\npublic:\n    virtual std::string label() const { return \"Widget\"; }\n    virtual ~Widget() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Widget& w) {\n        out << w.label(); return out;\n    }\n};\n\nclass Button : public Widget {\npublic:\n    std::string label() const override { return \"Button\"; }\n};\n\nvoid show(const Widget& w) { std::cout << w << \"\\n\"; }\n\nint main() {\n    Button b;\n    show(b);\n}\n```",
+    "options": null,
+    "answer": "Button",
+    "explanation_md": "`show` takes `const Widget&` — no slicing. `operator<<` calls `w.label()` via virtual dispatch. Because `w` refers to a `Button`, `Button::label()` returns `\"Button\"`. The output is `Button` followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In the diamond inheritance `A → B (virtual), A → C (virtual), B+C → D`, who must explicitly initialize `A` in their constructor initializer list?",
+    "options": {
+      "a": "`B` and `C` — they directly inherit from `A`.",
+      "b": "`D` — the most-derived class is responsible for constructing the virtual base.",
+      "c": "All four classes.",
+      "d": "No class needs to initialize `A` explicitly; the compiler does it automatically."
+    },
+    "answer": "b",
+    "explanation_md": "In virtual inheritance the most-derived class (`D` here) is responsible for constructing the virtual base directly. The `A(...)` calls in `B`'s and `C`'s constructors are silently ignored when `D` is being constructed. If `D` does not list `A` explicitly, the default constructor of `A` is used."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual ~Base() = default;\n};\n\nclass X : public Base {};\nclass Y : public Base {};\n\nint main() {\n    X x;\n    Base* p = &x;\n    Y* yp = dynamic_cast<Y*>(p);\n    std::cout << (yp ? \"yes\" : \"no\") << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "no",
+    "explanation_md": "`p` points to an `X` object. `dynamic_cast<Y*>(p)` attempts to cast to `Y*`. Because `*p` is an `X`, not a `Y` or a class derived from `Y`, the cast fails and returns `nullptr`. The ternary prints `no`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function takes `Animal a` (by value) instead of `const Animal& a`. A `Dog` object is passed to it. What happens?",
+    "options": {
+      "a": "The function operates on a `Dog` correctly because C++ automatically adjusts the vtable.",
+      "b": "The program fails to compile because `Dog` cannot be assigned to `Animal`.",
+      "c": "The `Dog` is sliced: `a` becomes a pure `Animal`, and virtual dispatch inside the function calls `Animal`'s methods.",
+      "d": "The `Dog` is sliced and the program exhibits undefined behavior."
+    },
+    "answer": "c",
+    "explanation_md": "Taking a polymorphic base by value invokes the base class's copy constructor, which copies only the base sub-object. The derived portion is discarded. `a` is a genuine `Animal` with `Animal`'s vtable pointer; virtual calls dispatch to `Animal`'s implementations. This is legal C++ (not UB) but almost never what was intended."
+  }
+]

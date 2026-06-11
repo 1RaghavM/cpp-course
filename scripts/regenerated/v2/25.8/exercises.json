@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Virtual Base Diamond",
+    "prompt_md": "## Goal\nComplete the `Copier` constructor so the diamond hierarchy produces a single shared `PoweredDevice` and prints the correct power level.\n\n## Input\nNo input.\n\n## Output\nPrint exactly one line:\n```\npower: 42\n```\n\n## Requirements\n1. `PoweredDevice` has `int power_` and a constructor `PoweredDevice(int p)`. It has no default constructor.\n2. `Scanner` and `Printer` both inherit from `PoweredDevice` using `virtual public`.\n3. `Copier` inherits from both `Scanner` and `Printer`.\n4. Complete `Copier`'s constructor initializer list so it directly initializes `PoweredDevice(42)`, `Scanner(42)`, and `Printer(42)`.\n5. In `main`, create `Copier c` and print `power: ` followed by `c.power_`.",
+    "starter_code": "#include <iostream>\n\nstruct PoweredDevice {\n    int power_;\n    PoweredDevice(int p) : power_(p) {}\n    PoweredDevice() : power_(0) {}  // default for stub\n};\n\nstruct Scanner : virtual public PoweredDevice {\n    Scanner(int p) : PoweredDevice(p) {}\n    Scanner() : PoweredDevice() {}\n};\n\nstruct Printer : virtual public PoweredDevice {\n    Printer(int p) : PoweredDevice(p) {}\n    Printer() : PoweredDevice() {}\n};\n\nstruct Copier : public Scanner, public Printer {\n    // TODO: add constructor Copier(int p) that initializes PoweredDevice(p), Scanner(p), Printer(p)\n    Copier(int p) : Scanner(p), Printer(p) {}  // incomplete — add PoweredDevice(p) to initializer list\n};\n\nint main() {\n    Copier c{42};\n    std::cout << \"power: \" << c.power_ << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct PoweredDevice {\n    int power_;\n    PoweredDevice(int p) : power_(p) {}\n};\n\nstruct Scanner : virtual public PoweredDevice {\n    Scanner(int p) : PoweredDevice(p) {}\n};\n\nstruct Printer : virtual public PoweredDevice {\n    Printer(int p) : PoweredDevice(p) {}\n};\n\nstruct Copier : public Scanner, public Printer {\n    Copier(int p) : PoweredDevice(p), Scanner(p), Printer(p) {}\n};\n\nint main() {\n    Copier c{42};\n    std::cout << \"power: \" << c.power_ << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: power 42",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "power: 42"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "power: 42"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "power: 42"
+      }
+    ]
+  },
+  {
+    "title": "Count Virtual Base Constructions",
+    "prompt_md": "## Goal\nComplete the `countConstructions` function that returns how many times the virtual base constructor ran when creating a `Derived` object.\n\n## Input\nNo input.\n\n## Output\nPrint exactly one line:\n```\nBase constructed: 1\n```\n\n## Requirements\n1. `Base` has a static `int count` that increments in its constructor.\n2. `Left` and `Right` both inherit from `Base` using `virtual public`.\n3. `Derived` inherits from both `Left` and `Right` and must explicitly initialize `Base()` in its constructor.\n4. Complete `countConstructions()` to create a `Derived` object, reset `Base::count` before creation, then return `Base::count`.\n5. `main` prints `Base constructed: ` followed by the return value.",
+    "starter_code": "#include <iostream>\n\nstruct Base {\n    static int count;\n    Base() { ++count; }\n};\nint Base::count = 0;\n\nstruct Left : virtual public Base {\n    Left() : Base() {}\n};\n\nstruct Right : virtual public Base {\n    Right() : Base() {}\n};\n\nstruct Derived : public Left, public Right {\n    Derived() : Base(), Left(), Right() {}\n};\n\n// TODO: complete this function\nint countConstructions() {\n    Base::count = 0;\n    // TODO: create a Derived object and return Base::count\n    return 0;\n}\n\nint main() {\n    std::cout << \"Base constructed: \" << countConstructions() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Base {\n    static int count;\n    Base() { ++count; }\n};\nint Base::count = 0;\n\nstruct Left : virtual public Base {\n    Left() : Base() {}\n};\n\nstruct Right : virtual public Base {\n    Right() : Base() {}\n};\n\nstruct Derived : public Left, public Right {\n    Derived() : Base(), Left(), Right() {}\n};\n\nint countConstructions() {\n    Base::count = 0;\n    Derived d;\n    return Base::count;\n}\n\nint main() {\n    std::cout << \"Base constructed: \" << countConstructions() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: constructed once",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Base constructed: 1"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Base constructed: 1"
+      },
+      {
+        "label": "Hidden: exact count",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Base constructed: 1"
+      }
+    ]
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    void hello() { std::cout << \"Base hello\\n\"; }\nprotected:\n    void secret() { std::cout << \"Base secret\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    using Base::secret;\nprivate:\n    using Base::hello;\n};\n\nint main() {\n    Derived d;\n    d.secret();\n}\n```",
+    "options": null,
+    "answer": "Base secret",
+    "explanation_md": "The `using Base::secret;` declaration in the `public:` section of `Derived` promotes `secret` from protected to public. Calling `d.secret()` is legal and calls the base's function, printing \"Base secret\". The `hello` function is demoted to private and would be a compile error to call on `d`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A derived class demotes a base-class public function to private using a `using` declaration. Can that function still be called on a `Derived` object through a `Base&` reference?",
+    "options": {
+      "a": "No — private means unreachable from anywhere",
+      "b": "Yes — access is checked using the static type of the expression, which is `Base&`",
+      "c": "Only if the function is also `virtual`",
+      "d": "Yes, but only from within the derived class body"
+    },
+    "answer": "b",
+    "explanation_md": "C++ checks access control at compile time using the *static type* of the expression. When the variable is declared as `Base&`, the compiler sees `Base::function` which is public in `Base`, so the call is allowed. The derived class's private label only applies when the expression's static type is the derived type."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code fails to compile. What is the problem?\n\n```cpp\n#include <iostream>\n\nclass Printer {\npublic:\n    void print()      { std::cout << \"Printer\\n\"; }\n    void print(int n) { std::cout << \"Printer \" << n << \"\\n\"; }\n};\n\nclass ColorPrinter : public Printer {\npublic:\n    void print(double dpi) {\n        std::cout << \"Color dpi=\" << dpi << \"\\n\";\n    }\n};\n\nint main() {\n    ColorPrinter cp;\n    cp.print();    // error here\n    cp.print(3.0);\n}\n```",
+    "options": {
+      "a": "`ColorPrinter` cannot inherit from `Printer` because they have different `print` signatures",
+      "b": "Defining `print(double)` in `ColorPrinter` hides all inherited `print` overloads; `cp.print()` has no match",
+      "c": "`print()` is ambiguous because both `Printer::print()` and `ColorPrinter::print(double)` could match",
+      "d": "`print(int)` and `print(double)` are ambiguous overloads that the compiler cannot resolve"
+    },
+    "answer": "b",
+    "explanation_md": "Defining any function in a derived class with the same name as a base function hides all inherited overloads of that name — even overloads with different parameter lists. Adding `using Printer::print;` to `ColorPrinter` restores all the inherited `print` overloads while keeping `print(double)` as well."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between making an inherited function `private` in the derived class (via `using`) versus deleting it with `= delete`?",
+    "options": {
+      "a": "There is no practical difference — both produce a compile error",
+      "b": "`private` allows calls from within the derived class and from friends; `= delete` prohibits the function entirely including from within the class",
+      "c": "`= delete` only works on virtual functions",
+      "d": "`private` is a compile error; `= delete` produces a runtime error"
+    },
+    "answer": "b",
+    "explanation_md": "A `private` member can still be called by the class's own member functions and friends. `= delete` makes the function unconditionally uncallable — even from within the class body or from a friend. Use `= delete` when the operation must be truly prohibited, not just hidden from external users."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Fix the optional Value Check",
+    "prompt_md": "## Goal\nThis program uses `std::optional<int>` to represent a parse result that may fail, but it dereferences the optional without checking whether it holds a value. Fix the bug so the program correctly reports success or failure.\n\n## Input\n- Line 1: a non-negative integer (success) or the string `bad` (failure).\n\n## Output\n- If the input parses as a non-negative integer N, print `value: N`.\n- If parsing fails, print `error: not a number`.\n\n## Requirements\n1. The program contains exactly one logic bug — fix only the condition check in main.\n2. Do not change the parse function or the output format.\n3. Edge cases: `0` is valid (print `value: 0`); `bad` must print the error line.",
+    "starter_code": "#include <iostream>\n#include <optional>\n#include <string>\n\nstd::optional<int> parse_nonneg(const std::string& s) {\n    for (char c : s)\n        if (c < '0' || c > '9')\n            return std::nullopt;\n    int val = 0;\n    for (char c : s)\n        val = val * 10 + (c - '0');\n    return val;\n}\n\nint main() {\n    std::string input;\n    std::cin >> input;\n    auto result = parse_nonneg(input);\n    // BUG: dereferencing without checking whether result holds a value\n    std::cout << \"value: \" << *result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <optional>\n#include <string>\n\nstd::optional<int> parse_nonneg(const std::string& s) {\n    for (char c : s)\n        if (c < '0' || c > '9')\n            return std::nullopt;\n    int val = 0;\n    for (char c : s)\n        val = val * 10 + (c - '0');\n    return val;\n}\n\nint main() {\n    std::string input;\n    std::cin >> input;\n    auto result = parse_nonneg(input);\n    if (result)\n        std::cout << \"value: \" << *result << \"\\n\";\n    else\n        std::cout << \"error: not a number\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: valid integer",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "value: 42"
+      },
+      {
+        "label": "Hidden: bad input triggers error path",
+        "is_sample": false,
+        "stdin": "bad\n",
+        "expected_stdout": "error: not a number"
+      },
+      {
+        "label": "Hidden: zero is valid",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "value: 0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the ranges::filter Predicate",
+    "prompt_md": "## Goal\nThis program filters a list of integers and prints those strictly greater than a threshold, but the filter predicate has a logic bug — it keeps the wrong elements. Fix it.\n\n## Input\n- Line 1: integer T (the threshold).\n- Line 2: integer N (1 ≤ N ≤ 10).\n- Lines 3..N+2: one integer per line.\n\n## Output\nPrint all integers from the input list that are strictly greater than T, one per line, in their original order. If no integers satisfy the condition, print nothing.\n\n## Requirements\n1. The program contains exactly one bug — the lambda predicate uses the wrong comparison operator.\n2. Fix only the comparison in the predicate; do not restructure the program.\n3. Edge cases: T equal to some list values — only strictly greater pass; all values ≤ T → empty output.",
+    "starter_code": "#include <iostream>\n#include <ranges>\n#include <vector>\n\nint main() {\n    int threshold, n;\n    std::cin >> threshold >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n\n    // BUG: predicate keeps elements <= threshold instead of > threshold\n    auto filtered = v | std::views::filter([threshold](int x){ return x <= threshold; });\n\n    for (int x : filtered)\n        std::cout << x << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <ranges>\n#include <vector>\n\nint main() {\n    int threshold, n;\n    std::cin >> threshold >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n\n    auto filtered = v | std::views::filter([threshold](int x){ return x > threshold; });\n\n    for (int x : filtered)\n        std::cout << x << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: filter above 3",
+        "is_sample": true,
+        "stdin": "3\n5\n1\n4\n2\n5\n3\n",
+        "expected_stdout": "4\n5"
+      },
+      {
+        "label": "Hidden: all below threshold",
+        "is_sample": false,
+        "stdin": "10\n3\n1\n2\n3\n",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Hidden: threshold at boundary",
+        "is_sample": false,
+        "stdin": "5\n4\n5\n6\n7\n4\n",
+        "expected_stdout": "6\n7"
+      }
+    ]
+  }
+]

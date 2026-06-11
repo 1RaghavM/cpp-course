@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "In a diamond inheritance `A → B, A → C, B+C → D`, what problem arises when `virtual` is NOT used?",
+    "options": {
+      "a": "Class `D` cannot compile because multiple inheritance is prohibited.",
+      "b": "`D` contains two separate sub-objects of `A`, making access to `A`'s members ambiguous.",
+      "c": "`B` and `C` cannot both inherit from `A` at the same time.",
+      "d": "Virtual functions defined in `A` stop working in `D`."
+    },
+    "answer": "b",
+    "explanation_md": "Without virtual inheritance, each path through the hierarchy creates its own copy of `A`'s sub-object. `D` ends up with two `A` sub-objects — one via `B` and one via `C`. Accessing `A`'s members directly on a `D` object is then ambiguous, causing a compile error. Virtual inheritance tells the compiler to share a single `A` sub-object across all paths."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct A {\n    int x_;\n    A(int x) : x_(x) {}\n};\n\nstruct B : virtual public A {\n    B(int x) : A(x) {}\n};\n\nstruct C : virtual public A {\n    C(int x) : A(x) {}\n};\n\nstruct D : public B, public C {\n    D(int x) : A(x), B(x), C(x) {}\n};\n\nint main() {\n    D d{7};\n    std::cout << d.x_ << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "With virtual inheritance, `D` has exactly one `A` sub-object. `D`'s constructor initializes `A(7)` directly. `B` and `C` each list `A(x)` in their constructors but those calls are silently suppressed because `D` is the most-derived class. `d.x_` is unambiguous and equals 7."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In a virtual inheritance diamond where `PoweredDevice` is the shared base, `Scanner` and `Printer` both inherit from it virtually, and `Copier` inherits from both — which class is responsible for constructing `PoweredDevice`?",
+    "options": {
+      "a": "`Scanner`, because it appears first in `Copier`'s base list.",
+      "b": "`PoweredDevice` constructs itself; no derived class needs to list it explicitly.",
+      "c": "`Copier`, the most-derived class, must explicitly call `PoweredDevice`'s constructor.",
+      "d": "Both `Scanner` and `Printer` construct it, and the results are merged."
+    },
+    "answer": "c",
+    "explanation_md": "The rule for virtual inheritance is that the most-derived class is responsible for constructing the virtual base directly. When `Copier` is being instantiated, the `PoweredDevice(p)` calls inside `Scanner`'s and `Printer`'s constructors are skipped. If `Copier` does not explicitly initialize `PoweredDevice`, the default constructor is used instead."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Where must the `virtual` keyword appear to enable virtual inheritance in the diamond `A → B, A → C, B+C → D`?",
+    "options": {
+      "a": "In `D`'s inheritance list: `class D : virtual public B, virtual public C`.",
+      "b": "In `B`'s and `C`'s inheritance lists: `class B : virtual public A` and `class C : virtual public A`.",
+      "c": "In `A`'s class definition as a virtual base marker.",
+      "d": "In all four classes."
+    },
+    "answer": "b",
+    "explanation_md": "Virtual inheritance must be declared in the classes that directly inherit from the shared base — here `B` and `C`. It is their inheritance of `A` that must be marked `virtual`. Placing `virtual` only in `D`'s inheritance of `B` and `C` does not affect whether `A` is duplicated."
+  }
+]

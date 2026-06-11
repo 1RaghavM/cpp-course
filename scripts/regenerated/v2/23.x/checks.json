@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <initializer_list>\n\nclass NumList {\n    int data_[8]{};\n    int count_{0};\npublic:\n    NumList(std::initializer_list<int> list) {\n        for (int v : list)\n            data_[count_++] = v;\n    }\n    int size() const { return count_; }\n    int get(int i) const { return data_[i]; }\n};\n\nint main() {\n    NumList a{10, 20, 30};\n    std::cout << a.size() << \"\\n\";\n    std::cout << a.get(1) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "3\n20",
+    "explanation_md": "The initializer-list constructor copies all three values into `data_`, setting `count_` to 3. `size()` returns 3. `get(1)` returns `data_[1]`, which is 20 (zero-indexed)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Classroom` class stores `Student*` pointers without calling `new` itself, and its destructor does not call `delete`. Which object-relationship type does this describe?",
+    "options": {
+      "a": "Composition — the classroom owns the students",
+      "b": "Aggregation — the classroom holds students it does not own",
+      "c": "Dependency — students are passed only to function calls",
+      "d": "Association — neither object knows about the other"
+    },
+    "answer": "b",
+    "explanation_md": "Aggregation means the container holds references or pointers to objects it did not create and does not destroy. The students exist independently and can outlive any classroom. Composition would store `Student` by value or in a `unique_ptr` and destroy it in the destructor."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between `std::vector<int>(3, 5)` and `std::vector<int>{3, 5}`?",
+    "options": {
+      "a": "Both produce a vector containing {3, 5}",
+      "b": "Both produce a vector containing {5, 5, 5}",
+      "c": "`(3, 5)` produces three fives; `{3, 5}` produces two elements 3 and 5",
+      "d": "`{3, 5}` produces three fives; `(3, 5)` produces two elements 3 and 5"
+    },
+    "answer": "c",
+    "explanation_md": "Parentheses call the count-and-fill constructor, producing three elements all equal to 5. Braces prefer the initializer-list constructor, producing a two-element vector with 3 and 5. This is a direct consequence of initializer-list constructors being strongly preferred when braces are used."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The program compiles but exhibits undefined behaviour. What is the bug?\n\n```cpp\n#include <initializer_list>\n#include <iostream>\n\nclass Cache {\n    std::initializer_list<int> stored_;\npublic:\n    Cache(std::initializer_list<int> l) : stored_{l} {}\n    void print() const {\n        for (int v : stored_)\n            std::cout << v << \" \";\n        std::cout << \"\\n\";\n    }\n};\n\nint main() {\n    Cache c{1, 2, 3};\n    c.print();\n}\n```",
+    "options": {
+      "a": "The constructor should take `const std::initializer_list<int>&`",
+      "b": "`stored_` holds a dangling reference — the backing array is destroyed after the constructor returns",
+      "c": "`for (int v : stored_)` requires a mutable iterator and cannot iterate a const list",
+      "d": "The class is missing a destructor that calls `delete[]` on the backing array"
+    },
+    "answer": "b",
+    "explanation_md": "`std::initializer_list` is a lightweight view into a temporary array. That array's lifetime ends when the constructor returns. Storing the list as a member variable leaves `stored_` pointing at memory that no longer belongs to the program. The fix is to copy the values into a proper member array during construction."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Part {\npublic:\n    Part()  { std::cout << \"Part created\\n\"; }\n    ~Part() { std::cout << \"Part destroyed\\n\"; }\n};\n\nclass Whole {\n    Part p_;\npublic:\n    Whole()  { std::cout << \"Whole created\\n\"; }\n    ~Whole() { std::cout << \"Whole destroyed\\n\"; }\n};\n\nint main() {\n    Whole w;\n}\n```",
+    "options": null,
+    "answer": "Part created\nWhole created\nWhole destroyed\nPart destroyed",
+    "explanation_md": "Member variables are constructed before the constructor body runs (in declaration order), so `Part` is created first. Destruction happens in reverse order: `Whole`'s destructor runs first, then `Part`'s destructor runs. This demonstrates composition's lifetime coupling — the part lives and dies with the whole."
+  }
+]
