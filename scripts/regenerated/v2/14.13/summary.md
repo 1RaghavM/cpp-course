@@ -83,7 +83,7 @@ Taking the address of a temporary and storing it outlives the temporary's lifeti
 
 ```cpp
 const int& val = Point{ 10, 20 }.x();  // val refers to a copy returned by value
-// This is fine only because x() returns by value, creating a new temporary int
+// This works because x() returns by value, producing a temporary int
 // that is lifetime-extended by the const int& binding.
 // But beware: this pattern is subtle and easy to get wrong.
 ```

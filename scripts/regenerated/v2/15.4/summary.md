@@ -95,15 +95,15 @@ log.~Logger();  // legal but almost always wrong
 
 The destructor will then run again automatically when `log` goes out of scope, resulting in double-destruction. For a class that closes a file or frees memory, this means the resource is released twice — undefined behavior. Destructors should be called by the compiler, not by your code.
 
-**Mistake 3 — Assuming the destructor runs at a specific time for heap objects**
+**Mistake 3 — Calling the destructor explicitly and getting double-destruction**
 
 ```cpp
-Logger* p = new Logger();    // created on heap
-// ...
-// forget to delete p — destructor never runs, resource is leaked
+Logger log;
+log.~Logger();  // explicit call — runs the destructor body now
+// end of scope: destructor runs AGAIN automatically — undefined behavior
 ```
 
-For objects created with `new`, the destructor runs only when `delete` is called. If `delete` is never called, the destructor never runs and the resource leaks. This is one of the main reasons modern C++ avoids raw `new`/`delete` — but that belongs to a later lesson. For now, understand that automatic (stack) objects always have their destructors called when they go out of scope; heap objects do not.
+Calling a destructor explicitly is almost always wrong. The destructor will then run a second time automatically when `log` goes out of scope, causing the resource to be released twice. For a class that closes a file, this means `fclose` is called twice on the same handle — undefined behavior. Destructors are called by the compiler, not by your code.
 
 ## When to use this
 
