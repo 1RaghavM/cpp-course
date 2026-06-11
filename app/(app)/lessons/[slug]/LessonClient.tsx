@@ -31,9 +31,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
-import { CheckCircle2, Circle, Loader2 } from "lucide-react";
+import { CheckCircle2, Circle, Clock, Loader2, MemoryStick } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Drawer,
   DrawerPopup,
@@ -106,6 +113,8 @@ interface TestResult {
   expected: string;
   actual: string;
   status: string;
+  wallTimeMs?: number;
+  memoryKb?: number | null;
 }
 
 interface SubmissionResponse {
@@ -115,9 +124,19 @@ interface SubmissionResponse {
   compileOutput: string | null;
   exitCode: number | null;
   wallTimeMs: number;
+  memoryKb?: number | null;
+  peakMemoryKb?: number | null;
   testResults?: TestResult[];
   lessonCompleted?: boolean;
 }
+
+function formatMemory(kb: number | null | undefined): string | null {
+  if (kb === null || kb === undefined) return null;
+  if (kb < 1024) return `${kb} KB`;
+  return `${(kb / 1024).toFixed(1)} MB`;
+}
+
+const METRIC_DISCLAIMER = "Measured on a shared sandbox; treat as indicative.";
 
 interface Props {
   lesson: LessonData;
@@ -854,26 +873,51 @@ function ConsoleContent({
     );
   }
 
+  const isSubmitMode = (result.testResults?.length ?? 0) > 0;
+  const memoryDisplay = formatMemory(
+    isSubmitMode ? result.peakMemoryKb ?? null : result.memoryKb ?? null,
+  );
+  const timeLabel = isSubmitMode ? "Total time across all test cases" : "Execution wall-clock time";
+  const memoryLabel = isSubmitMode ? "Peak memory across test cases" : "Peak resident memory";
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <span
-          className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-wide ${
-            result.status === "passed" || result.status === "accepted"
-              ? "bg-success/20 text-success"
-              : result.status === "compile_error" || result.status === "runtime_error"
-                ? "bg-error/20 text-error"
-                : "bg-warning/20 text-warning"
-          }`}
-        >
-          {!result.testResults?.length && result.status === "accepted"
-            ? "compiled successfully"
-            : result.status.replace(/_/g, " ")}
-        </span>
-        {result.wallTimeMs > 0 && (
-          <span className="text-xs text-muted-foreground">{result.wallTimeMs}ms</span>
-        )}
-      </div>
+    <TooltipProvider delay={200}>
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <span
+            className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-wide ${
+              result.status === "passed" || result.status === "accepted"
+                ? "bg-success/20 text-success"
+                : result.status === "compile_error" || result.status === "runtime_error"
+                  ? "bg-error/20 text-error"
+                  : "bg-warning/20 text-warning"
+            }`}
+          >
+            {!result.testResults?.length && result.status === "accepted"
+              ? "compiled successfully"
+              : result.status.replace(/_/g, " ")}
+          </span>
+          <Tooltip>
+            <TooltipTrigger render={<Badge variant="outline" />}>
+              <Clock />
+              {result.wallTimeMs > 0 ? `${result.wallTimeMs} ms` : "<1 ms"}
+            </TooltipTrigger>
+            <TooltipContent>
+              {timeLabel}. {METRIC_DISCLAIMER}
+            </TooltipContent>
+          </Tooltip>
+          {memoryDisplay && (
+            <Tooltip>
+              <TooltipTrigger render={<Badge variant="outline" />}>
+                <MemoryStick />
+                {memoryDisplay}
+              </TooltipTrigger>
+              <TooltipContent>
+                {memoryLabel}. {METRIC_DISCLAIMER}
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
 
       {result.compileOutput && (
         <div>
@@ -906,25 +950,46 @@ function ConsoleContent({
 
       {result.testResults && result.testResults.length > 0 && (
         <div className="space-y-2">
-          {result.testResults.map((tr) => (
-            <div key={tr.label} className={`rounded-md border p-3 text-sm ${tr.passed ? "border-success/30 bg-success/5" : "border-error/30 bg-error/5"}`}>
-              <div className="flex items-center gap-2">
-                <span className={tr.passed ? "text-success" : "text-error"}>
-                  {tr.passed ? "✓" : "✗"}
-                </span>
-                <span className="font-medium text-foreground">{tr.label}</span>
-              </div>
-              {!tr.passed && (
-                <div className="mt-2 font-mono text-xs text-muted-foreground">
-                  <div>Expected: {tr.expected || "(empty)"}</div>
-                  <div>Actual: {tr.actual || "(empty)"}</div>
+          {result.testResults.map((tr) => {
+            const trMemory = formatMemory(tr.memoryKb);
+            const hasMetrics = (tr.wallTimeMs ?? 0) > 0 || trMemory !== null;
+            return (
+              <div key={tr.label} className={`rounded-md border p-3 text-sm ${tr.passed ? "border-success/30 bg-success/5" : "border-error/30 bg-error/5"}`}>
+                <div className="flex items-center gap-2">
+                  <span className={tr.passed ? "text-success" : "text-error"}>
+                    {tr.passed ? "✓" : "✗"}
+                  </span>
+                  <span className="font-medium text-foreground">{tr.label}</span>
+                  {hasMetrics && (
+                    <span className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
+                      {(tr.wallTimeMs ?? 0) > 0 && (
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {tr.wallTimeMs}ms
+                        </span>
+                      )}
+                      {trMemory && (
+                        <span className="inline-flex items-center gap-1">
+                          <MemoryStick className="h-3 w-3" />
+                          {trMemory}
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+                {!tr.passed && (
+                  <div className="mt-2 font-mono text-xs text-muted-foreground">
+                    <div>Expected: {tr.expected || "(empty)"}</div>
+                    <div>Actual: {tr.actual || "(empty)"}</div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
 

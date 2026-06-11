@@ -52,6 +52,8 @@ export interface SubmissionResult {
   status: JudgeStatus;
   /** Wall-clock time in milliseconds. */
   wallTimeMs: number;
+  /** Peak resident memory in KB, or null if Judge0 did not report it. */
+  memoryKb: number | null;
 }
 
 export interface Judge0Error {
@@ -75,6 +77,7 @@ interface Judge0Response {
   exit_code: number | null;
   status: Judge0StatusField;
   wall_time: string | null; // seconds as a decimal string, e.g. "0.034"
+  memory: number | null; // peak memory in KB
 }
 
 // ---- Helpers --------------------------------------------------------------
@@ -238,6 +241,7 @@ export async function submitCode(params: SubmissionParams): Promise<SubmitCodeRe
     exitCode: json.exit_code,
     status: mapStatus(json.status.id),
     wallTimeMs: json.wall_time ? Math.round(parseFloat(json.wall_time) * 1000) : 0,
+    memoryKb: typeof json.memory === "number" ? json.memory : null,
   };
 
   return { ok: true, data: result };
