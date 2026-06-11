@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "You open a file with `std::ifstream f(\"data.txt\")` but the file does not exist. What happens to subsequent reads from `f`?",
+    "options": {
+      "a": "The program throws a `std::runtime_error` automatically.",
+      "b": "`failbit` is set and all subsequent reads silently do nothing; variables keep their prior values.",
+      "c": "The program creates an empty `data.txt` and reads from it successfully.",
+      "d": "`badbit` is set and the program terminates."
+    },
+    "answer": "b",
+    "explanation_md": "Opening a non-existent file with `std::ifstream` sets `failbit`. No exception is thrown by default, and no file is created. Subsequent reads check the flag and silently skip, leaving variables at whatever value they held before. Always check `if (!f)` right after opening."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which open mode should you use to add new lines to an existing file without deleting its current content?",
+    "options": {
+      "a": "`std::ios::out` — the default writing mode.",
+      "b": "`std::ios::in | std::ios::out` — opens for both reading and writing.",
+      "c": "`std::ios::app` — all writes go to the end of the file.",
+      "d": "`std::ios::trunc` — truncate then write from the beginning."
+    },
+    "answer": "c",
+    "explanation_md": "`std::ios::app` (append mode) positions the write pointer at the end of the file before every write, so existing content is preserved. `std::ios::out` without `app` truncates the file to zero bytes on open. `std::ios::trunc` explicitly truncates."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can a function with signature `int countLines(std::istream& in)` be called with both `std::cin` and an `std::ifstream` object?",
+    "options": {
+      "a": "Because `std::cin` and `std::ifstream` are both global objects.",
+      "b": "Because `std::ifstream` inherits from `std::istream`, so an `std::ifstream` IS an `std::istream`.",
+      "c": "Because `std::istream&` is a template that deduces the argument type.",
+      "d": "Because C++ implicitly converts any stream to `std::istream` via a cast operator."
+    },
+    "answer": "b",
+    "explanation_md": "`std::ifstream` inherits from `std::istream`. A reference to a base class can bind to a derived-class object, so passing an `std::ifstream` where `std::istream&` is expected is valid. This is the same polymorphism that lets `std::ostringstream` accept all `<iomanip>` manipulators."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assume `data.txt` contains two lines: `hello` and `world`. What does this program print to **stdout**?\n\n```cpp\n#include <fstream>\n#include <iostream>\n#include <string>\nint main() {\n    std::ifstream f(\"data.txt\");\n    int count = 0;\n    std::string line;\n    while (std::getline(f, line)) ++count;\n    std::cout << count << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "2",
+    "explanation_md": "`std::getline` reads `\"hello\"` (count becomes 1), then `\"world\"` (count becomes 2), then hits EOF and the loop exits. The program prints `2`."
+  }
+]

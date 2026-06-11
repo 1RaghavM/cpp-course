@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Fixed-Capacity Integer Stack",
+    "prompt_md": "## Goal\nBuild a fixed-capacity `IntStack` container class and use it to process a sequence of push/pop operations.\n\n## Input\n- Line 1: integer CAP (1 ≤ CAP ≤ 10), the maximum capacity.\n- Line 2: integer N (1 ≤ N ≤ 20), the number of operations.\n- Lines 3..N+2: one operation per line:\n  - `push <value>` — push an integer onto the stack (guaranteed not to exceed capacity).\n  - `pop` — pop the top element.\n  - `top` — print the top element.\n  - `size` — print the current number of elements.\n\n## Output\nFor `top` and `size` operations, print the result on its own line.\n\n## Requirements\n1. `IntStack` uses a fixed-size internal `int` array of size CAP (use dynamic allocation: `new int[cap]`).\n2. Provide `push(int)`, `pop()`, `int top() const`, `int size() const`.\n3. The destructor must call `delete[]` on the internal array.\n4. No use of std::stack or std::vector.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass IntStack {\n    int* data;\n    int size_;\n    int cap_;\npublic:\n    explicit IntStack(int cap)\n        : data{new int[static_cast<std::size_t>(cap)]}, size_{0}, cap_{cap}\n    {}\n    ~IntStack() {\n        // TODO: free the array\n    }\n    void push(int v) {\n        // TODO: add v at the top\n    }\n    void pop() {\n        // TODO: remove top element\n    }\n    int top() const {\n        // TODO: return top element\n        return 0;\n    }\n    int size() const { return size_; }\n};\n\nint main() {\n    int cap{}, n{};\n    std::cin >> cap >> n;\n    IntStack s{cap};\n    for (int i = 0; i < n; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"push\") {\n            int v{};\n            std::cin >> v;\n            s.push(v);\n        } else if (op == \"pop\") {\n            s.pop();\n        } else if (op == \"top\") {\n            std::cout << s.top() << \"\\n\";\n        } else if (op == \"size\") {\n            std::cout << s.size() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass IntStack {\n    int* data;\n    int size_;\n    int cap_;\npublic:\n    explicit IntStack(int cap)\n        : data{new int[static_cast<std::size_t>(cap)]}, size_{0}, cap_{cap}\n    {}\n    ~IntStack() { delete[] data; }\n    void push(int v) { data[size_++] = v; }\n    void pop()       { --size_; }\n    int top() const  { return data[size_ - 1]; }\n    int size() const { return size_; }\n};\n\nint main() {\n    int cap{}, n{};\n    std::cin >> cap >> n;\n    IntStack s{cap};\n    for (int i = 0; i < n; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"push\") {\n            int v{};\n            std::cin >> v;\n            s.push(v);\n        } else if (op == \"pop\") {\n            s.pop();\n        } else if (op == \"top\") {\n            std::cout << s.top() << \"\\n\";\n        } else if (op == \"size\") {\n            std::cout << s.size() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: push, top, size, pop",
+        "is_sample": true,
+        "stdin": "5\n6\npush 10\npush 20\npush 30\ntop\nsize\npop\n",
+        "expected_stdout": "30\n3"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "3\n3\npush 42\ntop\nsize\n",
+        "expected_stdout": "42\n1"
+      },
+      {
+        "label": "Hidden: push pop top sequence",
+        "is_sample": false,
+        "stdin": "4\n7\npush 1\npush 2\ntop\npop\ntop\nsize\npush 9\n",
+        "expected_stdout": "2\n1\n1"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Integer Queue Container",
+    "prompt_md": "## Goal\nComplete the `enqueue` and `dequeue` functions of a fixed-capacity circular queue container.\n\n## Input\n- Line 1: integer CAP (2 ≤ CAP ≤ 8), the fixed capacity.\n- Line 2: integer N (1 ≤ N ≤ 10), number of operations.\n- Lines 3..N+2: one operation per line:\n  - `enqueue <value>` — add to back (guaranteed not to exceed capacity).\n  - `dequeue` — remove from front and print it.\n  - `count` — print current number of elements.\n\n## Output\nFor `dequeue` and `count`, print the result on its own line.\n\n## Requirements\n1. `FixedQueue` wraps a fixed `int data[8]` array (size 8 is sufficient for all tests).\n2. Complete `void enqueue(int v)`: write to `data[tail_]`, advance `tail_` circularly `(tail_+1) % CAP_`, increment `count_`.\n3. Complete `int dequeue()`: read `data[head_]`, advance `head_` circularly, decrement `count_`, return the value.\n4. `count()` is already implemented; do not change it.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass FixedQueue {\n    int data[8]{};\n    int head_{0};\n    int tail_{0};\n    int count_{0};\n    int cap_;\npublic:\n    explicit FixedQueue(int cap) : cap_{cap} {}\n    void enqueue(int v) {\n        // TODO: write v at data[tail_], advance tail_ circularly, increment count_\n    }\n    int dequeue() {\n        // TODO: read data[head_], advance head_ circularly, decrement count_, return value\n        return 0;\n    }\n    int count() const { return count_; }\n};\n\nint main() {\n    int cap{}, n{};\n    std::cin >> cap >> n;\n    FixedQueue q{cap};\n    for (int i = 0; i < n; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"enqueue\") {\n            int v{};\n            std::cin >> v;\n            q.enqueue(v);\n        } else if (op == \"dequeue\") {\n            std::cout << q.dequeue() << \"\\n\";\n        } else if (op == \"count\") {\n            std::cout << q.count() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass FixedQueue {\n    int data[8]{};\n    int head_{0};\n    int tail_{0};\n    int count_{0};\n    int cap_;\npublic:\n    explicit FixedQueue(int cap) : cap_{cap} {}\n    void enqueue(int v) {\n        data[tail_] = v;\n        tail_ = (tail_ + 1) % cap_;\n        ++count_;\n    }\n    int dequeue() {\n        int v = data[head_];\n        head_ = (head_ + 1) % cap_;\n        --count_;\n        return v;\n    }\n    int count() const { return count_; }\n};\n\nint main() {\n    int cap{}, n{};\n    std::cin >> cap >> n;\n    FixedQueue q{cap};\n    for (int i = 0; i < n; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"enqueue\") {\n            int v{};\n            std::cin >> v;\n            q.enqueue(v);\n        } else if (op == \"dequeue\") {\n            std::cout << q.dequeue() << \"\\n\";\n        } else if (op == \"count\") {\n            std::cout << q.count() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: enqueue, count, dequeue",
+        "is_sample": true,
+        "stdin": "4\n5\nenqueue 10\nenqueue 20\nenqueue 30\ncount\ndequeue\n",
+        "expected_stdout": "3\n10"
+      },
+      {
+        "label": "Hidden: FIFO order",
+        "is_sample": false,
+        "stdin": "4\n6\nenqueue 1\nenqueue 2\nenqueue 3\ndequeue\ndequeue\ndequeue\n",
+        "expected_stdout": "1\n2\n3"
+      },
+      {
+        "label": "Hidden: circular wrap",
+        "is_sample": false,
+        "stdin": "3\n6\nenqueue 5\nenqueue 6\ndequeue\nenqueue 7\ndequeue\ndequeue\n",
+        "expected_stdout": "5\n6\n7"
+      }
+    ]
+  }
+]

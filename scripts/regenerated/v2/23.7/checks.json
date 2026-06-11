@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\nint main() {\n    std::vector<int> a(3, 7);\n    std::vector<int> b{3, 7};\n    std::cout << a.size() << \"\\n\";\n    std::cout << b.size() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "3\n2",
+    "explanation_md": "a is constructed with parentheses (3, 7), calling the (count, value) constructor: 3 elements all equal to 7, so size is 3. b is constructed with braces {3, 7}, which prefers the initializer_list constructor: 2 elements (3 and 7), so size is 2."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `std::initializer_list<T>` provide to the code that uses it?",
+    "options": {
+      "a": "A modifiable sequence of T values that can be pushed to and popped from.",
+      "b": "A read-only view into a temporary array; iteration via range-for and .size() are the main operations.",
+      "c": "A heap-allocated array that persists after the constructor returns.",
+      "d": "A way to overload the assignment operator for brace expressions."
+    },
+    "answer": "b",
+    "explanation_md": "std::initializer_list is a lightweight read-only view. Its elements are const and cannot be modified. It provides .size(), .begin(), .end(), and supports range-for. The underlying array is temporary, so it must not be stored after construction."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This class stores an initializer_list as a member, which causes dangling-reference problems. Which option correctly identifies the bug?\n\n```cpp\n#include <iostream>\n#include <initializer_list>\nclass Nums {\n    std::initializer_list<int> stored;\npublic:\n    Nums(std::initializer_list<int> list) : stored{list} {}\n    int front() const { return *stored.begin(); }\n};\nint main() {\n    Nums n{1, 2, 3};\n    std::cout << n.front() << \"\\n\";\n}\n```",
+    "options": {
+      "a": "std::initializer_list cannot be stored in a class; it must be used only as a function parameter.",
+      "b": "stored holds a pointer into a temporary array that may no longer exist when front() is called.",
+      "c": "The range-for syntax cannot be used with std::initializer_list.",
+      "d": "stored should be std::initializer_list<const int> to match the const elements."
+    },
+    "answer": "b",
+    "explanation_md": "std::initializer_list is a view into a temporary array. That array's lifetime ends after the constructor call. Storing the list as a member and then accessing it later may produce a dangling reference. The fix is to copy the values into a proper container (e.g., std::vector<int> or a fixed array) during construction."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <initializer_list>\nint sumAll(std::initializer_list<int> vals) {\n    int total = 0;\n    for (int v : vals) total += v;\n    return total;\n}\nint main() {\n    std::cout << sumAll({1, 2, 3, 4}) << \"\\n\";\n    std::cout << sumAll({10, 20}) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10\n30",
+    "explanation_md": "sumAll adds all elements in the provided list. {1,2,3,4} sums to 10; {10,20} sums to 30."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class has both `Widget(int count, int val)` and `Widget(std::initializer_list<int> list)`. What happens when you write `Widget w{5, 3}`?",
+    "options": {
+      "a": "The (int, int) constructor is called because the argument types match exactly.",
+      "b": "The initializer_list constructor is called because brace initialization strongly prefers it.",
+      "c": "A compile error occurs because both constructors match.",
+      "d": "The call is ambiguous; the compiler picks the first declared constructor."
+    },
+    "answer": "b",
+    "explanation_md": "When both an initializer_list constructor and other constructors are viable, brace initialization strongly prefers the initializer_list constructor. To call the (int, int) constructor, you must use parentheses: Widget w(5, 3)."
+  }
+]

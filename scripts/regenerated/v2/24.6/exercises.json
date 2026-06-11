@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Square with Derived Perimeter Function",
+    "prompt_md": "## Goal\nDefine a `Rectangle` base class and a `Square` derived class. `Square` adds a new `perimeter()` function not present in `Rectangle`.\n\n## Input\nLine 1: a double — the side length of the square.\n\n## Output\nPrint exactly two lines:\n```\nArea: <area>\nPerimeter: <perimeter>\n```\nPrint values with exactly 1 decimal place.\n\n## Requirements\n1. `Rectangle` must have `double width` and `double height` as public members, and a constructor `Rectangle(double w, double h)`. It must have a `double area()` member function returning `width * height`.\n2. `Square` must publicly inherit `Rectangle` and have a constructor `Square(double side)` that calls `Rectangle(side, side)`.\n3. `Square` must have a new member function `double perimeter()` that returns `4.0 * width` (not in `Rectangle`).\n4. In `main()`, construct a `Square`, call `area()` (inherited), then call `perimeter()` (new), and print both.\n5. Edge case: side = 1.0.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define Rectangle with double width, height, constructor, and double area()\nclass Rectangle {\npublic:\n    double width;\n    double height;\n    Rectangle(double w, double h) : width(w), height(h) {}\n    double area() { return width * height; }\n};\n\n// TODO: Define Square that publicly inherits Rectangle\n//   Constructor Square(double side) calls Rectangle(side, side)\n//   New function double perimeter() returns 4.0 * width\nclass Square : public Rectangle {\npublic:\n    Square(double side) : Rectangle(side, side) {}\n    double perimeter() {\n        return 0.0; // TODO: return 4.0 * width\n    }\n};\n\nint main() {\n    double side;\n    std::cin >> side;\n    Square s(side);\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Area: \" << s.area() << \"\\n\";\n    std::cout << \"Perimeter: \" << s.perimeter() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width;\n    double height;\n    Rectangle(double w, double h) : width(w), height(h) {}\n    double area() { return width * height; }\n};\n\nclass Square : public Rectangle {\npublic:\n    Square(double side) : Rectangle(side, side) {}\n    double perimeter() {\n        return 4.0 * width;\n    }\n};\n\nint main() {\n    double side;\n    std::cin >> side;\n    Square s(side);\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Area: \" << s.area() << \"\\n\";\n    std::cout << \"Perimeter: \" << s.perimeter() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: side=5",
+        "is_sample": true,
+        "stdin": "5.0\n",
+        "expected_stdout": "Area: 25.0\nPerimeter: 20.0"
+      },
+      {
+        "label": "Hidden: side=1",
+        "is_sample": false,
+        "stdin": "1.0\n",
+        "expected_stdout": "Area: 1.0\nPerimeter: 4.0"
+      },
+      {
+        "label": "Hidden: side=3",
+        "is_sample": false,
+        "stdin": "3.0\n",
+        "expected_stdout": "Area: 9.0\nPerimeter: 12.0"
+      }
+    ]
+  },
+  {
+    "title": "Manager Report via Derived Function",
+    "prompt_md": "## Goal\nComplete the function `void printReport(Manager& m)` that prints a manager's full report by calling the inherited `printName()` function and then printing additional manager-specific info.\n\n## Input\nLine 1: a string — the manager's name (no spaces).\nLine 2: a double — the manager's salary.\nLine 3: an integer — the team size.\n\n## Output\nPrint exactly three lines:\n```\nName: <name>\nSalary: <salary>\nTeam: <teamSize>\n```\nPrint salary with 2 decimal places.\n\n## Requirements\n1. `Employee` has `std::string name`, `double salary`, a constructor, and `void printName()` that prints `Name: <name>`.\n2. `Manager` publicly inherits `Employee`, adds `int teamSize`, and has a constructor.\n3. Implement `void printSummary()` as a member of `Manager` — it calls `printName()` (inherited), then prints `Salary: <salary>` with 2 decimal places and `Team: <teamSize>`.\n4. Edge case: teamSize = 1.\n5. Edge case: salary = 0.00.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Employee {\npublic:\n    std::string name;\n    double salary;\n    Employee(std::string n, double s) : name(n), salary(s) {}\n    void printName() {\n        std::cout << \"Name: \" << name << \"\\n\";\n    }\n};\n\nclass Manager : public Employee {\npublic:\n    int teamSize;\n    Manager(std::string n, double s, int ts) : Employee(n, s), teamSize(ts) {}\n    void printSummary() {\n        printName(); // calls inherited function\n        // TODO: print \"Salary: <salary>\" with 2 decimal places\n        // TODO: print \"Team: <teamSize>\"\n    }\n};\n\nint main() {\n    std::string name;\n    double salary;\n    int ts;\n    std::cin >> name >> salary >> ts;\n    Manager m(name, salary, ts);\n    m.printSummary();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Employee {\npublic:\n    std::string name;\n    double salary;\n    Employee(std::string n, double s) : name(n), salary(s) {}\n    void printName() {\n        std::cout << \"Name: \" << name << \"\\n\";\n    }\n};\n\nclass Manager : public Employee {\npublic:\n    int teamSize;\n    Manager(std::string n, double s, int ts) : Employee(n, s), teamSize(ts) {}\n    void printSummary() {\n        printName();\n        std::cout << std::fixed << std::setprecision(2);\n        std::cout << \"Salary: \" << salary << \"\\n\";\n        std::cout << \"Team: \" << teamSize << \"\\n\";\n    }\n};\n\nint main() {\n    std::string name;\n    double salary;\n    int ts;\n    std::cin >> name >> salary >> ts;\n    Manager m(name, salary, ts);\n    m.printSummary();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Alice 75000 8",
+        "is_sample": true,
+        "stdin": "Alice\n75000.0\n8\n",
+        "expected_stdout": "Name: Alice\nSalary: 75000.00\nTeam: 8"
+      },
+      {
+        "label": "Hidden: teamSize=1",
+        "is_sample": false,
+        "stdin": "Bob\n50000.0\n1\n",
+        "expected_stdout": "Name: Bob\nSalary: 50000.00\nTeam: 1"
+      },
+      {
+        "label": "Hidden: salary=0",
+        "is_sample": false,
+        "stdin": "Carol\n0.0\n3\n",
+        "expected_stdout": "Name: Carol\nSalary: 0.00\nTeam: 3"
+      }
+    ]
+  }
+]

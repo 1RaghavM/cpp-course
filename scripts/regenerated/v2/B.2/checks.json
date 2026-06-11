@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    auto twice = [](auto x) { return x + x; };\n    std::cout << twice(7) << '\\n';\n    std::cout << twice(1.5) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "14\n3",
+    "explanation_md": "`twice(7)` instantiates with `int`, producing `7+7=14`. `twice(1.5)` instantiates with `double`, producing `1.5+1.5=3.0`. `std::cout` prints `3.0` as `3` (no decimal for a whole-number double by default)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why was `std::make_unique` not included in C++11 alongside `std::unique_ptr`?",
+    "options": {
+      "a": "It requires features that were only added in C++14",
+      "b": "It was an oversight; variadic templates (needed for forwarding arguments) were already in C++11 — it was simply forgotten",
+      "c": "Raw `new` was preferred over `make_unique` in the C++11 design philosophy",
+      "d": "It requires `auto` return type deduction, which was not allowed in C++11"
+    },
+    "answer": "b",
+    "explanation_md": "All the ingredients for `make_unique` — variadic templates, `std::forward`, `std::unique_ptr` — were in C++11. Its absence was acknowledged as an oversight by the committee, and it was added in C++14."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nconstexpr int factorial(int n) {\n    int r = 1;\n    for (int i = 2; i <= n; ++i) r *= i;\n    return r;\n}\nint main() {\n    std::cout << factorial(4) << '\\n';\n    std::cout << factorial(0) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "24\n1",
+    "explanation_md": "`factorial(4)` = 4*3*2*1 = 24. `factorial(0)` never enters the loop (2 ≤ 0 is false), so it returns the initial value 1 (0! = 1 by mathematical convention). The relaxed C++14 `constexpr` allows the loop inside the function."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The function below fails to compile. What is the bug?\n\n```cpp\nauto compute(bool flag) {\n    if (flag) return 1;\n    return 2.5;\n}\n```",
+    "options": {
+      "a": "`auto` return type deduction is not allowed in C++14",
+      "b": "The two `return` statements deduce different types (`int` and `double`), which is not allowed with `auto` return deduction",
+      "c": "`if` statements are not allowed in `auto` return type functions",
+      "d": "The function must be declared `constexpr` to use `auto` return type"
+    },
+    "answer": "b",
+    "explanation_md": "When using `auto` return type deduction, every `return` statement must produce the same type. `return 1` deduces `int`; `return 2.5` deduces `double`. The compiler cannot reconcile these, so it emits an error. Fix by returning `1.0` or explicitly declaring the return type as `double`."
+  }
+]

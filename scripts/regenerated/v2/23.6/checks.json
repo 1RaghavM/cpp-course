@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Buffer` class stores `int* data` (heap-allocated) and an `int size`. What must the destructor do?",
+    "options": {
+      "a": "Nothing — the OS reclaims heap memory when the program exits.",
+      "b": "Call `delete data` to free the single integer.",
+      "c": "Call `delete[] data` to free the array.",
+      "d": "Set `data = nullptr` and `size = 0`."
+    },
+    "answer": "c",
+    "explanation_md": "Arrays allocated with `new[]` must be freed with `delete[]`, not `delete`. Relying on the OS for memory cleanup is wrong for long-running programs and is considered a leak. Setting pointers to nullptr without freeing is also a leak."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Bag {\n    int data[3]{};\n    int count_{0};\npublic:\n    void add(int v) { data[count_++] = v; }\n    int get(int i) const { return data[i]; }\n    int count() const { return count_; }\n};\nint main() {\n    Bag b;\n    b.add(10);\n    b.add(20);\n    b.add(30);\n    for (int i = 0; i < b.count(); ++i)\n        std::cout << b.get(i) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10\n20\n30",
+    "explanation_md": "add() writes each value at data[count_] then increments count_. The loop prints all three values in insertion order: 10, 20, 30."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This container crashes or produces wrong output. What is the bug?\n\n```cpp\n#include <iostream>\nclass Stack {\n    int data[4]{};\n    int size_{0};\npublic:\n    void push(int v) { data[++size_] = v; }\n    int top()  const { return data[size_]; }\n    void pop()       { --size_; }\n};\nint main() {\n    Stack s;\n    s.push(1);\n    s.push(2);\n    std::cout << s.top() << \"\\n\";\n    s.pop();\n    std::cout << s.top() << \"\\n\";\n}\n```",
+    "options": {
+      "a": "pop() decrements size_ before printing, so it always prints 0.",
+      "b": "push() increments size_ before writing, so index 0 is skipped and the first push writes to data[1], wasting a slot and potentially going out of bounds.",
+      "c": "top() should return data[size_-1] instead of data[size_].",
+      "d": "The array size 4 is too small for two pushes."
+    },
+    "answer": "b",
+    "explanation_md": "push() does `data[++size_] = v`, so size_ is incremented before the write. The first push writes to data[1] (not data[0]), wasting slot 0 and shifting every index by one. top() returns data[size_], which is correct for the shifted indexing, but the array can effectively only hold 3 elements instead of 4. The canonical fix is `data[size_++] = v` and `return data[size_-1]`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Mini {\n    int data[2]{};\n    int n{0};\npublic:\n    void add(int v) { data[n++] = v; }\n    bool empty() const { return n == 0; }\n    int size()  const { return n; }\n};\nint main() {\n    Mini m;\n    std::cout << m.empty() << \"\\n\";\n    m.add(5);\n    std::cout << m.size() << \"\\n\";\n    std::cout << m.empty() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "1\n1\n0",
+    "explanation_md": "Initially n == 0, so empty() returns true (printed as 1). After add(5), n == 1, so size() prints 1. empty() now returns false (printed as 0)."
+  }
+]

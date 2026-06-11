@@ -1,0 +1,56 @@
+[
+  {
+    "title": "TypeName: class template specialization for type identification",
+    "prompt_md": "## Goal\nComplete the class template `TypeName<T>` and its specializations so that `TypeName<T>::name()` returns a string identifying the type.\n\n## Input\nNo input (the program takes no stdin).\n\n## Output\nPrint exactly three lines:\n```\nType: unknown\nType: int\nType: bool\n```\n\n## Requirements\n1. Primary template `TypeName<T>` has a static member function `static const char* name()` that returns `\"unknown\"`.\n2. Full specialization `TypeName<int>` — `name()` returns `\"int\"`.\n3. Full specialization `TypeName<bool>` — `name()` returns `\"bool\"`.\n4. `main()` calls `TypeName<double>::name()`, `TypeName<int>::name()`, `TypeName<bool>::name()` and prints each as `Type: <name>`.\n\n## Notes\n- The function `name()` should be `static` and return `const char*`.",
+    "starter_code": "#include <iostream>\n\n// Primary template — returns \"unknown\" for any type\ntemplate <typename T>\nclass TypeName {\npublic:\n    // TODO: implement static const char* name() returning \"unknown\"\n    static const char* name() { return \"\"; }\n};\n\n// TODO: add full specialization for int — name() returns \"int\"\n\n// TODO: add full specialization for bool — name() returns \"bool\"\n\nint main() {\n    std::cout << \"Type: \" << TypeName<double>::name() << \"\\n\";\n    std::cout << \"Type: \" << TypeName<int>::name()    << \"\\n\";\n    std::cout << \"Type: \" << TypeName<bool>::name()   << \"\\n\";\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass TypeName {\npublic:\n    static const char* name() { return \"unknown\"; }\n};\n\ntemplate <>\nclass TypeName<int> {\npublic:\n    static const char* name() { return \"int\"; }\n};\n\ntemplate <>\nclass TypeName<bool> {\npublic:\n    static const char* name() { return \"bool\"; }\n};\n\nint main() {\n    std::cout << \"Type: \" << TypeName<double>::name() << \"\\n\";\n    std::cout << \"Type: \" << TypeName<int>::name()    << \"\\n\";\n    std::cout << \"Type: \" << TypeName<bool>::name()   << \"\\n\";\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three type names",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Type: unknown\nType: int\nType: bool"
+      },
+      {
+        "label": "Hidden: same program, repeated run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Type: unknown\nType: int\nType: bool"
+      },
+      {
+        "label": "Hidden: deterministic output check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Type: unknown\nType: int\nType: bool"
+      }
+    ]
+  },
+  {
+    "title": "Complete the function: use Storage<bool> specialization to count flags",
+    "prompt_md": "## Goal\nComplete the function `countTrue` that counts how many `true` values are stored in a `Storage<bool>` array by using the accessor `get()` on each element.\n\n## Input\nLine 1: integer N (1 ≤ N ≤ 6).\nLine 2: N space-separated integers (0 or 1).\n\n## Output\nPrint exactly one line: `True count: <k>`\n\n## Requirements\n1. `Storage<T>` primary template and `Storage<bool>` specialization are provided; do not modify them.\n2. Complete `int countTrue(const Storage<bool> arr[], int n)` — loop from 0 to n-1 and count `arr[i].get() == true`.\n3. `main()` builds a `Storage<bool>` array from stdin, calls `countTrue`, and prints the result.\n\n## Notes\n- Hidden test: all zeros (count = 0).\n- Hidden test: all ones.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Storage {\n    T val_;\npublic:\n    explicit Storage(T v) : val_{v} {}\n    T get() const { return val_; }\n};\n\ntemplate <>\nclass Storage<bool> {\n    bool val_;\npublic:\n    explicit Storage(bool v) : val_{v} {}\n    bool get() const { return val_; }\n    void print() const { std::cout << (val_ ? \"true\" : \"false\"); }\n};\n\n// TODO: implement this function\n// Count how many elements in arr[0..n-1] have get() == true\nint countTrue(const Storage<bool> arr[], int n) {\n    int count = 0;\n    // TODO: loop and count\n    return count;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    Storage<bool> arr[6]{ Storage<bool>{false}, Storage<bool>{false},\n                          Storage<bool>{false}, Storage<bool>{false},\n                          Storage<bool>{false}, Storage<bool>{false} };\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        arr[i] = Storage<bool>{static_cast<bool>(v)};\n    }\n    std::cout << \"True count: \" << countTrue(arr, n) << \"\\n\";\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Storage {\n    T val_;\npublic:\n    explicit Storage(T v) : val_{v} {}\n    T get() const { return val_; }\n};\n\ntemplate <>\nclass Storage<bool> {\n    bool val_;\npublic:\n    explicit Storage(bool v) : val_{v} {}\n    bool get() const { return val_; }\n    void print() const { std::cout << (val_ ? \"true\" : \"false\"); }\n};\n\nint countTrue(const Storage<bool> arr[], int n) {\n    int count = 0;\n    for (int i = 0; i < n; ++i)\n        if (arr[i].get()) ++count;\n    return count;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    Storage<bool> arr[6]{ Storage<bool>{false}, Storage<bool>{false},\n                          Storage<bool>{false}, Storage<bool>{false},\n                          Storage<bool>{false}, Storage<bool>{false} };\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        arr[i] = Storage<bool>{static_cast<bool>(v)};\n    }\n    std::cout << \"True count: \" << countTrue(arr, n) << \"\\n\";\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed flags",
+        "is_sample": true,
+        "stdin": "4\n1 0 1 1\n",
+        "expected_stdout": "True count: 3"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "3\n0 0 0\n",
+        "expected_stdout": "True count: 0"
+      },
+      {
+        "label": "Hidden: all ones",
+        "is_sample": false,
+        "stdin": "5\n1 1 1 1 1\n",
+        "expected_stdout": "True count: 5"
+      }
+    ]
+  }
+]

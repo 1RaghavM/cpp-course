@@ -967,6 +967,308 @@
 1 warning generated.
 
 
+## 23.3 — pass
+- **warning**: 23_3_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_3_ex1_starter.cpp:12:28: warning: unused parameter 'p' [-Wunused-parameter]
+   12 |     void addPlayer(Player* p) {
+      |                            ^
+1 warning generated.
+
+
+## 23.5 — pass
+- **warning**: 23_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_5_ex1_starter.cpp:14:53: warning: unused parameter 'items' [-Wunused-parameter]
+   14 |     void processAll(const std::vector<std::string>& items, Logger& logger) {
+      |                                                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_5_ex1_starter.cpp:14:68: wa
+
+## 23.6 — pass
+- **warning**: 23_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_6_ex1_starter.cpp:15:19: warning: unused parameter 'v' [-Wunused-parameter]
+   15 |     void push(int v) {
+      |                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_6_ex1_starter.cpp:7:9: warning: private field 'cap_' is not used [-Wunused-private-field]
+    7 |     int cap_;
+      |
+- **warning**: 23_6_ex1_solution: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_6_ex1_solution.cpp:7:9: warning: private field 'cap_' is not used [-Wunused-private-field]
+    7 |     int cap_;
+      |         ^
+1 warning generated.
+
+- **warning**: 23_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_6_ex2_starter.cpp:12:22: warning: unused parameter 'v' [-Wunused-parameter]
+   12 |     void enqueue(int v) {
+      |                      ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/23_6_ex2_starter.cpp:5:9: warning: private field 'data' is not used [-Wunused-private-field]
+    5 |     int data[8]
+
+## 23.x — fail
+- **error**: summary.md missing
+
+## 24.2 — pass
+- **warning**: 24_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_2_ex2_starter.cpp:5:21: warning: unused parameter 'baseFields' [-Wunused-parameter]
+    5 | int countFields(int baseFields, int derivedFields) {
+      |                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_2_ex2_starter.cpp:5:37: warning: unused parameter 'derivedFields' [-Wunused-par
+
+## 24.4 — pass
+- **warning**: 24_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_4_ex1_starter.cpp:21:26: warning: unused parameter 'w' [-Wunused-parameter]
+   21 |     ColoredRectangle(int w, int h, std::string c)
+      |                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_4_ex1_starter.cpp:21:33: warning: unused parameter 'h' [-Wunused-parameter]
+   21 |  
+- **warning**: 24_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_4_ex2_starter.cpp:5:48: warning: unused parameter 'value' [-Wunused-parameter]
+    5 | std::string buildLabel(std::string prefix, int value) {
+      |                                                ^
+1 warning generated.
+
+
+## 24.5 — pass
+- **warning**: 24_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_5_ex1_starter.cpp:14:35: warning: unused parameter 'label' [-Wunused-parameter]
+   14 |     void printBalance(std::string label) {
+      |                                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_5_ex1_starter.cpp:24:31: warning: unused parameter 'rate' [-Wunused-parameter]
+
+- **warning**: 24_5_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/24_5_ex2_starter.cpp:14:25: warning: unused parameter 'n' [-Wunused-parameter]
+   14 |     Manager(std::string n, int ts) : Employee("boss"), teamSize(ts) {} // BUG: wrong argument
+      |                         ^
+1 warning generated.
+
+
+## 24.8 — fail
+- **error**: summary.md missing
+
+## 24.9 — fail
+- **error**: summary.md missing
+
+## 24.x — fail
+- **error**: summary.md missing
+
+## 25.1 — pass
+- **warning**: 25_1_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_1_ex1_starter.cpp:24:14: warning: suggest braces around initialization of subobject [-Wmissing-braces]
+   24 |     Circle c{"red", 5.0};
+      |              ^~~~~
+      |              {    }
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_1_ex1_starter.cpp:25:17: warning: suggest braces around initia
+- **warning**: 25_1_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_1_ex2_starter.cpp:17:33: warning: unused parameter 'a' [-Wunused-parameter]
+   17 | void reportAnimal(const Animal& a) {
+      |                                 ^
+1 warning generated.
+
+
+## 25.10 — fail
+- **error**: summary.md missing
+
+## 25.11 — fail
+- **error**: summary.md missing
+
+## 25.2 — pass
+- **warning**: 25_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_2_ex1_starter.cpp:25:12: warning: unused variable 'shapes' [-Wunused-variable]
+   25 |     Shape* shapes[2] = { &c, &r };
+      |            ^~~~~~
+1 warning generated.
+
+- **warning**: 25_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_2_ex2_starter.cpp:19:30: warning: unused parameter 'a' [-Wunused-parameter]
+   19 | void makeSpeak(const Animal& a) {
+      |                              ^
+1 warning generated.
+
+
+## 25.3 — pass
+- **warning**: 25_3_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_3_ex2_starter.cpp:10:10: warning: 'Dog::speak' hides overloaded virtual function [-Woverloaded-virtual]
+   10 |     void speak() { std::cout << "Dog\n"; }  // bug: missing const
+      |          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_3_ex2_starter.cpp:5:18: note: hidden overloaded virtual f
+
+## 25.5 — pass
+- **warning**: 25_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_5_ex1_starter.cpp:15:11: warning: unused variable 'p' [-Wunused-variable]
+   15 |     Base* p = &d;
+      |           ^
+1 warning generated.
+
+
+## 25.6 — pass
+- **warning**: 25_6_ex1_solution: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_6_ex1_solution.cpp:3:19: warning: private field 'x' is not used [-Wunused-private-field]
+    3 | class Plain { int x; };
+      |                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_6_ex1_solution.cpp:4:25: warning: private field 'x' is not used [-Wunused-private-field]
+    4 | class Wi
+- **warning**: 25_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/25_6_ex2_starter.cpp:18:13: warning: unused variable 'ptrs' [-Wunused-variable]
+   18 |     Animal* ptrs[2] = { &a, &d };
+      |             ^~~~
+1 warning generated.
+
+
+## 25.7 — fail
+- **error**: summary.md missing
+
+## 25.8 — fail
+- **error**: summary.md missing
+
+## 25.9 — fail
+- **error**: summary.md missing
+
+## 25.x — fail
+- **error**: summary.md missing
+
+## 26.2 — pass
+- **warning**: 26_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/26_2_ex1_starter.cpp:8:18: warning: unused parameter 'index' [-Wunused-parameter]
+    8 |     void set(int index, T value) {}
+      |                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/26_2_ex1_starter.cpp:8:27: warning: unused parameter 'value' [-Wunused-parameter]
+    8 |     void set(int 
+
+## 26.4 — pass
+- **warning**: 26_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/26_4_ex2_starter.cpp:22:35: warning: unused parameter 'arr' [-Wunused-parameter]
+   22 | int countTrue(const Storage<bool> arr[], int n) {
+      |                                   ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/26_4_ex2_starter.cpp:22:46: warning: unused parameter 'n' [-Wunused-parameter
+
+## 26.x — fail
+- **error**: summary.md missing
+
+## 27.1 — pass
+- **warning**: 27_1_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_1_ex1_starter.cpp:7:21: warning: unused parameter 'a' [-Wunused-parameter]
+    7 | int safe_divide(int a, int b) {
+      |                     ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_1_ex1_starter.cpp:7:28: warning: unused parameter 'b' [-Wunused-parameter]
+    7 | int safe_divide(int a, int
+- **warning**: 27_1_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_1_ex2_starter.cpp:5:23: warning: unused parameter 'val' [-Wunused-parameter]
+    5 | void add_positive(int val, int& total) {
+      |                       ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_1_ex2_starter.cpp:5:33: warning: unused parameter 'total' [-Wunused-parameter]
+    5 | void add_
+
+## 27.10 — fail
+- **error**: summary.md missing
+
+## 27.2 — pass
+- **warning**: 27_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_2_ex1_starter.cpp:9:19: warning: unused parameter 'code' [-Wunused-parameter]
+    9 | void dispatch(int code) {
+      |                   ^
+1 warning generated.
+
+- **warning**: 27_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_2_ex2_starter.cpp:9:30: warning: unused parameter 'score' [-Wunused-parameter]
+    9 | std::string grade_letter(int score) {
+      |                              ^
+1 warning generated.
+
+
+## 27.4 — pass
+- **warning**: 27_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_4_ex1_starter.cpp:5:24: warning: unused parameter 'code' [-Wunused-parameter]
+    5 | void throw_by_code(int code) {
+      |                        ^
+1 warning generated.
+
+- **warning**: 27_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_4_ex2_starter.cpp:8:29: warning: unused parameter 'key' [-Wunused-parameter]
+    8 | std::string safe_lookup(int key) {
+      |                             ^
+1 warning generated.
+
+
+## 27.5 — pass
+- **warning**: 27_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_5_ex1_starter.cpp:13:18: warning: unused parameter 'code' [-Wunused-parameter]
+   13 | void trigger(int code) {
+      |                  ^
+1 warning generated.
+
+- **warning**: 27_5_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_5_ex2_starter.cpp:17:20: warning: exception of type 'const SpecificError &' will be caught by earlier handler [-Wexceptions]
+   17 |     } catch (const SpecificError& e) {
+      |                    ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_5_ex2_starter.cpp:15:20: note: for type 'const std::r
+
+## 27.6 — pass
+- **warning**: 27_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_6_ex1_starter.cpp:6:18: warning: unused parameter 'code' [-Wunused-parameter]
+    6 | void do_work(int code) {
+      |                  ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/27_6_ex1_starter.cpp:13:22: warning: unused parameter 'code' [-Wunused-parameter]
+   13 | void logged_call(int code) {
+
+
+## 27.8 — fail
+- **error**: summary.md missing
+
+## 27.9 — fail
+- **error**: summary.md missing
+
+## 27.x — fail
+- **error**: summary.md missing
+
+## 28.1 — pass
+- **warning**: 28_1_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_1_ex2_starter.cpp:5:30: warning: unused parameter 'out' [-Wunused-parameter]
+    5 | void printLine(std::ostream& out, const std::string& text) {
+      |                              ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_1_ex2_starter.cpp:5:54: warning: unused parameter 'text' [-Wunused-pa
+
+## 28.2 — pass
+- **warning**: summary is 686 words (target 800-1200)
+
+## 28.3 — pass
+- **warning**: summary is 692 words (target 800-1200)
+
+## 28.4 — pass
+- **warning**: summary is 599 words (target 800-1200)
+- **warning**: 28_4_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_4_ex1_starter.cpp:12:9: warning: unused variable 'count' [-Wunused-variable]
+   12 |     int count = 0;
+      |         ^~~~~
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_4_ex1_starter.cpp:13:12: warning: unused variable 'avg' [-Wunused-variable]
+   13 |     double avg = 0.0;
+      |            ^~~
+- **warning**: 28_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_4_ex2_starter.cpp:7:42: warning: unused parameter 'key' [-Wunused-parameter]
+    7 | std::string makeLabel(const std::string& key, int value) {
+      |                                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_4_ex2_starter.cpp:7:51: warning: unused parameter 'value' [
+
+## 28.5 — pass
+- **warning**: 28_5_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_5_ex1_starter.cpp:4:9: warning: unused variable 'x' [-Wunused-variable]
+    4 |     int x;
+      |         ^
+1 warning generated.
+
+
+## 28.6 — pass
+- **warning**: summary is 654 words (target 800-1200)
+- **warning**: 28_6_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_6_ex1_starter.cpp:6:30: warning: unused parameter 'in' [-Wunused-parameter]
+    6 | int countLines(std::istream& in) {
+      |                              ^
+1 warning generated.
+
+- **warning**: 28_6_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_6_ex2_starter.cpp:6:38: warning: unused parameter 'log' [-Wunused-parameter]
+    6 | void appendEntry(std::ostringstream& log, int index, const std::string& msg) {
+      |                                      ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/28_6_ex2_starter.cpp:6:47: warning: unused par
+
 ## 3.10 — pass
 - **warning**: 3_10_ex1_starter: compiler warnings:
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/3_10_ex1_starter.cpp:3:17: warning: unused parameter 'a' [-Wunused-parameter]
@@ -1333,3 +1635,38 @@
       |                                ^
 /Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/9_6_ex2_starter.cpp:9:40: warning: unused parameter 'hi' [-Wunused-parameter]
     9 | in
+
+## A.2 — pass
+- **warning**: A_2_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/A_2_ex2_starter.cpp:6:42: warning: unused parameter 'includeDir' [-Wunused-parameter]
+    6 | bool isConfigComplete(const std::string& includeDir,
+      |                                          ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/A_2_ex2_starter.cpp:7:42: warning: unused parameter 'libDir' [
+
+## A.4 — pass
+- **warning**: A_4_ex2_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/A_4_ex2_starter.cpp:6:41: warning: unused parameter 'pragma_once' [-Wunused-parameter]
+    6 | bool hasIncludeGuard(const std::string& pragma_once, const std::string& ifndef_guard) {
+      |                                         ^
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/A_4_ex2_starter.cpp:6:73: w
+
+## B.2 — pass
+- **warning**: summary is 699 words (target 800-1200)
+- **warning**: B_2_ex1_starter: compiler warnings:
+/Users/raghavmehta/Downloads/cpp-course/scripts/regenerated/v2/.build/B_2_ex1_starter.cpp:4:27: warning: unused parameter 'x' [-Wunused-parameter]
+    4 | std::string toBinary8(int x) {
+      |                           ^
+1 warning generated.
+
+
+## B.3 — pass
+- **warning**: summary is 651 words (target 800-1200)
+
+## B.4 — fail
+- **error**: summary.md missing
+
+## B.5 — fail
+- **error**: summary.md missing
+
+## C.1 — fail
+- **error**: summary.md missing

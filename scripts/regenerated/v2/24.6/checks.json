@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Shape {\npublic:\n    double width = 4.0;\n    double height = 3.0;\n    double area() { return width * height; }\n};\nclass Box : public Shape {\npublic:\n    double depth = 2.0;\n    double volume() { return area() * depth; }\n};\nint main() {\n    Box b;\n    std::cout << b.area() << \"\\n\";\n    std::cout << b.volume() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "12\n24",
+    "explanation_md": "`b.area()` is the inherited `Shape::area()` which returns `4.0 * 3.0 = 12`. `b.volume()` is the new `Box` function that calls `area()` (which returns 12) and multiplies by `depth` (2.0), giving `24`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Can a new member function added to a derived class call inherited member functions from the base class?",
+    "options": {
+      "a": "No — derived-only functions can only access derived-only members",
+      "b": "Yes — derived functions have access to all public and protected members, including inherited ones",
+      "c": "Only if the derived function is also declared in the base class",
+      "d": "Only if you use the base class name as a qualifier: `Base::function()`"
+    },
+    "answer": "b",
+    "explanation_md": "A derived class member function can freely call any public or protected inherited member function (and access any public or protected inherited data member). No special syntax is needed — the inherited function is in scope just like a member of the derived class."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code gets a compile error. What is the bug?\n\n```cpp\n#include <iostream>\nclass Vehicle {\npublic:\n    std::string type = \"vehicle\";\n};\nclass Car : public Vehicle {\npublic:\n    int doors = 4;\n    void describe() {\n        std::cout << type << \" with \" << doors << \" doors\\n\";\n    }\n};\nint main() {\n    Vehicle v;\n    v.describe();\n}\n```",
+    "options": {
+      "a": "`describe()` tries to access `type` which is only available in `Car`, not `Vehicle`",
+      "b": "`describe()` is defined in `Car`, not `Vehicle`. Calling it on a `Vehicle` object is an error",
+      "c": "`std::string` members cannot be used in a class without including `<string>`",
+      "d": "`int doors = 4` requires a constructor to be valid"
+    },
+    "answer": "b",
+    "explanation_md": "`describe()` is a member function of `Car`, not `Vehicle`. A `Vehicle` object has no `describe()` method. The base class does not inherit functions from its derived classes — the relationship only flows downward. To call `describe()`, `v` must be declared as `Car`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A derived class `Truck` inherits from `Vehicle`. `Vehicle` has `void start()`. `Truck` adds `void loadCargo()`. Which calls are valid on a `Truck` object `t`?",
+    "options": {
+      "a": "Only `t.loadCargo()` — derived objects can only use derived-class functions",
+      "b": "Only `t.start()` — the inherited function",
+      "c": "Both `t.start()` and `t.loadCargo()`",
+      "d": "Neither — you must cast `t` to access any function"
+    },
+    "answer": "c",
+    "explanation_md": "A derived object has access to all public inherited functions from the base class AND all public functions defined in the derived class. `t.start()` calls the inherited `Vehicle::start()`, and `t.loadCargo()` calls the `Truck`-specific function."
+  }
+]

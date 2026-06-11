@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A base class has a `protected` member `int score`. Which of the following can access `score` directly?",
+    "options": {
+      "a": "Code in `main()` via an object of the base class",
+      "b": "Code in a publicly derived class's member function",
+      "c": "Code in `main()` via an object of the derived class",
+      "d": "Only the base class itself — protected is equivalent to private"
+    },
+    "answer": "b",
+    "explanation_md": "`protected` members are accessible inside any derived class's member functions (option b), but not from outside the class hierarchy (`main()` cannot access them directly through any object). Option d is wrong — `protected` is specifically designed to allow derived class access."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass A {\npublic:\n    int x = 1;\nprotected:\n    int y = 2;\nprivate:\n    int z = 3;\n};\nclass B : public A {\npublic:\n    void show() {\n        std::cout << x << \" \" << y << \"\\n\";\n    }\n};\nint main() {\n    B b;\n    b.show();\n    std::cout << b.x << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "1 2\n1",
+    "explanation_md": "`B::show()` accesses `x` (public, inherited) and `y` (protected, accessible inside derived). It prints `1 2`. In `main()`, `b.x` is accessible because it is public — prints `1`. `b.y` and `b.z` would be errors outside the class hierarchy."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code should compile but gets a compile error. What is the bug?\n\n```cpp\n#include <iostream>\nclass Shape {\nprivate:\n    int area = 0;\n};\nclass Circle : public Shape {\npublic:\n    void setArea(int a) {\n        area = a; // line 8\n    }\n};\nint main() {\n    Circle c;\n    c.setArea(50);\n}\n```",
+    "options": {
+      "a": "`Circle` uses public inheritance but should use protected inheritance to access `area`",
+      "b": "`area` is `private` in `Shape` — derived classes cannot access private members regardless of inheritance specifier",
+      "c": "`int area = 0` is invalid syntax inside a class without a constructor",
+      "d": "The inheritance specifier is missing — writing `: Shape` without a keyword is required for access"
+    },
+    "answer": "b",
+    "explanation_md": "`private` members of a base class are inaccessible in any derived class, regardless of whether inheritance is `public`, `protected`, or `private`. To let `Circle` access `area`, the base must declare it `protected` instead of `private`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Class `B` uses `private` inheritance from class `A` (`class B : private A`). `A` has a `public` method `void doWork()`. From outside both classes (e.g. in `main()`), can you call `doWork()` on a `B` object?",
+    "options": {
+      "a": "Yes — `public` methods of A are always accessible through any derived object",
+      "b": "No — `private` inheritance makes `doWork()` private in `B`, so it is inaccessible outside `B`",
+      "c": "Yes — but only if `B` explicitly re-declares `doWork()` as public",
+      "d": "Only if `B` uses `using A::doWork` to restore the access level"
+    },
+    "answer": "b",
+    "explanation_md": "Private inheritance makes all public and protected members of the base become `private` in the derived class. `doWork()` becomes private in `B`, so it cannot be called from `main()`. Option d (using `using A::doWork`) could restore it, but the question asks about the default behavior."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nclass MyErr : public std::runtime_error {\npublic:\n    MyErr(const std::string& m) : std::runtime_error(m) {}\n};\nint main() {\n    try {\n        throw MyErr(\"custom\");\n    } catch (const std::runtime_error& e) {\n        std::cout << \"runtime: \" << e.what() << \"\\n\";\n    } catch (const MyErr& e) {\n        std::cout << \"myerr: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "runtime: custom",
+    "explanation_md": "`MyErr` derives from `std::runtime_error`, so the first catch (`const std::runtime_error&`) matches it. The second catch is never reached. This is the ordering mistake: derived types must come before their base in catch sequences."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You derive `NetworkError` from `std::runtime_error` and want to catch it specifically. Which catch order is correct?",
+    "options": {
+      "a": "`catch (const std::runtime_error&)` first, then `catch (const NetworkError&)`",
+      "b": "`catch (const NetworkError&)` first, then `catch (const std::runtime_error&)`",
+      "c": "Order doesn't matter; C++ resolves the most-derived match automatically",
+      "d": "You cannot catch both in the same try block"
+    },
+    "answer": "b",
+    "explanation_md": "Catch clauses are checked in written order. `std::runtime_error` is a base of `NetworkError`, so it would match `NetworkError` objects if listed first. Put the most-derived catch first so it gets the chance to run."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n#include <string>\nclass AppError : public std::runtime_error {\npublic:\n    int code;\n    AppError(const std::string& m, int c)\n        : std::runtime_error(m), code(c) {}\n};\nint main() {\n    try {\n        throw AppError(\"fail\", 42);\n    } catch (const AppError& e) {\n        std::cout << e.code << \" \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42 fail",
+    "explanation_md": "`AppError` is caught by its own specific handler. `e.code` is `42` and `e.what()` returns `\"fail\"` because the message was correctly forwarded to the `std::runtime_error` constructor."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to print `Error: boom` but prints `Error: ` (empty message). What is wrong?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n#include <string>\nclass Oops : public std::runtime_error {\npublic:\n    Oops(const std::string& msg) : std::runtime_error(\"\") {}\n};\nint main() {\n    try { throw Oops(\"boom\"); }\n    catch (const Oops& e) { std::cout << \"Error: \" << e.what() << \"\\n\"; }\n    return 0;\n}\n```",
+    "options": {
+      "a": "The constructor should be `explicit`",
+      "b": "The base constructor is called with `\"\"` instead of `msg`, so the message is lost",
+      "c": "`std::runtime_error::what()` always returns an empty string",
+      "d": "Custom exception classes cannot inherit `what()` from `std::runtime_error`"
+    },
+    "answer": "b",
+    "explanation_md": "`std::runtime_error` stores the message passed to its constructor and returns it via `what()`. Here the base constructor is called with `\"\"` instead of `msg`, discarding the actual message `\"boom\"`. Fix: `: std::runtime_error(msg)`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you always catch exceptions by `const` reference rather than by value, especially when working with derived exception classes?",
+    "options": {
+      "a": "The compiler requires const reference for all exception types",
+      "b": "Catching by value slices the object, losing the derived class data",
+      "c": "Catching by value copies the exception twice, causing double-free errors",
+      "d": "References are faster at runtime due to cache locality"
+    },
+    "answer": "b",
+    "explanation_md": "If you catch `std::runtime_error e` by value and the thrown type is `DatabaseError` (derived from `std::runtime_error`), only the `std::runtime_error` base part is copied into `e`. The derived data (like `error_code`) is sliced away. Catching by `const` reference avoids this: `e` refers to the actual thrown object without copying."
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nclass D : public std::runtime_error {\npublic:\n    D() : std::runtime_error(\"d\") {}\n};\nint main() {\n    try {\n        try { throw D(); }\n        catch (const std::runtime_error& e) {\n            throw; // bare rethrow\n        }\n    } catch (const D& d) {\n        std::cout << \"D\\n\";\n    } catch (const std::runtime_error&) {\n        std::cout << \"runtime\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "D",
+    "explanation_md": "The bare `throw;` re-propagates the original `D` object intact — no slicing occurs. The outer catch for `const D&` matches and prints `\"D\"`. If `throw e;` had been used instead, it would create a new `std::runtime_error` and slice away the `D` part."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nclass D : public std::runtime_error {\npublic:\n    D() : std::runtime_error(\"d\") {}\n};\nint main() {\n    try {\n        try { throw D(); }\n        catch (const std::runtime_error& e) {\n            throw e; // rethrows by value — slices!\n        }\n    } catch (const D& d) {\n        std::cout << \"D\\n\";\n    } catch (const std::runtime_error&) {\n        std::cout << \"runtime\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "runtime",
+    "explanation_md": "`throw e;` creates a new exception of type `std::runtime_error` (the static type of `e`), slicing off the `D` part. The outer `catch (const D&)` does not match, so the `catch (const std::runtime_error&)` fires and prints `\"runtime\"`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is it valid to use a bare `throw;` statement?",
+    "options": {
+      "a": "Any time, as long as the program has previously thrown at least one exception",
+      "b": "Only inside a `catch` block, where it re-throws the currently active exception",
+      "c": "Only at the top level of `main`",
+      "d": "Whenever a `try` block is in scope, even outside a `catch`"
+    },
+    "answer": "b",
+    "explanation_md": "A bare `throw;` re-propagates the currently active (caught) exception. It is only valid inside a `catch` block or in a function called from a `catch` block while that exception is still active. Using `throw;` outside an active catch context is undefined behavior."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between `throw;` and `throw e;` inside a catch clause?",
+    "options": {
+      "a": "They are identical — both re-throw the original exception object",
+      "b": "`throw;` re-propagates the original exception preserving its dynamic type; `throw e;` creates a new exception of `e`'s static type, potentially slicing it",
+      "c": "`throw e;` preserves the type; `throw;` always rethrows as `std::exception`",
+      "d": "`throw;` terminates the program; `throw e;` propagates normally"
+    },
+    "answer": "b",
+    "explanation_md": "`throw;` re-propagates the original exception object without copying or slicing — the dynamic type is preserved. `throw e;` makes a copy of `e` using `e`'s static (declared) type, which slices if `e` is a base-class reference to a derived object."
+  }
+]

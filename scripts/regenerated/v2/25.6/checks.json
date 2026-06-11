@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the vtable in C++?",
+    "options": {
+      "a": "A per-object array of function pointers for that specific instance's chosen overrides.",
+      "b": "A static, per-class array of function pointers that the compiler creates for each class with at least one virtual function.",
+      "c": "A runtime structure built by the OS when a polymorphic object is first used.",
+      "d": "A lookup table stored inside each function that maps argument types to overloads."
+    },
+    "answer": "b",
+    "explanation_md": "The vtable is a static structure created by the compiler — one per class, not one per object. All instances of the same class share the same vtable. Option (a) confuses the vtable (shared, per-class) with the vptr (per-object). Options (c) and (d) are invented."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print (on a 64-bit system with 8-byte pointers)?\n\n```cpp\n#include <iostream>\n\nclass NV  { int x = 0; };\nclass V   { int x = 0; virtual void f() {} };\n\nint main() {\n    std::cout << (sizeof(V) > sizeof(NV) ? \"larger\" : \"same\") << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "larger",
+    "explanation_md": "`V` has a virtual function, so every `V` instance stores a hidden vptr (8 bytes on 64-bit). Combined with `int x` and alignment padding, `sizeof(V)` is 16 while `sizeof(NV)` is 4. So `V` is larger."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Dog` class overrides `speak()` but not `move()` from its `Animal` base, both of which are virtual. What does `Dog`'s vtable entry for `move()` contain?",
+    "options": {
+      "a": "A null pointer — since `Dog` didn't override it, the slot is empty.",
+      "b": "A pointer to `Animal::move` — the slot is inherited from `Animal`'s vtable.",
+      "c": "A pointer to a stub function that calls `Dog::speak` instead.",
+      "d": "The slot does not exist in `Dog`'s vtable."
+    },
+    "answer": "b",
+    "explanation_md": "When a derived class does not override a virtual function, its vtable slot for that function still holds the address of the base class implementation. The derived vtable is built by copying the base vtable and then replacing only the slots for functions that are overridden."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "How many vtables are created for a class hierarchy where `Animal`, `Dog`, and `Cat` each have virtual functions?",
+    "options": {
+      "a": "One shared vtable for the entire hierarchy.",
+      "b": "Three vtables — one per class — regardless of how many objects are created.",
+      "c": "One vtable per object instance.",
+      "d": "One vtable per virtual function."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler creates one vtable per class that has virtual functions. The number of objects does not affect the number of vtables — all instances of `Dog` share the same `Dog` vtable. Options (a), (c), and (d) are all incorrect descriptions of the vtable model."
+  }
+]
