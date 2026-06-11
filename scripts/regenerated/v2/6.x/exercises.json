@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Divisibility Report",
+    "prompt_md": "## Goal\nRead an integer and print a one-line divisibility report using the remainder operator and logical operators.\n\n## Input\nLine 1: a single non-zero integer n (between -1000 and 1000, not zero).\n\n## Output\nPrint exactly one line (followed by a newline) according to these rules:\n- If n is divisible by both 3 and 5, print `FizzBuzz`\n- If n is divisible by only 3, print `Fizz`\n- If n is divisible by only 5, print `Buzz`\n- Otherwise print the number itself\n\n## Requirements\n1. Use `%` to check divisibility and `&&`, `||` to combine conditions.\n2. Use chained conditional operators (`?:`) — no if-else statements.\n3. Hidden tests cover: n = 15 (FizzBuzz), n = 9 (Fizz), n = 25 (Buzz), n = 7 (prints 7), n = -15 (FizzBuzz — negative values work correctly with %).",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: use chained ?: expressions with % to classify n.\n    // Print \"FizzBuzz\", \"Fizz\", \"Buzz\", or n itself.\n    const char* result = \"?\";\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    const char* result =\n        ((n % 3 == 0) && (n % 5 == 0)) ? \"FizzBuzz\" :\n        (n % 3 == 0)                    ? \"Fizz\" :\n        (n % 5 == 0)                    ? \"Buzz\" : nullptr;\n\n    if (result) {\n        std::cout << result << \"\\n\";\n    } else {\n        std::cout << n << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: divisible by 3 only",
+        "is_sample": true,
+        "stdin": "9\n",
+        "expected_stdout": "Fizz\n"
+      },
+      {
+        "label": "Hidden: divisible by both 3 and 5",
+        "is_sample": false,
+        "stdin": "15\n",
+        "expected_stdout": "FizzBuzz\n"
+      },
+      {
+        "label": "Hidden: not divisible by 3 or 5",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "7\n"
+      }
+    ]
+  },
+  {
+    "title": "Safe Ratio Calculator (Fix the Bug)",
+    "prompt_md": "## Goal\nThis program reads two integers and should print their ratio as a `double`, or print `undefined` if the denominator is zero. Find and fix the one logic bug.\n\n## Input\nLine 1: two space-separated integers `a` and `b`.\n\n## Output\nPrint exactly one line:\n- The ratio `a / b` as a `double` (e.g. `3.5`) if `b != 0`\n- `undefined` if `b == 0`\n\n## Requirements\n1. The bug is a logic error — the program compiles and runs, but gives wrong output for at least one input.\n2. Fix the bug without restructuring the program — only the broken expression needs to change.\n3. The division must produce a floating-point result (not integer truncation).\n4. Hidden tests cover: b = 0, a = 0, a and b both positive, a negative b positive.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // BUG: this contains one logic error\n    if (b == 0) {\n        std::cout << \"undefined\\n\";\n    } else {\n        std::cout << a / b << \"\\n\";  // should print a floating-point ratio\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    if (b == 0) {\n        std::cout << \"undefined\\n\";\n    } else {\n        std::cout << static_cast<double>(a) / b << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: non-integer ratio",
+        "is_sample": true,
+        "stdin": "7 2\n",
+        "expected_stdout": "3.5\n"
+      },
+      {
+        "label": "Hidden: denominator is zero",
+        "is_sample": false,
+        "stdin": "5 0\n",
+        "expected_stdout": "undefined\n"
+      },
+      {
+        "label": "Hidden: exact integer result",
+        "is_sample": false,
+        "stdin": "10 2\n",
+        "expected_stdout": "5\n"
+      }
+    ]
+  }
+]

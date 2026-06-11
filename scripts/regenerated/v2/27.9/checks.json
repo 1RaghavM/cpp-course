@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid safe() noexcept {}\nvoid risky() {}\n\nint main() {\n    std::cout << std::boolalpha;\n    std::cout << noexcept(safe()) << \"\\n\";\n    std::cout << noexcept(risky()) << \"\\n\";\n    std::cout << noexcept(1 + 2) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "true\nfalse\ntrue",
+    "explanation_md": "`noexcept(expr)` is a compile-time operator that returns `true` when the expression is guaranteed not to throw. `safe()` is declared `noexcept` so it yields `true`. `risky()` has no specifier so it may throw, yielding `false`. The expression `1 + 2` operates on integers with no throwing operations, so it yields `true`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function is marked `noexcept` but its body calls `std::vector::at()`, which can throw `std::out_of_range`. What happens if `at()` throws at runtime?",
+    "options": {
+      "a": "The exception propagates normally to the nearest catch handler.",
+      "b": "The compiler rejects the code with an error.",
+      "c": "`std::terminate` is called immediately, ending the program.",
+      "d": "The exception is silently discarded and the function returns a default value."
+    },
+    "answer": "c",
+    "explanation_md": "The `noexcept` specifier is a runtime-enforced contract. If an exception attempts to propagate out of a `noexcept` function, the runtime calls `std::terminate` — the stack may not even unwind. The compiler does not reject the code (it cannot always detect every possible throw path), and no catch handler is invoked."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does `std::vector` prefer to move elements (rather than copy) during reallocation only when the element type's move constructor is `noexcept`?",
+    "options": {
+      "a": "Move constructors without `noexcept` are slower than copies.",
+      "b": "To maintain the strong exception guarantee: if a move throws mid-reallocation, the original vector would be left in a partially modified state with no way to recover.",
+      "c": "`noexcept` move constructors use less memory than non-noexcept ones.",
+      "d": "The C++ standard forbids calling non-noexcept constructors inside containers."
+    },
+    "answer": "b",
+    "explanation_md": "The strong exception guarantee means that if an operation fails, the program state is unchanged. During reallocation, if a move throws after some elements have already been moved out of the old buffer, the original buffer is partially destroyed and the new buffer is incomplete — there is no way to undo the damage. Copying preserves the originals until all copies succeed, so a throwing copy can still roll back. Move is only safe here when it is guaranteed not to throw."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This swap function is supposed to be `noexcept` but has a subtle issue. What is the bug?\n\n```cpp\n#include <string>\n\nvoid swap_strings(std::string& a, std::string& b) noexcept {\n    std::string tmp = a; // copy\n    a = b;\n    b = tmp;\n}\n```",
+    "options": {
+      "a": "std::string copy and assignment can throw (e.g. on allocation failure), so the noexcept guarantee may be violated.",
+      "b": "tmp should be declared as const std::string.",
+      "c": "The function should return void instead of noexcept.",
+      "d": "The third line should use std::move(tmp) to compile correctly."
+    },
+    "answer": "a",
+    "explanation_md": "Copying a `std::string` can throw `std::bad_alloc` if memory allocation fails. Marking the function `noexcept` while it performs throwing operations means that if an allocation does fail, `std::terminate` is called rather than propagating the exception. The correct implementation should use `std::move` to move-assign the strings (since `std::string` move operations are `noexcept`) or simply use `std::swap` which already has the right `noexcept` annotation."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid f() noexcept {}\nvoid g() noexcept(noexcept(f())) {}\n\nint main() {\n    std::cout << std::boolalpha;\n    std::cout << noexcept(g()) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "true",
+    "explanation_md": "`g()` uses conditional `noexcept`: it is `noexcept` if and only if calling `f()` is `noexcept`. Since `f()` is declared `noexcept`, `noexcept(f())` evaluates to `true`, so `g` is `noexcept(true)` which is the same as plain `noexcept`. Therefore `noexcept(g())` returns `true`."
+  }
+]

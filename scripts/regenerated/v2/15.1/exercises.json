@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Fluent Counter with Method Chaining",
+    "prompt_md": "## Goal\nComplete a `Counter` class that supports method chaining: `add`, `subtract`, and `reset` each return a reference to the calling object so calls can be chained.\n\n## Input\nLine 1: three integers separated by spaces — `a`, `b`, `c`.\n\n## Output\nPrint the counter value after performing: reset to 0, add `a`, subtract `b`, add `c`.\nExact format: `Result: <value>` followed by a newline.\n\n## Requirements\n1. `Counter& add(int n)` — adds `n` to the internal count and returns `*this`.\n2. `Counter& subtract(int n)` — subtracts `n` from the internal count and returns `*this`.\n3. `Counter& reset()` — sets the internal count to 0 and returns `*this`.\n4. `int value() const` — returns the current count (does not modify the object).\n5. The chain `c.reset().add(a).subtract(b).add(c_val)` must update the original object `c`.\n6. Hidden tests include negative results and chaining more than three operations.",
+    "starter_code": "#include <iostream>\n\nclass Counter {\npublic:\n    int count{0};\n\n    // TODO: implement Counter& add(int n) — add n to count and return *this\n    Counter& add(int n) { (void)n; return *this; }\n\n    // TODO: implement Counter& subtract(int n) — subtract n from count and return *this\n    Counter& subtract(int n) { (void)n; return *this; }\n\n    // TODO: implement Counter& reset() — set count to 0 and return *this\n    Counter& reset() { return *this; }\n\n    int value() const { return count; }\n};\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n\n    Counter ctr;\n    ctr.reset().add(a).subtract(b).add(c);\n\n    std::cout << \"Result: \" << ctr.value() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Counter {\npublic:\n    int count{0};\n\n    Counter& add(int n) { count += n; return *this; }\n    Counter& subtract(int n) { count -= n; return *this; }\n    Counter& reset() { count = 0; return *this; }\n    int value() const { return count; }\n};\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n\n    Counter ctr;\n    ctr.reset().add(a).subtract(b).add(c);\n\n    std::cout << \"Result: \" << ctr.value() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive",
+        "is_sample": true,
+        "stdin": "10 3 5",
+        "expected_stdout": "Result: 12"
+      },
+      {
+        "label": "Hidden: negative result",
+        "is_sample": false,
+        "stdin": "2 9 1",
+        "expected_stdout": "Result: -6"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0 0 0",
+        "expected_stdout": "Result: 0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Broken Method Chain",
+    "prompt_md": "## Goal\nFix the bug in a `Rect` class that is supposed to support method chaining to set width, height, and then print the area.\n\n## Input\nLine 1: two integers separated by a space — `w` (width) and `h` (height).\n\n## Output\nPrint exactly: `Area: <w*h>` followed by a newline.\n\n## Requirements\n1. The chain `r.setWidth(w).setHeight(h).printArea()` must correctly compute and print `w * h`.\n2. Do not change the `printArea` function or the `main` function.\n3. The fix is in the setter return types only.\n4. Hidden tests use large values (up to 1000) and values of 1.",
+    "starter_code": "#include <iostream>\n\nclass Rect {\npublic:\n    int width{0}, height{0};\n\n    Rect setWidth(int w) { width = w; return *this; }\n    Rect setHeight(int h) { height = h; return *this; }\n\n    void printArea() const {\n        std::cout << \"Area: \" << width * height << '\\n';\n    }\n};\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n\n    Rect r;\n    r.setWidth(w).setHeight(h).printArea();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rect {\npublic:\n    int width{0}, height{0};\n\n    Rect& setWidth(int w) { width = w; return *this; }\n    Rect& setHeight(int h) { height = h; return *this; }\n\n    void printArea() const {\n        std::cout << \"Area: \" << width * height << '\\n';\n    }\n};\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n\n    Rect r;\n    r.setWidth(w).setHeight(h).printArea();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic area",
+        "is_sample": true,
+        "stdin": "4 5",
+        "expected_stdout": "Area: 20"
+      },
+      {
+        "label": "Hidden: unit side",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Area: 1"
+      },
+      {
+        "label": "Hidden: large values",
+        "is_sample": false,
+        "stdin": "100 200",
+        "expected_stdout": "Area: 20000"
+      }
+    ]
+  }
+]

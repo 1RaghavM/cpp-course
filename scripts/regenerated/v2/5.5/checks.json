@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a constant expression?\n\n```cpp\nint a = 10;\nconst int b = a;\nconst int c = 10;\nconst int d = c + 5;\n```",
+    "options": {
+      "a": "`b`, because it is declared `const`.",
+      "b": "`c` and `d`, because both are `const` and initialized from compile-time values.",
+      "c": "`a`, `b`, `c`, and `d` are all constant expressions since they are all integers.",
+      "d": "None of them; constant expressions require `constexpr`."
+    },
+    "answer": "b",
+    "explanation_md": "`c` is initialized with the literal `10` (a constant expression), and `d` is initialized with `c + 5` where `c` is itself a constant expression — so both qualify. `b` is `const` but initialized from `a`, which is not `const` and therefore not a constant expression, so `b` is not a constant expression either."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int x = 3;\n    const int y = x + 7;\n    const int z = y * 2;\n    std::cout << z << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`x` is `3`, `y` is `3 + 7 = 10`, `z` is `10 * 2 = 20`. All three are constant expressions: each initializer is computable at compile time. The program prints `20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes:\n\n```cpp\nint score = 95;\nconst int passing = score;\n```\n\nThey claim `passing` is a constant expression because it is `const`. Are they right?",
+    "options": {
+      "a": "Yes — `const` variables are always constant expressions.",
+      "b": "No — `score` is not `const`, so its value is not known at compile time, making `passing` not a constant expression.",
+      "c": "Yes — the compiler can see that `score` is `95` and will treat `passing` as a constant expression.",
+      "d": "It depends on whether the compiler optimization level is set to -O2."
+    },
+    "answer": "b",
+    "explanation_md": "`const` means the variable will not be modified after initialization. It does not mean the value is known at compile time. Since `score` is a non-`const` variable, it is not a constant expression, so `passing`'s initializer is not a constant expression even though `passing` itself is `const`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student expects this program to demonstrate two different kinds of `const` variables, but they can't explain why `limit` might not be usable as a compile-time constant even though it's `const`. What is the reason?\n\n```cpp\n#include <iostream>\n\nint getMax() {\n    return 100;\n}\n\nint main() {\n    const int limit = getMax();\n    std::cout << limit << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The program will not compile because `getMax()` is not declared before `main`.",
+      "b": "`limit` is not a constant expression because `getMax()` is a regular function — its return value is only known at runtime.",
+      "c": "`limit` is a constant expression because `getMax()` always returns `100`.",
+      "d": "The bug is that `const int` should be `const auto` when initialized from a function."
+    },
+    "answer": "b",
+    "explanation_md": "Regular (non-`constexpr`) functions are evaluated at runtime, not at compile time. Even though `getMax()` obviously returns `100`, the compiler does not evaluate its body when determining whether an expression is a constant expression. `limit` is `const` but not a constant expression. The program compiles and runs correctly, but `limit` cannot be used where a compile-time value is required."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int a = 2;\n    const int b = 3;\n    const int c = a * b + 1;\n    std::cout << c << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`a * b` is `6`, then `6 + 1` is `7`. All three variables are constant expressions: each is initialized from literals or from other constant expressions. The program prints `7`."
+  }
+]

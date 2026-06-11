@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Generate N Random Integers in a Range",
+    "prompt_md": "## Goal\nWrite a program that reads a count and a range, then prints that many uniformly distributed random integers.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of integers to generate.\n- Line 2: integer lo (0 ≤ lo ≤ 100).\n- Line 3: integer hi (lo ≤ hi ≤ 100).\n\n## Output\n- Print exactly N lines, each containing one integer in [lo, hi].\n- Use `std::mt19937` seeded with `42u` and `std::uniform_int_distribution<int>{lo, hi}`.\n\n## Requirements\n1. Use `std::mt19937` seeded with `42u`.\n2. Use `std::uniform_int_distribution<int>` constructed with the input lo and hi values.\n3. Create the engine and distribution once, before the loop.\n4. Print each number on its own line.\n\n## Notes\n- `#include <random>` and `#include <iostream>` are required.",
+    "starter_code": "#include <random>\n#include <iostream>\n\nint main()\n{\n    int n, lo, hi;\n    std::cin >> n >> lo >> hi;\n\n    // TODO: create std::mt19937 seeded with 42u\n    // TODO: create std::uniform_int_distribution<int> with lo and hi\n    // TODO: loop n times and print one number per line\n\n    return 0;\n}\n",
+    "solution_code": "#include <random>\n#include <iostream>\n\nint main()\n{\n    int n, lo, hi;\n    std::cin >> n >> lo >> hi;\n\n    std::mt19937 rng{ 42u };\n    std::uniform_int_distribution<int> dist{ lo, hi };\n\n    for (int i = 0; i < n; ++i)\n        std::cout << dist(rng) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 numbers in [10, 20]",
+        "is_sample": true,
+        "stdin": "4\n10\n20\n",
+        "expected_stdout": "16\n13\n20\n17\n"
+      },
+      {
+        "label": "Hidden: 1 number in [1, 100]",
+        "is_sample": false,
+        "stdin": "1\n1\n100\n",
+        "expected_stdout": "52\n"
+      },
+      {
+        "label": "Hidden: 6 numbers in [0, 9]",
+        "is_sample": false,
+        "stdin": "6\n0\n9\n",
+        "expected_stdout": "6\n3\n7\n4\n6\n9\n"
+      }
+    ]
+  },
+  {
+    "title": "Count Die Rolls in Range",
+    "prompt_md": "## Goal\nComplete the function `count_in_range` that rolls a six-sided die a given number of times and returns how many results fall in a closed range `[lo, hi]`.\n\n## Input\n- Line 1: integer rolls (1 ≤ rolls ≤ 20).\n- Line 2: integer lo (1 ≤ lo ≤ 6).\n- Line 3: integer hi (lo ≤ hi ≤ 6).\n\n## Output\n- Print exactly one line: the count of rolls whose result is in `[lo, hi]`.\n\n## Requirements\n1. Implement `count_in_range(std::mt19937& rng, int rolls, int lo, int hi) -> int`.\n2. Inside the function, use `std::uniform_int_distribution<int>{1, 6}` to simulate the die.\n3. Use the `rng` parameter passed in — do not create a new engine inside the function.\n4. `main()` creates `std::mt19937 rng{ 42u }` and passes it to the function.\n5. Print just the integer count, no extra text.\n\n## Notes\n- The function signature uses `std::mt19937&` (a reference) so the engine state advances across calls.",
+    "starter_code": "#include <random>\n#include <iostream>\n\n// TODO: implement this function\n// Roll a six-sided die `rolls` times using `rng`.\n// Return how many results fall in the closed range [lo, hi].\nint count_in_range(std::mt19937& rng, int rolls, int lo, int hi)\n{\n    return 0; // replace with your implementation\n}\n\nint main()\n{\n    int rolls, lo, hi;\n    std::cin >> rolls >> lo >> hi;\n\n    std::mt19937 rng{ 42u };\n    std::cout << count_in_range(rng, rolls, lo, hi) << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <random>\n#include <iostream>\n\nint count_in_range(std::mt19937& rng, int rolls, int lo, int hi)\n{\n    std::uniform_int_distribution<int> die{ 1, 6 };\n    int count = 0;\n    for (int i = 0; i < rolls; ++i)\n    {\n        int v = die(rng);\n        if (v >= lo && v <= hi)\n            ++count;\n    }\n    return count;\n}\n\nint main()\n{\n    int rolls, lo, hi;\n    std::cin >> rolls >> lo >> hi;\n\n    std::mt19937 rng{ 42u };\n    std::cout << count_in_range(rng, rolls, lo, hi) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 rolls, count in [1, 3]",
+        "is_sample": true,
+        "stdin": "10\n1\n3\n",
+        "expected_stdout": "5\n"
+      },
+      {
+        "label": "Hidden: 1 roll, count in [1, 6]",
+        "is_sample": false,
+        "stdin": "1\n1\n6\n",
+        "expected_stdout": "1\n"
+      },
+      {
+        "label": "Hidden: 20 rolls, count in [4, 6]",
+        "is_sample": false,
+        "stdin": "20\n4\n6\n",
+        "expected_stdout": "12\n"
+      }
+    ]
+  }
+]

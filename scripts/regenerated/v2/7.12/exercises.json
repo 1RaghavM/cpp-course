@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Running Total (Three Values)",
+    "prompt_md": "## Goal\nComplete `int addAndTotal(int value)` that uses a static local variable to accumulate a running sum. The program calls it with three fixed inputs and prints each intermediate total.\n\n## Input\nNone — the program reads nothing from stdin.\n\n## Output\nPrint exactly three lines:\n```\n5\n3\n11\n```\n(The three inputs are 5, -2, and 8 hardcoded in main.)\n\n## Requirements\n1. Complete `int addAndTotal(int value)` using a `static int total` initialised to 0 that accumulates across calls.\n2. Each call adds `value` to `total` and returns the accumulated `total`.\n3. Do not change `main` — it calls `addAndTotal(5)`, `addAndTotal(-2)`, `addAndTotal(8)` in that order.\n4. Hidden tests run the same program and verify exact output.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete addAndTotal using a static local int 'total'.\n// Accumulate 'value' into 'total' each call and return the updated total.\nint addAndTotal(int value) {\n    return value; // replace with correct accumulating implementation\n}\n\nint main() {\n    std::cout << addAndTotal(5)  << \"\\n\";\n    std::cout << addAndTotal(-2) << \"\\n\";\n    std::cout << addAndTotal(8)  << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint addAndTotal(int value) {\n    static int total = 0;\n    total += value;\n    return total;\n}\n\nint main() {\n    std::cout << addAndTotal(5)  << \"\\n\";\n    std::cout << addAndTotal(-2) << \"\\n\";\n    std::cout << addAndTotal(8)  << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 then -2 then 8",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "5\n3\n11\n"
+      },
+      {
+        "label": "Hidden: same output check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "5\n3\n11\n"
+      },
+      {
+        "label": "Hidden: output format check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "5\n3\n11\n"
+      }
+    ]
+  },
+  {
+    "title": "Process Value with Inline Constant",
+    "prompt_md": "## Goal\nComplete `int processValue(int x)` that doubles positive inputs, halves negative inputs (integer division), and returns zero for zero. Use the provided `inline const` threshold constant in your comparisons.\n\n## Input\n- Line 1: a single integer x (-1000 to 1000 inclusive)\n\n## Output\nPrint exactly one line: the result of `processValue(x)` followed by a newline.\n\n## Requirements\n1. `inline const int kZeroThreshold = 0;` is already defined at global scope — do not change it.\n2. Complete `int processValue(int x)`:\n   - Return `x * 2` if `x > kZeroThreshold`\n   - Return `x / 2` if `x < kZeroThreshold` (truncates toward zero)\n   - Return `0` if `x == kZeroThreshold`\n3. `main` reads one integer and prints `processValue` applied to it.\n4. Hidden tests cover: x = 0, x = 6 (result 12), x = -7 (result -3), x = 1 (result 2), x = -1 (result 0).",
+    "starter_code": "#include <iostream>\n\ninline const int kZeroThreshold = 0;\n\n// TODO: complete processValue(int x).\n// Return x*2 if x > kZeroThreshold,\n// return x/2 if x < kZeroThreshold,\n// return 0   if x == kZeroThreshold.\nint processValue(int x) {\n    return x; // replace with correct implementation\n}\n\nint main() {\n    int val;\n    std::cin >> val;\n    std::cout << processValue(val) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ninline const int kZeroThreshold = 0;\n\nint processValue(int x) {\n    if (x > kZeroThreshold) return x * 2;\n    if (x < kZeroThreshold) return x / 2;\n    return 0;\n}\n\nint main() {\n    int val;\n    std::cin >> val;\n    std::cout << processValue(val) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: x = 6 gives 12",
+        "is_sample": true,
+        "stdin": "6\n",
+        "expected_stdout": "12\n"
+      },
+      {
+        "label": "Hidden: x = 0 gives 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: x = -7 gives -3",
+        "is_sample": false,
+        "stdin": "-7\n",
+        "expected_stdout": "-3\n"
+      }
+    ]
+  }
+]

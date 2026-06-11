@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you use `std::chrono::steady_clock` instead of `std::chrono::system_clock` when measuring elapsed time?",
+    "options": {
+      "a": "`steady_clock` is monotonically increasing and never goes backward; `system_clock` can be adjusted by NTP or the user, making elapsed-time measurements unreliable.",
+      "b": "`system_clock` is only available on Windows, while `steady_clock` is cross-platform.",
+      "c": "`steady_clock` has nanosecond resolution while `system_clock` only has millisecond resolution.",
+      "d": "`system_clock` does not have a `now()` function."
+    },
+    "answer": "a",
+    "explanation_md": "`steady_clock` guarantees monotonic progression — it never goes backward — making it safe for measuring elapsed durations. `system_clock` reflects wall-clock calendar time and can jump forward or backward if the system clock is adjusted, producing negative or grossly wrong elapsed times."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below tries to print how many milliseconds a loop takes, but will not compile. What is wrong?\n\n```cpp\n#include <iostream>\n#include <chrono>\nint main()\n{\n    auto start = std::chrono::steady_clock::now();\n    long long s = 0;\n    for (int i = 0; i < 1000000; ++i) s += i;\n    auto end = std::chrono::steady_clock::now();\n    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);\n    std::cout << \"Elapsed: \" << elapsed << \" ms\\n\";  // problem here\n    std::cout << s << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`elapsed` is a duration object; `.count()` must be called to extract the integer value before printing.",
+      "b": "`duration_cast` is not part of `<chrono>`; you must include `<duration>` separately.",
+      "c": "`end - start` is not valid; you must use `std::chrono::subtract(end, start)` instead.",
+      "d": "`auto` cannot deduce the type of `start` and `end`; you must write the full type explicitly."
+    },
+    "answer": "a",
+    "explanation_md": "`std::chrono::duration_cast` returns a duration object, not an integer. To print the numeric count of milliseconds you must call `elapsed.count()`. In C++20 streaming a duration object directly is allowed, but in C++17 and earlier it does not compile without `.count()`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You time a function that runs in 800 microseconds using `std::chrono::duration_cast<std::chrono::milliseconds>`. What value does `.count()` return?",
+    "options": {
+      "a": "0 — duration_cast truncates toward zero, and 800 microseconds is less than one millisecond.",
+      "b": "1 — duration_cast rounds to the nearest millisecond.",
+      "c": "800 — the value is preserved regardless of the cast target.",
+      "d": "0.8 — fractional milliseconds are stored as a floating-point value."
+    },
+    "answer": "a",
+    "explanation_md": "`duration_cast` truncates (not rounds) toward zero. 800 microseconds is 0.8 milliseconds, which truncates to 0. To measure 800-microsecond events accurately, cast to `std::chrono::microseconds` instead, which will give `.count()` == 800."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Ignoring the actual elapsed time (which varies by machine), what is the structure of the output printed by the following program?\n\n```cpp\n#include <iostream>\n#include <chrono>\nint main()\n{\n    auto t1 = std::chrono::steady_clock::now();\n    int x = 0;\n    for (int i = 0; i < 100; ++i) x += i;\n    auto t2 = std::chrono::steady_clock::now();\n    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();\n    std::cout << \"Result: \" << x << '\\n';\n    std::cout << \"Time: \" << ms << \" ms\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Result: 4950\nTime: 0 ms",
+    "explanation_md": "The loop computes 0+1+2+...+99 = 4950, so `Result: 4950` is printed first. The loop itself is so fast (far under 1 ms) that `duration_cast<milliseconds>` truncates to 0, printing `Time: 0 ms`. The exact time value is machine-dependent but will almost certainly be 0 ms for 100 iterations."
+  }
+]

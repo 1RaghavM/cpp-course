@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Arithmetic on Two Integers",
+    "prompt_md": "## Goal\nRead two integers from stdin and print the results of five arithmetic operations on them.\n\n## Input\n- Line 1: integer `a` (-1000 ≤ a ≤ 1000)\n- Line 2: integer `b` (1 ≤ b ≤ 1000, always positive so division is well-defined)\n\n## Output\nPrint exactly five lines in this order:\n```\na + b = <result>\na - b = <result>\na * b = <result>\na / b = <result>\na % b = <result>\n```\nUse integer arithmetic throughout. No blank lines, no extra spaces.\n\n## Requirements\n1. Use `std::cin` to read both values.\n2. Print each line with the label and result exactly as shown (e.g. `a + b = 13`).\n3. Division must be integer division (truncation toward zero).\n4. `a` may be negative; the result of `/` and `%` on negative numbers must match C++ truncation rules.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    // TODO: print the five lines for +, -, *, /, %\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    std::cout << \"a + b = \" << a + b << '\\n';\n    std::cout << \"a - b = \" << a - b << '\\n';\n    std::cout << \"a * b = \" << a * b << '\\n';\n    std::cout << \"a / b = \" << a / b << '\\n';\n    std::cout << \"a % b = \" << a % b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 and 3",
+        "is_sample": true,
+        "stdin": "10\n3\n",
+        "expected_stdout": "a + b = 13\na - b = 7\na * b = 30\na / b = 3\na % b = 1\n"
+      },
+      {
+        "label": "Hidden: negative dividend",
+        "is_sample": false,
+        "stdin": "-7\n2\n",
+        "expected_stdout": "a + b = -5\na - b = -9\na * b = -14\na / b = -3\na % b = -1\n"
+      },
+      {
+        "label": "Hidden: exact division",
+        "is_sample": false,
+        "stdin": "100\n5\n",
+        "expected_stdout": "a + b = 105\na - b = 95\na * b = 500\na / b = 20\na % b = 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Integer Division Bug",
+    "prompt_md": "## Goal\nThe program below reads two integers `a` and `b` and is supposed to print: the integer quotient, the remainder, and the value of `a - (quotient * b)` as a check value. It compiles and runs, but the check value is always wrong.\n\n## Input\n- Line 1: integer `a` (1 ≤ a ≤ 10000)\n- Line 2: integer `b` (1 ≤ b ≤ 1000)\n\n## Output\nPrint exactly three lines:\n```\nquotient: <a / b>\nremainder: <a % b>\ncheck: <a - (a/b)*b>\n```\nThe `quotient` and `remainder` lines must be correct. The `check` value must equal the remainder (they are mathematically equivalent).\n\n## Requirements\n1. Find and fix the single logic bug.\n2. Do not change the program structure.\n3. Hidden tests use values where `b` does not divide `a` evenly.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int quotient = a / b;\n    int remainder = a % b;\n    int check = a - quotient + b;  // bug: wrong operator\n\n    std::cout << \"quotient: \" << quotient << '\\n';\n    std::cout << \"remainder: \" << remainder << '\\n';\n    std::cout << \"check: \" << check << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int quotient = a / b;\n    int remainder = a % b;\n    int check = a - quotient * b;\n\n    std::cout << \"quotient: \" << quotient << '\\n';\n    std::cout << \"remainder: \" << remainder << '\\n';\n    std::cout << \"check: \" << check << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 and 3",
+        "is_sample": true,
+        "stdin": "10\n3\n",
+        "expected_stdout": "quotient: 3\nremainder: 1\ncheck: 1\n"
+      },
+      {
+        "label": "Hidden: exact division",
+        "is_sample": false,
+        "stdin": "12\n4\n",
+        "expected_stdout": "quotient: 3\nremainder: 0\ncheck: 0\n"
+      },
+      {
+        "label": "Hidden: large values",
+        "is_sample": false,
+        "stdin": "100\n7\n",
+        "expected_stdout": "quotient: 14\nremainder: 2\ncheck: 2\n"
+      }
+    ]
+  }
+]

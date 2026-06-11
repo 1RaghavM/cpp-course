@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 10, 20, 30 };\n    for (int i = static_cast<int>(v.size()) - 1; i >= 0; --i)\n        std::cout << v[i] << ' ';\n    std::cout << '\\n';\n}\n```",
+    "options": null,
+    "answer": "30 20 10",
+    "explanation_md": "The loop starts at index 2 (the last element), prints 30, then 20, then 10, and stops when `i` becomes -1. Using a signed `int` makes the termination condition `i >= 0` work correctly."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A vector is empty. What happens when you evaluate `v.size() - 1` where `v.size()` returns a `std::size_t` of value 0?",
+    "options": {
+      "a": "It equals -1 (negative one)",
+      "b": "It equals 0 because subtraction is clamped at zero for unsigned types",
+      "c": "It wraps to a very large positive number (unsigned underflow)",
+      "d": "It causes a compile-time error"
+    },
+    "answer": "c",
+    "explanation_md": "`std::size_t` is unsigned. Subtracting 1 from 0 wraps around to the maximum representable value (e.g., 18446744073709551615 on 64-bit). This is defined behavior for unsigned arithmetic but is almost certainly not what the programmer intended."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is intended to print the elements of `v` in reverse, but it loops forever. Why?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 1, 2, 3 };\n    for (std::size_t i = v.size() - 1; i >= 0; --i)\n        std::cout << v[i] << ' ';\n    std::cout << '\\n';\n}\n```",
+    "options": {
+      "a": "`v.size() - 1` accesses out-of-bounds memory",
+      "b": "`i >= 0` is always true because `std::size_t` is unsigned and can never be negative",
+      "c": "Decrementing `i` inside the loop condition is undefined behavior",
+      "d": "The loop should use `<` instead of `>=`"
+    },
+    "answer": "b",
+    "explanation_md": "`std::size_t` is an unsigned type. When `i` is 0 and `--i` executes, the value wraps around to the maximum `size_t` value, which is still `>= 0`. The condition is always true, making this an infinite loop. Fix by using a signed `int` for the loop variable."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 5, 10, 15, 20 };\n    int len { static_cast<int>(v.size()) };\n    int sum { 0 };\n    for (int i = 0; i < len; ++i)\n        sum += v[i];\n    std::cout << sum / len << '\\n';\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "The sum is 5+10+15+20 = 50. `len` is 4. Integer division 50/4 = 12 (the fractional part .5 is truncated). The `static_cast<int>` converts `size_t` to `int` safely here because the vector has far fewer than `INT_MAX` elements."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following loop patterns correctly and cleanly iterates a `std::vector<int> v` in forward order without triggering a signed/unsigned comparison warning?",
+    "options": {
+      "a": "`for (int i = 0; i < v.size(); ++i)`",
+      "b": "`for (int i = 0, len = static_cast<int>(v.size()); i < len; ++i)`",
+      "c": "`for (int i = 0; i <= v.size(); ++i)`",
+      "d": "`for (unsigned i = 0; i < v.size(); ++i)`"
+    },
+    "answer": "b",
+    "explanation_md": "Option B casts `v.size()` to `int` before comparison, eliminating the signed/unsigned warning. Option A triggers the warning. Option C has an off-by-one error. Option D uses `unsigned` which is narrower than `size_t` on 64-bit systems and still a potential mismatch."
+  }
+]

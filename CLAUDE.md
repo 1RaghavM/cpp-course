@@ -23,12 +23,15 @@ The entire cost model depends on this: a lesson with non-NULL `summary_md` never
 
 If caching breaks, costs blow up. Guard this invariant in every code path that touches `lib/anthropic/` or `lib/content/`.
 
+Phase B adds `concept_check_reviews` — per-user-per-check scheduler state (`interval_index`, `next_due`). It is derived from `concept_check_attempts` and written atomically alongside each attempt via the `record_check_attempt` RPC. All writes funnel through `applyAttempt` in `lib/content/review.ts`; both Route Handlers (`/api/concept-checks`, `/api/review/attempt`) and any future surface MUST go through that single helper so the two tables can never diverge.
+
 ### Key data flow
 
 1. **Lesson visit (cache miss):** Page → `GET /api/lessons/[slug]` → `summary_md IS NULL` → call Haiku → write to DB → return
 2. **Lesson visit (cache hit):** Page → `GET /api/lessons/[slug]` → return cached content directly
 3. **Code run/submit:** Page → `POST /api/submissions` → Judge0 VM → results back (synchronous, no queue)
 4. **Tutor:** Page → `POST /api/tutor` (SSE) → load conversation history from DB → compute hint tier → stream from Sonnet → persist messages
+5. **Daily review:** Page → `GET /api/review/due` → returns up to 20 due cards from `concept_check_reviews` + nextDueDate when empty. Each answer → `POST /api/review/attempt` → `applyAttempt` (no LLM).
 
 ## Planned file structure
 

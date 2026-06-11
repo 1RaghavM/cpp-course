@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Move Strings into a Store",
+    "prompt_md": "## Goal\nWrite a program that reads N strings and stores them one by one into a fixed-size array using `std::move`, then prints each stored string.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5).\n- Lines 2..N+1: one string per line (no spaces).\n\n## Output\nPrint N lines, each containing the stored string in the order it was stored.\n\n## Requirements\n1. Declare `std::string store[5]`.\n2. Read each string into a temporary `std::string s`, then use `std::move(s)` to move it into `store[i]`.\n3. After storing, print each `store[i]` on its own line.\n4. Edge case N = 1: prints just that one string.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::string store[5];\n    for (int i = 0; i < n; ++i) {\n        std::string s;\n        std::cin >> s;\n        // TODO: move s into store[i] using std::move\n        store[i] = s; // replace this with a move\n    }\n    for (int i = 0; i < n; ++i) {\n        std::cout << store[i] << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::string store[5];\n    for (int i = 0; i < n; ++i) {\n        std::string s;\n        std::cin >> s;\n        store[i] = std::move(s);\n    }\n    for (int i = 0; i < n; ++i) {\n        std::cout << store[i] << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 strings",
+        "is_sample": true,
+        "stdin": "3\napple\nbanana\ncherry\n",
+        "expected_stdout": "apple\nbanana\ncherry"
+      },
+      {
+        "label": "Hidden: single string",
+        "is_sample": false,
+        "stdin": "1\nhello\n",
+        "expected_stdout": "hello"
+      },
+      {
+        "label": "Hidden: 5 strings",
+        "is_sample": false,
+        "stdin": "5\none\ntwo\nthree\nfour\nfive\n",
+        "expected_stdout": "one\ntwo\nthree\nfour\nfive"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Move-Based Swap",
+    "prompt_md": "## Goal\nComplete the function `swap_strings` that exchanges two `std::string` values using `std::move` (no copies allowed).\n\n## Input\n- Line 1: string A (no spaces).\n- Line 2: string B (no spaces).\n\n## Output\nPrint exactly two lines:\n- Line 1: original B (now in A's position)\n- Line 2: original A (now in B's position)\n\n## Requirements\n1. Implement `void swap_strings(std::string& a, std::string& b)` using exactly three `std::move` operations (the classic three-step move-swap).\n2. Do not use `std::swap` or any copy assignment.\n3. In `main`, read A and B, call `swap_strings`, then print `a` then `b`.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement swap_strings using std::move\nvoid swap_strings(std::string& a, std::string& b) {\n    // TODO: three-step move swap\n    // step 1: move a into a temporary\n    // step 2: move b into a\n    // step 3: move the temporary into b\n}\n\nint main() {\n    std::string a, b;\n    std::cin >> a >> b;\n    swap_strings(a, b);\n    std::cout << a << \"\\n\";\n    std::cout << b << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nvoid swap_strings(std::string& a, std::string& b) {\n    std::string tmp = std::move(a);\n    a = std::move(b);\n    b = std::move(tmp);\n}\n\nint main() {\n    std::string a, b;\n    std::cin >> a >> b;\n    swap_strings(a, b);\n    std::cout << a << \"\\n\";\n    std::cout << b << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: hello world",
+        "is_sample": true,
+        "stdin": "hello world\n",
+        "expected_stdout": "world\nhello"
+      },
+      {
+        "label": "Hidden: identical strings",
+        "is_sample": false,
+        "stdin": "abc abc\n",
+        "expected_stdout": "abc\nabc"
+      },
+      {
+        "label": "Hidden: long strings",
+        "is_sample": false,
+        "stdin": "alpha beta\n",
+        "expected_stdout": "beta\nalpha"
+      }
+    ]
+  }
+]

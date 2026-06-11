@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nint main() {\n    std::array<int, 4> a { 1, 2, 3 };\n    std::cout << a[0] << ' ' << a[3] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 0",
+    "explanation_md": "The array has 4 elements but only 3 are listed in the initializer. The unlisted element at index 3 is value-initialized to 0. So `a[0]` is 1 and `a[3]` is 0, printing `1 0`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which declaration is valid for a `std::array` of 5 integers?",
+    "options": {
+      "a": "`std::array<int, 5> arr;` — elements are zero-initialized",
+      "b": "`std::array<int, 5> arr {};` — elements are zero-initialized",
+      "c": "`int n = 5; std::array<int, n> arr {};` — valid because n holds 5",
+      "d": "`std::array arr<int, 5> {};` — correct syntax"
+    },
+    "answer": "b",
+    "explanation_md": "Option b is correct: `std::array<int, 5> arr {}` value-initializes all 5 elements to 0. Option a leaves elements uninitialized on the stack. Option c uses a runtime variable as the size template argument, which the compiler rejects. Option d has incorrect syntax."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nint main() {\n    std::array<int, 3> v { 10, 20, 30 };\n    for (int x : v) {\n        std::cout << x * 2 << ' ';\n    }\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20 40 60",
+    "explanation_md": "The range-based for loop visits each element in order. Each is multiplied by 2 and printed with a space: 20, 40, 60. The trailing newline ends the line but produces no extra visible output."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between accessing an element with `arr[i]` versus `arr.at(i)`?",
+    "options": {
+      "a": "`arr[i]` is slower because it checks bounds; `arr.at(i)` skips bounds checking",
+      "b": "`arr.at(i)` performs a bounds check at runtime; `arr[i]` does not",
+      "c": "Both perform bounds checks, but `arr.at(i)` also checks at compile time",
+      "d": "`arr[i]` can only be used in a for loop; `arr.at(i)` works anywhere"
+    },
+    "answer": "b",
+    "explanation_md": "`arr.at(i)` checks whether `i` is a valid index at runtime and throws `std::out_of_range` if not. `arr[i]` has no bounds check — an out-of-range index causes undefined behavior silently. There is no compile-time bounds check for either."
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "In Code::Blocks, you want to link against a library whose file on disk is `libsfml-graphics.a`. What string do you enter in the **Link libraries** field?",
+    "options": {
+      "a": "libsfml-graphics.a",
+      "b": "libsfml-graphics",
+      "c": "sfml-graphics",
+      "d": "-lsfml-graphics"
+    },
+    "answer": "c",
+    "explanation_md": "Code::Blocks automatically prepends `lib` and appends `.a` when constructing the `-l` linker flag. You supply only the stem `sfml-graphics`. Entering the full filename or the `-l` flag directly results in a linker error."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer opens Build Options and adds include and library paths while the **Debug** sub-node is selected. The Debug build succeeds but the Release build fails with missing-include errors. What is the most likely cause?",
+    "options": {
+      "a": "Debug and Release use different compilers in Code::Blocks",
+      "b": "The paths were applied only to the Debug configuration, not to the project root or Release configuration",
+      "c": "Release builds do not support third-party libraries in Code::Blocks",
+      "d": "The `-DNDEBUG` flag removes include paths from Release builds"
+    },
+    "answer": "b",
+    "explanation_md": "Build Options settings are scoped to the node you have selected. Selecting the Debug sub-node limits changes to that configuration. Setting paths at the project root or repeating them for Release ensures all build types see the settings."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "On Windows with MinGW, a program built in Code::Blocks links against `sfml-graphics`. It runs correctly from inside the IDE but gives \"DLL not found\" when run by double-clicking the `.exe`. What is the most likely reason?",
+    "options": {
+      "a": "SFML's DLL is not registered in the system PATH accessible to standalone executables",
+      "b": "Code::Blocks uses a virtual DLL loader that doesn't work outside the IDE",
+      "c": "Static linking was used; SFML does not support that on Windows",
+      "d": "The `.exe` must be run from an administrator command prompt"
+    },
+    "answer": "a",
+    "explanation_md": "Code::Blocks modifies the process PATH before launching, so DLLs in the configured library directory are found. Running the `.exe` standalone uses the system PATH, which may not include the SFML DLL directory. Copying the DLLs next to the executable fixes this."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "A Code::Blocks project has these entries in **Link libraries**:\n```\nfoo\nbar\nbaz\n```\nWhat linker flags does Code::Blocks pass to g++ for these entries?",
+    "options": null,
+    "answer": "-lfoo -lbar -lbaz",
+    "explanation_md": "Code::Blocks converts each stem to a `-l` flag in the order listed. The result is `-lfoo -lbar -lbaz` appended to the linker command line."
+  }
+]

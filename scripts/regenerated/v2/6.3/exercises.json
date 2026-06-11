@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Divisibility Checker",
+    "prompt_md": "## Goal\nRead two integers and print whether the first is divisible by the second, plus their remainder.\n\n## Input\n- Line 1: integer A\n- Line 2: integer B (B != 0)\n\n## Output\nPrint exactly two lines:\n- `divisible: yes` if A is evenly divisible by B, `divisible: no` otherwise\n- `remainder: <value>` — the value of `A % B`\n\n## Requirements\n1. Use the `%` operator to compute divisibility and the remainder.\n2. A may be 0 or negative.\n3. Edge case: A = 0 should print `divisible: yes` and `remainder: 0`.\n4. Edge case: A = -10, B = 3 should print `divisible: no` and `remainder: -1`.\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    // TODO: print whether a is divisible by b\n    // TODO: print the remainder\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    if (a % b == 0)\n        std::cout << \"divisible: yes\\n\";\n    else\n        std::cout << \"divisible: no\\n\";\n\n    std::cout << \"remainder: \" << a % b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 17 / 5",
+        "is_sample": true,
+        "stdin": "17\n5\n",
+        "expected_stdout": "divisible: no\nremainder: 2"
+      },
+      {
+        "label": "Hidden: 0 / 7",
+        "is_sample": false,
+        "stdin": "0\n7\n",
+        "expected_stdout": "divisible: yes\nremainder: 0"
+      },
+      {
+        "label": "Hidden: -10 / 3",
+        "is_sample": false,
+        "stdin": "-10\n3\n",
+        "expected_stdout": "divisible: no\nremainder: -1"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Digit Extractor",
+    "prompt_md": "## Goal\nThe program below is supposed to read a positive integer and print its ones digit and tens digit (the last two digits, individually). It contains one logic bug — find and fix it.\n\n## Input\n- Line 1: positive integer N (1 <= N <= 9999)\n\n## Output\nPrint exactly two lines:\n- `ones: <digit>` — the ones (units) digit of N\n- `tens: <digit>` — the tens digit of N (0 if N < 10)\n\n## Requirements\n1. Use `%` and `/` to extract the digits.\n2. The fix must be a change to how digits are extracted — do not change the output labels.\n3. Edge case: N = 5 should print `ones: 5` and `tens: 0`.\n4. Edge case: N = 42 should print `ones: 2` and `tens: 4`.\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    // Bug: one of these extractions is wrong\n    int ones = n / 10;  // should be the ones digit\n    int tens = n % 10;  // should be the tens digit\n\n    std::cout << \"ones: \" << ones << '\\n';\n    std::cout << \"tens: \" << tens << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    int ones = n % 10;       // last digit: remainder when dividing by 10\n    int tens = (n / 10) % 10; // second-to-last digit\n\n    std::cout << \"ones: \" << ones << '\\n';\n    std::cout << \"tens: \" << tens << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: N=47",
+        "is_sample": true,
+        "stdin": "47\n",
+        "expected_stdout": "ones: 7\ntens: 4"
+      },
+      {
+        "label": "Hidden: N=5",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "ones: 5\ntens: 0"
+      },
+      {
+        "label": "Hidden: N=830",
+        "is_sample": false,
+        "stdin": "830\n",
+        "expected_stdout": "ones: 0\ntens: 3"
+      }
+    ]
+  }
+]

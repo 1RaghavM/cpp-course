@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Employee Derived from Person",
+    "prompt_md": "## Goal\nDefine a `Person` base class and an `Employee` derived class. Read employee data from stdin and print a formatted summary.\n\n## Input\nLine 1: a string — the person's name (no spaces).\nLine 2: an integer — the person's age.\nLine 3: an integer — the employee's ID number.\nLine 4: a string — the employee's department (no spaces).\n\n## Output\nPrint exactly two lines:\n```\nName: <name>, Age: <age>\nEmployee ID: <id>, Dept: <dept>\n```\n\n## Requirements\n1. `Person` must have public members `name` (std::string) and `age` (int).\n2. `Employee` must publicly inherit from `Person` and add `id` (int) and `dept` (std::string).\n3. `Person` must have a member function `void printInfo()` that prints the first output line.\n4. `Employee` must have a member function `void printEmployee()` that prints the second output line.\n5. In `printEmployee()`, you may call `printInfo()` before printing the second line — this counts as using the inherited function.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define class Person with:\n//   public members: name (std::string), age (int)\n//   member function: void printInfo() — prints \"Name: <name>, Age: <age>\"\nclass Person {\npublic:\n    std::string name;\n    int age = 0;\n    void printInfo() {\n        // TODO: print \"Name: <name>, Age: <age>\"\n    }\n};\n\n// TODO: Define class Employee that publicly inherits from Person and adds:\n//   public members: id (int), dept (std::string)\n//   member function: void printEmployee() — calls printInfo(), then prints\n//     \"Employee ID: <id>, Dept: <dept>\"\nclass Employee : public Person {\npublic:\n    int id = 0;\n    std::string dept;\n    void printEmployee() {\n        printInfo();\n        // TODO: print \"Employee ID: <id>, Dept: <dept>\"\n    }\n};\n\nint main() {\n    Employee e;\n    std::cin >> e.name >> e.age >> e.id >> e.dept;\n    e.printEmployee();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Person {\npublic:\n    std::string name;\n    int age = 0;\n    void printInfo() {\n        std::cout << \"Name: \" << name << \", Age: \" << age << \"\\n\";\n    }\n};\n\nclass Employee : public Person {\npublic:\n    int id = 0;\n    std::string dept;\n    void printEmployee() {\n        printInfo();\n        std::cout << \"Employee ID: \" << id << \", Dept: \" << dept << \"\\n\";\n    }\n};\n\nint main() {\n    Employee e;\n    std::cin >> e.name >> e.age >> e.id >> e.dept;\n    e.printEmployee();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic employee",
+        "is_sample": true,
+        "stdin": "Alice\n30\n1042\nEngineering\n",
+        "expected_stdout": "Name: Alice, Age: 30\nEmployee ID: 1042, Dept: Engineering"
+      },
+      {
+        "label": "Hidden: different employee",
+        "is_sample": false,
+        "stdin": "Bob\n45\n2077\nMarketing\n",
+        "expected_stdout": "Name: Bob, Age: 45\nEmployee ID: 2077, Dept: Marketing"
+      },
+      {
+        "label": "Hidden: young employee",
+        "is_sample": false,
+        "stdin": "Carol\n22\n3001\nDesign\n",
+        "expected_stdout": "Name: Carol, Age: 22\nEmployee ID: 3001, Dept: Design"
+      }
+    ]
+  },
+  {
+    "title": "Compute Derived Object Field Count",
+    "prompt_md": "## Goal\nComplete the function `int countFields(int baseFields, int derivedFields)` that returns the total number of data fields a derived object contains.\n\n## Input\nLine 1: integer B (1 ≤ B ≤ 20) — number of fields in the base class.\nLine 2: integer D (0 ≤ D ≤ 20) — number of fields added by the derived class.\n\n## Output\nPrint exactly one line: `Total fields: <result>` where `<result>` is B + D.\n\n## Requirements\n1. Implement `int countFields(int baseFields, int derivedFields)` to return `baseFields + derivedFields`.\n2. `main()` reads B and D, calls `countFields`, and prints the result in the exact format shown.\n3. Edge case: D = 0 (derived adds no fields) must still work.\n4. Edge case: B = 1, D = 1.",
+    "starter_code": "#include <iostream>\n\n// TODO: Implement countFields that returns the total number of fields\n// a derived object contains (base fields + derived fields).\nint countFields(int baseFields, int derivedFields) {\n    return 0; // TODO: fix this\n}\n\nint main() {\n    int b, d;\n    std::cin >> b >> d;\n    int total = countFields(b, d);\n    std::cout << \"Total fields: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint countFields(int baseFields, int derivedFields) {\n    return baseFields + derivedFields;\n}\n\nint main() {\n    int b, d;\n    std::cin >> b >> d;\n    int total = countFields(b, d);\n    std::cout << \"Total fields: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 base + 2 derived",
+        "is_sample": true,
+        "stdin": "3\n2\n",
+        "expected_stdout": "Total fields: 5"
+      },
+      {
+        "label": "Hidden: D=0 (no extra fields)",
+        "is_sample": false,
+        "stdin": "5\n0\n",
+        "expected_stdout": "Total fields: 5"
+      },
+      {
+        "label": "Hidden: B=1 D=1",
+        "is_sample": false,
+        "stdin": "1\n1\n",
+        "expected_stdout": "Total fields: 2"
+      }
+    ]
+  }
+]

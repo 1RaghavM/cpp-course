@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Early vs Late Binding Demo",
+    "prompt_md": "## Goal\nWrite a program that demonstrates both early binding (explicit scope-resolution call) and late binding (virtual dispatch through a pointer) on the same method.\n\n## Input\nNo input — all data is hardcoded.\n\n## Output\nPrint exactly three lines:\n```\nBase::greet\nBase::greet\nDerived::greet\n```\n\n## Requirements\n1. `Base` has `virtual void greet() const` printing `Base::greet`.\n2. `Derived` inherits from `Base` and overrides `greet()` printing `Derived::greet`.\n3. In `main`, create a `Derived` object `d`.\n4. First call: `d.Base::greet()` — explicit early binding, must print `Base::greet`.\n5. Second call: through a `Base*` set to `&d`, call `Base::greet()` explicitly (scope resolution) — early binding, prints `Base::greet`.\n6. Third call: through a `Base*` set to `&d`, call `greet()` without scope resolution — late binding, prints `Derived::greet`.",
+    "starter_code": "#include <iostream>\n\nclass Base {\npublic:\n    virtual void greet() const { std::cout << \"Base::greet\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    void greet() const override { std::cout << \"Derived::greet\\n\"; }\n};\n\nint main() {\n    Derived d;\n    Base* p = &d;\n\n    // TODO: call 1 — d.Base::greet() (early binding)\n\n    // TODO: call 2 — p->Base::greet() (early binding via scope resolution)\n\n    // TODO: call 3 — p->greet() (late binding)\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Base {\npublic:\n    virtual void greet() const { std::cout << \"Base::greet\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    void greet() const override { std::cout << \"Derived::greet\\n\"; }\n};\n\nint main() {\n    Derived d;\n    Base* p = &d;\n\n    d.Base::greet();   // early binding\n    p->Base::greet();  // early binding via scope resolution\n    p->greet();        // late binding\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three greet lines",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Base::greet\nBase::greet\nDerived::greet"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Base::greet\nBase::greet\nDerived::greet"
+      },
+      {
+        "label": "Hidden: exact order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Base::greet\nBase::greet\nDerived::greet"
+      }
+    ]
+  },
+  {
+    "title": "Extend Base Behavior in Override",
+    "prompt_md": "## Goal\nFix the bug in the program below. It should print `Base log` then `Derived action` but prints only `Derived action`.\n\n## Input\nNo input.\n\n## Output\n```\nBase log\nDerived action\n```\n\n## Requirements\n1. `Logger` has `virtual void run() const` that prints `Base log`.\n2. `Task` overrides `run()` and should first call `Logger::run()` explicitly (early binding), then print `Derived action`.\n3. The bug is that the explicit base call `Logger::run()` is missing from `Task::run()`.\n4. Fix by adding the explicit early-binding call at the start of `Task::run()`.\n5. Do not change `Logger::run` or `main`.",
+    "starter_code": "#include <iostream>\n\nclass Logger {\npublic:\n    virtual void run() const { std::cout << \"Base log\\n\"; }\n};\n\nclass Task : public Logger {\npublic:\n    void run() const override {\n        // Bug: missing Logger::run() call here\n        std::cout << \"Derived action\\n\";\n    }\n};\n\nint main() {\n    Task t;\n    Logger* p = &t;\n    p->run();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Logger {\npublic:\n    virtual void run() const { std::cout << \"Base log\\n\"; }\n};\n\nclass Task : public Logger {\npublic:\n    void run() const override {\n        Logger::run();   // explicit early binding to base\n        std::cout << \"Derived action\\n\";\n    }\n};\n\nint main() {\n    Task t;\n    Logger* p = &t;\n    p->run();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: base then derived output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Base log\nDerived action"
+      },
+      {
+        "label": "Hidden: exact two lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Base log\nDerived action"
+      },
+      {
+        "label": "Hidden: no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Base log\nDerived action"
+      }
+    ]
+  }
+]

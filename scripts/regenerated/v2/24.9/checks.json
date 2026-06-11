@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Flyable {\npublic:\n    Flyable() { std::cout << \"Flyable\\n\"; }\n};\n\nclass Swimmable {\npublic:\n    Swimmable() { std::cout << \"Swimmable\\n\"; }\n};\n\nclass Duck : public Flyable, public Swimmable {\npublic:\n    Duck() { std::cout << \"Duck\\n\"; }\n};\n\nint main() {\n    Duck d;\n}\n```",
+    "options": null,
+    "answer": "Flyable\nSwimmable\nDuck",
+    "explanation_md": "Base classes are constructed in the order they appear in the base-class list: `Flyable` first, then `Swimmable`. The derived class constructor body runs last. This mirrors the single-inheritance rule: base before derived."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fails to compile. What is the problem?\n\n```cpp\n#include <iostream>\n\nclass A {\npublic:\n    void hello() { std::cout << \"A\\n\"; }\n};\n\nclass B {\npublic:\n    void hello() { std::cout << \"B\\n\"; }\n};\n\nclass C : public A, public B {};\n\nint main() {\n    C c;\n    c.hello();\n}\n```",
+    "options": {
+      "a": "`C` cannot inherit from both `A` and `B` because they define functions with the same name",
+      "b": "`c.hello()` is ambiguous — both `A::hello` and `B::hello` are equally viable; use `c.A::hello()` to disambiguate",
+      "c": "`hello` is private in `C` because it is inherited from two bases",
+      "d": "Multiple inheritance requires `virtual` on at least one base class"
+    },
+    "answer": "b",
+    "explanation_md": "When two base classes both provide a member with the same name and neither is a better match, the call is ambiguous and the compiler reports an error. The fix is to qualify the call: `c.A::hello()` or `c.B::hello()`. Alternatively, `C` can define its own `hello()` that delegates to the desired base."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Class `RoboDog` inherits from both `Dog` and `Robot`, which both inherit from `Animal` (normal, non-virtual inheritance). How many copies of `Animal`'s data members does `RoboDog` contain?",
+    "options": {
+      "a": "Zero — `Animal` data is shared between `Dog` and `Robot` automatically",
+      "b": "One — C++ merges duplicate base data automatically",
+      "c": "Two — one from `Dog` and one from `Robot`",
+      "d": "It depends on whether the bases are declared `public` or `protected`"
+    },
+    "answer": "c",
+    "explanation_md": "Without virtual inheritance, each path through the inheritance chain brings its own full copy of the shared base. `Dog` has an `Animal` subobject, and `Robot` has a separate `Animal` subobject. `RoboDog` therefore contains two copies. This is the diamond problem. Virtual inheritance (`virtual public Animal`) merges them into one shared subobject."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "With virtual inheritance, which class is responsible for constructing the virtual base?",
+    "options": {
+      "a": "The first direct base listed in the derived class declaration",
+      "b": "Each direct base constructs the virtual base independently",
+      "c": "The most-derived class is responsible; intermediate base constructors' calls to the virtual base are ignored",
+      "d": "The virtual base constructs itself with a default constructor regardless of anything the derived class says"
+    },
+    "answer": "c",
+    "explanation_md": "With virtual inheritance, the most-derived concrete class in the chain is responsible for constructing the virtual base. Any constructor calls to the virtual base inside intermediate classes (`Dog`, `Robot`) are silently skipped when a more-derived constructor is running. The most-derived class must provide the arguments for the virtual base's constructor, or the default constructor is used."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass A {\npublic:\n    void hello() { std::cout << \"A\\n\"; }\n};\n\nclass B {\npublic:\n    void hello() { std::cout << \"B\\n\"; }\n};\n\nclass C : public A, public B {\npublic:\n    void greetBoth() {\n        A::hello();\n        B::hello();\n    }\n};\n\nint main() {\n    C c;\n    c.A::hello();\n    c.greetBoth();\n}\n```",
+    "options": null,
+    "answer": "A\nA\nB",
+    "explanation_md": "`c.A::hello()` explicitly calls `A`'s version, printing \"A\". Then `greetBoth()` calls `A::hello()` (prints \"A\") followed by `B::hello()` (prints \"B\"). Total: three lines."
+  }
+]

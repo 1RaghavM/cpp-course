@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Read and Double via Pointer",
+    "prompt_md": "## Goal\nWrite a function `doubleViaPointer` that takes a pointer to an `int` and doubles the value at that address.\n\n## Input\nLine 1: one integer.\n\n## Output\nPrint exactly one line: the integer doubled.\n\n## Requirements\n1. The function signature must be `void doubleViaPointer(int* p)`.\n2. The function must dereference `p` to read and write the value — do not use a separate variable.\n3. `main` reads the integer, calls `doubleViaPointer(&value)`, then prints `value`.\n4. Edge case: value is 0 (result is 0).\n5. Edge case: negative value.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement doubleViaPointer\n// Dereference p to double the integer at that address\nvoid doubleViaPointer(int* p) {\n    // your code here\n}\n\nint main() {\n    int value;\n    std::cin >> value;\n    doubleViaPointer(&value);\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid doubleViaPointer(int* p) {\n    *p = *p * 2;\n}\n\nint main() {\n    int value;\n    std::cin >> value;\n    doubleViaPointer(&value);\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive value",
+        "is_sample": true,
+        "stdin": "6\n",
+        "expected_stdout": "12"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-7\n",
+        "expected_stdout": "-14"
+      }
+    ]
+  },
+  {
+    "title": "Pointer Dereference Confusion",
+    "prompt_md": "## Goal\nA program reads two integers, stores them in `a` and `b`, then uses a pointer to print the value of `b`. The code has one bug — find and fix it.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\nPrint exactly one line: the value of `b`.\n\n## Requirements\n1. The program must use a pointer `int* p` to print `b`'s value.\n2. The printed value must be `b`, not `a` and not an address.\n3. Edge case: a and b are equal.\n4. Edge case: b is negative.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    int* p = &a;     // BUG: should point to b, not a\n    std::cout << *p << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    int* p = &b;\n    std::cout << *p << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: distinct values",
+        "is_sample": true,
+        "stdin": "10\n25\n",
+        "expected_stdout": "25"
+      },
+      {
+        "label": "Hidden: b is negative",
+        "is_sample": false,
+        "stdin": "3\n-9\n",
+        "expected_stdout": "-9"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "7"
+      }
+    ]
+  }
+]

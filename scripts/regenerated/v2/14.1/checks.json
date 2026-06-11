@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes **encapsulation** in object-oriented programming?",
+    "options": {
+      "a": "Writing all code inside a single function so nothing is exposed globally.",
+      "b": "Bundling data and the functions that operate on it into one unit, and controlling external access.",
+      "c": "Using structs instead of separate variables to group related data.",
+      "d": "Making every member variable public so any function can read or write it."
+    },
+    "answer": "b",
+    "explanation_md": "Encapsulation means data and behavior live together *and* access is controlled — private members can only be touched by the object's own functions. Option c describes grouping (which structs already do) without the access-control component. Option d is the opposite of encapsulation."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Counter {\n    int value;\n};\n\nvoid increment(Counter& c) { c.value += 1; }\n\nint main() {\n    Counter c;\n    c.value = 0;\n    increment(c);\n    increment(c);\n    std::cout << c.value << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "2",
+    "explanation_md": "`value` starts at 0, then `increment` adds 1 twice, so `c.value` is 2 when printed. This is the procedural style: data and logic are separate."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is object-oriented programming (OOP) the **best** fit for a program?",
+    "options": {
+      "a": "Any time you use C++, because C++ is an OOP language.",
+      "b": "When the program models entities with meaningful state and behavior, or has many instances of the same type.",
+      "c": "Only when the program has more than 500 lines of code.",
+      "d": "When you want to avoid writing functions entirely."
+    },
+    "answer": "b",
+    "explanation_md": "OOP shines when entities carry state and respond to operations — a `BankAccount`, a `Player`. C++ supports multiple programming styles; OOP is not mandatory. Line count is not a useful threshold, and OOP still uses functions (member functions)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In the OOP mindset, the difference between calling `distanceFromOrigin(p)` versus `p.distanceFromOrigin()` is:",
+    "options": {
+      "a": "Purely cosmetic — both styles produce identical compiled code in all cases.",
+      "b": "The second form requires the function to be a template.",
+      "c": "The second form makes the behavior part of the object itself, reflecting that the object knows how to compute its own distance.",
+      "d": "The first form is faster because it avoids the overhead of an object."
+    },
+    "answer": "c",
+    "explanation_md": "The dot-call syntax reflects OOP's principle that behavior belongs to the data. The object isn't just a passive holder; it *does* things. Options a and d focus on performance, which is not the point of this conceptual distinction at this level."
+  }
+]

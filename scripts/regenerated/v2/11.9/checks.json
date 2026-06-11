@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\ntemplate <int N>\nvoid show() {\n    std::cout << N * N << '\\n';\n}\nint main() {\n    show<3>();\n    show<5>();\n}\n```",
+    "options": null,
+    "answer": "9\n25",
+    "explanation_md": "`show<3>` instantiates the template with `N=3`, so `N*N` is 9. `show<5>` instantiates a separate version with `N=5`, so `N*N` is 25. Each call to `show` with a distinct integer argument creates a separate compiled function."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a valid call to `template <int N> void f()`?",
+    "options": {
+      "a": "`int x = 4; f<x>();`",
+      "b": "`constexpr int x = 4; f<x>();`",
+      "c": "`double x = 4.0; f<x>();`",
+      "d": "`f<4.5>();`"
+    },
+    "answer": "b",
+    "explanation_md": "Non-type template arguments must be compile-time constants. A `constexpr int` variable satisfies that requirement, so option b is valid. A plain `int` variable (`a`) is a runtime value. A `double` (`c`) is the wrong type for an `int` non-type parameter. A floating-point literal (`d`) is also not allowed for an `int` non-type parameter."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code should print `5` twice, but it doesn't compile. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <int N>\nvoid printVal(int N) {\n    std::cout << N << '\\n';\n}\nint main() {\n    printVal<5>();\n    printVal<5>();\n}\n```",
+    "options": {
+      "a": "The template parameter `N` is not allowed to be `int`.",
+      "b": "The function parameter is also named `N`, conflicting with the template parameter.",
+      "c": "`printVal` must be called with an explicit type argument, not an integer.",
+      "d": "Templates cannot have function parameters when they have non-type parameters."
+    },
+    "answer": "b",
+    "explanation_md": "The template declares `int N` as a non-type parameter, and then the function also declares a parameter named `int N`. This redeclares `N` inside the function scope, causing a compiler error. The fix is to rename the function parameter to something else, or remove it entirely if it is not needed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T, int Factor>\nT scale(T x) { return x * Factor; }\nint main() {\n    std::cout << scale<int, 3>(7)   << '\\n';\n    std::cout << scale<double, 2>(1.5) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "21\n3",
+    "explanation_md": "`scale<int,3>(7)` returns `7 * 3 = 21`. `scale<double,2>(1.5)` returns `1.5 * 2 = 3.0`, which prints as `3` because the default `cout` formatting for `3.0` omits the trailing zero."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function template with a non-type parameter `template <int N>` is called with `N=3` in `file_a.cpp` and `N=3` in `file_b.cpp`. How many instantiations exist after linking?",
+    "options": {
+      "a": "Two — one per translation unit.",
+      "b": "One — the linker merges duplicate instantiations.",
+      "c": "Zero — templates are never instantiated across multiple files.",
+      "d": "It depends on whether `inline` is specified."
+    },
+    "answer": "b",
+    "explanation_md": "When multiple translation units instantiate the same template with the same arguments, the compiler emits a copy in each object file, but the linker merges them into a single definition in the final binary. This is the One Definition Rule applied to template instantiations. No special `inline` keyword is required."
+  }
+]

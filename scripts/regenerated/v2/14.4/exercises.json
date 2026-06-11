@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Const Query Functions",
+    "prompt_md": "## Goal\nComplete a `Rectangle` class with two `const` member functions: `area()` and `isSquare()`.\n\n## Input\n- Line 1: two doubles `w` and `h` (0.1 ≤ w, h ≤ 100.0), the width and height.\n\n## Output\nPrint exactly two lines:\n```\nArea: <value>\nSquare: <yes|no>\n```\nPrint area with exactly 2 decimal places.\nPrint `yes` if `w == h`, `no` otherwise.\n\n## Requirements\n1. Define `class Rectangle` with `public` members `double width` and `double height`.\n2. Define `double area() const` that returns `width * height`.\n3. Define `bool isSquare() const` that returns `true` when `width == height`.\n4. The function `printInfo(const Rectangle& r)` is already in the starter — it must compile without modification.\n5. Test case: width 3.0, height 3.0 → area 9.00, square yes.\n\n## Notes\n- Include `<iomanip>` for formatting.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width;\n    double height;\n\n    // TODO: implement double area() const\n    double area() const {\n        return 0.0;  // placeholder\n    }\n\n    // TODO: implement bool isSquare() const\n    bool isSquare() const {\n        return false;  // placeholder\n    }\n};\n\nvoid printInfo(const Rectangle& r) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n    std::cout << \"Square: \" << (r.isSquare() ? \"yes\" : \"no\") << \"\\n\";\n}\n\nint main() {\n    double w, h;\n    std::cin >> w >> h;\n    Rectangle r;\n    r.width = w;\n    r.height = h;\n    printInfo(r);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width;\n    double height;\n\n    double area() const {\n        return width * height;\n    }\n\n    bool isSquare() const {\n        return width == height;\n    }\n};\n\nvoid printInfo(const Rectangle& r) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n    std::cout << \"Square: \" << (r.isSquare() ? \"yes\" : \"no\") << \"\\n\";\n}\n\nint main() {\n    double w, h;\n    std::cin >> w >> h;\n    Rectangle r;\n    r.width = w;\n    r.height = h;\n    printInfo(r);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: square",
+        "is_sample": true,
+        "stdin": "3.0 3.0\n",
+        "expected_stdout": "Area: 9.00\nSquare: yes"
+      },
+      {
+        "label": "Hidden: non-square",
+        "is_sample": false,
+        "stdin": "4.0 2.0\n",
+        "expected_stdout": "Area: 8.00\nSquare: no"
+      },
+      {
+        "label": "Hidden: large rectangle",
+        "is_sample": false,
+        "stdin": "10.0 5.0\n",
+        "expected_stdout": "Area: 50.00\nSquare: no"
+      }
+    ]
+  },
+  {
+    "title": "Sensor Class — Complete the Const Function",
+    "prompt_md": "## Goal\nComplete `double average() const` in the `Sensor` class. The function returns the average of two readings.\n\n## Input\n- Line 1: two doubles, the two sensor readings.\n\n## Output\nPrint exactly one line:\n```\nAverage: <value>\n```\nwith exactly 2 decimal places.\n\n## Requirements\n1. `Sensor` has `public` members `double reading1` and `double reading2`.\n2. Implement `double average() const` that returns `(reading1 + reading2) / 2.0`.\n3. The function `report(const Sensor& s)` calls `s.average()` — it must compile.\n4. Do not change `main()` or `report()`.\n5. Edge case: both readings are 0.0 → average is 0.00.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Sensor {\npublic:\n    double reading1;\n    double reading2;\n\n    // TODO: implement double average() const\n    // return (reading1 + reading2) / 2.0\n    double average() const {\n        return 0.0;  // placeholder\n    }\n};\n\nvoid report(const Sensor& s) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Average: \" << s.average() << \"\\n\";\n}\n\nint main() {\n    double r1, r2;\n    std::cin >> r1 >> r2;\n    Sensor s;\n    s.reading1 = r1;\n    s.reading2 = r2;\n    report(s);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Sensor {\npublic:\n    double reading1;\n    double reading2;\n\n    double average() const {\n        return (reading1 + reading2) / 2.0;\n    }\n};\n\nvoid report(const Sensor& s) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Average: \" << s.average() << \"\\n\";\n}\n\nint main() {\n    double r1, r2;\n    std::cin >> r1 >> r2;\n    Sensor s;\n    s.reading1 = r1;\n    s.reading2 = r2;\n    report(s);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two readings",
+        "is_sample": true,
+        "stdin": "10.0 20.0\n",
+        "expected_stdout": "Average: 15.00"
+      },
+      {
+        "label": "Hidden: both zero",
+        "is_sample": false,
+        "stdin": "0.0 0.0\n",
+        "expected_stdout": "Average: 0.00"
+      },
+      {
+        "label": "Hidden: unequal readings",
+        "is_sample": false,
+        "stdin": "7.5 12.5\n",
+        "expected_stdout": "Average: 10.00"
+      }
+    ]
+  }
+]

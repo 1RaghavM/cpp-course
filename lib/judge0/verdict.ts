@@ -34,11 +34,16 @@ export interface VerdictResult {
  * Normalise stdout for comparison.
  *
  * - Treats null / undefined as empty string
- * - Trims leading and trailing whitespace (including trailing newlines)
+ * - Trims trailing whitespace on every line (formatting noise, not correctness)
+ * - Trims leading and trailing whitespace overall (including trailing newlines)
  */
 function normalise(value: string | null | undefined): string {
   if (value === null || value === undefined) return "";
-  return value.trim();
+  return value
+    .split("\n")
+    .map((line) => line.trimEnd())
+    .join("\n")
+    .trim();
 }
 
 // ---- Main export ----------------------------------------------------------

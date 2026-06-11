@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Classifier: partial specialization for pointer types",
+    "prompt_md": "## Goal\nAdd a partial specialization to `Classifier<T>` so it identifies pointer types separately from value types.\n\n## Input\nNo input.\n\n## Output\nPrint exactly three lines:\n```\nvalue\npointer\npointer\n```\n\n## Requirements\n1. Primary template `Classifier<T>` has `static const char* kind()` returning `\"value\"`.\n2. Partial specialization `Classifier<T*>` — `kind()` returns `\"pointer\"`.\n3. `main()` calls `Classifier<int>::kind()`, `Classifier<int*>::kind()`, `Classifier<double*>::kind()` and prints each on its own line.\n\n## Notes\n- No stdin is read; the output is always the same three lines.",
+    "starter_code": "#include <iostream>\n\n// Primary template\ntemplate <typename T>\nclass Classifier {\npublic:\n    static const char* kind() { return \"value\"; }\n};\n\n// TODO: add partial specialization for pointer types T*\n// kind() should return \"pointer\"\n\nint main() {\n    std::cout << Classifier<int>::kind()     << \"\\n\";\n    std::cout << Classifier<int*>::kind()    << \"\\n\";\n    std::cout << Classifier<double*>::kind() << \"\\n\";\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Classifier {\npublic:\n    static const char* kind() { return \"value\"; }\n};\n\ntemplate <typename T>\nclass Classifier<T*> {\npublic:\n    static const char* kind() { return \"pointer\"; }\n};\n\nint main() {\n    std::cout << Classifier<int>::kind()     << \"\\n\";\n    std::cout << Classifier<int*>::kind()    << \"\\n\";\n    std::cout << Classifier<double*>::kind() << \"\\n\";\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value and two pointers",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "value\npointer\npointer"
+      },
+      {
+        "label": "Hidden: repeated run check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "value\npointer\npointer"
+      },
+      {
+        "label": "Hidden: deterministic output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "value\npointer\npointer"
+      }
+    ]
+  },
+  {
+    "title": "Fix the bug: partial specialization prints wrong output",
+    "prompt_md": "## Goal\nThe program defines `Wrapper<T>` with a partial specialization for pointer types. It compiles, but the pointer specialization's `show()` prints the wrong thing. Find and fix the single logic bug so the output matches the expected result.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nval: 7\nptr: 7\n```\n\n## Requirements\n1. The bug is in the `show()` body of the pointer specialization — it prints the pointer address instead of the dereferenced value.\n2. Fix only that one line; do not change `main` or the primary template.\n\n## Notes\n- Hidden tests verify the same output twice.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Wrapper {\n    T val_;\npublic:\n    explicit Wrapper(T v) : val_{v} {}\n    void show() const { std::cout << \"val: \" << val_ << \"\\n\"; }\n};\n\ntemplate <typename T>\nclass Wrapper<T*> {\n    T* ptr_;\npublic:\n    explicit Wrapper(T* p) : ptr_{p} {}\n    void show() const { std::cout << \"ptr: \" << ptr_ << \"\\n\"; }  // BUG: prints address, not value\n};\n\nint main() {\n    int x = 7;\n    Wrapper<int> a{x};\n    Wrapper<int*> b{&x};\n    a.show();\n    b.show();\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Wrapper {\n    T val_;\npublic:\n    explicit Wrapper(T v) : val_{v} {}\n    void show() const { std::cout << \"val: \" << val_ << \"\\n\"; }\n};\n\ntemplate <typename T>\nclass Wrapper<T*> {\n    T* ptr_;\npublic:\n    explicit Wrapper(T* p) : ptr_{p} {}\n    void show() const { std::cout << \"ptr: \" << *ptr_ << \"\\n\"; }\n};\n\nint main() {\n    int x = 7;\n    Wrapper<int> a{x};\n    Wrapper<int*> b{&x};\n    a.show();\n    b.show();\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value and pointer",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "val: 7\nptr: 7"
+      },
+      {
+        "label": "Hidden: repeated check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "val: 7\nptr: 7"
+      },
+      {
+        "label": "Hidden: deterministic output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "val: 7\nptr: 7"
+      }
+    ]
+  }
+]

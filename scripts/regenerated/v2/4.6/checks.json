@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <cstdint>\n#include <iostream>\n\nint main()\n{\n    std::cout << sizeof(int32_t) << \"\\n\";\n    std::cout << sizeof(uint64_t) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4\n8",
+    "explanation_md": "`int32_t` is exactly 32 bits = 4 bytes, and `uint64_t` is exactly 64 bits = 8 bytes. These are guaranteed by the fixed-width integer specification — unlike `int` or `long`, which can vary by platform. `sizeof` returns the size in bytes, so the output is `4` then `8`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <cstdint>\n#include <iostream>\n\nint main()\n{\n    int8_t x { 65 };\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A",
+    "explanation_md": "`int8_t` is typically a `typedef` for `signed char`. When passed to `std::cout`, the stream treats it as a character rather than an integer, so it prints the ASCII character for 65, which is `A`. To print the numeric value, you would need to cast it to `int` with `static_cast<int>(x)` (covered in lesson 4.12)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which header must you include to use the fixed-width integer types like `int32_t` and `uint64_t`?",
+    "options": {
+      "a": "`<stdint>`",
+      "b": "`<cstdint>`",
+      "c": "`<types>`",
+      "d": "`<integer>`"
+    },
+    "answer": "b",
+    "explanation_md": "The fixed-width integer types defined by C99/C++11 live in `<cstdint>` (the C++ version of the C header `<stdint.h>`). `<stdint>` and `<types>` and `<integer>` are not standard headers. Many other headers pull in `<cstdint>` as a side effect, but relying on that is fragile — include it directly."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `std::size_t` used by the standard library for sizes and lengths instead of plain `int`?",
+    "options": {
+      "a": "Because `int` cannot hold values larger than 32,767",
+      "b": "Because `std::size_t` is signed, which prevents overflow",
+      "c": "Because `std::size_t` is wide enough to represent the size of any object on the current platform, and it is unsigned so negative sizes are not expressible",
+      "d": "Because `int` is slower than `std::size_t` on 64-bit platforms"
+    },
+    "answer": "c",
+    "explanation_md": "`std::size_t` is defined to be large enough to hold the byte size of any object the platform can allocate. On a 64-bit system that may be 64 bits wide. It is unsigned because negative sizes make no sense. Option (a) is wrong — `int` is at least 16 bits but usually 32. Option (b) is wrong — `size_t` is unsigned, not signed. Option (d) is a common misconception; performance is not the reason."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer stores the total number of bytes in a small buffer and then subtracts one to get the last valid index. What is the bug?\n\n```cpp\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::size_t buffer_size { 0 };\n    std::size_t last_index { buffer_size - 1 };\n    std::cout << last_index << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`std::size_t` cannot hold the value 0",
+      "b": "Subtracting 1 from `std::size_t` value 0 wraps around to the maximum unsigned value, not -1",
+      "c": "`last_index` should be declared as `int` to hold the result",
+      "d": "The program will throw a runtime exception because sizes cannot be negative"
+    },
+    "answer": "b",
+    "explanation_md": "`std::size_t` is an unsigned type. Subtracting 1 from 0 does not produce -1 — it wraps around to the maximum value representable by `size_t` (e.g., 18,446,744,073,709,551,615 on a 64-bit platform). This is silent and produces a meaningless huge number. The fix is to check that `buffer_size > 0` before subtracting, or use a signed type for index arithmetic."
+  }
+]

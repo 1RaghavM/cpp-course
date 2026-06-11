@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compose nested structs for a game map tile",
+    "prompt_md": "## Goal\nDefine nested structs `Color` and `Tile`, then write a function that prints a tile's description.\n\n## Input\nNo stdin. The program uses hardcoded tile objects.\n\n## Output\n```\nGrass tile at (3,5) color=(0,128,0) passable=true\nWater tile at (7,2) color=(0,0,255) passable=false\n```\n\n## Requirements\n1. Define `struct Color` with `int r{ 0 }`, `int g{ 0 }`, `int b{ 0 }`.\n2. Define `struct Tile` with `std::string name{ \"unknown\" }`, `int x{ 0 }`, `int y{ 0 }`, `Color color{}`, `bool passable{ true }`.\n3. Write `void printTile(const Tile& t)` that prints the format shown above.\n4. In `main`, create a grass tile `{ .name=\"Grass\", .x=3, .y=5, .color={0,128,0}, .passable=true }` and a water tile `{ .name=\"Water\", .x=7, .y=2, .color={0,0,255}, .passable=false }`. Print both.\n\n## Notes\n- Use `(t.passable ? \"true\" : \"false\")` for the boolean.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Color with r, g, b (all default 0).\n\n// TODO: Define struct Tile with name, x, y, color, passable.\n\n// TODO: Write void printTile(const Tile& t).\n\nint main() {\n    // TODO: Create grass and water tiles and print them.\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Color {\n    int r{ 0 };\n    int g{ 0 };\n    int b{ 0 };\n};\n\nstruct Tile {\n    std::string name{ \"unknown\" };\n    int x{ 0 };\n    int y{ 0 };\n    Color color{};\n    bool passable{ true };\n};\n\nvoid printTile(const Tile& t) {\n    std::cout << t.name << \" tile at (\" << t.x << ',' << t.y << \") \"\n              << \"color=(\" << t.color.r << ',' << t.color.g << ',' << t.color.b << \") \"\n              << \"passable=\" << (t.passable ? \"true\" : \"false\") << '\\n';\n}\n\nint main() {\n    Tile grass{ .name = \"Grass\", .x = 3, .y = 5,\n                .color = { 0, 128, 0 }, .passable = true };\n    Tile water{ .name = \"Water\", .x = 7, .y = 2,\n                .color = { 0, 0, 255 }, .passable = false };\n    printTile(grass);\n    printTile(water);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Grass tile at (3,5) color=(0,128,0) passable=true\nWater tile at (7,2) color=(0,0,255) passable=false\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Grass tile at (3,5) color=(0,128,0) passable=true\nWater tile at (7,2) color=(0,0,255) passable=false\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Grass tile at (3,5) color=(0,128,0) passable=true\nWater tile at (7,2) color=(0,0,255) passable=false\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the swapped field bug",
+    "prompt_md": "## Goal\nFix the one bug so the program prints the correct resolution.\n\n## Input\nNo stdin.\n\n## Output\n```\nWidth: 1920 Height: 1080\n```\n(trailing newline)\n\n## Requirements\n1. The program defines a `Resolution` struct with `width` and `height` members.\n2. `printResolution` compiles fine but prints the fields in the wrong order \u2014 find and fix the one bug.\n3. Do not change `main`, the struct definition, or the function signature.",
+    "starter_code": "#include <iostream>\n\nstruct Resolution {\n    int width{ 1920 };\n    int height{ 1080 };\n};\n\nvoid printResolution(const Resolution& r) {\n    std::cout << \"Width: \" << r.height << \" Height: \" << r.width << '\\n';  // BUG: fields swapped\n}\n\nint main() {\n    const Resolution screen{};\n    printResolution(screen);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Resolution {\n    int width{ 1920 };\n    int height{ 1080 };\n};\n\nvoid printResolution(const Resolution& r) {\n    std::cout << \"Width: \" << r.width << \" Height: \" << r.height << '\\n';  // FIX: correct field order\n}\n\nint main() {\n    const Resolution screen{};\n    printResolution(screen);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "default resolution",
+        "stdin": "",
+        "expected_stdout": "Width: 1920 Height: 1080\n",
+        "is_sample": true
+      },
+      {
+        "label": "default resolution hidden 1",
+        "stdin": "",
+        "expected_stdout": "Width: 1920 Height: 1080\n",
+        "is_sample": false
+      },
+      {
+        "label": "default resolution hidden 2",
+        "stdin": "",
+        "expected_stdout": "Width: 1920 Height: 1080\n",
+        "is_sample": false
+      }
+    ]
+  }
+]

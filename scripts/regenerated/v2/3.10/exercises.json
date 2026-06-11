@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Instrument a Computation with std::cerr Traces",
+    "prompt_md": "## Goal\nWrite a program that reads two integers, computes their sum via a helper function, and prints the result to stdout. Add `std::cerr` trace lines inside the helper so its inputs and output are visible on stderr during development.\n\n## Input\nLine 1: integer `a`. Line 2: integer `b`.\n\n## Output\nStdout: exactly one line: `Sum: <a+b>`\n\nStderr (not checked by the judge, but required by the exercise): two lines from inside `addInts`:\n```\n[addInts] a=<a> b=<b>\n[addInts] returning <a+b>\n```\n\n## Requirements\n1. Implement `int addInts(int a, int b)` that returns `a + b`.\n2. Before computing, print to `std::cerr`: `[addInts] a=<a> b=<b>`.\n3. After computing (before returning), print to `std::cerr`: `[addInts] returning <result>`.\n4. In `main`, read two integers, call `addInts`, and print `Sum: <result>` to `std::cout`.\n5. Stdout must contain only the `Sum:` line — nothing else.\n\n## Notes\n- Use `std::cerr` for the trace lines, not `std::cout`.\n- The judge only checks stdout; stderr output is not compared.",
+    "starter_code": "#include <iostream>\n\nint addInts(int a, int b)\n{\n    // TODO: print to std::cerr: \"[addInts] a=\" then a, then \" b=\" then b\n    // TODO: compute the sum\n    // TODO: print to std::cerr: \"[addInts] returning \" then the result\n    // TODO: return the result\n    return 0;\n}\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n    std::cout << \"Sum: \" << addInts(a, b) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint addInts(int a, int b)\n{\n    std::cerr << \"[addInts] a=\" << a << \" b=\" << b << '\\n';\n    int result = a + b;\n    std::cerr << \"[addInts] returning \" << result << '\\n';\n    return result;\n}\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n    std::cout << \"Sum: \" << addInts(a, b) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 + 4",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "Sum: 7"
+      },
+      {
+        "label": "Hidden: 0 + 0",
+        "is_sample": false,
+        "stdin": "0\n0\n",
+        "expected_stdout": "Sum: 0"
+      },
+      {
+        "label": "Hidden: -10 + 5",
+        "is_sample": false,
+        "stdin": "-10\n5\n",
+        "expected_stdout": "Sum: -5"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Defensive Multiply Function",
+    "prompt_md": "## Goal\nComplete the function `int safeMultiply(int x, int y)` that multiplies two integers and returns the product. The function must also print a `std::cerr` diagnostic line so callers can verify its inputs at development time.\n\n## Input\nLine 1: integer `x`. Line 2: integer `y`.\n\n## Output\nPrint exactly one line to stdout: `Product: <x*y>`\n\n## Requirements\n1. `safeMultiply(int x, int y)` must compute and return `x * y`.\n2. Before returning, print to `std::cerr`: `[safeMultiply] x=<x> y=<y> product=<result>`.\n3. `main` reads `x` and `y`, calls `safeMultiply`, and prints `Product: <result>` to stdout.\n4. Edge cases covered by hidden tests: `x=0`, `y=0`, negative values.\n5. Stdout must contain only the `Product:` line.",
+    "starter_code": "#include <iostream>\n\nint safeMultiply(int x, int y)\n{\n    // TODO: compute x * y\n    // TODO: print to std::cerr: \"[safeMultiply] x=\" x \" y=\" y \" product=\" result\n    // TODO: return the product\n    return 0;\n}\n\nint main()\n{\n    int x = 0;\n    int y = 0;\n    std::cin >> x >> y;\n    std::cout << \"Product: \" << safeMultiply(x, y) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint safeMultiply(int x, int y)\n{\n    int result = x * y;\n    std::cerr << \"[safeMultiply] x=\" << x << \" y=\" << y << \" product=\" << result << '\\n';\n    return result;\n}\n\nint main()\n{\n    int x = 0;\n    int y = 0;\n    std::cin >> x >> y;\n    std::cout << \"Product: \" << safeMultiply(x, y) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 6 * 7",
+        "is_sample": true,
+        "stdin": "6\n7\n",
+        "expected_stdout": "Product: 42"
+      },
+      {
+        "label": "Hidden: 0 * 100",
+        "is_sample": false,
+        "stdin": "0\n100\n",
+        "expected_stdout": "Product: 0"
+      },
+      {
+        "label": "Hidden: -3 * 4",
+        "is_sample": false,
+        "stdin": "-3\n4\n",
+        "expected_stdout": "Product: -12"
+      }
+    ]
+  }
+]

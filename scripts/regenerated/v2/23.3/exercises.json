@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Team Roster via Aggregation",
+    "prompt_md": "## Goal\nBuild a `Team` class that aggregates `Player` objects (does not own them) and print the team's roster.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), the number of players.\n- Lines 2..N+1: one player name per line.\n- Line N+2: integer M (1 ≤ M ≤ N), the number of players to add to the team (indices 0-based, first M players).\n\n## Output\nPrint `Team roster:` followed by one player name per line for each team member, in the order they were added.\n\n## Requirements\n1. Define a `struct Player` with a `std::string name` member.\n2. Define a `class Team` with a `std::vector<Player*> members` (non-owning pointers).\n3. `Team` must have a `void addPlayer(Player* p)` method.\n4. `Team` must have a `void printRoster() const` method that prints `Team roster:` then each name.\n5. `Team`'s destructor must NOT delete any Player objects.\n6. Store all Player objects in a `std::vector<Player>` in main() to ensure they outlive the Team.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Player {\n    std::string name;\n};\n\nclass Team {\n    std::vector<Player*> members;  // non-owning\npublic:\n    void addPlayer(Player* p) {\n        // TODO: add p to members\n    }\n    void printRoster() const {\n        // TODO: print \"Team roster:\" then each player's name\n    }\n    // Destructor intentionally does nothing to Players\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Player> pool(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> pool[static_cast<std::size_t>(i)].name;\n    int m{};\n    std::cin >> m;\n    Team t;\n    for (int i = 0; i < m; ++i)\n        t.addPlayer(&pool[static_cast<std::size_t>(i)]);\n    t.printRoster();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Player {\n    std::string name;\n};\n\nclass Team {\n    std::vector<Player*> members;\npublic:\n    void addPlayer(Player* p) {\n        members.push_back(p);\n    }\n    void printRoster() const {\n        std::cout << \"Team roster:\\n\";\n        for (const Player* p : members)\n            std::cout << p->name << \"\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Player> pool(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> pool[static_cast<std::size_t>(i)].name;\n    int m{};\n    std::cin >> m;\n    Team t;\n    for (int i = 0; i < m; ++i)\n        t.addPlayer(&pool[static_cast<std::size_t>(i)]);\n    t.printRoster();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 players, all added",
+        "is_sample": true,
+        "stdin": "3\nAlice\nBob\nCarol\n3\n",
+        "expected_stdout": "Team roster:\nAlice\nBob\nCarol"
+      },
+      {
+        "label": "Hidden: 5 players, 2 added",
+        "is_sample": false,
+        "stdin": "5\nAlice\nBob\nCarol\nDave\nEve\n2\n",
+        "expected_stdout": "Team roster:\nAlice\nBob"
+      },
+      {
+        "label": "Hidden: 1 player",
+        "is_sample": false,
+        "stdin": "1\nSolo\n1\n",
+        "expected_stdout": "Team roster:\nSolo"
+      }
+    ]
+  },
+  {
+    "title": "Shared Book Between Shelves",
+    "prompt_md": "## Goal\nA `Shelf` aggregates `Book` objects. The code has a logic bug: it deletes the Book pointers in the destructor even though it does not own them. Find and fix the bug.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), the number of books.\n- Lines 2..N+1: one book title per line.\n\n## Output\nFor each book, print its title on a separate line. Print all N titles in input order.\n\n## Requirements\n1. The bug is in `Shelf::~Shelf()` which incorrectly calls `delete` on each pointer.\n2. After the fix, destroying a `Shelf` must NOT delete the Book objects.\n3. The Book objects are stored as locals in `main()` (not heap-allocated), so calling delete on them is undefined behavior.\n4. The output must print all N book titles from the original vector in main().",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Book {\n    std::string title;\n    Book(const std::string& t) : title{t} {}\n};\n\nclass Shelf {\n    std::vector<Book*> books;\npublic:\n    void add(Book* b) { books.push_back(b); }\n    // BUG: deletes pointers it doesn't own\n    ~Shelf() {\n        for (Book* b : books)\n            delete b;  // WRONG — Shelf does not own these\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Book> library;\n    library.reserve(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i) {\n        std::string t;\n        std::cin >> t;\n        library.emplace_back(t);\n    }\n    {\n        Shelf s;\n        for (auto& b : library)\n            s.add(&b);\n    } // Shelf destroyed here\n    for (const auto& b : library)\n        std::cout << b.title << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Book {\n    std::string title;\n    Book(const std::string& t) : title{t} {}\n};\n\nclass Shelf {\n    std::vector<Book*> books;\npublic:\n    void add(Book* b) { books.push_back(b); }\n    // FIXED: do not delete what we don't own\n    ~Shelf() {}\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Book> library;\n    library.reserve(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i) {\n        std::string t;\n        std::cin >> t;\n        library.emplace_back(t);\n    }\n    {\n        Shelf s;\n        for (auto& b : library)\n            s.add(&b);\n    }\n    for (const auto& b : library)\n        std::cout << b.title << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 books",
+        "is_sample": true,
+        "stdin": "3\nDune\nFoundation\nNeuromancer\n",
+        "expected_stdout": "Dune\nFoundation\nNeuromancer"
+      },
+      {
+        "label": "Hidden: 1 book",
+        "is_sample": false,
+        "stdin": "1\nCleanCode\n",
+        "expected_stdout": "CleanCode"
+      },
+      {
+        "label": "Hidden: 5 books",
+        "is_sample": false,
+        "stdin": "5\nAlpha\nBeta\nGamma\nDelta\nEpsilon\n",
+        "expected_stdout": "Alpha\nBeta\nGamma\nDelta\nEpsilon"
+      }
+    ]
+  }
+]

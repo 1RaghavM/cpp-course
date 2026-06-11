@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Swap Two Integers Using Named Variables",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints them in swapped order.\n\n## Input\n- Line 1: integer `a` (-1000 ≤ a ≤ 1000)\n- Line 2: integer `b` (-1000 ≤ b ≤ 1000)\n\n## Output\nPrint exactly two lines:\n```\na: <original b value>\nb: <original a value>\n```\nUsing the exact labels `a: ` and `b: ` (lowercase, colon, space).\n\n## Requirements\n1. Read `a` and `b` as named `int` variables (both are lvalues and can be assigned to).\n2. Swap the values using a temporary named variable `temp`.\n3. Print `a:` followed by the new value of `a`, then `b:` followed by the new value of `b`.\n4. No extra blank lines.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n    // TODO: swap a and b using a temporary variable named 'temp'\n    std::cout << \"a: \" << a << '\\n';\n    std::cout << \"b: \" << b << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n    int temp { a };\n    a = b;\n    b = temp;\n    std::cout << \"a: \" << a << '\\n';\n    std::cout << \"b: \" << b << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 7",
+        "is_sample": true,
+        "stdin": "3\n7\n",
+        "expected_stdout": "a: 7\nb: 3"
+      },
+      {
+        "label": "Hidden: negative and positive",
+        "is_sample": false,
+        "stdin": "-4\n9\n",
+        "expected_stdout": "a: 9\nb: -4"
+      },
+      {
+        "label": "Hidden: same value",
+        "is_sample": false,
+        "stdin": "5\n5\n",
+        "expected_stdout": "a: 5\nb: 5"
+      }
+    ]
+  },
+  {
+    "title": "Compute and Cache Expression Results",
+    "prompt_md": "## Goal\nComplete the function `computeSum` that takes two integers and returns their sum. The main program reads two integers, calls `computeSum`, and prints the result.\n\n## Input\n- Line 1: integer `x` (-500 ≤ x ≤ 500)\n- Line 2: integer `y` (-500 ≤ y ≤ 500)\n\n## Output\nPrint exactly one line: `Sum: <result>` where `<result>` is `x + y`.\n\n## Requirements\n1. Complete the function `int computeSum(int a, int b)` — it must return `a + b`.\n2. In `main`, store the return value in a named `int` variable `result` (an lvalue) before printing.\n3. Print `Sum: ` (capital S, colon, space) followed by the result.\n4. Do not call `computeSum` directly inside `std::cout` — store the result first.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete this function — return the sum of a and b\nint computeSum(int a, int b)\n{\n    return 0;  // TODO: fix this\n}\n\nint main()\n{\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n    // TODO: call computeSum and store result in a named int variable 'result'\n    // TODO: print \"Sum: \" followed by result\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint computeSum(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    int x {};\n    int y {};\n    std::cin >> x >> y;\n    int result { computeSum(x, y) };\n    std::cout << \"Sum: \" << result << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 + 6 = 10",
+        "is_sample": true,
+        "stdin": "4\n6\n",
+        "expected_stdout": "Sum: 10"
+      },
+      {
+        "label": "Hidden: negative sum",
+        "is_sample": false,
+        "stdin": "-3\n-8\n",
+        "expected_stdout": "Sum: -11"
+      },
+      {
+        "label": "Hidden: zero result",
+        "is_sample": false,
+        "stdin": "7\n-7\n",
+        "expected_stdout": "Sum: 0"
+      }
+    ]
+  }
+]

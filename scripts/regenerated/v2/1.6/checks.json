@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when a C++ program reads an uninitialized `int` variable?",
+    "options": {
+      "a": "The variable is guaranteed to hold `0`.",
+      "b": "The program immediately crashes with a runtime error.",
+      "c": "The behavior is undefined — the value can be anything.",
+      "d": "The compiler always catches this and refuses to build."
+    },
+    "answer": "c",
+    "explanation_md": "Reading an uninitialized variable is *undefined behavior* in C++. The standard makes no guarantee about the value or even that the program will produce consistent results. While modern compilers often warn and sanitizers catch it at runtime, neither is guaranteed — the program might print garbage, crash, or appear to work correctly by accident."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "This program initializes `x` to `0` and then reads from `std::cin`. What does it print if the user enters `42`?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x = 0;\n    std::cin >> x;\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "`x` starts as `0`, but `std::cin >> x` replaces it with the user-supplied value `42`. The output is `42`. Initializing to `0` does not prevent `cin` from overwriting the value — it just ensures the variable has a defined value if `cin` somehow fails before reaching the output statement."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following variable declarations is correctly initialized?\n\n```cpp\nint a;        // A\nint b = 5;    // B\nint c;        // C\nc = 3;        // (assignment on the next line)\n```\n\nWhich variable is safe to read immediately after it is declared?",
+    "options": {
+      "a": "Only `a`.",
+      "b": "Only `b`.",
+      "c": "Both `b` and `c`.",
+      "d": "All three."
+    },
+    "answer": "b",
+    "explanation_md": "`b` is initialized at the declaration site (`int b = 5;`) and is safe to read immediately. `a` has no initializer and is uninitialized — reading it before assigning a value is undefined behavior. `c` only becomes defined after the assignment on the following line; reading it between the declaration and the assignment would be undefined behavior. At the point right after each variable is *declared*, only `b` has a well-defined value."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this well-formed program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x = 7;\n    int y = 3;\n    std::cout << x + y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "Both `x` and `y` are properly initialized at their declarations, so reading them is perfectly defined. `x + y` evaluates to `10`, which is printed followed by a newline. No undefined behavior here — this is the correct pattern to follow."
+  }
+]

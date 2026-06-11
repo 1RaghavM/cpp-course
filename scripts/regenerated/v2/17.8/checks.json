@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print on a 64-bit system where `int` is 4 bytes and a pointer is 8 bytes?\n\n```cpp\n#include <iostream>\n\nvoid check(int* arr) {\n    std::cout << sizeof(arr) << '\\n';\n}\n\nint main() {\n    int data[6]{};\n    std::cout << sizeof(data) << '\\n';\n    check(data);\n}\n```",
+    "options": null,
+    "answer": "24\n8",
+    "explanation_md": "Inside `main`, `data` is still the array type `int[6]`, so `sizeof(data)` is 6 × 4 = 24. After passing to `check`, `arr` is an `int*` (a pointer), so `sizeof(arr)` is the pointer size, 8 on a 64-bit system."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about C-style array decay is correct?",
+    "options": {
+      "a": "An array decays to a pointer to its last element.",
+      "b": "An array decays to a pointer to its first element.",
+      "c": "An array decays only inside `sizeof` expressions.",
+      "d": "An array decays only when passed to a function that expects `void*`."
+    },
+    "answer": "b",
+    "explanation_md": "When a C-style array is used in most expressions — particularly when passed to a function expecting a pointer — it converts to a pointer to its first element (`&arr[0]`). This is a fundamental language rule, not limited to `sizeof` or `void*` contexts."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function signature `void process(int arr[], int count)` is equivalent to which of these?",
+    "options": {
+      "a": "`void process(int arr[10], int count)`",
+      "b": "`void process(int* arr, int count)`",
+      "c": "`void process(int& arr, int count)`",
+      "d": "`void process(int arr, int count)`"
+    },
+    "answer": "b",
+    "explanation_md": "In a function parameter list, `int arr[]` is exactly the same as `int* arr`—the compiler treats array parameters as pointers. The array has already decayed by the time the parameter is received. Any size written inside the brackets (like `int arr[10]`) is also ignored."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(const int* arr, int count) {\n    for (int i = 0; i < count; ++i)\n        std::cout << arr[i] << '\\n';\n}\n\nint main() {\n    int nums[3]{ 5, 10, 15 };\n    show(nums, 3);\n}\n```",
+    "options": null,
+    "answer": "5\n10\n15",
+    "explanation_md": "`nums` decays to a `const int*` pointing at `nums[0]`. `show` iterates indices 0, 1, 2 and prints `arr[0]`=5, `arr[1]`=10, `arr[2]`=15 on separate lines."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program tries to print the number of elements but always prints 2 on a 64-bit system. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid printCount(int arr[]) {\n    std::cout << sizeof(arr) / sizeof(arr[0]) << '\\n';\n}\n\nint main() {\n    int data[5]{ 1, 2, 3, 4, 5 };\n    printCount(data);\n}\n```",
+    "options": {
+      "a": "`data` is not initialized with five values, so the count is undefined.",
+      "b": "`arr` inside `printCount` is a pointer, not an array; `sizeof(arr)` is the pointer size (8), not the array size, so `8 / 4 = 2`.",
+      "c": "The function parameter should be `int arr[5]` to retain the size.",
+      "d": "`sizeof` cannot be used inside a function."
+    },
+    "answer": "b",
+    "explanation_md": "`int arr[]` in a function parameter is equivalent to `int* arr`. After decay, `sizeof(arr)` returns the pointer size (8 bytes on 64-bit). `sizeof(arr[0])` is `sizeof(int)` = 4. So `8 / 4 = 2`, not 5. The fix is to pass the count as a separate parameter."
+  }
+]

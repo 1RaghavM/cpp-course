@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Box {\n    int width{ 10 };\n    int height{ 5 };\n};\n\nint main() {\n    Box a{};\n    Box b{ 20 };\n    std::cout << a.width << ' ' << a.height << '\\n';\n    std::cout << b.width << ' ' << b.height << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10 5\n20 5\n",
+    "explanation_md": "`a{}` uses both defaults so `width=10` and `height=5`. `b{20}` supplies `20` for the first member (`width`), overriding its default, but `height` gets no value so it falls back to its default of `5`. The default is only bypassed for the members that are explicitly provided."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `score` to start at `100` when no value is given. Spot the bug.\n\n```cpp\n#include <iostream>\n\nstruct Player {\n    std::string name{ \"unknown\" };\n    int score;\n};\n\nint main() {\n    Player p{};\n    std::cout << p.name << ' ' << p.score << '\\n';\n}\n```",
+    "options": {
+      "a": "`std::string` cannot have a default member initializer.",
+      "b": "`score` has no default member initializer, so it is value-initialized to `0`, not `100`.",
+      "c": "Using `{}` on a struct with mixed-initialized members is ill-formed.",
+      "d": "The struct definition is missing a semicolon."
+    },
+    "answer": "b",
+    "explanation_md": "`score` has no default member initializer, so with `Player p{}` it is value-initialized to `0` (not `100`). The fix is to write `int score{ 100 };` in the struct definition. Option `a` is wrong — `std::string` can absolutely have a default initializer."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes what happens when aggregate initialization provides a value for a member that also has a default member initializer?",
+    "options": {
+      "a": "Both values are added together.",
+      "b": "The default initializer value is used and the provided value is ignored.",
+      "c": "The provided value is used and the default initializer is ignored.",
+      "d": "The program fails to compile because of the conflict."
+    },
+    "answer": "c",
+    "explanation_md": "The explicitly provided value always wins. Default member initializers only take effect when no value is given for that member during aggregate initialization. There is no conflict and no combining — the default is simply skipped."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Consider `struct S { int x; };`. Which initialization leaves `x` with undefined behavior on a subsequent read?\n\n```cpp\nS a{};   // (1)\nS b{ 5 }; // (2)\nS c;     // (3)\n```",
+    "options": {
+      "a": "(1) only",
+      "b": "(2) only",
+      "c": "(3) only",
+      "d": "(1) and (3)"
+    },
+    "answer": "c",
+    "explanation_md": "`S c;` (no braces, no default initializer) leaves `x` uninitialized; reading it is undefined behavior. `S a{}` value-initializes `x` to `0`, and `S b{5}` explicitly sets `x` to `5`. The absence of braces is the hazard when no default initializer is present."
+  }
+]

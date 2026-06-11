@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid tick() {\n    static int count = 0;\n    ++count;\n    std::cout << count << \"\\n\";\n}\n\nint main() {\n    tick();\n    tick();\n    tick();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n2\n3",
+    "explanation_md": "`count` is a static local variable. It is initialized to 0 only once (before the first call to `tick`), then persists across calls. Each call increments it and prints the new value, so the output is 1, 2, 3 on successive lines."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint x = 1;\n\nvoid modify() {\n    int x = 2;\n    std::cout << x << \"\\n\";\n}\n\nint main() {\n    modify();\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2\n1",
+    "explanation_md": "Inside `modify()`, `int x = 2` declares a new local variable that shadows the global `x`. Printing inside `modify` prints `2`. Back in `main`, the global `x` (still `1`) is printed. Shadowing does not modify the outer variable."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which combination correctly describes a `static` local variable declared inside a function?",
+    "options": {
+      "a": "Block scope, automatic duration, no linkage.",
+      "b": "File scope, static duration, internal linkage.",
+      "c": "Block scope, static duration, no linkage.",
+      "d": "Block scope, static duration, internal linkage."
+    },
+    "answer": "c",
+    "explanation_md": "A static local variable has block scope (its name is only visible inside the function) and static duration (the object lives for the entire program). It has no linkage — there is no way to refer to it from any other scope, even within the same translation unit."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You want a helper function to be visible only within `utils.cpp` and not linkable from any other file. Which of the following achieves this goal?",
+    "options": {
+      "a": "Declare the function `inline`.",
+      "b": "Declare the function `extern`.",
+      "c": "Define the function inside an unnamed namespace or with the `static` keyword.",
+      "d": "Put the function inside a named namespace."
+    },
+    "answer": "c",
+    "explanation_md": "Internal linkage is achieved with `static` on a function or by placing it inside an unnamed namespace. Both prevent the linker from exporting the symbol. `inline` enables multiple definitions across translation units (not hiding). `extern` explicitly requests external linkage. A named namespace does not restrict linkage on its own."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The developer wants `MAX` to be a program-wide constant shared across multiple `.cpp` files via a header. What is wrong?\n\n```cpp\n// constants.h\n#pragma once\nconst int MAX = 100;\n```\n\n```cpp\n// a.cpp\n#include \"constants.h\"\n// uses MAX\n\n// b.cpp\n#include \"constants.h\"\n// uses MAX\n```",
+    "options": {
+      "a": "`const int` at file scope has internal linkage by default, so each translation unit gets its own copy — this is actually fine for a constant but not truly \"shared\" as a single object.",
+      "b": "The program will fail to link because `MAX` is defined in two translation units.",
+      "c": "A `const int` in a header must be wrapped in a namespace to be usable.",
+      "d": "`const int` requires `extern` to be visible across files."
+    },
+    "answer": "a",
+    "explanation_md": "In C++, `const` variables at namespace/file scope have internal linkage by default. Including the header in two `.cpp` files creates two separate `MAX` objects with the same value. For a simple integer constant this is usually harmless, but if the goal is a single shared object (e.g. for address identity), the fix is `inline const int MAX = 100;` (C++17), which makes the linker merge the definitions into one."
+  }
+]

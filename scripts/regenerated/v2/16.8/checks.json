@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 1, 2, 3 };\n    for (int x : v)\n        x *= 10;\n    for (int x : v)\n        std::cout << x << ' ';\n    std::cout << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1 2 3",
+    "explanation_md": "The first loop uses `int x` — a copy. Multiplying `x` by 10 changes only the copy, not the element in the vector. The second loop prints the original values 1, 2, 3 unchanged."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 1, 2, 3 };\n    for (int& x : v)\n        x *= 10;\n    for (int x : v)\n        std::cout << x << ' ';\n    std::cout << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10 20 30",
+    "explanation_md": "The first loop uses `int& x` — a reference to each element. Multiplying `x` by 10 modifies the actual vector elements. The second loop prints the modified values: 10, 20, 30."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer `const int& x` over plain `int x` as the range variable in a for-each loop?",
+    "options": {
+      "a": "Whenever you want to modify the elements in place",
+      "b": "When the element type is large or non-trivially copyable, to avoid copying each element",
+      "c": "When you need to access the element's index inside the loop body",
+      "d": "Only when the vector is declared `const`"
+    },
+    "answer": "b",
+    "explanation_md": "`const int& x` binds a read-only reference to each element, avoiding a copy. For small types like `int` the difference is negligible, but for larger types it saves copying the entire object on each iteration. Option A describes `int& x` (non-const reference). Option C — the index — is not available in range-based loops at all."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to add 5 to every element of a vector using a range-based for loop, but the vector is unchanged afterward. What is wrong?\n\n```cpp\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 10, 20, 30 };\n    for (int x : v)\n        x += 5;   // student expects v to hold {15, 25, 35}\n}\n```",
+    "options": {
+      "a": "The range-based for loop cannot be used to modify vector elements at all",
+      "b": "`x` is a copy of each element; modifying it does not affect the vector",
+      "c": "The loop must use `auto` instead of `int`",
+      "d": "The loop iterates in the wrong direction"
+    },
+    "answer": "b",
+    "explanation_md": "When you write `int x : v`, `x` receives a copy of each element. Changes to `x` are invisible to the vector. To modify the actual elements, declare the variable as a reference: `int& x : v`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which loop is the most appropriate for this task: given `std::vector<int> grades`, count how many elements are above 90?",
+    "options": {
+      "a": "An index-based loop, because you need to track positions",
+      "b": "A range-based for loop with `int grade : grades`, since you only need the values",
+      "c": "A range-based for loop with `int& grade : grades`, because you might modify the grades later",
+      "d": "A reverse index-based loop, to avoid the signed/unsigned issue"
+    },
+    "answer": "b",
+    "explanation_md": "You only need to read each value — no index, no modification. A range-based for loop with a value copy (`int grade`) is the clearest choice. Option C adds `&` unnecessarily. Option A and D add complexity with no benefit for this task."
+  }
+]

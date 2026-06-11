@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Debug with Cerr Checkpoints",
+    "prompt_md": "## Goal\nAdd `std::cerr` checkpoint statements to trace a computation, then fix the logic bug you discover.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space\n\n## Output\n- Print exactly one line to `std::cout`: `Result: ` followed by the value of `a * b - a` (e.g. for `a=3, b=4`: `Result: 9`)\n- `std::cerr` output is not checked by the tests\n\n## Requirements\n1. The program currently computes the wrong value — fix the semantic error in the `compute` function.\n2. The compute function should return `a * b - a`.\n3. Output format: `Result: <number>` with no extra spaces or blank lines.",
+    "starter_code": "#include <iostream>\n\nint compute(int a, int b)\n{\n    return a + b - a;   // bug: should multiply, not add\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cerr << \"[debug] a=\" << a << \" b=\" << b << \"\\n\";\n    int result = compute(a, b);\n    std::cerr << \"[debug] result=\" << result << \"\\n\";\n    std::cout << \"Result: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint compute(int a, int b)\n{\n    return a * b - a;\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cerr << \"[debug] a=\" << a << \" b=\" << b << \"\\n\";\n    int result = compute(a, b);\n    std::cerr << \"[debug] result=\" << result << \"\\n\";\n    std::cout << \"Result: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "Result: 9"
+      },
+      {
+        "label": "Hidden: 5 and 6",
+        "is_sample": false,
+        "stdin": "5 6",
+        "expected_stdout": "Result: 25"
+      },
+      {
+        "label": "Hidden: 1 and 1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Result: 0"
+      }
+    ]
+  },
+  {
+    "title": "Implement the Halve Function",
+    "prompt_md": "## Goal\nComplete the function `halved` that takes an integer and returns `n / 2` using integer division. The `main` function reads a value, calls `halved`, and prints the result.\n\n## Input\n- Line 1: one integer `n` (1 ≤ n ≤ 1000)\n\n## Output\n- Print exactly one line: `Halved: ` followed by `n / 2` (integer division), e.g. `Halved: 5` for input `10`\n\n## Requirements\n1. Implement the body of `halved(int n)` so it returns `n / 2`.\n2. Do not modify `main`.\n3. Output format: `Halved: <number>` with no trailing spaces or extra blank lines.\n4. Hidden tests include odd numbers (integer division truncates toward zero).",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function so it returns n divided by 2 (integer division)\nint halved(int n)\n{\n    return n * 1;   // replace this expression\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cerr << \"[debug] n = \" << n << \"\\n\";\n    int result = halved(n);\n    std::cerr << \"[debug] halved = \" << result << \"\\n\";\n    std::cout << \"Halved: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint halved(int n)\n{\n    return n / 2;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cerr << \"[debug] n = \" << n << \"\\n\";\n    int result = halved(n);\n    std::cerr << \"[debug] halved = \" << result << \"\\n\";\n    std::cout << \"Halved: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10",
+        "is_sample": true,
+        "stdin": "10",
+        "expected_stdout": "Halved: 5"
+      },
+      {
+        "label": "Hidden: odd number 7",
+        "is_sample": false,
+        "stdin": "7",
+        "expected_stdout": "Halved: 3"
+      },
+      {
+        "label": "Hidden: value 1",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Halved: 0"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Exception Classifier",
+    "prompt_md": "## Goal\nWrite a program that reads a code and throws a matching type, then uses multiple catch clauses (including catch-all) to identify and report what was caught.\n\n## Input\n- Line 1: integer code (1, 2, 3, or 4)\n\n## Output\n- Code 1: throw `std::out_of_range(\"range\")` → print `out_of_range: range`\n- Code 2: throw `std::runtime_error(\"rt\")` → print `runtime_error: rt`\n- Code 3: throw `99` (an int) → catch-all prints `unknown exception`\n- Code 4: no throw → print `no exception`\n\n## Requirements\n1. Implement `void throw_by_code(int code)` that throws per the spec above.\n2. Use three catch clauses in `main` in this order: `const std::out_of_range&`, `const std::runtime_error&`, then `catch (...)`.\n3. If no exception, print `no exception` after the try/catch.\n4. Each output line ends with `\\n`.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\n// TODO: implement throw_by_code\nvoid throw_by_code(int code) {\n}\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    // TODO: call throw_by_code(code) in a try block\n    // Catch 1: const std::out_of_range& -> print: out_of_range: <message>\n    // Catch 2: const std::runtime_error& -> print: runtime_error: <message>\n    // Catch 3: ... -> print: unknown exception\n    // No exception: print: no exception\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nvoid throw_by_code(int code) {\n    if (code == 1) throw std::out_of_range(\"range\");\n    if (code == 2) throw std::runtime_error(\"rt\");\n    if (code == 3) throw 99;\n}\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    try {\n        throw_by_code(code);\n        std::cout << \"no exception\\n\";\n    } catch (const std::out_of_range& e) {\n        std::cout << \"out_of_range: \" << e.what() << \"\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"runtime_error: \" << e.what() << \"\\n\";\n    } catch (...) {\n        std::cout << \"unknown exception\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: out_of_range",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "out_of_range: range\n"
+      },
+      {
+        "label": "Hidden: catch-all int",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "unknown exception\n"
+      },
+      {
+        "label": "Hidden: no exception",
+        "is_sample": false,
+        "stdin": "4\n",
+        "expected_stdout": "no exception\n"
+      }
+    ]
+  },
+  {
+    "title": "Top-Level Safety Net",
+    "prompt_md": "## Goal\nComplete the function `std::string safe_lookup(int key)` that looks up a value by key in a fixed table, using exceptions for missing keys and a top-level catch-all to handle unexpected errors.\n\n## Input\n- Line 1: integer key\n\n## Output\n- Key 1: print `Value: alpha`\n- Key 2: print `Value: beta`\n- Key 3: print `Value: gamma`\n- Any other key: `safe_lookup` throws `std::out_of_range`; print `Not found: <key>`\n\n## Requirements\n1. `safe_lookup` throws `std::out_of_range` for keys not in {1, 2, 3}; returns the string value otherwise.\n2. In `main`, use a try block that catches `const std::out_of_range&` and prints `Not found: <key>`.\n3. A final `catch (...)` after the typed catch must print `Unexpected error` (handles anything else).\n4. Success case prints `Value: <string>` followed by a newline.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\n// TODO: complete safe_lookup\n// returns \"alpha\"/\"beta\"/\"gamma\" for keys 1/2/3\n// throws std::out_of_range for any other key\nstd::string safe_lookup(int key) {\n    return \"\"; // replace this\n}\n\nint main() {\n    int key;\n    std::cin >> key;\n\n    // TODO: call safe_lookup(key) in a try block\n    // catch const std::out_of_range& -> print: Not found: <key>\n    // catch ... -> print: Unexpected error\n    // success -> print: Value: <result>\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nstd::string safe_lookup(int key) {\n    if (key == 1) return \"alpha\";\n    if (key == 2) return \"beta\";\n    if (key == 3) return \"gamma\";\n    throw std::out_of_range(\"key not found\");\n}\n\nint main() {\n    int key;\n    std::cin >> key;\n\n    try {\n        std::string val = safe_lookup(key);\n        std::cout << \"Value: \" << val << \"\\n\";\n    } catch (const std::out_of_range&) {\n        std::cout << \"Not found: \" << key << \"\\n\";\n    } catch (...) {\n        std::cout << \"Unexpected error\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: valid key",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "Value: beta\n"
+      },
+      {
+        "label": "Hidden: missing key",
+        "is_sample": false,
+        "stdin": "99\n",
+        "expected_stdout": "Not found: 99\n"
+      },
+      {
+        "label": "Hidden: key 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Value: alpha\n"
+      }
+    ]
+  }
+]

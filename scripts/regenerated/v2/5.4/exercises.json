@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Precomputed Time Conversions",
+    "prompt_md": "## Goal\nWrite a program that prints three time-conversion constants: the number of seconds in a minute, an hour, and a day. All values must be expressed as constant expressions computed from smaller units.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly three lines:\n```\nSeconds per minute: 60\nSeconds per hour: 3600\nSeconds per day: 86400\n```\n\n## Requirements\n1. Declare each value using `const int` and compute it from simpler constants (e.g., seconds per hour = seconds per minute * 60).\n2. Do not write the numeric literals `3600` or `86400` directly; compute them from the smaller unit.\n3. Print each line with the exact label shown, followed by a colon, a space, and the value.\n4. No trailing spaces on any line.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare const int secs_per_minute = 60;\n    // TODO: declare const int secs_per_hour computed from secs_per_minute\n    // TODO: declare const int secs_per_day computed from secs_per_hour\n\n    // TODO: print the three lines\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    const int secs_per_minute = 60;\n    const int secs_per_hour = secs_per_minute * 60;\n    const int secs_per_day = secs_per_hour * 24;\n\n    std::cout << \"Seconds per minute: \" << secs_per_minute << \"\\n\";\n    std::cout << \"Seconds per hour: \" << secs_per_hour << \"\\n\";\n    std::cout << \"Seconds per day: \" << secs_per_day << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Seconds per minute: 60\nSeconds per hour: 3600\nSeconds per day: 86400"
+      },
+      {
+        "label": "Hidden: exact label format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Seconds per minute: 60\nSeconds per hour: 3600\nSeconds per day: 86400"
+      },
+      {
+        "label": "Hidden: no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Seconds per minute: 60\nSeconds per hour: 3600\nSeconds per day: 86400"
+      }
+    ]
+  },
+  {
+    "title": "Compute Circle Area From Constants",
+    "prompt_md": "## Goal\nComplete the function `circleArea` that takes an integer radius and returns the area as a `double`, using a `const double` approximation of pi.\n\n## Input\nLine 1: one integer `r` (1 ≤ r ≤ 100), the radius.\n\n## Output\nPrint exactly one line: `Area: <value>` where `<value>` is the area rounded to two decimal places.\n\nExample: for radius `5`, print `Area: 78.54`.\n\n## Requirements\n1. Inside `circleArea`, declare `const double pi = 3.14159;`.\n2. Compute and return `pi * radius * radius`.\n3. In `main`, read the integer radius from stdin, call `circleArea`, and print the result with exactly two decimal places using `std::fixed` and `std::setprecision(2)`.\n4. Edge case: radius `1` should print `Area: 3.14`.\n\n## Notes\n- Include `<iostream>` and `<iomanip>`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: implement circleArea(int radius) -> double\n// Use const double pi = 3.14159 inside the function\ndouble circleArea(int radius) {\n    // TODO\n    return 0.0;\n}\n\nint main() {\n    int r;\n    std::cin >> r;\n    std::cout << \"Area: \" << std::fixed << std::setprecision(2) << circleArea(r) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble circleArea(int radius) {\n    const double pi = 3.14159;\n    return pi * radius * radius;\n}\n\nint main() {\n    int r;\n    std::cin >> r;\n    std::cout << \"Area: \" << std::fixed << std::setprecision(2) << circleArea(r) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: radius 5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Area: 78.54"
+      },
+      {
+        "label": "Hidden: radius 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Area: 3.14"
+      },
+      {
+        "label": "Hidden: radius 10",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "Area: 314.16"
+      }
+    ]
+  }
+]

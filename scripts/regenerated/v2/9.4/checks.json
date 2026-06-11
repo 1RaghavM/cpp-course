@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint safeSqrt(int n) {\n    if (n < 0) return -1;\n    int root = 0;\n    while (root * root < n) ++root;\n    if (root * root == n) return root;\n    return -1;\n}\n\nint main() {\n    std::cout << safeSqrt(9)  << '\\n';\n    std::cout << safeSqrt(7)  << '\\n';\n    std::cout << safeSqrt(-1) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n-1\n-1",
+    "explanation_md": "`safeSqrt(9)`: 3*3 == 9, so it returns `3`. `safeSqrt(7)`: no integer root (2*2=4, 3*3=9), so `root*root != n` after the loop, returns `-1`. `safeSqrt(-1)`: `n < 0`, returns `-1` immediately. The sentinel `-1` is returned for both invalid input and non-perfect-squares."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function `int lookup(int key)` searches a table and returns the index where `key` was found. Which sentinel value is safest to use for \"not found\"?",
+    "options": {
+      "a": "-1, because valid indices are always non-negative (0, 1, 2, ...).",
+      "b": "0, because the first element is at index 0.",
+      "c": "INT_MAX, so the caller never confuses it with a real index.",
+      "d": "The same as the largest valid index."
+    },
+    "answer": "a",
+    "explanation_md": "Array indices are non-negative (0 and above), so `-1` cannot be a valid result. Using `-1` as the sentinel is unambiguous — no real index can equal it. Option b is wrong because `0` is a valid index. INT_MAX could work but is less conventional and harder to remember. Using the largest valid index (option d) creates ambiguity."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is it appropriate to call `std::exit(1)` inside a function to handle an error?",
+    "options": {
+      "a": "Whenever the function receives an unexpected argument.",
+      "b": "When the error is so severe that the program cannot safely continue — for example, a required file is missing at startup.",
+      "c": "When you want to make the function easier to test.",
+      "d": "Instead of checking return values, to simplify the caller's code."
+    },
+    "answer": "b",
+    "explanation_md": "`std::exit` terminates the entire process. It is appropriate only for truly unrecoverable situations where continuing would produce corrupt or dangerous behavior. For normal bad-input errors, returning a sentinel or `false` gives the caller a chance to recover. Options a, c, and d describe cases where a return value or error code is more appropriate."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (Assume `std::cerr` output appears on stdout for this question.)\n\n```cpp\n#include <iostream>\n\nint safeDivide(int a, int b) {\n    if (b == 0) {\n        std::cerr << \"Error\\n\";\n        return 0;\n    }\n    return a / b;\n}\n\nint main() {\n    std::cout << safeDivide(10, 2) << '\\n';\n    std::cout << safeDivide(10, 0) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\nError\n0",
+    "explanation_md": "`safeDivide(10, 2)` has `b != 0`, so it returns `10 / 2 = 5` → prints `5`. `safeDivide(10, 0)` has `b == 0`: it prints `Error\\n` to `std::cerr` and then returns `0`; `main` then prints `0`. Note: the sentinel `0` here overlaps with a valid result for `0 / 5`, which illustrates the \"sentinel overlap\" pitfall."
+  }
+]

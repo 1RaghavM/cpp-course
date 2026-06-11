@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace math {\n    int triple(int n) { return n * 3; }\n}\n\nint main() {\n    std::cout << math::triple(7) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "21",
+    "explanation_md": "`math::triple(7)` calls the `triple` function inside the `math` namespace, returning `7 * 3 = 21`. The `math::` prefix is required because the function is scoped to that namespace."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these correctly describes the one-definition rule as it applies to functions across multiple files?",
+    "options": {
+      "a": "A function may be defined in multiple `.cpp` files as long as the definitions are identical",
+      "b": "A function may be declared many times but may be defined only once across the entire program",
+      "c": "A function must be both declared and defined in the same file",
+      "d": "A function body in a header file is fine as long as the header has a guard"
+    },
+    "answer": "b",
+    "explanation_md": "The one-definition rule (ODR) says a function may be defined exactly once in the whole linked program — regardless of how many `.cpp` files exist. It may be declared (forward-declared) in as many places as needed; declarations do not count as definitions. Putting a function body in a header violates the ODR when two `.cpp` files include that header."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint half(int n);\n\nint main() {\n    std::cout << half(10) << \"\\n\";\n    std::cout << half(7) << \"\\n\";\n    return 0;\n}\n\nint half(int n) {\n    return n / 2;\n}\n```",
+    "options": null,
+    "answer": "5\n3",
+    "explanation_md": "`half(10)` returns `10 / 2 = 5`. `half(7)` returns `7 / 2 = 3` — integer division truncates toward zero. Both results are printed on separate lines."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program compiles but prints the wrong output for input `3 4`.\n\n```cpp\n#include <iostream>\n\nint area(int w, int h);\nvoid printResult(int w, int h);\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n    printResult(w, h);\n    return 0;\n}\n\nvoid printResult(int w, int h) {\n    std::cout << \"Area: \" << area(w, h) << \"\\n\";\n}\n\nint area(int w, int h) {\n    return w + h;  // supposed to be w * h\n}\n```",
+    "options": {
+      "a": "The forward declaration of `area` is wrong — it should return `void`",
+      "b": "`area` uses `+` instead of `*`, producing the sum instead of the product",
+      "c": "`printResult` calls `area` before it is defined — linker error",
+      "d": "`main` should call `area` directly instead of going through `printResult`"
+    },
+    "answer": "b",
+    "explanation_md": "The `area` function returns `w + h` (sum) when it should return `w * h` (product). For input `3 4`, the sum is `7` but the expected area is `12`. The forward declaration, call chain, and function signatures are all correct — the only bug is the wrong arithmetic operator."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A header file contains:\n\n```cpp\n#ifndef TOOLS_H\n#define TOOLS_H\nint double_it(int x);\n#endif\n```\n\nTwo `.cpp` files both include this header. What happens during compilation and linking?",
+    "options": {
+      "a": "Compile error: the guard prevents the second file from seeing the declaration",
+      "b": "Linker error: two definitions of `double_it` are seen",
+      "c": "Both files compile successfully; the linker sees one definition if `double_it` is defined in exactly one `.cpp` file",
+      "d": "The guard only works within a single file, so both files get duplicate declarations"
+    },
+    "answer": "c",
+    "explanation_md": "Each `.cpp` file is compiled independently. The guard fires within each individual compilation unit, preventing double-inclusion in that unit. Across two separate `.cpp` files it is perfectly fine for both to see the declaration — declarations are not definitions. As long as the actual function body appears in exactly one `.cpp`, the linker finds exactly one definition and links successfully."
+  }
+]

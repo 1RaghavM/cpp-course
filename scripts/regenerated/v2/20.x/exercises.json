@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Lambda Filter and Sum",
+    "prompt_md": "## Goal\nWrite a program that reads N integers and a threshold T, then uses a capturing lambda to sum only the integers that are strictly greater than T.\n\n## Input\n- Line 1: integer T (threshold)\n- Line 2: integer N (1 <= N <= 10)\n- Lines 3..N+2: one integer per line\n\n## Output\nPrint exactly one line: `FilteredSum: X` where X is the sum of values strictly greater than T.\nIf no values exceed T, print `FilteredSum: 0`.\n\n## Requirements\n1. Define a lambda `shouldInclude` that captures `T` by value and returns `true` if its argument > T.\n2. Loop over the N values; for each value where `shouldInclude(val)` is true, add it to the sum.\n3. Print in the format `FilteredSum: X`.\n4. Edge case: no values exceed T — sum is 0.\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int threshold;\n    std::cin >> threshold;\n\n    // TODO: define lambda 'shouldInclude' that captures threshold by value\n    // and returns true if its int argument > threshold\n\n    int n;\n    std::cin >> n;\n\n    int sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        // TODO: add val to sum if shouldInclude(val) is true\n    }\n\n    std::cout << \"FilteredSum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int threshold;\n    std::cin >> threshold;\n\n    auto shouldInclude = [threshold](int x) { return x > threshold; };\n\n    int n;\n    std::cin >> n;\n\n    int sum = 0;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        if (shouldInclude(val)) sum += val;\n    }\n\n    std::cout << \"FilteredSum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: threshold 4",
+        "is_sample": true,
+        "stdin": "4\n5\n2\n7\n4\n9\n1\n",
+        "expected_stdout": "FilteredSum: 16"
+      },
+      {
+        "label": "Hidden: no values exceed threshold",
+        "is_sample": false,
+        "stdin": "100\n3\n5\n10\n50\n",
+        "expected_stdout": "FilteredSum: 0"
+      },
+      {
+        "label": "Hidden: all exceed threshold",
+        "is_sample": false,
+        "stdin": "0\n4\n1\n2\n3\n4\n",
+        "expected_stdout": "FilteredSum: 10"
+      }
+    ]
+  },
+  {
+    "title": "Complete a Recursive GCD Function",
+    "prompt_md": "## Goal\nComplete the recursive function `gcd` that computes the Greatest Common Divisor of two positive integers.\n\n## Input\n- Line 1: two space-separated positive integers A and B (1 <= A, B <= 1000)\n\n## Output\nPrint exactly one line: `GCD: X` where X is the GCD of A and B.\n\n## Requirements\n1. Implement `int gcd(int a, int b)` recursively using the Euclidean algorithm: `gcd(a, 0) = a` and `gcd(a, b) = gcd(b, a % b)`.\n2. Base case: when `b == 0`, return `a`.\n3. Recursive case: return `gcd(b, a % b)`.\n4. `main` reads A and B, calls `gcd(A, B)`, and prints `GCD: X`.\n5. Edge case: `gcd(N, N) = N`; `gcd(1, N) = 1`.\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function recursively\n// Base case: gcd(a, 0) == a\n// Recursive case: gcd(a, b) == gcd(b, a % b)\nint gcd(int a, int b) {\n    return 0;  // replace this\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"GCD: \" << gcd(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint gcd(int a, int b) {\n    if (b == 0) return a;\n    return gcd(b, a % b);\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"GCD: \" << gcd(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: gcd(48, 18)",
+        "is_sample": true,
+        "stdin": "48 18\n",
+        "expected_stdout": "GCD: 6"
+      },
+      {
+        "label": "Hidden: gcd(1, 100)",
+        "is_sample": false,
+        "stdin": "1 100\n",
+        "expected_stdout": "GCD: 1"
+      },
+      {
+        "label": "Hidden: gcd(100, 100)",
+        "is_sample": false,
+        "stdin": "100 100\n",
+        "expected_stdout": "GCD: 100"
+      }
+    ]
+  }
+]

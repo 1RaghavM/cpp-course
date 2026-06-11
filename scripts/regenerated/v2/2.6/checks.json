@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint triple(int x)\n{\n    return x * 3;\n}\n\nint main()\n{\n    std::cout << triple(4) << \"\\n\";\n    std::cout << triple(triple(2)) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n18",
+    "explanation_md": "`triple(4)` returns `4 * 3 = 12`. `triple(2)` returns `6`, then `triple(6)` returns `18`. Each call is independent and the results are printed on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the best reason to extract a block of code into its own function?",
+    "options": {
+      "a": "The block is more than 3 lines long.",
+      "b": "The block represents a distinct sub-task that has a clear name and might be needed in more than one place.",
+      "c": "The block contains a `std::cin` call.",
+      "d": "The block is at the bottom of `main`."
+    },
+    "answer": "b",
+    "explanation_md": "The primary motivation is clarity and reuse: a named function documents intent and avoids duplicating logic. Length alone is not a trigger — a 10-line block that does one thing may be fine in `main`, while a 2-line formula used everywhere should be its own function."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer writes a function called `multiplyHeightByTwo`. Later the formula changes to add 10 instead of multiply by 2. What is the main problem with the original name?",
+    "options": {
+      "a": "The name is too long.",
+      "b": "The name describes the implementation rather than the purpose, so it becomes misleading after refactoring.",
+      "c": "Function names must start with a capital letter.",
+      "d": "The name contains a number, which is forbidden."
+    },
+    "answer": "b",
+    "explanation_md": "Naming a function after its mechanism rather than its intent causes the name to lie once the implementation changes. A name like `computeScaledHeight` stays accurate regardless of how the scaling is implemented."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid printLine()\n{\n    std::cout << \"---\\n\";\n}\n\nvoid printValue(int v)\n{\n    std::cout << \"Val: \" << v << \"\\n\";\n}\n\nint main()\n{\n    printLine();\n    printValue(5);\n    printLine();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "---\nVal: 5\n---",
+    "explanation_md": "`printLine` prints `---` followed by a newline, and `printValue` prints `Val: ` followed by the integer and a newline. `main` calls them in order: line, value, line."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the sum of two numbers read from the user, but it prints wrong results. What is the bug?\n\n```cpp\n#include <iostream>\n\nint add(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    int x;\n    int y;\n    std::cin >> x;\n    std::cout << \"Sum: \" << add(x, y) << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The function `add` returns `a + b` but should return `a * b`.",
+      "b": "`y` is declared but never read from `std::cin`, so it holds an indeterminate value when passed to `add`.",
+      "c": "You cannot call a function before `return 0;` in `main`.",
+      "d": "The `int` return type of `add` should be `void`."
+    },
+    "answer": "b",
+    "explanation_md": "`y` is never initialised and `std::cin >> y` is missing, so `y` holds whatever garbage value was in memory. The function `add` itself is correct; the bug is in `main` where the second operand is never read."
+  }
+]

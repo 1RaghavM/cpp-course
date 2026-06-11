@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must function template definitions be placed in header files (or otherwise included at every call site)?",
+    "options": {
+      "a": "Headers are compiled before `.cpp` files, so templates must be there first.",
+      "b": "The compiler needs the full template definition to instantiate it at each call site.",
+      "c": "The linker cannot merge template instantiations from different object files.",
+      "d": "Templates are interpreted at runtime and headers are loaded at startup."
+    },
+    "answer": "b",
+    "explanation_md": "A function template is not code — it is a recipe. The compiler must see the complete recipe at the point where it processes a call like `add(3, 4)` in order to stamp out `add<int>`. If the definition is in a separate `.cpp` file the compiler has already finished, the recipe is unavailable and instantiation fails. The linker *does* merge duplicate instantiations (option c is wrong); the problem is upstream at compile time, not link time."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assume the template definition is correctly placed in the header. What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nT doubled(T x) { return x * 2; }\nint main() {\n    std::cout << doubled(7)   << '\\n';\n    std::cout << doubled(2.5) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "14\n5",
+    "explanation_md": "`doubled(7)` instantiates `doubled<int>`, returning `7 * 2 = 14`. `doubled(2.5)` instantiates `doubled<double>`, returning `2.5 * 2 = 5.0`, which `cout` prints as `5` without a decimal point under default formatting."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A project has `template <typename T> T square(T x);` in `utils.h` and `template <typename T> T square(T x) { return x * x; }` in `utils.cpp`. `main.cpp` includes `utils.h` and calls `square(4)`. What is the most likely outcome?",
+    "options": {
+      "a": "Compiles and links fine — the linker finds the definition in `utils.cpp`.",
+      "b": "Compile error in `utils.cpp` because template definitions are not allowed in `.cpp` files.",
+      "c": "Linker error: undefined reference to `square<int>`.",
+      "d": "Runtime error because the template was not instantiated with `int`."
+    },
+    "answer": "c",
+    "explanation_md": "The definition lives in `utils.cpp` and is never instantiated there because nothing in `utils.cpp` calls `square`. When `main.cpp` calls `square(4)`, the compiler sees only the declaration and cannot instantiate it. The resulting object file has an unresolved reference to `square<int>`, which the linker then reports as an error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer wants to avoid repeating the template definition in every file, so they write:\n\n```cpp\n// helper.h\ntemplate <typename T>\nT halve(T x);\n\n// helper.cpp\n#include \"helper.h\"\ntemplate <typename T>\nT halve(T x) { return x / 2; }\n\n// main.cpp\n#include \"helper.h\"\n#include <iostream>\nint main() {\n    std::cout << halve(10) << '\\n';\n}\n```\n\nThe build fails with a linker error. What is the bug?",
+    "options": {
+      "a": "`helper.h` should not contain a declaration — only the definition.",
+      "b": "The definition of `halve` is in `helper.cpp` so `main.cpp` never sees it when compiling, and `halve<int>` is never instantiated.",
+      "c": "`halve` must be marked `inline` to be used across translation units.",
+      "d": "`main.cpp` must directly `#include \"helper.cpp\"` rather than `\"helper.h\"`."
+    },
+    "answer": "b",
+    "explanation_md": "The root cause is that the template definition is hidden in `helper.cpp`. When the compiler processes `main.cpp`, it only sees the declaration and cannot instantiate `halve<int>`. The object file for `helper.cpp` also never instantiates `halve<int>` because nothing calls it there. The linker is then left with an unresolved symbol. The fix is to move the definition into `helper.h`."
+  }
+]

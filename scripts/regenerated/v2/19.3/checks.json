@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Log {\n    int n;\n    Log(int x) : n{x} { std::cout << \"on \" << n << \"\\n\"; }\n    ~Log()             { std::cout << \"off \" << n << \"\\n\"; }\n};\nint main() {\n    Log a{1};\n    {\n        Log b{2};\n        Log c{3};\n    }\n    // a destroyed here\n}\n```",
+    "options": null,
+    "answer": "on 1\non 2\non 3\noff 3\noff 2\noff 1",
+    "explanation_md": "Objects are constructed in declaration order and destroyed in reverse order. `b` and `c` are created inside the inner scope: `b` first, then `c`. When the inner scope closes, `c` is destroyed first (reverse order), then `b`. Finally `a` is destroyed at the end of `main`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class allocates heap memory in its constructor. When is its destructor guaranteed to run for a stack-allocated object of that class?",
+    "options": {
+      "a": "Only when the programmer explicitly calls `delete` on the object",
+      "b": "At the end of the program, regardless of scope",
+      "c": "When the object goes out of scope (the enclosing block ends or the function returns)",
+      "d": "The destructor never runs automatically; the programmer must call it manually"
+    },
+    "answer": "c",
+    "explanation_md": "For a stack-allocated object, the destructor runs automatically when the object's scope ends — when the enclosing block closes or the function returns. This is the key guarantee of RAII. `delete` is only needed for heap-allocated objects created with `new`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This class compiles and runs, but has a resource bug. What is it?\n\n```cpp\nstruct Buffer {\n    int* data;\n    Buffer(int n) { data = new int[n]{}; }\n};\n\nint main() {\n    Buffer b{4};\n    // use b.data ...\n}\n```",
+    "options": {
+      "a": "`data` should be initialised to `nullptr` before `new` is called",
+      "b": "`Buffer` has no destructor, so `data` is never freed — memory leak on every object",
+      "c": "The constructor should use the initialiser list instead of assignment",
+      "d": "`b` should be allocated with `new Buffer{4}` to avoid a stack overflow"
+    },
+    "answer": "b",
+    "explanation_md": "Because `Buffer` has no destructor, the heap array allocated in the constructor is never freed when `b` goes out of scope. Every `Buffer` object leaks its array. The fix is to add `~Buffer() { delete[] data; }`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the danger of explicitly calling a destructor on a stack object, like `myObj.~MyClass();`?",
+    "options": {
+      "a": "It is a compile error — destructors cannot be called explicitly",
+      "b": "The destructor runs once manually and then runs again automatically when the object goes out of scope, causing a double-destroy",
+      "c": "The object's memory is freed immediately, freeing the stack frame prematurely",
+      "d": "Nothing dangerous — calling the destructor manually is equivalent to `delete`"
+    },
+    "answer": "b",
+    "explanation_md": "Calling a destructor manually on a stack object is legal syntax, but then C++ will also call it automatically when the object goes out of scope. If the destructor frees heap memory (e.g. `delete[] data`), the second automatic call is a double-delete — undefined behavior."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct R {\n    R()  { std::cout << \"A\"; }\n    ~R() { std::cout << \"Z\"; }\n};\nint main() {\n    R* p = new R;\n    std::cout << \"B\";\n    delete p;\n    std::cout << \"C\";\n}\n```",
+    "options": null,
+    "answer": "ABZC",
+    "explanation_md": "The constructor prints `A` when `new R` is executed. Then `B` is printed. `delete p` calls the destructor (prints `Z`) and then frees the memory. Finally `C` is printed."
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Team` class stores `std::vector<Player*> members`. The `Player` objects are created by a `League` and passed to `Team::addPlayer`. When a `Team` object is destroyed, what should happen to the `Player` objects?",
+    "options": {
+      "a": "They should be deleted by Team's destructor.",
+      "b": "They should remain alive; Team does not own them.",
+      "c": "They are automatically destroyed because they are pointed to by Team.",
+      "d": "They are destroyed only if the vector goes out of scope."
+    },
+    "answer": "b",
+    "explanation_md": "Aggregation means the aggregating class (Team) does not own the aggregated objects (Players). The League created them and is responsible for their lifetime. Team's destructor should do nothing to the Player pointers."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\nstruct Book { std::string title; };\nstruct Shelf {\n    std::vector<Book*> books;\n    void add(Book* b) { books.push_back(b); }\n    ~Shelf() { std::cout << \"Shelf gone\\n\"; }\n};\nint main() {\n    Book b1{\"C++ Primer\"};\n    Book b2{\"Effective C++\"};\n    {\n        Shelf s;\n        s.add(&b1);\n        s.add(&b2);\n    }\n    std::cout << b1.title << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "Shelf gone\nC++ Primer",
+    "explanation_md": "The Shelf goes out of scope at the inner closing brace, prints \"Shelf gone\", and is destroyed. But the Book objects are local variables in main(), so they survive. b1.title is still accessible after the Shelf is gone, printing \"C++ Primer\"."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print \"Alice\" but crashes or produces undefined behavior. What is the bug?\n\n```cpp\n#include <iostream>\n#include <string>\nstruct Student { std::string name; };\nstruct Group {\n    Student* member;\n};\nGroup makeGroup() {\n    Student s{\"Alice\"};\n    Group g;\n    g.member = &s;\n    return g;  // s destroyed here\n}\nint main() {\n    Group g = makeGroup();\n    std::cout << g.member->name << \"\\n\";\n}\n```",
+    "options": {
+      "a": "Group does not have a destructor to manage member.",
+      "b": "g.member is a dangling pointer because s was a local variable in makeGroup.",
+      "c": "std::string name cannot be stored inside a struct passed by value.",
+      "d": "Student s should be initialized with new to persist after the function returns."
+    },
+    "answer": "b",
+    "explanation_md": "s is a local variable in makeGroup(). When makeGroup() returns, s is destroyed. The Group is returned by value but g.member still points to the memory where s used to live, making it a dangling pointer. Using it is undefined behavior."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly distinguishes aggregation from composition?",
+    "options": {
+      "a": "Composition uses pointers; aggregation uses values.",
+      "b": "In composition the container destroys the sub-object; in aggregation the sub-object has an independent lifetime.",
+      "c": "Aggregation is always implemented with std::vector; composition is not.",
+      "d": "Composition allows shared references; aggregation does not."
+    },
+    "answer": "b",
+    "explanation_md": "The defining difference is lifetime ownership. Composition means the container owns and destroys the sub-object. Aggregation means the sub-object's lifetime is independent of the container. Option a is backwards — composition typically uses values, aggregation uses pointers/references."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT halve(T x)\n{\n    return x / 2;\n}\n\ntemplate <>\ndouble halve<double>(double x)\n{\n    return x / 2.0;\n}\n\nint main()\n{\n    std::cout << halve(10) << '\\n';\n    std::cout << halve(7) << '\\n';\n    std::cout << halve(7.0) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\n3\n3.5",
+    "explanation_md": "`halve(10)` and `halve(7)` use the generic `int` instantiation: integer division `10/2=5` and `7/2=3` (truncated). `halve(7.0)` uses the explicit specialisation for `double`, which computes `7.0/2.0=3.5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must a function template's definition typically appear in a header file (not a `.cpp` file)?",
+    "options": {
+      "a": "The C++ standard forbids template definitions in `.cpp` files.",
+      "b": "The compiler needs the full template definition visible in every translation unit that uses it, so it can generate the required instantiation.",
+      "c": "Putting the definition in a header prevents duplicate symbol errors at link time.",
+      "d": "Template functions are always inlined, so the compiler requires them in headers."
+    },
+    "answer": "b",
+    "explanation_md": "Instantiation happens at compile time in each translation unit that calls the template. If the definition is hidden in a `.cpp` file, other translation units only see the declaration and cannot generate the needed instantiation, leading to linker errors."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT addHalf(T a, T b)\n{\n    return a + b / 2;\n}\n\nint main()\n{\n    std::cout << addHalf(4, 1.5) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`addHalf` cannot use `/` on a template type because not all types support division.",
+      "b": "The call `addHalf(4, 1.5)` fails type deduction because `4` suggests `T=int` and `1.5` suggests `T=double` — conflicting deductions for `T`.",
+      "c": "Template functions cannot return a value of type `T`.",
+      "d": "The `template` keyword must appear on the same line as the function name."
+    },
+    "answer": "b",
+    "explanation_md": "Both arguments must match the single type parameter `T`. `4` deduces `T=int` and `1.5` deduces `T=double`, so the compiler cannot settle on one type and reports an error. Fix it by making both arguments the same type: `addHalf(4.0, 1.5)` or `addHalf<double>(4, 1.5)`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does an explicit template specialisation like `template <> int square<int>(int x) { ... }` do?",
+    "options": {
+      "a": "Forces every call to `square` to use type `int` from now on.",
+      "b": "Provides a hand-written replacement for the compiler-generated `int` version of `square`.",
+      "c": "Deletes the `int` instantiation so `square(3)` becomes a compile error.",
+      "d": "Declares a brand-new template that takes no type parameters."
+    },
+    "answer": "b",
+    "explanation_md": "An explicit specialisation overrides the generic template for that specific type. When the compiler would normally generate `square<int>`, it uses your hand-written version instead. All other types still use the generic blueprint."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT convert(T x)\n{\n    return x;\n}\n\nint main()\n{\n    std::cout << convert<double>(5) << '\\n';\n    std::cout << convert(5) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\n5",
+    "explanation_md": "`convert<double>(5)` explicitly instantiates with `T=double`, converting `5` (int) to `5.0` (double). `std::cout` prints `5.0` as `5` because the default format omits trailing `.0` for exact integers. `convert(5)` deduces `T=int` and returns `5` (int). Both print `5`."
+  }
+]

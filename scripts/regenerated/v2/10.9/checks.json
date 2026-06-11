@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nauto half(int x)\n{\n    return x / 2;\n}\nint main()\n{\n    std::cout << half(7) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`x / 2` where both operands are `int` performs integer division, giving `3` for input `7`. The deduced return type is `int`, so no fractional part is retained. Learners who expect `3.5` forget that `auto` deduces from the expression's actual type."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function uses return-type deduction with `auto`. Two `return` statements exist: one returns `int`, the other returns `double`. What happens?",
+    "options": {
+      "a": "The compiler implicitly promotes the `int` return to `double` and deduces `double`",
+      "b": "The compiler emits a compile error because it cannot deduce a single consistent type",
+      "c": "The function returns `int` from the first `return` it encounters at runtime",
+      "d": "The function deduces `auto` as a variant type that can hold either `int` or `double`"
+    },
+    "answer": "b",
+    "explanation_md": "All `return` statements in a deduced-return-type function must return the same type. Conflicting types cause a compile error. The compiler does not silently promote to a common type the way arithmetic conversions do."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nauto scale(double x)\n{\n    return x * 3;\n}\nint main()\n{\n    std::cout << scale(2.5) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7.5",
+    "explanation_md": "`x` is `double` and `3` is an `int` literal, so arithmetic conversions promote `3` to `double`, and `x * 3` is `double`. The deduced return type is `double`, and `2.5 * 3 = 7.5`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `average` to return the floating-point average of two integers. What is wrong?\n\n```cpp\n#include <iostream>\nauto average(int a, int b)\n{\n    return (a + b) / 2;\n}\nint main()\n{\n    std::cout << average(3, 4) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`auto` cannot be used as a return type when the function takes `int` parameters",
+      "b": "`(a + b) / 2` is integer division; `auto` deduces `int`, so the decimal part is lost",
+      "c": "The parentheses around `a + b` cause a narrowing error",
+      "d": "`auto` deduces the return type as `double` automatically when there is a division"
+    },
+    "answer": "b",
+    "explanation_md": "All operands in `(a + b) / 2` are `int`, so integer division is performed and the decimal part is discarded. `auto` deduces `int`, not `double`. The fix is `return (a + b) / 2.0;` or `return static_cast<double>(a + b) / 2;`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must a function definition that uses `auto` return-type deduction appear before any call site that uses it?",
+    "options": {
+      "a": "Because `auto` functions are slower and must be optimized first",
+      "b": "Because the compiler needs to see the `return` expression in the body to deduce the return type before compiling the call",
+      "c": "Because `auto` return-type deduction is only valid at file scope, not inside `main`",
+      "d": "Because forward declarations of `auto` functions are not allowed in any form"
+    },
+    "answer": "b",
+    "explanation_md": "The compiler deduces the return type from the body's `return` expression. If the definition is not yet visible when the call is compiled, the compiler has no body to read, so it cannot determine the type. Forward declarations with `auto` return type only work after the definition has been seen."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Track Calls with a Static File-Scope Counter",
+    "prompt_md": "## Goal\nWrite a program that uses a `static` (internal-linkage) file-scope counter to track how many times a function is called, then prints the count.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly one line:\n```\nCalled: 5\n```\n\n## Requirements\n1. Declare a `static int callCount` at file scope (giving it internal linkage), initialized to `0`.\n2. Implement a function `void recordCall()` that increments `callCount` by 1.\n3. In `main`, call `recordCall()` exactly 5 times (write out each call individually), then print `Called: <callCount>`.\n4. Do not declare `callCount` inside `main` or inside `recordCall`. Do not use any loop.",
+    "starter_code": "#include <iostream>\n\n// TODO: declare static int callCount at file scope, initialized to 0\n\n// TODO: implement void recordCall() that increments callCount\n\nint main()\n{\n    // TODO: call recordCall() 5 times (each on its own line)\n\n    // TODO: print \"Called: \" followed by callCount\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstatic int callCount { 0 };\n\nvoid recordCall()\n{\n    ++callCount;\n}\n\nint main()\n{\n    recordCall();\n    recordCall();\n    recordCall();\n    recordCall();\n    recordCall();\n    std::cout << \"Called: \" << callCount << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 calls",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Called: 5"
+      },
+      {
+        "label": "Hidden: output format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Called: 5"
+      },
+      {
+        "label": "Hidden: callCount at file scope",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Called: 5"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Apply a Capped Discount Using a File-Scope Constant",
+    "prompt_md": "## Goal\nComplete the function `int applyDiscount(int price)` that subtracts a fixed discount amount from a price, but never returns a value below zero.\n\n## Input\nOne line containing a single integer price (0 <= price <= 10000).\n\n## Output\nPrint exactly one line: the discounted price (never negative).\n\nExample (price = 100, discount = 30):\n```\n70\n```\n\n## Requirements\n1. A `static const int discount` at file scope is already provided and set to `30` (internal linkage).\n2. Complete `int applyDiscount(int price)`: subtract `discount` from `price` and return the result, but return `0` if the result would be negative.\n3. Do not change the value of `discount` or move it.\n4. `main` reads a price, calls `applyDiscount`, and prints the returned value.",
+    "starter_code": "#include <iostream>\n\nstatic const int discount { 30 };\n\n// TODO: implement int applyDiscount(int price)\n// Subtract discount from price, but return 0 if the result is negative.\nint applyDiscount(int price)\n{\n    (void)price;    // remove this line when you implement the function\n    (void)discount; // remove this line when you implement the function\n    return 0;\n}\n\nint main()\n{\n    int price {};\n    std::cin >> price;\n    std::cout << applyDiscount(price) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstatic const int discount { 30 };\n\nint applyDiscount(int price)\n{\n    int result { price - discount };\n    if (result < 0)\n        return 0;\n    return result;\n}\n\nint main()\n{\n    int price {};\n    std::cin >> price;\n    std::cout << applyDiscount(price) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: price = 100",
+        "is_sample": true,
+        "stdin": "100",
+        "expected_stdout": "70"
+      },
+      {
+        "label": "Hidden: price = 25 (below discount)",
+        "is_sample": false,
+        "stdin": "25",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: price = 30 (exactly discount)",
+        "is_sample": false,
+        "stdin": "30",
+        "expected_stdout": "0"
+      }
+    ]
+  }
+]

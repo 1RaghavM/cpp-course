@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <functional>\n#include <iostream>\nint main() {\n    int a = 1, b = 2, c = 3;\n    std::array<std::reference_wrapper<int>, 3> refs { a, b, c };\n    refs[1].get() = 20;\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 20 3",
+    "explanation_md": "`refs[1]` wraps `b`. Calling `.get() = 20` writes 20 into `b` through the reference wrapper. `a` and `c` are unchanged, so the output is `1 20 3`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can't you write `std::array<int&, 3> refs { a, b, c };`?",
+    "options": {
+      "a": "References are not objects — they have no size and cannot be stored in containers",
+      "b": "The `<array>` header does not support reference element types",
+      "c": "`std::array` only supports scalar types like int, double, or char",
+      "d": "You need `std::ref()` on each element even for a raw reference array"
+    },
+    "answer": "a",
+    "explanation_md": "C++ references are not objects — they are aliases that have no independent existence, no address, and no size. Container types like `std::array` require their element type to be an object type. `std::reference_wrapper<T>` solves this by wrapping the reference in a regular object."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <functional>\n#include <iostream>\nint main() {\n    int x = 5, y = 10;\n    std::array<std::reference_wrapper<int>, 2> v {\n        std::ref(x), std::ref(y)\n    };\n    for (int& val : v) {\n        val += 3;\n    }\n    std::cout << x << ' ' << y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "8 13",
+    "explanation_md": "The range-based for loop uses `int& val`, which receives an implicit conversion from each `std::reference_wrapper<int>`. Adding 3 to `val` modifies the underlying variables `x` and `y` directly. After the loop, `x` is 5+3=8 and `y` is 10+3=13."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the correct way to print the integer value stored via a `std::reference_wrapper<int>` called `rw`?",
+    "options": {
+      "a": "`std::cout << rw;` — the wrapper prints its value automatically",
+      "b": "`std::cout << rw.get();` — use `.get()` to retrieve the underlying int",
+      "c": "`std::cout << *rw;` — dereference with `*` like a pointer",
+      "d": "`std::cout << rw.value();` — use `.value()` to retrieve the int"
+    },
+    "answer": "b",
+    "explanation_md": "`.get()` is the standard way to retrieve the underlying reference from a `std::reference_wrapper`. Streaming `rw` directly does not automatically convert to `int` for `std::cout`. There is no dereference operator or `.value()` method on `std::reference_wrapper`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code intends to create an array of references to `a`, `b`, and `c`, double each through the array, and then print the original variables. Find the bug.\n\n```cpp\n#include <array>\n#include <functional>\n#include <iostream>\nint main() {\n    int a = 2, b = 4, c = 6;\n    std::array<std::reference_wrapper<int>, 3> refs { a, b, c };\n    for (int v : refs) {   // note: int v, not int& v\n        v *= 2;\n    }\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`refs` should be declared as `std::array<int&, 3>` for the loop to work",
+      "b": "The range loop uses `int v` — this copies the value; `v *= 2` modifies the copy, not the original variables",
+      "c": "`std::reference_wrapper` cannot be used with range-based for loops",
+      "d": "The initializer `{ a, b, c }` should use `std::ref(a)` etc. or the array is invalid"
+    },
+    "answer": "b",
+    "explanation_md": "When the range loop declares `int v`, the `std::reference_wrapper<int>` implicitly converts to `int`, producing a copy. Multiplying the copy has no effect on `a`, `b`, or `c`. Fix by writing `int& v` so the loop element binds as a reference to the underlying variable, and `v *= 2` modifies the original."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Classify Visual Studio Build Errors",
+    "prompt_md": "## Goal\nWrite a program that reads Visual Studio error codes and prints which configuration step was most likely missed.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Lines 2..N+1: one error code per line. Codes are one of: `C1083`, `LNK2019`, `LNK1104`, `LNK1112`, `RUNTIME`.\n\n## Output\nFor each error code, print the likely missed step:\n- `C1083` → `missing include directory`\n- `LNK2019` → `missing additional dependency`\n- `LNK1104` → `missing library directory`\n- `LNK1112` → `architecture mismatch`\n- `RUNTIME` → `missing dll`\n\n## Requirements\n1. Each result on its own line.\n2. N=1 must work for any valid code.\n3. All five codes must map to the correct message exactly as shown above.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string code;\n        std::cin >> code;\n        // TODO: print the correct diagnostic message for each error code\n        // C1083     -> missing include directory\n        // LNK2019   -> missing additional dependency\n        // LNK1104   -> missing library directory\n        // LNK1112   -> architecture mismatch\n        // RUNTIME   -> missing dll\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string code;\n        std::cin >> code;\n        if (code == \"C1083\") {\n            std::cout << \"missing include directory\\n\";\n        } else if (code == \"LNK2019\") {\n            std::cout << \"missing additional dependency\\n\";\n        } else if (code == \"LNK1104\") {\n            std::cout << \"missing library directory\\n\";\n        } else if (code == \"LNK1112\") {\n            std::cout << \"architecture mismatch\\n\";\n        } else if (code == \"RUNTIME\") {\n            std::cout << \"missing dll\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three errors",
+        "is_sample": true,
+        "stdin": "3\nC1083\nLNK2019\nRUNTIME\n",
+        "expected_stdout": "missing include directory\nmissing additional dependency\nmissing dll"
+      },
+      {
+        "label": "Hidden: linker errors",
+        "is_sample": false,
+        "stdin": "2\nLNK1104\nLNK1112\n",
+        "expected_stdout": "missing library directory\narchitecture mismatch"
+      },
+      {
+        "label": "Hidden: single runtime",
+        "is_sample": false,
+        "stdin": "1\nRUNTIME\n",
+        "expected_stdout": "missing dll"
+      }
+    ]
+  },
+  {
+    "title": "Library Configuration Validator",
+    "prompt_md": "## Goal\nComplete the function `isConfigComplete` that checks whether all three Visual Studio library configuration steps have been performed.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of configurations to check.\n- For each configuration: three lines, each containing `yes` or `no`, representing:\n  - Whether include directory was added\n  - Whether library directory was added\n  - Whether additional dependency was added\n\n## Output\nFor each configuration, print `complete` if all three are `yes`, otherwise print `incomplete`.\n\n## Requirements\n1. All three settings must be `yes` for the result to be `complete`.\n2. Any single `no` makes the configuration `incomplete`.\n3. Print one result per line.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement isConfigComplete\n// Returns true if all three parameters are \"yes\", false otherwise\nbool isConfigComplete(const std::string& includeDir,\n                      const std::string& libDir,\n                      const std::string& dependency) {\n    return false; // replace this stub\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string inc, lib, dep;\n        std::cin >> inc >> lib >> dep;\n        if (isConfigComplete(inc, lib, dep)) {\n            std::cout << \"complete\\n\";\n        } else {\n            std::cout << \"incomplete\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nbool isConfigComplete(const std::string& includeDir,\n                      const std::string& libDir,\n                      const std::string& dependency) {\n    return includeDir == \"yes\" && libDir == \"yes\" && dependency == \"yes\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string inc, lib, dep;\n        std::cin >> inc >> lib >> dep;\n        if (isConfigComplete(inc, lib, dep)) {\n            std::cout << \"complete\\n\";\n        } else {\n            std::cout << \"incomplete\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: complete then incomplete",
+        "is_sample": true,
+        "stdin": "2\nyes\nyes\nyes\nyes\nno\nyes\n",
+        "expected_stdout": "complete\nincomplete"
+      },
+      {
+        "label": "Hidden: all incomplete",
+        "is_sample": false,
+        "stdin": "3\nno\nno\nno\nyes\nyes\nno\nno\nyes\nyes\n",
+        "expected_stdout": "incomplete\nincomplete\nincomplete"
+      },
+      {
+        "label": "Hidden: single complete",
+        "is_sample": false,
+        "stdin": "1\nyes\nyes\nyes\n",
+        "expected_stdout": "complete"
+      }
+    ]
+  }
+]

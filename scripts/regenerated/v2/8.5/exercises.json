@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Day Name From Number",
+    "prompt_md": "## Goal\nRead an integer from stdin and print the corresponding day name, or `Invalid` if the number is out of range.\n\n## Input\nLine 1: one integer N.\n\n## Output\nPrint exactly one line: the day name (`Monday` through `Sunday` for N = 1–7) or `Invalid` for any other value.\n\n## Requirements\n1. Use a `switch` statement — not `if`/`else if`.\n2. 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday, 7 = Sunday.\n3. Any value outside 1–7 prints `Invalid`.\n4. No trailing spaces; output ends with a newline.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: use a switch statement to print the day name\n    // 1 -> Monday, 2 -> Tuesday, ..., 7 -> Sunday\n    // anything else -> Invalid\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    switch (n) {\n        case 1: std::cout << \"Monday\\n\";    break;\n        case 2: std::cout << \"Tuesday\\n\";   break;\n        case 3: std::cout << \"Wednesday\\n\"; break;\n        case 4: std::cout << \"Thursday\\n\";  break;\n        case 5: std::cout << \"Friday\\n\";    break;\n        case 6: std::cout << \"Saturday\\n\";  break;\n        case 7: std::cout << \"Sunday\\n\";    break;\n        default: std::cout << \"Invalid\\n\";  break;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Wednesday",
+        "is_sample": true,
+        "stdin": "3\n",
+        "expected_stdout": "Wednesday\n"
+      },
+      {
+        "label": "Hidden: boundary Sunday",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Sunday\n"
+      },
+      {
+        "label": "Hidden: invalid zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Invalid\n"
+      }
+    ]
+  },
+  {
+    "title": "Season From Month (Fix the Bug)",
+    "prompt_md": "## Goal\nRead a month number (1–12) and print the season: `Winter`, `Spring`, `Summer`, or `Autumn`. The program compiles and runs but gives wrong output — find and fix the one logic bug.\n\n## Input\nLine 1: one integer M (1 ≤ M ≤ 12).\n\n## Output\nPrint exactly one line:\n- M = 12, 1, 2 → `Winter`\n- M = 3, 4, 5 → `Spring`\n- M = 6, 7, 8 → `Summer`\n- M = 9, 10, 11 → `Autumn`\n\n## Requirements\n1. The bug is a logic error; the program already compiles.\n2. Hidden tests check that each season is reported correctly.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int m;\n    std::cin >> m;\n\n    switch (m) {\n        case 12: case 1: case 2:\n            std::cout << \"Winter\\n\";\n        case 3: case 4: case 5:\n            std::cout << \"Spring\\n\";\n            break;\n        case 6: case 7: case 8:\n            std::cout << \"Summer\\n\";\n            break;\n        case 9: case 10: case 11:\n            std::cout << \"Autumn\\n\";\n            break;\n        default:\n            std::cout << \"Invalid\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int m;\n    std::cin >> m;\n\n    switch (m) {\n        case 12: case 1: case 2:\n            std::cout << \"Winter\\n\";\n            break;\n        case 3: case 4: case 5:\n            std::cout << \"Spring\\n\";\n            break;\n        case 6: case 7: case 8:\n            std::cout << \"Summer\\n\";\n            break;\n        case 9: case 10: case 11:\n            std::cout << \"Autumn\\n\";\n            break;\n        default:\n            std::cout << \"Invalid\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: January = Winter",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "Winter\n"
+      },
+      {
+        "label": "Hidden: June = Summer",
+        "is_sample": false,
+        "stdin": "6\n",
+        "expected_stdout": "Summer\n"
+      },
+      {
+        "label": "Hidden: October = Autumn",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "Autumn\n"
+      }
+    ]
+  }
+]

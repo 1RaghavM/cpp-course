@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n\nint main() {\n    try {\n        throw std::runtime_error(\"oops\");\n        std::cout << \"A\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"B\\n\";\n    }\n    std::cout << \"C\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "B\nC",
+    "explanation_md": "When `throw` executes, the rest of the `try` block is abandoned immediately — `\"A\"` is never printed. The `catch` block runs and prints `\"B\"`. After the catch, execution continues normally past the entire try/catch construct, so `\"C\"` is printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when a `throw` expression executes and there is no matching `catch` anywhere in the call stack?",
+    "options": {
+      "a": "The exception is silently ignored and the program continues",
+      "b": "The function returns a default value instead",
+      "c": "`std::terminate` is called, aborting the program",
+      "d": "The compiler rejects the code at compile time"
+    },
+    "answer": "c",
+    "explanation_md": "`std::terminate` is called when an exception propagates all the way up the call stack without being caught. The program aborts, usually with an error message. The compiler cannot know at compile time whether a matching catch exists, so this is a runtime — not compile-time — event."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n\nvoid inner() { throw std::runtime_error(\"fail\"); }\nvoid outer() { inner(); }\n\nint main() {\n    try {\n        outer();\n    } catch (const std::runtime_error& e) {\n        std::cout << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "fail",
+    "explanation_md": "The exception thrown inside `inner()` propagates through `outer()` (which has no try/catch) and is caught by the `catch` block in `main`. `e.what()` returns the message string `\"fail\"`. This demonstrates that exceptions cross function boundaries automatically."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you catch exceptions by `const` reference rather than by value?",
+    "options": {
+      "a": "Value-catching causes the program to terminate immediately",
+      "b": "Value-catching copies the object and may slice derived exception types",
+      "c": "References are required by the C++ standard; value-catching is illegal",
+      "d": "Value-catching prevents `e.what()` from compiling"
+    },
+    "answer": "b",
+    "explanation_md": "Catching by value makes an unnecessary copy of the exception object. More importantly, if the thrown object is a derived class (e.g., `std::logic_error`) and you catch by the base-class value type, object slicing occurs — the derived portion is lost and `e.what()` may return the wrong message. Catching by `const` reference avoids both the copy and slicing."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print `\"Caught: bad input\"` but instead terminates abnormally. What is wrong?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n\nvoid validate(int x) {\n    if (x < 0)\n        throw std::invalid_argument(\"bad input\");\n}\n\nint main() {\n    validate(-1);\n    try {\n        std::cout << \"Caught: bad input\\n\";\n    } catch (const std::invalid_argument& e) {\n        std::cout << \"Caught: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": {
+      "a": "The `throw` statement is missing a semicolon",
+      "b": "`validate(-1)` is called outside the `try` block, so the exception is never caught",
+      "c": "`std::invalid_argument` is not a valid exception type",
+      "d": "The `catch` type must match exactly `std::exception`, not a derived type"
+    },
+    "answer": "b",
+    "explanation_md": "The call to `validate(-1)` happens before the `try` block begins, so when it throws, there is no active `catch` to handle it. `std::terminate` is called. The fix is to move `validate(-1)` inside the `try` block."
+  }
+]

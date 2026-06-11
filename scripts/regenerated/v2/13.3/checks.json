@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Level\n{\n    low,\n    medium,\n    high,\n};\n\nint main()\n{\n    int n { 2 };\n    Level l { static_cast<Level>(n) };\n    std::cout << l + 1 << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`static_cast<Level>(2)` produces the enumerator `high` (since `high` has underlying value 2). When `l + 1` is evaluated, the unscoped enumerator implicitly converts to `int`, giving `2 + 1 = 3`. The result is an `int`, so `std::cout` prints `3` with no surprise."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this program?\n\n```cpp\n#include <iostream>\n\nenum Color\n{\n    red,\n    green,\n    blue,\n};\n\nint main()\n{\n    int code {};\n    std::cin >> code;\n    Color c { code };\n    std::cout << c << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`std::cin >> code;` is not allowed; you must read into a `Color` directly.",
+      "b": "The line `Color c { code };` fails to compile because brace initialization does not allow an implicit int-to-enum conversion.",
+      "c": "Printing an enum with `std::cout` is illegal and triggers a compile error.",
+      "d": "The enum should be declared inside `main` for `c` to be usable."
+    },
+    "answer": "b",
+    "explanation_md": "Going from an integer to an enumeration is not an implicit conversion; you must request it with `static_cast<Color>(code)`. Brace initialization is the strictest form and rejects this. The other directions are fine: reading into an `int` works (option a is wrong), and printing an unscoped enum implicitly converts it back to `int` (option c is wrong)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Pet\n{\n    cat,\n    dog,\n    bird,\n};\n\nint main()\n{\n    Pet p { static_cast<Pet>(99) };\n    switch (p)\n    {\n        case cat:  std::cout << \"cat\\n\";  break;\n        case dog:  std::cout << \"dog\\n\";  break;\n        case bird: std::cout << \"bird\\n\"; break;\n        default:   std::cout << \"unknown\\n\"; break;\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "unknown",
+    "explanation_md": "`static_cast<Pet>(99)` is a legal conversion: the language does not check that `99` corresponds to any named enumerator. The variable `p` ends up holding `99`. No `case` label matches that value, so the `default` branch fires and the program prints `unknown`. This is exactly the silent bug the lesson warns about — without the `default`, the program would have printed nothing."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the language require `static_cast` for int-to-enum but allow enum-to-int without one?",
+    "options": {
+      "a": "Because the enum-to-int direction is more efficient, the compiler is allowed to skip the check.",
+      "b": "Because every enumerator has a valid integer representation, but not every integer corresponds to a named enumerator — the int-to-enum direction risks producing a value no one wrote.",
+      "c": "Because `static_cast` cannot convert an enum value to an integer.",
+      "d": "Because the C++ standard chose this asymmetry to match the behavior of `std::cin` and `std::cout`."
+    },
+    "answer": "b",
+    "explanation_md": "Going from an enumerator to its underlying integer is always safe — the value exists by construction. Going the other way is dangerous: any `int` is potentially being treated as an enumerator, including values outside the listed names. Requiring an explicit cast forces you, the author, to acknowledge the risk."
+  }
+]

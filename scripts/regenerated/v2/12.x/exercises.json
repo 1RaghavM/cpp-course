@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Chapter 12 Wrap: Reference-Based Min and Max",
+    "prompt_md": "## Goal\nWrite functions `findMin` and `findMax` that each return a reference to the smallest/largest element in an array, then modify one of them through the returned reference.\n\n## Input\n- Line 1: integer `n` (2 ≤ n ≤ 10) — number of elements.\n- Line 2: `n` integers separated by spaces.\n\n## Output\n- Line 1: the minimum value after it has been incremented by 1 (via the reference).\n- Line 2: the maximum value (unchanged).\n- Line 3: all `n` array elements separated by spaces, reflecting the modification.\n\n## Requirements\n1. Implement `int& findMin(int* arr, int n)` returning a reference to the minimum element.\n2. Implement `int& findMax(int* arr, int n)` returning a reference to the maximum element.\n3. In `main`, call `findMin` and increment the returned reference by 1.\n4. Print the modified minimum, the maximum, then all elements separated by spaces.\n5. Hidden tests include arrays where the minimum is not the first element and arrays with duplicates.",
+    "starter_code": "#include <iostream>\n\n// TODO: return a reference to the minimum element of arr[0..n-1]\nint& findMin(int* arr, int n) {\n    int* minPtr = &arr[0];\n    for (int i = 1; i < n; ++i)\n        if (arr[i] < *minPtr) minPtr = &arr[i];\n    return *minPtr;\n}\n\n// TODO: return a reference to the maximum element of arr[0..n-1]\nint& findMax(int* arr, int n) {\n    // TODO\n    return arr[0];\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int arr[10];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int& minRef = findMin(arr, n);\n    minRef += 1;  // modify through reference\n\n    int& maxRef = findMax(arr, n);\n\n    std::cout << minRef << '\\n';\n    std::cout << maxRef << '\\n';\n    for (int i = 0; i < n; ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint& findMin(int* arr, int n) {\n    int* minPtr = &arr[0];\n    for (int i = 1; i < n; ++i)\n        if (arr[i] < *minPtr) minPtr = &arr[i];\n    return *minPtr;\n}\n\nint& findMax(int* arr, int n) {\n    int* maxPtr = &arr[0];\n    for (int i = 1; i < n; ++i)\n        if (arr[i] > *maxPtr) maxPtr = &arr[i];\n    return *maxPtr;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int arr[10];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int& minRef = findMin(arr, n);\n    minRef += 1;\n\n    int& maxRef = findMax(arr, n);\n\n    std::cout << minRef << '\\n';\n    std::cout << maxRef << '\\n';\n    for (int i = 0; i < n; ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic five elements",
+        "is_sample": true,
+        "stdin": "5\n3 1 4 1 5\n",
+        "expected_stdout": "2\n5\n3 2 4 1 5"
+      },
+      {
+        "label": "Hidden: min at end",
+        "is_sample": false,
+        "stdin": "4\n7 5 9 2\n",
+        "expected_stdout": "3\n9\n7 5 9 3"
+      },
+      {
+        "label": "Hidden: two elements",
+        "is_sample": false,
+        "stdin": "2\n8 3\n",
+        "expected_stdout": "4\n8\n8 4"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Optional Lookup with value_or Fallback",
+    "prompt_md": "## Goal\nComplete the function `lookup` that searches a parallel key-value array for a given key and returns the associated value as a `std::optional<int>`.\n\n## Input\n- Line 1: integer `m` (1 ≤ m ≤ 10) — number of key-value pairs.\n- Lines 2..m+1: two integers per line — `key` and `value`.\n- Line m+2: integer `target` — the key to search for.\n\n## Output\n- Print the found value, or `0` if the key is absent (use `.value_or(0)`).\n\n## Requirements\n1. Implement `std::optional<int> lookup(const int* keys, const int* values, int size, int target)` — return the value associated with the first matching key, or `std::nullopt` if not found.\n2. In `main`, print the result of `lookup(...).value_or(0)` followed by a newline.\n3. Hidden tests include targets not present in the array and targets that appear more than once (return the first match).",
+    "starter_code": "#include <iostream>\n#include <optional>\n\n// TODO: implement lookup\n// Search keys[0..size-1] for target. If found, return the corresponding values[i].\n// If not found, return std::nullopt.\nstd::optional<int> lookup(const int* keys, const int* values, int size, int target) {\n    // TODO\n    return std::nullopt;\n}\n\nint main() {\n    int m;\n    std::cin >> m;\n    int keys[10], values[10];\n    for (int i = 0; i < m; ++i)\n        std::cin >> keys[i] >> values[i];\n    int target;\n    std::cin >> target;\n\n    std::cout << lookup(keys, values, m, target).value_or(0) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <optional>\n\nstd::optional<int> lookup(const int* keys, const int* values, int size, int target) {\n    for (int i = 0; i < size; ++i)\n        if (keys[i] == target) return values[i];\n    return std::nullopt;\n}\n\nint main() {\n    int m;\n    std::cin >> m;\n    int keys[10], values[10];\n    for (int i = 0; i < m; ++i)\n        std::cin >> keys[i] >> values[i];\n    int target;\n    std::cin >> target;\n\n    std::cout << lookup(keys, values, m, target).value_or(0) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: key found",
+        "is_sample": true,
+        "stdin": "3\n1 10\n2 20\n3 30\n2\n",
+        "expected_stdout": "20"
+      },
+      {
+        "label": "Hidden: key not found",
+        "is_sample": false,
+        "stdin": "3\n1 10\n2 20\n3 30\n5\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: duplicate key returns first",
+        "is_sample": false,
+        "stdin": "4\n1 10\n2 20\n2 99\n3 30\n2\n",
+        "expected_stdout": "20"
+      }
+    ]
+  }
+]

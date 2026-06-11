@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Lvalue and Rvalue Calls",
+    "prompt_md": "## Goal\nWrite a program that reads N integers from stdin, calls an overloaded function `record` for each one, and counts how many calls went to the lvalue overload versus the rvalue overload. Then print the counts.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line. If the integer is positive, pass it as a named variable (lvalue). If it is zero or negative, pass it as a temporary (rvalue) by writing `record(val + 0)` — adding 0 makes the expression a temporary.\n\n## Output\nPrint exactly two lines:\n```\nLvalue calls: X\nRvalue calls: Y\n```\nwhere X + Y == N.\n\n## Requirements\n1. Declare two overloads: `void record(int& x)` and `void record(int&& x)`. Each increments the appropriate counter.\n2. For positive integers, call `record(val)` with the named variable.\n3. For zero or negative integers, call `record(val + 0)` so the overload resolution picks the rvalue overload.\n4. N = 1 with a positive integer → `Lvalue calls: 1`, `Rvalue calls: 0`.\n",
+    "starter_code": "#include <iostream>\n\nint lvalue_count = 0;\nint rvalue_count = 0;\n\n// TODO: declare void record(int& x) that increments lvalue_count\nvoid record(int& x) {\n    // TODO: increment lvalue_count\n}\n\n// TODO: declare void record(int&& x) that increments rvalue_count\nvoid record(int&& x) {\n    // TODO: increment rvalue_count\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        if (val > 0) {\n            record(val);       // lvalue call\n        } else {\n            record(val + 0);   // rvalue call\n        }\n    }\n    std::cout << \"Lvalue calls: \" << lvalue_count << \"\\n\";\n    std::cout << \"Rvalue calls: \" << rvalue_count << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint lvalue_count = 0;\nint rvalue_count = 0;\n\nvoid record(int& x) {\n    (void)x;\n    ++lvalue_count;\n}\n\nvoid record(int&& x) {\n    (void)x;\n    ++rvalue_count;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        if (val > 0) {\n            record(val);\n        } else {\n            record(val + 0);\n        }\n    }\n    std::cout << \"Lvalue calls: \" << lvalue_count << \"\\n\";\n    std::cout << \"Rvalue calls: \" << rvalue_count << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 mixed values",
+        "is_sample": true,
+        "stdin": "3\n5\n-1\n2\n",
+        "expected_stdout": "Lvalue calls: 2\nRvalue calls: 1"
+      },
+      {
+        "label": "Hidden: all positive",
+        "is_sample": false,
+        "stdin": "4\n1\n2\n3\n4\n",
+        "expected_stdout": "Lvalue calls: 4\nRvalue calls: 0"
+      },
+      {
+        "label": "Hidden: all non-positive",
+        "is_sample": false,
+        "stdin": "3\n0\n-5\n-2\n",
+        "expected_stdout": "Lvalue calls: 0\nRvalue calls: 3"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Rvalue-Aware Accumulator",
+    "prompt_md": "## Goal\nComplete the function `accumulate` that takes an rvalue reference to an integer and adds it to a running total stored in a global variable. The function must use the rvalue reference overload.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line.\n\n## Output\nPrint exactly one line: `Total: T` where T is the sum of all N integers.\n\n## Requirements\n1. Implement `void accumulate(int&& val)` that adds `val` to a global `int total = 0`.\n2. In `main`, read each integer into a local variable `x`, then call `accumulate(x + 0)` to pass it as an rvalue.\n3. After all inputs, print `Total: ` followed by the total.\n4. Edge case N = 1: prints `Total: <that integer>`.\n",
+    "starter_code": "#include <iostream>\n\nint total = 0;\n\n// TODO: implement void accumulate(int&& val)\n// It should add val to the global total.\nvoid accumulate(int&& val) {\n    // TODO\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        std::cin >> x;\n        accumulate(x + 0); // pass as rvalue\n    }\n    std::cout << \"Total: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint total = 0;\n\nvoid accumulate(int&& val) {\n    total += val;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        std::cin >> x;\n        accumulate(x + 0);\n    }\n    std::cout << \"Total: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: sum of 3",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "Total: 60"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n7\n",
+        "expected_stdout": "Total: 7"
+      },
+      {
+        "label": "Hidden: negatives",
+        "is_sample": false,
+        "stdin": "4\n-3\n5\n-2\n1\n",
+        "expected_stdout": "Total: 1"
+      }
+    ]
+  }
+]

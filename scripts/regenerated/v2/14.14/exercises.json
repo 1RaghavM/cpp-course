@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Copy Constructor Invocations",
+    "prompt_md": "## Goal\nComplete the function `countCopies` that creates a copy of a given `Tracker` object and returns the total number of times the copy constructor has been called across all `Tracker` instances.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10) — how many times to call `countCopies` in main\n\n## Output\n- For each call i (1-indexed), print: `Call i: <N>` where N is the cumulative copy count returned by `countCopies`.\n- One line per call, no trailing blank line.\n\n## Requirements\n1. `Tracker` has a `static int s_copies` counter initialized to 0.\n2. The copy constructor increments `s_copies` by 1.\n3. `countCopies(const Tracker& t)` creates a local copy of `t` (by value) and returns `s_copies`.\n4. N = 1 should print `Call 1: 1`, N = 2 should print `Call 1: 1` then `Call 2: 2`, etc.\n5. Hidden tests check N = 3 and N = 5.\n\n## Notes\n- Include `<iostream>` only. No other headers needed.",
+    "starter_code": "#include <iostream>\n\nclass Tracker {\npublic:\n    static int s_copies;\n\n    Tracker() = default;\n\n    // TODO: implement the copy constructor so it increments s_copies\n    Tracker(const Tracker& src);\n\n    static int getCopies() { return s_copies; }\n};\n\nint Tracker::s_copies = 0;\n\n// TODO: implement countCopies — take t by const reference, make one copy of it,\n// then return Tracker::s_copies\nint countCopies(const Tracker& t) {\n    (void)t;  // replace this stub with your implementation\n    return 0;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    Tracker base;\n    for (int i = 1; i <= n; ++i) {\n        int c = countCopies(base);\n        std::cout << \"Call \" << i << \": \" << c << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Tracker {\npublic:\n    static int s_copies;\n\n    Tracker() = default;\n\n    Tracker(const Tracker& /*src*/) {\n        ++s_copies;\n    }\n\n    static int getCopies() { return s_copies; }\n};\n\nint Tracker::s_copies = 0;\n\nint countCopies(const Tracker& t) {\n    Tracker copy{ t };          // invokes the copy constructor\n    return Tracker::s_copies;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    Tracker base;\n    for (int i = 1; i <= n; ++i) {\n        int c = countCopies(base);\n        std::cout << \"Call \" << i << \": \" << c << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: N=1",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "Call 1: 1\n"
+      },
+      {
+        "label": "Hidden: N=3",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "Call 1: 1\nCall 2: 2\nCall 3: 3\n"
+      },
+      {
+        "label": "Hidden: N=5",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "Call 1: 1\nCall 2: 2\nCall 3: 3\nCall 4: 4\nCall 5: 5\n"
+      }
+    ]
+  },
+  {
+    "title": "Copy Constructor or Reference?",
+    "prompt_md": "## Goal\nThe program below is supposed to print the description of a `Gadget` object by passing it to a `describe` function. There is exactly one logic bug: the function does not use the copy constructor when it should, or vice versa — the wrong parameter-passing strategy is used relative to what `main` expects.\n\n## Input\n- No stdin. The program is self-contained.\n\n## Output\n```\nGadget 42\nGadget 42\n```\nTwo lines: both print the same description, but the first call should be by value (invoking the copy constructor) and the second by const reference (no copy constructor).\n\n## Requirements\n1. `Gadget` has a single `int m_id` member.\n2. `describeByValue(Gadget g)` prints `Gadget <id>` and must receive a copy (pass by value).\n3. `describeByRef(const Gadget& g)` prints `Gadget <id>` and must NOT create a copy.\n4. The bug: the buggy version has both functions taking `const Gadget&` (so neither triggers a copy). Fix `describeByValue` to take its parameter by value.\n5. Hidden test checks that after the fix both lines still print `Gadget 42`.\n\n## Notes\n- No stdin. Compile and run produces the exact two-line output.",
+    "starter_code": "#include <iostream>\n\nclass Gadget {\n    int m_id;\npublic:\n    Gadget(int id) : m_id{ id } {}\n\n    Gadget(const Gadget& src) : m_id{ src.m_id } {}\n\n    int id() const { return m_id; }\n};\n\n// BUG: this should take Gadget by VALUE so the copy constructor runs,\n// but it currently takes a const reference — no copy is made.\nvoid describeByValue(const Gadget& g) {\n    std::cout << \"Gadget \" << g.id() << \"\\n\";\n}\n\nvoid describeByRef(const Gadget& g) {\n    std::cout << \"Gadget \" << g.id() << \"\\n\";\n}\n\nint main() {\n    Gadget g{ 42 };\n    describeByValue(g);\n    describeByRef(g);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Gadget {\n    int m_id;\npublic:\n    Gadget(int id) : m_id{ id } {}\n\n    Gadget(const Gadget& src) : m_id{ src.m_id } {}\n\n    int id() const { return m_id; }\n};\n\nvoid describeByValue(Gadget g) {\n    std::cout << \"Gadget \" << g.id() << \"\\n\";\n}\n\nvoid describeByRef(const Gadget& g) {\n    std::cout << \"Gadget \" << g.id() << \"\\n\";\n}\n\nint main() {\n    Gadget g{ 42 };\n    describeByValue(g);\n    describeByRef(g);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Gadget 42\nGadget 42\n"
+      },
+      {
+        "label": "Hidden: verify both lines present",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Gadget 42\nGadget 42\n"
+      },
+      {
+        "label": "Hidden: no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Gadget 42\nGadget 42\n"
+      }
+    ]
+  }
+]

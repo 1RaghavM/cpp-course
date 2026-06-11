@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes the key difference between stack and heap memory?",
+    "options": {
+      "a": "Stack memory is slower but larger; heap memory is faster but limited",
+      "b": "Stack memory is automatically managed and freed when a function returns; heap memory is manually managed and persists until explicitly freed",
+      "c": "Stack memory can hold any size; heap memory is limited to a fixed block",
+      "d": "Stack memory is shared between all threads; heap memory is private to each thread"
+    },
+    "answer": "b",
+    "explanation_md": "The defining difference is lifetime and management. Stack frames are pushed when a function is called and popped (freeing all locals) when it returns — fully automatic. Heap memory persists until `delete`/`delete[]` is called explicitly. Options (a) and (c) reverse the size characteristics. Option (d) is unrelated to this lesson."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int multiplier = 4;\n    auto scale = [multiplier](int x) { return x * multiplier; };\n    multiplier = 100;\n    std::cout << scale(3) << \"\\n\";\n    std::cout << scale(5) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "12\n20",
+    "explanation_md": "`scale` captures `multiplier` by value when it equals 4. Changing `multiplier` to 100 afterward does not affect the frozen copy. So `scale(3)` returns 3*4=12 and `scale(5)` returns 5*4=20."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program is run as `./calc multiply 6 7`. What is `argc`?",
+    "options": {
+      "a": "3",
+      "b": "4",
+      "c": "1",
+      "d": "2"
+    },
+    "answer": "b",
+    "explanation_md": "`argc` includes `argv[0]` (the program name) plus all user arguments. Here: `./calc`, `multiply`, `6`, `7` — four tokens, so `argc == 4`. A common mistake is forgetting to count `argv[0]`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these is the safest replacement for a C-style ellipsis function that sums an arbitrary number of `int` values?",
+    "options": {
+      "a": "A function taking `int count, ...` with `va_arg(args, int)`",
+      "b": "A function taking `std::initializer_list<int> vals`",
+      "c": "A function taking `int* arr` and `int n`",
+      "d": "Multiple overloads: `sum(int)`, `sum(int, int)`, `sum(int, int, int)`, etc."
+    },
+    "answer": "b",
+    "explanation_md": "`std::initializer_list<int>` preserves full type safety — passing a non-int value is a compile error — and supports any number of arguments. Option (a) is the ellipsis approach being replaced. Option (c) works but requires callers to manage an array explicitly. Option (d) scales poorly and still can't handle arbitrary counts."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint fib(int n) {\n    if (n <= 1) return n;\n    return fib(n - 1) + fib(n - 2);\n}\nint main() {\n    std::cout << fib(0) << \"\\n\";\n    std::cout << fib(5) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "0\n5",
+    "explanation_md": "`fib(0)` hits the base case and returns 0. `fib(5)` computes the 5th Fibonacci number: fib(5) = fib(4)+fib(3) = 3+2 = 5. The Fibonacci sequence is 0,1,1,2,3,5,8,... so the 5th value (0-indexed) is 5."
+  }
+]

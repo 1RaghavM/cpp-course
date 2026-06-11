@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it usually better to implement `operator+` as a friend function rather than a member function for a class `Cents`?",
+    "options": {
+      "a": "Friend functions are faster than member functions.",
+      "b": "As a member, `operator+` only allows implicit conversions on the right operand; as a friend, implicit conversions apply to both operands.",
+      "c": "Member functions cannot return by value.",
+      "d": "Friend functions automatically handle self-addition."
+    },
+    "answer": "b",
+    "explanation_md": "A member `operator+` always takes `*this` as the left operand — no conversion is applied there. A friend (non-member) function receives both operands as regular arguments, so implicit conversions can fire on either side. This matters when you want `5 + Cents{3}` to compile via an implicit `int → Cents` conversion."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct V {\n    int x;\n    V(int x) : x{x} {}\n    V& operator+=(const V& rhs) { x += rhs.x; return *this; }\n};\nstd::ostream& operator<<(std::ostream& o, const V& v) {\n    o << v.x; return o;\n}\nint main() {\n    V a{3};\n    V b{4};\n    a += b;\n    std::cout << a << '\\n';\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`a += b` calls `operator+=`, which adds `b.x` (4) to `a.x` (3), setting `a.x = 7`. Then `operator<<` prints `7`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `operator=` is correct?",
+    "options": {
+      "a": "It can be implemented as a non-member friend function.",
+      "b": "It must be implemented as a member function and should return `ClassName&`.",
+      "c": "It does not need a self-assignment guard because C++ handles it automatically.",
+      "d": "It should return `void` to prevent accidental chaining."
+    },
+    "answer": "b",
+    "explanation_md": "`operator=` is one of the few operators that *must* be a member (the standard requires it). It should return `ClassName&` and `return *this` to support chained assignments. The self-assignment guard is the programmer's responsibility, not the compiler's."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class `Timer` has only `int` and `double` members (no raw pointers). Which statement about copy semantics is correct?",
+    "options": {
+      "a": "You must write a custom copy constructor and copy assignment to avoid shallow copy.",
+      "b": "The compiler-generated copy constructor and copy assignment are safe and correct — no custom versions needed.",
+      "c": "Shallow copy is only a problem for classes with `double` members.",
+      "d": "The compiler refuses to generate copy operations for classes with both `int` and `double` members."
+    },
+    "answer": "b",
+    "explanation_md": "Shallow copy is dangerous only for members that are *pointers to owned heap memory*. Plain value types (`int`, `double`) copy correctly with memberwise copy. The compiler-generated operations are perfectly safe for `Timer`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this postfix increment operator?\n\n```cpp\nstruct Tick {\n    int m_val;\n    Tick(int v) : m_val{v} {}\n    Tick& operator++(int) {  // postfix\n        Tick old{m_val};\n        ++m_val;\n        return old;   // returning reference to local variable\n    }\n};\n```",
+    "options": {
+      "a": "The dummy `int` parameter should be a `bool`.",
+      "b": "Postfix `operator++` returns `Tick&`, but `old` is a local variable — returning a reference to it is undefined behavior. It should return `Tick` by value.",
+      "c": "Prefix increment should be used here, not postfix.",
+      "d": "The member should be incremented before saving `old`."
+    },
+    "answer": "b",
+    "explanation_md": "The postfix operator must save the old value, increment, then return the old value. But `old` is a local variable destroyed when the function returns. Returning a reference to it is undefined behavior. The fix is to change the return type to `Tick` (not `Tick&`) so `old` is returned by value."
+  }
+]

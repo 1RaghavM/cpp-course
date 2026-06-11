@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace a { int val { 1 }; }\nnamespace b { int val { 2 }; }\n\nint main()\n{\n    std::cout << a::val << ' ' << b::val << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 2",
+    "explanation_md": "`a::val` resolves to the `val` inside namespace `a` (value 1) and `b::val` resolves to the `val` inside namespace `b` (value 2). The two names do not collide because they live in different namespaces. Output is `1 2`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `::` mean when used as a prefix with nothing on its left side (e.g., `::pi`)?\n\n- a. It refers to the global namespace scope.\n- b. It refers to the most recently opened namespace.\n- c. It is shorthand for `std::`.\n- d. It resolves a namespace named after the current file.",
+    "options": {
+      "a": "It refers to the global namespace scope.",
+      "b": "It refers to the most recently opened namespace.",
+      "c": "It is shorthand for `std::`.",
+      "d": "It resolves a namespace named after the current file."
+    },
+    "answer": "a",
+    "explanation_md": "When `::` has no left-hand operand, it is the global scope resolution operator — it looks for the name at the top level of the program, outside any namespace. It has nothing to do with the most recently opened namespace or with `std::`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `8` but fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nnamespace util\n{\n    int double_val(int n) { return n * 2; }\n}\n\nint main()\n{\n    std::cout << double_val(4) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`double_val` is a reserved keyword in C++ and cannot be used as a function name.",
+      "b": "The function is inside namespace `util` but called without the `util::` qualifier.",
+      "c": "`n * 2` should be written as `n + n` to avoid a type error.",
+      "d": "`std::cout` cannot print the result of a function call directly."
+    },
+    "answer": "b",
+    "explanation_md": "Names defined inside a namespace are not visible in the global scope. `double_val(4)` must be written as `util::double_val(4)` to resolve the name correctly. Without the qualifier the compiler reports that `double_val` was not declared."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace greet { void say() { std::cout << \"Hi\"; } }\nnamespace greet { void say2() { std::cout << \" there\"; } }\n\nint main()\n{\n    greet::say();\n    greet::say2();\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Hi there",
+    "explanation_md": "Both `say` and `say2` are defined inside namespace `greet` (across two separate blocks, which is valid — the compiler merges them). Calling both in sequence prints `Hi there` followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Inside a namespace block, a function refers to another function in the SAME namespace. Does it need the `namespace::` qualifier?\n\n- a. Yes, always — you must always use the full qualified name.\n- b. No — names in the same namespace are visible to each other without a qualifier.\n- c. Only when the second function is defined later in the file.\n- d. Only if the second function has parameters.",
+    "options": {
+      "a": "Yes, always — you must always use the full qualified name.",
+      "b": "No — names in the same namespace are visible to each other without a qualifier.",
+      "c": "Only when the second function is defined later in the file.",
+      "d": "Only if the second function has parameters."
+    },
+    "answer": "b",
+    "explanation_md": "Inside a namespace, all members of that same namespace are in scope without qualification. You only need `namespace::name` when accessing the member from outside the namespace. The qualifier is not required (or even standard style) for intra-namespace calls."
+  }
+]

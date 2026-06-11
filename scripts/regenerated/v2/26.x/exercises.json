@@ -1,0 +1,56 @@
+[
+  {
+    "title": "FixedBuffer: Template Class with Non-Type Parameter",
+    "prompt_md": "## Goal\nComplete the `FixedBuffer<T, N>` template class so it stores up to N elements of type T in a fixed internal array and supports basic operations.\n\n## Input\n- Line 1: integer Q (1 ≤ Q ≤ 6), number of operations.\n- Lines 2..Q+1: one operation per line:\n  - `push <value>` — push an integer value (guaranteed not to exceed capacity N=5).\n  - `size` — print the current number of elements.\n  - `get <i>` — print element at index i (0-based).\n  - `cap` — print the template capacity N.\n\n## Output\nFor `size`, `get`, and `cap` operations, print the result on its own line.\n\n## Requirements\n1. Complete `FixedBuffer<T, N>` with members `T data_[N]` and `int count_`.\n2. Complete `void push(T v)` to store v at `data_[count_]` and increment `count_`.\n3. Complete `T get(int i) const` to return `data_[i]`.\n4. `int size() const` returns `count_`; `int cap() const` returns `N`. Both are already implemented.\n5. `main` instantiates `FixedBuffer<int, 5>`; do not change `main`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\ntemplate <typename T, int N>\nclass FixedBuffer {\n    T data_[N]{};\n    int count_{0};\npublic:\n    void push(T v) {\n        // TODO: store v at data_[count_] and increment count_\n    }\n    T get(int i) const {\n        // TODO: return data_[i]\n        return T{};\n    }\n    int size() const { return count_; }\n    int cap()  const { return N; }\n};\n\nint main() {\n    FixedBuffer<int, 5> buf;\n    int q{};\n    std::cin >> q;\n    for (int i = 0; i < q; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"push\") {\n            int v{};\n            std::cin >> v;\n            buf.push(v);\n        } else if (op == \"size\") {\n            std::cout << buf.size() << \"\\n\";\n        } else if (op == \"get\") {\n            int idx{};\n            std::cin >> idx;\n            std::cout << buf.get(idx) << \"\\n\";\n        } else if (op == \"cap\") {\n            std::cout << buf.cap() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\ntemplate <typename T, int N>\nclass FixedBuffer {\n    T data_[N]{};\n    int count_{0};\npublic:\n    void push(T v) {\n        data_[count_++] = v;\n    }\n    T get(int i) const {\n        return data_[i];\n    }\n    int size() const { return count_; }\n    int cap()  const { return N; }\n};\n\nint main() {\n    FixedBuffer<int, 5> buf;\n    int q{};\n    std::cin >> q;\n    for (int i = 0; i < q; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"push\") {\n            int v{};\n            std::cin >> v;\n            buf.push(v);\n        } else if (op == \"size\") {\n            std::cout << buf.size() << \"\\n\";\n        } else if (op == \"get\") {\n            int idx{};\n            std::cin >> idx;\n            std::cout << buf.get(idx) << \"\\n\";\n        } else if (op == \"cap\") {\n            std::cout << buf.cap() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: push, size, get, cap",
+        "is_sample": true,
+        "stdin": "5\npush 10\npush 20\npush 30\nsize\nget 1\n",
+        "expected_stdout": "3\n20"
+      },
+      {
+        "label": "Hidden: cap query and get last",
+        "is_sample": false,
+        "stdin": "4\npush 7\npush 8\ncap\nget 0\n",
+        "expected_stdout": "5\n7"
+      },
+      {
+        "label": "Hidden: size after multiple pushes",
+        "is_sample": false,
+        "stdin": "4\npush 1\npush 2\npush 3\nsize\n",
+        "expected_stdout": "3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the bug: wrong partial specialization stores pointer instead of value",
+    "prompt_md": "## Goal\nThe program defines `Snapshot<T>` with a partial pointer specialization. The specialization compiles and runs, but returns the wrong value after the source variable changes. Find and fix the single logic bug.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\n42\n42\n```\n\n## Requirements\n1. The bug is in the `Snapshot<T*>` specialization: it stores the raw pointer instead of copying the value, so the snapshot changes when the original variable changes.\n2. Fix only the member variable declaration and the constructor in `Snapshot<T*>`; do not change `main` or the primary template.\n3. Both hidden tests verify the same output.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Snapshot {\n    T data_;\npublic:\n    explicit Snapshot(T v) : data_{v} {}\n    T value() const { return data_; }\n};\n\ntemplate <typename T>\nclass Snapshot<T*> {\n    T* ptr_;              // BUG: stores the pointer; should store a copy of *ptr\npublic:\n    explicit Snapshot(T* p) : ptr_{p} {}\n    T value() const { return *ptr_; }\n};\n\nint main() {\n    int x = 42;\n    Snapshot<int>  a{x};\n    Snapshot<int*> b{&x};\n    x = 99;              // change x after creating snapshots\n    std::cout << a.value() << \"\\n\";  // should print 42 (captured by value)\n    std::cout << b.value() << \"\\n\";  // should print 42 (captured copy), but prints 99 due to bug\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Snapshot {\n    T data_;\npublic:\n    explicit Snapshot(T v) : data_{v} {}\n    T value() const { return data_; }\n};\n\ntemplate <typename T>\nclass Snapshot<T*> {\n    T copy_;\npublic:\n    explicit Snapshot(T* p) : copy_{*p} {}\n    T value() const { return copy_; }\n};\n\nint main() {\n    int x = 42;\n    Snapshot<int>  a{x};\n    Snapshot<int*> b{&x};\n    x = 99;\n    std::cout << a.value() << \"\\n\";\n    std::cout << b.value() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: both snapshots show 42",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "42\n42"
+      },
+      {
+        "label": "Hidden: same output check 1",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "42\n42"
+      },
+      {
+        "label": "Hidden: same output check 2",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "42\n42"
+      }
+    ]
+  }
+]

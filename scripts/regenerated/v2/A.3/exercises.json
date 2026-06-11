@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Generate GCC Linker Flags from Library Names",
+    "prompt_md": "## Goal\nWrite a program that reads library stem names and outputs the corresponding GCC linker flags, simulating what Code::Blocks does internally.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), the number of library names.\n- Lines 2..N+1: one library stem per line (no `lib` prefix, no `.a` suffix), e.g., `sfml-graphics`.\n\n## Output\nPrint all the `-l` flags on a single space-separated line, in the order given.\n\n## Requirements\n1. Each flag is `-l` immediately followed by the stem (no space between `-l` and the name).\n2. All flags on one line, separated by single spaces.\n3. No leading or trailing spaces.\n4. N=1 must produce a single flag.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    // TODO: read n library stem names and print \"-lname1 -lname2 ...\"\n    // flags on a single line separated by spaces\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string stem;\n        std::cin >> stem;\n        if (i > 0) std::cout << ' ';\n        std::cout << \"-l\" << stem;\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three SFML libs",
+        "is_sample": true,
+        "stdin": "3\nsfml-graphics\nsfml-window\nsfml-system\n",
+        "expected_stdout": "-lsfml-graphics -lsfml-window -lsfml-system"
+      },
+      {
+        "label": "Hidden: single library",
+        "is_sample": false,
+        "stdin": "1\nSDL2\n",
+        "expected_stdout": "-lSDL2"
+      },
+      {
+        "label": "Hidden: two libraries",
+        "is_sample": false,
+        "stdin": "2\nboost_system\nboost_filesystem\n",
+        "expected_stdout": "-lboost_system -lboost_filesystem"
+      }
+    ]
+  },
+  {
+    "title": "Code::Blocks Library Name Validator Bug Fix",
+    "prompt_md": "## Goal\nThe program below is supposed to validate library names entered in Code::Blocks' Link Libraries field. A valid entry must not start with `lib`, must not end with `.a`, and must not start with `-l`. Find and fix the logic bug.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Lines 2..N+1: one library name per line.\n\n## Output\nFor each name, print `valid` or `invalid`.\n\n## Requirements\n1. A name is invalid if it starts with `lib`, ends with `.a`, or starts with `-l`.\n2. Otherwise it is valid.\n3. One result per line.\n\n## Notes\n- The program contains exactly one logic bug — find and fix it.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nbool isValid(const std::string& name) {\n    if (name.substr(0, 3) == \"lib\") return false;\n    if (name.size() >= 2 && name.substr(name.size() - 2) == \".a\") return false;\n    // Bug: should check for \"-l\" prefix but checks for \"l-\" instead\n    if (name.substr(0, 2) == \"l-\") return false;\n    return true;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string name;\n        std::cin >> name;\n        std::cout << (isValid(name) ? \"valid\" : \"invalid\") << '\\n';\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nbool isValid(const std::string& name) {\n    if (name.substr(0, 3) == \"lib\") return false;\n    if (name.size() >= 2 && name.substr(name.size() - 2) == \".a\") return false;\n    if (name.substr(0, 2) == \"-l\") return false;\n    return true;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string name;\n        std::cin >> name;\n        std::cout << (isValid(name) ? \"valid\" : \"invalid\") << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed valid and invalid",
+        "is_sample": true,
+        "stdin": "4\nsfml-graphics\nlibsfml-graphics\n-lsfml-graphics\nsfml-graphics.a\n",
+        "expected_stdout": "valid\ninvalid\ninvalid\ninvalid"
+      },
+      {
+        "label": "Hidden: all valid",
+        "is_sample": false,
+        "stdin": "3\nSDL2\nboost_system\nfoo\n",
+        "expected_stdout": "valid\nvalid\nvalid"
+      },
+      {
+        "label": "Hidden: -l prefix detection",
+        "is_sample": false,
+        "stdin": "2\n-lfoo\nfoo\n",
+        "expected_stdout": "invalid\nvalid"
+      }
+    ]
+  }
+]

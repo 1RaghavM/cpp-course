@@ -138,6 +138,7 @@ export default async function ExercisePage({ params }: Props) {
 
   return (
     <LessonClient
+      slug={lessonRow.slug}
       lesson={{
         id: lesson.id,
         number: lesson.number,

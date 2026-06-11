@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 10 - 3 - 2;\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "Subtraction is left-associative, so `10 - 3 - 2` is parsed as `(10 - 3) - 2 = 7 - 2 = 5`. A right-to-left reading would give `10 - (3 - 2) = 10 - 1 = 9`, but that is not how subtraction works in C++."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a = 2 + 3 * 4;\n    int b = (2 + 3) * 4;\n    std::cout << a << ' ' << b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "14 20",
+    "explanation_md": "`*` has higher precedence than `+`, so `2 + 3 * 4` is `2 + 12 = 14`. Parentheses in `(2 + 3) * 4` override this to give `5 * 4 = 20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `1 < x < 10` mean in C++ when `x` is an `int`?",
+    "options": {
+      "a": "It checks whether x is strictly between 1 and 10.",
+      "b": "It is a syntax error and will not compile.",
+      "c": "It is parsed as `(1 < x) < 10`, comparing a bool (0 or 1) against 10.",
+      "d": "It is parsed as `1 < (x < 10)`, comparing 1 against a bool."
+    },
+    "answer": "c",
+    "explanation_md": "Comparison operators are left-associative: `1 < x < 10` becomes `(1 < x) < 10`. The first comparison yields `0` or `1`, which is then compared to `10`. The expression almost always evaluates to `true` and never correctly tests a range. To check a range, write `x > 1 && x < 10`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement correctly describes the associativity of the assignment operator `=`?",
+    "options": {
+      "a": "Left-to-right, so `x = y = 5` sets x first then y.",
+      "b": "Right-to-left, so `x = y = 5` sets y first then x.",
+      "c": "Assignment has no associativity because you cannot chain it.",
+      "d": "Right-to-left, but only when exactly two variables are on the left side."
+    },
+    "answer": "b",
+    "explanation_md": "Assignment associates right-to-left. `x = y = 5` is parsed as `x = (y = 5)`: first `y` receives 5, then `x` receives the result of that assignment (also 5). Both end up as 5."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to check whether a grade is between 60 and 100 (inclusive). Their code always prints \"pass\" even for a grade of 200. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int grade = 200;\n    if (60 <= grade <= 100)\n        std::cout << \"pass\\n\";\n    else\n        std::cout << \"fail\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`<=` has higher precedence than `if`, so the condition is never evaluated correctly.",
+      "b": "`60 <= grade <= 100` is parsed as `(60 <= grade) <= 100`; the bool result (0 or 1) is always less than 100.",
+      "c": "The `if` statement requires parentheses around each comparison separately.",
+      "d": "`grade` should be declared as `double` for range comparisons to work."
+    },
+    "answer": "b",
+    "explanation_md": "The chained comparison `60 <= grade <= 100` is parsed left-to-right as `(60 <= grade) <= 100`. For grade = 200, `60 <= 200` is `true` (promoted to `1`), and `1 <= 100` is also `true`. The fix is `grade >= 60 && grade <= 100`."
+  }
+]

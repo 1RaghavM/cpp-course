@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build a Temperature Reading struct",
+    "prompt_md": "## Goal\nDefine a `TempReading` struct with default member initializers and write a function that prints a reading.\n\n## Input\nNo stdin. The program constructs specific `TempReading` objects in `main`.\n\n## Output\n```\nunknown: -999.0 C invalid\nLab: 23.5 C valid\n```\n\n## Requirements\n1. Define `struct TempReading` with members: `std::string location` (default `\"unknown\"`), `float celsius` (default `-999.0f`), `bool valid` (default `false`).\n2. Write `void printReading(const TempReading& r)` that prints `location: celsius C valid` or `location: celsius C invalid` depending on `valid`.\n3. In `main`, create one default `TempReading t1{}` (all defaults) and one `TempReading t2{ .location=\"Lab\", .celsius=23.5f, .valid=true }`, then call `printReading` on each.\n4. Format celsius to one decimal place using `std::fixed` and `std::setprecision(1)` from `<iomanip>`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: Define struct TempReading with three members and default initializers.\n\n// TODO: Write void printReading(const TempReading& r) that prints the reading.\n\nint main() {\n    // TODO: Create t1 using all defaults.\n    // TODO: Create t2 with location=\"Lab\", celsius=23.5f, valid=true.\n    // TODO: Call printReading on t1 and t2.\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nstruct TempReading {\n    std::string location{ \"unknown\" };\n    float celsius{ -999.0f };\n    bool valid{ false };\n};\n\nvoid printReading(const TempReading& r) {\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << r.location << \": \" << r.celsius << \" C \"\n              << (r.valid ? \"valid\" : \"invalid\") << '\\n';\n}\n\nint main() {\n    TempReading t1{};\n    TempReading t2{ .location = \"Lab\", .celsius = 23.5f, .valid = true };\n    printReading(t1);\n    printReading(t2);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "unknown: -999.0 C invalid\nLab: 23.5 C valid\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "unknown: -999.0 C invalid\nLab: 23.5 C valid\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "unknown: -999.0 C invalid\nLab: 23.5 C valid\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the default initializer bug",
+    "prompt_md": "## Goal\nFix the one bug in this program so it prints the correct output.\n\n## Input\nNo stdin.\n\n## Output\n```\nHP: 100 Mana: 50\nHP: 75 Mana: 50\n```\n\n## Requirements\n1. The program defines a `Character` struct. The intended defaults are `hp = 100` and `mana = 50`.\n2. There is exactly one bug causing incorrect output. Find and fix it.\n3. Do not change `main` or add/remove members.",
+    "starter_code": "#include <iostream>\n\nstruct Character {\n    int hp{ 100 };\n    int mana{ 50 };\n};\n\nvoid printCharacter(const Character& c) {\n    std::cout << \"HP: \" << c.hp << \" Mana: \" << c.mana << '\\n';\n}\n\nint main() {\n    Character hero{};\n    Character wounded{ 75, 0 };  // BUG: should keep mana at default 50\n    printCharacter(hero);\n    printCharacter(wounded);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Character {\n    int hp{ 100 };\n    int mana{ 50 };\n};\n\nvoid printCharacter(const Character& c) {\n    std::cout << \"HP: \" << c.hp << \" Mana: \" << c.mana << '\\n';\n}\n\nint main() {\n    Character hero{};\n    Character wounded{ .hp = 75 };  // FIX: designated init; mana keeps default 50\n    printCharacter(hero);\n    printCharacter(wounded);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "HP: 100 Mana: 50\nHP: 75 Mana: 50\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "HP: 100 Mana: 50\nHP: 75 Mana: 50\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "HP: 100 Mana: 50\nHP: 75 Mana: 50\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

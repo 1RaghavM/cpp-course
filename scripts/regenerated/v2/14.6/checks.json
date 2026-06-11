@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Gauge {\nprivate:\n    int m_reading{ 10 };\n\npublic:\n    int  getReading() const { return m_reading; }\n    void setReading(int r)  {\n        if (r < 0) r = 0;\n        m_reading = r;\n    }\n};\n\nint main() {\n    Gauge g;\n    g.setReading(-5);\n    std::cout << g.getReading() << '\\n';\n    g.setReading(20);\n    std::cout << g.getReading() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n20",
+    "explanation_md": "The first call `setReading(-5)` clamps the value to 0 because the setter enforces `r < 0 → r = 0`. The second call `setReading(20)` stores 20 directly. The getter returns the stored value each time, so output is `0` then `20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `public` getter that does not modify the object should be declared with which qualifier?",
+    "options": {
+      "a": "`static`",
+      "b": "`const`",
+      "c": "`inline`",
+      "d": "`volatile`"
+    },
+    "answer": "b",
+    "explanation_md": "Marking a getter `const` tells the compiler it does not modify the object, which allows the function to be called on `const` objects and `const` references. Without `const`, the getter cannot be used in const contexts even though it does not change anything."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `print` to compile, but it does not. What is wrong?\n\n```cpp\n#include <iostream>\n\nclass Meter {\nprivate:\n    int m_level{ 5 };\npublic:\n    int getLevel() { return m_level; }  // getter\n};\n\nvoid print(const Meter& m) {\n    std::cout << m.getLevel() << '\\n';\n}\n\nint main() {\n    Meter m;\n    print(m);\n    return 0;\n}\n```",
+    "options": {
+      "a": "`m_level` is private so `getLevel` cannot return it.",
+      "b": "`getLevel` is not `const`, so it cannot be called on the `const Meter&` parameter in `print`.",
+      "c": "`print` must be a member function to access `getLevel`.",
+      "d": "The initializer `{ 5 }` requires a constructor."
+    },
+    "answer": "b",
+    "explanation_md": "`print` receives a `const Meter&`. Calling a non-const member function on a const reference is not allowed. The fix is to declare `getLevel` as `int getLevel() const { return m_level; }`. The `const` qualifier signals that the function does not modify the object, making it safe to call on const references."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the problem with this getter?\n\n```cpp\nclass Buffer {\nprivate:\n    int m_data{ 0 };\npublic:\n    int& getData() { return m_data; }  // returns non-const reference\n};\n```",
+    "options": {
+      "a": "It will not compile because member functions cannot return references.",
+      "b": "It exposes the private member directly — callers can modify `m_data` through the reference without going through a setter.",
+      "c": "It is fine; returning a reference is always faster than returning a value.",
+      "d": "It will cause a dangling reference when the object is destroyed."
+    },
+    "answer": "b",
+    "explanation_md": "Returning a non-const reference to a private member defeats encapsulation: any caller can write `obj.getData() = 999;` and bypass the setter's validation entirely. The object can no longer enforce its invariants. Return by value for cheap types, or by `const&` for expensive types."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Flag {\nprivate:\n    bool m_on{ false };\npublic:\n    bool isOn() const  { return m_on; }\n    void turnOn()      { m_on = true; }\n};\n\nint main() {\n    Flag f;\n    std::cout << f.isOn() << '\\n';\n    f.turnOn();\n    std::cout << f.isOn() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n1",
+    "explanation_md": "`m_on` starts as `false`, which `std::cout` prints as `0`. After `turnOn()` sets it to `true`, the second call prints `1`. C++ prints `bool` values as `0` and `1` by default."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint multiply(int a, int b)\n{\n    return a + b;\n}\n\nint main()\n{\n    std::cout << multiply(3, 5) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "8",
+    "explanation_md": "The function is named `multiply` but the body computes `a + b` (addition), not `a * b` (multiplication). This is a semantic error — the code compiles fine but does the wrong thing. `3 + 5 = 8`, so that is what prints."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program compiles without errors but prints `0` when you expected `10`. What kind of error does this most likely represent?",
+    "options": {
+      "a": "A syntax error, because the compiler missed it",
+      "b": "A semantic error, because the program compiles but behaves incorrectly",
+      "c": "A linker error, because the output is missing",
+      "d": "No error — `0` might be the correct output"
+    },
+    "answer": "b",
+    "explanation_md": "A semantic error is one where the code is grammatically valid C++ but does not express the programmer's intent. The program compiles and runs but produces wrong results. Syntax errors prevent compilation entirely, so `b` is correct."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You write this and the compiler reports an error on line 6. Where is the actual bug most likely located?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 5\n    int y = 10;\n    std::cout << x + y << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "Line 6, where the error is reported",
+      "b": "Line 4, the line before the reported error",
+      "c": "Line 3, the opening brace",
+      "d": "Line 1, the include directive"
+    },
+    "answer": "b",
+    "explanation_md": "The missing semicolon is on line 4 (`int x = 5`). The compiler only realizes something is wrong when it reads line 5 and finds `int` where it expected a semicolon or operator — so the error message points to line 5 or 6. Always check the line before the reported location for missing semicolons."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function should return the larger of two integers. It compiles cleanly but returns the wrong value when `a > b`.\n\n```cpp\nint larger(int a, int b)\n{\n    return b;\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "Missing `#include <iostream>`",
+      "b": "The function always returns `b`, ignoring `a`",
+      "c": "The parameters should be named `x` and `y`",
+      "d": "The return type should be `void`"
+    },
+    "answer": "b",
+    "explanation_md": "This is a semantic error: the function unconditionally returns `b` regardless of whether `a` or `b` is larger. The code compiles because returning an `int` from an `int` function is valid C++. The fix requires a comparison, but that is a later chapter concept — recognizing it as a semantic error is the key lesson here."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 10;\n    int b = 3;\n    std::cout << a / b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "Both `a` and `b` are `int`, so `/` performs integer division: the result is truncated toward zero, giving `3` (not `3.333...`). This is a common semantic error — the programmer may have expected a decimal result, but the compiler silently truncates because both operands are integers."
+  }
+]

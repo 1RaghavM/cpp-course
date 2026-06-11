@@ -1,0 +1,47 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    bool b = true;\n    short s = 4;\n    int result = b + s;\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`bool` `true` is integrally promoted to `int(1)`, and `short 4` is integrally promoted to `int(4)`. The addition gives `int(5)`, which is stored in `result` and printed. Promotion happens before the arithmetic, so there is no overflow or wrap-around."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After this code runs, what type does the expression `c + 1` have during evaluation?\n\n```cpp\nchar c = 'A'; // 'A' == 65\nint r = c + 1;\n```",
+    "options": {
+      "a": "`char`, because the left operand is `char`",
+      "b": "`short`, because `char` is promoted to `short` before arithmetic",
+      "c": "`int`, because `char` is integrally promoted to `int` before arithmetic",
+      "d": "`long`, because integer literals default to `long`"
+    },
+    "answer": "c",
+    "explanation_md": "Integral promotion converts `char` to `int` before the expression is evaluated. Integer literals like `1` are already `int`. So the addition is `int(65) + int(1)` and the result type is `int`. `char` never stays `char` during arithmetic."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    char c = 'A';   // 'A' == 65\n    char d = c + 1; // result stored back in char\n    std::cout << d << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "B",
+    "explanation_md": "`c` is promoted to `int(65)`, `1` is added to get `int(66)`, and `int(66)` is narrowed back to `char` for storage in `d`. The character with ASCII code 66 is `'B'`. When a `char` is passed to `std::cout`, it prints the character, not the number."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary reason that `bool`, `char`, and `short` are promoted to `int` before arithmetic?",
+    "options": {
+      "a": "To prevent negative values in small types from causing undefined behavior.",
+      "b": "Because CPU arithmetic instructions operate on int-sized (or larger) values, not on byte-sized types.",
+      "c": "Because the C++ standard requires all variables to be at least 32 bits wide.",
+      "d": "To make the types compatible with `std::cout` which only accepts `int`."
+    },
+    "answer": "b",
+    "explanation_md": "CPUs have native add/multiply instructions for `int`-sized and larger values, but not for byte-sized or 16-bit types. Promoting to `int` before arithmetic ensures the operation uses the hardware's native integer unit efficiently. The promotion is a design decision, not a safety requirement per se."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    char a = 200;\n    char b = 100;\n    int result = a + b;\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "300",
+    "explanation_md": "Both `a` and `b` are promoted to `int` before the addition: `int(200) + int(100) = int(300)`. The addition is performed in `int` space where 300 fits comfortably, so there is no overflow or wrap-around. The result `300` is stored in `result` and printed."
+  }
+]

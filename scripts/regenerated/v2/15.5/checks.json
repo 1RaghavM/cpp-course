@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nclass Holder {\n    T m_val;\npublic:\n    Holder(T val) : m_val{ val } {}\n    T get() const { return m_val; }\n};\n\nint main() {\n    Holder<int>    hi{ 10 };\n    Holder<double> hd{ 3.5 };\n    std::cout << hi.get() << \"\\n\";\n    std::cout << hd.get() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10\n3.5",
+    "explanation_md": "`hi` is a `Holder<int>` storing 10; `hd` is a `Holder<double>` storing 3.5. Each `get()` returns its stored value. The two instantiations are independent classes generated from the same template, so the output is `10` then `3.5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must template member function definitions be placed in the header file (or the same translation unit where they are used), rather than in a separate `.cpp` file?",
+    "options": {
+      "a": "Header files are compiled first, so the linker can find them.",
+      "b": "The compiler needs the full template definition to generate code for each type it is instantiated with; a definition hidden in a `.cpp` file is invisible to other translation units.",
+      "c": "Template functions are slower in `.cpp` files because the optimizer cannot inline them.",
+      "d": "The `template` keyword is only legal inside `.h` files."
+    },
+    "answer": "b",
+    "explanation_md": "When the compiler sees `Holder<int>` in a translation unit, it must immediately generate the `Holder<int>` class — constructors, methods, everything. If the definitions are in a separate `.cpp` file, that translation unit never sees them, so no code is generated and the linker reports undefined symbols."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nclass Wrap {\n    T m_data;\npublic:\n    Wrap(T data);\n    T value() const;\n};\n\ntemplate <typename T>\nWrap::Wrap(T data) : m_data{ data } {}\n\ntemplate <typename T>\nT Wrap::value() const { return m_data; }\n\nint main() {\n    Wrap<int> w{ 5 };\n    std::cout << w.value() << \"\\n\";\n}\n```",
+    "options": {
+      "a": "The constructor is missing its body — it should say `= default`.",
+      "b": "Out-of-class definitions use `Wrap::` but should use `Wrap<T>::` to name the template instantiation.",
+      "c": "`template <typename T>` is required only on the class definition, not on out-of-class member definitions.",
+      "d": "`T` cannot be used as a return type outside the class body."
+    },
+    "answer": "b",
+    "explanation_md": "When defining a template member function outside the class, the class name must carry the template parameter: `Wrap<T>::Wrap(T data)` and `T Wrap<T>::value() const`. Writing `Wrap::Wrap` or `Wrap::value` is a compile error because `Wrap` alone is not a complete type — `Wrap<T>` is."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nclass Swapper {\n    T m_a;\n    T m_b;\npublic:\n    Swapper(T a, T b) : m_a{ a }, m_b{ b } {}\n    void swap() {\n        T tmp = m_a;\n        m_a   = m_b;\n        m_b   = tmp;\n    }\n    T first()  const { return m_a; }\n    T second() const { return m_b; }\n};\n\nint main() {\n    Swapper<int> s{ 1, 2 };\n    s.swap();\n    std::cout << s.first() << \" \" << s.second() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "2 1",
+    "explanation_md": "`Swapper<int>` is initialized with `m_a = 1` and `m_b = 2`. After `swap()`, `m_a = 2` and `m_b = 1`. `first()` returns 2 and `second()` returns 1, so the output is `2 1`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly instantiates `template <typename T> class Box`?",
+    "options": {
+      "a": "`Box b{ 42 };` — the compiler deduces T = int from the constructor argument.",
+      "b": "`Box<int> b{ 42 };` — T is explicitly specified as int.",
+      "c": "`Box<> b{ 42 };` — empty angle brackets tell the compiler to deduce T.",
+      "d": "`Box<auto> b{ 42 };` — auto deduces T from the initializer."
+    },
+    "answer": "b",
+    "explanation_md": "Class templates require explicit type arguments in angle brackets unless Class Template Argument Deduction (CTAD) applies. Option b is the straightforward, always-correct form. Option a may or may not work depending on whether the compiler can deduce T — it is not guaranteed. Options c and d are not valid syntax for template instantiation."
+  }
+]

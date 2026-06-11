@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Temperature Converter: Celsius to Fahrenheit",
+    "prompt_md": "## Goal\nRead a temperature in Celsius and print the equivalent in Fahrenheit using the formula `F = C * 9 / 5 + 32`.\n\n## Input\n- Line 1: integer `celsius` (-100 ≤ celsius ≤ 100)\n\n## Output\nPrint exactly one line:\n```\n<celsius> C = <fahrenheit> F\n```\nFor example, for input `100` print: `100 C = 212 F`\n\n## Requirements\n1. Use only integer arithmetic (all values stay as `int`).\n2. Compute Fahrenheit in a separate variable before printing.\n3. Use the exact output format: the Celsius value, space, `C`, space, `=`, space, the Fahrenheit value, space, `F`.\n4. The formula `C * 9 / 5 + 32` must be applied with standard C++ operator precedence (multiplication before division before addition).\n5. Hidden tests include negative Celsius values and the standard freezing/boiling points.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int celsius = 0;\n    std::cin >> celsius;\n\n    // TODO: compute fahrenheit using C * 9 / 5 + 32, then print the result\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int celsius = 0;\n    std::cin >> celsius;\n\n    int fahrenheit = celsius * 9 / 5 + 32;\n    std::cout << celsius << \" C = \" << fahrenheit << \" F\" << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: boiling point 100 C",
+        "is_sample": true,
+        "stdin": "100\n",
+        "expected_stdout": "100 C = 212 F\n"
+      },
+      {
+        "label": "Hidden: freezing point 0 C",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0 C = 32 F\n"
+      },
+      {
+        "label": "Hidden: negative temperature -40 C",
+        "is_sample": false,
+        "stdin": "-40\n",
+        "expected_stdout": "-40 C = -40 F\n"
+      }
+    ]
+  },
+  {
+    "title": "Compute Quotient and Remainder",
+    "prompt_md": "## Goal\nComplete the function `divide_report` that takes two integers `dividend` and `divisor` and returns the quotient. The `main` function reads the inputs, calls `divide_report`, and also prints the remainder.\n\n## Input\n- Line 1: integer `dividend` (1 ≤ dividend ≤ 10000)\n- Line 2: integer `divisor` (1 ≤ divisor ≤ 1000)\n\n## Output\nPrint exactly two lines:\n```\nQuotient: <dividend / divisor>\nRemainder: <dividend % divisor>\n```\n\n## Requirements\n1. The function signature is exactly: `int divide_report(int dividend, int divisor)`. It must return `dividend / divisor` (integer division).\n2. `main` calls `divide_report` to get the quotient and prints both lines.\n3. Compute the remainder using `%` directly in `main` — do not add a second function.\n4. Hidden tests include cases where `divisor` does not divide `dividend` evenly.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement divide_report(int dividend, int divisor) -> int\n// Return the integer quotient (dividend / divisor)\nint divide_report(int dividend, int divisor)\n{\n    return 0; // stub — replace with correct expression\n}\n\nint main()\n{\n    int dividend = 0;\n    int divisor = 0;\n    std::cin >> dividend >> divisor;\n\n    int quotient = divide_report(dividend, divisor);\n    int remainder = dividend % divisor;\n\n    std::cout << \"Quotient: \" << quotient << '\\n';\n    std::cout << \"Remainder: \" << remainder << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint divide_report(int dividend, int divisor)\n{\n    return dividend / divisor;\n}\n\nint main()\n{\n    int dividend = 0;\n    int divisor = 0;\n    std::cin >> dividend >> divisor;\n\n    int quotient = divide_report(dividend, divisor);\n    int remainder = dividend % divisor;\n\n    std::cout << \"Quotient: \" << quotient << '\\n';\n    std::cout << \"Remainder: \" << remainder << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 17 / 5",
+        "is_sample": true,
+        "stdin": "17\n5\n",
+        "expected_stdout": "Quotient: 3\nRemainder: 2\n"
+      },
+      {
+        "label": "Hidden: exact division 100 / 4",
+        "is_sample": false,
+        "stdin": "100\n4\n",
+        "expected_stdout": "Quotient: 25\nRemainder: 0\n"
+      },
+      {
+        "label": "Hidden: large dividend 9999 / 7",
+        "is_sample": false,
+        "stdin": "9999\n7\n",
+        "expected_stdout": "Quotient: 1428\nRemainder: 3\n"
+      }
+    ]
+  }
+]

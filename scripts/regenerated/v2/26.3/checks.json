@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nvoid tag(T v) { std::cout << \"generic: \" << v << \"\\n\"; }\ntemplate <>\nvoid tag<int>(int v) { std::cout << \"int: \" << v << \"\\n\"; }\nint main() {\n    tag(3.14);\n    tag(42);\n    tag('x');\n}\n```",
+    "options": null,
+    "answer": "generic: 3.14\nint: 42\ngeneric: x",
+    "explanation_md": "`tag(3.14)` deduces `double` — no specialization for `double`, so the primary template prints `generic: 3.14`. `tag(42)` deduces `int` — the explicit `<int>` specialization fires, printing `int: 42`. `tag('x')` deduces `char` — no specialization, prints `generic: x`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the correct syntax for the header of a full function template specialization?",
+    "options": {
+      "a": "`template <typename T>`",
+      "b": "`template <T>`",
+      "c": "`template <>`",
+      "d": "`template`"
+    },
+    "answer": "c",
+    "explanation_md": "A full (explicit) specialization uses `template <>` with empty angle brackets. This signals to the compiler that no template parameters remain — they have all been replaced by concrete types. Using `template <typename T>` would declare a new primary template, not a specialization."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `describe<bool>` to print `bool: true/false`. But running this program prints `generic: 1` for the bool case. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nvoid describe(T v) { std::cout << \"generic: \" << v << \"\\n\"; }\ntemplate <typename T>\nvoid describe<bool>(bool v) {\n    std::cout << \"bool: \" << (v ? \"true\" : \"false\") << \"\\n\";\n}\nint main() {\n    describe(true);\n}\n```",
+    "options": {
+      "a": "The specialization body uses `(v ? \"true\" : \"false\")` which does not compile for `bool`.",
+      "b": "The specialization header is `template <typename T>` instead of `template <>` — the compiler treats it as a new primary template causing a compile error or using the wrong version.",
+      "c": "The primary template should use `const T&` not `T` by value.",
+      "d": "`describe(true)` deduces `int` instead of `bool`."
+    },
+    "answer": "b",
+    "explanation_md": "A full specialization must use `template <>` (empty brackets). Writing `template <typename T>` before `describe<bool>` makes the compiler reject it as an invalid partial specialization of a function template, or treat it incorrectly. Changing the header to `template <>` fixes the issue."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given a primary function template and a non-template overload with the same name, which does the compiler prefer when both match?",
+    "options": {
+      "a": "The template specialization is always preferred over plain overloads.",
+      "b": "The non-template overload is preferred over any template instantiation.",
+      "c": "It depends on which was declared first in the source file.",
+      "d": "The compiler issues an ambiguity error."
+    },
+    "answer": "b",
+    "explanation_md": "C++ overload resolution prefers non-template functions over template instantiations when both are exact matches. This is why many C++ experts recommend non-template overloads instead of function template specializations for type-specific behaviour — they participate in overload resolution more predictably."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nT doubled(T v) { return v * 2; }\ntemplate <>\nbool doubled<bool>(bool v) { return v; }\nint main() {\n    std::cout << doubled(5) << \"\\n\";\n    std::cout << doubled(true) << \"\\n\";\n    std::cout << doubled(false) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10\n1\n0",
+    "explanation_md": "`doubled(5)` uses the primary template: `5 * 2 = 10`. `doubled(true)` uses the `bool` specialization which returns `v` unchanged — `true` prints as `1`. `doubled(false)` similarly returns `false` which prints as `0`."
+  }
+]

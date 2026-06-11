@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Read and Print Three Named Variables",
+    "prompt_md": "## Goal\nRead three integers from standard input, store them in well-named variables, and print them on three labeled lines.\n\n## Input\n- Line 1: three space-separated integers representing a width, a height, and a depth (1 ≤ each ≤ 1000).\n\n## Output\n- Line 1: `Width: <width>`\n- Line 2: `Height: <height>`\n- Line 3: `Depth: <depth>`\n\n## Requirements\n1. Declare and initialize all three variables to `0` before calling `std::cin`.\n2. Use descriptive camelCase names: `width`, `height`, `depth`.\n3. Use `std::cin` to read all three values in a single chained extraction.\n4. Print each value on its own line with the exact label shown (capital first letter, colon, space).\n5. No extra blank lines in the output.\n\n## Notes\n- This exercise combines proper initialization with descriptive naming.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare and initialize width, height, depth to 0\n    // TODO: read all three from std::cin in one statement\n    // TODO: print each on its own labeled line\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int width = 0;\n    int height = 0;\n    int depth = 0;\n\n    std::cin >> width >> height >> depth;\n\n    std::cout << \"Width: \" << width << '\\n';\n    std::cout << \"Height: \" << height << '\\n';\n    std::cout << \"Depth: \" << depth << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic dimensions",
+        "is_sample": true,
+        "stdin": "10 20 30\n",
+        "expected_stdout": "Width: 10\nHeight: 20\nDepth: 30\n"
+      },
+      {
+        "label": "Hidden: all same value",
+        "is_sample": false,
+        "stdin": "5 5 5\n",
+        "expected_stdout": "Width: 5\nHeight: 5\nDepth: 5\n"
+      },
+      {
+        "label": "Hidden: larger values",
+        "is_sample": false,
+        "stdin": "100 200 300\n",
+        "expected_stdout": "Width: 100\nHeight: 200\nDepth: 300\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Swapped Variable Names Bug",
+    "prompt_md": "## Goal\nThe program below reads two integers intended to represent a length and a width, then prints them. It contains one logic bug where a variable is printed under the wrong label. Find and fix it.\n\n## Input\n- Line 1: two space-separated integers: `length` then `width`.\n\n## Output\n- Line 1: `Length: <length>`\n- Line 2: `Width: <width>`\n\n## Requirements\n1. The first value read must appear on the `Length:` line.\n2. The second value read must appear on the `Width:` line.\n3. Do not rename the variables or restructure the program — fix only the one bug.\n4. Both lines must use the exact label format shown (capital first letter, colon, space).\n\n## Notes\n- The bug is a naming/output mismatch, not a compile error.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int length = 0;\n    int width = 0;\n\n    std::cin >> length >> width;\n\n    std::cout << \"Length: \" << width << '\\n';\n    std::cout << \"Width: \" << length << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int length = 0;\n    int width = 0;\n\n    std::cin >> length >> width;\n\n    std::cout << \"Length: \" << length << '\\n';\n    std::cout << \"Width: \" << width << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "8 4\n",
+        "expected_stdout": "Length: 8\nWidth: 4\n"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "6 6\n",
+        "expected_stdout": "Length: 6\nWidth: 6\n"
+      },
+      {
+        "label": "Hidden: width larger than length",
+        "is_sample": false,
+        "stdin": "3 12\n",
+        "expected_stdout": "Length: 3\nWidth: 12\n"
+      }
+    ]
+  }
+]

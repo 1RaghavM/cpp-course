@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nstruct T {\n    T(int i) : id(i) { std::cout << \"ctor \" << id << \"\\n\"; }\n    ~T() { std::cout << \"dtor \" << id << \"\\n\"; }\n    int id;\n};\nvoid inner() {\n    T a(1);\n    throw std::runtime_error(\"x\");\n}\nvoid outer() {\n    T b(2);\n    inner();\n}\nint main() {\n    try { outer(); }\n    catch (const std::runtime_error&) { std::cout << \"caught\\n\"; }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "ctor 2\nctor 1\ndtor 1\ndtor 2\ncaught",
+    "explanation_md": "Construction order: `outer` creates `b(2)` first, then `inner` creates `a(1)`. When the throw unwinds the stack, destructors run in reverse order: `a` (innermost frame) is destroyed first, then `b`. Only then does the catch run."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens to local variables in a function that does NOT have a catch block, when an exception propagates through it?",
+    "options": {
+      "a": "Their destructors are NOT called — the memory is simply abandoned",
+      "b": "Their destructors ARE called as the stack unwinds through that frame",
+      "c": "The behavior is undefined",
+      "d": "The function catches the exception automatically and re-throws it"
+    },
+    "answer": "b",
+    "explanation_md": "Stack unwinding guarantees that all local objects with destructors are destroyed as each frame is popped, regardless of whether that frame has a catch clause. This is the foundation of RAII: resources are released even during exception propagation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must destructors never throw?",
+    "options": {
+      "a": "The compiler rejects destructors that contain `throw` statements",
+      "b": "If a destructor throws while the stack is already unwinding, `std::terminate` is called",
+      "c": "Throwing in a destructor silently swallows the original exception",
+      "d": "Exceptions from destructors are always caught by the enclosing try block"
+    },
+    "answer": "b",
+    "explanation_md": "During stack unwinding, if a destructor throws a new exception before the first exception is caught, C++ cannot handle two simultaneous exceptions and calls `std::terminate`, aborting the program. This is why destructors are implicitly `noexcept` in C++11 and later."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nvoid thrower() {\n    std::cout << \"A\\n\";\n    throw std::runtime_error(\"boom\");\n    std::cout << \"B\\n\";\n}\nint main() {\n    try {\n        std::cout << \"C\\n\";\n        thrower();\n        std::cout << \"D\\n\";\n    } catch (const std::runtime_error&) {\n        std::cout << \"E\\n\";\n    }\n    std::cout << \"F\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "C\nA\nE\nF",
+    "explanation_md": "`\"C\"` prints before `thrower()` is called. Inside `thrower()`, `\"A\"` prints, then the throw fires. `\"B\"` and `\"D\"` are unreachable. The catch runs printing `\"E\"`. Execution continues after the try/catch, printing `\"F\"`."
+  }
+]

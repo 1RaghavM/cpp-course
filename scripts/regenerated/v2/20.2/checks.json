@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int* p = new int{42};\n    *p = *p * 2;\n    std::cout << *p << \"\\n\";\n    delete p;\n    p = nullptr;\n    std::cout << (p == nullptr ? \"null\" : \"valid\") << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "84\nnull",
+    "explanation_md": "`new int{42}` allocates an int with value 42 on the heap. `*p = *p * 2` doubles it to 84. After `delete p`, the memory is released. Setting `p = nullptr` makes the pointer null, so the comparison prints `null`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes what happens to a local variable when its enclosing function returns?",
+    "options": {
+      "a": "The variable's memory is moved to the heap so callers can still access it",
+      "b": "The variable is destroyed — its stack frame is popped and the memory is reclaimed",
+      "c": "The variable persists until the program exits",
+      "d": "The variable is set to zero automatically"
+    },
+    "answer": "b",
+    "explanation_md": "Local variables live on the call stack in the function's stack frame. When the function returns, its stack frame is popped and the memory is reclaimed for future calls. There is no move to the heap, no zeroing, and no persistence beyond the function's lifetime."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program tries to allocate an array, use it, and clean up. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    int* arr = new int[3]{10, 20, 30};\n    for (int i = 0; i < 3; ++i)\n        std::cout << arr[i] << \"\\n\";\n    delete arr;    // release the array\n}\n```",
+    "options": {
+      "a": "The array is not initialized; values are undefined",
+      "b": "`delete arr` should be `delete[] arr` — using `delete` on a `new[]` allocation is undefined behavior",
+      "c": "The array is declared on the stack, not the heap, so `delete` is invalid",
+      "d": "The loop should use `arr[i + 1]` to access the correct elements"
+    },
+    "answer": "b",
+    "explanation_md": "Arrays allocated with `new[]` must be freed with `delete[]`. Using plain `delete` on a `new[]` allocation is undefined behavior — typically resulting in heap corruption or a crash. The array is correctly heap-allocated and initialized; only the deallocation is wrong."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is a dangling pointer?",
+    "options": {
+      "a": "A pointer that has been set to `nullptr`",
+      "b": "A pointer that points to memory that has been freed or destroyed",
+      "c": "A pointer declared but never assigned a value",
+      "d": "A pointer to a heap-allocated object that was never deleted"
+    },
+    "answer": "b",
+    "explanation_md": "A dangling pointer points to memory that is no longer valid — the classic case is returning a pointer to a local variable after the function returns (stack memory is reclaimed) or continuing to use a pointer after calling `delete` on it. Option (a) is a null pointer — not dangling, just empty. Option (c) is an uninitialized pointer. Option (d) describes a memory leak, not a dangling pointer."
+  }
+]

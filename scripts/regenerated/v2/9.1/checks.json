@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nbool isEven(int n) {\n    return n % 2 == 1;\n}\n\nint main() {\n    std::cout << isEven(4) << '\\n';\n    std::cout << isEven(-3) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n0",
+    "explanation_md": "`isEven` uses `n % 2 == 1`, which is the wrong check. For `4`, `4 % 2` is `0`, so `0 == 1` is `false` → prints `0`. For `-3`, `-3 % 2` is `-1` in C++, so `-1 == 1` is also `false` → prints `0`. Both are wrong answers, which is exactly why testing with negative and even numbers catches this bug."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you test boundary values (like zero, negative numbers, or the maximum of a range) rather than only typical inputs?",
+    "options": {
+      "a": "Boundary values run faster in the CPU, so they compile more efficiently.",
+      "b": "Bugs most often appear at the edges of valid input ranges, where special cases in the logic are triggered.",
+      "c": "The compiler automatically validates typical inputs but ignores boundary values.",
+      "d": "Boundary values are only needed when using std::cin to read user input."
+    },
+    "answer": "b",
+    "explanation_md": "Bugs cluster at boundary values because that is where conditions like `>`, `==`, or `% 2` change behavior. A function that works perfectly for inputs 1–100 might silently fail at 0 or -1 because the author never considered those cases. Options a, c, and d are all false — the compiler does not validate input values at runtime."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint add(int a, int b) { return a + b; }\n\nint main() {\n    std::cout << (add(2, 3) == 5  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (add(-1, 1) == 0 ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (add(0, 0) == 1  ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "PASS\nPASS\nFAIL",
+    "explanation_md": "`add(2,3)` is `5`, which equals `5` → `PASS`. `add(-1,1)` is `0`, which equals `0` → `PASS`. `add(0,0)` is `0`, which does not equal `1` → `FAIL`. This shows how embedding expected values in comparisons makes test failures immediately visible."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the main advantage of writing test cases that print `PASS` or `FAIL` instead of just printing the raw output value?",
+    "options": {
+      "a": "It makes the program run faster because fewer values are printed.",
+      "b": "It lets the compiler catch semantic errors at compile time.",
+      "c": "The check is self-documenting and does not require you to remember what the correct output was.",
+      "d": "It avoids integer overflow when comparing large values."
+    },
+    "answer": "c",
+    "explanation_md": "When you print `PASS`/`FAIL`, the expected value is embedded in the code next to the actual result, so future you (or a teammate) can see the intent without remembering what 'correct' looked like. Options a and d are unrelated; option b is false — the compiler cannot detect semantic errors at compile time."
+  }
+]

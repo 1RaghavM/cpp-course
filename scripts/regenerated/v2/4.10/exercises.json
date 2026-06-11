@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Number Sign Classifier",
+    "prompt_md": "## Goal\nRead one integer and print whether it is positive, negative, or zero.\n\n## Input\n- Line 1: one integer.\n\n## Output\n- Print exactly one of: `positive`, `negative`, or `zero` (all lowercase, no extra spaces or punctuation).\n\n## Requirements\n1. Use an `if/else if/else` chain (three branches).\n2. Zero is neither positive nor negative; it must print `zero`.\n3. Negative values print `negative`.\n4. Positive values print `positive`.\n\n## Notes\n- No loops needed. Single integer input only.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    // TODO: use if/else if/else to print \"positive\", \"negative\", or \"zero\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n\n    if (n > 0)\n        std::cout << \"positive\\n\";\n    else if (n < 0)\n        std::cout << \"negative\\n\";\n    else\n        std::cout << \"zero\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "positive"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "zero"
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-3\n",
+        "expected_stdout": "negative"
+      }
+    ]
+  },
+  {
+    "title": "Grade Letter from Score",
+    "prompt_md": "## Goal\nComplete the function `gradeLetter` that takes an integer score (0–100) and returns a `char` representing the letter grade.\n\n## Input\n- Line 1: one integer, the score (0 to 100 inclusive).\n\n## Output\n- Print exactly one character followed by a newline: the letter grade.\n\n## Requirements\n1. Complete the function with this exact signature: `char gradeLetter(int score)`\n2. Grade boundaries:\n   - Score >= 90: return `'A'`\n   - Score >= 80: return `'B'`\n   - Score >= 70: return `'C'`\n   - Score >= 60: return `'D'`\n   - Score < 60: return `'F'`\n3. Use `if/else if/else` inside the function body.\n4. `main()` reads the score, calls `gradeLetter`, and prints the returned char followed by `\\n`.\n\n## Notes\n- You may assume the input is always in [0, 100]. No error handling required.",
+    "starter_code": "#include <iostream>\n\nchar gradeLetter(int score)\n{\n    // TODO: implement grade boundaries using if/else if/else\n    return 'F';  // stub — replace this\n}\n\nint main()\n{\n    int score {};\n    std::cin >> score;\n    std::cout << gradeLetter(score) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nchar gradeLetter(int score)\n{\n    if (score >= 90)\n        return 'A';\n    else if (score >= 80)\n        return 'B';\n    else if (score >= 70)\n        return 'C';\n    else if (score >= 60)\n        return 'D';\n    else\n        return 'F';\n}\n\nint main()\n{\n    int score {};\n    std::cin >> score;\n    std::cout << gradeLetter(score) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: B grade",
+        "is_sample": true,
+        "stdin": "85\n",
+        "expected_stdout": "B"
+      },
+      {
+        "label": "Hidden: exact 90 boundary",
+        "is_sample": false,
+        "stdin": "90\n",
+        "expected_stdout": "A"
+      },
+      {
+        "label": "Hidden: failing score",
+        "is_sample": false,
+        "stdin": "55\n",
+        "expected_stdout": "F"
+      }
+    ]
+  }
+]

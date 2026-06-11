@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <cassert>\nint divide(int a, int b)\n{\n    assert(b != 0);\n    return a / b;\n}\nint main()\n{\n    std::cout << divide(10, 2) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`b` is `2`, which is not `0`, so the `assert` passes silently and `10 / 2` returns `5`. Learners who think `assert` prints something or changes control flow are wrong — a passing assert is invisible."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A user types `abc` when your program uses `std::cin >> age` to read an integer. Which of the following best describes what happens next?",
+    "options": {
+      "a": "`age` is set to `0` and extraction succeeds",
+      "b": "The extraction fails, `std::cin` enters a fail state, and `age` is left unchanged",
+      "c": "The program terminates immediately with an error",
+      "d": "`age` is set to the ASCII value of `'a'`"
+    },
+    "answer": "b",
+    "explanation_md": "When `>>` cannot parse the input as the target type, extraction fails, `std::cin` enters a fail state, and the variable is not modified. The characters stay in the buffer. You must call `std::cin.clear()` followed by `std::cin.ignore(...)` to recover."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to recover from bad input and re-prompt the user. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x;\n    if (!(std::cin >> x))\n    {\n        std::cin.clear();\n        std::cout << \"Invalid input, try again\\n\";\n        std::cin >> x;\n    }\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`std::cin.clear()` should be called after the second read, not before",
+      "b": "The bad characters are still in the buffer after `clear()`; the second read will fail again immediately",
+      "c": "`if (!(std::cin >> x))` always evaluates to true even on valid input",
+      "d": "`std::cin.clear()` sets `x` to zero, so the output is always `0`"
+    },
+    "answer": "b",
+    "explanation_md": "`std::cin.clear()` resets the fail flag but leaves the unread characters in the buffer. Without calling `std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n')` to discard those characters, the next `>>` attempts to parse the same bad input and fails again."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint classify(int n)\n{\n    if (n >= 0)\n        return 1;\n    return -1;\n}\nint main()\n{\n    std::cout << (classify(0) == 1 ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (classify(-5) == -1 ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "PASS\nPASS",
+    "explanation_md": "`classify(0)` returns `1` because `0 >= 0` is true; `classify(-5)` returns `-1` because `-5 >= 0` is false. Both comparisons succeed, so both lines print `PASS`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes when to use `assert` versus `std::cin` validation for input checking?",
+    "options": {
+      "a": "Use `assert` for user-facing input and `std::cin` validation only for internal functions",
+      "b": "Use `assert` to enforce programmer-guaranteed invariants; use `std::cin` validation for expected user-input errors that should be handled gracefully",
+      "c": "`assert` and `std::cin` validation are interchangeable; choose whichever is shorter to write",
+      "d": "Use `assert` only in debug builds; use `std::cin` validation only in release builds"
+    },
+    "answer": "b",
+    "explanation_md": "`assert` is for conditions that should never be false in correct code — programmer invariants. A user typing the wrong thing is an expected event that your program should handle gracefully with a message and a retry, not an assertion that crashes the process."
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a **compound type** in C++?",
+    "options": {
+      "a": "`int` — a 32-bit signed integer",
+      "b": "`double` — a 64-bit floating-point number",
+      "c": "`int*` — a pointer to an integer",
+      "d": "`bool` — a boolean value"
+    },
+    "answer": "c",
+    "explanation_md": "`int*` is a compound type because it is built from another type (`int`) and carries extra meaning (\"holds the address of an int\"). `int`, `double`, and `bool` are all fundamental types — they stand alone and do not reference another type in their definition."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 10 };\n    int y { 20 };\n    std::cout << x << ' ' << y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10 20",
+    "explanation_md": "Both `x` and `y` are fundamental `int` variables. They hold their own values independently and are printed with a space between them, producing `10 20` followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given this declaration:\n\n```cpp\nint* a, b;\n```\n\nWhat are the types of `a` and `b`?",
+    "options": {
+      "a": "Both `a` and `b` are `int*` (pointer to int)",
+      "b": "`a` is `int*` and `b` is `int`",
+      "c": "`a` is `int` and `b` is `int*`",
+      "d": "This line does not compile"
+    },
+    "answer": "b",
+    "explanation_md": "In C++ declaration syntax the `*` binds to the variable name, not the type keyword. So `int* a, b` declares `a` as `int*` (pointer to int) and `b` as plain `int`. This is a well-known gotcha; the fix is one declaration per line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes the relationship between a compound type and the type it is built from?",
+    "options": {
+      "a": "A compound type copies the underlying type's value into a new location.",
+      "b": "A compound type is constructed from another (underlying) type and expresses a relationship with it.",
+      "c": "A compound type is always more memory-efficient than a fundamental type.",
+      "d": "A compound type can only be used inside functions, not at global scope."
+    },
+    "answer": "b",
+    "explanation_md": "By definition, a compound type is built on top of another type. For example, `int*` is built on `int` and expresses \"address of an int.\" Compound types do not inherently copy or optimize memory, and they can appear at any scope."
+  }
+]

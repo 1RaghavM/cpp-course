@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int i = 5;\n    double d = 2.0;\n    double result = i / d;\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2.5",
+    "explanation_md": "Because one operand of `/` is `double`, the other (`int i`) is converted to `double(5.0)` by the usual arithmetic conversions. The division `5.0 / 2.0` is floating-point division, producing `2.5`. The integer division rule only applies when both operands are integers."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 7;\n    int y = 2;\n    float ratio = x / y;\n    std::cout << ratio << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "Both `x` and `y` are `int`. There is no `float` or `double` in the division expression, so the usual arithmetic conversions keep both as `int` and the division is integer division, producing `3`. The result `3` is then converted to `float 3.0` for assignment to `ratio`, but the truncation has already happened."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In the expression `unsigned int u = 5; int s = -1; auto result = u + s;`, what is the type of `result` and what value does it hold?",
+    "options": {
+      "a": "`int`, value is `4` — the usual signed arithmetic result.",
+      "b": "`unsigned int`, value is `4` — because `-1` wraps to `4294967295u`, and `5 + 4294967295` wraps back to `4` modulo 2^32.",
+      "c": "`double`, because mixing signed and unsigned always produces floating-point.",
+      "d": "`long long`, because mixing signed and unsigned always widens to the largest signed type."
+    },
+    "answer": "b",
+    "explanation_md": "When `unsigned int` and `int` meet in an expression, the `int` is converted to `unsigned int`. `-1` becomes `4294967295u`. Adding `5 + 4294967295` modulo 2^32 gives `4`. The result type is `unsigned int`, not `int` or `double`. This is the signed/unsigned mismatch trap."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which type wins in the expression `long double x = 3.14L; double y = 2.0; auto z = x + y;`?",
+    "options": {
+      "a": "`double`, because it is the most common floating-point type.",
+      "b": "`float`, because it is the base floating-point type.",
+      "c": "`long double`, because it is the highest-ranked floating-point type in the hierarchy.",
+      "d": "`int`, because floating-point and integers cannot mix."
+    },
+    "answer": "c",
+    "explanation_md": "The usual arithmetic conversions promote both operands to the highest-ranked type present. `long double` is ranked above `double`, so `y` is converted to `long double` and the addition is done in `long double` precision. The result `z` has type `long double`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer calculates an average but gets `2` instead of `2.5`. Where is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    unsigned int total = 10;\n    int count = 4;\n    double avg = total / count;\n    std::cout << avg << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`total / count` converts `count` to `unsigned int`, performs integer division giving `2`, and only then converts to `double`. The float conversion is too late.",
+      "b": "`double avg = total / count;` is a narrowing conversion that the compiler should reject.",
+      "c": "`unsigned int` cannot be divided by `int`; the types must match exactly.",
+      "d": "The variable `avg` should be `float`, not `double`, to hold integer-derived values."
+    },
+    "answer": "a",
+    "explanation_md": "The usual arithmetic conversions see `unsigned int` and `int` as operands of `/`. `count` is converted to `unsigned int`, and then `10u / 4u` is unsigned integer division giving `2u`. That integer `2` is then implicitly converted to `double 2.0` for the assignment. The fix is to introduce a `double` operand in the division: `total / static_cast<double>(count)` or `static_cast<double>(total) / count`."
+  }
+]

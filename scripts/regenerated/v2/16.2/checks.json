@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> a(3);\n    std::vector<int> b { 3 };\n    std::cout << a.size() << '\\n';\n    std::cout << b.size() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n1",
+    "explanation_md": "`a(3)` uses the size constructor: it creates 3 elements all initialized to 0, so `a.size()` is 3. `b { 3 }` uses list initialization with the single value 3, producing a vector of 1 element, so `b.size()` is 1. The distinction between parentheses and braces is critical with `std::vector`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which declaration creates a `std::vector<double>` containing seven elements each set to `0.0`?",
+    "options": {
+      "a": "`std::vector<double> v { 7 };`",
+      "b": "`std::vector<double> v(7);`",
+      "c": "`std::vector<double> v = 7;`",
+      "d": "`std::vector<double> v { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };`"
+    },
+    "answer": "b",
+    "explanation_md": "`v(7)` uses the size constructor: 7 default-initialized doubles (all 0.0). Option a creates a vector with one element whose value is 7. Option c does not compile. Option d works but requires writing 7 explicit zeros. The size constructor `v(N)` is the idiomatic solution."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 10, 20, 30 };\n    std::cout << v.size() << '\\n';\n    std::cout << v[v.size() - 1] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n30",
+    "explanation_md": "`v.size()` returns 3 because the vector has three elements. `v[v.size() - 1]` is `v[2]`, which is the last element, 30. Using `v.size() - 1` is the correct way to access the last element."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What header must be included to use `std::vector`?",
+    "options": {
+      "a": "`<array>`",
+      "b": "`<list>`",
+      "c": "`<vector>`",
+      "d": "`<container>`"
+    },
+    "answer": "c",
+    "explanation_md": "`std::vector` is defined in the `<vector>` header. `<array>` is for `std::array`, `<list>` is for `std::list`, and `<container>` does not exist as a standard header."
+  }
+]

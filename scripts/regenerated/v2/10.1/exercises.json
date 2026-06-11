@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Predict Implicit Conversion Results",
+    "prompt_md": "## Goal\nWrite a program that reads two integers from stdin and prints the result of dividing them as an integer, and then the result of dividing them as a double.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space (b is never zero; 1 ≤ b ≤ 1000; -1000 ≤ a ≤ 1000).\n\n## Output\n- Line 1: `Integer division: X` where X is `a / b` using integer division.\n- Line 2: `Double division: Y` where Y is the result of the division computed as a floating-point division (convert at least one operand to double before dividing). Print Y with exactly one decimal place using `std::fixed` and `std::setprecision(1)` from `<iomanip>`.\n\n## Requirements\n1. Use integer division (no casts) for line 1.\n2. For line 2, assign `a` to a `double` variable first, then divide by `b` — demonstrating that implicit conversion at assignment time changes the type.\n3. Both values must be computed from the same two input integers.\n4. Edge case covered by hidden tests: negative numerator (e.g., `-7 2`).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: compute and print integer division result\n    // Format: \"Integer division: X\"\n\n    // TODO: assign a to a double, then divide by b to get floating-point result\n    // Format: \"Double division: Y\" with 1 decimal place\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int intResult = a / b;\n    std::cout << \"Integer division: \" << intResult << \"\\n\";\n\n    double da = a;  // implicit int -> double conversion\n    double dblResult = da / b;\n    std::cout << \"Double division: \" << std::fixed << std::setprecision(1) << dblResult << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7 divided by 2",
+        "is_sample": true,
+        "stdin": "7 2",
+        "expected_stdout": "Integer division: 3\nDouble division: 3.5"
+      },
+      {
+        "label": "Hidden: negative numerator",
+        "is_sample": false,
+        "stdin": "-7 2",
+        "expected_stdout": "Integer division: -3\nDouble division: -3.5"
+      },
+      {
+        "label": "Hidden: evenly divisible",
+        "is_sample": false,
+        "stdin": "10 5",
+        "expected_stdout": "Integer division: 2\nDouble division: 2.0"
+      }
+    ]
+  },
+  {
+    "title": "Spot the Silent Conversion Bug",
+    "prompt_md": "## Goal\nThe program below is supposed to compute a weighted average: 60% of score A plus 40% of score B, printing the result with two decimal places. It compiles, but produces the wrong answer. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space (0 ≤ a, b ≤ 100).\n\n## Output\n- One line: `Weighted average: X.XX` where X.XX is `a * 0.6 + b * 0.4` printed with exactly two decimal places.\n\n## Requirements\n1. The bug is caused by integer arithmetic being used where floating-point arithmetic is needed.\n2. The fix must ensure the multiplication uses floating-point arithmetic for both terms.\n3. Edge case covered by hidden tests: inputs where the fractional part differs from integer truncation (e.g., `70 85`).\n4. Do not change the output format.\n\n## Notes\n- Use `std::fixed` and `std::setprecision(2)` from `<iomanip>` for formatting (already present in starter).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    // BUG: this computes integer arithmetic first, then converts\n    int weightedA = a * 6 / 10;\n    int weightedB = b * 4 / 10;\n    double result = weightedA + weightedB;\n\n    std::cout << \"Weighted average: \"\n              << std::fixed << std::setprecision(2)\n              << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    double weightedA = a * 0.6;\n    double weightedB = b * 0.4;\n    double result = weightedA + weightedB;\n\n    std::cout << \"Weighted average: \"\n              << std::fixed << std::setprecision(2)\n              << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 80 and 90",
+        "is_sample": true,
+        "stdin": "80 90",
+        "expected_stdout": "Weighted average: 84.00"
+      },
+      {
+        "label": "Hidden: fractional result differs from integer truncation",
+        "is_sample": false,
+        "stdin": "70 85",
+        "expected_stdout": "Weighted average: 76.00"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "Weighted average: 0.00"
+      }
+    ]
+  }
+]

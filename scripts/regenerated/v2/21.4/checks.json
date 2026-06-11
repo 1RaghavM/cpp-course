@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Pair {\n    int m_a{}, m_b{};\npublic:\n    Pair(int a, int b) : m_a{a}, m_b{b} {}\n    friend std::ostream& operator<<(std::ostream& out, const Pair& p);\n};\n\nstd::ostream& operator<<(std::ostream& out, const Pair& p) {\n    out << p.m_a << \",\" << p.m_b;\n    return out;\n}\n\nint main() {\n    Pair x{3, 5};\n    Pair y{7, 2};\n    std::cout << x << \" \" << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3,5 7,2",
+    "explanation_md": "`operator<<` prints each pair as `a,b`. Chaining works because the operator returns `out` by reference. So `x` prints `3,5`, a space is printed, then `y` prints `7,2`, then a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must `operator<<` for a user-defined type be a free function rather than a member function?",
+    "options": {
+      "a": "Because `operator<<` cannot access private members when defined as a member function",
+      "b": "Because as a member function the left operand would be the user-defined object, not `std::ostream`, which reverses the natural `cout << obj` syntax",
+      "c": "Because `std::ostream` is a final class and cannot be used on the right side of a member function",
+      "d": "Because member functions cannot return references"
+    },
+    "answer": "b",
+    "explanation_md": "For a member function, the implicit `this` is the left operand. So `operator<<` as a member of `Foo` would require writing `foo << std::cout` — backwards from the intended syntax `std::cout << foo`. Free functions let you put `std::ostream` on the left."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code compiles but the chaining behavior is wrong:\n\n```cpp\n#include <iostream>\n\nclass Tag {\n    int m_id{};\npublic:\n    Tag(int id) : m_id{id} {}\n    friend void operator<<(std::ostream& out, const Tag& t);\n};\n\nvoid operator<<(std::ostream& out, const Tag& t) {\n    out << \"Tag(\" << t.m_id << \")\";\n}\n\nint main() {\n    Tag a{1}, b{2};\n    std::cout << a << \" and \" << b << \"\\n\";  // error here\n    return 0;\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "The `friend` declaration is unnecessary — `operator<<` doesn't need access to private members",
+      "b": "`operator<<` returns `void` instead of `std::ostream&`, so chaining fails because the result of `std::cout << a` is `void`, which cannot be the left operand of the next `<<`",
+      "c": "The `out` parameter should be `const std::ostream&` to allow writing to const streams",
+      "d": "Friend functions cannot have `void` return types"
+    },
+    "answer": "b",
+    "explanation_md": "Chaining `std::cout << a << \" and \"` requires that `std::cout << a` returns something with a `<<` operator. Returning `void` means the result of the first `<<` is `void`, and you cannot call `void << \" and \"`. The fix: return `std::ostream&` and add `return out;`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In `operator>>(std::istream& in, MyClass& obj)`, why is `obj` taken by non-const reference?",
+    "options": {
+      "a": "Because `std::istream` requires non-const objects as right-hand operands",
+      "b": "Because the operator must fill `obj` with data read from the stream, so it must be able to modify it",
+      "c": "Because `const` references cannot be passed to functions that take `std::istream&`",
+      "d": "Because non-const references are faster than const references"
+    },
+    "answer": "b",
+    "explanation_md": "The purpose of `operator>>` is to populate the object. If `obj` were passed by value, modifications would apply to a temporary copy that is discarded. If passed by `const` reference, you could not modify it at all. It must be a non-const reference so the changes persist in the caller's object."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <sstream>\n\nclass Num {\n    int m_v{};\npublic:\n    Num() = default;\n    Num(int v) : m_v{v} {}\n    friend std::istream& operator>>(std::istream& in, Num& n);\n    friend std::ostream& operator<<(std::ostream& out, const Num& n);\n};\n\nstd::istream& operator>>(std::istream& in, Num& n) {\n    in >> n.m_v;\n    return in;\n}\n\nstd::ostream& operator<<(std::ostream& out, const Num& n) {\n    out << n.m_v * 2;\n    return out;\n}\n\nint main() {\n    std::istringstream ss{\"7\"};\n    Num x;\n    ss >> x;\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "14",
+    "explanation_md": "`ss >> x` reads 7 into `x.m_v`. `std::cout << x` calls `operator<<` which prints `m_v * 2 = 14`. This also shows that I/O operators work on any stream, not just `std::cin`/`std::cout`."
+  }
+]

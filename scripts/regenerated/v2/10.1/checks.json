@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int a = 7;\n    int b = 2;\n    double result = a / b;\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "Both `a` and `b` are `int`, so `a / b` performs integer division and produces `3`. Only then is that `int 3` implicitly converted to `double 3.0` and stored in `result`. The conversion happens after the division, not before, so the decimal part is already gone."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When the compiler evaluates `int i = 5; double d = i;`, what actually happens to the variable `i`?",
+    "options": {
+      "a": "The variable `i` is reinterpreted in memory as a double, changing its binary layout.",
+      "b": "The variable `i` is unchanged; a new temporary `double` value `5.0` is created.",
+      "c": "The variable `i` is deleted from memory and replaced by `d`.",
+      "d": "The compiler throws an error because you cannot assign an int to a double."
+    },
+    "answer": "b",
+    "explanation_md": "Implicit conversion always produces a **new value** in the target type. The original variable `i` remains an `int` holding `5`. The compiler creates a new `double` value `5.0` and initializes `d` with it. `i` itself is untouched."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    bool flag = true;\n    int n = flag;\n    std::cout << n << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "`bool` is implicitly convertible to `int`. The value `true` maps to `1` and `false` maps to `0`. So `n` is initialized to `1`, and `1` is printed. The output is not `\"true\"` because no special formatting is applied."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the MOST dangerous type of implicit conversion because it can silently lose information?",
+    "options": {
+      "a": "`bool` to `int`",
+      "b": "`int` to `double`",
+      "c": "`double` to `int`",
+      "d": "`char` to `int`"
+    },
+    "answer": "c",
+    "explanation_md": "`double` to `int` truncates the fractional part — for example, `3.9` becomes `3`. This is called a narrowing conversion and can silently discard information. The other conversions listed (bool→int, int→double, char→int) are widening conversions that preserve all information."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wants to compute the average of two integers and print it with a decimal point. The output is `2` instead of `2.5`. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 3;\n    int y = 2;\n    double avg = x + y / 2;\n    std::cout << avg << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The assignment to `double avg` should be `double avg = (x + y) / 2.0;`.",
+      "b": "The `+` operator cannot be used with mixed int/double types.",
+      "c": "`x` needs to be explicitly declared as `double` before the expression.",
+      "d": "`std::cout` cannot print a `double` without format specifiers."
+    },
+    "answer": "a",
+    "explanation_md": "Due to operator precedence, `y / 2` is evaluated first as integer division giving `1`, then `x + 1` gives `3`, and then `3` converts to `3.0`. The programmer wants `(x + y) / 2.0` — grouping the addition and using a `double` divisor so the division is floating-point."
+  }
+]

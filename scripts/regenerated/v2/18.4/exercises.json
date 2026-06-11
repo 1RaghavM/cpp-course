@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Convert and compare chrono durations",
+    "prompt_md": "## Goal\nRead a number of microseconds from stdin, convert it to milliseconds using `std::chrono::duration_cast`, and print both values.\n\n## Input\n- Line 1: integer U (0 <= U <= 1,000,000) — a number of microseconds\n\n## Output\nPrint exactly two lines:\n```\nMicroseconds: <U>\nMilliseconds: <M>\n```\nwhere `<M>` is `U` converted to whole milliseconds (truncated, not rounded).\n\n## Requirements\n1. Create a `std::chrono::microseconds` duration from the input value.\n2. Use `std::chrono::duration_cast<std::chrono::milliseconds>` to convert it.\n3. Use `.count()` to extract the integer value from each duration before printing.\n4. U = 0 must print `Milliseconds: 0`.\n5. U = 999 must print `Milliseconds: 0` (truncation, not rounding).\n6. U = 1500 must print `Milliseconds: 1`.\n\n## Notes\n- Include `<chrono>`.\n- `std::chrono::microseconds` can be constructed from an integer: `std::chrono::microseconds dur(value);`",
+    "starter_code": "#include <iostream>\n#include <chrono>\n\nint main()\n{\n    long long u;\n    std::cin >> u;\n\n    // TODO: create a std::chrono::microseconds duration from u\n    // TODO: convert it to milliseconds using duration_cast\n    // TODO: print both values using .count()\n\n    std::cout << \"Microseconds: \" << u << '\\n';\n    // std::cout << \"Milliseconds: \" << ??? << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <chrono>\n\nint main()\n{\n    long long u;\n    std::cin >> u;\n\n    std::chrono::microseconds dur(u);\n    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur);\n\n    std::cout << \"Microseconds: \" << dur.count() << '\\n';\n    std::cout << \"Milliseconds: \" << ms.count() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2500 microseconds",
+        "is_sample": true,
+        "stdin": "2500\n",
+        "expected_stdout": "Microseconds: 2500\nMilliseconds: 2\n"
+      },
+      {
+        "label": "Hidden: truncation below 1ms",
+        "is_sample": false,
+        "stdin": "999\n",
+        "expected_stdout": "Microseconds: 999\nMilliseconds: 0\n"
+      },
+      {
+        "label": "Hidden: exact millisecond boundary",
+        "is_sample": false,
+        "stdin": "5000\n",
+        "expected_stdout": "Microseconds: 5000\nMilliseconds: 5\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the elapsed-time formatter",
+    "prompt_md": "## Goal\nComplete the function `formatDuration` that takes a number of microseconds and returns a formatted string describing the duration in both microseconds and milliseconds.\n\n## Input\n- Line 1: integer N (1 <= N <= 5) — number of durations to format\n- Lines 2..N+1: one integer per line — microseconds value (0 <= value <= 1,000,000)\n\n## Output\nFor each value, print one line: `<us>us = <ms>ms` where `<us>` is the original microseconds and `<ms>` is the truncated milliseconds.\n\n## Requirements\n1. Implement `std::string formatDuration(long long microseconds)` using `std::chrono::microseconds` and `std::chrono::duration_cast<std::chrono::milliseconds>`.\n2. The function must return a `std::string` in the exact format `<us>us = <ms>ms`.\n3. In `main`, read each value, call `formatDuration`, and print the result.\n4. Include `<string>` and `<chrono>`.\n\n## Notes\n- Use `std::to_string` to convert integers to strings inside `formatDuration`.",
+    "starter_code": "#include <iostream>\n#include <chrono>\n#include <string>\n\n// TODO: implement formatDuration\n// Takes a microseconds value, returns a string like \"2500us = 2ms\"\nstd::string formatDuration(long long us)\n{\n    // TODO: create std::chrono::microseconds dur(us)\n    // TODO: duration_cast to milliseconds\n    // TODO: build and return the formatted string using std::to_string\n    (void)us;\n    return \"\";  // placeholder\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i)\n    {\n        long long us;\n        std::cin >> us;\n        std::cout << formatDuration(us) << '\\n';\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <chrono>\n#include <string>\n\nstd::string formatDuration(long long microseconds)\n{\n    std::chrono::microseconds dur(microseconds);\n    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur);\n    return std::to_string(dur.count()) + \"us = \" + std::to_string(ms.count()) + \"ms\";\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i)\n    {\n        long long us;\n        std::cin >> us;\n        std::cout << formatDuration(us) << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three durations",
+        "is_sample": true,
+        "stdin": "3\n1500\n999\n3000\n",
+        "expected_stdout": "1500us = 1ms\n999us = 0ms\n3000us = 3ms\n"
+      },
+      {
+        "label": "Hidden: zero microseconds",
+        "is_sample": false,
+        "stdin": "1\n0\n",
+        "expected_stdout": "0us = 0ms\n"
+      },
+      {
+        "label": "Hidden: large value",
+        "is_sample": false,
+        "stdin": "2\n1000000\n500500\n",
+        "expected_stdout": "1000000us = 1000ms\n500500us = 500ms\n"
+      }
+    ]
+  }
+]

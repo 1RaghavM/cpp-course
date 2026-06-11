@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <utility>\n\nstruct S {\n    S() = default;\n    S(S&&) noexcept { std::cout << \"moved\\n\"; }\n    S(const S&) { std::cout << \"copied\\n\"; }\n};\n\nstruct R {\n    R() = default;\n    R(R&&) { std::cout << \"moved\\n\"; }\n    R(const R&) { std::cout << \"copied\\n\"; }\n};\n\nint main() {\n    S s;\n    S s2 = std::move_if_noexcept(s);\n    R r;\n    R r2 = std::move_if_noexcept(r);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "moved\ncopied",
+    "explanation_md": "`std::move_if_noexcept(s)` returns an rvalue reference because `S`'s move constructor is `noexcept`, so `S s2 = ...` invokes the move constructor. `std::move_if_noexcept(r)` returns a const lvalue reference because `R`'s move constructor is not `noexcept`, so `R r2 = ...` invokes the copy constructor."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary purpose of `std::move_if_noexcept` compared to `std::move`?",
+    "options": {
+      "a": "It moves objects faster than std::move by skipping runtime checks.",
+      "b": "It returns an rvalue when the type's move constructor is noexcept, and a const lvalue (forcing a copy) otherwise, preserving strong exception guarantees in generic code.",
+      "c": "It prevents moves entirely and always produces copies for safety.",
+      "d": "It is a drop-in replacement for std::move that adds bounds checking."
+    },
+    "answer": "b",
+    "explanation_md": "`std::move_if_noexcept` chooses at compile time between move and copy semantics based on the `noexcept` annotation of the type's move constructor. When a move could throw, falling back to copy preserves the strong exception guarantee because the original object remains intact if the copy fails. `std::move` always produces an rvalue regardless of the `noexcept` status."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which scenario is the most appropriate use of `std::move_if_noexcept`?",
+    "options": {
+      "a": "Swapping two `std::string` objects, which always have noexcept move constructors.",
+      "b": "A generic template function that relocates elements of unknown type T and must maintain strong exception safety.",
+      "c": "Any time you want to avoid writing std::move.",
+      "d": "Moving a unique_ptr to transfer ownership inside a class."
+    },
+    "answer": "b",
+    "explanation_md": "`std::move_if_noexcept` is designed for generic code that works with arbitrary types. When `T`'s move might throw, the template gets a copy instead, keeping the strong exception guarantee intact. For concrete types like `std::string` or `std::unique_ptr` (whose move constructors are `noexcept`), `std::move` and `std::move_if_noexcept` are equivalent — so using `move_if_noexcept` there is harmless but unnecessary."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <utility>\n#include <string>\n\nint main() {\n    std::string src = \"hello\";\n    std::string dst = std::move_if_noexcept(src);\n    std::cout << dst << \"\\n\";\n    std::cout << src.empty() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "hello\n1",
+    "explanation_md": "`std::string`'s move constructor is `noexcept`, so `move_if_noexcept(src)` produces an rvalue reference and the move constructor runs. `dst` receives \"hello\" and `src` is left in the moved-from (empty) state. `src.empty()` returns `true`, which prints as `1` without `std::boolalpha`."
+  }
+]

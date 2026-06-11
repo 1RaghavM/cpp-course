@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Day\n{\n    monday,\n    tuesday,\n    wednesday,\n    thursday,\n    friday,\n};\n\nint main()\n{\n    Day d { thursday };\n    std::cout << d << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "Enumerators in an unscoped enumeration get integer values starting at 0 unless you specify them. `monday` is 0, `tuesday` is 1, `wednesday` is 2, and `thursday` is 3. Printing an unscoped enumerator with `std::cout` implicitly converts it to its underlying integer."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Code\n{\n    a = 5,\n    b,\n    c = 10,\n    d,\n};\n\nint main()\n{\n    Code x { d };\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "11",
+    "explanation_md": "Explicit enumerator values restart the counter. `a` is 5, `b` is 6 (one more than the previous), `c` is set to 10, and `d` is 11 (one more than the previous). Many learners assume `d` is 8 because it is the fourth enumerator, but enumerator numbering follows the previous explicit value, not the position."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this code?\n\n```cpp\n#include <iostream>\n\nenum Light\n{\n    red,\n    yellow,\n    green,\n};\n\nint main()\n{\n    Light current { 2 };\n    std::cout << current << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The brace initialization syntax `{ 2 }` is illegal in C++.",
+      "b": "An int cannot be implicitly converted to an unscoped enumeration; the line fails to compile.",
+      "c": "The enumerator `green` should be listed before `red` for the program to compile.",
+      "d": "The variable name `current` is a reserved keyword."
+    },
+    "answer": "b",
+    "explanation_md": "Although the underlying integer value of `green` is 2, the language does not implicitly convert `int` to an enumeration type. Brace initialization actually catches this and flags a narrowing/conversion error at compile time. To assign an integer to an enum variable, you would need an explicit `static_cast<Light>(2)`, which is the topic of the next lesson."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the following code fail to compile?\n\n```cpp\nenum Animal { cat, dog };\nenum Verb   { cat, run };\n```",
+    "options": {
+      "a": "An enum cannot have only two enumerators.",
+      "b": "Unscoped enumerators leak into the enclosing scope, so the second `cat` collides with the first.",
+      "c": "Each enum must be defined inside a function.",
+      "d": "Enumerators must always be uppercase."
+    },
+    "answer": "b",
+    "explanation_md": "Unscoped enumerations place their enumerator names directly into the surrounding scope. After `enum Animal { cat, dog };`, the name `cat` already exists at file scope; the second enum tries to introduce another `cat` and the compiler reports a redeclaration. This is a key motivation for `enum class` (covered later), which scopes its names."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Integer Arithmetic Reporter",
+    "prompt_md": "## Goal\nWrite a program that reads two integers from stdin and prints their quotient and remainder using integer division.\n\n## Input\n- Line 1: integer `a` (−10000 ≤ a ≤ 10000)\n- Line 2: integer `b` (1 ≤ b ≤ 10000, guaranteed non-zero)\n\n## Output\nPrint exactly two lines:\n- Line 1: `Quotient: <a/b>`\n- Line 2: `Remainder: <a%b>`\n\n## Requirements\n1. Declare `a` and `b` as `int` variables, initialised with brace initialisation.\n2. Use `/` for the quotient and `%` for the remainder.\n3. Output labels are exactly `Quotient: ` and `Remainder: ` (capital first letter, colon, space).\n4. Integer division truncates toward zero — the program must rely on that behaviour.\n5. The hidden tests include cases where `a` is negative to verify truncation-toward-zero behaviour.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: compute quotient (a / b) and remainder (a % b)\n    // TODO: print \"Quotient: <value>\" then \"Remainder: <value>\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int quotient{a / b};\n    int remainder{a % b};\n\n    std::cout << \"Quotient: \"  << quotient  << \"\\n\";\n    std::cout << \"Remainder: \" << remainder << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 17 and 5",
+        "is_sample": true,
+        "stdin": "17\n5\n",
+        "expected_stdout": "Quotient: 3\nRemainder: 2"
+      },
+      {
+        "label": "Hidden: negative dividend",
+        "is_sample": false,
+        "stdin": "-17\n5\n",
+        "expected_stdout": "Quotient: -3\nRemainder: -2"
+      },
+      {
+        "label": "Hidden: exact division",
+        "is_sample": false,
+        "stdin": "100\n4\n",
+        "expected_stdout": "Quotient: 25\nRemainder: 0"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Long Long Arithmetic Function",
+    "prompt_md": "## Goal\nComplete the function `computeStats` that takes two `long long` parameters and returns their sum, difference, and product packed into a printed report.\n\n## Input\n- Line 1: integer `x` (−1 000 000 000 ≤ x ≤ 1 000 000 000)\n- Line 2: integer `y` (−1 000 000 000 ≤ y ≤ 1 000 000 000)\n\n## Output\nPrint exactly three lines:\n- Line 1: `Sum: <x+y>`\n- Line 2: `Diff: <x-y>`\n- Line 3: `Product: <x*y>`\n\n## Requirements\n1. Complete the body of `void computeStats(long long x, long long y)` — do not change its signature.\n2. Use `long long` arithmetic throughout the function body to avoid overflow on the product (up to 10¹⁸).\n3. Labels are exactly `Sum: `, `Diff: `, `Product: ` (capital first letter, colon, space).\n4. `main` already reads the two values and calls `computeStats` — do not modify `main`.\n5. The hidden tests use values whose product exceeds `INT_MAX`, verifying `long long` arithmetic.",
+    "starter_code": "#include <iostream>\n\nvoid computeStats(long long x, long long y) {\n    // TODO: print \"Sum: \" followed by x + y\n    // TODO: print \"Diff: \" followed by x - y\n    // TODO: print \"Product: \" followed by x * y\n    // Use long long arithmetic to avoid overflow\n    (void)x; (void)y;  // suppress unused-parameter warnings in the stub\n}\n\nint main() {\n    long long x{};\n    long long y{};\n    std::cin >> x >> y;\n    computeStats(x, y);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid computeStats(long long x, long long y) {\n    std::cout << \"Sum: \"     << x + y << \"\\n\";\n    std::cout << \"Diff: \"    << x - y << \"\\n\";\n    std::cout << \"Product: \" << x * y << \"\\n\";\n}\n\nint main() {\n    long long x{};\n    long long y{};\n    std::cin >> x >> y;\n    computeStats(x, y);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 100 and 7",
+        "is_sample": true,
+        "stdin": "100\n7\n",
+        "expected_stdout": "Sum: 107\nDiff: 93\nProduct: 700"
+      },
+      {
+        "label": "Hidden: large product needs long long",
+        "is_sample": false,
+        "stdin": "1000000000\n1000000000\n",
+        "expected_stdout": "Sum: 2000000000\nDiff: 0\nProduct: 1000000000000000000"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-500\n200\n",
+        "expected_stdout": "Sum: -300\nDiff: -700\nProduct: -100000"
+      }
+    ]
+  }
+]

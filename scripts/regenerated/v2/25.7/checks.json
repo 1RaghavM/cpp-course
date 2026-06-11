@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `= 0` at the end of a virtual function declaration mean?",
+    "options": {
+      "a": "The function returns zero by default when not overridden.",
+      "b": "The function is pure virtual: the class is abstract and derived classes must implement it.",
+      "c": "The function is deleted and cannot be called.",
+      "d": "The function is assigned a default implementation of returning zero."
+    },
+    "answer": "b",
+    "explanation_md": "`= 0` marks a pure virtual function. It means the base class declares the contract but provides no implementation. Any class containing such a function becomes abstract and cannot be instantiated directly. Derived classes must override it to become concrete."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Animal {\npublic:\n    virtual std::string sound() const = 0;\n    virtual ~Animal() = default;\n};\n\nclass Cat : public Animal {\npublic:\n    std::string sound() const override { return \"meow\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    std::string sound() const override { return \"woof\"; }\n};\n\nvoid speak(const Animal& a) {\n    std::cout << a.sound() << \"\\n\";\n}\n\nint main() {\n    Cat c;\n    Dog d;\n    speak(c);\n    speak(d);\n}\n```",
+    "options": null,
+    "answer": "meow\nwoof",
+    "explanation_md": "`speak` takes a `const Animal&`, so virtual dispatch applies. `c.sound()` returns `\"meow\"` and `d.sound()` returns `\"woof\"`. Each is printed on its own line. There is no trailing blank line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is an interface class in C++?",
+    "options": {
+      "a": "A class that has at least one virtual function.",
+      "b": "A class with data members and pure virtual functions.",
+      "c": "A class consisting entirely of pure virtual functions and a virtual destructor, with no data members.",
+      "d": "A class whose constructor is private so external code cannot create it directly."
+    },
+    "answer": "c",
+    "explanation_md": "An interface class contains only pure virtual functions (plus a virtual destructor) and no data members or regular member functions. It describes capabilities without carrying state. Options (a) and (b) describe abstract classes with possible extras; option (d) describes a different pattern entirely."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual void greet() const = 0;\n    virtual ~Base() = default;\n};\n\nclass Child : public Base {\npublic:\n    void greet() const override { std::cout << \"hello\\n\"; }\n};\n\nint main() {\n    Child c;\n    Base* p = &c;\n    p->greet();\n}\n```",
+    "options": null,
+    "answer": "hello",
+    "explanation_md": "`p` is a `Base*` pointing at a `Child` object. Because `greet` is virtual, dispatch goes to `Child::greet`, which prints `hello`. The newline is included but trailing whitespace is stripped by the checker."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class `Derived` inherits from abstract base `Base` but does not override `Base`'s pure virtual function `compute()`. What happens when you write `Derived d;`?",
+    "options": {
+      "a": "It compiles fine; `compute()` just returns zero.",
+      "b": "It compiles fine; calling `d.compute()` causes a runtime error.",
+      "c": "Compile error: `Derived` is still abstract because `compute()` is not overridden.",
+      "d": "Linker error: the vtable for `Derived` is missing an entry."
+    },
+    "answer": "c",
+    "explanation_md": "If a derived class fails to override every pure virtual function it inherits, it remains abstract. Attempting to instantiate it is a compile error, not a linker or runtime error. The error message will name `compute` as the unimplemented function."
+  }
+]

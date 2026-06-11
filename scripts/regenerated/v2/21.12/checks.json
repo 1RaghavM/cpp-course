@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Pt {\n    int m_x, m_y;\npublic:\n    Pt(int x, int y) : m_x{x}, m_y{y} {}\n    Pt& operator=(const Pt& rhs) {\n        m_x = rhs.m_x;\n        m_y = rhs.m_y;\n        return *this;\n    }\n    void print() const { std::cout << m_x << ',' << m_y << '\\n'; }\n};\nint main() {\n    Pt a{1, 2}, b{3, 4}, c{5, 6};\n    a = b = c;\n    a.print();\n    b.print();\n}\n```",
+    "options": null,
+    "answer": "5,6\n5,6",
+    "explanation_md": "`b = c` assigns `c` to `b` and returns `b&`. Then `a = b` assigns that `b` (now `5,6`) to `a`. Both `a` and `b` end up as `5,6`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must `operator=` return `ClassName&` (a reference) rather than `ClassName` (a value)?",
+    "options": {
+      "a": "Returning by value would prevent the compiler from optimizing the copy.",
+      "b": "Chained assignments like `a = b = c` require the operator to return the actual modified object, not a temporary copy.",
+      "c": "The language standard mandates reference return for all operators.",
+      "d": "Returning by value causes undefined behavior."
+    },
+    "answer": "b",
+    "explanation_md": "In `a = b = c`, `b = c` must return `b` itself so the outer `a = (result)` operates on `b`. A copy return would give `a` a copy of `b` after assignment, which technically works for simple types but breaks for types that prohibit copying, and it is universally inconsistent with built-in behavior. The standard mandates return-by-reference specifically to support chaining."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The class below manages a heap buffer. Can you identify the dangerous bug in `operator=`?\n\n```cpp\nclass Buf {\n    int* m_data;\n    int  m_len;\npublic:\n    Buf(int len) : m_len{len}, m_data{new int[len]{}} {}\n    ~Buf() { delete[] m_data; }\n    Buf& operator=(const Buf& rhs) {\n        delete[] m_data;\n        m_len  = rhs.m_len;\n        m_data = new int[m_len];\n        return *this;\n    }\n};\n```",
+    "options": {
+      "a": "The destructor should use `delete` not `delete[]`.",
+      "b": "There is no self-assignment guard; if `buf = buf` is called, `delete[] m_data` destroys the data that `rhs.m_data` still points to.",
+      "c": "`m_len` should be copied after `new`, not before.",
+      "d": "`operator=` should be a non-member friend function."
+    },
+    "answer": "b",
+    "explanation_md": "Without `if (this == &rhs) return *this;`, self-assignment deletes the array first and then tries to read its size and contents through `rhs.m_data`, which is now a dangling pointer. The fix is to add the self-assignment guard before any mutation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is an *assignment*, not an *initialization*?\n\n```\nBox a{1, 2};\n(A) Box b = a;\n(B) Box c{a};\n(C) a = Box{3, 4};\n(D) Box d(a);\n```",
+    "options": {
+      "a": "A",
+      "b": "B",
+      "c": "C",
+      "d": "D"
+    },
+    "answer": "c",
+    "explanation_md": "A, B, and D all declare and initialize a *new* object — they call the copy constructor. Only C operates on an *already-constructed* object (`a`), so it calls `operator=`. The `Box{3,4}` on the right creates a temporary, and `operator=` copies it into `a`."
+  }
+]

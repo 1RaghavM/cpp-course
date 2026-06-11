@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Consteval Bit Width Checker",
+    "prompt_md": "## Goal\nWrite a `consteval` function `bit_width(unsigned int n)` that returns the minimum number of bits needed to represent the value `n` (i.e., floor(log2(n)) + 1 for n > 0, and 0 for n == 0). Use it to print the bit width of a compile-time constant and then of a value read from stdin via a `constexpr` wrapper.\n\n## Input\n- Line 1: one non-negative integer N (0 <= N <= 1000000000).\n\n## Output\n- Line 1: `Compile-time: <bits>` for bit_width(255).\n- Line 2: `Runtime: <bits>` for the value from stdin (computed by a `constexpr` wrapper).\n\n## Requirements\n1. `bit_width` must be `consteval`.\n2. `constexpr unsigned int ct = bit_width(255);` must compile.\n3. For the runtime path, write a separate `constexpr` function `bit_width_cx(unsigned int n)` with identical logic and call it on the stdin value.\n4. `bit_width(0)` returns 0. `bit_width(1)` returns 1.\n5. N is at most 1000000000 (fits in unsigned int).\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement consteval unsigned bit_width(unsigned int n)\n// Returns minimum bits to represent n.\n// bit_width(0) == 0, bit_width(1) == 1, bit_width(255) == 8\nconsteval unsigned int bit_width(unsigned int n) {\n    (void)n;\n    return 0;  // stub\n}\n\n// TODO: implement constexpr version for runtime use\nconstexpr unsigned int bit_width_cx(unsigned int n) {\n    (void)n;\n    return 0;  // stub\n}\n\nint main() {\n    constexpr unsigned int ct = bit_width(255);\n    std::cout << \"Compile-time: \" << ct << \"\\n\";\n\n    unsigned int x;\n    std::cin >> x;\n    std::cout << \"Runtime: \" << bit_width_cx(x) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconsteval unsigned int bit_width(unsigned int n) {\n    if (n == 0) return 0;\n    unsigned int count = 0;\n    while (n > 0) {\n        ++count;\n        n >>= 1;\n    }\n    return count;\n}\n\nconstexpr unsigned int bit_width_cx(unsigned int n) {\n    if (n == 0) return 0;\n    unsigned int count = 0;\n    while (n > 0) {\n        ++count;\n        n >>= 1;\n    }\n    return count;\n}\n\nint main() {\n    constexpr unsigned int ct = bit_width(255);\n    std::cout << \"Compile-time: \" << ct << \"\\n\";\n\n    unsigned int x;\n    std::cin >> x;\n    std::cout << \"Runtime: \" << bit_width_cx(x) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: N=256",
+        "is_sample": true,
+        "stdin": "256\n",
+        "expected_stdout": "Compile-time: 8\nRuntime: 9"
+      },
+      {
+        "label": "Hidden: N=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Compile-time: 8\nRuntime: 0"
+      },
+      {
+        "label": "Hidden: N=1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Compile-time: 8\nRuntime: 1"
+      }
+    ]
+  },
+  {
+    "title": "Consteval Parity — Find the Bug",
+    "prompt_md": "## Goal\nThe program below uses a `consteval` function `is_even(int n)` to print whether a compile-time constant is even or odd. It contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: one integer (0 to 1000).\n\n## Output\n- Line 1: `Compile-time 7 is: odd`\n- Line 2: `Runtime <N> is: even` or `Runtime <N> is: odd` depending on stdin.\n\n## Requirements\n1. `is_even` must remain `consteval`.\n2. Compile-time output must always say `Compile-time 7 is: odd`.\n3. Runtime output uses a `constexpr` function `is_even_cx` with the same logic.\n4. The bug is a logic error; the starter compiles.\n",
+    "starter_code": "#include <iostream>\n\nconsteval bool is_even(int n) {\n    return n % 2 == 1;  // bug: checks for odd, not even\n}\n\nconstexpr bool is_even_cx(int n) {\n    return n % 2 == 1;  // same bug\n}\n\nint main() {\n    constexpr bool ct = is_even(7);\n    std::cout << \"Compile-time 7 is: \" << (ct ? \"even\" : \"odd\") << \"\\n\";\n\n    int x;\n    std::cin >> x;\n    std::cout << \"Runtime \" << x << \" is: \" << (is_even_cx(x) ? \"even\" : \"odd\") << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconsteval bool is_even(int n) {\n    return n % 2 == 0;\n}\n\nconstexpr bool is_even_cx(int n) {\n    return n % 2 == 0;\n}\n\nint main() {\n    constexpr bool ct = is_even(7);\n    std::cout << \"Compile-time 7 is: \" << (ct ? \"even\" : \"odd\") << \"\\n\";\n\n    int x;\n    std::cin >> x;\n    std::cout << \"Runtime \" << x << \" is: \" << (is_even_cx(x) ? \"even\" : \"odd\") << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: N=4 (even)",
+        "is_sample": true,
+        "stdin": "4\n",
+        "expected_stdout": "Compile-time 7 is: odd\nRuntime 4 is: even"
+      },
+      {
+        "label": "Hidden: N=9 (odd)",
+        "is_sample": false,
+        "stdin": "9\n",
+        "expected_stdout": "Compile-time 7 is: odd\nRuntime 9 is: odd"
+      },
+      {
+        "label": "Hidden: N=0 (even)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Compile-time 7 is: odd\nRuntime 0 is: even"
+      }
+    ]
+  }
+]

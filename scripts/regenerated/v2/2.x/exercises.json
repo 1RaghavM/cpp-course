@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Namespace Arithmetic Reporter",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints four values: their sum, difference, product, and the result of integer division — each computed by a dedicated function inside a `math` namespace.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space. `b` is always non-zero. Both values satisfy -500 ≤ a, b ≤ 500 and b ≠ 0.\n\n## Output\n- Line 1: `Sum: X`\n- Line 2: `Diff: X`\n- Line 3: `Product: X`\n- Line 4: `Quotient: X`\n\nwhere each X is the corresponding result of `a op b` (integer division truncates toward zero).\n\n## Requirements\n1. Define all four functions (`add`, `subtract`, `multiply`, `divide`) inside a `namespace math`.\n2. Forward declare all four before `main`.\n3. Call each from `main` using the `math::` prefix.\n4. No other output; no trailing spaces.\n\n## Notes\n- All four operations use integer arithmetic — no `double` or `float`.",
+    "starter_code": "#include <iostream>\n\nnamespace math {\n    int add(int a, int b);\n    int subtract(int a, int b);\n    int multiply(int a, int b);\n    int divide(int a, int b);\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Sum: \"      << math::add(a, b)      << \"\\n\";\n    std::cout << \"Diff: \"     << math::subtract(a, b) << \"\\n\";\n    std::cout << \"Product: \"  << math::multiply(a, b) << \"\\n\";\n    std::cout << \"Quotient: \" << math::divide(a, b)   << \"\\n\";\n    return 0;\n}\n\nnamespace math {\n    int add(int a, int b) {\n        // TODO: return a + b\n        return 0;\n    }\n    int subtract(int a, int b) {\n        // TODO: return a - b\n        return 0;\n    }\n    int multiply(int a, int b) {\n        // TODO: return a * b\n        return 0;\n    }\n    int divide(int a, int b) {\n        // TODO: return a / b\n        return 0;\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nnamespace math {\n    int add(int a, int b);\n    int subtract(int a, int b);\n    int multiply(int a, int b);\n    int divide(int a, int b);\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Sum: \"      << math::add(a, b)      << \"\\n\";\n    std::cout << \"Diff: \"     << math::subtract(a, b) << \"\\n\";\n    std::cout << \"Product: \"  << math::multiply(a, b) << \"\\n\";\n    std::cout << \"Quotient: \" << math::divide(a, b)   << \"\\n\";\n    return 0;\n}\n\nnamespace math {\n    int add(int a, int b) {\n        return a + b;\n    }\n    int subtract(int a, int b) {\n        return a - b;\n    }\n    int multiply(int a, int b) {\n        return a * b;\n    }\n    int divide(int a, int b) {\n        return a / b;\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 3",
+        "is_sample": true,
+        "stdin": "10 3\n",
+        "expected_stdout": "Sum: 13\nDiff: 7\nProduct: 30\nQuotient: 3"
+      },
+      {
+        "label": "Hidden: negative dividend",
+        "is_sample": false,
+        "stdin": "-12 4\n",
+        "expected_stdout": "Sum: -8\nDiff: -16\nProduct: -48\nQuotient: -3"
+      },
+      {
+        "label": "Hidden: both negative",
+        "is_sample": false,
+        "stdin": "-7 -2\n",
+        "expected_stdout": "Sum: -9\nDiff: -5\nProduct: 14\nQuotient: 3"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Volume and Surface Area Calculator",
+    "prompt_md": "## Goal\nComplete the functions `volume` and `surfaceArea` for a rectangular box, then `main` reads the dimensions and prints both results.\n\n## Input\n- Line 1: three integers `l`, `w`, `h` separated by spaces (1 ≤ l, w, h ≤ 100).\n\n## Output\n- Line 1: `Volume: X` where `X = l * w * h`.\n- Line 2: `Surface: X` where `X = 2 * (l*w + l*h + w*h)`.\n\n## Requirements\n1. Complete `int volume(int l, int w, int h)` — returns `l * w * h`.\n2. Complete `int surfaceArea(int l, int w, int h)` — returns `2 * (l*w + l*h + w*h)`.\n3. Both functions are forward declared and called from `main` already.\n4. No other output.\n\n## Notes\n- This exercise combines function parameters, return values, and arithmetic — core chapter 2 skills.",
+    "starter_code": "#include <iostream>\n\nint volume(int l, int w, int h);\nint surfaceArea(int l, int w, int h);\n\nint main() {\n    int l, w, h;\n    std::cin >> l >> w >> h;\n    std::cout << \"Volume: \"  << volume(l, w, h)     << \"\\n\";\n    std::cout << \"Surface: \" << surfaceArea(l, w, h) << \"\\n\";\n    return 0;\n}\n\nint volume(int l, int w, int h) {\n    // TODO: return l * w * h\n    return 0;\n}\n\nint surfaceArea(int l, int w, int h) {\n    // TODO: return 2 * (l*w + l*h + w*h)\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint volume(int l, int w, int h);\nint surfaceArea(int l, int w, int h);\n\nint main() {\n    int l, w, h;\n    std::cin >> l >> w >> h;\n    std::cout << \"Volume: \"  << volume(l, w, h)     << \"\\n\";\n    std::cout << \"Surface: \" << surfaceArea(l, w, h) << \"\\n\";\n    return 0;\n}\n\nint volume(int l, int w, int h) {\n    return l * w * h;\n}\n\nint surfaceArea(int l, int w, int h) {\n    return 2 * (l * w + l * h + w * h);\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2 3 4",
+        "is_sample": true,
+        "stdin": "2 3 4\n",
+        "expected_stdout": "Volume: 24\nSurface: 52"
+      },
+      {
+        "label": "Hidden: cube 5x5x5",
+        "is_sample": false,
+        "stdin": "5 5 5\n",
+        "expected_stdout": "Volume: 125\nSurface: 150"
+      },
+      {
+        "label": "Hidden: flat slab 10 1 1",
+        "is_sample": false,
+        "stdin": "10 1 1\n",
+        "expected_stdout": "Volume: 10\nSurface: 42"
+      }
+    ]
+  }
+]

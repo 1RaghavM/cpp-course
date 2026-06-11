@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Restricted Print Function",
+    "prompt_md": "## Goal\nWrite a function `printValue(int x)` that prints an integer. Add deleted overloads so that passing a `double` or a `bool` is a compile error.\n\n## Input\nLine 1: an integer N.\n\n## Output\nLine 1: `Value: <N>`\n\n## Requirements\n1. `printValue(int x)` prints `Value: ` followed by x.\n2. `printValue(double)` must be declared as deleted.\n3. `printValue(bool)` must be declared as deleted.\n4. `main` reads one `int` from stdin and calls `printValue` on it.\n5. No extra blank lines.\n\n## Notes\n- The deleted overloads are declarations; no function body is written for them.\n- The starter already declares the deleted signatures — implement the `int` version only.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement printValue(int x) to print \"Value: \" then x\nvoid printValue(int x) {\n    (void)x; // TODO\n}\n\nvoid printValue(double) = delete;\nvoid printValue(bool)   = delete;\n\nint main() {\n    int n;\n    std::cin >> n;\n    printValue(n);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printValue(int x) {\n    std::cout << \"Value: \" << x << \"\\n\";\n}\n\nvoid printValue(double) = delete;\nvoid printValue(bool)   = delete;\n\nint main() {\n    int n;\n    std::cin >> n;\n    printValue(n);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10",
+        "is_sample": true,
+        "stdin": "10",
+        "expected_stdout": "Value: 10"
+      },
+      {
+        "label": "Hidden: 0",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "Value: 0"
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-7",
+        "expected_stdout": "Value: -7"
+      }
+    ]
+  },
+  {
+    "title": "Square Root Guard — Complete the Function",
+    "prompt_md": "## Goal\nComplete the function `safeRoot(int x)` that computes the integer square root (using `static_cast<int>` on `std::sqrt`). A deleted `double` overload prevents callers from accidentally passing a floating-point value.\n\n## Input\nLine 1: an integer N (0 ≤ N ≤ 10000).\n\n## Output\nLine 1: `Root: <floor(sqrt(N))>` — the integer part of the square root.\n\n## Requirements\n1. `safeRoot(int x)` returns `static_cast<int>(std::sqrt(static_cast<double>(x)))`.\n2. `safeRoot(double)` is declared deleted — do not remove it.\n3. `main` reads one `int`, calls `safeRoot`, and prints `Root: ` followed by the result.\n4. N = 0 must print `Root: 0`.\n\n## Notes\n- `#include <cmath>` is already provided.",
+    "starter_code": "#include <iostream>\n#include <cmath>\n\n// TODO: implement safeRoot(int x)\n// Return static_cast<int>(std::sqrt(static_cast<double>(x)))\nint safeRoot(int x) {\n    return 0; // TODO\n}\n\nvoid safeRoot(double) = delete;  // do not remove this\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Root: \" << safeRoot(n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cmath>\n\nint safeRoot(int x) {\n    return static_cast<int>(std::sqrt(static_cast<double>(x)));\n}\n\nvoid safeRoot(double) = delete;\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Root: \" << safeRoot(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 16",
+        "is_sample": true,
+        "stdin": "16",
+        "expected_stdout": "Root: 4"
+      },
+      {
+        "label": "Hidden: 0",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "Root: 0"
+      },
+      {
+        "label": "Hidden: 10",
+        "is_sample": false,
+        "stdin": "10",
+        "expected_stdout": "Root: 3"
+      }
+    ]
+  }
+]

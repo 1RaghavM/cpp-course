@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "In a multi-file C++ program, `int score { 0 };` is defined in `game.cpp`. Another file, `display.cpp`, needs to read `score`. What should `display.cpp` contain?",
+    "options": {
+      "a": "`int score { 0 };` — redefine it with the same initial value.",
+      "b": "`extern int score;` — a forward declaration that the linker resolves.",
+      "c": "`static int score;` — mark it static so the linker finds it.",
+      "d": "Nothing — global variables are automatically visible in all files."
+    },
+    "answer": "b",
+    "explanation_md": "`extern int score;` is a forward declaration telling the compiler that `score` is defined elsewhere with external linkage. The linker connects the declaration in `display.cpp` to the definition in `game.cpp`. Redefining the variable (option a) violates the One Definition Rule and causes a linker error. `static` makes a name *less* visible, not more."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the linkage of `const int limit { 50 };` defined at file scope in a `.cpp` file, with no other keywords?",
+    "options": {
+      "a": "External — `const` globals are visible to all translation units.",
+      "b": "Internal — `const` globals default to internal linkage in C++.",
+      "c": "No linkage — `const` makes the variable local to the block.",
+      "d": "External — all global variables have external linkage by default."
+    },
+    "answer": "b",
+    "explanation_md": "`const` (and `constexpr`) global variables default to internal linkage in C++. Only non-`const` global variables default to external linkage. To give a `const` global external linkage you must explicitly add `extern` to the definition."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assume these two translation units are linked together. What does the program print?\n\n```cpp\n// unit1.cpp\nint value { 7 };\n\nvoid doubleIt()\n{\n    value = value * 2;\n}\n```\n\n```cpp\n// unit2.cpp (contains main)\n#include <iostream>\nextern int value;\nvoid doubleIt();\n\nint main()\n{\n    doubleIt();\n    std::cout << value << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "14",
+    "explanation_md": "`value` is defined in `unit1.cpp` with external linkage (non-`const` global, no `static`). `unit2.cpp` forward-declares it with `extern int value;`. `doubleIt()` modifies the single shared `value`, setting it to `7 * 2 = 14`. `main` then prints that shared value."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer writes `extern int x { 0 };` in one `.cpp` file and `extern int x;` in another. Is this valid?",
+    "options": {
+      "a": "No — `extern` and an initializer cannot appear together.",
+      "b": "Yes — `extern int x { 0 };` is the definition; `extern int x;` is the declaration.",
+      "c": "Yes — both lines are declarations; the linker synthesizes a definition automatically.",
+      "d": "No — `extern int x;` without an initializer is a compile error."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, `extern` combined with an initializer (`extern int x { 0 };`) is still a definition — it allocates storage. `extern` without an initializer (`extern int x;`) is a pure declaration. So the two lines together correctly express one definition and one forward declaration."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer has two files. After linking, the program crashes with a linker error about multiply defined `counter`. What is the bug?\n\n```cpp\n// file_a.cpp\nint counter { 0 };\nvoid bumpCounter() { ++counter; }\n```\n\n```cpp\n// file_b.cpp\n#include <iostream>\nint counter { 0 };  // intended as forward declaration\nvoid bumpCounter();\nint main()\n{\n    bumpCounter();\n    std::cout << counter << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`bumpCounter()` is defined in `file_a.cpp` but not declared `extern` in `file_b.cpp`.",
+      "b": "`int counter { 0 };` in `file_b.cpp` is a second definition, not a forward declaration; it should be `extern int counter;`.",
+      "c": "`counter` in `file_a.cpp` needs `static` to make it externally visible.",
+      "d": "The `void bumpCounter();` forward declaration in `file_b.cpp` is missing `extern`."
+    },
+    "answer": "b",
+    "explanation_md": "`int counter { 0 };` in `file_b.cpp` is a full definition (with initialization), creating a second `counter` — a One Definition Rule violation. The fix is `extern int counter;` (no initializer), which is a declaration only. The linker then resolves both files' uses to the single definition in `file_a.cpp`."
+  }
+]

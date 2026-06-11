@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Initialization with List Syntax",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and computes and prints several values. Use list initialization `{}` for all integer variables. For the floating-point division, multiply `a` by `1.0` before dividing (making it a double expression) and store in a `double` variable declared with `=`.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space (-1000 ≤ a, b ≤ 1000, b ≠ 0).\n\n## Output\n- Line 1: `Sum: X` where X is a + b.\n- Line 2: `Product: Y` where Y is a * b.\n- Line 3: `As double: Z` where Z is `a * 1.0 / b`, printed with exactly 2 decimal places.\n\n## Requirements\n1. Declare `a`, `b`, `sum`, and `product` using brace initialization `{}`.\n2. For the double result, use `double result = a * 1.0 / b;` (copy-initialization with `=` is acceptable here because the expression is already `double`).\n3. Use `std::fixed` and `std::setprecision(2)` from `<iomanip>` for the double output.\n4. Hidden tests cover a = 0 and negative values.\n\n## Notes\n- `int x{5};` uses list initialization. `double d = expr;` uses copy-initialization — both are valid, the difference matters when you would be narrowing.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: compute sum using list initialization\n    // int sum{...};\n    // std::cout << \"Sum: \" << sum << \"\\n\";\n\n    // TODO: compute product using list initialization\n    // int product{...};\n    // std::cout << \"Product: \" << product << \"\\n\";\n\n    // TODO: compute double division: a * 1.0 / b (already a double expression)\n    // double result = ...;\n    // std::cout << \"As double: \" << ... << \"\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int sum{a + b};\n    std::cout << \"Sum: \" << sum << \"\\n\";\n\n    int product{a * b};\n    std::cout << \"Product: \" << product << \"\\n\";\n\n    // a * 1.0 promotes a to double; result is already double, so = is safe\n    double result = a * 1.0 / b;\n    std::cout << \"As double: \" << std::fixed << std::setprecision(2) << result << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 6 and 4",
+        "is_sample": true,
+        "stdin": "6 4",
+        "expected_stdout": "Sum: 10\nProduct: 24\nAs double: 1.50"
+      },
+      {
+        "label": "Hidden: zero numerator",
+        "is_sample": false,
+        "stdin": "0 5",
+        "expected_stdout": "Sum: 5\nProduct: 0\nAs double: 0.00"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-3 2",
+        "expected_stdout": "Sum: -1\nProduct: -6\nAs double: -1.50"
+      }
+    ]
+  },
+  {
+    "title": "Classify Initialization Safety",
+    "prompt_md": "## Goal\nComplete the function `isSafeConversion` that returns `true` if an `int` value fits safely in a `short` (i.e., its value is between −32768 and 32767 inclusive), and `false` otherwise.\n\n## Input\n- Line 1: a single integer value (may be large or negative).\n\n## Output\n- One line: `Safe: yes` if the value fits in a `short`, or `Safe: no` otherwise.\n\n## Requirements\n1. Implement `bool isSafeConversion(int value)` by checking whether `value` is in [−32768, 32767].\n2. `main` reads the integer, calls `isSafeConversion`, and prints the result.\n3. Hidden tests cover the exact boundary values 32767 (safe) and 32768 (not safe), and a negative boundary −32768 (safe).\n4. Do not use a `short` variable to do the check — compare against the integer constants directly.",
+    "starter_code": "#include <iostream>\n\n// TODO: return true if value fits in a short (range: -32768 to 32767)\nbool isSafeConversion(int value) {\n    return false; // TODO: replace with correct check\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    bool safe{isSafeConversion(n)};\n    std::cout << \"Safe: \" << (safe ? \"yes\" : \"no\") << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nbool isSafeConversion(int value) {\n    return value >= -32768 && value <= 32767;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    bool safe{isSafeConversion(n)};\n    std::cout << \"Safe: \" << (safe ? \"yes\" : \"no\") << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1000 (safe)",
+        "is_sample": true,
+        "stdin": "1000",
+        "expected_stdout": "Safe: yes"
+      },
+      {
+        "label": "Hidden: boundary 32767 (safe)",
+        "is_sample": false,
+        "stdin": "32767",
+        "expected_stdout": "Safe: yes"
+      },
+      {
+        "label": "Hidden: boundary 32768 (not safe)",
+        "is_sample": false,
+        "stdin": "32768",
+        "expected_stdout": "Safe: no"
+      }
+    ]
+  }
+]

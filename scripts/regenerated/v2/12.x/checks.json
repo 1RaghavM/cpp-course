@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the primary advantage of `std::optional<T>` over returning a sentinel value like `-1` to signal absence?",
+    "options": {
+      "a": "`std::optional` is faster at runtime because it avoids branch instructions",
+      "b": "The type itself communicates that a result may be absent, so callers cannot silently ignore the possibility",
+      "c": "`std::optional` automatically prints an error message when accessed while empty",
+      "d": "Returning `-1` is a compile error for unsigned types, so optional is the only choice"
+    },
+    "answer": "b",
+    "explanation_md": "`std::optional`'s main advantage is that the type system makes optionality explicit — a caller receiving `std::optional<int>` cannot treat it as a plain `int` without an explicit unwrap, which forces acknowledgment of the empty case. Option d describes a real limitation of sentinel values but is not the primary advantage, and option c is false — `std::optional` does not print errors, it causes undefined behaviour on `*opt` or throws on `.value()` when empty."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nvoid addTen(int& x) { x += 10; }\n\nint main() {\n    int a = 5;\n    const int& cr = a;\n    auto copy = cr;\n    addTen(copy);\n    std::cout << a << ' ' << copy << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5 15",
+    "explanation_md": "`auto copy = cr` deduces `int` — both the reference and the top-level `const` are stripped, giving a mutable copy. `addTen(copy)` adds 10 to the copy, making it 15. `a` is untouched because `copy` is independent. Learners who print `15 15` forgot that `auto` stripped the reference; learners who expect a compile error on `addTen(copy)` forgot that `copy` is a non-const `int`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function returns `int&`. Under what condition does this cause undefined behaviour?",
+    "options": {
+      "a": "When the caller stores the result in an `auto` variable",
+      "b": "When the referenced variable is a local variable of the function",
+      "c": "When the caller passes the return value to another function",
+      "d": "When the function has more than one return statement"
+    },
+    "answer": "b",
+    "explanation_md": "A local variable's lifetime ends when the function returns. Returning a reference to it leaves the caller with a reference to destroyed storage — undefined behaviour. The reference must point to something that outlives the call: a parameter passed by reference, a static variable, or data on the heap. The other options describe legal patterns."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <optional>\n\nstd::optional<int> half(int n) {\n    if (n % 2 != 0) return std::nullopt;\n    return n / 2;\n}\n\nint main() {\n    std::cout << half(8).value_or(-1) << '\\n';\n    std::cout << half(7).value_or(-1) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "4\n-1",
+    "explanation_md": "`half(8)` returns 4 (8 is even), so `value_or(-1)` returns 4. `half(7)` returns `std::nullopt` (7 is odd), so `value_or(-1)` returns the fallback -1. `value_or` is safe to call on an empty optional — that is its entire purpose."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between `const int*` and `int* const`?",
+    "options": {
+      "a": "`const int*` prevents modifying the pointer; `int* const` prevents modifying the value",
+      "b": "`const int*` prevents modifying the value pointed to; `int* const` prevents reseating the pointer",
+      "c": "They are identical — both prevent modification of the pointed-to value",
+      "d": "`int* const` is not valid C++ syntax"
+    },
+    "answer": "b",
+    "explanation_md": "Read from right to left: `const int*` is a pointer to `const int` — you cannot write through the pointer. `int* const` is a `const` pointer to `int` — you can write through it, but you cannot make it point somewhere else. Option a reverses the meanings. Knowing this distinction matters when choosing parameter types for functions that should read-only access vs. functions that may modify the pointee."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compile-Time Power Function",
+    "prompt_md": "## Goal\nWrite a `constexpr` function `power(int base, int exp)` that returns `base` raised to the non-negative integer power `exp`, then use it to print two results.\n\n## Input\n- Line 1: two integers separated by a space — `base` and `exp` (runtime values).\n\n## Output\n- Line 1: `Compile-time: <value>` where `<value>` is `power(2, 10)` computed at compile time.\n- Line 2: `Runtime: <value>` where `<value>` is `power(base, exp)` computed from stdin.\n\n## Requirements\n1. `power` must be declared `constexpr`.\n2. Use `constexpr int ct = power(2, 10);` for the compile-time result.\n3. Read two integers from stdin for the runtime call.\n4. `exp` is always >= 0. When `exp` is 0, the result is 1.\n5. The runtime `base` is in [-100, 100] and `exp` is in [0, 9].\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement power(int base, int exp) as a constexpr function\n// It should return base^exp. When exp == 0, return 1.\nconstexpr int power(int base, int exp) {\n    // TODO: replace this stub with the correct implementation\n    (void)base; (void)exp;\n    return 0;\n}\n\nint main() {\n    constexpr int ct = power(2, 10);  // must work at compile time\n    std::cout << \"Compile-time: \" << ct << \"\\n\";\n\n    int base, exp;\n    std::cin >> base >> exp;\n    std::cout << \"Runtime: \" << power(base, exp) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconstexpr int power(int base, int exp) {\n    int result = 1;\n    for (int i = 0; i < exp; ++i)\n        result *= base;\n    return result;\n}\n\nint main() {\n    constexpr int ct = power(2, 10);\n    std::cout << \"Compile-time: \" << ct << \"\\n\";\n\n    int base, exp;\n    std::cin >> base >> exp;\n    std::cout << \"Runtime: \" << power(base, exp) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: base=3 exp=4",
+        "is_sample": true,
+        "stdin": "3 4\n",
+        "expected_stdout": "Compile-time: 1024\nRuntime: 81"
+      },
+      {
+        "label": "Hidden: exp=0 gives 1",
+        "is_sample": false,
+        "stdin": "7 0\n",
+        "expected_stdout": "Compile-time: 1024\nRuntime: 1"
+      },
+      {
+        "label": "Hidden: negative base",
+        "is_sample": false,
+        "stdin": "-2 3\n",
+        "expected_stdout": "Compile-time: 1024\nRuntime: -8"
+      }
+    ]
+  },
+  {
+    "title": "Constexpr Range Clamp — Find the Bug",
+    "prompt_md": "## Goal\nThe program below reads a value from stdin and clamps it to [lo, hi] using a `constexpr` function, then prints the clamped value. It contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: three integers separated by spaces — `value`, `lo`, `hi`.\n\n## Output\n- Print exactly one line: `Clamped: <result>` where `<result>` is the value clamped to [lo, hi].\n\n## Requirements\n1. If `value < lo`, print `lo`.\n2. If `value > hi`, print `hi`.\n3. Otherwise print `value`.\n4. The function must be `constexpr`.\n5. `lo <= hi` is always guaranteed.\n\n## Notes\n- The bug is a logic error; the program compiles.\n",
+    "starter_code": "#include <iostream>\n\nconstexpr int clamp(int value, int lo, int hi) {\n    if (value < lo) return hi;   // bug is here\n    if (value > hi) return lo;   // bug is here\n    return value;\n}\n\nint main() {\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << \"Clamped: \" << clamp(value, lo, hi) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconstexpr int clamp(int value, int lo, int hi) {\n    if (value < lo) return lo;\n    if (value > hi) return hi;\n    return value;\n}\n\nint main() {\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << \"Clamped: \" << clamp(value, lo, hi) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value below range",
+        "is_sample": true,
+        "stdin": "3 10 20\n",
+        "expected_stdout": "Clamped: 10"
+      },
+      {
+        "label": "Hidden: value above range",
+        "is_sample": false,
+        "stdin": "25 10 20\n",
+        "expected_stdout": "Clamped: 20"
+      },
+      {
+        "label": "Hidden: value within range",
+        "is_sample": false,
+        "stdin": "15 10 20\n",
+        "expected_stdout": "Clamped: 15"
+      }
+    ]
+  }
+]

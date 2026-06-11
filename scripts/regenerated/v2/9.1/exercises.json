@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Test a Square Function with PASS/FAIL Output",
+    "prompt_md": "## Goal\nWrite a function `square` that returns the square of an integer, then write test cases in `main` that print `PASS` or `FAIL` for each check.\n\n## Input\nNo stdin. All test inputs are hard-coded in the source.\n\n## Output\nPrint one line per test case in the format `PASS` or `FAIL`.\nExactly 4 test cases, in this order:\n- `square(0)` expected 0\n- `square(3)` expected 9\n- `square(-4)` expected 16\n- `square(10)` expected 100\n\n## Requirements\n1. Implement `int square(int n)` that returns `n * n`.\n2. In `main`, call `square` with each test input and compare to the expected value.\n3. Print `PASS` if the result matches the expected value, `FAIL` otherwise.\n4. Print exactly 4 lines; each line contains only `PASS` or `FAIL`, followed by a newline.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement square(int n) that returns n * n\nint square(int n) {\n    return 0; // replace this\n}\n\nint main() {\n    // TODO: write 4 PASS/FAIL test cases:\n    // square(0) == 0\n    // square(3) == 9\n    // square(-4) == 16\n    // square(10) == 100\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint square(int n) {\n    return n * n;\n}\n\nint main() {\n    std::cout << (square(0)   == 0   ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (square(3)   == 9   ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (square(-4)  == 16  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (square(10)  == 100 ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all four checks pass",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS"
+      },
+      {
+        "label": "Hidden: starter stub returns zeros so all fail",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS"
+      },
+      {
+        "label": "Hidden: solution consistency",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug in isPositive",
+    "prompt_md": "## Goal\nThe program below tests a function `isPositive` that is supposed to return `true` when a number is strictly greater than zero. The function has a bug. Find and fix it so all tests print `PASS`.\n\n## Input\nNo stdin.\n\n## Output\nPrint exactly 5 lines, each `PASS` or `FAIL`.\n\n## Requirements\n1. `isPositive(1)` must return `true`.\n2. `isPositive(0)` must return `false` (zero is not positive).\n3. `isPositive(-5)` must return `false`.\n4. `isPositive(100)` must return `true`.\n5. `isPositive(-1)` must return `false`.\n6. Do not change `main`; only fix the function body.",
+    "starter_code": "#include <iostream>\n\n// BUG: this function has exactly one logic error\nbool isPositive(int n) {\n    return n >= 0;  // should be strictly greater than zero\n}\n\nint main() {\n    std::cout << (isPositive(1)    == true  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(0)    == false ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(-5)   == false ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(100)  == true  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(-1)   == false ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nbool isPositive(int n) {\n    return n > 0;\n}\n\nint main() {\n    std::cout << (isPositive(1)    == true  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(0)    == false ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(-5)   == false ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(100)  == true  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (isPositive(-1)   == false ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: buggy version fails test 2",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS\nPASS"
+      },
+      {
+        "label": "Hidden: all five pass after fix",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS\nPASS"
+      },
+      {
+        "label": "Hidden: solution consistency check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS\nPASS"
+      }
+    ]
+  }
+]

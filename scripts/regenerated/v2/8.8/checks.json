@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 5;\n    while (x > 0) {\n        std::cout << x << \"\\n\";\n        x -= 2;\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\n3\n1",
+    "explanation_md": "x starts at 5 (> 0, prints 5), decrements to 3 (> 0, prints 3), decrements to 1 (> 0, prints 1), decrements to -1 (not > 0, loop exits). Three values are printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "How many times does the following loop body execute?\n\n```cpp\nint n = 10;\nwhile (n < 5) {\n    std::cout << n << \"\\n\";\n    ++n;\n}\n```",
+    "options": {
+      "a": "10 times",
+      "b": "5 times",
+      "c": "0 times — the body never runs",
+      "d": "Infinite times — the condition is always true"
+    },
+    "answer": "c",
+    "explanation_md": "n is already 10 when the loop is first evaluated. 10 < 5 is false, so the condition fails immediately and the body is never executed. A while loop can run zero times if the condition is false from the start."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int sum = 0;\n    int i = 1;\n    while (i <= 4) {\n        sum += i;\n        ++i;\n    }\n    std::cout << sum << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "i goes 1, 2, 3, 4 and sum accumulates 1+2+3+4 = 10. After i becomes 5, the condition 5 <= 4 is false and the loop exits, then 10 is printed."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print the numbers 1 through 3. What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    int count = 1;\n    while (count < 3);\n    {\n        std::cout << count << \"\\n\";\n        ++count;\n    }\n    return 0;\n}\n```",
+    "options": {
+      "a": "The condition should be `count <= 3` not `count < 3`",
+      "b": "A semicolon after the condition creates an empty infinite loop; the block below it is not the loop body",
+      "c": "The loop variable must be declared inside the while condition",
+      "d": "`count` must be initialized to 0 instead of 1"
+    },
+    "answer": "b",
+    "explanation_md": "The semicolon immediately after `while (count < 3)` makes the while loop have an empty body. Since count never changes in that empty body, the loop spins forever on `count < 3` (which stays true). The block below is a regular compound statement that never executes. Removing the semicolon fixes it."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which change to the loop below would make it print exactly `1 2 3 4 5`?\n\n```cpp\nint i = 1;\nwhile (i < 5) {\n    std::cout << i << \" \";\n    ++i;\n}\n```",
+    "options": {
+      "a": "Change `i < 5` to `i <= 5`",
+      "b": "Change `++i` to `i += 2`",
+      "c": "Initialize `i = 0`",
+      "d": "Add `std::cout << \"\\n\";` after the loop"
+    },
+    "answer": "a",
+    "explanation_md": "With `i < 5`, the loop stops after printing 4 (i becomes 5 and fails the check). Changing to `i <= 5` allows i=5 to pass the check, printing 5 before i becomes 6 and the loop exits. This is the classic off-by-one fix."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "Input is `abc\\n`. What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int n = 99;\n    if (std::cin >> n) {\n        std::cout << \"ok \" << n << \"\\n\";\n    } else {\n        std::cout << \"fail \" << n << \"\\n\";\n    }\n}\n```",
+    "options": null,
+    "answer": "fail 99",
+    "explanation_md": "Extracting `abc` into an `int` fails, setting `failbit`. The condition is false, so the `else` branch runs. Because extraction failed, `n` retains its initialised value of `99`. Output is `fail 99`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After `std::cin.clear()` is called, why is it still necessary to call `std::cin.ignore(...)`?",
+    "options": {
+      "a": "`clear()` only resets `badbit`; `ignore()` is needed to reset `failbit`.",
+      "b": "`clear()` resets the error flags but leaves the invalid characters in the buffer; `ignore()` discards them.",
+      "c": "`clear()` flushes the buffer; `ignore()` re-fills it from the OS.",
+      "d": "`clear()` is deprecated; `ignore()` handles both flag clearing and buffer cleanup."
+    },
+    "answer": "b",
+    "explanation_md": "`clear()` resets the error flags so the stream is willing to read again, but the characters that caused the failure (e.g. `abc`) are still sitting in the input buffer. The next read will hit them again and fail immediately. `ignore()` discards those characters, leaving the buffer in a clean state."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Input is `5 7 3\\n` (followed by EOF). What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x, sum = 0;\n    while (std::cin >> x) sum += x;\n    std::cout << sum << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "`while (std::cin >> x)` reads integers until EOF or a bad read. The three integers 5, 7, and 3 are read and summed. At EOF the extraction returns a stream in a false state and the loop exits. `sum` is 15."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "`fail()` returns true when which flag(s) are set?",
+    "options": {
+      "a": "Only `failbit`.",
+      "b": "Either `failbit` or `badbit`.",
+      "c": "Either `failbit` or `eofbit`.",
+      "d": "Any of `failbit`, `badbit`, or `eofbit`."
+    },
+    "answer": "b",
+    "explanation_md": "`fail()` returns true if `failbit` OR `badbit` is set, because a hardware-level error (`badbit`) also makes the stream unusable for logical operations. `eofbit` alone does not cause `fail()` to return true — reaching end of file is not itself a failure."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to read integers until EOF and print their sum, but it loops forever when given non-integer input. What is the bug?\n\n```cpp\n#include <iostream>\nint main() {\n    int x, sum = 0;\n    while (!std::cin.eof()) {\n        std::cin >> x;\n        sum += x;\n    }\n    std::cout << sum << \"\\n\";\n}\n```",
+    "options": {
+      "a": "`std::cin.eof()` is not a valid function; use `std::feof(stdin)` instead.",
+      "b": "Checking `!eof()` does not stop the loop when `failbit` is set by bad input; the loop spins forever re-reading the same bad data.",
+      "c": "`sum` overflows because the loop never terminates.",
+      "d": "`x` is uninitialized, causing undefined behaviour before the first read."
+    },
+    "answer": "b",
+    "explanation_md": "When non-integer input is encountered, `failbit` is set but `eofbit` is not, so `!std::cin.eof()` remains true and the loop spins. Each iteration re-reads the same offending characters, failing again. The fix is `while (std::cin >> x)` — the stream converts to `false` on either EOF or a failed read."
+  }
+]

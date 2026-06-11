@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Inner {\n    Inner()  { std::cout << \"Inner created\\n\"; }\n    ~Inner() { std::cout << \"Inner destroyed\\n\"; }\n};\nstruct Outer {\n    Inner a;\n    Inner b;\n    Outer()  { std::cout << \"Outer created\\n\"; }\n    ~Outer() { std::cout << \"Outer destroyed\\n\"; }\n};\nint main() {\n    Outer o;\n}\n```",
+    "options": null,
+    "answer": "Inner created\nInner created\nOuter created\nOuter destroyed\nInner destroyed\nInner destroyed",
+    "explanation_md": "Members are constructed in declaration order before the constructor body runs. Members are destroyed in reverse declaration order after the destructor body runs. So `a` is constructed, then `b`, then the Outer body; on destruction, the Outer body runs first, then `b` is destroyed, then `a`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which code snippet correctly expresses composition of a `Point` inside a `Circle`?",
+    "options": {
+      "a": "`Point* center = new Point{0.0, 0.0};`",
+      "b": "`Point& center;`",
+      "c": "`Point center{};`",
+      "d": "`static Point center{};`"
+    },
+    "answer": "c",
+    "explanation_md": "Composition means the contained object is stored by value inside the containing object and its lifetime is managed automatically. Option a uses dynamic allocation with a raw pointer (requires manual deletion). Option b is a reference member (not ownership). Option d makes it shared across all instances."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This class is supposed to print a message when it creates and destroys a `Logger`, but something is wrong.\n\n```cpp\n#include <iostream>\nstruct Logger {\n    Logger()  { std::cout << \"Logger up\\n\"; }\n    ~Logger() { std::cout << \"Logger down\\n\"; }\n};\nstruct App {\n    Logger* log;\n    App() : log{new Logger{}} {}\n};\nint main() {\n    App a;\n}\n```",
+    "options": {
+      "a": "Logger's constructor is not compatible with App's constructor initializer list.",
+      "b": "App has no destructor to delete log, so Logger is never destroyed and its memory is leaked.",
+      "c": "Logger must be stored by value for its destructor to run.",
+      "d": "new Logger{} calls the wrong constructor overload."
+    },
+    "answer": "b",
+    "explanation_md": "App allocates a Logger with `new` but never `delete`s it. Without a destructor that calls `delete log`, the Logger destructor never runs and the memory is leaked. The fix is to add `~App() { delete log; }`, or better, store Logger by value for true composition."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct A {\n    int x{};\n    A(int v) : x{v} { std::cout << \"A(\" << v << \")\\n\"; }\n};\nstruct B {\n    A first;\n    A second;\n    B() : second{2}, first{1} { std::cout << \"B\\n\"; }\n};\nint main() {\n    B b;\n}\n```",
+    "options": null,
+    "answer": "A(1)\nA(2)\nB",
+    "explanation_md": "Members are initialized in their *declaration* order, regardless of the order in the initializer list. `first` is declared before `second`, so `A(1)` is printed first, then `A(2)`, then the B constructor body prints \"B\"."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you move from composition (by-value member) to using `std::unique_ptr` for the composed sub-object?",
+    "options": {
+      "a": "When the sub-object needs to be shared between multiple containers.",
+      "b": "When the sub-object is large and heap-allocating it avoids large stack frames, but the ownership is still one-to-one.",
+      "c": "When the sub-object's lifetime should outlive the containing object.",
+      "d": "When you need the sub-object to have a reference member."
+    },
+    "answer": "b",
+    "explanation_md": "std::unique_ptr preserves composition semantics (one owner, automatic destruction) while heap-allocating the object. Option a describes shared ownership (std::shared_ptr or aggregation). Option c is aggregation, not composition. Option d is unrelated."
+  }
+]

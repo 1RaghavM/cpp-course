@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following expressions is an **lvalue**?",
+    "options": {
+      "a": "`42`",
+      "b": "`x + 1` where `x` is an `int`",
+      "c": "`x` where `x` is a named `int` variable",
+      "d": "`3.14`"
+    },
+    "answer": "c",
+    "explanation_md": "A named variable like `x` is an lvalue because it refers to a persistent memory location — you can take its address and assign to it (if not `const`). Integer and floating-point literals (`42`, `3.14`) and arithmetic expressions like `x + 1` produce temporary values with no stable address, making them rvalues."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a { 3 };\n    int b { a * 2 };\n    a = 10;\n    std::cout << a << ' ' << b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10 6",
+    "explanation_md": "`b` is initialized to `a * 2` which is `6` at that point. The rvalue `a * 2` is evaluated once and its result stored in `b`; `b` does not track `a` automatically. When `a` is later reassigned to `10`, `b` remains `6`. Output is `10 6`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the following line fail to compile?\n\n```cpp\nint x { 5 };\n&(x + 1);  // attempt to take address\n```",
+    "options": {
+      "a": "Because `x + 1` is an rvalue and rvalues have no stable memory address.",
+      "b": "Because `&` can only be applied to `const` variables.",
+      "c": "Because `x + 1` overflows when `x` is 5.",
+      "d": "Because `&` requires parentheses to be on the right-hand side of an assignment."
+    },
+    "answer": "a",
+    "explanation_md": "The address-of operator `&` requires its operand to be an lvalue — something with a stable memory location. The expression `x + 1` is an rvalue: it produces a temporary `int` with no persistent address, so the compiler rejects the attempt to take its address."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int n { 8 };\n    int m { n };\n    n = 20;\n    std::cout << n << ' ' << m << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20 8",
+    "explanation_md": "`m` is initialized by copying the current value of `n` (which is `8`). After that initialization, `m` is an independent variable. Changing `n` to `20` does not affect `m`. The program prints `20 8`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `const int c { 5 }` is correct?",
+    "options": {
+      "a": "`c` is an rvalue because it cannot be modified.",
+      "b": "`c` is an lvalue because it has a persistent memory location, even though it is `const`.",
+      "c": "`c` has no value category because `const` variables are neither lvalues nor rvalues.",
+      "d": "`c` is an lvalue only when it appears on the left side of an expression."
+    },
+    "answer": "b",
+    "explanation_md": "Being `const` means *not modifiable*, not *not an lvalue*. `c` has a stable address in memory and can be passed by reference — it is an lvalue. The lvalue/rvalue distinction is about *addressability and persistence*, not about whether you can write to the object."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Overload << and >> for a Fraction Class",
+    "prompt_md": "## Goal\nOverload `operator<<` and `operator>>` for a `Fraction` class so it can be read from stdin and printed to stdout.\n\n## Input\nLine 1: two space-separated integers `n` and `d` — numerator and denominator of the fraction.\n\n## Output\nOne line: `n/d` (the fraction as printed by `operator<<`).\n\n## Requirements\n1. `Fraction` has private `int m_num` and `int m_den`, with a constructor `Fraction(int n, int d)`.\n2. Overload `operator<<` as a friend free function that prints the fraction as `n/d` with no spaces.\n3. Overload `operator>>` as a friend free function that reads two integers into `m_num` and `m_den`.\n4. Both operators must return their stream parameter by reference to support chaining.\n5. `Fraction` needs a default constructor (with `m_num=0, m_den=1`) so `Fraction f;` compiles before `cin >> f`.",
+    "starter_code": "#include <iostream>\n\nclass Fraction {\n    int m_num{};\n    int m_den{1};\npublic:\n    Fraction() = default;\n    Fraction(int n, int d) : m_num{n}, m_den{d} {}\n\n    friend std::ostream& operator<<(std::ostream& out, const Fraction& f);\n    friend std::istream& operator>>(std::istream& in, Fraction& f);\n};\n\n// TODO: implement operator<< — print as \"m_num/m_den\"\nstd::ostream& operator<<(std::ostream& out, const Fraction& f) {\n    return out;  // replace this\n}\n\n// TODO: implement operator>> — read two integers into m_num and m_den\nstd::istream& operator>>(std::istream& in, Fraction& f) {\n    return in;  // replace this\n}\n\nint main() {\n    Fraction f;\n    std::cin >> f;\n    std::cout << f << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Fraction {\n    int m_num{};\n    int m_den{1};\npublic:\n    Fraction() = default;\n    Fraction(int n, int d) : m_num{n}, m_den{d} {}\n\n    friend std::ostream& operator<<(std::ostream& out, const Fraction& f);\n    friend std::istream& operator>>(std::istream& in, Fraction& f);\n};\n\nstd::ostream& operator<<(std::ostream& out, const Fraction& f) {\n    out << f.m_num << \"/\" << f.m_den;\n    return out;\n}\n\nstd::istream& operator>>(std::istream& in, Fraction& f) {\n    in >> f.m_num >> f.m_den;\n    return in;\n}\n\nint main() {\n    Fraction f;\n    std::cin >> f;\n    std::cout << f << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic fraction",
+        "is_sample": true,
+        "stdin": "3 4\n",
+        "expected_stdout": "3/4"
+      },
+      {
+        "label": "Hidden: negative numerator",
+        "is_sample": false,
+        "stdin": "-1 2\n",
+        "expected_stdout": "-1/2"
+      },
+      {
+        "label": "Hidden: whole number fraction",
+        "is_sample": false,
+        "stdin": "7 1\n",
+        "expected_stdout": "7/1"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Overload operator<< for a Color Class",
+    "prompt_md": "## Goal\nComplete `operator<<` for a `Color` class that prints in the format `rgb(R, G, B)`, and use it to print two colors and their chain.\n\n## Input\nLine 1: three space-separated integers `r1 g1 b1` for color A.\nLine 2: three space-separated integers `r2 g2 b2` for color B.\n\n## Output\nThree lines:\n- `rgb(r1, g1, b1)`\n- `rgb(r2, g2, b2)`\n- `rgb(r1, g1, b1) and rgb(r2, g2, b2)` (both printed on one line via chaining)\n\n## Requirements\n1. `Color` has public `int r`, `int g`, `int b` fields (no private members for this exercise).\n2. Complete `operator<<` as a normal free function (no `friend` needed — fields are public) that prints `rgb(R, G, B)` with exact spacing: `rgb(`, then R, `, `, G, `, `, B, `)`.\n3. Print the two colors on separate lines, then chain them with ` and ` between them on the third line.\n4. The operator must return `std::ostream&`.",
+    "starter_code": "#include <iostream>\n\nstruct Color {\n    int r{}, g{}, b{};\n};\n\n// TODO: implement operator<< for Color\n// Print as: rgb(R, G, B)\n// Return std::ostream& for chaining\nstd::ostream& operator<<(std::ostream& out, const Color& c) {\n    return out;  // replace this\n}\n\nint main() {\n    Color a, b;\n    std::cin >> a.r >> a.g >> a.b;\n    std::cin >> b.r >> b.g >> b.b;\n    std::cout << a << \"\\n\";\n    std::cout << b << \"\\n\";\n    std::cout << a << \" and \" << b << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Color {\n    int r{}, g{}, b{};\n};\n\nstd::ostream& operator<<(std::ostream& out, const Color& c) {\n    out << \"rgb(\" << c.r << \", \" << c.g << \", \" << c.b << \")\";\n    return out;\n}\n\nint main() {\n    Color a, b;\n    std::cin >> a.r >> a.g >> a.b;\n    std::cin >> b.r >> b.g >> b.b;\n    std::cout << a << \"\\n\";\n    std::cout << b << \"\\n\";\n    std::cout << a << \" and \" << b << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two colors",
+        "is_sample": true,
+        "stdin": "255 0 0\n0 255 0\n",
+        "expected_stdout": "rgb(255, 0, 0)\nrgb(0, 255, 0)\nrgb(255, 0, 0) and rgb(0, 255, 0)"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0\n0 0 0\n",
+        "expected_stdout": "rgb(0, 0, 0)\nrgb(0, 0, 0)\nrgb(0, 0, 0) and rgb(0, 0, 0)"
+      },
+      {
+        "label": "Hidden: mixed values",
+        "is_sample": false,
+        "stdin": "10 20 30\n40 50 60\n",
+        "expected_stdout": "rgb(10, 20, 30)\nrgb(40, 50, 60)\nrgb(10, 20, 30) and rgb(40, 50, 60)"
+      }
+    ]
+  }
+]

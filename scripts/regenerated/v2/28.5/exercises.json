@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum Until EOF",
+    "prompt_md": "## Goal\nWrite a program that reads integers from stdin until EOF (or a non-integer token) and prints their sum.\n\n## Input\nZero or more integers, whitespace-separated (may span multiple lines), followed by EOF.\n\n## Output\nPrint exactly one line: `Sum: N` where N is the sum of all integers read.\n\nExample — input `5 7 3` → output: `Sum: 15`\n\n## Requirements\n1. Use `while (std::cin >> x)` as the loop condition.\n2. If no integers are read (empty input), print `Sum: 0`.\n3. Hidden tests use an empty input and an input with a single integer.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int x;\n    int sum = 0;\n    // TODO: loop reading integers with std::cin >> x; accumulate sum\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int x;\n    int sum = 0;\n    while (std::cin >> x) {\n        sum += x;\n    }\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three integers",
+        "is_sample": true,
+        "stdin": "5 7 3\n",
+        "expected_stdout": "Sum: 15\n"
+      },
+      {
+        "label": "Hidden: empty input",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Sum: 0\n"
+      },
+      {
+        "label": "Hidden: single integer",
+        "is_sample": false,
+        "stdin": "42\n",
+        "expected_stdout": "Sum: 42\n"
+      }
+    ]
+  },
+  {
+    "title": "Input Validation Loop — fix the bug",
+    "prompt_md": "## Goal\nThis program is supposed to repeatedly prompt for a positive integer, rejecting non-integer input and non-positive values, until a valid positive integer is entered, then print it. It compiles but loops forever on bad input. Find and fix the bug.\n\n## Input\nOne or more lines. The first line that contains a valid positive integer is the answer. For this exercise, the test runner always provides a valid integer on the first or second line.\n\n## Output\nPrint exactly one line: `Valid: N` where N is the accepted positive integer.\n\n## Requirements\n1. The bug is a logic error — the program compiles cleanly.\n2. When `std::cin` extraction fails, the program must call `clear()` and `ignore()` to recover.\n3. Hidden tests: first input is a valid positive integer (no bad input path), and first input is 0 then second is a valid positive integer.",
+    "starter_code": "#include <iostream>\n#include <limits>\n\nint main() {\n    int n = 0;\n    while (true) {\n        std::cin >> n;\n        if (!std::cin) {\n            std::cin.clear();\n            // BUG: missing ignore — bad chars remain in buffer\n        } else if (n > 0) {\n            break;\n        }\n    }\n    std::cout << \"Valid: \" << n << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <limits>\n\nint main() {\n    int n = 0;\n    while (true) {\n        std::cin >> n;\n        if (!std::cin) {\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        } else if (n > 0) {\n            break;\n        }\n    }\n    std::cout << \"Valid: \" << n << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: valid integer immediately",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "Valid: 7\n"
+      },
+      {
+        "label": "Hidden: zero then valid",
+        "is_sample": false,
+        "stdin": "0\n5\n",
+        "expected_stdout": "Valid: 5\n"
+      },
+      {
+        "label": "Hidden: larger valid integer",
+        "is_sample": false,
+        "stdin": "100\n",
+        "expected_stdout": "Valid: 100\n"
+      }
+    ]
+  }
+]

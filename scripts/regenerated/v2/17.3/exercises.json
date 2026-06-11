@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Reverse an Array In Place",
+    "prompt_md": "## Goal\nRead 5 integers from stdin into a `std::array<int, 5>`, reverse the array in place by passing it to a function, then print all elements.\n\n## Input\n- Line 1: exactly 5 integers separated by spaces.\n\n## Output\n- 5 integers separated by spaces on one line, in reversed order.\n\n## Requirements\n1. Implement `void reverseArray(std::array<int, 5>& arr)` that reverses the elements in place using index-based swapping.\n2. The function must modify the caller's array (pass by reference).\n3. `main()` reads the array, calls `reverseArray`, then prints the elements separated by spaces with a trailing newline.\n4. Swap element at index i with element at index `arr.size() - 1 - i` for `i < arr.size() / 2`.\n5. Hidden test: already reversed. Hidden test: all same value.",
+    "starter_code": "#include <array>\n#include <iostream>\n\n// TODO: implement reverseArray\n// Reverse the elements of arr in place\nvoid reverseArray(std::array<int, 5>& arr) {\n    // TODO: swap arr[i] and arr[arr.size()-1-i] for i < arr.size()/2\n}\n\nint main() {\n    std::array<int, 5> nums {};\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        std::cin >> nums[i];\n    }\n    reverseArray(nums);\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << nums[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nvoid reverseArray(std::array<int, 5>& arr) {\n    for (std::size_t i = 0; i < arr.size() / 2; ++i) {\n        int tmp = arr[i];\n        arr[i] = arr[arr.size() - 1 - i];\n        arr[arr.size() - 1 - i] = tmp;\n    }\n}\n\nint main() {\n    std::array<int, 5> nums {};\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        std::cin >> nums[i];\n    }\n    reverseArray(nums);\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << nums[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "1 2 3 4 5\n",
+        "expected_stdout": "5 4 3 2 1"
+      },
+      {
+        "label": "Hidden: already reversed input",
+        "is_sample": false,
+        "stdin": "9 7 5 3 1\n",
+        "expected_stdout": "1 3 5 7 9"
+      },
+      {
+        "label": "Hidden: all same values",
+        "is_sample": false,
+        "stdin": "4 4 4 4 4\n",
+        "expected_stdout": "4 4 4 4 4"
+      }
+    ]
+  },
+  {
+    "title": "Build and Return a Scaled Array",
+    "prompt_md": "## Goal\nThe program contains one bug — find and fix it. The intent is to read 4 integers and a scale factor, then print the elements each multiplied by the scale factor.\n\n## Input\n- Line 1: exactly 4 integers separated by spaces.\n- Line 2: one integer (the scale factor).\n\n## Output\n- 4 integers separated by spaces on one line (each original element multiplied by scale).\n\n## Requirements\n1. `scaleArray` is supposed to return a new `std::array<int, 4>` with each element multiplied by `factor`.\n2. The bug is a logic bug — the starter compiles cleanly but produces wrong output.\n3. Hidden test: scale by 1 (output equals input). Hidden test: scale by 0 (all zeros).",
+    "starter_code": "#include <array>\n#include <iostream>\n\nstd::array<int, 4> scaleArray(const std::array<int, 4>& arr, int factor) {\n    std::array<int, 4> result {};\n    for (std::size_t i = 0; i < arr.size(); ++i) {\n        result[i] = arr[i] + factor;  // BUG: should multiply, not add\n    }\n    return result;\n}\n\nint main() {\n    std::array<int, 4> nums {};\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        std::cin >> nums[i];\n    }\n    int scale {};\n    std::cin >> scale;\n    std::array<int, 4> scaled = scaleArray(nums, scale);\n    for (std::size_t i = 0; i < scaled.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << scaled[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nstd::array<int, 4> scaleArray(const std::array<int, 4>& arr, int factor) {\n    std::array<int, 4> result {};\n    for (std::size_t i = 0; i < arr.size(); ++i) {\n        result[i] = arr[i] * factor;  // FIX: multiply, not add\n    }\n    return result;\n}\n\nint main() {\n    std::array<int, 4> nums {};\n    for (std::size_t i = 0; i < nums.size(); ++i) {\n        std::cin >> nums[i];\n    }\n    int scale {};\n    std::cin >> scale;\n    std::array<int, 4> scaled = scaleArray(nums, scale);\n    for (std::size_t i = 0; i < scaled.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << scaled[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: scale by 3",
+        "is_sample": true,
+        "stdin": "1 2 3 4\n3\n",
+        "expected_stdout": "3 6 9 12"
+      },
+      {
+        "label": "Hidden: scale by 1 (identity)",
+        "is_sample": false,
+        "stdin": "5 10 15 20\n1\n",
+        "expected_stdout": "5 10 15 20"
+      },
+      {
+        "label": "Hidden: scale by 0",
+        "is_sample": false,
+        "stdin": "7 3 9 2\n0\n",
+        "expected_stdout": "0 0 0 0"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes the difference between a function **declaration** and a function **definition**?",
+    "options": {
+      "a": "A declaration includes the function body; a definition only lists the signature.",
+      "b": "A declaration tells the compiler the function's name, return type, and parameter types; a definition also provides the function body.",
+      "c": "Declarations are only used in header files; definitions must be in `.cpp` files.",
+      "d": "There is no difference — both terms mean the same thing."
+    },
+    "answer": "b",
+    "explanation_md": "A declaration (prototype) gives the compiler enough information to type-check a call site. A definition additionally provides the body that the linker uses to generate code. A definition is always also a declaration, but a bare forward declaration is not a definition."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint double_it(int x);\n\nint main()\n{\n    std::cout << double_it(6) << \"\\n\";\n    return 0;\n}\n\nint double_it(int x)\n{\n    return x * 2;\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "The forward declaration `int double_it(int x);` lets the compiler accept the call in `main`. The definition below provides the body, which returns `6 * 2 = 12`. The program prints `12` followed by a newline."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nint half(int x)\n\nint main()\n{\n    std::cout << half(10) << \"\\n\";\n    return 0;\n}\n\nint half(int x)\n{\n    return x / 2;\n}\n```",
+    "options": {
+      "a": "The function `half` divides by 2 using integer division, which truncates.",
+      "b": "The forward declaration `int half(int x)` is missing its semicolon, causing a parse error.",
+      "c": "`main` must be defined before any other function.",
+      "d": "You cannot have both a declaration and a definition of the same function."
+    },
+    "answer": "b",
+    "explanation_md": "A forward declaration must end with a semicolon. Without it, the compiler reads the next line (`int main()`) as the start of `half`'s body and reports a parse error. The fix is to write `int half(int x);`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program declares `int compute(int);` but provides no definition anywhere. What happens?",
+    "options": {
+      "a": "The program compiles and links fine; the declaration is sufficient.",
+      "b": "The compiler rejects the declaration immediately.",
+      "c": "The program compiles but the linker reports an error: undefined reference to `compute`.",
+      "d": "The function silently returns 0 at runtime."
+    },
+    "answer": "c",
+    "explanation_md": "The compiler only needs a declaration to accept call sites. The linker, however, must find the actual body to generate a complete executable. With no definition, the linker cannot find the body and reports an 'undefined reference' error even though compilation succeeded."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid greet(int n);\n\nint main()\n{\n    greet(3);\n    return 0;\n}\n\nvoid greet(int n)\n{\n    std::cout << \"Hello \" << n << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "Hello 3",
+    "explanation_md": "The forward declaration tells the compiler `greet` takes an `int` and returns nothing. `main` calls `greet(3)`, which prints `Hello 3` followed by a newline. The output is one line."
+  }
+]

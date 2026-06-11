@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Downcast Inspector",
+    "prompt_md": "## Goal\nComplete the `inspect` function so it uses `dynamic_cast` to identify the concrete type and print the correct description.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nCar: 4 doors\nTruck: 800 kg\n```\n\n## Requirements\n1. `Vehicle` has a virtual destructor and no other members.\n2. `Car` derives from `Vehicle` and has `int doors_` initialized to 4.\n3. `Truck` derives from `Vehicle` and has `int payload_` initialized to 800.\n4. Complete `inspect(Vehicle* v)` to:\n   - If `v` is a `Car`, print `Car: ` followed by `doors_` followed by ` doors`.\n   - If `v` is a `Truck`, print `Truck: ` followed by `payload_` followed by ` kg`.\n   - Use `dynamic_cast` pointer form and check the result before using.\n5. `main` creates `Car car` and `Truck truck` and calls `inspect` on each.",
+    "starter_code": "#include <iostream>\n\nclass Vehicle {\npublic:\n    virtual ~Vehicle() = default;\n};\n\nclass Car : public Vehicle {\npublic:\n    int doors_ = 4;\n};\n\nclass Truck : public Vehicle {\npublic:\n    int payload_ = 800;\n};\n\n// TODO: complete inspect using dynamic_cast\nvoid inspect(Vehicle* v) {\n    // TODO: try dynamic_cast<Car*> and print \"Car: X doors\"\n    // TODO: try dynamic_cast<Truck*> and print \"Truck: X kg\"\n}\n\nint main() {\n    Car car;\n    Truck truck;\n    inspect(&car);\n    inspect(&truck);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Vehicle {\npublic:\n    virtual ~Vehicle() = default;\n};\n\nclass Car : public Vehicle {\npublic:\n    int doors_ = 4;\n};\n\nclass Truck : public Vehicle {\npublic:\n    int payload_ = 800;\n};\n\nvoid inspect(Vehicle* v) {\n    if (Car* c = dynamic_cast<Car*>(v)) {\n        std::cout << \"Car: \" << c->doors_ << \" doors\\n\";\n    } else if (Truck* t = dynamic_cast<Truck*>(v)) {\n        std::cout << \"Truck: \" << t->payload_ << \" kg\\n\";\n    }\n}\n\nint main() {\n    Car car;\n    Truck truck;\n    inspect(&car);\n    inspect(&truck);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: car then truck",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Car: 4 doors\nTruck: 800 kg"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Car: 4 doors\nTruck: 800 kg"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Car: 4 doors\nTruck: 800 kg"
+      }
+    ]
+  },
+  {
+    "title": "Safe Cast Result",
+    "prompt_md": "## Goal\nComplete `castResult` so it returns the string `\"success\"` when a `dynamic_cast` to `Dog*` succeeds and `\"fail\"` when it does not.\n\n## Input\nLine 1: integer `t` (0 or 1). If `t == 1`, the pointer holds a `Dog`; if `t == 0`, it holds a `Cat`.\n\n## Output\nPrint exactly one line: `success` or `fail`.\n\n## Requirements\n1. `Animal` has a virtual destructor.\n2. `Dog` and `Cat` derive from `Animal`.\n3. Complete `castResult(Animal* a)` to attempt `dynamic_cast<Dog*>(a)` and return `\"success\"` if it is non-null, `\"fail\"` otherwise.\n4. `main` reads `t`, creates a `Dog` or `Cat` on the stack accordingly, and calls `castResult` with a pointer to it.\n5. Edge cases: `t == 0` must print `fail`; `t == 1` must print `success`.",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual ~Animal() = default;\n};\n\nclass Dog : public Animal {};\nclass Cat : public Animal {};\n\n// TODO: complete — return \"success\" if dynamic_cast<Dog*>(a) succeeds, else \"fail\"\nstd::string castResult(Animal* a) {\n    return \"fail\";  // TODO: replace with dynamic_cast logic\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n    if (t == 1) {\n        Dog d;\n        std::cout << castResult(&d) << \"\\n\";\n    } else {\n        Cat c;\n        std::cout << castResult(&c) << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual ~Animal() = default;\n};\n\nclass Dog : public Animal {};\nclass Cat : public Animal {};\n\nstd::string castResult(Animal* a) {\n    if (dynamic_cast<Dog*>(a)) return \"success\";\n    return \"fail\";\n}\n\nint main() {\n    int t;\n    std::cin >> t;\n    if (t == 1) {\n        Dog d;\n        std::cout << castResult(&d) << \"\\n\";\n    } else {\n        Cat c;\n        std::cout << castResult(&c) << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Dog succeeds",
+        "is_sample": true,
+        "stdin": "1",
+        "expected_stdout": "success"
+      },
+      {
+        "label": "Hidden: Cat fails",
+        "is_sample": false,
+        "stdin": "0",
+        "expected_stdout": "fail"
+      },
+      {
+        "label": "Hidden: Dog succeeds again",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "success"
+      }
+    ]
+  }
+]

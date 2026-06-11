@@ -1,0 +1,56 @@
+[
+  {
+    "title": "C++11 Feature Year Checker",
+    "prompt_md": "## Goal\nWrite a program that reads C++11 feature names and reports whether each was introduced in C++11 (year 2011) or is from an earlier standard.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Lines 2..N+1: one feature name per line. Valid names:\n  - `auto` — C++11\n  - `nullptr` — C++11\n  - `lambda` — C++11\n  - `unique_ptr` — C++11\n  - `printf` — pre-C++11 (C library)\n  - `malloc` — pre-C++11 (C library)\n\n## Output\nFor each feature, print `C++11` or `pre-C++11` on its own line.\n\n## Requirements\n1. `auto`, `nullptr`, `lambda`, `unique_ptr` → `C++11`.\n2. `printf`, `malloc` → `pre-C++11`.\n3. One result per line.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string feature;\n        std::cin >> feature;\n        // TODO: print \"C++11\" for modern features, \"pre-C++11\" for legacy ones\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string feature;\n        std::cin >> feature;\n        if (feature == \"auto\" || feature == \"nullptr\" ||\n            feature == \"lambda\" || feature == \"unique_ptr\") {\n            std::cout << \"C++11\\n\";\n        } else {\n            std::cout << \"pre-C++11\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed features",
+        "is_sample": true,
+        "stdin": "4\nauto\nprintf\nnullptr\nmalloc\n",
+        "expected_stdout": "C++11\npre-C++11\nC++11\npre-C++11"
+      },
+      {
+        "label": "Hidden: all C++11",
+        "is_sample": false,
+        "stdin": "3\nlambda\nunique_ptr\nauto\n",
+        "expected_stdout": "C++11\nC++11\nC++11"
+      },
+      {
+        "label": "Hidden: single legacy",
+        "is_sample": false,
+        "stdin": "1\nmalloc\n",
+        "expected_stdout": "pre-C++11"
+      }
+    ]
+  },
+  {
+    "title": "Move vs Copy Counter Bug Fix",
+    "prompt_md": "## Goal\nThe program below counts how many times elements are moved vs copied when building a vector. It should print the move count and copy count. Find and fix the logic bug.\n\n## Input\n- Line 1: integer M (0 ≤ M ≤ 100), the number of move operations.\n- Line 2: integer C (0 ≤ C ≤ 100), the number of copy operations.\n\n## Output\nPrint exactly:\n```\nMoves: M\nCopies: C\n```\nwhere M and C are the input values.\n\n## Requirements\n1. Print `Moves: ` followed by the move count.\n2. Print `Copies: ` followed by the copy count.\n3. The program contains exactly one logic bug — the labels are swapped.\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int moves, copies;\n    std::cin >> moves >> copies;\n    // Bug: labels are swapped\n    std::cout << \"Copies: \" << moves << '\\n';\n    std::cout << \"Moves: \" << copies << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int moves, copies;\n    std::cin >> moves >> copies;\n    std::cout << \"Moves: \" << moves << '\\n';\n    std::cout << \"Copies: \" << copies << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 moves, 2 copies",
+        "is_sample": true,
+        "stdin": "5\n2\n",
+        "expected_stdout": "Moves: 5\nCopies: 2"
+      },
+      {
+        "label": "Hidden: 0 moves, 10 copies",
+        "is_sample": false,
+        "stdin": "0\n10\n",
+        "expected_stdout": "Moves: 0\nCopies: 10"
+      },
+      {
+        "label": "Hidden: equal counts",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "Moves: 7\nCopies: 7"
+      }
+    ]
+  }
+]

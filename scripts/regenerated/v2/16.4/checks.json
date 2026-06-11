@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A function computes the minimum value in a `std::vector<int>` and returns it. Which parameter type is most appropriate?",
+    "options": {
+      "a": "`std::vector<int> v` (pass by value)",
+      "b": "`std::vector<int>& v` (pass by non-const reference)",
+      "c": "`const std::vector<int>& v` (pass by const reference)",
+      "d": "`std::vector<int>* v` (pass by pointer)"
+    },
+    "answer": "c",
+    "explanation_md": "The function only reads the vector to find the minimum — it does not modify it. `const std::vector<int>&` avoids copying all the elements (no performance cost) and prevents accidental modification (safety). Pass-by-value would copy every element needlessly; non-const reference would allow accidental mutation."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nvoid addOne(std::vector<int>& v)\n{\n    for (int i = 0; i < std::ssize(v); ++i)\n        v[i] += 1;\n}\n\nint main()\n{\n    std::vector<int> nums { 10, 20, 30 };\n    addOne(nums);\n    std::cout << nums[0] << '\\n';\n    std::cout << nums[2] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "11\n31",
+    "explanation_md": "`addOne` receives `v` as a non-const reference, so `v[i] += 1` modifies the original `nums` in the caller. After the call, `nums[0]` is 11 and `nums[2]` is 31. If the parameter had been `const std::vector<int>&`, the assignment would be a compile error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. What is the bug?\n\n```cpp\n#include <vector>\n\nvoid printFirst(std::vector<int>& v)\n{\n    std::cout << v[0] << '\\n';\n}\n\nint main()\n{\n    printFirst({ 5, 10, 15 });\n    return 0;\n}\n```",
+    "options": {
+      "a": "Brace-initialized temporary cannot bind to a non-const reference parameter",
+      "b": "`std::vector<int>` cannot be initialized with braces",
+      "c": "The parameter should be `std::vector<int>*` to accept a temporary",
+      "d": "`printFirst` is missing a return type"
+    },
+    "answer": "a",
+    "explanation_md": "A temporary object (like the brace-initialized vector `{5, 10, 15}`) cannot bind to a non-const lvalue reference. The fix is to either change the parameter to `const std::vector<int>&`, which can bind to temporaries, or to first store the vector in a named variable."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary reason to avoid passing a large `std::vector<int>` by value to a function that only reads it?",
+    "options": {
+      "a": "Pass-by-value does not compile for `std::vector`",
+      "b": "The copy constructor is marked `delete` for `std::vector`",
+      "c": "Every element is copied, which is expensive for large vectors",
+      "d": "Pass-by-value prevents the function from using the subscript operator"
+    },
+    "answer": "c",
+    "explanation_md": "Passing by value causes the vector to be fully copied: every element is duplicated in memory. For a vector holding thousands of elements, this is a significant performance cost. Using `const std::vector<int>&` lets the function access the data directly through a reference without any copying."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nvoid fill(std::vector<int>& v, int val)\n{\n    for (int i = 0; i < std::ssize(v); ++i)\n        v[i] = val;\n}\n\nint main()\n{\n    std::vector<int> data(3, 0);\n    fill(data, 7);\n    std::cout << data[0] << ' ' << data[1] << ' ' << data[2] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7 7 7",
+    "explanation_md": "`data` is constructed with 3 elements all set to 0. `fill` receives it by non-const reference and sets every element to 7. Back in `main`, all three elements are 7. The output is `7 7 7` with spaces between them."
+  }
+]

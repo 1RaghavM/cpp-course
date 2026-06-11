@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 5 };\n    int& r { x };\n    r = 20;\n    std::cout << x << ' ' << r << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20 20",
+    "explanation_md": "`r` is an alias for `x`. Assigning `20` through `r` changes the single underlying object. Both `x` and `r` now refer to the same location holding `20`, so the output is `20 20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After the following code runs, what is the value of `a`?\n\n```cpp\nint a { 1 };\nint b { 9 };\nint& r { a };\nr = b;\n```",
+    "options": {
+      "a": "`a` is 1 — the assignment `r = b` rebinds `r` to `b`, leaving `a` unchanged.",
+      "b": "`a` is 9 — `r = b` copies the value of `b` into the object that `r` aliases (which is `a`).",
+      "c": "`a` is undefined — assigning through a reference after initialization is illegal.",
+      "d": "`a` is 9 only if `b` was declared before `a`."
+    },
+    "answer": "b",
+    "explanation_md": "References cannot be reseated. `r = b` assigns the *value* of `b` (which is `9`) to the object `r` aliases, which is `a`. After this line `a == 9` and `r` still aliases `a`. References can never be redirected to a different object."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The following program is supposed to print `100`, but it does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int& r { 100 };\n    std::cout << r << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`100` is an rvalue (a literal); a non-const lvalue reference cannot bind to an rvalue.",
+      "b": "The reference `r` must be declared with `auto&` to bind to an integer literal.",
+      "c": "The program compiles but prints nothing because `r` has no value.",
+      "d": "`int& r` should be `int r` — references cannot be initialized with brace syntax."
+    },
+    "answer": "a",
+    "explanation_md": "A non-const lvalue reference (`int&`) requires its initializer to be an lvalue — an object with a stable address. `100` is an integer literal, which is an rvalue with no persistent address. The fix is either to use a named variable (`int x { 100 }; int& r { x };`) or to make the reference `const int&`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid addTen(int& n)\n{\n    n = n + 10;\n}\n\nint main()\n{\n    int val { 7 };\n    addTen(val);\n    std::cout << val << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "17",
+    "explanation_md": "`addTen` takes its parameter as a non-const lvalue reference, so `n` is an alias for `val`. The line `n = n + 10` adds 10 to `val` directly. After `addTen` returns, `val` is `17`, which is what gets printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these statements about lvalue references is TRUE?",
+    "options": {
+      "a": "A reference can be left uninitialized and bound to an object later.",
+      "b": "A reference can be rebound to a different object after initialization by assigning through it.",
+      "c": "A reference must be initialized at the point of declaration and always aliases the same object for its lifetime.",
+      "d": "A reference stores a copy of the value it was initialized with."
+    },
+    "answer": "c",
+    "explanation_md": "References must be initialized when declared and cannot be reseated. They are permanent aliases: the reference will refer to the same object for its entire lifetime. Assigning through a reference changes the *value of the aliased object*, not which object the reference aliases."
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\nint main() {\n    std::vector<int> v = {10, 20, 30};\n    std::vector<int> w = std::move(v);\n    std::cout << v.size() << ' ' << w.size() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "0 3",
+    "explanation_md": "`std::move(v)` casts `v` to an rvalue reference, triggering the move constructor of `w`. The move constructor transfers ownership of the underlying buffer to `w` and leaves `v` in a valid-but-empty state. `v.size()` is 0 and `w.size()` is 3."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which C++11 feature allows you to explicitly prohibit copying an object?",
+    "options": {
+      "a": "`const` qualifier on the class",
+      "b": "`= delete` on the copy constructor",
+      "c": "`virtual` destructor",
+      "d": "`= default` on all constructors"
+    },
+    "answer": "b",
+    "explanation_md": "`= delete` on a special member function makes any attempt to call that function a compile error. `= default` asks the compiler to generate the default implementation. `const` and `virtual` serve unrelated purposes."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n#include <algorithm>\nint main() {\n    std::vector<int> v = {3, 1, 4, 1, 5};\n    std::sort(v.begin(), v.end(), [](int a, int b){ return a > b; });\n    for (auto x : v) std::cout << x << ' ';\n    std::cout << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5 4 3 1 1",
+    "explanation_md": "The lambda `[](int a, int b){ return a > b; }` orders elements in descending order. After sorting, the vector is `{5, 4, 3, 1, 1}`. The range-for prints each element followed by a space, then a newline."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The following code is meant to create and use a lambda that adds a local offset. What is the bug?\n\n```cpp\n#include <iostream>\n#include <functional>\nstd::function<int(int)> make_adder(int offset) {\n    int local = offset;\n    return [&local](int x) { return x + local; };\n}\nint main() {\n    auto add5 = make_adder(5);\n    std::cout << add5(10) << '\\n'; // intended: 15\n}\n```",
+    "options": {
+      "a": "`std::function` cannot store a lambda",
+      "b": "The lambda captures `local` by reference, but `local` is destroyed when `make_adder` returns, making the lambda a dangling reference",
+      "c": "`make_adder` must be declared `constexpr` for lambda captures to work",
+      "d": "The `[&local]` syntax is invalid; only `[&]` is allowed"
+    },
+    "answer": "b",
+    "explanation_md": "`local` is a stack variable in `make_adder`. Capturing it by reference (`&local`) stores a pointer to that stack location. After `make_adder` returns, `local` is out of scope and the reference is dangling. Using the lambda calls undefined behavior. Fix: capture by value `[local]`."
+  }
+]

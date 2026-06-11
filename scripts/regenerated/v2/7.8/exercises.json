@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Refactor: Replace Global with Parameter",
+    "prompt_md": "## Goal\nWrite a program that computes the area of a rectangle, but without using a non-`const` global variable for the width or height. The area function must take both dimensions as parameters.\n\n## Input\nTwo lines:\n- Line 1: integer width W (1 <= W <= 100)\n- Line 2: integer height H (1 <= H <= 100)\n\n## Output\nPrint exactly one line:\n```\nArea: <W*H>\n```\n\nExample (W = 6, H = 4):\n```\nArea: 24\n```\n\n## Requirements\n1. Implement `int area(int width, int height)` that returns `width * height`.\n2. In `main`, read W and H from stdin, call `area(W, H)`, and print `Area: <result>`.\n3. Do not declare any global variables (non-`const` or `const`).\n4. All data flows through parameters and return values only.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement int area(int width, int height)\n\nint main()\n{\n    int w {};\n    int h {};\n    std::cin >> w >> h;\n\n    // TODO: call area(w, h) and print \"Area: <result>\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint area(int width, int height)\n{\n    return width * height;\n}\n\nint main()\n{\n    int w {};\n    int h {};\n    std::cin >> w >> h;\n    std::cout << \"Area: \" << area(w, h) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 6 x 4",
+        "is_sample": true,
+        "stdin": "6\n4",
+        "expected_stdout": "Area: 24"
+      },
+      {
+        "label": "Hidden: 1 x 1",
+        "is_sample": false,
+        "stdin": "1\n1",
+        "expected_stdout": "Area: 1"
+      },
+      {
+        "label": "Hidden: 10 x 7",
+        "is_sample": false,
+        "stdin": "10\n7",
+        "expected_stdout": "Area: 70"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Safe Discount Calculator Without Global State",
+    "prompt_md": "## Goal\nComplete the function `int finalPrice(int price, int discountPercent)` that applies a percentage discount to a price and returns the result, without using any global variables.\n\n## Input\nTwo lines:\n- Line 1: integer price P (1 <= P <= 10000)\n- Line 2: integer discount percentage D (0 <= D <= 100)\n\n## Output\nPrint exactly one line:\n```\nFinal: <result>\n```\nwhere `<result>` is `price - (price * discountPercent / 100)`, using integer arithmetic.\n\nExample (P = 200, D = 25):\n```\nFinal: 150\n```\n\n## Requirements\n1. Complete `int finalPrice(int price, int discountPercent)`: return `price - (price * discountPercent / 100)` using integer arithmetic.\n2. All inputs to the calculation must come through the function parameters — no globals.\n3. `main` reads P and D, calls `finalPrice(P, D)`, and prints `Final: <result>`.\n4. D = 0 must return the original price. D = 100 must return 0.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement int finalPrice(int price, int discountPercent)\n// Return price minus the discount amount (integer arithmetic).\n// All data must flow through parameters — no globals.\nint finalPrice(int price, int discountPercent)\n{\n    (void)price;           // remove when you implement\n    (void)discountPercent; // remove when you implement\n    return 0;\n}\n\nint main()\n{\n    int p {};\n    int d {};\n    std::cin >> p >> d;\n    std::cout << \"Final: \" << finalPrice(p, d) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint finalPrice(int price, int discountPercent)\n{\n    return price - (price * discountPercent / 100);\n}\n\nint main()\n{\n    int p {};\n    int d {};\n    std::cin >> p >> d;\n    std::cout << \"Final: \" << finalPrice(p, d) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 200 price, 25% off",
+        "is_sample": true,
+        "stdin": "200\n25",
+        "expected_stdout": "Final: 150"
+      },
+      {
+        "label": "Hidden: 0% discount",
+        "is_sample": false,
+        "stdin": "100\n0",
+        "expected_stdout": "Final: 100"
+      },
+      {
+        "label": "Hidden: 100% discount",
+        "is_sample": false,
+        "stdin": "80\n100",
+        "expected_stdout": "Final: 0"
+      }
+    ]
+  }
+]

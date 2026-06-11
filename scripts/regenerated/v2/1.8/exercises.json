@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print a Formatted Calculation",
+    "prompt_md": "## Goal\nRead two integers and print their product on a labeled line, following this course's formatting conventions.\n\n## Input\n- Line 1: two space-separated integers `a` and `b` (1 ≤ a, b ≤ 100).\n\n## Output\n- Print exactly one line: `Product: <value>` where `<value>` is `a * b`.\n\n## Requirements\n1. Declare and initialize both variables to `0` before reading from `std::cin`.\n2. Read both values in a single `std::cin` extraction chain.\n3. Print in the exact format `Product: <value>` (capital P, colon, space, no trailing spaces).\n4. End output with a newline character.\n5. Write the solution using one statement per line and four-space indentation.\n\n## Notes\n- The compiler does not enforce formatting, but your solution should follow the course style.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare and initialize a and b to 0\n    // TODO: read a and b from std::cin\n    // TODO: print \"Product: \" followed by a * b and a newline\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n\n    std::cin >> a >> b;\n\n    std::cout << \"Product: \" << a * b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: small numbers",
+        "is_sample": true,
+        "stdin": "3 4\n",
+        "expected_stdout": "Product: 12\n"
+      },
+      {
+        "label": "Hidden: one is 1",
+        "is_sample": false,
+        "stdin": "1 99\n",
+        "expected_stdout": "Product: 99\n"
+      },
+      {
+        "label": "Hidden: larger values",
+        "is_sample": false,
+        "stdin": "10 10\n",
+        "expected_stdout": "Product: 100\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Area Calculation",
+    "prompt_md": "## Goal\nComplete the function `computeArea` so that the program reads a width and height, computes the rectangular area, and prints it.\n\n## Input\n- Line 1: two space-separated integers `width` and `height` (1 ≤ each ≤ 200).\n\n## Output\n- Print exactly one line: `Area: <value>` where `<value>` is `width * height`.\n\n## Requirements\n1. The function `computeArea` takes two `int` parameters and returns an `int` equal to their product.\n2. Both variables in `main` must be initialized to `0` before reading from `std::cin`.\n3. Output must be in the exact format shown (capital A, colon, space, no extra blank lines).\n4. Follow one-statement-per-line formatting in your implementation.\n\n## Notes\n- The function body is the only thing you need to change.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement computeArea — takes int w and int h, returns w * h\nint computeArea(int w, int h)\n{\n    return 0; // replace this stub\n}\n\nint main()\n{\n    int width = 0;\n    int height = 0;\n\n    std::cin >> width >> height;\n\n    std::cout << \"Area: \" << computeArea(width, height) << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint computeArea(int w, int h)\n{\n    return w * h;\n}\n\nint main()\n{\n    int width = 0;\n    int height = 0;\n\n    std::cin >> width >> height;\n\n    std::cout << \"Area: \" << computeArea(width, height) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 by 6",
+        "is_sample": true,
+        "stdin": "5 6\n",
+        "expected_stdout": "Area: 30\n"
+      },
+      {
+        "label": "Hidden: square",
+        "is_sample": false,
+        "stdin": "7 7\n",
+        "expected_stdout": "Area: 49\n"
+      },
+      {
+        "label": "Hidden: tall rectangle",
+        "is_sample": false,
+        "stdin": "2 100\n",
+        "expected_stdout": "Area: 200\n"
+      }
+    ]
+  }
+]

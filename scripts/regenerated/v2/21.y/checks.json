@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "When implementing `operator<<` for `IntStack` that prints `[a, b, c]`, the loop should iterate how many times?",
+    "options": {
+      "a": "Always `MAX_SIZE` (8) times, so all slots are visible.",
+      "b": "`m_count` times, because only that many elements contain valid data.",
+      "c": "`MAX_SIZE - m_count` times, to skip the used portion.",
+      "d": "Once, printing the top element only."
+    },
+    "answer": "b",
+    "explanation_md": "Only the first `m_count` elements of the internal array hold valid data. Iterating beyond that prints garbage from uninitialized memory. The stream operator must always use `m_count` as its loop bound."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Given a correct `IntStack` implementation, what does this code print?\n\n```cpp\nIntStack s;\ns += 10;\ns += 20;\ns += 30;\n--s;\nstd::cout << s << '\\n';\n```",
+    "options": null,
+    "answer": "[10, 20]",
+    "explanation_md": "Three pushes add 10, 20, 30 to the stack (bottom to top). One prefix `--` pops the top element (30). The remaining stack printed bottom-to-top is `[10, 20]`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "The copy constructor for `IntStack` must copy which members?",
+    "options": {
+      "a": "Only `m_count`, because the array elements are recomputed on access.",
+      "b": "Both `m_data` (all `m_count` elements) and `m_count`.",
+      "c": "Only `m_data` — `m_count` is always recomputed from the array.",
+      "d": "Neither — the default memberwise copy is always correct for arrays."
+    },
+    "answer": "b",
+    "explanation_md": "A correct copy must replicate both the count and the data. Copying only `m_count` leaves `m_data` uninitialized in the copy. Copying only `m_data` leaves `m_count` as 0 so the copy appears empty. The compiler's default memberwise copy would actually work here (it copies fixed arrays element-by-element), but writing it explicitly is the point of the exercise."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should `operator bool()` on `IntStack` be declared `explicit`?",
+    "options": {
+      "a": "It makes the operator faster.",
+      "b": "Without `explicit`, the stack could silently convert to `int` in arithmetic expressions via the `bool → int` promotion chain.",
+      "c": "`explicit` is required on all `operator bool` declarations by the standard.",
+      "d": "Without `explicit`, the operator cannot be used in `if` conditions."
+    },
+    "answer": "b",
+    "explanation_md": "Without `explicit`, an `IntStack` could be used wherever an `int` is expected: `int n = stack;` would compile and give 0 or 1. `explicit` blocks implicit conversions but still allows the operator in boolean contexts (`if`, `while`, `?:`), which is exactly where it is meant to be used."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Trim Leading and Trailing Spaces",
+    "prompt_md": "## Goal\nWrite a program that reads a line of text that may have leading and/or trailing spaces and prints the trimmed result using `std::string_view::remove_prefix` and `remove_suffix`.\n\n## Input\nLine 1: a string of at most 80 characters, possibly surrounded by spaces. The non-space content is at least 1 character long.\n\n## Output\nPrint the trimmed string on exactly one line, with no leading or trailing spaces.\n\n## Requirements\n1. Read the full line with `std::getline` into a `std::string`.\n2. Create a `std::string_view` from that string.\n3. Use `sv.find_first_not_of(' ')` to find how many leading spaces to skip, then call `remove_prefix` once with that count.\n4. Use `sv.find_last_not_of(' ')` to find the position of the last non-space, then call `remove_suffix` once with the count of trailing spaces.\n5. Print the resulting `string_view`.\n\n## Notes\n- `find_first_not_of(c)` returns the index of the first character that is not `c`, or `std::string_view::npos` if none.\n- `find_last_not_of(c)` returns the index of the last character that is not `c`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main() {\n    std::string line{};\n    std::getline(std::cin, line);\n    std::string_view sv{ line };\n\n    // TODO: find the number of leading spaces and call remove_prefix once\n    // TODO: find the number of trailing spaces and call remove_suffix once\n\n    std::cout << sv << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main() {\n    std::string line{};\n    std::getline(std::cin, line);\n    std::string_view sv{ line };\n\n    std::size_t leading{ sv.find_first_not_of(' ') };\n    if (leading != std::string_view::npos)\n        sv.remove_prefix(leading);\n\n    std::size_t last{ sv.find_last_not_of(' ') };\n    if (last != std::string_view::npos)\n        sv.remove_suffix(sv.size() - last - 1);\n\n    std::cout << sv << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: leading and trailing spaces",
+        "is_sample": true,
+        "stdin": "  hello  \n",
+        "expected_stdout": "hello"
+      },
+      {
+        "label": "Hidden: no spaces",
+        "is_sample": false,
+        "stdin": "world\n",
+        "expected_stdout": "world"
+      },
+      {
+        "label": "Hidden: only leading spaces",
+        "is_sample": false,
+        "stdin": "   cpp\n",
+        "expected_stdout": "cpp"
+      }
+    ]
+  },
+  {
+    "title": "File Extension Checker",
+    "prompt_md": "## Goal\nThis program is supposed to read a filename and print `source`, `header`, or `other` depending on whether the file ends with `.cpp`, `.h`, or neither — but it contains exactly one logic bug. Find and fix it.\n\n## Input\nLine 1: a filename string, at most 50 characters, no spaces.\n\n## Output\nPrint exactly one word on one line: `source` if the filename ends with `.cpp`, `header` if it ends with `.h`, or `other` otherwise.\n\n## Requirements\n1. `source` must print for filenames ending with `.cpp`.\n2. `header` must print for filenames ending with `.h`.\n3. `other` must print for all other filenames.\n4. The program must produce the correct result for filenames ending in `.h` (the hidden tests cover this case specifically).\n\n## Notes\n- Use `std::string_view::ends_with` for the checks.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main() {\n    std::string filename{};\n    std::cin >> filename;\n    std::string_view sv{ filename };\n    if (sv.ends_with(\".cpp\")) {\n        std::cout << \"source\\n\";\n    } else if (sv.ends_with(\".cpp\")) {  // BUG: wrong extension checked\n        std::cout << \"header\\n\";\n    } else {\n        std::cout << \"other\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main() {\n    std::string filename{};\n    std::cin >> filename;\n    std::string_view sv{ filename };\n    if (sv.ends_with(\".cpp\")) {\n        std::cout << \"source\\n\";\n    } else if (sv.ends_with(\".h\")) {\n        std::cout << \"header\\n\";\n    } else {\n        std::cout << \"other\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: cpp file",
+        "is_sample": true,
+        "stdin": "main.cpp\n",
+        "expected_stdout": "source"
+      },
+      {
+        "label": "Hidden: header file",
+        "is_sample": false,
+        "stdin": "utils.h\n",
+        "expected_stdout": "header"
+      },
+      {
+        "label": "Hidden: other extension",
+        "is_sample": false,
+        "stdin": "notes.txt\n",
+        "expected_stdout": "other"
+      }
+    ]
+  }
+]

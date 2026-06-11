@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Divider with Early Exit",
+    "prompt_md": "## Goal\nWrite a program that reads two integers A and B and prints their integer quotient `A / B`. If B is zero, print an error to stderr and exit with failure status before performing the division.\n\n## Input\n- Line 1: two space-separated integers A and B (-1000 <= A <= 1000, -1000 <= B <= 1000).\n\n## Output\n- If B is non-zero: print exactly one line to stdout: `Result: Q` where Q is the integer quotient of A divided by B (truncated toward zero, which is C++'s default integer division).\n- If B is zero: print `Error: division by zero.` to stderr and exit with `EXIT_FAILURE`. Print nothing to stdout.\n\n## Requirements\n1. Read A and B from stdin.\n2. If B == 0, write `Error: division by zero.` to `std::cerr` and call `std::exit(EXIT_FAILURE)`.\n3. Otherwise print `Result: Q` to stdout.\n4. Include `<cstdlib>` for `std::exit` and `EXIT_FAILURE`.\n5. Edge cases covered by hidden tests: B == 1, negative B, A == 0.",
+    "starter_code": "#include <iostream>\n#include <cstdlib>\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    // TODO: if b is zero, print \"Error: division by zero.\" to std::cerr\n    // and call std::exit(EXIT_FAILURE).\n\n    std::cout << \"Result: \" << a / b << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cstdlib>\n\nint main() {\n    int a{}, b{};\n    std::cin >> a >> b;\n\n    if (b == 0) {\n        std::cerr << \"Error: division by zero.\\n\";\n        std::exit(EXIT_FAILURE);\n    }\n\n    std::cout << \"Result: \" << a / b << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal division",
+        "is_sample": true,
+        "stdin": "10 2\n",
+        "expected_stdout": "Result: 5"
+      },
+      {
+        "label": "Hidden: A divided by 1",
+        "is_sample": false,
+        "stdin": "7 1\n",
+        "expected_stdout": "Result: 7"
+      },
+      {
+        "label": "Hidden: negative divisor",
+        "is_sample": false,
+        "stdin": "9 -3\n",
+        "expected_stdout": "Result: -3"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Function: Validated Range Check with Exit",
+    "prompt_md": "## Goal\nComplete the function `validateRange` that checks whether a value is within [minVal, maxVal] inclusive. If the value is out of range, it should print an error and halt the program. Then `main` uses the validated value.\n\n## Input\n- Line 1: three space-separated integers: `value`, `minVal`, `maxVal` (-100 <= minVal <= maxVal <= 100, -1000 <= value <= 1000).\n\n## Output\n- If value is within [minVal, maxVal]: print exactly one line: `Valid: V` where V is the value.\n- If value is out of range: print `Out of range.` to stderr and exit with `EXIT_FAILURE`. Print nothing to stdout.\n\n## Requirements\n1. Implement `validateRange(int value, int minVal, int maxVal)` as a `void` function.\n2. Inside `validateRange`: if `value < minVal || value > maxVal`, print `Out of range.` to `std::cerr` and call `std::exit(EXIT_FAILURE)`.\n3. If in range, the function returns normally (no output from the function itself).\n4. `main` reads the three integers, calls `validateRange`, then prints `Valid: V`.\n5. Edge cases covered by hidden tests: value exactly at minVal, value exactly at maxVal.",
+    "starter_code": "#include <iostream>\n#include <cstdlib>\n\n// TODO: implement validateRange.\n// If value is out of [minVal, maxVal], print \"Out of range.\" to std::cerr\n// and call std::exit(EXIT_FAILURE). Otherwise return normally.\nvoid validateRange(int value, int minVal, int maxVal) {\n    // your code here\n}\n\nint main() {\n    int value{}, minVal{}, maxVal{};\n    std::cin >> value >> minVal >> maxVal;\n\n    validateRange(value, minVal, maxVal);\n\n    std::cout << \"Valid: \" << value << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cstdlib>\n\nvoid validateRange(int value, int minVal, int maxVal) {\n    if (value < minVal || value > maxVal) {\n        std::cerr << \"Out of range.\\n\";\n        std::exit(EXIT_FAILURE);\n    }\n}\n\nint main() {\n    int value{}, minVal{}, maxVal{};\n    std::cin >> value >> minVal >> maxVal;\n\n    validateRange(value, minVal, maxVal);\n\n    std::cout << \"Valid: \" << value << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value in range",
+        "is_sample": true,
+        "stdin": "5 1 10\n",
+        "expected_stdout": "Valid: 5"
+      },
+      {
+        "label": "Hidden: value exactly at minVal",
+        "is_sample": false,
+        "stdin": "1 1 10\n",
+        "expected_stdout": "Valid: 1"
+      },
+      {
+        "label": "Hidden: value exactly at maxVal",
+        "is_sample": false,
+        "stdin": "10 1 10\n",
+        "expected_stdout": "Valid: 10"
+      }
+    ]
+  }
+]

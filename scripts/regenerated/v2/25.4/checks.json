@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual ~Base() { std::cout << \"~Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    ~Derived() override { std::cout << \"~Derived\\n\"; }\n};\n\nint main() {\n    Base* p = new Derived{};\n    delete p;\n}\n```",
+    "options": null,
+    "answer": "~Derived\n~Base",
+    "explanation_md": "With a virtual destructor in `Base`, `delete p` dispatches to `Derived::~Derived` first (most-derived), then automatically chains to `Base::~Base`. Destructors always run in reverse construction order."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you `delete` a `Base*` pointer that actually points to a `Derived` object, if `Base` has no virtual destructor?",
+    "options": {
+      "a": "Both `Base` and `Derived` destructors run in correct order.",
+      "b": "Only `Derived::~Derived` runs.",
+      "c": "Only `Base::~Base` runs; `Derived::~Derived` is never called, leading to resource leaks or undefined behavior.",
+      "d": "A compile error is generated."
+    },
+    "answer": "c",
+    "explanation_md": "Without a virtual destructor, `delete` uses the static type of the pointer (`Base*`) to decide which destructor to call. Only `Base::~Base` runs. `Derived::~Derived` is skipped, leaking any resources owned by `Derived`. This is undefined behavior when the dynamic type differs from the static type."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    ~Base() { std::cout << \"~Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    ~Derived() { std::cout << \"~Derived\\n\"; }\n};\n\nint main() {\n    Derived d;\n}\n```",
+    "options": null,
+    "answer": "~Derived\n~Base",
+    "explanation_md": "When `d` goes out of scope, C++ always calls destructors from most-derived to base — regardless of whether destructors are virtual. The virtual destructor is only needed when deleting through a *base pointer*. When the static type is `Derived`, both destructors run in correct order automatically."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which idiom correctly declares a virtual destructor with no custom body in a base class?",
+    "options": {
+      "a": "`virtual ~Base();` (declaration only, no definition anywhere)",
+      "b": "`virtual ~Base() = 0;`",
+      "c": "`virtual ~Base() = default;`",
+      "d": "`~Base() override;`"
+    },
+    "answer": "c",
+    "explanation_md": "`virtual ~Base() = default;` asks the compiler to generate the default (empty) destructor body while marking it virtual. Option (a) would produce a link error — the definition is required. Option (b) would make the class abstract (pure virtual destructor). Option (d) uses `override` which applies to derived classes overriding a base, not to defining the base destructor itself."
+  }
+]

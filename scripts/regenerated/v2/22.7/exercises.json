@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Observe and Report Pointer Liveness",
+    "prompt_md": "## Goal\nWrite a program that creates a `shared_ptr`, makes a `weak_ptr` from it, then conditionally resets the shared pointer based on input, and finally reports whether the weak pointer is still alive.\n\n## Input\n- Line 1: integer V (the value to store).\n- Line 2: `1` to reset the shared_ptr before checking, `0` to keep it alive.\n\n## Output\nPrint exactly one line:\n- `Alive: V` if the weak_ptr can still be locked (shared_ptr was not reset).\n- `Dead` if the weak_ptr has expired (shared_ptr was reset).\n\n## Requirements\n1. Use `std::make_shared<int>(V)` to create the shared pointer.\n2. Assign it to a `std::weak_ptr<int>`.\n3. If input is 1, call `.reset()` on the shared pointer before checking.\n4. Call `.lock()` on the weak pointer; if the result is non-null print `Alive: V`, else print `Dead`.\n",
+    "starter_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int v, should_reset;\n    std::cin >> v >> should_reset;\n\n    auto shared = std::make_shared<int>(v);\n    std::weak_ptr<int> weak = shared;\n\n    if (should_reset) {\n        shared.reset();\n    }\n\n    // TODO: lock the weak_ptr and print the appropriate message\n    auto locked = weak.lock();\n    if (locked) {\n        // TODO: print \"Alive: \" + the value\n    } else {\n        // TODO: print \"Dead\"\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int v, should_reset;\n    std::cin >> v >> should_reset;\n\n    auto shared = std::make_shared<int>(v);\n    std::weak_ptr<int> weak = shared;\n\n    if (should_reset) {\n        shared.reset();\n    }\n\n    auto locked = weak.lock();\n    if (locked) {\n        std::cout << \"Alive: \" << *locked << \"\\n\";\n    } else {\n        std::cout << \"Dead\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: alive (no reset)",
+        "is_sample": true,
+        "stdin": "42 0\n",
+        "expected_stdout": "Alive: 42"
+      },
+      {
+        "label": "Hidden: dead (reset)",
+        "is_sample": false,
+        "stdin": "10 1\n",
+        "expected_stdout": "Dead"
+      },
+      {
+        "label": "Hidden: alive with value 0",
+        "is_sample": false,
+        "stdin": "0 0\n",
+        "expected_stdout": "Alive: 0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Cycle Memory Leak",
+    "prompt_md": "## Goal\nThe program below creates two nodes that hold `shared_ptr`s to each other, forming a reference cycle. The destructors never run. Fix the one bug (change one member type in `Node`) so that both nodes are properly destroyed and the destructors print their messages.\n\n## Input\nNo input (stdin is empty).\n\n## Output\nExactly two lines in this order:\n```\nA destroyed\nB destroyed\n```\n\n## Requirements\n1. Fix only the type of the `prev` member in `Node` — change it from `shared_ptr<Node>` to `weak_ptr<Node>`.\n2. Do not change `main` or the assignment statements.\n3. The program must not leak memory (both destructors must print).\n",
+    "starter_code": "#include <iostream>\n#include <memory>\n#include <string>\n\nstruct Node {\n    std::string name;\n    std::shared_ptr<Node> next;\n    std::shared_ptr<Node> prev; // Bug: should be weak_ptr to break the cycle\n    ~Node() { std::cout << name << \" destroyed\\n\"; }\n};\n\nint main() {\n    auto a = std::make_shared<Node>(); a->name = \"A\";\n    auto b = std::make_shared<Node>(); b->name = \"B\";\n    a->next = b;\n    b->prev = a;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n#include <string>\n\nstruct Node {\n    std::string name;\n    std::shared_ptr<Node> next;\n    std::weak_ptr<Node>   prev;\n    ~Node() { std::cout << name << \" destroyed\\n\"; }\n};\n\nint main() {\n    auto a = std::make_shared<Node>(); a->name = \"A\";\n    auto b = std::make_shared<Node>(); b->name = \"B\";\n    a->next = b;\n    b->prev = a;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: both nodes destroyed",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "A destroyed\nB destroyed"
+      },
+      {
+        "label": "Hidden: same program, same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "A destroyed\nB destroyed"
+      },
+      {
+        "label": "Hidden: deterministic destruction order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "A destroyed\nB destroyed"
+      }
+    ]
+  }
+]

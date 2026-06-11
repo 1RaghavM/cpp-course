@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Val {\n    int m_v{};\npublic:\n    Val(int v) : m_v{v} {}\n    Val& operator+=(const Val& rhs) {\n        m_v += rhs.m_v;\n        return *this;\n    }\n    int v() const { return m_v; }\n};\n\nint main() {\n    Val a{10};\n    Val b{3};\n    a += b;\n    std::cout << a.v() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "13",
+    "explanation_md": "`a += b` calls `a.operator+=(b)`, which adds `b.m_v` (3) to `a.m_v` (10), making it 13. The operator returns `*this` (a reference to `a`), but the result is unused here. `a.v()` then returns 13."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "For a class `Matrix`, you want `m * 2` to work but also `2 * m`. Which approach achieves both?",
+    "options": {
+      "a": "Define a single member `operator*(int scale) const` — it automatically handles both orders",
+      "b": "Define a member `operator*(int scale) const` for `m * 2`, and a free function `operator*(int scale, const Matrix& m)` for `2 * m`",
+      "c": "Define two member functions: `operator*(int)` and `operator*(int, const Matrix&)`",
+      "d": "Only `m * 2` is valid in C++; `2 * m` cannot be overloaded"
+    },
+    "answer": "b",
+    "explanation_md": "A member function always puts the class instance on the left. So `m * 2` works with a member, but `2 * m` requires the left operand to be `int`, which has no member function for `operator*(Matrix)`. A separate free function `operator*(int, const Matrix&)` handles the reversed order."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Score {\n    int m_pts{};\npublic:\n    Score(int p) : m_pts{p} {}\n    Score operator+(const Score& rhs) const {\n        return Score{m_pts + rhs.m_pts};\n    }\n    int pts() const { return m_pts; }\n};\n\nint main() {\n    Score a{5}, b{8}, c{2};\n    Score r = a + b + c;\n    std::cout << r.pts() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "`a + b` calls `a.operator+(b)` producing `Score{13}`. Then `Score{13} + c` produces `Score{15}`. Chaining works because `operator+` returns a new object by value."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code compiles but produces wrong results:\n\n```cpp\n#include <iostream>\n\nclass Pos {\n    int m_x{}, m_y{};\npublic:\n    Pos(int x, int y) : m_x{x}, m_y{y} {}\n    Pos& operator+(const Pos& rhs) {\n        m_x += rhs.m_x;\n        m_y += rhs.m_y;\n        return *this;\n    }\n    int x() const { return m_x; }\n    int y() const { return m_y; }\n};\n\nint main() {\n    Pos a{1, 2}, b{3, 4};\n    Pos c = a + b;\n    std::cout << a.x() << \" \" << c.x() << \"\\n\";\n    return 0;\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "`operator+` is missing the `const` qualifier at the end, so it cannot be called on const objects",
+      "b": "`operator+` modifies `*this` (the left operand `a`) and returns a reference to it. `c` becomes an alias for `a`, so both `a.x()` and `c.x()` show the mutated value `4`, not the original `1`",
+      "c": "Binary `operator+` cannot return `Pos&` — it must return `void`",
+      "d": "`rhs.m_x` is inaccessible because `m_x` is private"
+    },
+    "answer": "b",
+    "explanation_md": "Arithmetic `+` must return a new object, not modify the left operand. Here `a.m_x` becomes 4, then a reference to `a` is returned and stored in `c`. Now `a` and `c` refer to the same mutated object. The fix: return `Pos{m_x + rhs.m_x, m_y + rhs.m_y}` by value and mark the method `const`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following operators **must** be defined as a member function (the language requires it)?",
+    "options": {
+      "a": "`operator+`",
+      "b": "`operator<<`",
+      "c": "`operator[]` (subscript)",
+      "d": "`operator==`"
+    },
+    "answer": "c",
+    "explanation_md": "The C++ standard requires that `operator[]`, `operator()`, `operator->`, and conversion operators be member functions. `operator+`, `operator==`, and `operator<<` can be free functions (and `operator<<` in fact should be, as covered in the I/O operators lesson)."
+  }
+]

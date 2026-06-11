@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Template describe() with bool specialization",
+    "prompt_md": "## Goal\nWrite a function template `describe<T>` that prints a type-labelled description of a value. Add a full specialization for `bool` that prints `true` or `false` instead of `1` or `0`.\n\n## Input\nLine 1: an integer.\nLine 2: an integer that will be converted to bool (0 = false, non-zero = true).\n\n## Output\nPrint exactly two lines:\n- `int: <value>` for the integer\n- `bool: true` or `bool: false` for the boolean\n\n## Requirements\n1. Primary template `describe(const T& v)` prints `int: <v>` (this exercise only uses `int` and `bool`).\n2. Full specialization `template <> void describe<bool>(const bool& v)` prints `bool: true` or `bool: false`.\n3. `main()` reads an `int` and calls `describe` with it, then reads an `int`, converts it to `bool`, and calls `describe` with that.\n\n## Notes\n- Input 0 for the second value → print `bool: false`; any non-zero → print `bool: true`.",
+    "starter_code": "#include <iostream>\n\n// Primary template: prints \"int: <v>\"\ntemplate <typename T>\nvoid describe(const T& v) {\n    std::cout << \"int: \" << v << \"\\n\";\n}\n\n// TODO: add a full specialization for bool that prints:\n//   \"bool: true\"  when v is true\n//   \"bool: false\" when v is false\n\nint main() {\n    int n;\n    std::cin >> n;\n    describe(n);\n\n    int b;\n    std::cin >> b;\n    describe(static_cast<bool>(b));\n\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nvoid describe(const T& v) {\n    std::cout << \"int: \" << v << \"\\n\";\n}\n\ntemplate <>\nvoid describe<bool>(const bool& v) {\n    std::cout << \"bool: \" << (v ? \"true\" : \"false\") << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    describe(n);\n\n    int b;\n    std::cin >> b;\n    describe(static_cast<bool>(b));\n\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: int and true",
+        "is_sample": true,
+        "stdin": "42\n1\n",
+        "expected_stdout": "int: 42\nbool: true"
+      },
+      {
+        "label": "Hidden: zero bool",
+        "is_sample": false,
+        "stdin": "7\n0\n",
+        "expected_stdout": "int: 7\nbool: false"
+      },
+      {
+        "label": "Hidden: negative int and non-zero bool",
+        "is_sample": false,
+        "stdin": "-5\n3\n",
+        "expected_stdout": "int: -5\nbool: true"
+      }
+    ]
+  },
+  {
+    "title": "Fix the bug: specialization prints wrong label",
+    "prompt_md": "## Goal\nThe program has a primary function template `format` and a full specialization for `double`. It compiles and runs, but the `double` specialization prints the wrong label. Find and fix the single logic bug so the program produces the correct output.\n\n## Input\nLine 1: an integer.\nLine 2: a double.\n\n## Output\n- `Number: <int>` for the integer\n- `Float: <double>` for the double\n\n## Requirements\n1. The bug is in the body of the `double` specialization — do not change `main` or the primary template.\n2. After the fix, `format(3.14)` must print `Float: 3.14`.\n\n## Notes\n- Hidden tests: integer 0 and double 0.5.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nvoid format(T v) {\n    std::cout << \"Number: \" << v << \"\\n\";\n}\n\ntemplate <>\nvoid format<double>(double v) {\n    std::cout << \"Number: \" << v << \"\\n\";  // BUG: wrong label\n}\n\nint main() {\n    int a;\n    double b;\n    std::cin >> a >> b;\n    format(a);\n    format(b);\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nvoid format(T v) {\n    std::cout << \"Number: \" << v << \"\\n\";\n}\n\ntemplate <>\nvoid format<double>(double v) {\n    std::cout << \"Float: \" << v << \"\\n\";\n}\n\nint main() {\n    int a;\n    double b;\n    std::cin >> a >> b;\n    format(a);\n    format(b);\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic int and double",
+        "is_sample": true,
+        "stdin": "5 3.14\n",
+        "expected_stdout": "Number: 5\nFloat: 3.14"
+      },
+      {
+        "label": "Hidden: zero integer and small double",
+        "is_sample": false,
+        "stdin": "0 0.5\n",
+        "expected_stdout": "Number: 0\nFloat: 0.5"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-3 -1.5\n",
+        "expected_stdout": "Number: -3\nFloat: -1.5"
+      }
+    ]
+  }
+]

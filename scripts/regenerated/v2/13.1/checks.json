@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following statements about program-defined types is correct?",
+    "options": {
+      "a": "A program-defined type definition allocates a variable of that type as soon as it is parsed.",
+      "b": "Once defined, a program-defined type can be used like any fundamental type to declare variables and parameters.",
+      "c": "Program-defined types must be defined inside main so they have a clear lifetime.",
+      "d": "C++ does not allow the programmer to introduce new type names; only typedefs are permitted."
+    },
+    "answer": "b",
+    "explanation_md": "A type definition introduces a new name into the type system but does not create any objects on its own. After the definition, the type takes its place beside fundamental types and you can declare variables, parameters, and return types with it. Option (a) confuses defining a type with defining a variable; option (c) is backwards — file scope is the usual location, so other functions can use the type; option (d) is simply false."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with the following code?\n\n```cpp\n#include <iostream>\n\nenum Color\n{\n    red,\n    green,\n    blue,\n}\n\nint main()\n{\n    return 0;\n}\n```",
+    "options": {
+      "a": "The enumerators should be capitalized.",
+      "b": "There is a missing semicolon after the closing brace of the enum definition.",
+      "c": "The enum cannot have a trailing comma after `blue`.",
+      "d": "`main` must return a Color, not an int."
+    },
+    "answer": "b",
+    "explanation_md": "A type definition is a statement and must end with a semicolon. Without it, the parser treats `int main()` as a continuation of the definition and reports a confusing error pointing at the `main` line. The trailing comma after `blue` is perfectly legal in C++, and enumerator capitalization is a style choice, not a language rule."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum Level\n{\n    low,\n    medium,\n    high,\n};\n\nint main()\n{\n    Level current { medium };\n    std::cout << current << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "An unscoped enumerator without an explicit value gets the index it has in the list, starting at zero. `low` is 0, `medium` is 1, `high` is 2. When printed with `std::cout`, the enumerator value is converted to its underlying integer representation and `1` appears on the line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is putting an `enum Color { ... };` definition inside `main` usually a mistake?",
+    "options": {
+      "a": "C++ forbids type definitions inside functions; the program will not compile.",
+      "b": "The enumerators leak into the global namespace and clash with other names.",
+      "c": "Other functions in the file cannot use the type because its name is only visible inside main.",
+      "d": "It causes the program to allocate memory for every value of Color at startup."
+    },
+    "answer": "c",
+    "explanation_md": "A type defined inside a function has function-local scope: the name `Color` only exists inside that function. Helper functions elsewhere in the same file cannot accept `Color` as a parameter. C++ does allow such nested definitions (so option (a) is wrong), they do not leak names outside the function (option (b) is the opposite of what happens), and type definitions never allocate memory by themselves (option (d) is wrong)."
+  }
+]

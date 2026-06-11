@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Validate Age Input with Do-While",
+    "prompt_md": "## Goal\nWrite a program that repeatedly prompts the user for an age until a valid value (1 through 120 inclusive) is entered, then prints the accepted age.\n\n## Input\nOne or more integers, one per line, until a valid age is entered. Only the final valid integer matters.\n\n## Output\nPrint exactly one line: `Age accepted: N` where N is the valid age entered.\n\n## Requirements\n1. Use a do-while loop to enforce at least one prompt.\n2. Re-prompt with the message `Enter your age (1-120): ` until the input is in range.\n3. After a valid input is received, print `Age accepted: N` where N is the accepted age.\n4. Edge cases covered by hidden tests: the minimum valid value (1), the maximum valid value (120), and a single invalid entry followed by a valid one.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int age{};\n\n    // TODO: use a do-while loop to prompt \"Enter your age (1-120): \"\n    // and keep repeating until age is between 1 and 120 inclusive.\n\n    std::cout << \"Age accepted: \" << age << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int age{};\n\n    do {\n        std::cout << \"Enter your age (1-120): \";\n        std::cin >> age;\n    } while (age < 1 || age > 120);\n\n    std::cout << \"Age accepted: \" << age << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: valid on first try",
+        "is_sample": true,
+        "stdin": "25\n",
+        "expected_stdout": "Enter your age (1-120): Age accepted: 25"
+      },
+      {
+        "label": "Hidden: minimum valid value",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Enter your age (1-120): Age accepted: 1"
+      },
+      {
+        "label": "Hidden: invalid then valid",
+        "is_sample": false,
+        "stdin": "0\n55\n",
+        "expected_stdout": "Enter your age (1-120): Enter your age (1-120): Age accepted: 55"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: PIN Retry Loop",
+    "prompt_md": "## Goal\nThe program below is supposed to keep asking the user for a 4-digit PIN (1000–9999 inclusive) until they enter the correct PIN (7531), then print `Access granted.`. It contains exactly one logic bug — find and fix it.\n\n## Input\nOne or more integers, one per line. The correct PIN is 7531.\n\n## Output\nPrint exactly one line: `Access granted.`\n\n## Requirements\n1. The program must keep re-prompting as long as the entered PIN is not 7531.\n2. The re-prompt message is `Enter PIN: `.\n3. Once the correct PIN is entered, print `Access granted.` and exit.\n4. Hidden tests cover: correct PIN on the first attempt, correct PIN after one wrong attempt.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    const int correctPin{7531};\n    int pin{};\n\n    do {\n        std::cout << \"Enter PIN: \";\n        std::cin >> pin;\n    } while (pin == correctPin);  // bug here\n\n    std::cout << \"Access granted.\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    const int correctPin{7531};\n    int pin{};\n\n    do {\n        std::cout << \"Enter PIN: \";\n        std::cin >> pin;\n    } while (pin != correctPin);\n\n    std::cout << \"Access granted.\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct PIN first try",
+        "is_sample": true,
+        "stdin": "7531\n",
+        "expected_stdout": "Enter PIN: Access granted."
+      },
+      {
+        "label": "Hidden: wrong then correct",
+        "is_sample": false,
+        "stdin": "1234\n7531\n",
+        "expected_stdout": "Enter PIN: Enter PIN: Access granted."
+      },
+      {
+        "label": "Hidden: two wrong then correct",
+        "is_sample": false,
+        "stdin": "9999\n0000\n7531\n",
+        "expected_stdout": "Enter PIN: Enter PIN: Enter PIN: Access granted."
+      }
+    ]
+  }
+]

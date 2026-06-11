@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Construction and Destruction Order",
+    "prompt_md": "## Goal\nCreate a three-level class hierarchy and print the exact order of construction and destruction.\n\n## Input\nNo input — the program reads nothing from stdin.\n\n## Output\nPrint exactly 6 lines in the correct construction/destruction order:\n```\nAlpha constructed\nBeta constructed\nGamma constructed\nGamma destructed\nBeta destructed\nAlpha destructed\n```\n\n## Requirements\n1. Define class `Alpha` with a default constructor that prints `Alpha constructed` and a destructor that prints `Alpha destructed`.\n2. Define class `Beta` that publicly inherits from `Alpha` with a default constructor that prints `Beta constructed` and a destructor that prints `Beta destructed`.\n3. Define class `Gamma` that publicly inherits from `Beta` with a default constructor that prints `Gamma constructed` and a destructor that prints `Gamma destructed`.\n4. In `main()`, create a single `Gamma` object in a local scope (or just as a local variable in main) — the destructors must fire when it goes out of scope.\n5. Do NOT print anything other than the 6 required lines.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define class Alpha with default constructor (prints \"Alpha constructed\")\n//       and destructor (prints \"Alpha destructed\")\n\n// TODO: Define class Beta that publicly inherits Alpha,\n//       constructor prints \"Beta constructed\", destructor prints \"Beta destructed\"\n\n// TODO: Define class Gamma that publicly inherits Beta,\n//       constructor prints \"Gamma constructed\", destructor prints \"Gamma destructed\"\n\nint main() {\n    // TODO: create a Gamma object so all 6 lines print\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Alpha {\npublic:\n    Alpha()  { std::cout << \"Alpha constructed\\n\"; }\n    ~Alpha() { std::cout << \"Alpha destructed\\n\"; }\n};\n\nclass Beta : public Alpha {\npublic:\n    Beta()  { std::cout << \"Beta constructed\\n\"; }\n    ~Beta() { std::cout << \"Beta destructed\\n\"; }\n};\n\nclass Gamma : public Beta {\npublic:\n    Gamma()  { std::cout << \"Gamma constructed\\n\"; }\n    ~Gamma() { std::cout << \"Gamma destructed\\n\"; }\n};\n\nint main() {\n    Gamma g;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: full chain output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Alpha constructed\nBeta constructed\nGamma constructed\nGamma destructed\nBeta destructed\nAlpha destructed"
+      },
+      {
+        "label": "Hidden: same (no stdin variation)",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Alpha constructed\nBeta constructed\nGamma constructed\nGamma destructed\nBeta destructed\nAlpha destructed"
+      },
+      {
+        "label": "Hidden: verify order again",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Alpha constructed\nBeta constructed\nGamma constructed\nGamma destructed\nBeta destructed\nAlpha destructed"
+      }
+    ]
+  },
+  {
+    "title": "Construction Order Bug Fix",
+    "prompt_md": "## Goal\nThe program below should print the correct two-level construction message showing base constructs before derived. It compiles, but prints in the wrong order. Find and fix the one logic bug.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nEngine constructed\nCar constructed\n```\n\n## Requirements\n1. The bug is a logic error in the constructor bodies — the program compiles.\n2. `Engine` constructor must print `Engine constructed` and `Car` constructor must print `Car constructed`.\n3. The messages must appear in construction order: base (`Engine`) first, derived (`Car`) second.\n4. Do not restructure the class hierarchy or add/remove classes.",
+    "starter_code": "#include <iostream>\n\nclass Engine {\npublic:\n    Engine() {\n        std::cout << \"Car constructed\\n\"; // BUG: wrong message\n    }\n};\n\nclass Car : public Engine {\npublic:\n    Car() {\n        std::cout << \"Engine constructed\\n\"; // BUG: wrong message\n    }\n};\n\nint main() {\n    Car c;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Engine {\npublic:\n    Engine() {\n        std::cout << \"Engine constructed\\n\";\n    }\n};\n\nclass Car : public Engine {\npublic:\n    Car() {\n        std::cout << \"Car constructed\\n\";\n    }\n};\n\nint main() {\n    Car c;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct order",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Engine constructed\nCar constructed"
+      },
+      {
+        "label": "Hidden: same check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Engine constructed\nCar constructed"
+      },
+      {
+        "label": "Hidden: verify base first",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Engine constructed\nCar constructed"
+      }
+    ]
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid display(const int& n) {\n    std::cout << n + 1 << '\\n';\n}\n\nint main() {\n    int x = 9;\n    display(x);\n    display(4);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n5",
+    "explanation_md": "`display` takes a `const int&`. For `display(x)`, `n` binds to `x` and prints `9 + 1 = 10`. For `display(4)`, `n` binds to the rvalue `4` (via a compiler-created temporary) and prints `4 + 1 = 5`. Both calls succeed because `const&` accepts both lvalues and rvalues."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which parameter type allows passing both `myVar` (a named `int`) and the literal `42` to a function that only needs to read the value?",
+    "options": {
+      "a": "`int n` (pass by value)",
+      "b": "`int& n` (non-const reference)",
+      "c": "`const int& n` (const reference)",
+      "d": "Both a and c"
+    },
+    "answer": "d",
+    "explanation_md": "Both pass-by-value (`int n`) and pass-by-const-reference (`const int& n`) accept rvalues like `42`. A non-const lvalue reference (`int& n`) rejects rvalues because it requires a modifiable named object. The difference between a and c is cost: for large types, `const&` avoids a copy; for `int`, either is fine."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The function should print the sum of two numbers but fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid printSum(int& a, int& b) {\n    std::cout << a + b << '\\n';\n}\n\nint main() {\n    int x = 3;\n    printSum(x, 10);   // error here\n    return 0;\n}\n```",
+    "options": {
+      "a": "You cannot add `a + b` when they are references",
+      "b": "`printSum` should return `int`, not `void`",
+      "c": "`int& b` cannot bind to the rvalue `10`; parameter should be `const int& b`",
+      "d": "The `std::cout` statement needs `std::endl` instead of `'\\n'`"
+    },
+    "answer": "c",
+    "explanation_md": "A non-const lvalue reference (`int& b`) can only bind to a modifiable named variable. The literal `10` is an rvalue and has no address, so the compiler rejects the binding. Changing `int& b` to `const int& b` (or `int b`) fixes the error because `const&` and value parameters both accept rvalues."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `const int&` generally preferred over `int&` for a read-only parameter?",
+    "options": {
+      "a": "It is faster because it skips the reference binding step",
+      "b": "It allows passing rvalues and literals, and documents that the function will not modify the argument",
+      "c": "It causes the compiler to copy the value into a register for speed",
+      "d": "It prevents the caller's variable from being changed by any other code"
+    },
+    "answer": "b",
+    "explanation_md": "`const int&` widens what callers can pass (including literals and temporaries) and signals in the type system that the function only reads the value — no modification possible. It does not affect register use or copy semantics, and it only restricts this particular reference from writing, not the object itself from being changed elsewhere."
+  }
+]

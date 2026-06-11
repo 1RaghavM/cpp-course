@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which smart pointer should you choose by default when you have a single, clear owner of a heap resource?",
+    "options": {
+      "a": "std::shared_ptr, because it is safer due to reference counting",
+      "b": "std::unique_ptr, because it expresses single ownership with zero overhead",
+      "c": "std::weak_ptr, because it avoids reference cycles",
+      "d": "A raw pointer, because smart pointers add runtime cost"
+    },
+    "answer": "b",
+    "explanation_md": "`std::unique_ptr` is the default choice: it is the same size as a raw pointer, has no runtime overhead beyond the destructor call, and communicates single ownership clearly in the type. `shared_ptr` adds atomic reference-count operations; use it only when ownership genuinely is shared."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nstruct R {\n    ~R() { std::cout << \"gone\\n\"; }\n};\n\nint main() {\n    std::shared_ptr<R> a = std::make_shared<R>();\n    std::weak_ptr<R>   w = a;\n    a.reset();\n    if (w.lock()) std::cout << \"alive\\n\";\n    else          std::cout << \"dead\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "gone\ndead",
+    "explanation_md": "`a.reset()` drops the strong reference count to 0, immediately destroying R and printing \"gone\". `w` is a weak observer — it did not prevent destruction. `w.lock()` returns null, so the else branch prints \"dead\"."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Two nodes each hold a `shared_ptr` to the other. What is the consequence?",
+    "options": {
+      "a": "The program crashes with a stack overflow",
+      "b": "Both nodes leak — their reference counts never reach zero",
+      "c": "The compiler detects the cycle and refuses to compile",
+      "d": "Only the second node leaks; the first is properly freed"
+    },
+    "answer": "b",
+    "explanation_md": "Each node's reference count stays at at least 1 because the other node holds it. When the local variables go out of scope, the counts drop from 2 to 1, not to 0. Neither destructor runs. This is a classic reference cycle. The fix is to make one of the back-pointers a `weak_ptr`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the rule of five about?",
+    "options": {
+      "a": "You must always define exactly five constructors in every class",
+      "b": "If you define any of destructor, copy constructor, copy assignment, move constructor, or move assignment, you should explicitly define (or delete) all five",
+      "c": "A class must not exceed five data members for move semantics to work",
+      "d": "Move constructors are only generated when a class has five or fewer members"
+    },
+    "answer": "b",
+    "explanation_md": "Defining any one of the five special member functions signals that the class manages a resource in a non-default way. The compiler's auto-generated versions may not do the right thing for the other four. Explicitly defining or deleting all five ensures correct copy, move, and destruction behavior."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nvoid take(std::unique_ptr<int> p) {\n    std::cout << *p << \"\\n\";\n}\n\nint main() {\n    auto p = std::make_unique<int>(55);\n    take(std::move(p));\n    std::cout << (p ? \"has value\" : \"null\") << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "55\nnull",
+    "explanation_md": "`std::move(p)` casts `p` to an rvalue reference, enabling `unique_ptr`'s move constructor to transfer ownership into `take`'s parameter. After the call, `p` is null. Inside `take`, the value 55 is printed before the function returns and the local `p` destructs."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Define and use an alias template",
+    "prompt_md": "## Goal\nDefine a class template `Pair<T, U>` with members `first` and `second`, then an alias template `IntPair<U>` that fixes the first type to `int`. Use it to read two values and print them.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line: `first=<a> second=<b>` followed by a newline, where `<a>` and `<b>` are the two input integers.\n\n## Requirements\n1. Define `template <typename T, typename U> struct Pair { T first; U second; };` at file scope.\n2. Define `template <typename U> using IntPair = Pair<int, U>;` after `Pair`.\n3. In `main`, read two `int` values from `std::cin`, store them in an `IntPair<int>`, and print them in the exact format `first=<a> second=<b>` followed by a newline.\n\n## Notes\n`IntPair<int>` should be the same type as `Pair<int, int>`.",
+    "starter_code": "#include <iostream>\n\n// TODO: define class template Pair<T, U>\n\n// TODO: define alias template IntPair<U>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    // TODO: construct an IntPair<int> and print in the required format\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Pair\n{\n    T first;\n    U second;\n};\n\ntemplate <typename U>\nusing IntPair = Pair<int, U>;\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    IntPair<int> p{ a, b };\n    std::cout << \"first=\" << p.first << \" second=\" << p.second << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "3 4\n",
+        "expected_stdout": "first=3 second=4\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "-1 99\n",
+        "expected_stdout": "first=-1 second=99\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "0 0\n",
+        "expected_stdout": "first=0 second=0\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the wrong alias instantiation",
+    "prompt_md": "## Goal\nThe program below uses an alias template `IntPair<U>` (where `IntPair<U>` is shorthand for `Pair<int, U>`) and is supposed to read two integers and print them as `a + b`. The program compiles and runs, but it prints the wrong arithmetic operator because the alias was instantiated with the wrong second type. Find the single broken instantiation and fix it so the program prints the sum.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing the sum of the two integers, followed by a newline.\n\n## Requirements\n1. Keep the `Pair` template, the `IntPair` alias, and `main`'s I/O exactly as written.\n2. The current code instantiates `IntPair<double>` and stores the values, but the `double` second member causes the printed sum to be a `double` like `30.5` for integer inputs that should produce `30`. Change the instantiation to use `int` for both members.\n3. After the fix the program must compile cleanly under `g++ -std=c++20 -Wall -Wextra` and print only the sum as an integer on a single line.\n\n## Notes\nThe planted bug is `IntPair<double>` where `IntPair<int>` is intended. Both compile, but the wrong one promotes the sum to floating point, which prints with a decimal for non-trivial inputs.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Pair\n{\n    T first;\n    U second;\n};\n\ntemplate <typename U>\nusing IntPair = Pair<int, U>;\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    IntPair<double> p{ a, static_cast<double>(b) + 0.5 };\n    std::cout << p.first + p.second << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Pair\n{\n    T first;\n    U second;\n};\n\ntemplate <typename U>\nusing IntPair = Pair<int, U>;\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    IntPair<int> p{ a, b };\n    std::cout << p.first + p.second << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "10 20\n",
+        "expected_stdout": "30\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "-5 5\n",
+        "expected_stdout": "0\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "100 -42\n",
+        "expected_stdout": "58\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

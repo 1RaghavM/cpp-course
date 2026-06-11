@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Fizz for Multiples of 3",
+    "prompt_md": "## Goal\nWrite a program that prints integers from lo to hi (inclusive), replacing each multiple of 3 with `Fizz`.\n\n## Input\n- Line 1: integer lo (1 ≤ lo ≤ 50).\n- Line 2: integer hi (lo ≤ hi ≤ 50).\n\n## Output\n- Print exactly `hi - lo + 1` lines.\n- For each integer i in [lo, hi]: if `i % 3 == 0`, print `Fizz`; otherwise print the integer itself.\n\n## Requirements\n1. Use a `for` loop from lo to hi inclusive.\n2. Use a `switch` on `i % 3` to decide what to print (case 0 → `Fizz`, cases 1 and 2 → the number).\n3. Each output is on its own line.\n4. Do not use `if`/`else` for this decision — use `switch`.\n\n## Notes\n- `#include <iostream>` is required.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int lo, hi;\n    std::cin >> lo >> hi;\n\n    for (int i = lo; i <= hi; ++i)\n    {\n        // TODO: use switch on (i % 3)\n        // case 0: print \"Fizz\"\n        // cases 1 and 2: print i\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int lo, hi;\n    std::cin >> lo >> hi;\n\n    for (int i = lo; i <= hi; ++i)\n    {\n        switch (i % 3)\n        {\n            case 0:\n                std::cout << \"Fizz\\n\";\n                break;\n            case 1:\n                std::cout << i << '\\n';\n                break;\n            case 2:\n                std::cout << i << '\\n';\n                break;\n        }\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1 to 6",
+        "is_sample": true,
+        "stdin": "1\n6\n",
+        "expected_stdout": "1\n2\nFizz\n4\n5\nFizz\n"
+      },
+      {
+        "label": "Hidden: single multiple of 3",
+        "is_sample": false,
+        "stdin": "3\n3\n",
+        "expected_stdout": "Fizz\n"
+      },
+      {
+        "label": "Hidden: 7 to 12",
+        "is_sample": false,
+        "stdin": "7\n12\n",
+        "expected_stdout": "7\n8\nFizz\n10\n11\nFizz\n"
+      }
+    ]
+  },
+  {
+    "title": "First Value Below Threshold",
+    "prompt_md": "## Goal\nComplete the function `first_below` that searches a random sequence for the first value strictly less than a given threshold.\n\n## Input\n- Line 1: integer threshold (1 ≤ threshold ≤ 100).\n- Line 2: integer max_draws (1 ≤ max_draws ≤ 20).\n\n## Output\n- Print exactly one line: the first drawn value below threshold, or `-1` if no such value was found within max_draws draws.\n\n## Requirements\n1. Implement `first_below(std::mt19937& rng, int threshold, int max_draws) -> int`.\n2. Inside the function, use `std::uniform_int_distribution<int>{1, 100}` to draw values.\n3. Use a `for` loop that runs at most `max_draws` times.\n4. Return the first drawn value that is strictly less than `threshold`; return `-1` if the loop ends without finding one.\n5. `main()` creates `std::mt19937 rng{ 42u }` and passes it to the function.\n\n## Notes\n- Use `break` inside the loop to stop as soon as a qualifying value is found.",
+    "starter_code": "#include <random>\n#include <iostream>\n\n// TODO: implement this function.\n// Draw up to max_draws values from rng using uniform_int_distribution{1, 100}.\n// Return the first value strictly less than threshold, or -1 if none found.\nint first_below(std::mt19937& rng, int threshold, int max_draws)\n{\n    return -1; // replace with your implementation\n}\n\nint main()\n{\n    int threshold, max_draws;\n    std::cin >> threshold >> max_draws;\n\n    std::mt19937 rng{ 42u };\n    std::cout << first_below(rng, threshold, max_draws) << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <random>\n#include <iostream>\n\nint first_below(std::mt19937& rng, int threshold, int max_draws)\n{\n    std::uniform_int_distribution<int> d{ 1, 100 };\n    for (int i = 0; i < max_draws; ++i)\n    {\n        int v = d(rng);\n        if (v < threshold)\n            return v;\n    }\n    return -1;\n}\n\nint main()\n{\n    int threshold, max_draws;\n    std::cin >> threshold >> max_draws;\n\n    std::mt19937 rng{ 42u };\n    std::cout << first_below(rng, threshold, max_draws) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: threshold=50, max=10",
+        "is_sample": true,
+        "stdin": "50\n10\n",
+        "expected_stdout": "15\n"
+      },
+      {
+        "label": "Hidden: threshold=100, max=1 (all values qualify)",
+        "is_sample": false,
+        "stdin": "100\n1\n",
+        "expected_stdout": "52\n"
+      },
+      {
+        "label": "Hidden: threshold=5, max=3 (no value qualifies)",
+        "is_sample": false,
+        "stdin": "5\n3\n",
+        "expected_stdout": "-1\n"
+      }
+    ]
+  }
+]

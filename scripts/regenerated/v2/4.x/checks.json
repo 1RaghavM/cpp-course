@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a{ 7 };\n    int b{ 2 };\n    double result{ static_cast<double>(a) / b };\n    std::cout << static_cast<int>(result) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`static_cast<double>(a)` converts `a` to `7.0`, so the division is `7.0 / 2 = 3.5`. Then `static_cast<int>(3.5)` truncates to `3`, not rounds. The most tempting wrong answer is `4` (rounding up), but `static_cast<int>` always truncates toward zero."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You declare `unsigned int x{ 0 };` and then write `x = x - 1;`. What is the value of `x` afterward on a platform where `unsigned int` is 32 bits?",
+    "options": {
+      "a": "-1",
+      "b": "0",
+      "c": "4294967295",
+      "d": "Undefined behavior"
+    },
+    "answer": "c",
+    "explanation_md": "Unsigned arithmetic wraps around modulo 2^32. Subtracting 1 from 0 yields 2^32 - 1 = 4,294,967,295. Option `a` is wrong because unsigned types cannot hold negative values. Option `d` is wrong — unsigned overflow is well-defined in C++ (it wraps), unlike signed overflow which is undefined behavior."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    char c{ 'A' };\n    int shifted{ c + 3 };\n    std::cout << static_cast<char>(shifted) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "D",
+    "explanation_md": "`'A'` has ASCII value 65. Adding 3 gives 68, which is the ASCII value of `'D'`. The `static_cast<char>` converts the integer back to a character, so `std::cout` prints the character `D`. A common mistake is thinking `c + 3` already produces a `char`; it actually produces an `int` due to integral promotion, so the cast is necessary to print a character rather than a number."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the average of three integers as a decimal number, but it always prints a whole number. What is wrong?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a{ 5 };\n    int b{ 3 };\n    int c{ 2 };\n    double avg{ (a + b + c) / 3 };\n    std::cout << avg << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`avg` should be declared as `float`, not `double`",
+      "b": "The division `(a + b + c) / 3` is integer division and truncates before being stored in `avg`",
+      "c": "`std::cout` cannot print `double` values accurately",
+      "d": "The parentheses around `a + b + c` cause the division to be performed incorrectly"
+    },
+    "answer": "b",
+    "explanation_md": "`a`, `b`, `c`, and `3` are all `int`, so `(a + b + c) / 3` performs integer division and produces `3` (not `3.333...`). That integer is then implicitly converted to `double` and stored as `3.0`. The fix is to cast at least one operand: `static_cast<double>(a + b + c) / 3.0`. Declaring `avg` as `float` would not help — the division already truncated before the assignment."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which `<cstdint>` type should you choose when you need a signed integer that is guaranteed to be exactly 2 bytes wide on every platform?",
+    "options": {
+      "a": "`short`",
+      "b": "`int16_t`",
+      "c": "`int_least16_t`",
+      "d": "`int`"
+    },
+    "answer": "b",
+    "explanation_md": "`int16_t` is the fixed-width type that is guaranteed to be exactly 16 bits (2 bytes). `short` is at least 16 bits but can be wider. `int_least16_t` is at least 16 bits but can also be wider. `int` is at least 16 bits and is typically 32 bits on modern platforms. When exact width matters, only `int16_t` provides the guarantee."
+  }
+]

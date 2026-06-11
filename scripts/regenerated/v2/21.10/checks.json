@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Multiplier {\n    int m_factor{};\npublic:\n    Multiplier(int f) : m_factor{ f } {}\n    int operator()(int x) const { return x * m_factor; }\n};\nint main() {\n    Multiplier triple{ 3 };\n    std::cout << triple(4) << ' ' << triple(10) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "12 30",
+    "explanation_md": "`triple` is a functor with `m_factor = 3`. `triple(4)` returns `4 * 3 = 12`. `triple(10)` returns `10 * 3 = 30`. The stored factor is unchanged between calls. Output: `12 30`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What makes a functor (a class with `operator()`) more useful than a plain function when you need multiple independent configurations at the same time?",
+    "options": {
+      "a": "Functors compile faster than plain functions",
+      "b": "Each functor instance can carry its own private state, so two instances can have different configurations simultaneously",
+      "c": "Functors automatically inline, making them faster",
+      "d": "A plain function cannot be passed as an argument; a functor can"
+    },
+    "answer": "b",
+    "explanation_md": "A plain function has no per-instance state. Two callers using the same function always share the same behavior. A functor is an object, so two instances (`Multiplier triple{3}` and `Multiplier double_{2}`) each hold their own `m_factor` and behave independently. Options (a), (c), and (d) are incorrect: compile speed is unaffected, inlining is a compiler optimization unrelated to functors, and plain functions can be passed as function pointers."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Acc {\n    int m_sum{ 0 };\npublic:\n    void operator()(int n) { m_sum += n; }\n    int get() const { return m_sum; }\n};\nint main() {\n    Acc a;\n    a(5); a(3); a(2);\n    std::cout << a.get() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "Each call to `a(n)` adds `n` to `m_sum`. After `a(5)`, `m_sum` is 5; after `a(3)`, it is 8; after `a(2)`, it is 10. `a.get()` returns 10. Output: `10`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which is the correct way to declare a functor object with no constructor arguments?",
+    "options": {
+      "a": "`MyFunctor f();`",
+      "b": "`MyFunctor f{};`",
+      "c": "`MyFunctor f = operator()();`",
+      "d": "`MyFunctor f = MyFunctor::operator()();`"
+    },
+    "answer": "b",
+    "explanation_md": "`MyFunctor f()` is interpreted by the compiler as a function declaration (the most-vexing-parse), not as a variable of type `MyFunctor`. Using braces — `MyFunctor f{}` — unambiguously constructs a default-initialized object. Options (c) and (d) are not valid C++ syntax."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `20 30` but fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\nclass Scale {\n    int m_factor{};\npublic:\n    Scale(int f) : m_factor{ f } {}\n    int operator()(int x) { return x * m_factor; }  // non-const\n};\nvoid apply(const Scale& s, int x) {\n    std::cout << s(x) << '\\n';\n}\nint main() {\n    Scale s{ 10 };\n    apply(s, 2);\n    apply(s, 3);\n}\n```",
+    "options": {
+      "a": "`operator()` should take `const int x` instead of `int x`",
+      "b": "`operator()` is not marked `const`, so it cannot be called on the `const Scale&` parameter in `apply`",
+      "c": "The function `apply` must take `Scale` by value, not by reference",
+      "d": "`m_factor` must be `static` for the functor to work correctly"
+    },
+    "answer": "b",
+    "explanation_md": "`apply` receives a `const Scale&`. Calling `s(x)` on a `const` reference requires `operator()` to be a `const` member function. Because the non-`const` version is the only overload, the compiler cannot call it on a `const` object and reports an error. The fix is to add `const` after the parameter list: `int operator()(int x) const`."
+  }
+]

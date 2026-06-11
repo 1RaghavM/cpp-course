@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Celsius Wrapper with Explicit Constructor",
+    "prompt_md": "## Goal\nComplete the `Celsius` class so that implicit conversions from `double` are rejected at compile time, but explicit construction and copying work correctly.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: one `double` per line — a temperature in Celsius.\n\n## Output\nFor each value, print one line: `T=<value>C` where `<value>` is the input number printed with one decimal place.\n\n## Requirements\n1. `Celsius(double v)` must be marked `explicit`.\n2. Add a `value()` const member function returning `double`.\n3. `main` reads each double, constructs `Celsius c{v}` explicitly, and prints using `value()`.\n4. Output must use `std::fixed` and `std::setprecision(1)` for the value.\n\n## Notes\n- `#include <iomanip>` is already included in the starter.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Celsius {\npublic:\n    // TODO: store v in m_val (the explicit keyword is already here)\n    explicit Celsius(double v) : m_val{0.0} { /* replace 0.0 with v */ }\n    // TODO: return m_val instead of 0.0\n    double value() const { return 0.0; }\nprivate:\n    double m_val{0.0};\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        double v;\n        std::cin >> v;\n        Celsius c{v};\n        std::cout << \"T=\" << std::fixed << std::setprecision(1) << c.value() << \"C\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Celsius {\npublic:\n    explicit Celsius(double v) : m_val{v} {}\n    double value() const { return m_val; }\nprivate:\n    double m_val{0.0};\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        double v;\n        std::cin >> v;\n        Celsius c{v};\n        std::cout << \"T=\" << std::fixed << std::setprecision(1) << c.value() << \"C\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three temperatures",
+        "is_sample": true,
+        "stdin": "3\n100.0\n0.0\n37.5\n",
+        "expected_stdout": "T=100.0C\nT=0.0C\nT=37.5C"
+      },
+      {
+        "label": "Hidden: single temperature",
+        "is_sample": false,
+        "stdin": "1\n-40.0\n",
+        "expected_stdout": "T=-40.0C"
+      },
+      {
+        "label": "Hidden: five temperatures",
+        "is_sample": false,
+        "stdin": "5\n20.0\n21.5\n22.0\n23.5\n24.0\n",
+        "expected_stdout": "T=20.0C\nT=21.5C\nT=22.0C\nT=23.5C\nT=24.0C"
+      }
+    ]
+  },
+  {
+    "title": "Pixel Color with Implicit Conversion Guard",
+    "prompt_md": "## Goal\nFind and fix the single logic bug in the program. The program is supposed to read RGB color components and print them, but it produces wrong output because an implicit conversion silently swaps two values.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: three integers per line — `r`, `g`, `b` (each 0–255).\n\n## Output\nFor each set of components, print one line: `rgb(<r>,<g>,<b>)`.\n\n## Requirements\n1. `Color` stores three `int` members: `r`, `g`, `b`.\n2. The constructor `Color(int r, int g, int b)` is `explicit`.\n3. The bug is a logic error in the constructor argument order — arguments are passed in the wrong order.\n4. After fixing, output for input `255 0 128` must be `rgb(255,0,128)`.\n5. Edge case: `0 0 0` must print `rgb(0,0,0)`.",
+    "starter_code": "#include <iostream>\n\nstruct Color {\n    int r, g, b;\n    explicit Color(int red, int green, int blue)\n        : r{green}, g{red}, b{blue} {}  // bug is here\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int r, g, b;\n        std::cin >> r >> g >> b;\n        Color c{r, g, b};\n        std::cout << \"rgb(\" << c.r << \",\" << c.g << \",\" << c.b << \")\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Color {\n    int r, g, b;\n    explicit Color(int red, int green, int blue)\n        : r{red}, g{green}, b{blue} {}\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int r, g, b;\n        std::cin >> r >> g >> b;\n        Color c{r, g, b};\n        std::cout << \"rgb(\" << c.r << \",\" << c.g << \",\" << c.b << \")\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two colors",
+        "is_sample": true,
+        "stdin": "2\n255 0 128\n0 0 0\n",
+        "expected_stdout": "rgb(255,0,128)\nrgb(0,0,0)"
+      },
+      {
+        "label": "Hidden: single white",
+        "is_sample": false,
+        "stdin": "1\n255 255 255\n",
+        "expected_stdout": "rgb(255,255,255)"
+      },
+      {
+        "label": "Hidden: five distinct colors",
+        "is_sample": false,
+        "stdin": "5\n100 150 200\n0 128 64\n255 0 0\n0 255 0\n0 0 255\n",
+        "expected_stdout": "rgb(100,150,200)\nrgb(0,128,64)\nrgb(255,0,0)\nrgb(0,255,0)\nrgb(0,0,255)"
+      }
+    ]
+  }
+]

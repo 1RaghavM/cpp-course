@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Observe Object Slicing",
+    "prompt_md": "## Goal\nComplete `describeByValue` and `describeByRef` so the program demonstrates the contrast between sliced and unsliced polymorphic calls.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nsliced: Animal\nunsliced: Dog\n```\n\n## Requirements\n1. `Animal` has `virtual std::string speak() const` returning `\"Animal\"`.\n2. `Dog` overrides `speak()` returning `\"Dog\"`.\n3. Complete `describeByValue(Animal a)` to print `sliced: ` followed by `a.speak()`.\n4. Complete `describeByRef(const Animal& a)` to print `unsliced: ` followed by `a.speak()`.\n5. `main` creates a `Dog d` and calls both functions with it.",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual std::string speak() const { return \"Animal\"; }\n    virtual ~Animal() = default;\n};\n\nclass Dog : public Animal {\npublic:\n    std::string speak() const override { return \"Dog\"; }\n};\n\n// TODO: complete — takes Animal by value (slices)\nvoid describeByValue(Animal a) {\n    // TODO: print \"sliced: \" followed by a.speak()\n}\n\n// TODO: complete — takes Animal by const reference (no slicing)\nvoid describeByRef(const Animal& a) {\n    // TODO: print \"unsliced: \" followed by a.speak()\n}\n\nint main() {\n    Dog d;\n    describeByValue(d);\n    describeByRef(d);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual std::string speak() const { return \"Animal\"; }\n    virtual ~Animal() = default;\n};\n\nclass Dog : public Animal {\npublic:\n    std::string speak() const override { return \"Dog\"; }\n};\n\nvoid describeByValue(Animal a) {\n    std::cout << \"sliced: \" << a.speak() << \"\\n\";\n}\n\nvoid describeByRef(const Animal& a) {\n    std::cout << \"unsliced: \" << a.speak() << \"\\n\";\n}\n\nint main() {\n    Dog d;\n    describeByValue(d);\n    describeByRef(d);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: sliced vs unsliced",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "sliced: Animal\nunsliced: Dog"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "sliced: Animal\nunsliced: Dog"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "sliced: Animal\nunsliced: Dog"
+      }
+    ]
+  },
+  {
+    "title": "Slicing Bug in Vector",
+    "prompt_md": "## Goal\nFix the single bug so the program prints the correct type label for each element stored in the collection.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nCat\nDog\n```\n\n## Requirements\n1. `Animal` has `virtual std::string type() const` returning `\"Animal\"`. `Cat` overrides it returning `\"Cat\"`. `Dog` overrides it returning `\"Dog\"`.\n2. The bug causes both elements to print `\"Animal\"` because the objects are sliced during storage.\n3. Fix only the container declaration and the loop to use pointers so virtual dispatch works correctly.\n4. Do not change the class definitions.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nclass Animal {\npublic:\n    virtual std::string type() const { return \"Animal\"; }\n    virtual ~Animal() = default;\n};\n\nclass Cat : public Animal {\npublic:\n    std::string type() const override { return \"Cat\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    std::string type() const override { return \"Dog\"; }\n};\n\nint main() {\n    Cat cat;\n    Dog dog;\n    // Bug: storing by value slices the derived objects\n    std::vector<Animal> animals;\n    animals.push_back(cat);\n    animals.push_back(dog);\n    for (int i = 0; i < 2; ++i)\n        std::cout << animals[i].type() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nclass Animal {\npublic:\n    virtual std::string type() const { return \"Animal\"; }\n    virtual ~Animal() = default;\n};\n\nclass Cat : public Animal {\npublic:\n    std::string type() const override { return \"Cat\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    std::string type() const override { return \"Dog\"; }\n};\n\nint main() {\n    Cat cat;\n    Dog dog;\n    std::vector<Animal*> animals;\n    animals.push_back(&cat);\n    animals.push_back(&dog);\n    for (int i = 0; i < 2; ++i)\n        std::cout << animals[i]->type() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Cat then Dog",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Cat\nDog"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Cat\nDog"
+      },
+      {
+        "label": "Hidden: exact order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Cat\nDog"
+      }
+    ]
+  }
+]

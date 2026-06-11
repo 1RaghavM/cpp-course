@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid addTen(int& n) {\n    n = n + 10;\n}\n\nint main() {\n    int x = 5;\n    addTen(x);\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "`addTen` takes `n` by lvalue reference, so `n` is an alias for `x`. The assignment `n = n + 10` writes directly into `x`, making it 15. If the parameter were `int n` instead of `int& n`, `x` would remain 5."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid tryDouble(int n) {\n    n = n * 2;\n}\n\nint main() {\n    int val = 7;\n    tryDouble(val);\n    std::cout << val << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`tryDouble` takes `n` by value — it receives a copy of `val`. Doubling `n` inside the function only affects that local copy; `val` in `main` is never touched and stays 7."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following calls will the compiler **reject** when the function is declared as `void set(int& n)`?",
+    "options": {
+      "a": "`int x = 3; set(x);`",
+      "b": "`set(42);`",
+      "c": "`int y = 0; set(y);`",
+      "d": "`int z; z = 1; set(z);`"
+    },
+    "answer": "b",
+    "explanation_md": "A non-const lvalue reference can only bind to a named, modifiable lvalue. The literal `42` is an rvalue — it has no address and cannot be modified — so the compiler rejects the binding. All the other options pass a named variable, which is a valid lvalue."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function signature is `void swap(int& a, int& b)`. After the call `swap(x, y)`, what is true?",
+    "options": {
+      "a": "x and y are copies of what a and b were inside the function",
+      "b": "a and b inside the function referred to x and y directly, so any changes to a and b are visible in x and y",
+      "c": "x and y are unaffected because the function works on its own local copies",
+      "d": "The compiler makes temporary copies of x and y and passes those to swap"
+    },
+    "answer": "b",
+    "explanation_md": "Reference parameters are aliases for the caller's variables. Inside `swap`, `a` IS `x` and `b` IS `y` — they share the same memory. Any assignment to `a` or `b` directly modifies `x` or `y` in the caller."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `zero` to set the caller's variable to 0, but it doesn't work. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid zero(int n) {\n    n = 0;\n}\n\nint main() {\n    int x = 99;\n    zero(x);\n    std::cout << x << '\\n';  // expected: 0, actual: 99\n    return 0;\n}\n```",
+    "options": {
+      "a": "The function should return int instead of void",
+      "b": "The parameter should be `int& n` to pass by reference",
+      "c": "The assignment `n = 0` is illegal inside a function",
+      "d": "The call `zero(x)` should be `zero(&x)`"
+    },
+    "answer": "b",
+    "explanation_md": "The parameter is declared `int n`, so the function receives a copy of `x`. Assigning `n = 0` modifies only that copy; `x` in `main` remains 99. Changing the parameter to `int& n` makes `n` an alias for `x`, so the assignment reaches through to the caller's variable."
+  }
+]

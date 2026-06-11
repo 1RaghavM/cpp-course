@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the correct category for the `return` statement?",
+    "options": {
+      "a": "Conditional statement — it chooses between two paths",
+      "b": "Loop — it repeats a block of code",
+      "c": "Jump — it transfers execution unconditionally to another location",
+      "d": "Function definition — it defines a new callable block"
+    },
+    "answer": "c",
+    "explanation_md": "`return` transfers execution from the current function back to the caller without testing any condition, which makes it a jump. Conditionals test a condition first; loops repeat; function definitions describe callable units."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 3 };\n\n    if (x > 0)\n        std::cout << \"Positive\\n\";\n\n    std::cout << \"Done\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Positive\nDone",
+    "explanation_md": "`x` is 3, so `x > 0` is true and `Positive` prints. The second `cout` is outside the `if` — it has no braces and is a separate statement — so it always runs, printing `Done`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program needs to print a table of square numbers for every integer from 1 to 20. Which control flow category is most appropriate?",
+    "options": {
+      "a": "Conditional statement — check whether each number is a square",
+      "b": "Loop — repeat the same operation a fixed number of times",
+      "c": "Jump — skip to the end when done",
+      "d": "Function call — define a square function and call it once"
+    },
+    "answer": "b",
+    "explanation_md": "When the same operation must be repeated a known (or variable) number of times, a loop is the right tool. Conditionals choose between paths; jumps exit constructs early; a function call alone would require the caller to invoke it 20 times explicitly."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { -1 };\n\n    if (x > 0)\n        std::cout << \"Positive\\n\";\n    else\n        std::cout << \"Not positive\\n\";\n\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Not positive",
+    "explanation_md": "`x` is -1, so `x > 0` is false. Execution skips the `then` branch and runs the `else` branch, printing `Not positive`."
+  }
+]

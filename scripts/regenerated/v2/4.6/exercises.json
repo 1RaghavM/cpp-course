@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compute Total Bytes from Width",
+    "prompt_md": "## Goal\nComplete the function `totalBytes` that computes how many bytes a value of a given fixed-width integer type occupies, multiplied by a count.\n\n## Input\n- Line 1: integer `width_bits` — the bit width of the type (must be 8, 16, 32, or 64)\n- Line 2: integer `count` — how many values of that type (1 ≤ count ≤ 1000)\n\n## Output\nPrint exactly one line: the total number of bytes (`width_bits / 8 * count`) as a `std::size_t`.\n\n## Requirements\n1. Complete the function `std::size_t totalBytes(std::size_t width_bits, std::size_t count)` which returns `width_bits / 8 * count`.\n2. `main()` reads the two integers, calls `totalBytes`, and prints the result followed by a newline.\n3. For input `32` and `4`, the output must be `16`.\n4. For input `64` and `1`, the output must be `8`.\n5. Use only integer arithmetic — no floating-point operations.\n\n## Notes\n- `#include <cstddef>` is already provided for `std::size_t`.",
+    "starter_code": "#include <cstddef>\n#include <iostream>\n\n// TODO: complete this function\n// It should return (width_bits / 8) * count\nstd::size_t totalBytes(std::size_t width_bits, std::size_t count)\n{\n    return std::size_t{}; // TODO: replace with correct expression\n}\n\nint main()\n{\n    std::size_t width_bits {};\n    std::size_t count {};\n\n    std::cin >> width_bits;\n    std::cin >> count;\n\n    std::cout << totalBytes(width_bits, count) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <cstddef>\n#include <iostream>\n\nstd::size_t totalBytes(std::size_t width_bits, std::size_t count)\n{\n    return (width_bits / 8) * count;\n}\n\nint main()\n{\n    std::size_t width_bits {};\n    std::size_t count {};\n\n    std::cin >> width_bits;\n    std::cin >> count;\n\n    std::cout << totalBytes(width_bits, count) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 32-bit type, 4 values",
+        "is_sample": true,
+        "stdin": "32\n4\n",
+        "expected_stdout": "16\n"
+      },
+      {
+        "label": "Hidden: 64-bit type, 1 value",
+        "is_sample": false,
+        "stdin": "64\n1\n",
+        "expected_stdout": "8\n"
+      },
+      {
+        "label": "Hidden: 8-bit type, 100 values",
+        "is_sample": false,
+        "stdin": "8\n100\n",
+        "expected_stdout": "100\n"
+      }
+    ]
+  },
+  {
+    "title": "Would Sum Overflow Int16",
+    "prompt_md": "## Goal\nComplete the function `wouldOverflow16` that returns `1` if the sum of two `int32_t` values exceeds 32767 (the maximum for a 16-bit signed integer), and `0` otherwise.\n\n## Input\n- Line 1: integer `a` (-100000 ≤ a ≤ 100000)\n- Line 2: integer `b` (-100000 ≤ b ≤ 100000)\n\n## Output\nPrint exactly one line: `1` if `a + b > 32767`, or `0` otherwise.\n\n## Requirements\n1. Complete the function `int wouldOverflow16(int32_t a, int32_t b)` so that it returns `a + b > 32767` directly (the boolean comparison implicitly converts to `int` 1 or 0).\n2. Use `int32_t` for the parameters so the sum cannot overflow a 32-bit signed range with the given input bounds.\n3. `main()` reads two integers into `int32_t` variables, calls `wouldOverflow16`, and prints the result followed by a newline.\n4. For inputs `20000` and `15000`, the output must be `1` (sum is 35000, which is > 32767).\n5. For inputs `10000` and `20000`, the output must be `0` (sum is 30000, which is not > 32767).\n6. For inputs `32768` and `0`, the output must be `1`.\n\n## Notes\n- The expression `a + b > 32767` has type `bool`, which converts to `int` as `1` (true) or `0` (false) when returned from an `int` function.",
+    "starter_code": "#include <cstdint>\n#include <iostream>\n\n// TODO: complete this function\n// Return 1 if a + b > 32767, otherwise return 0\nint wouldOverflow16(int32_t a, int32_t b)\n{\n    return 0; // TODO: replace with correct return expression\n}\n\nint main()\n{\n    int32_t a {};\n    int32_t b {};\n\n    std::cin >> a;\n    std::cin >> b;\n\n    std::cout << wouldOverflow16(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <cstdint>\n#include <iostream>\n\nint wouldOverflow16(int32_t a, int32_t b)\n{\n    return a + b > 32767;\n}\n\nint main()\n{\n    int32_t a {};\n    int32_t b {};\n\n    std::cin >> a;\n    std::cin >> b;\n\n    std::cout << wouldOverflow16(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: sum exceeds 32767",
+        "is_sample": true,
+        "stdin": "20000\n15000\n",
+        "expected_stdout": "1\n"
+      },
+      {
+        "label": "Hidden: sum within 16-bit range",
+        "is_sample": false,
+        "stdin": "10000\n20000\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: exactly at boundary plus one",
+        "is_sample": false,
+        "stdin": "32768\n0\n",
+        "expected_stdout": "1\n"
+      }
+    ]
+  }
+]

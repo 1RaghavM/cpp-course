@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 2;\n    switch (x) {\n        case 1: std::cout << \"one\\n\";\n        case 2: std::cout << \"two\\n\";\n        case 3: std::cout << \"three\\n\";\n        default: std::cout << \"other\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "two\nthree\nother",
+    "explanation_md": "There are no `break` statements, so after matching `case 2:` and printing `two`, execution falls through into `case 3:` (printing `three`) and then into `default:` (printing `other`). Fallthrough continues until the end of the switch body or a `break` is reached."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following types is **not** valid as the expression inside `switch (...)`?",
+    "options": {
+      "a": "`int`",
+      "b": "`char`",
+      "c": "`double`",
+      "d": "`bool`"
+    },
+    "answer": "c",
+    "explanation_md": "`switch` requires an integral type — `int`, `char`, `bool`, and similar types are all fine because they are integers underneath. `double` is a floating-point type and the compiler rejects it as a switch expression."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int month = 9;\n    switch (month) {\n        case 4: case 6: case 9: case 11:\n            std::cout << \"30 days\\n\";\n            break;\n        case 2:\n            std::cout << \"28 or 29 days\\n\";\n            break;\n        default:\n            std::cout << \"31 days\\n\";\n            break;\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "30 days",
+    "explanation_md": "`month` is `9` and `case 9:` is one of the stacked labels that shares the `\"30 days\"` block. The stacked labels are not fallthrough — they all point to the same block, so only `30 days` is printed before `break` exits the switch."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `case` label value must be:\n\nA — any expression that evaluates at runtime\nB — a compile-time integer constant\nC — a string literal\nD — a variable declared earlier in the same function",
+    "options": {
+      "a": "Any expression that evaluates at runtime",
+      "b": "A compile-time integer constant",
+      "c": "A string literal",
+      "d": "A variable declared earlier in the same function"
+    },
+    "answer": "b",
+    "explanation_md": "Case labels must be compile-time integer constants so the compiler can build the jump table. Variables (even `const` ones initialized at runtime) and string literals are not allowed. Using a variable as a case label is a compile error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `Freezing` when temperature is 0 and `Boiling` when it is 100, otherwise `Normal`. What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    int temp = 0;\n    switch (temp) {\n        case 0:\n            std::cout << \"Freezing\\n\";\n        case 100:\n            std::cout << \"Boiling\\n\";\n            break;\n        default:\n            std::cout << \"Normal\\n\";\n            break;\n    }\n    return 0;\n}\n```",
+    "options": {
+      "a": "The `default` label must come before the numbered cases",
+      "b": "`case 0:` is missing a `break`, so execution falls through and also prints `Boiling`",
+      "c": "`int` is not a valid switch expression type",
+      "d": "`case 100:` should be `case 1:` to match boolean logic"
+    },
+    "answer": "b",
+    "explanation_md": "After printing `Freezing`, there is no `break`, so execution falls into `case 100:` and prints `Boiling` as well. Adding `break;` after `std::cout << \"Freezing\\n\";` fixes it."
+  }
+]

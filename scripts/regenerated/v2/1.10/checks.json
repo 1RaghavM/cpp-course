@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x = 3;\n    int y = 4;\n    std::cout << x + y * 2 << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "11",
+    "explanation_md": "`*` has higher precedence than `+`, so `y * 2` is evaluated first: `4 * 2 = 8`. Then `x + 8 = 3 + 8 = 11`. If you read left-to-right ignoring precedence you would get `(3 + 4) * 2 = 14`, which is wrong."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes what an *expression* is in C++?",
+    "options": {
+      "a": "Any combination of literals, variables, and operators that evaluates to a single value.",
+      "b": "A complete instruction terminated by a semicolon that the program executes.",
+      "c": "Only arithmetic formulas involving the `+` and `*` operators.",
+      "d": "A line of code that declares a new variable."
+    },
+    "answer": "a",
+    "explanation_md": "An expression is any construct that evaluates to a value — it can be a single literal, a variable, or operators applied to sub-expressions. Option b describes an expression *statement*. Option c is too narrow; even a lone variable name is a valid expression."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 5;\n    a = a + 3;\n    a = a * 2;\n    std::cout << a << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "16",
+    "explanation_md": "`a` starts at `5`. After `a = a + 3`, `a` is `8`. After `a = a * 2`, `a` is `16`. Each assignment evaluates the right side using the current value of `a`, then overwrites `a`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes the following line intending to add 10 to `score`:\n\n```cpp\nint score = 5;\nscore + 10;\nstd::cout << score << '\\n';\n```\n\nWhat is printed?",
+    "options": {
+      "a": "`15` — the expression `score + 10` updates `score`.",
+      "b": "`5` — the expression `score + 10` computes a value but does not modify `score`.",
+      "c": "`10` — the standalone expression replaces the old value with `10`.",
+      "d": "A compile error because `score + 10;` is not a valid statement."
+    },
+    "answer": "b",
+    "explanation_md": "The expression `score + 10` produces the value `15` but the result is immediately discarded; `score` is never modified. To update `score`, the student needs `score = score + 10;`. The standalone expression is valid C++ (just useless), so there is no compile error."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Echo to Correct Stream",
+    "prompt_md": "## Goal\nWrite a program that reads one integer from stdin, prints it to stdout if it is positive, or prints an error message to **stderr** if it is zero or negative.\n\n## Input\nLine 1: one integer N (−1000 ≤ N ≤ 1000).\n\n## Output\n- If N > 0: print exactly `Value: N` to **stdout** (e.g. `Value: 42`), followed by a newline. Nothing to stderr.\n- If N ≤ 0: print nothing to stdout. Print exactly `Error: non-positive` to **stderr**, followed by a newline.\n\n## Requirements\n1. Use `std::cout` for the positive-value case.\n2. Use `std::cerr` for the error case.\n3. The stdout output must be exactly `Value: ` followed by the integer and a newline.\n4. Hidden tests for N=0 and a negative N check that stdout is empty and stderr contains the error message.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: if n > 0, print \"Value: n\" to std::cout\n    // TODO: otherwise, print \"Error: non-positive\" to std::cerr\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    if (n > 0) {\n        std::cout << \"Value: \" << n << \"\\n\";\n    } else {\n        std::cerr << \"Error: non-positive\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive value",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Value: 42\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": ""
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-5\n",
+        "expected_stdout": ""
+      }
+    ]
+  },
+  {
+    "title": "Stream Parameter Function",
+    "prompt_md": "## Goal\nComplete the function `printLine` that accepts an `std::ostream&` and a string, and writes the string followed by a newline to that stream.\n\n## Input\nLine 1: a single word (no spaces, length 1–20).\n\n## Output\nPrint the word twice, each on its own line, to stdout.\n\n## Requirements\n1. The function signature must be: `void printLine(std::ostream& out, const std::string& text)`.\n2. `main()` reads the word with `std::cin`, then calls `printLine(std::cout, word)` twice.\n3. Do not call `std::cout` directly inside `printLine` — use the `out` parameter.\n4. Hidden tests use different words to check the function generalises.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement printLine so it writes text followed by '\\n' to out\nvoid printLine(std::ostream& out, const std::string& text) {\n    // TODO\n}\n\nint main() {\n    std::string word;\n    std::cin >> word;\n    printLine(std::cout, word);\n    printLine(std::cout, word);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nvoid printLine(std::ostream& out, const std::string& text) {\n    out << text << \"\\n\";\n}\n\nint main() {\n    std::string word;\n    std::cin >> word;\n    printLine(std::cout, word);\n    printLine(std::cout, word);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic word",
+        "is_sample": true,
+        "stdin": "hello\n",
+        "expected_stdout": "hello\nhello\n"
+      },
+      {
+        "label": "Hidden: single character",
+        "is_sample": false,
+        "stdin": "z\n",
+        "expected_stdout": "z\nz\n"
+      },
+      {
+        "label": "Hidden: longer word",
+        "is_sample": false,
+        "stdin": "streams\n",
+        "expected_stdout": "streams\nstreams\n"
+      }
+    ]
+  }
+]

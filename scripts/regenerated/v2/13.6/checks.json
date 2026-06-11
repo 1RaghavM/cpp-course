@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum class Planet { mercury, venus, earth, mars };\n\nstd::ostream& operator<<(std::ostream& out, Planet p)\n{\n    switch (p)\n    {\n        case Planet::mercury: out << \"Mercury\"; break;\n        case Planet::venus:   out << \"Venus\";   break;\n        case Planet::earth:   out << \"Earth\";   break;\n        case Planet::mars:    out << \"Mars\";    break;\n    }\n    return out;\n}\n\nint main()\n{\n    Planet p{ Planet::earth };\n    std::cout << p << '\\n';\n    std::cout << static_cast<int>(p) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Earth\n2",
+    "explanation_md": "`Planet::earth` is the third enumerator (0-indexed: mercury=0, venus=1, earth=2), so `static_cast<int>(p)` produces `2`. The `operator<<` overload prints `\"Earth\"` for `Planet::earth`. Both lines end with `'\\n'`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. Which line is the bug?\n\n```cpp\n#include <iostream>\n\nenum class Size { small, medium, large };\n\nint main()\n{\n    Size s{ medium };     // line 7\n    if (s == Size::large) // line 8\n        std::cout << \"large\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "Line 7: `medium` must be written as `Size::medium`",
+      "b": "Line 8: you cannot compare enum class values with `==`",
+      "c": "Line 3: `enum class` requires an underlying type like `enum class Size : int`",
+      "d": "Line 7: `Size s` should be `Size s = Size::small` first, then assigned"
+    },
+    "answer": "a",
+    "explanation_md": "Scoped enumerators are not visible outside the enum's scope, so bare `medium` is undeclared. The fix is `Size s{ Size::medium };`. Options (b) and (c) describe features that work fine by default; option (d) describes unnecessary gymnastics."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes the difference between `enum` and `enum class`?",
+    "options": {
+      "a": "`enum class` enumerators must be assigned explicit integer values; plain `enum` assigns them automatically",
+      "b": "`enum class` enumerators are scoped to the enum name and do not implicitly convert to `int`; plain `enum` enumerators pollute the enclosing scope and convert silently",
+      "c": "`enum class` is only available in C++20 and later; plain `enum` works in all versions",
+      "d": "There is no practical difference; `enum class` is just a style alias"
+    },
+    "answer": "b",
+    "explanation_md": "The two defining differences are name scoping (you must write `Color::red` for a scoped enum) and the absence of implicit integer conversion (you need `static_cast<int>` to get the underlying value). Both features were introduced in C++11. The other options are incorrect."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum class Flag { none = 0, read = 1, write = 2, execute = 4 };\n\nint main()\n{\n    Flag f{ Flag::write };\n    std::cout << static_cast<int>(f) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2",
+    "explanation_md": "`Flag::write` was explicitly assigned the value `2`. `static_cast<int>(f)` converts the scoped enumerator to its underlying integer, which is `2`."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    const int base{ 5 };\n    int multiplier{ 3 };\n    multiplier = multiplier + 1;\n    std::cout << base * multiplier << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`base` is `const` and stays 5 throughout. `multiplier` starts at 3 and is incremented to 4. `5 * 4 = 20`. A common mistake is thinking `base` might change because it participates in an expression with a mutable variable — `const` only prevents assignment to `base` itself, not the use of its value in computations."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following lines will cause a compile error?",
+    "options": {
+      "a": "`const int x{ 10 };`",
+      "b": "`const int y = 10;`",
+      "c": "`const int z;`",
+      "d": "`const double pi{ 3.14159 };`"
+    },
+    "answer": "c",
+    "explanation_md": "`const int z;` is a compile error because a `const` variable must be initialized at its declaration — there is no later opportunity to assign a value. Options `a`, `b`, and `d` are all valid initializations of `const` variables using brace-init, copy-init, and brace-init with `double` respectively."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to compute `base` raised to the power of 2 (i.e., `base * base`) and print the result. It contains one bug.\n\n```cpp\n#include <iostream>\n\nvoid print_square(const int base)\n{\n    base = base * base;\n    std::cout << base << \"\\n\";\n}\n\nint main()\n{\n    print_square(7);\n    return 0;\n}\n```",
+    "options": {
+      "a": "You cannot pass an integer literal `7` to a `const int` parameter",
+      "b": "`base = base * base` modifies a `const` parameter, which is a compile error",
+      "c": "`base * base` overflows for large values of `base`",
+      "d": "The function returns `void` but should return `int`"
+    },
+    "answer": "b",
+    "explanation_md": "Marking a parameter `const` means the function promises not to modify it. The line `base = base * base` violates that promise and causes a compile error. The fix is to store the result in a new local variable: `int square{ base * base }; std::cout << square;`. Option `a` is wrong — passing an integer literal to a `const int` parameter is perfectly valid."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary benefit of declaring a variable `const` over leaving it as a regular (non-`const`) variable?",
+    "options": {
+      "a": "`const` variables use less memory than non-`const` variables of the same type",
+      "b": "The compiler enforces that the value never changes, catching accidental modifications at compile time",
+      "c": "`const` variables are evaluated faster at runtime than non-`const` variables",
+      "d": "`const` variables can be used in more arithmetic operations than non-`const` variables"
+    },
+    "answer": "b",
+    "explanation_md": "The core benefit of `const` is that the compiler will reject any code that attempts to modify the variable, turning a potential silent runtime bug into a hard compile-time error. `const` does not reduce memory usage, change runtime speed in a guaranteed way, or expand the set of arithmetic operations — its value lies entirely in enforced read-only semantics."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    const int limit{ 100 };\n    int score{ 95 };\n    int gap{ limit - score };\n    std::cout << gap << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`limit` is `const int` with value 100. `score` is 95. `gap = 100 - 95 = 5`. Using a `const` variable in a subtraction expression is perfectly valid — `const` only prevents assigning a new value to `limit`, not using it in computations."
+  }
+]

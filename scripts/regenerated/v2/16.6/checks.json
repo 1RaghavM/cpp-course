@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 3, 1, 4, 1, 5 };\n    int sum { 0 };\n    int len { static_cast<int>(v.size()) };\n    for (int i = 0; i < len; ++i)\n        sum += v[i];\n    std::cout << sum << '\\n';\n}\n```",
+    "options": null,
+    "answer": "14",
+    "explanation_md": "The loop adds every element: 3+1+4+1+5 = 14. The `static_cast<int>` safely converts the unsigned `size_t` to `int` before the comparison."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to print all elements of a vector, but it has a bug:\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 10, 20, 30 };\n    for (int i = 0; i <= static_cast<int>(v.size()); ++i)\n        std::cout << v[i] << ' ';\n    std::cout << '\\n';\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "The loop condition uses `<=` instead of `<`, so it reads one past the last valid index",
+      "b": "The cast to `int` is unnecessary and causes narrowing",
+      "c": "The loop variable `i` should start at 1 instead of 0",
+      "d": "Calling `v.size()` inside the loop condition is illegal"
+    },
+    "answer": "a",
+    "explanation_md": "Valid indices are 0 through `size()-1`. Using `<=` causes the last iteration to access `v[3]`, which is out of bounds — undefined behavior. The condition must be `i < static_cast<int>(v.size())`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it recommended to store `static_cast<int>(v.size())` in a variable before a loop rather than calling it in the condition each iteration?",
+    "options": {
+      "a": "Calling `size()` inside a loop condition is illegal in C++20",
+      "b": "It prevents the loop bound from changing if elements are added inside the loop",
+      "c": "It makes the loop run faster by avoiding a function call each iteration",
+      "d": "Both B and C are true"
+    },
+    "answer": "b",
+    "explanation_md": "The main correctness reason is option B: if `push_back` is called inside the loop body, capturing the size beforehand prevents the loop from chasing a moving target. The speed argument (C) is minor and the compiler often inlines `size()` anyway. Option A is false."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 5, 3, 8, 1 };\n    int maxVal { v[0] };\n    int len { static_cast<int>(v.size()) };\n    for (int i = 1; i < len; ++i)\n    {\n        if (v[i] > maxVal)\n            maxVal = v[i];\n    }\n    std::cout << maxVal << '\\n';\n}\n```",
+    "options": null,
+    "answer": "8",
+    "explanation_md": "The loop starts at index 1 (the first element is already the initial maximum). It compares 3, 8, 1 against the running max. After comparing 8, `maxVal` becomes 8 and stays there. The final output is 8."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you compare a signed `int` loop variable directly against `v.size()` without a cast?",
+    "options": {
+      "a": "The program refuses to compile",
+      "b": "The compiler issues a signed/unsigned comparison warning; a negative `i` would compare as very large",
+      "c": "The comparison always evaluates to false, causing the loop to never execute",
+      "d": "Nothing — signed and unsigned integers compare identically in all cases"
+    },
+    "answer": "b",
+    "explanation_md": "`v.size()` returns `std::size_t`, an unsigned type. Comparing signed `int` to unsigned can cause surprising results: if `i` were negative, it would be implicitly converted to a very large unsigned number and compare as greater than `size()`. The compiler warns about this. Cast to `int` before comparing."
+  }
+]

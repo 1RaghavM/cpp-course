@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x = 10;\n    int y = 3;\n    std::cout << x / y << '\\n';\n    std::cout << x % y << '\\n';\n    std::cout << x - (x / y) * y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n1\n1",
+    "explanation_md": "`10 / 3` is `3` (integer division). `10 % 3` is `1`. The third line computes `10 - 3 * 3 = 10 - 9 = 1`, which is the same as the remainder — this is the mathematical relationship between `/` and `%`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `std::endl` vs `'\\n'` is correct?",
+    "options": {
+      "a": "`std::endl` and `'\\n'` are identical in every way.",
+      "b": "`std::endl` ends the line and flushes the output buffer; `'\\n'` only ends the line.",
+      "c": "`'\\n'` flushes the buffer; `std::endl` does not.",
+      "d": "`std::endl` is a character literal; `'\\n'` is an object."
+    },
+    "answer": "b",
+    "explanation_md": "`std::endl` outputs a newline character and then explicitly flushes the output buffer, which has a performance cost. `'\\n'` outputs only the newline. For most programs, `'\\n'` is preferred because it avoids the unnecessary flush."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a = 2;\n    int b = 3;\n    int c = a;\n    c = b;\n    std::cout << a << ' ' << b << ' ' << c << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2 3 3",
+    "explanation_md": "`c` is initialized to `2` (a copy of `a`). Then `c = b` overwrites `c` with `3`. `a` and `b` are untouched. Assignment copies a value; it does not link two variables together."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program reads an integer `n` from stdin and computes `n / 2`. The programmer expects the result to always be exactly half of `n`. Which input will reveal that this expectation is wrong?",
+    "options": {
+      "a": "`n = 4` — result is `2`, which is exactly half.",
+      "b": "`n = 7` — result is `3`, not `3.5`.",
+      "c": "`n = 0` — result is `0`, which is correct.",
+      "d": "`n = 100` — result is `50`, which is exactly half."
+    },
+    "answer": "b",
+    "explanation_md": "When `n` is odd, integer division drops the fractional part: `7 / 2 = 3`, not `3.5`. The expectation breaks on any odd input. Even inputs like 4 and 100 happen to divide evenly, so they do not reveal the issue."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes what `return 0;` at the end of `main` does?",
+    "options": {
+      "a": "It returns the value `0` to the operating system, signalling that the program completed successfully.",
+      "b": "It resets all variables to zero before the program exits.",
+      "c": "It causes the program to loop back to the start of `main`.",
+      "d": "It is optional and has no effect in a modern C++ program."
+    },
+    "answer": "a",
+    "explanation_md": "`return 0;` exits `main` and reports the exit code `0` to the operating system, conventionally meaning success. Non-zero values signal errors. Modern C++ does allow omitting `return 0;` from `main` (the compiler inserts it implicitly), but including it explicitly is good practice for clarity."
+  }
+]

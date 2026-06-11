@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Inventory Item Class",
+    "prompt_md": "## Goal\nWrite a program that reads inventory items and prints their total value. Use a class `Item` with private members and a `constexpr`-friendly design.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: a string name (no spaces) and two integers — quantity and unit price — separated by spaces.\n\n## Output\nFor each item, print: `<name>: qty=<quantity> price=<unit_price> total=<quantity*unit_price>`.\nThen print one final line: `grand_total=<sum of all totals>`.\n\n## Requirements\n1. `Item` has private `int` members for quantity and unit price, and stores the name as a `std::string`.\n2. Provide a constructor using a member initializer list.\n3. Provide const member functions `name()`, `quantity()`, `unitPrice()`, and `total()` (returns `quantity * unitPrice`).\n4. Do not use `std::vector` or `std::array` — store up to 5 items in a fixed-size C-style array `Item items[5]`.\n5. Edge case: N=1 must print one item line and the grand total.\n\n## Notes\n- `#include <string>` and `#include <iostream>` are already included.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Item {\npublic:\n    Item(std::string name, int qty, int price)\n        : m_name{name}, m_qty{qty}, m_price{price} {}\n\n    std::string name() const { return m_name; }\n    int quantity() const { return m_qty; }\n    int unitPrice() const { return m_price; }\n    // TODO: implement total() — returns quantity * unit price\n    int total() const { return 0; } // replace with correct implementation\n\nprivate:\n    std::string m_name;\n    int m_qty;\n    int m_price;\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Item items[5] = {\n        Item{\"\", 0, 0}, Item{\"\", 0, 0}, Item{\"\", 0, 0},\n        Item{\"\", 0, 0}, Item{\"\", 0, 0}\n    };\n    for (int i = 0; i < n; ++i) {\n        std::string name;\n        int qty, price;\n        std::cin >> name >> qty >> price;\n        items[i] = Item{name, qty, price};\n    }\n    int grand = 0;\n    for (int i = 0; i < n; ++i) {\n        std::cout << items[i].name() << \": qty=\" << items[i].quantity()\n                  << \" price=\" << items[i].unitPrice()\n                  << \" total=\" << items[i].total() << \"\\n\";\n        grand += items[i].total();\n    }\n    std::cout << \"grand_total=\" << grand << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Item {\npublic:\n    Item(std::string name, int qty, int price)\n        : m_name{name}, m_qty{qty}, m_price{price} {}\n\n    std::string name() const { return m_name; }\n    int quantity() const { return m_qty; }\n    int unitPrice() const { return m_price; }\n    int total() const { return m_qty * m_price; }\n\nprivate:\n    std::string m_name;\n    int m_qty;\n    int m_price;\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Item items[5] = {\n        Item{\"\", 0, 0}, Item{\"\", 0, 0}, Item{\"\", 0, 0},\n        Item{\"\", 0, 0}, Item{\"\", 0, 0}\n    };\n    for (int i = 0; i < n; ++i) {\n        std::string name;\n        int qty, price;\n        std::cin >> name >> qty >> price;\n        items[i] = Item{name, qty, price};\n    }\n    int grand = 0;\n    for (int i = 0; i < n; ++i) {\n        std::cout << items[i].name() << \": qty=\" << items[i].quantity()\n                  << \" price=\" << items[i].unitPrice()\n                  << \" total=\" << items[i].total() << \"\\n\";\n        grand += items[i].total();\n    }\n    std::cout << \"grand_total=\" << grand << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three items",
+        "is_sample": true,
+        "stdin": "3\napple 10 2\nbook 3 15\npen 20 1\n",
+        "expected_stdout": "apple: qty=10 price=2 total=20\nbook: qty=3 price=15 total=45\npen: qty=20 price=1 total=20\ngrand_total=85"
+      },
+      {
+        "label": "Hidden: single item",
+        "is_sample": false,
+        "stdin": "1\nwidget 7 100\n",
+        "expected_stdout": "widget: qty=7 price=100 total=700\ngrand_total=700"
+      },
+      {
+        "label": "Hidden: five items",
+        "is_sample": false,
+        "stdin": "5\na 1 1\nb 2 3\nc 4 5\nd 6 7\ne 8 9\n",
+        "expected_stdout": "a: qty=1 price=1 total=1\nb: qty=2 price=3 total=6\nc: qty=4 price=5 total=20\nd: qty=6 price=7 total=42\ne: qty=8 price=9 total=72\ngrand_total=141"
+      }
+    ]
+  },
+  {
+    "title": "Temperature Converter Class",
+    "prompt_md": "## Goal\nComplete the `Temperature` class so it stores a value in Celsius with an `explicit` constructor and provides a `toFahrenheit()` const member function.\n\n## Input\nLine 1: integer `N` (1 ≤ N ≤ 5).\nLines 2..N+1: one integer per line — a temperature in Celsius.\n\n## Output\nFor each temperature, print one line: `<celsius>C = <fahrenheit>F` where fahrenheit is computed as `celsius * 9 / 5 + 32` (integer arithmetic).\n\n## Requirements\n1. `Temperature(int celsius)` must be marked `explicit`.\n2. `int celsius() const` returns the stored Celsius value.\n3. `int toFahrenheit() const` returns `m_celsius * 9 / 5 + 32`.\n4. Edge case: 0°C must print `0C = 32F`; -40°C must print `-40C = -40F`.\n\n## Notes\n- Do not use `std::vector` or `std::array`.",
+    "starter_code": "#include <iostream>\n\nclass Temperature {\npublic:\n    // TODO: implement explicit constructor taking int celsius\n    explicit Temperature(int c) : m_celsius{0} { /* store c in m_celsius */ }\n    int celsius() const { return m_celsius; }\n    // TODO: implement toFahrenheit() — returns m_celsius * 9 / 5 + 32\n    int toFahrenheit() const { return 0; }\nprivate:\n    int m_celsius;\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int c;\n        std::cin >> c;\n        Temperature t{c};\n        std::cout << t.celsius() << \"C = \" << t.toFahrenheit() << \"F\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Temperature {\npublic:\n    explicit Temperature(int c) : m_celsius{c} {}\n    int celsius() const { return m_celsius; }\n    int toFahrenheit() const { return m_celsius * 9 / 5 + 32; }\nprivate:\n    int m_celsius;\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int c;\n        std::cin >> c;\n        Temperature t{c};\n        std::cout << t.celsius() << \"C = \" << t.toFahrenheit() << \"F\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three temperatures",
+        "is_sample": true,
+        "stdin": "3\n0\n100\n-40\n",
+        "expected_stdout": "0C = 32F\n100C = 212F\n-40C = -40F"
+      },
+      {
+        "label": "Hidden: single temperature",
+        "is_sample": false,
+        "stdin": "1\n37\n",
+        "expected_stdout": "37C = 98F"
+      },
+      {
+        "label": "Hidden: five temperatures",
+        "is_sample": false,
+        "stdin": "5\n20\n25\n30\n35\n40\n",
+        "expected_stdout": "20C = 68F\n25C = 77F\n30C = 86F\n35C = 95F\n40C = 104F"
+      }
+    ]
+  }
+]

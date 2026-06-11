@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Demonstrate vptr Size Impact",
+    "prompt_md": "## Goal\nComplete the program to print whether a virtual class is larger than a plain class, demonstrating the vptr overhead.\n\n## Input\nNo input.\n\n## Output\nPrint exactly one line:\n```\nvptr adds overhead: yes\n```\n\n## Requirements\n1. Define `Plain` with one `int` member and no virtual functions.\n2. Define `WithVirtual` with one `int` member and one virtual function `void f()`.\n3. Compare `sizeof(WithVirtual) > sizeof(Plain)`.\n4. Print `vptr adds overhead: yes` if `WithVirtual` is larger, `vptr adds overhead: no` otherwise.\n5. On any standard 64-bit implementation `WithVirtual` will be larger — your solution code must produce `yes`.",
+    "starter_code": "#include <iostream>\n\n// TODO: define Plain with one int member, no virtual functions\n\n// TODO: define WithVirtual with one int member and one virtual void f()\n\nint main() {\n    // TODO: compare sizeof and print result\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Plain { int x; };\nclass WithVirtual { int x; virtual void f() {} };\n\nint main() {\n    if (sizeof(WithVirtual) > sizeof(Plain))\n        std::cout << \"vptr adds overhead: yes\\n\";\n    else\n        std::cout << \"vptr adds overhead: no\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: overhead yes",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "vptr adds overhead: yes"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "vptr adds overhead: yes"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "vptr adds overhead: yes"
+      }
+    ]
+  },
+  {
+    "title": "Inherited vtable Slot Demo",
+    "prompt_md": "## Goal\nComplete the program to demonstrate that a derived class inherits vtable slots it does not override.\n\n## Input\nNo input.\n\n## Output\nPrint exactly three lines:\n```\nAnimal::move\nDog::speak\nAnimal::move\n```\n\n## Requirements\n1. `Animal` has `virtual void speak() const` printing `Animal::speak` and `virtual void move() const` printing `Animal::move`.\n2. `Dog` overrides only `speak()` to print `Dog::speak`; it does not override `move()`.\n3. `main` creates an `Animal a` and a `Dog d`.\n4. Store both in `Animal* ptrs[2] = {&a, &d}`.\n5. Print `ptrs[0]->move()` then `ptrs[1]->speak()` then `ptrs[1]->move()`.\n6. The output shows `Animal::move` for both `move()` calls, proving the inherited slot.",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Animal::speak\\n\"; }\n    // TODO: declare virtual move() printing \"Animal::move\"\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const override { std::cout << \"Dog::speak\\n\"; }\n    // Dog does NOT override move()\n};\n\nint main() {\n    Animal a;\n    Dog d;\n    Animal* ptrs[2] = { &a, &d };\n    // TODO: call ptrs[0]->move(), ptrs[1]->speak(), ptrs[1]->move()\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Animal::speak\\n\"; }\n    virtual void move() const { std::cout << \"Animal::move\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const override { std::cout << \"Dog::speak\\n\"; }\n    // Dog does NOT override move()\n};\n\nint main() {\n    Animal a;\n    Dog d;\n    Animal* ptrs[2] = { &a, &d };\n    ptrs[0]->move();\n    ptrs[1]->speak();\n    ptrs[1]->move();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three lines",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Animal::move\nDog::speak\nAnimal::move"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Animal::move\nDog::speak\nAnimal::move"
+      },
+      {
+        "label": "Hidden: exact order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Animal::move\nDog::speak\nAnimal::move"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 5;\n    int* p = &x;\n    int** pp = &p;\n    **pp = 20;\n    std::cout << x << \"\\n\";\n    std::cout << *p << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "20\n20",
+    "explanation_md": "`**pp` dereferences twice: `*pp` yields the `int*` stored in `p`, and dereferencing that pointer reaches `x`. Writing `**pp = 20` sets `x` to 20. Both `x` and `*p` then refer to the same memory location, so both print 20."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When freeing a dynamically allocated 2D array created as shown below, which order is correct?\n\n```cpp\nint** grid = new int*[rows];\nfor (int r = 0; r < rows; ++r)\n    grid[r] = new int[cols]{};\n```",
+    "options": {
+      "a": "Call `delete[] grid` first, then `delete[] grid[r]` for each row",
+      "b": "Call `delete[] grid[r]` for each row first, then `delete[] grid`",
+      "c": "Call `delete grid` (without brackets) for the outer array only",
+      "d": "Free the rows and the outer array in any order — it does not matter"
+    },
+    "answer": "b",
+    "explanation_md": "Freeing the outer `grid` array first destroys the row pointers. Any subsequent attempt to read `grid[r]` to free the rows accesses freed memory — undefined behavior. You must free each row first, then free the outer pointer array."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int** g = new int*[2];\n    g[0] = new int[3]{1, 2, 3};\n    g[1] = new int[3]{4, 5, 6};\n    std::cout << g[0][2] << \" \" << g[1][0] << \"\\n\";\n    for (int r = 0; r < 2; ++r) delete[] g[r];\n    delete[] g;\n}\n```",
+    "options": null,
+    "answer": "3 4",
+    "explanation_md": "`g[0][2]` is the third element of row 0, which is 3. `g[1][0]` is the first element of row 1, which is 4."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program has a memory management bug. What is it?\n\n```cpp\nint rows = 3, cols = 4;\nint** g = new int*[rows];\nfor (int r = 0; r < rows; ++r)\n    g[r] = new int[cols]{};\n\n// cleanup\ndelete[] g;                       // (1)\nfor (int r = 0; r < rows; ++r)    // (2)\n    delete[] g[r];\n```",
+    "options": {
+      "a": "Each row should be freed with `delete g[r]`, not `delete[] g[r]`",
+      "b": "The outer array `g` is freed at (1) before the row pointers are freed at (2), causing use-after-free",
+      "c": "The outer array should be freed with `delete g`, not `delete[] g`",
+      "d": "There is no bug — freeing the outer array also frees all rows"
+    },
+    "answer": "b",
+    "explanation_md": "After `delete[] g` at (1), the memory holding the row pointers is released. The loop at (2) then reads `g[r]`, which is accessing freed memory. The rows were never freed before the outer array was. This is use-after-free — undefined behavior. The rows must be freed first."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `int** grid` (an array of pointers) NOT the same as a contiguous 2D array like `int arr[3][4]`?",
+    "options": {
+      "a": "They are identical in memory layout; the syntax is just different",
+      "b": "The rows in `int** grid` are separate heap allocations at arbitrary addresses, not a single contiguous block",
+      "c": "`int** grid` can only store pointers, not integers",
+      "d": "`int arr[3][4]` is always on the heap, while `int** grid` is on the stack"
+    },
+    "answer": "b",
+    "explanation_md": "Each row of `int** grid` is its own independent `new int[cols]` allocation at a different address. A flat 2D array like `int arr[3][4]` is a single contiguous block. Pointer arithmetic that spans rows of a jagged array is undefined behavior; the rows are not adjacent in memory."
+  }
+]

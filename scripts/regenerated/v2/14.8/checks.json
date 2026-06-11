@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary engineering benefit of making data members private (encapsulation)?",
+    "options": {
+      "a": "It makes programs run faster by preventing unnecessary copies.",
+      "b": "It lets the class control and enforce invariants, and allows the internal implementation to change without breaking callers.",
+      "c": "It hides the member names from other programmers who read the header file.",
+      "d": "It prevents the program from compiling if a bug is present."
+    },
+    "answer": "b",
+    "explanation_md": "Encapsulation is primarily about correctness and maintainability. Private members let the class enforce invariants (e.g., balance is never negative) and let the implementation change internally without requiring callers to update. It does not hide names from people reading the code, and it does not directly affect runtime speed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Timer {\nprivate:\n    int m_seconds{ 0 };\npublic:\n    void setSeconds(int s) {\n        if (s < 0) s = 0;\n        m_seconds = s;\n    }\n    int getSeconds() const { return m_seconds; }\n};\n\nint main() {\n    Timer t;\n    t.setSeconds(-10);\n    std::cout << t.getSeconds() << '\\n';\n    t.setSeconds(5);\n    std::cout << t.getSeconds() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n5",
+    "explanation_md": "The setter clamps negative values to 0, so `setSeconds(-10)` stores 0. The first print outputs `0`. `setSeconds(5)` stores 5 normally, and the second print outputs `5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Distance` class currently stores its value in centimeters as a private `int m_cm`. The team decides to change the internal representation to millimeters for higher precision. Which statement is true?",
+    "options": {
+      "a": "Every file that uses `Distance` must be rewritten because the member name changes.",
+      "b": "Only the `Distance` class's own member functions need to be updated; callers that use the public interface are unaffected.",
+      "c": "The change is impossible once any code has used the class.",
+      "d": "Making the member private makes changes harder, not easier."
+    },
+    "answer": "b",
+    "explanation_md": "Because `m_cm` is private, no caller can access it directly — they all go through the public getter and setter. Changing the internal representation to millimeters only requires updating the class's own member functions. Callers that call `getCentimeters()` and `setCentimeters()` continue to work unchanged."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `Gauge` to never allow a reading below 1. Does the following class guarantee that invariant?\n\n```cpp\nclass Gauge {\npublic:\n    int reading{ 1 };\n\n    void setReading(int r) {\n        if (r >= 1) reading = r;\n    }\n};\n```",
+    "options": {
+      "a": "Yes — `setReading` checks that `r >= 1` before storing.",
+      "b": "No — `reading` is public so any code can assign a value below 1 directly, bypassing `setReading`.",
+      "c": "No — the `if` condition should use `r > 0` instead of `r >= 1`.",
+      "d": "Yes — the compiler enforces the `setReading` check at all call sites."
+    },
+    "answer": "b",
+    "explanation_md": "Even though `setReading` enforces the invariant, `reading` is public. Any caller can write `g.reading = -5;` directly, completely bypassing the check. To enforce the invariant, `reading` must be private — then the only way to change it is through `setReading`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which type is most appropriate as a plain `struct` with public members rather than a `class` with private members?",
+    "options": {
+      "a": "A bank account that must never have a negative balance.",
+      "b": "A timer that counts down from a non-zero starting value.",
+      "c": "A 2D point `(x, y)` with no constraints on the coordinate values.",
+      "d": "A percentage value that must stay between 0 and 100."
+    },
+    "answer": "c",
+    "explanation_md": "A plain 2D point has no invariant to protect — any combination of x and y is valid. It is a passive data bundle, ideal for a `struct`. The other options all have rules (non-negative balance, non-zero start, 0–100 range) that require a class with private members and a setter to enforce."
+  }
+]

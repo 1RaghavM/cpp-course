@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Scale a Measurement",
+    "prompt_md": "## Goal\nWrite a program that reads a measurement in millimeters and converts it to meters and to kilometers, using scientific notation literals for the conversion factors.\n\n## Input\n- Line 1: a floating-point number `mm` — a measurement in millimeters (0.0 ≤ mm ≤ 1000000.0)\n\n## Output\nPrint exactly two lines:\n- Line 1: the measurement in meters (mm × 1e-3)\n- Line 2: the measurement in kilometers (mm × 1e-6)\n\n## Requirements\n1. Read the input into a `double` variable named `mm`.\n2. Compute `meters` as `mm * 1.0e-3` (a `double`).\n3. Compute `kilometers` as `mm * 1.0e-6` (a `double`).\n4. Print `meters` then `kilometers`, each followed by a newline.\n5. Use the default `std::cout` format — do not set any stream manipulators.\n6. For input `1000.0`, the output must be `1` on line 1 and `0.001` on line 2.\n7. For input `1e6`, the output must be `1000` on line 1 and `1` on line 2.\n\n## Notes\n- The conversion factors must be written as scientific notation literals in your code (`1.0e-3` and `1.0e-6`).",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    double mm {};\n    std::cin >> mm;\n\n    // TODO: compute meters = mm * 1.0e-3\n    // TODO: compute kilometers = mm * 1.0e-6\n    // TODO: print meters then kilometers, each on its own line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    double mm {};\n    std::cin >> mm;\n\n    double meters     { mm * 1.0e-3 };\n    double kilometers { mm * 1.0e-6 };\n\n    std::cout << meters     << \"\\n\";\n    std::cout << kilometers << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1000 mm",
+        "is_sample": true,
+        "stdin": "1000\n",
+        "expected_stdout": "1\n0.001\n"
+      },
+      {
+        "label": "Hidden: 1e6 mm (1 million)",
+        "is_sample": false,
+        "stdin": "1e6\n",
+        "expected_stdout": "1000\n1\n"
+      },
+      {
+        "label": "Hidden: 500 mm",
+        "is_sample": false,
+        "stdin": "500\n",
+        "expected_stdout": "0.5\n0.0005\n"
+      }
+    ]
+  },
+  {
+    "title": "Planet Distance Scaler",
+    "prompt_md": "## Goal\nFind and fix the bug in this program that converts a planet's distance from the Sun (given in astronomical units) to kilometers. One AU is approximately 1.496e8 km.\n\n## Input\n- Line 1: a floating-point number `au` — the distance in astronomical units (0.1 ≤ au ≤ 100.0)\n\n## Output\nPrint exactly one line: the distance in kilometers (au × 1.496e8).\n\n## Requirements\n1. The program must compile and run, but it currently produces incorrect output.\n2. The bug is in the scientific notation literal used for the conversion factor.\n3. Fix only the conversion factor literal — do not change any other part of the logic.\n4. For input `1.0` (Earth), the output must be `1.496e+08`.\n5. For input `5.2` (Jupiter), the output must be `7.7792e+08`.\n6. For input `0.39` (Mercury), the output must be `5.8344e+07`.\n\n## Notes\n- The program uses `std::scientific` to force scientific notation output — do not remove it.\n- One astronomical unit = 1.496 × 10⁸ km.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    double au {};\n    std::cin >> au;\n\n    double km_per_au { 1.496e-8 };   // BUG: wrong exponent sign\n    double distance_km { au * km_per_au };\n\n    std::cout << std::scientific << distance_km << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    double au {};\n    std::cin >> au;\n\n    double km_per_au { 1.496e8 };   // fixed: positive exponent\n    double distance_km { au * km_per_au };\n\n    std::cout << std::scientific << distance_km << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Earth (1.0 AU)",
+        "is_sample": true,
+        "stdin": "1.0\n",
+        "expected_stdout": "1.496000e+08\n"
+      },
+      {
+        "label": "Hidden: Jupiter (5.2 AU)",
+        "is_sample": false,
+        "stdin": "5.2\n",
+        "expected_stdout": "7.779200e+08\n"
+      },
+      {
+        "label": "Hidden: Mercury (0.39 AU)",
+        "is_sample": false,
+        "stdin": "0.39\n",
+        "expected_stdout": "5.834400e+07\n"
+      }
+    ]
+  }
+]

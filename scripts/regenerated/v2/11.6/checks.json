@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT triple(T x)\n{\n    return x * 3;\n}\n\nint main()\n{\n    std::cout << triple(4) << '\\n';\n    std::cout << triple(2.5) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n7.5",
+    "explanation_md": "`triple(4)` instantiates with `T=int`, returning `4*3=12`. `triple(2.5)` instantiates with `T=double`, returning `2.5*3=7.5`. Each call gets its own compiled version of the template."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `template <typename T>` do?",
+    "options": {
+      "a": "Declares that `T` is a variable of type `typename` that will hold a type at runtime.",
+      "b": "Introduces `T` as a placeholder type that the compiler will substitute with a concrete type when the function is called.",
+      "c": "Forces all arguments to be converted to type `T` before the function runs.",
+      "d": "Creates a new type named `T` that inherits from all built-in types."
+    },
+    "answer": "b",
+    "explanation_md": "`typename T` introduces a type parameter. At each call site the compiler deduces (or is told) what concrete type to use for `T` and generates a specialised version of the function. Nothing happens at runtime — this is entirely a compile-time mechanism."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This template is supposed to return the smaller of two values, but it has a bug. What is it?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT minimum(T a, T b)\n{\n    return (a > b) ? a : b;\n}\n\nint main()\n{\n    std::cout << minimum(3, 7) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The function returns `a` when `a > b`, but `a` is the larger value — the condition should be `a < b`.",
+      "b": "Template functions cannot use the ternary operator.",
+      "c": "The template parameter should be `class T` not `typename T`.",
+      "d": "The function does not compile because `T` is not a built-in type."
+    },
+    "answer": "a",
+    "explanation_md": "The ternary condition `a > b` returns `a` (the larger) when true, so the function actually returns the maximum, not the minimum. Changing the condition to `a < b` — or changing the return to `(a < b) ? a : b` — fixes the logic."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When must you provide the template type argument explicitly, as in `zero<int>()`?",
+    "options": {
+      "a": "Always — the compiler never deduces template types automatically.",
+      "b": "Only when the template type parameter does not appear in any function argument, so the compiler has nothing to deduce it from.",
+      "c": "Only when passing `double` values — `int` is always deduced.",
+      "d": "Only when the function returns `void`."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler deduces `T` from the types of the arguments. When the type parameter appears only in the return type (and not in any parameter), there are no arguments to inspect, so you must write the type explicitly: `zero<int>()`."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "MinMax Template Class",
+    "prompt_md": "## Goal\nComplete the class template `MinMax<T>` so it tracks the smallest and largest values fed to it.\n\n## Input\n- Line 1: integer N (2 ≤ N ≤ 10) — number of values to read\n- Lines 2..N+1: one integer per line\n\n## Output\n- Print exactly two lines:\n  - `Min: <value>`\n  - `Max: <value>`\n\n## Requirements\n1. `MinMax<T>` stores `m_min` and `m_max`, both of type `T`.\n2. The constructor `MinMax(T first)` initializes both `m_min` and `m_max` to `first`.\n3. `void update(T val)` updates `m_min` if `val < m_min`, and `m_max` if `val > m_max`.\n4. `T getMin() const` and `T getMax() const` return the tracked minimum and maximum.\n5. Hidden test 1 uses N = 4 with values that include the minimum first. Hidden test 2 uses N = 6 with mixed ordering.\n\n## Notes\n- Use `<iostream>` only. No `<algorithm>` or `<vector>`.",
+    "starter_code": "#include <iostream>\n\n// TODO: replace this stub with the complete MinMax<T> class template:\n//   - data members m_min and m_max of type T\n//   - constructor MinMax(T first) that initializes both to first\n//   - void update(T val) that updates m_min / m_max\n//   - T getMin() const and T getMax() const\ntemplate <typename T>\nclass MinMax {\n    T m_min;\n    T m_max;\npublic:\n    MinMax(T first) : m_min{ first }, m_max{ first } {}\n    void update(T val) { /* TODO */ }\n    T getMin() const { return m_min; }\n    T getMax() const { return m_max; }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int first;\n    std::cin >> first;\n    MinMax<int> mm{ first };\n\n    for (int i = 1; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        mm.update(val);\n    }\n\n    std::cout << \"Min: \" << mm.getMin() << \"\\n\";\n    std::cout << \"Max: \" << mm.getMax() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass MinMax {\n    T m_min;\n    T m_max;\npublic:\n    MinMax(T first) : m_min{ first }, m_max{ first } {}\n\n    void update(T val) {\n        if (val < m_min) m_min = val;\n        if (val > m_max) m_max = val;\n    }\n\n    T getMin() const { return m_min; }\n    T getMax() const { return m_max; }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int first;\n    std::cin >> first;\n    MinMax<int> mm{ first };\n\n    for (int i = 1; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        mm.update(val);\n    }\n\n    std::cout << \"Min: \" << mm.getMin() << \"\\n\";\n    std::cout << \"Max: \" << mm.getMax() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 values",
+        "is_sample": true,
+        "stdin": "3\n5\n2\n8\n",
+        "expected_stdout": "Min: 2\nMax: 8\n"
+      },
+      {
+        "label": "Hidden: 4 values min first",
+        "is_sample": false,
+        "stdin": "4\n1\n9\n4\n6\n",
+        "expected_stdout": "Min: 1\nMax: 9\n"
+      },
+      {
+        "label": "Hidden: 6 values mixed",
+        "is_sample": false,
+        "stdin": "6\n7\n3\n10\n1\n5\n8\n",
+        "expected_stdout": "Min: 1\nMax: 10\n"
+      }
+    ]
+  },
+  {
+    "title": "Buggy Pair Template",
+    "prompt_md": "## Goal\nThe program below defines a class template `Pair<T>` that is supposed to store two values and print them in swapped order. There is exactly one logic bug — find and fix it.\n\n## Input\n- Line 1: two integers separated by a space\n\n## Output\n- Print: `<second> <first>` on one line (the two values in swapped order).\n- Example: input `3 7` should produce `7 3`.\n\n## Requirements\n1. `Pair<T>` stores `m_first` and `m_second` of type `T`.\n2. `first()` returns `m_first`; `second()` returns `m_second`.\n3. `printSwapped()` must print `second` then `first`, separated by a space, with a trailing newline.\n4. The bug is in `printSwapped()` — it currently prints in the wrong order. Fix it so second prints before first.\n5. Hidden tests use different integer pairs.\n\n## Notes\n- No additional headers needed beyond `<iostream>`.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nclass Pair {\n    T m_first;\n    T m_second;\npublic:\n    Pair(T first, T second) : m_first{ first }, m_second{ second } {}\n    T first()  const { return m_first; }\n    T second() const { return m_second; }\n\n    // BUG: should print second then first, but currently prints first then second\n    void printSwapped() const {\n        std::cout << m_first << \" \" << m_second << \"\\n\";\n    }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    Pair<int> p{ a, b };\n    p.printSwapped();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nclass Pair {\n    T m_first;\n    T m_second;\npublic:\n    Pair(T first, T second) : m_first{ first }, m_second{ second } {}\n    T first()  const { return m_first; }\n    T second() const { return m_second; }\n\n    void printSwapped() const {\n        std::cout << m_second << \" \" << m_first << \"\\n\";\n    }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    Pair<int> p{ a, b };\n    p.printSwapped();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 7",
+        "is_sample": true,
+        "stdin": "3 7\n",
+        "expected_stdout": "7 3\n"
+      },
+      {
+        "label": "Hidden: 10 20",
+        "is_sample": false,
+        "stdin": "10 20\n",
+        "expected_stdout": "20 10\n"
+      },
+      {
+        "label": "Hidden: same values",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "5 5\n"
+      }
+    ]
+  }
+]

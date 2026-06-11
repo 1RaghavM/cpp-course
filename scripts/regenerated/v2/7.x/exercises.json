@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Static Local Call Counter",
+    "prompt_md": "## Goal\nComplete the function `int next_ticket()` that uses a **static local variable** to return a unique, incrementing ticket number each time it is called, starting at 1.\n\nThe program always dispenses exactly 5 tickets.\n\n## Input\nNone (no input is read).\n\n## Output\n- Print exactly 5 lines, each of the form `Ticket: K` where K is the ticket number for that call (1, 2, 3, 4, 5).\n- No extra blank lines.\n\n## Requirements\n1. `next_ticket()` must declare a `static int` local variable initialized to `0` and return its pre-incremented value.\n2. The static variable must be local to `next_ticket()` -- no global variables allowed.\n3. Each call to `next_ticket()` returns the next integer in sequence (1, 2, 3, 4, 5).\n4. `main` calls `next_ticket()` exactly 5 times and prints `Ticket: ` followed by the returned value.\n5. No loops are used -- each call is written explicitly.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement next_ticket() using a static local variable\n// It should return 1 on the first call, 2 on the second, and so on.\nint next_ticket()\n{\n    // TODO: declare a static local int initialized to 0\n    // TODO: pre-increment it and return it\n}\n\nint main()\n{\n    // TODO: call next_ticket() 5 times and print each result\n    //       \"Ticket: \" followed by the returned value\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint next_ticket()\n{\n    static int count = 0;\n    return ++count;\n}\n\nint main()\n{\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n    std::cout << \"Ticket: \" << next_ticket() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- 5 tickets",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n"
+      },
+      {
+        "label": "Hidden -- same test (deterministic, no input)",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n"
+      },
+      {
+        "label": "Hidden -- verify exact output format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Ticket: 1\nTicket: 2\nTicket: 3\nTicket: 4\nTicket: 5\n"
+      }
+    ]
+  },
+  {
+    "title": "Namespace-Scoped Running Statistics",
+    "prompt_md": "## Goal\nComplete two functions, `void record(int value)` and `void print_stats()`, that live inside a **user-defined namespace** called `Stats`. `record` accumulates values using **static local variables**, and `print_stats` prints the count, sum, and average.\n\n## Input\n- Lines 1-4: one integer per line (each value in the range -1000 to 1000).\n\n## Output\nPrint exactly 3 lines:\n- `Count: C` -- where C is the number of values recorded (always 4).\n- `Sum: S` -- where S is the integer sum of all recorded values.\n- `Average: A` -- where A is the average formatted to **2 decimal places**.\n\nNo extra blank lines.\n\n## Requirements\n1. Both `record` and `print_stats` must be defined inside a namespace named `Stats`.\n2. `record(int value)` must use **static local variables** (not globals) to accumulate the running count and sum -- no variables may be declared outside a function.\n3. The simplest correct approach is to use two helper functions inside `Stats` -- one for count and one for sum -- each containing a static local. The helpers accept an `int` to add and return the current total. Both `record` and `print_stats` call these helpers.\n4. `main()` calls `Stats::record(v)` for each of the 4 values, then calls `Stats::print_stats()` once.\n5. Average is printed with exactly 2 decimal places (use `std::fixed` and `std::setprecision(2)`).\n6. Edge cases covered by hidden tests: a mix of negative and positive values that sum to zero, all same values.\n\n## Notes\n- `#include <iomanip>` is allowed for `std::setprecision`.\n- All mutable state must live in static local variables, not at namespace or global scope.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nnamespace Stats\n{\n    // Helper: updates and returns the running count.\n    // Pass 1 to increment, 0 to query without changing.\n    int runningCount(int add)\n    {\n        static int count = 0;\n        count += add;\n        return count;\n    }\n\n    // Helper: updates and returns the running sum.\n    // Pass the value to add, or 0 to query without changing.\n    int runningSum(int add)\n    {\n        static int sum = 0;\n        sum += add;\n        return sum;\n    }\n\n    // TODO: implement record(int value)\n    //   Call runningCount(1) to increment the count.\n    //   Call runningSum(value) to add the value.\n    void record(int value)\n    {\n    }\n\n    // TODO: implement print_stats()\n    //   Call runningCount(0) to get the count.\n    //   Call runningSum(0) to get the sum.\n    //   Compute average as double, print Count, Sum, Average.\n    void print_stats()\n    {\n    }\n} // namespace Stats\n\nint main()\n{\n    int v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    Stats::record(v1);\n    Stats::record(v2);\n    Stats::record(v3);\n    Stats::record(v4);\n\n    Stats::print_stats();\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nnamespace Stats\n{\n    int runningCount(int add)\n    {\n        static int count = 0;\n        count += add;\n        return count;\n    }\n\n    int runningSum(int add)\n    {\n        static int sum = 0;\n        sum += add;\n        return sum;\n    }\n\n    void record(int value)\n    {\n        runningCount(1);\n        runningSum(value);\n    }\n\n    void print_stats()\n    {\n        int count = runningCount(0);\n        int sum   = runningSum(0);\n        double average = static_cast<double>(sum) / count;\n        std::cout << \"Count: \"   << count << '\\n'\n                  << \"Sum: \"     << sum   << '\\n'\n                  << \"Average: \" << std::fixed << std::setprecision(2)\n                  << average    << '\\n';\n    }\n} // namespace Stats\n\nint main()\n{\n    int v1{}, v2{}, v3{}, v4{};\n    std::cin >> v1 >> v2 >> v3 >> v4;\n\n    Stats::record(v1);\n    Stats::record(v2);\n    Stats::record(v3);\n    Stats::record(v4);\n\n    Stats::print_stats();\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample -- 4 values",
+        "is_sample": true,
+        "stdin": "10\n20\n30\n40\n",
+        "expected_stdout": "Count: 4\nSum: 100\nAverage: 25.00\n"
+      },
+      {
+        "label": "Hidden -- single repeated value",
+        "is_sample": false,
+        "stdin": "7\n7\n7\n7\n",
+        "expected_stdout": "Count: 4\nSum: 28\nAverage: 7.00\n"
+      },
+      {
+        "label": "Hidden -- mixed negatives summing to zero",
+        "is_sample": false,
+        "stdin": "-10\n5\n3\n2\n",
+        "expected_stdout": "Count: 4\nSum: 0\nAverage: 0.00\n"
+      }
+    ]
+  }
+]

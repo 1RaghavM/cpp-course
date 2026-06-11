@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a[4]{ 1, 2 };\n    for (int i = 0; i < 4; ++i)\n        std::cout << a[i] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1\n2\n0\n0",
+    "explanation_md": "When a C-style array initializer has fewer elements than the array size, the remaining elements are zero-initialized. So `a[2]` and `a[3]` are 0."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `double vals[4]{ 1.0, 2.0, 3.0, 4.0 };`, what does `sizeof(vals)` return on a system where `double` is 8 bytes?",
+    "options": {
+      "a": "4",
+      "b": "8",
+      "c": "32",
+      "d": "The result depends on the compiler."
+    },
+    "answer": "c",
+    "explanation_md": "`sizeof` on an array returns the total byte size: 4 elements × 8 bytes each = 32. It does NOT return the number of elements. This is a frequent source of bugs when programmers try to use `sizeof(arr)` as a count."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int primes[]{ 2, 3, 5, 7, 11 };\n    std::cout << sizeof(primes) / sizeof(primes[0]) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`sizeof(primes)` is the total byte size of the array (5 × sizeof(int)). Dividing by `sizeof(primes[0])` (sizeof one int) gives the element count, 5. The size is deduced from the 5-element initializer list."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following C-style array declarations is NOT valid in standard C++20?",
+    "options": {
+      "a": "`int arr[5]{};`",
+      "b": "`const int arr[]{ 1, 2, 3 };`",
+      "c": "`int n = 5; int arr[n];`",
+      "d": "`int arr[5]{ 1, 2, 3, 4, 5 };`"
+    },
+    "answer": "c",
+    "explanation_md": "C-style array sizes must be compile-time constant expressions in standard C++. `n` is a runtime variable, so `int arr[n]` is a variable-length array (VLA), which is a C99 extension not part of the C++ standard. Options a, b, and d all use constant or deduced sizes and are perfectly valid."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the sum of all five elements but prints the wrong value. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int data[5]{ 1, 2, 3, 4, 5 };\n    int sum = 0;\n    for (int i = 0; i <= 5; ++i)\n        sum += data[i];\n    std::cout << sum << '\\n';\n}\n```",
+    "options": {
+      "a": "The loop condition should be `i < 5`, not `i <= 5`; accessing `data[5]` is out of bounds.",
+      "b": "`sum` is not initialized before use.",
+      "c": "The array should be declared with size 6, not 5.",
+      "d": "The range-based for loop should be used instead."
+    },
+    "answer": "a",
+    "explanation_md": "Valid indices for `data` are 0 through 4. The condition `i <= 5` allows `i` to reach 5, so `data[5]` is accessed — one past the end of the array. This is undefined behavior and can produce any output. The fix is `i < 5`."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Read N Lines with getline",
+    "prompt_md": "## Goal\nWrite a program that reads an integer N, then reads N full lines (which may contain spaces), and prints each line prefixed by its 1-based index and a colon.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one line of text each (may contain spaces, length 1–50).\n\n## Output\nPrint N lines, each in the format `I: text` where I is the 1-based line number.\n\nExample — input `2\\nhello world\\nfoo bar` → output:\n```\n1: hello world\n2: foo bar\n```\n\n## Requirements\n1. Read N with `>>`, then use `std::cin.ignore()` to discard the newline, then use `std::getline` inside a loop.\n2. Index starts at 1.\n3. Hidden test uses N=1 with a single-word line and N=3 with mixed-space lines.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    // TODO: discard the newline left by >>\n    // TODO: loop n times, read a full line with getline, print \"i: line\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n    for (int i = 1; i <= n; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        std::cout << i << \": \" << line << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two lines with spaces",
+        "is_sample": true,
+        "stdin": "2\nhello world\nfoo bar\n",
+        "expected_stdout": "1: hello world\n2: foo bar\n"
+      },
+      {
+        "label": "Hidden: one single-word line",
+        "is_sample": false,
+        "stdin": "1\nstream\n",
+        "expected_stdout": "1: stream\n"
+      },
+      {
+        "label": "Hidden: three mixed lines",
+        "is_sample": false,
+        "stdin": "3\nalpha beta\ngamma\ndelta epsilon zeta\n",
+        "expected_stdout": "1: alpha beta\n2: gamma\n3: delta epsilon zeta\n"
+      }
+    ]
+  },
+  {
+    "title": "Token Counter — fix the bug",
+    "prompt_md": "## Goal\nThis program is supposed to read a count N, then read N words (single tokens, no spaces), and print how many of them are longer than 3 characters. It has one bug — find and fix it.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Lines 2..N+1: one word per line.\n\n## Output\nPrint exactly one line: `Long words: K` where K is the count of words with length > 3.\n\n## Requirements\n1. The bug is a logic error — the program compiles cleanly.\n2. Hidden tests include N=1 where the single word is exactly 3 characters (should not count it), and N=5 with a mix.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    int count = 0;\n    for (int i = 0; i < n; ++i) {\n        std::string word;\n        std::cin >> word;\n        if (word.size() >= 3) {  // BUG: wrong comparison\n            ++count;\n        }\n    }\n    std::cout << \"Long words: \" << count << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    int count = 0;\n    for (int i = 0; i < n; ++i) {\n        std::string word;\n        std::cin >> word;\n        if (word.size() > 3) {  // fixed: > not >=\n            ++count;\n        }\n    }\n    std::cout << \"Long words: \" << count << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two long, one short",
+        "is_sample": true,
+        "stdin": "3\nhi\nstream\nvalue\n",
+        "expected_stdout": "Long words: 2\n"
+      },
+      {
+        "label": "Hidden: exactly 3-char word should not count",
+        "is_sample": false,
+        "stdin": "1\ncat\n",
+        "expected_stdout": "Long words: 0\n"
+      },
+      {
+        "label": "Hidden: mix of lengths",
+        "is_sample": false,
+        "stdin": "5\nI\nam\nhappy\nwith\nstreams\n",
+        "expected_stdout": "Long words: 3\n"
+      }
+    ]
+  }
+]

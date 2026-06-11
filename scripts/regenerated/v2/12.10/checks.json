@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nvoid addFive(int* p) { *p += 5; }\nint main() {\n    int n { 3 };\n    addFive(&n);\n    std::cout << n << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "8",
+    "explanation_md": "`addFive` receives the address of `n` and adds 5 to the value at that address. After the call, `n` holds 8. The function works on the original variable, not a copy."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function is declared `void fill(int* ptr)`. Which call correctly passes the address of local variable `int count { 0 };`?",
+    "options": {
+      "a": "`fill(count);`",
+      "b": "`fill(*count);`",
+      "c": "`fill(&count);`",
+      "d": "`fill(&&count);`"
+    },
+    "answer": "c",
+    "explanation_md": "The `&` address-of operator produces a pointer to `count`. Options (a) passes the integer value (type mismatch), (b) tries to dereference a non-pointer (compile error), and (d) is not valid syntax in this context."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code compiles and runs but prints a memory address instead of the integer value. What is the bug?\n\n```cpp\n#include <iostream>\nvoid show(const int* ptr) {\n    std::cout << ptr << '\\n';\n}\nint main() {\n    int x { 7 };\n    show(&x);\n    return 0;\n}\n```",
+    "options": {
+      "a": "`&x` should be `x` — do not pass the address",
+      "b": "`ptr` should be dereferenced: `*ptr` instead of `ptr`",
+      "c": "The parameter should be `int*` not `const int*`",
+      "d": "`std::cout` cannot print integers through pointers"
+    },
+    "answer": "b",
+    "explanation_md": "Printing `ptr` outputs the raw address stored in the pointer. To print the integer value at that address, you must dereference: `*ptr`. The parameter type `const int*` is correct; the problem is the missing dereference operator."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer pass-by-address over pass-by-reference for a function parameter?",
+    "options": {
+      "a": "Always — pointers are faster than references",
+      "b": "When the caller may legitimately pass `nullptr` to mean \"no value\"",
+      "c": "When the parameter is a built-in type like `int`",
+      "d": "When the function must not modify the value"
+    },
+    "answer": "b",
+    "explanation_md": "The main advantage of a pointer parameter over a reference is that it can be null, making it suitable when the argument is optional. References cannot be null, so a null-check is impossible through a reference. For read-only access, `const T*` and `const T&` are roughly equivalent, but references are generally preferred when null is not needed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nvoid maybe(const int* p) {\n    if (p == nullptr)\n        std::cout << \"none\\n\";\n    else\n        std::cout << *p << '\\n';\n}\nint main() {\n    int v { 5 };\n    maybe(&v);\n    maybe(nullptr);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\nnone",
+    "explanation_md": "The first call passes the address of `v`, so `p != nullptr` and `*p` (which is 5) is printed. The second call passes `nullptr`, matching the null branch, so `none` is printed."
+  }
+]

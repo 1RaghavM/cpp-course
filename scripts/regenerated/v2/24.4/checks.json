@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\nclass Base {\npublic:\n    int x;\n    Base(int v) : x(v) {\n        std::cout << \"Base x=\" << x << \"\\n\";\n    }\n};\nclass Derived : public Base {\npublic:\n    int y;\n    Derived(int a, int b) : Base(a), y(b) {\n        std::cout << \"Derived y=\" << y << \"\\n\";\n    }\n};\nint main() {\n    Derived d(3, 7);\n}\n```",
+    "options": null,
+    "answer": "Base x=3\nDerived y=7",
+    "explanation_md": "The initializer list calls `Base(3)` first, so `Base x=3` prints. Then `y` is initialized to `7`, and the derived constructor body prints `Derived y=7`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A base class `Shape` has only one constructor: `Shape(std::string color)` — no default constructor. A derived class `Circle` does NOT mention `Shape` in its member initializer list. What happens?",
+    "options": {
+      "a": "The derived class inherits the base's constructor and calls it automatically",
+      "b": "Compile error: no matching constructor for initialization of `Shape`",
+      "c": "The base sub-object is value-initialized with an empty string",
+      "d": "The program compiles but the base's `color` is uninitialized"
+    },
+    "answer": "b",
+    "explanation_md": "If the base class has no default (no-argument) constructor and the derived class does not name the base in its initializer list, the compiler tries to call the base's default constructor, which does not exist — compile error. The derived must explicitly pass arguments via the initializer list."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code compiles but prints unexpected output. What is the bug?\n\n```cpp\n#include <iostream>\n#include <string>\nclass Vehicle {\npublic:\n    std::string type;\n    Vehicle(std::string t) : type(t) {}\n};\nclass Car : public Vehicle {\npublic:\n    int doors;\n    Car(int d) : Vehicle(\"automobile\"), doors(d) {\n        type = \"car\"; // line 11\n    }\n    void print() {\n        std::cout << type << \" \" << doors << \"\\n\";\n    }\n};\nint main() {\n    Car c(4);\n    c.print();\n}\n```",
+    "options": {
+      "a": "Line 11 is illegal — you cannot assign to an inherited member inside a derived constructor",
+      "b": "There is no bug — the program prints `car 4` as intended",
+      "c": "The initializer list calls `Vehicle(\"automobile\")` but then `type` is immediately overwritten to `\"car\"` — the initializer list value is wasted",
+      "d": "`type` is private in `Vehicle` and cannot be assigned in `Car`'s constructor"
+    },
+    "answer": "c",
+    "explanation_md": "There is no compile error and no crash, but the initializer list sets `type` to `\"automobile\"` and then the constructor body immediately reassigns it to `\"car\"`. The initializer list call is wasted work. The correct approach is to pass the intended value directly in the initializer list: `Vehicle(\"car\")`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Where is the ONLY place you can initialize the base class sub-object?",
+    "options": {
+      "a": "In the derived constructor body by calling `Base(args)`",
+      "b": "In the derived constructor's member initializer list",
+      "c": "In the base constructor itself — the derived class never needs to do anything",
+      "d": "In the derived class's `init()` method, called from the derived constructor body"
+    },
+    "answer": "b",
+    "explanation_md": "The base sub-object can only be initialized in the member initializer list of the derived constructor. Calling `Base(args)` inside the constructor body creates a temporary and discards it — it does not affect the actual base sub-object. The base is initialized once, before the derived constructor body runs."
+  }
+]

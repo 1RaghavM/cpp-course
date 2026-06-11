@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can't `operator<<` itself be a virtual member function in a class hierarchy?",
+    "options": {
+      "a": "Operator overloads are always resolved at compile time and cannot be virtual.",
+      "b": "The left operand of `<<` is `std::ostream&`, so the function must be a non-member; only member functions can be virtual.",
+      "c": "Making `operator<<` virtual would require the stream to have a vtable.",
+      "d": "Virtual operator overloads are allowed but are not inherited by derived classes."
+    },
+    "answer": "b",
+    "explanation_md": "For `std::cout << obj` to work, the `operator<<` must have `std::ostream&` as its left operand. That means it must be a non-member (or a member of `std::ostream`, which you cannot modify). Only member functions can be declared `virtual`, so a non-member `operator<<` cannot be virtual. The workaround is to have it call a virtual member function such as `print`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Base\"; }\n    virtual ~Base() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Base& b) {\n        b.print(out); return out;\n    }\n};\n\nclass Child : public Base {\npublic:\n    void print(std::ostream& out) const override { out << \"Child\"; }\n};\n\nint main() {\n    Child c;\n    Base& ref = c;\n    std::cout << ref << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "Child",
+    "explanation_md": "`operator<<` takes `const Base&`, which binds to `c` without slicing. Inside it calls `b.print(out)`. Because `print` is virtual and `b` actually refers to a `Child`, dispatch goes to `Child::print`, which outputs `\"Child\"`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Node {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Node\"; }\n    virtual ~Node() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Node& n) {\n        n.print(out); return out;\n    }\n};\n\nclass Leaf : public Node {\npublic:\n    void print(std::ostream& out) const override {\n        Node::print(out);\n        out << \"+Leaf\";\n    }\n};\n\nint main() {\n    Leaf l;\n    std::cout << l << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "Node+Leaf",
+    "explanation_md": "`operator<<` calls `l.print(out)` via virtual dispatch, landing in `Leaf::print`. That function first calls `Node::print(out)` (the base version), which writes `Node`. Then it writes `+Leaf`. The total output on one line is `Node+Leaf`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "The `operator<<` for a `Shape` hierarchy is defined in `Shape` as a `friend` that calls `shape.print(out)`. A new class `Triangle : public Shape` is added. What does `Triangle` need to do to support `std::cout << myTriangle`?",
+    "options": {
+      "a": "Define its own `friend std::ostream& operator<<(std::ostream&, const Triangle&)`.",
+      "b": "Override the virtual `print(std::ostream&)` member function.",
+      "c": "Nothing — `Triangle` automatically inherits `operator<<` including the `Shape` output.",
+      "d": "Declare `operator<<` as a virtual member of `Triangle`."
+    },
+    "answer": "b",
+    "explanation_md": "The single `operator<<` in `Shape` works for the entire hierarchy because it calls the virtual `print`. `Triangle` only needs to override `print` to customize its output. No new `operator<<` is needed. Option (c) is wrong because without an override, `Triangle` would print as a `Shape`."
+  }
+]

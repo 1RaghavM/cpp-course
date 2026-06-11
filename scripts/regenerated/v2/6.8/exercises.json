@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Range Validator",
+    "prompt_md": "## Goal\nRead an integer and print whether it falls within the inclusive range [10, 50] using logical operators.\n\n## Input\nLine 1: a single integer n (between -1000 and 1000 inclusive).\n\n## Output\nPrint exactly one line:\n- `in range` if 10 <= n <= 50\n- `out of range` otherwise\n\n## Requirements\n1. Use `&&` to combine the two boundary conditions.\n2. Do not use the conditional operator or if-else — print the result using a `bool` variable and a conditional (`?:`) expression, or directly compute the correct string.\n3. Hidden tests cover: n = 10 (lower boundary), n = 50 (upper boundary), n = 9, n = 51, n = 0, n = -100.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: use && to check if n is in [10, 50]\n    // Print \"in range\" or \"out of range\"\n    bool inRange = false;  // replace with your logical expression\n\n    std::cout << (inRange ? \"in range\" : \"out of range\") << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    bool inRange = (n >= 10) && (n <= 50);\n\n    std::cout << (inRange ? \"in range\" : \"out of range\") << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value inside range",
+        "is_sample": true,
+        "stdin": "25\n",
+        "expected_stdout": "in range\n"
+      },
+      {
+        "label": "Hidden: lower boundary exactly",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "in range\n"
+      },
+      {
+        "label": "Hidden: value just outside upper boundary",
+        "is_sample": false,
+        "stdin": "51\n",
+        "expected_stdout": "out of range\n"
+      }
+    ]
+  },
+  {
+    "title": "Leap Year Checker",
+    "prompt_md": "## Goal\nComplete the function `isLeapYear` that returns `true` if the given year is a leap year, and `false` otherwise.\n\n## Input\nLine 1: a single integer year (1 to 9999 inclusive).\n\n## Output\nPrint exactly one line: `leap year` or `not a leap year` followed by a newline.\n\n## Requirements\n1. Implement `bool isLeapYear(int year)` using only logical operators (`&&`, `||`, `!`) and the remainder operator `%` — no if-else inside the function body.\n2. Leap year rule: a year is a leap year if it is divisible by 4 AND (not divisible by 100 OR divisible by 400).\n   - Divisible by 4: `year % 4 == 0`\n   - Not divisible by 100: `year % 100 != 0`\n   - Divisible by 400: `year % 400 == 0`\n3. The correct boolean formula in one expression: `(year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))`\n4. Hidden tests cover: 2000 (leap, div by 400), 1900 (not leap, div by 100 but not 400), 2024 (leap, div by 4 not 100), 2023 (not leap).",
+    "starter_code": "#include <iostream>\n\n// TODO: implement isLeapYear using logical operators (&&, ||) and %.\n// Do not use if-else inside this function.\nbool isLeapYear(int year) {\n    return false;  // replace with your logical expression\n}\n\nint main() {\n    int year;\n    std::cin >> year;\n    std::cout << (isLeapYear(year) ? \"leap year\" : \"not a leap year\") << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nbool isLeapYear(int year) {\n    return (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0));\n}\n\nint main() {\n    int year;\n    std::cin >> year;\n    std::cout << (isLeapYear(year) ? \"leap year\" : \"not a leap year\") << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2024 is a leap year",
+        "is_sample": true,
+        "stdin": "2024\n",
+        "expected_stdout": "leap year\n"
+      },
+      {
+        "label": "Hidden: 1900 is not a leap year (div by 100, not 400)",
+        "is_sample": false,
+        "stdin": "1900\n",
+        "expected_stdout": "not a leap year\n"
+      },
+      {
+        "label": "Hidden: 2000 is a leap year (div by 400)",
+        "is_sample": false,
+        "stdin": "2000\n",
+        "expected_stdout": "leap year\n"
+      }
+    ]
+  }
+]

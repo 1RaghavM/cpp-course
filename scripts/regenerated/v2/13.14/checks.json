@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What does CTAD let you do?",
+    "options": {
+      "a": "Skip the template definition entirely — the compiler generates it from the first use.",
+      "b": "Omit the angle-bracket template arguments when constructing an object from a class template, letting the compiler deduce them from the initializer.",
+      "c": "Convert one template instantiation to another implicitly at runtime.",
+      "d": "Define a class template inside a function instead of at file scope."
+    },
+    "answer": "b",
+    "explanation_md": "CTAD (class template argument deduction) is a C++17 feature that lets you write `Pair p{ 1, 2 }` instead of `Pair<int> p{ 1, 2 }` when the compiler can figure out the type argument from the initializer. The template definition is still required, instantiations remain unrelated types, and class templates still live at file scope."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assuming a C++20 compiler, what does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nstruct Wrap { T value; };\n\nint main()\n{\n    Wrap a{ 5 };\n    Wrap b{ 2.5 };\n    std::cout << a.value << ' ' << b.value << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5 2.5",
+    "explanation_md": "CTAD deduces `T = int` for `a` from the literal `5`, and `T = double` for `b` from the literal `2.5`. Each variable is constructed as the appropriate instantiation, and the two members are printed separated by a space."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "Why might this code fail to compile?\n\n```cpp\ntemplate <typename T>\nstruct Pair { T first; T second; };\n\nint main()\n{\n    Pair p{ 1, 2.5 };\n    return 0;\n}\n```",
+    "options": {
+      "a": "Aggregate initialization is not allowed with `{}` braces.",
+      "b": "CTAD cannot deduce a single `T` that matches both `int` and `double`, so deduction fails.",
+      "c": "The struct is missing a constructor.",
+      "d": "`Pair` cannot have two members of the same template type."
+    },
+    "answer": "b",
+    "explanation_md": "CTAD examines the initializers and tries to pick one type for `T`. The first argument suggests `int`, the second suggests `double`, and there is no rule that reconciles them — the compiler reports a deduction failure. Spelling out `Pair<double> p{ 1, 2.5 }` would fix it by forcing the `1` to convert."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is a deduction guide?",
+    "options": {
+      "a": "A runtime hint that tells the optimizer how often a template is used.",
+      "b": "A declaration that tells the compiler how to map constructor arguments to a class template's parameters when default deduction is not enough.",
+      "c": "A header file containing pre-instantiated versions of common templates.",
+      "d": "A debugger feature for stepping through template instantiations."
+    },
+    "answer": "b",
+    "explanation_md": "A deduction guide is a compile-time declaration of the form `ClassName(args) -> ClassName<T>;` that tells the compiler how to figure out the template parameters when CTAD's default rules do not produce the answer you want. It is not a runtime construct and exists purely to drive deduction."
+  }
+]

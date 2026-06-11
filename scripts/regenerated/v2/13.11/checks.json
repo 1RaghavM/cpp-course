@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Inner {\n    int val{ 7 };\n};\n\nstruct Outer {\n    Inner a{};\n    Inner b{ .val = 3 };\n};\n\nint main() {\n    Outer o{};\n    std::cout << o.a.val << '\\n';\n    std::cout << o.b.val << '\\n';\n}\n```",
+    "options": null,
+    "answer": "7\n3\n",
+    "explanation_md": "`o.a` uses the default initialization of `Inner`, so `a.val` is `7`. `o.b` overrides with `{ .val = 3 }`, so `b.val` is `3`. Nested access `o.a.val` chains two dot operators to reach the inner member."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to prevent the Config from being modified after creation. Spot the bug.\n\n```cpp\n#include <iostream>\n\nstruct Config {\n    int timeout{ 30 };\n    bool retry{ true };\n};\n\nvoid applyConfig(Config& cfg) {\n    cfg.timeout = 60;\n}\n\nint main() {\n    const Config prod{};\n    applyConfig(prod);  // should be rejected\n    std::cout << prod.timeout << '\\n';\n}\n```",
+    "options": {
+      "a": "`const Config prod{}` is not valid syntax for a const struct.",
+      "b": "`applyConfig` takes `Config&` (non-const reference), so passing a `const` object is a compile error.",
+      "c": "The default initializers on `Config` members conflict with `const`.",
+      "d": "`prod.timeout` cannot be read after declaring the struct `const`."
+    },
+    "answer": "b",
+    "explanation_md": "A `const` object cannot bind to a non-const reference parameter. `applyConfig(Config& cfg)` requires a modifiable reference, but `prod` is `const`. The compiler rejects this call. To read a `const` struct in a function, the parameter must be `const Config&`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why might `sizeof(struct S)` be greater than the sum of the sizes of its individual members?",
+    "options": {
+      "a": "The compiler stores a hidden type-tag byte at the start of every struct.",
+      "b": "The compiler may insert padding bytes between members to satisfy alignment requirements.",
+      "c": "Default member initializers add extra storage for the default values.",
+      "d": "`sizeof` counts virtual function table pointers even when there are no virtual functions."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler aligns members to boundaries that match their size (e.g., a 4-byte `int` at a 4-byte address). Padding bytes are inserted to achieve that alignment, making the struct larger than a naive sum. There is no hidden type tag, default initializers do not affect size, and plain structs without virtual functions have no vtable pointer."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `struct A { int x{}; }; struct B { A inner{}; };`, which expression correctly reads the `x` member of the `inner` member of a variable `b` of type `B`?",
+    "options": {
+      "a": "`b.x`",
+      "b": "`b->inner.x`",
+      "c": "`b.inner.x`",
+      "d": "`b.inner->x`"
+    },
+    "answer": "c",
+    "explanation_md": "Because `b` is a value (not a pointer), you use `.` to access each level. `b.inner` yields the nested `A` object, then `.x` accesses its member. The `->` operator is for pointers (covered in lesson 13.12), not for values or references."
+  }
+]

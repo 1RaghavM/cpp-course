@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Area and Perimeter Calculator",
+    "prompt_md": "## Goal\nRead the length and width of a rectangle from stdin and print its area and perimeter.\n\n## Input\n- Line 1: integer `length` (1 ≤ length ≤ 1000)\n- Line 2: integer `width` (1 ≤ width ≤ 1000)\n\n## Output\nPrint exactly two lines:\n```\nArea: <length * width>\nPerimeter: <2 * length + 2 * width>\n```\nNo blank lines, no extra spaces.\n\n## Requirements\n1. Declare two separate variables for `length` and `width`.\n2. Compute area and perimeter in separate variables before printing.\n3. Use the exact labels `Area:` and `Perimeter:` (capital first letter, colon, one space before the number).\n4. Hidden tests include cases where `length != width`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int length = 0;\n    int width = 0;\n    std::cin >> length >> width;\n\n    // TODO: compute area and perimeter, then print them\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int length = 0;\n    int width = 0;\n    std::cin >> length >> width;\n\n    int area = length * width;\n    int perimeter = 2 * length + 2 * width;\n\n    std::cout << \"Area: \" << area << '\\n';\n    std::cout << \"Perimeter: \" << perimeter << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 x 3",
+        "is_sample": true,
+        "stdin": "5\n3\n",
+        "expected_stdout": "Area: 15\nPerimeter: 16\n"
+      },
+      {
+        "label": "Hidden: square 7 x 7",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "Area: 49\nPerimeter: 28\n"
+      },
+      {
+        "label": "Hidden: 1 x 1000",
+        "is_sample": false,
+        "stdin": "1\n1000\n",
+        "expected_stdout": "Area: 1000\nPerimeter: 2002\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Output Label Bug",
+    "prompt_md": "## Goal\nThe program below reads three integers and is supposed to print each one on its own labeled line. It compiles and runs, but the labels are wrong for two of the three values.\n\n## Input\n- Line 1: integer `a`\n- Line 2: integer `b`\n- Line 3: integer `c`\n\n## Output\nPrint exactly three lines:\n```\nFirst: <a>\nSecond: <b>\nThird: <c>\n```\n\n## Requirements\n1. Find and fix the single logic bug (one incorrect expression in the output section).\n2. Do not change the structure of `main`.\n3. Hidden tests use values where all three integers are distinct.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    int c = 0;\n    std::cin >> a >> b >> c;\n\n    std::cout << \"First: \" << a << '\\n';\n    std::cout << \"Second: \" << a << '\\n';  // bug: prints a instead of b\n    std::cout << \"Third: \" << c << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    int c = 0;\n    std::cin >> a >> b >> c;\n\n    std::cout << \"First: \" << a << '\\n';\n    std::cout << \"Second: \" << b << '\\n';\n    std::cout << \"Third: \" << c << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1, 2, 3",
+        "is_sample": true,
+        "stdin": "1\n2\n3\n",
+        "expected_stdout": "First: 1\nSecond: 2\nThird: 3\n"
+      },
+      {
+        "label": "Hidden: 10, 20, 30",
+        "is_sample": false,
+        "stdin": "10\n20\n30\n",
+        "expected_stdout": "First: 10\nSecond: 20\nThird: 30\n"
+      },
+      {
+        "label": "Hidden: 7, 99, 3",
+        "is_sample": false,
+        "stdin": "7\n99\n3\n",
+        "expected_stdout": "First: 7\nSecond: 99\nThird: 3\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\nconstexpr int count_digits(int n) {\n    int count = 0;\n    while (n > 0) {\n        ++count;\n        n /= 10;\n    }\n    return count;\n}\nint main() {\n    constexpr int a = count_digits(12345);\n    std::cout << a << \"\\n\";\n    std::cout << count_digits(9) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "5\n1",
+    "explanation_md": "`count_digits(12345)` divides by 10 five times before reaching 0, so the count is 5. `count_digits(9)` divides once (9/10 = 0), giving 1. Both are printed on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes what is NOT allowed inside a `constexpr` function when it is called at compile time?",
+    "options": {
+      "a": "Loops (`for`, `while`) are not allowed.",
+      "b": "Local variables that change value are not allowed.",
+      "c": "Calls to non-`constexpr` functions are not allowed.",
+      "d": "`if`/`else` branches are not allowed."
+    },
+    "answer": "c",
+    "explanation_md": "Loops, mutable local variables, and `if`/`else` are all fully legal inside `constexpr` functions in C++14 and later. What is forbidden at compile time is calling a function that is not itself `constexpr`, because the compiler cannot evaluate it during compilation."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `result` to be 20 at compile time. What is wrong?\n\n```cpp\nconstexpr int doubled(int x) {\n    constexpr int result = x * 2;\n    return result;\n}\nint main() {\n    constexpr int r = doubled(10);\n}\n```",
+    "options": {
+      "a": "`doubled` is missing a `static` keyword.",
+      "b": "Local variable `result` is declared `constexpr` but depends on parameter `x`, which is not a constant expression inside the function body.",
+      "c": "`x * 2` causes integer overflow.",
+      "d": "`constexpr int r = doubled(10);` must use `const` instead of `constexpr`."
+    },
+    "answer": "b",
+    "explanation_md": "A `constexpr` function parameter is not itself a constant expression within the function body, so you cannot make a local variable `constexpr` if it depends on that parameter. Remove `constexpr` from `result`—it just needs to be a plain local variable. The function itself can still be evaluated at compile time."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint double_it(int x) { return x * 2; }\nconstexpr int quad(int x) { return double_it(x) * 2; }\nint main() {\n    int a = quad(5);\n    std::cout << a << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`quad(5)` calls `double_it(5)` which returns 10, then multiplies by 2 to get 20. `a` is a plain `int`, so the call is at runtime — `double_it` not being `constexpr` only matters if `quad` is called in a compile-time context. Here it is not, so the program compiles and prints `20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `constexpr` function is called twice: once to initialize a `constexpr` variable and once to initialize a plain `int`. Which statement is accurate?",
+    "options": {
+      "a": "Both calls are guaranteed to happen at compile time.",
+      "b": "Both calls are guaranteed to happen at runtime.",
+      "c": "The first call must happen at compile time; the second may happen at runtime.",
+      "d": "The compiler picks runtime or compile time randomly for both calls."
+    },
+    "answer": "c",
+    "explanation_md": "Assigning to a `constexpr` variable requires a compile-time constant, so the compiler is forced to evaluate the first call at compile time. The second call initializes a plain `int`, which has no such requirement, so the compiler may evaluate it at runtime (or optimize it to compile time—that is implementation-defined)."
+  }
+]

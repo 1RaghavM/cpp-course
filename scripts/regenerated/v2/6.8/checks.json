@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 5;\n    std::cout << ((x > 0) && (x < 10)) << \"\\n\";\n    std::cout << ((x < 0) || (x > 3))  << \"\\n\";\n    std::cout << (!(x == 5))            << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n1\n0",
+    "explanation_md": "`x > 0 && x < 10` is true (1). `x < 0 || x > 3` is true because `x > 3` is true (1). `!(x == 5)` is `!true` which is false (0)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int counter = 0;\n    bool result = (counter != 0) && (++counter > 0);\n    std::cout << counter << \"\\n\";\n    std::cout << result  << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n0",
+    "explanation_md": "`counter != 0` is false, so `&&` short-circuits and never evaluates `++counter`. `counter` remains 0. The result is false (0). Learners who expect `++counter` to always run will guess `counter == 1`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which expression correctly tests whether `n` is outside the range [1, 100] (i.e., strictly below 1 or strictly above 100)?",
+    "options": {
+      "a": "`n < 1 && n > 100`",
+      "b": "`n < 1 || n > 100`",
+      "c": "`!(n >= 1) && !(n <= 100)`",
+      "d": "`!n < 1 || !n > 100`"
+    },
+    "answer": "b",
+    "explanation_md": "A number is outside [1, 100] when it is less than 1 OR greater than 100 — these are two separate conditions joined by OR. Option a uses AND, which can never be true (no number is simultaneously less than 1 and greater than 100). Options c and d apply `!` incorrectly."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which expression is equivalent to `!(a || b)` according to De Morgan's laws?",
+    "options": {
+      "a": "`!a || !b`",
+      "b": "`!a && !b`",
+      "c": "`a && b`",
+      "d": "`!(a) || !(b)`"
+    },
+    "answer": "b",
+    "explanation_md": "De Morgan's law states `!(a || b)` equals `!a && !b`: negate the whole expression, flip OR to AND, and negate each operand. Option a (`!a || !b`) is De Morgan's expansion of `!(a && b)`, not `!(a || b)`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to print `safe` when `divisor` is not zero and the quotient is positive. What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    int divisor = 0;\n    int numerator = 10;\n    if ((numerator / divisor > 0) && (divisor != 0)) {\n        std::cout << \"safe\\n\";\n    } else {\n        std::cout << \"unsafe\\n\";\n    }\n    return 0;\n}\n```",
+    "options": {
+      "a": "The program uses `&&` where it should use `||`.",
+      "b": "The safety check `divisor != 0` appears on the right side of `&&`, so `numerator / divisor` is evaluated first, causing division by zero before the guard runs.",
+      "c": "The comparison `numerator / divisor > 0` should use `>=` to include zero.",
+      "d": "The bug is that `divisor` is declared as `int` rather than `double`."
+    },
+    "answer": "b",
+    "explanation_md": "Short-circuit evaluation only skips the RIGHT operand when the LEFT is false. Here the division `numerator / divisor` is evaluated first, before the safety check, causing undefined behavior (division by zero) for `divisor == 0`. The fix is to swap the operands: `(divisor != 0) && (numerator / divisor > 0)`."
+  }
+]

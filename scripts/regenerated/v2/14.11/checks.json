@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\n    int m_count{ 5 };\npublic:\n    Counter() = default;\n    int get() const { return m_count; }\n};\n\nint main() {\n    Counter c;\n    std::cout << c.get() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`Counter() = default` tells the compiler to generate the default constructor. The generated default constructor respects the in-class member initializer `m_count{ 5 }`, so `c.m_count` starts at 5. The program prints `5`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\n    int m_w;\n    int m_h;\npublic:\n    Box(int w = 2, int h = 3)\n        : m_w{ w }, m_h{ h }\n    {}\n    int area() const { return m_w * m_h; }\n};\n\nint main() {\n    Box b1{};\n    Box b2{ 4 };\n    std::cout << b1.area() << \" \" << b2.area() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "6 12",
+    "explanation_md": "`b1{}` uses both defaults: `w = 2`, `h = 3`, so area is 6. `b2{ 4 }` supplies `w = 4`, `h` defaults to 3, so area is 12. Output is `6 12`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class defines only one constructor: `Widget(int x)`. What happens when you write `Widget w;`?",
+    "options": {
+      "a": "The compiler generates a default constructor automatically.",
+      "b": "The program compiles and `w` has zero-initialized members.",
+      "c": "The compiler reports an error: no matching default constructor.",
+      "d": "The program compiles but `w` has uninitialized members."
+    },
+    "answer": "c",
+    "explanation_md": "As soon as you define any constructor yourself, the compiler stops generating the implicit default constructor. `Widget w;` requires a no-argument constructor, which does not exist, so the compiler reports an error. To allow `Widget w;` you must add `Widget() = default;` or give all parameters of the existing constructor default values."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is true about default arguments in constructors?",
+    "options": {
+      "a": "Any parameter can have a default argument regardless of position.",
+      "b": "Only trailing parameters can have default arguments; if parameter N has a default, all parameters after N must also have defaults.",
+      "c": "Default arguments are only allowed on the last parameter.",
+      "d": "Default arguments replace the need for member initializer lists."
+    },
+    "answer": "b",
+    "explanation_md": "C++ requires that once a parameter has a default value, all subsequent parameters must also have default values. This is because arguments are positional: if you skip argument N, the compiler needs to fill it in, and it can only do so safely if all following arguments also have defaults. Default arguments do not replace member initializer lists — they are independent features."
+  }
+]

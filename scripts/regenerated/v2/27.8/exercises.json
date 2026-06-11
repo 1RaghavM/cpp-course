@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Exception-Safe Pairs",
+    "prompt_md": "## Goal\nWrite a program that reads pairs of integers and, for each pair, safely computes the quotient — catching division-by-zero exceptions — and prints whether the division succeeded or failed.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of pairs.\n- Lines 2..N+1: two integers a and b separated by a space.\n\n## Output\nFor each pair, print exactly one line:\n- `a / b = Q` if b is non-zero (Q is the integer quotient).\n- `a / 0: division error` if b is zero.\n\n## Requirements\n1. Write a function `int safe_divide(int a, int b)` that throws `std::runtime_error(\"division by zero\")` when b is 0 and returns the integer quotient otherwise.\n2. In main, catch the exception and print the error message format above.\n3. The program must not crash; all N pairs must produce a line of output.\n4. Edge cases: b = 0 (should print the error line), a = 0 with b ≠ 0 (prints `0 / b = 0`).",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\n// TODO: implement safe_divide — throw std::runtime_error(\"division by zero\") when b==0,\n// otherwise return a / b.\nint safe_divide(int a, int b) {\n    return 0; // replace this\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int a, b;\n        std::cin >> a >> b;\n        // TODO: call safe_divide inside a try/catch and print the correct line\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nint safe_divide(int a, int b) {\n    if (b == 0)\n        throw std::runtime_error(\"division by zero\");\n    return a / b;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int a, b;\n        std::cin >> a >> b;\n        try {\n            int q = safe_divide(a, b);\n            std::cout << a << \" / \" << b << \" = \" << q << \"\\n\";\n        } catch (const std::runtime_error&) {\n            std::cout << a << \" / 0: division error\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed success and error",
+        "is_sample": true,
+        "stdin": "3\n10 2\n7 0\n9 3\n",
+        "expected_stdout": "10 / 2 = 5\n7 / 0: division error\n9 / 3 = 3"
+      },
+      {
+        "label": "Hidden: all zeros denominator",
+        "is_sample": false,
+        "stdin": "2\n5 0\n0 0\n",
+        "expected_stdout": "5 / 0: division error\n0 / 0: division error"
+      },
+      {
+        "label": "Hidden: zero numerator succeeds",
+        "is_sample": false,
+        "stdin": "1\n0 4\n",
+        "expected_stdout": "0 / 4 = 0"
+      }
+    ]
+  },
+  {
+    "title": "RAII Guard Destructor",
+    "prompt_md": "## Goal\nComplete the function `run_task` so it uses an RAII guard object to guarantee that a counter is decremented exactly once — whether or not the function throws.\n\n## Input\n- Line 1: integer flag (0 or 1). If flag is 1, `run_task` throws `std::runtime_error(\"task failed\")`.\n\n## Output\nPrint two lines:\n- Line 1: `counter before: 0`\n- Line 2: `counter after: 0` (the counter must return to 0 in both cases)\n\nIf run_task throws, the exception is caught in main; print the two counter lines regardless.\n\n## Requirements\n1. `int counter = 0;` is declared in main before calling `run_task`.\n2. `run_task(int& counter, bool should_throw)` increments `counter` on entry. It must use a local RAII struct whose destructor decrements `counter`.\n3. If `should_throw` is true, the function throws `std::runtime_error(\"task failed\")` after incrementing (but before the scope ends — the RAII destructor must still run).\n4. main catches any exception silently and always prints both counter lines.\n5. The counter must be 0 after `run_task` returns or throws.",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\n// TODO: define a local RAII struct inside run_task (or outside) whose\n// destructor decrements the counter.\nvoid run_task(int& counter, bool should_throw) {\n    counter++;\n    // TODO: create the RAII guard here\n    if (should_throw)\n        throw std::runtime_error(\"task failed\");\n    // counter should be decremented when the guard goes out of scope\n}\n\nint main() {\n    int counter = 0;\n    bool flag;\n    std::cin >> flag;\n    std::cout << \"counter before: \" << counter << \"\\n\";\n    try {\n        run_task(counter, flag == 1);\n    } catch (const std::runtime_error&) {\n        // swallow\n    }\n    std::cout << \"counter after: \" << counter << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nstruct Guard {\n    int& ref;\n    explicit Guard(int& r) : ref(r) {}\n    ~Guard() { ref--; }\n};\n\nvoid run_task(int& counter, bool should_throw) {\n    counter++;\n    Guard g(counter); // decrements when scope exits, whether or not we throw\n    if (should_throw)\n        throw std::runtime_error(\"task failed\");\n}\n\nint main() {\n    int counter = 0;\n    bool flag;\n    std::cin >> flag;\n    std::cout << \"counter before: \" << counter << \"\\n\";\n    try {\n        run_task(counter, flag == 1);\n    } catch (const std::runtime_error&) {\n        // swallow\n    }\n    std::cout << \"counter after: \" << counter << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: no throw, RAII decrements normally",
+        "is_sample": true,
+        "stdin": "0\n",
+        "expected_stdout": "counter before: 0\ncounter after: 0"
+      },
+      {
+        "label": "Hidden: throw path, RAII still decrements",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "counter before: 0\ncounter after: 0"
+      },
+      {
+        "label": "Hidden: second no-throw run",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "counter before: 0\ncounter after: 0"
+      }
+    ]
+  }
+]

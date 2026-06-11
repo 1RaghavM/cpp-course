@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Type Conversion Showcase",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and demonstrates three type-conversion techniques from chapter 10, printing labeled results.\n\n## Input\n- Line 1: integer `a`.\n- Line 2: integer `b` (guaranteed non-zero).\n\n## Output\nPrint exactly three lines in this order:\n- `Integer division: Q` — the result of `a / b` as an integer.\n- `Float division: F` — the result of `a` divided by `b` as a floating-point value, printed with one decimal place using `std::fixed` and `std::setprecision(1)`.\n- `Double a: D` — the value of `a` converted to `double` with `static_cast`, printed with one decimal place.\n\n## Requirements\n1. Use plain integer division for the first line.\n2. Use `static_cast<double>(a) / b` for the second line.\n3. Use `static_cast<double>(a)` for the third line.\n4. Use `std::fixed` and `std::setprecision(1)` only when printing the float and double lines.\n5. Label spacing must be exact: `Integer division: `, `Float division: `, `Double a: ` (capital first letter, colon, space).\n\n## Notes\n- `#include <iomanip>` is needed for `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: print \"Integer division: \" followed by a / b (integer)\n    // TODO: print \"Float division: \" followed by static_cast<double>(a) / b\n    //        (use std::fixed and std::setprecision(1))\n    // TODO: print \"Double a: \" followed by static_cast<double>(a)\n    //        (use std::fixed and std::setprecision(1))\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n\n    std::cout << \"Integer division: \" << a / b << '\\n';\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Float division: \" << static_cast<double>(a) / b << '\\n';\n    std::cout << \"Double a: \" << static_cast<double>(a) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7 and 2",
+        "is_sample": true,
+        "stdin": "7\n2\n",
+        "expected_stdout": "Integer division: 3\nFloat division: 3.5\nDouble a: 7.0"
+      },
+      {
+        "label": "Hidden: 9 and 3",
+        "is_sample": false,
+        "stdin": "9\n3\n",
+        "expected_stdout": "Integer division: 3\nFloat division: 3.0\nDouble a: 9.0"
+      },
+      {
+        "label": "Hidden: 1 and 4",
+        "is_sample": false,
+        "stdin": "1\n4\n",
+        "expected_stdout": "Integer division: 0\nFloat division: 0.2\nDouble a: 1.0"
+      }
+    ]
+  },
+  {
+    "title": "Clamp Value Using Auto Return Type",
+    "prompt_md": "## Goal\nComplete the function `clamp_value` so it returns the value clamped to the range `[lo, hi]`. The function uses `auto` as its return type.\n\n## Input\n- Line 1: integer `value`.\n- Line 2: integer `lo` (lower bound, inclusive).\n- Line 3: integer `hi` (upper bound, inclusive; guaranteed `hi >= lo`).\n\n## Output\n- Print exactly one line: `Clamped: C` where `C` is `value` if `value` is in `[lo, hi]`, `lo` if `value < lo`, or `hi` if `value > hi`.\n\n## Requirements\n1. Complete the function `clamp_value(int value, int lo, int hi)` which has `auto` as its return type.\n2. The function must return `lo` when `value < lo`, `hi` when `value > hi`, and `value` otherwise.\n3. Do not change the function signature.\n4. The output label must be exactly `Clamped: ` (capital C, colon, space).\n\n## Notes\n- Do not use `std::clamp` — implement the logic with `if` statements.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete the body of this function\n// Return lo if value < lo, hi if value > hi, otherwise return value\nauto clamp_value(int value, int lo, int hi)\n{\n    return value;  // TODO: fix this stub\n}\n\nint main()\n{\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << \"Clamped: \" << clamp_value(value, lo, hi) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nauto clamp_value(int value, int lo, int hi)\n{\n    if (value < lo)\n        return lo;\n    if (value > hi)\n        return hi;\n    return value;\n}\n\nint main()\n{\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << \"Clamped: \" << clamp_value(value, lo, hi) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value in range",
+        "is_sample": true,
+        "stdin": "5\n1\n10\n",
+        "expected_stdout": "Clamped: 5"
+      },
+      {
+        "label": "Hidden: value below lo",
+        "is_sample": false,
+        "stdin": "-3\n0\n100\n",
+        "expected_stdout": "Clamped: 0"
+      },
+      {
+        "label": "Hidden: value above hi",
+        "is_sample": false,
+        "stdin": "200\n0\n100\n",
+        "expected_stdout": "Clamped: 100"
+      }
+    ]
+  }
+]

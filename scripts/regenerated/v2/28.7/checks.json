@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <sstream>\n#include <iostream>\nint main() {\n    std::stringstream ss(\"ABCDE\");\n    ss.seekg(3, std::ios::beg);\n    char c;\n    ss.get(c);\n    std::cout << c << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "D",
+    "explanation_md": "`seekg(3, std::ios::beg)` moves the get pointer to byte offset 3 (0-indexed). The characters are at offsets 0=A, 1=B, 2=C, 3=D, 4=E. `ss.get(c)` reads the byte at position 3, which is `D`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You read a `std::istringstream` to EOF and then want to re-read it from the beginning. What must you do before calling `seekg(0)`?",
+    "options": {
+      "a": "Call `seekg(0, std::ios::end)` first to reset the end marker.",
+      "b": "Call `clear()` to reset the EOF flag, then `seekg(0)`.",
+      "c": "Reconstruct the `std::istringstream` — you cannot seek after EOF.",
+      "d": "Nothing — `seekg(0)` automatically clears `eofbit`."
+    },
+    "answer": "b",
+    "explanation_md": "After reading to EOF, `eofbit` is set and `seekg` silently fails. You must call `clear()` to reset the error flags first, then `seekg(0)` succeeds. Reconstruction works but wastes a copy; `clear()` + `seekg` is the idiomatic approach."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <sstream>\n#include <iostream>\nint main() {\n    std::stringstream ss(\"hello world\");\n    std::string a, b;\n    ss >> a;\n    std::streampos p = ss.tellg();\n    ss >> b;\n    std::cout << b << \"\\n\";\n    ss.seekg(p);\n    ss >> b;\n    std::cout << b << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "world\nworld",
+    "explanation_md": "After reading `\"hello\"`, `tellg` records the position at the space before `\"world\"`. Reading `b` gives `\"world\"`. After `seekg(p)`, the get pointer returns to before `\"world\"`, and reading again gives `\"world\"` a second time. Both lines print `world`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly moves the get pointer to 2 bytes before the end of the stream?",
+    "options": {
+      "a": "`stream.seekg(2, std::ios::end);`",
+      "b": "`stream.seekg(-2, std::ios::end);`",
+      "c": "`stream.seekg(stream.tellg() - 2);`",
+      "d": "`stream.seekg(2, std::ios::beg);`"
+    },
+    "answer": "b",
+    "explanation_md": "When using `std::ios::end` as the direction, a negative offset means *before* the end. `seekg(-2, std::ios::end)` positions the get pointer 2 bytes from the end. A positive offset with `std::ios::end` would seek past the end, which is generally an error. Option c could work arithmetically but requires `tellg` on the total size, not idiomatic."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to read `\"abc\"` from the string stream twice, but the second read produces garbage. What is the bug?\n\n```cpp\n#include <sstream>\n#include <iostream>\n#include <string>\nint main() {\n    std::istringstream iss(\"abc\");\n    std::string s;\n    iss >> s;\n    std::cout << s << \"\\n\";\n    iss.seekg(0);   // try to reset\n    iss >> s;\n    std::cout << s << \"\\n\";\n}\n```",
+    "options": {
+      "a": "`std::istringstream` does not support `seekg`.",
+      "b": "`eofbit` is set after the first read; `seekg(0)` silently fails because the error flag is not cleared first.",
+      "c": "You must use `seekg(0, std::ios::beg)` instead of `seekg(0)`.",
+      "d": "`s` retains the old value because `>>` on a string does not overwrite — it appends."
+    },
+    "answer": "b",
+    "explanation_md": "After `iss >> s` reads `\"abc\"`, the stream hits EOF and sets `eofbit`. `seekg(0)` silently does nothing because the error flag is set. The second `iss >> s` also fails, leaving `s` with the previous value `\"abc\"` — which happens to look right — or empty if the stream was constructed differently. The fix is `iss.clear()` before `iss.seekg(0)` to reset the error flags."
+  }
+]

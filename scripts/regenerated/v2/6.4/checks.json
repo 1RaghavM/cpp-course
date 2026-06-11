@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 10;\n    int a = x++;\n    int b = ++x;\n    std::cout << a << ' ' << b << ' ' << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10 12 12",
+    "explanation_md": "`a = x++` captures the old value 10 into `a`, then increments `x` to 11. `b = ++x` increments `x` to 12 first, then assigns that new value 12 to `b`. So `a` is 10, `b` is 12, and `x` is 12."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int n = 5;\n    int old = n--;\n    std::cout << old << ' ' << n << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5 4",
+    "explanation_md": "`n--` is postfix decrement: `old` receives the original value of `n` (which is 5), and then `n` is decremented to 4. The output is `5 4`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which is the idiomatic choice when you only want to increment a variable by 1 and do not need the old value?",
+    "options": {
+      "a": "Postfix `x++`, because it is more commonly seen in textbooks.",
+      "b": "Prefix `++x`, because it avoids creating a temporary copy of the old value.",
+      "c": "Either is fine — they are always identical in behavior.",
+      "d": "Neither — use `x += 1` exclusively to avoid confusion."
+    },
+    "answer": "b",
+    "explanation_md": "When the old value is not needed, prefix `++x` is idiomatically preferred. Postfix `x++` saves the old value in a temporary before incrementing, which is unnecessary overhead (even if the compiler often optimizes it away for `int`). The two are only interchangeable as standalone statements when the produced value is discarded."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What term describes the change to a variable that happens as a by-product of evaluating an expression, such as `x++`?",
+    "options": {
+      "a": "A return value",
+      "b": "A side effect",
+      "c": "An implicit conversion",
+      "d": "A compound expression"
+    },
+    "answer": "b",
+    "explanation_md": "A side effect is any modification to program state that occurs as a by-product of evaluating an expression. `x++` has the side effect of incrementing `x`. Problems arise when multiple side effects on the same variable appear in a single expression, potentially causing undefined behavior."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student expects `result` to be 11. What is wrong?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 5;\n    int result = x++ + x++;\n    std::cout << result << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Postfix `++` cannot appear on the right side of `+`; prefix is required.",
+      "b": "This expression modifies `x` twice without a sequence point, which is undefined behavior.",
+      "c": "`x++` returns 0 because the increment happens after the entire statement, not per operand.",
+      "d": "The two `x++` cancel each other out, leaving result equal to the original x."
+    },
+    "answer": "b",
+    "explanation_md": "Modifying `x` twice in a single expression (two `x++` with no sequence point between them) is undefined behavior in C++. The result is unpredictable and may differ between compilers. The safe fix is to break it into two statements: `int first = x++; int result = first + x++;`."
+  }
+]

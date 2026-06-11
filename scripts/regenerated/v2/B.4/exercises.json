@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Concept-Constrained Square Root",
+    "prompt_md": "## Goal\nWrite a program that reads a number and prints its square root, using a Concept to restrict the function to floating-point types only.\n\n## Input\n- Line 1: a floating-point number x (0.0 ≤ x ≤ 10000.0).\n\n## Output\nPrint exactly one line: `sqrt: R` where R is the square root formatted to 2 decimal places.\n\n## Requirements\n1. Define a concept `FloatingPoint` that is satisfied only by `float`, `double`, and `long double` (use `std::floating_point` from `<concepts>`).\n2. Define a function template `my_sqrt(FloatingPoint auto x)` that returns `std::sqrt(x)`.\n3. Read the input as `double`, call `my_sqrt`, and print the result with `std::fixed` and `std::setprecision(2)`.\n4. Edge cases: x = 0.0 → `sqrt: 0.00`; x = 100.0 → `sqrt: 10.00`.",
+    "starter_code": "#include <concepts>\n#include <cmath>\n#include <iomanip>\n#include <iostream>\n\n// TODO: rewrite this concept using std::floating_point so it accepts only\n// float, double, and long double.\ntemplate <typename T>\nconcept FloatingPoint = true; // placeholder — currently accepts everything\n\n// TODO: implement my_sqrt — return std::sqrt(x)\nauto my_sqrt(FloatingPoint auto x) {\n    return 0.0; // replace this\n}\n\nint main() {\n    double x;\n    std::cin >> x;\n    double result = my_sqrt(x);\n    std::cout << \"sqrt: \" << std::fixed << std::setprecision(2) << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <concepts>\n#include <cmath>\n#include <iomanip>\n#include <iostream>\n\ntemplate <typename T>\nconcept FloatingPoint = std::floating_point<T>;\n\nauto my_sqrt(FloatingPoint auto x) {\n    return std::sqrt(x);\n}\n\nint main() {\n    double x;\n    std::cin >> x;\n    double result = my_sqrt(x);\n    std::cout << \"sqrt: \" << std::fixed << std::setprecision(2) << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: sqrt of 9.0",
+        "is_sample": true,
+        "stdin": "9.0\n",
+        "expected_stdout": "sqrt: 3.00"
+      },
+      {
+        "label": "Hidden: sqrt of 0.0",
+        "is_sample": false,
+        "stdin": "0.0\n",
+        "expected_stdout": "sqrt: 0.00"
+      },
+      {
+        "label": "Hidden: sqrt of 2.0",
+        "is_sample": false,
+        "stdin": "2.0\n",
+        "expected_stdout": "sqrt: 1.41"
+      }
+    ]
+  },
+  {
+    "title": "Span Sum Function",
+    "prompt_md": "## Goal\nComplete the function `sum_span` that accepts a `std::span<const int>` and returns the sum of all elements.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line.\n\n## Output\nPrint exactly one line: `sum: S` where S is the total sum.\n\n## Requirements\n1. Complete `int sum_span(std::span<const int> data)` — iterate over `data` and accumulate the sum.\n2. In main, read N integers into a `std::vector<int>` and call `sum_span(v)` passing the vector directly (it converts implicitly to `std::span`).\n3. Edge cases: N=1 (single element sum equals that element); all negative values are valid input.",
+    "starter_code": "#include <iostream>\n#include <span>\n#include <vector>\n\n// TODO: implement sum_span — sum all elements in data and return the total.\nint sum_span(std::span<const int> data) {\n    return 0; // replace this\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n    std::cout << \"sum: \" << sum_span(v) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <span>\n#include <vector>\n\nint sum_span(std::span<const int> data) {\n    int total = 0;\n    for (int x : data)\n        total += x;\n    return total;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::vector<int> v(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> v[i];\n    std::cout << \"sum: \" << sum_span(v) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three elements",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "sum: 60"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n7\n",
+        "expected_stdout": "sum: 7"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "4\n-3\n5\n-2\n8\n",
+        "expected_stdout": "sum: 8"
+      }
+    ]
+  }
+]

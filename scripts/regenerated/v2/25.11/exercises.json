@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Virtual Print Hierarchy",
+    "prompt_md": "## Goal\nComplete the `print` overrides so `operator<<` dispatches correctly through the hierarchy.\n\n## Input\nNo input.\n\n## Output\nPrint exactly three lines:\n```\nAnimal\nDog: Rex\nCat: Whiskers\n```\n\n## Requirements\n1. `Animal` has `virtual void print(std::ostream& out) const` that writes `Animal`. It has a `friend operator<<` that calls `a.print(out)` and returns `out`.\n2. `Dog` has `std::string name_` set by its constructor. Override `print` to write `Dog: ` followed by `name_`.\n3. `Cat` has `std::string name_` set by its constructor. Override `print` to write `Cat: ` followed by `name_`.\n4. `main` creates `Animal a`, `Dog d{\"Rex\"}`, `Cat c{\"Whiskers\"}` and stores them in `Animal* arr[3]`. Loop and print each with `std::cout << *arr[i]`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Animal {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Animal\"; }\n    virtual ~Animal() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Animal& a) {\n        a.print(out);\n        return out;\n    }\n};\n\nclass Dog : public Animal {\n    std::string name_;\npublic:\n    Dog(const std::string& name) : name_(name) {}\n    // TODO: override print to write \"Dog: \" followed by name_\n};\n\nclass Cat : public Animal {\n    std::string name_;\npublic:\n    Cat(const std::string& name) : name_(name) {}\n    // TODO: override print to write \"Cat: \" followed by name_\n};\n\nint main() {\n    Animal a;\n    Dog d{\"Rex\"};\n    Cat c{\"Whiskers\"};\n    Animal* arr[3] = {&a, &d, &c};\n    for (int i = 0; i < 3; ++i)\n        std::cout << *arr[i] << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Animal {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Animal\"; }\n    virtual ~Animal() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Animal& a) {\n        a.print(out);\n        return out;\n    }\n};\n\nclass Dog : public Animal {\n    std::string name_;\npublic:\n    Dog(const std::string& name) : name_(name) {}\n    void print(std::ostream& out) const override { out << \"Dog: \" << name_; }\n};\n\nclass Cat : public Animal {\n    std::string name_;\npublic:\n    Cat(const std::string& name) : name_(name) {}\n    void print(std::ostream& out) const override { out << \"Cat: \" << name_; }\n};\n\nint main() {\n    Animal a;\n    Dog d{\"Rex\"};\n    Cat c{\"Whiskers\"};\n    Animal* arr[3] = {&a, &d, &c};\n    for (int i = 0; i < 3; ++i)\n        std::cout << *arr[i] << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three types",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Animal\nDog: Rex\nCat: Whiskers"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Animal\nDog: Rex\nCat: Whiskers"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Animal\nDog: Rex\nCat: Whiskers"
+      }
+    ]
+  },
+  {
+    "title": "Missing Virtual Print Bug",
+    "prompt_md": "## Goal\nFix the single bug so the program prints the correct derived-class name for each shape instead of always printing `Shape`.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nCircle\nTriangle\n```\n\n## Requirements\n1. `Shape` has a virtual `print` member and a `friend operator<<` that calls it.\n2. `Circle` and `Triangle` must each override `print` so dispatch prints the correct name.\n3. The bug is in one of the derived class method signatures — find and fix it so virtual dispatch works.\n4. Do not change `main` or `Shape`.",
+    "starter_code": "#include <iostream>\n\nclass Shape {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Shape\"; }\n    virtual ~Shape() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Shape& s) {\n        s.print(out); return out;\n    }\n};\n\nclass Circle : public Shape {\npublic:\n    void print(std::ostream& out) const override { out << \"Circle\"; }\n};\n\nclass Triangle : public Shape {\npublic:\n    // Bug: non-const does not override the const virtual function\n    void print(std::ostream& out) { out << \"Triangle\"; }\n};\n\nint main() {\n    Circle c;\n    Triangle t;\n    Shape* shapes[2] = {&c, &t};\n    for (int i = 0; i < 2; ++i)\n        std::cout << *shapes[i] << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Shape {\npublic:\n    virtual void print(std::ostream& out) const { out << \"Shape\"; }\n    virtual ~Shape() = default;\n    friend std::ostream& operator<<(std::ostream& out, const Shape& s) {\n        s.print(out); return out;\n    }\n};\n\nclass Circle : public Shape {\npublic:\n    void print(std::ostream& out) const override { out << \"Circle\"; }\n};\n\nclass Triangle : public Shape {\npublic:\n    void print(std::ostream& out) const override { out << \"Triangle\"; }\n};\n\nint main() {\n    Circle c;\n    Triangle t;\n    Shape* shapes[2] = {&c, &t};\n    for (int i = 0; i < 2; ++i)\n        std::cout << *shapes[i] << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: circle then triangle",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Circle\nTriangle"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Circle\nTriangle"
+      },
+      {
+        "label": "Hidden: exact order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Circle\nTriangle"
+      }
+    ]
+  }
+]

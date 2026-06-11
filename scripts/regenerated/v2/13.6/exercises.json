@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print a scoped traffic light enum",
+    "prompt_md": "## Goal\nDefine a scoped `TrafficLight` enum and overload `operator<<` to print its name.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact lines:\n```\nred\nyellow\ngreen\n```\n(trailing newline after `green`)\n\n## Requirements\n1. Define `enum class TrafficLight` with values `red`, `yellow`, `green` (in that order).\n2. Overload `std::ostream& operator<<(std::ostream& out, TrafficLight t)` using a `switch` statement with fully qualified case labels (`TrafficLight::red`, etc.).\n3. Each case prints the lowercase name.\n4. The overload must return `out`.\n5. `main` prints all three values, each on its own line.",
+    "starter_code": "#include <iostream>\n\n// TODO 1: Define enum class TrafficLight with values red, yellow, green\n\n// TODO 2: Overload operator<< for TrafficLight\n//         Signature: std::ostream& operator<<(std::ostream& out, TrafficLight t)\n//         Case labels: TrafficLight::red, TrafficLight::yellow, TrafficLight::green\n//         Return out at the end.\n\nint main()\n{\n    // TODO 3: Print TrafficLight::red, ::yellow, ::green each on its own line\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nenum class TrafficLight { red, yellow, green };\n\nstd::ostream& operator<<(std::ostream& out, TrafficLight t)\n{\n    switch (t)\n    {\n        case TrafficLight::red:    out << \"red\";    break;\n        case TrafficLight::yellow: out << \"yellow\"; break;\n        case TrafficLight::green:  out << \"green\";  break;\n    }\n    return out;\n}\n\nint main()\n{\n    std::cout << TrafficLight::red    << '\\n';\n    std::cout << TrafficLight::yellow << '\\n';\n    std::cout << TrafficLight::green  << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "red\nyellow\ngreen\n",
+        "is_sample": true,
+        "stdin": "",
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "red\nyellow\ngreen\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "red\nyellow\ngreen\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Describe a card suit",
+    "prompt_md": "## Goal\nComplete the function `describeSuit` that takes a scoped `Suit` enum value and returns a `std::string` description.\n\n## Input\nNone (hardcoded values in `main`).\n\n## Output\nExact lines:\n```\nClubs: low suit\nDiamonds: low suit\nHearts: high suit\nSpades: high suit\n```\n(trailing newline after `Spades: high suit`)\n\n## Requirements\n1. `enum class Suit` is defined with values `clubs`, `diamonds`, `hearts`, `spades` (in that order).\n2. Complete `std::string describeSuit(Suit s)` which returns `\"low suit\"` for `clubs` and `diamonds`, and `\"high suit\"` for `hearts` and `spades`.\n3. Use a `switch` statement with fully qualified case labels inside `describeSuit`.\n4. `main` is already written \u2014 do not modify it.\n\n## Notes\n- Combine `enum class` access with a `std::string` return value.\n- The `operator<<` for `Suit` is already provided in the starter.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nenum class Suit { clubs, diamonds, hearts, spades };\n\nstd::ostream& operator<<(std::ostream& out, Suit s)\n{\n    switch (s)\n    {\n        case Suit::clubs:    out << \"Clubs\";    break;\n        case Suit::diamonds: out << \"Diamonds\"; break;\n        case Suit::hearts:   out << \"Hearts\";   break;\n        case Suit::spades:   out << \"Spades\";   break;\n    }\n    return out;\n}\n\n// TODO: Complete this function.\n// Return \"low suit\" for clubs and diamonds, \"high suit\" for hearts and spades.\nstd::string describeSuit(Suit s)\n{\n    return \"\"; // replace this\n}\n\nint main()\n{\n    std::cout << Suit::clubs    << \": \" << describeSuit(Suit::clubs)    << '\\n';\n    std::cout << Suit::diamonds << \": \" << describeSuit(Suit::diamonds) << '\\n';\n    std::cout << Suit::hearts   << \": \" << describeSuit(Suit::hearts)   << '\\n';\n    std::cout << Suit::spades   << \": \" << describeSuit(Suit::spades)   << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nenum class Suit { clubs, diamonds, hearts, spades };\n\nstd::ostream& operator<<(std::ostream& out, Suit s)\n{\n    switch (s)\n    {\n        case Suit::clubs:    out << \"Clubs\";    break;\n        case Suit::diamonds: out << \"Diamonds\"; break;\n        case Suit::hearts:   out << \"Hearts\";   break;\n        case Suit::spades:   out << \"Spades\";   break;\n    }\n    return out;\n}\n\nstd::string describeSuit(Suit s)\n{\n    switch (s)\n    {\n        case Suit::clubs:    return \"low suit\";\n        case Suit::diamonds: return \"low suit\";\n        case Suit::hearts:   return \"high suit\";\n        case Suit::spades:   return \"high suit\";\n    }\n    return \"unknown\";\n}\n\nint main()\n{\n    std::cout << Suit::clubs    << \": \" << describeSuit(Suit::clubs)    << '\\n';\n    std::cout << Suit::diamonds << \": \" << describeSuit(Suit::diamonds) << '\\n';\n    std::cout << Suit::hearts   << \": \" << describeSuit(Suit::hearts)   << '\\n';\n    std::cout << Suit::spades   << \": \" << describeSuit(Suit::spades)   << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Clubs: low suit\nDiamonds: low suit\nHearts: high suit\nSpades: high suit\n",
+        "is_sample": true,
+        "stdin": "",
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Clubs: low suit\nDiamonds: low suit\nHearts: high suit\nSpades: high suit\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Clubs: low suit\nDiamonds: low suit\nHearts: high suit\nSpades: high suit\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

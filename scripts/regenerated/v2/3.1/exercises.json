@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Classify the Error",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints their sum. The program must compile and produce the correct output.\n\n## Input\n- Line 1: two integers separated by a space (each between -1000 and 1000)\n\n## Output\n- Print exactly one line: `Sum: ` followed by the computed sum (e.g. `Sum: 7`)\n\n## Requirements\n1. Read both integers from standard input.\n2. Print the label `Sum: ` (capital S, colon, space) before the number.\n3. No extra blank lines or trailing spaces.\n4. The program must compile without errors.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n\n    // TODO: print the sum in the format \"Sum: <result>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n\n    std::cout << \"Sum: \" << a + b << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive numbers",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "Sum: 7"
+      },
+      {
+        "label": "Hidden: negative result",
+        "is_sample": false,
+        "stdin": "-5 2",
+        "expected_stdout": "Sum: -3"
+      },
+      {
+        "label": "Hidden: both zero",
+        "is_sample": false,
+        "stdin": "0 0",
+        "expected_stdout": "Sum: 0"
+      }
+    ]
+  },
+  {
+    "title": "Find the Semantic Error",
+    "prompt_md": "## Goal\nThe program below is supposed to compute the product of two integers read from input and print it in the format `Product: <result>`. It compiles cleanly but prints the wrong answer. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers separated by a space\n\n## Output\n- Print exactly one line: `Product: ` followed by the product (e.g. `Product: 12`)\n\n## Requirements\n1. The bug is a semantic error — the program compiles but computes the wrong thing.\n2. Do not change the input/output format.\n3. Fix only the logical mistake; no other changes are needed.",
+    "starter_code": "#include <iostream>\n\nint product(int x, int y)\n{\n    return x + y;\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cout << \"Product: \" << product(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint product(int x, int y)\n{\n    return x * y;\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cout << \"Product: \" << product(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 times 4",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "Product: 12"
+      },
+      {
+        "label": "Hidden: one negative",
+        "is_sample": false,
+        "stdin": "-2 5",
+        "expected_stdout": "Product: -10"
+      },
+      {
+        "label": "Hidden: multiply by zero",
+        "is_sample": false,
+        "stdin": "7 0",
+        "expected_stdout": "Product: 0"
+      }
+    ]
+  }
+]

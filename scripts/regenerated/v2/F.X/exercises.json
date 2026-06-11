@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Constexpr Fibonacci with Static Assert",
+    "prompt_md": "## Goal\nWrite a `constexpr` function `fib(int n)` that returns the n-th Fibonacci number (0-indexed: fib(0)=0, fib(1)=1, fib(2)=1, fib(3)=2, ...). Print the Fibonacci number for a compile-time constant and for a value from stdin.\n\n## Input\n- Line 1: one integer N (0 <= N <= 20).\n\n## Output\n- Line 1: `Compile-time fib(10): 55`\n- Line 2: `Runtime fib(N): <result>`\n\n## Requirements\n1. `fib` must be `constexpr`.\n2. Use an iterative algorithm (not recursive) to avoid exponential compile-time cost.\n3. `constexpr int ct = fib(10);` must compile and equal 55.\n4. fib(0) = 0, fib(1) = 1, fib(n) = fib(n-1) + fib(n-2) for n >= 2.\n5. N is always in [0, 20].\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement constexpr int fib(int n)\n// Use an iterative approach (a, b loop — no recursion).\nconstexpr int fib(int n) {\n    (void)n;\n    return 0;  // stub\n}\n\nint main() {\n    constexpr int ct = fib(10);\n    std::cout << \"Compile-time fib(10): \" << ct << \"\\n\";\n\n    int n;\n    std::cin >> n;\n    std::cout << \"Runtime fib(\" << n << \"): \" << fib(n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconstexpr int fib(int n) {\n    if (n <= 0) return 0;\n    if (n == 1) return 1;\n    int a = 0, b = 1;\n    for (int i = 2; i <= n; ++i) {\n        int c = a + b;\n        a = b;\n        b = c;\n    }\n    return b;\n}\n\nint main() {\n    constexpr int ct = fib(10);\n    std::cout << \"Compile-time fib(10): \" << ct << \"\\n\";\n\n    int n;\n    std::cin >> n;\n    std::cout << \"Runtime fib(\" << n << \"): \" << fib(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: N=7",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "Compile-time fib(10): 55\nRuntime fib(7): 13"
+      },
+      {
+        "label": "Hidden: N=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Compile-time fib(10): 55\nRuntime fib(0): 0"
+      },
+      {
+        "label": "Hidden: N=20",
+        "is_sample": false,
+        "stdin": "20\n",
+        "expected_stdout": "Compile-time fib(10): 55\nRuntime fib(20): 6765"
+      }
+    ]
+  },
+  {
+    "title": "Constexpr LCM — Find the Bug",
+    "prompt_md": "## Goal\nThe program computes the least common multiple (LCM) of two numbers using `constexpr` functions. It contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: two positive integers A and B separated by a space (1 <= A, B <= 1000).\n\n## Output\n- Line 1: `LCM: <result>`\n\n## Requirements\n1. LCM(a, b) = (a / gcd(a, b)) * b — this formula avoids overflow better than a * b / gcd.\n2. Both `gcd` and `lcm` must remain `constexpr`.\n3. The bug is a logic error; the program compiles and runs but gives wrong output.\n4. LCM(12, 8) should be 24; LCM(7, 5) should be 35.\n",
+    "starter_code": "#include <iostream>\n\nconstexpr int gcd(int a, int b) {\n    while (b != 0) {\n        int t = b;\n        b = a % b;\n        a = t;\n    }\n    return a;\n}\n\nconstexpr int lcm(int a, int b) {\n    return (a / gcd(a, b)) + b;  // bug: should be * not +\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"LCM: \" << lcm(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconstexpr int gcd(int a, int b) {\n    while (b != 0) {\n        int t = b;\n        b = a % b;\n        a = t;\n    }\n    return a;\n}\n\nconstexpr int lcm(int a, int b) {\n    return (a / gcd(a, b)) * b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"LCM: \" << lcm(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: LCM(12, 8)",
+        "is_sample": true,
+        "stdin": "12 8\n",
+        "expected_stdout": "LCM: 24"
+      },
+      {
+        "label": "Hidden: coprime LCM(7, 5)",
+        "is_sample": false,
+        "stdin": "7 5\n",
+        "expected_stdout": "LCM: 35"
+      },
+      {
+        "label": "Hidden: one is multiple of other",
+        "is_sample": false,
+        "stdin": "6 18\n",
+        "expected_stdout": "LCM: 18"
+      }
+    ]
+  }
+]

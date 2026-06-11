@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Box {\npublic:\n    int side;\n    int volume() const { return side * side * side; }\n};\n\nvoid printVolume(const Box& b) {\n    std::cout << b.volume() << \"\\n\";\n}\n\nint main() {\n    Box b;\n    b.side = 3;\n    printVolume(b);\n    b.side = 4;\n    printVolume(b);\n}\n```",
+    "options": null,
+    "answer": "27\n64",
+    "explanation_md": "`volume()` is `const` so it can be called through the `const Box&` parameter. First call: 3³ = 27. Second call: 4³ = 64. The `const` member function reads `side` but does not modify it."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Score {\npublic:\n    int value;\n    int getValue() { return value; }\n};\n\nvoid display(const Score& s) {\n    std::cout << s.getValue() << \"\\n\";\n}\n\nint main() {\n    Score s;\n    s.value = 42;\n    display(s);\n}\n```",
+    "options": {
+      "a": "The `Score` class needs a constructor to compile.",
+      "b": "`getValue()` is not marked `const`, so it cannot be called on the `const Score&` parameter inside `display`.",
+      "c": "`display` should take `Score` by value, not by `const` reference.",
+      "d": "`value` must be `private` for `getValue()` to compile."
+    },
+    "answer": "b",
+    "explanation_md": "When `display` receives a `const Score&`, the compiler only allows calls to member functions marked `const`. `getValue()` reads `value` but is not marked `const`, so the compiler rejects the call. Fix: `int getValue() const { return value; }`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following statements about `const` member functions is correct?",
+    "options": {
+      "a": "A `const` member function can modify data members as long as they are `public`.",
+      "b": "A `const` member function can call non-`const` member functions of the same class.",
+      "c": "A `const` member function cannot modify any data member of the object.",
+      "d": "Only static member functions can be marked `const`."
+    },
+    "answer": "c",
+    "explanation_md": "Inside a `const` member function, the implicit object is treated as `const`, so any write to a data member is a compile error. Access specifiers (`public`/`private`) are irrelevant here. A `const` function cannot call non-`const` functions because they might modify the object."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\npublic:\n    int count;\n    bool isZero() const { return count == 0; }\n    void increment()    { count += 1; }\n};\n\nint main() {\n    Counter c;\n    c.count = 0;\n    std::cout << c.isZero() << \"\\n\";\n    c.increment();\n    std::cout << c.isZero() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "1\n0",
+    "explanation_md": "`isZero()` returns `true` (printed as `1`) when `count == 0`. After `increment()`, `count` is 1, so `isZero()` returns `false` (printed as `0`). `isZero()` is `const` because it only reads `count`; `increment()` is not `const` because it modifies `count`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should getter functions (functions that just return a member value) always be marked `const`?",
+    "options": {
+      "a": "Because `const` makes the function run faster.",
+      "b": "Because without `const`, the getter cannot be inlined by the compiler.",
+      "c": "Because without `const`, the getter cannot be called on `const` objects or through `const` references, limiting where the class can be used.",
+      "d": "Because `const` is required for functions that return a value by copy."
+    },
+    "answer": "c",
+    "explanation_md": "Marking a getter `const` is about correctness and usability, not performance. If a getter is not `const`, it cannot be called when the object is `const` or passed as a `const` reference — a very common pattern. This severely limits where your class can be used."
+  }
+]

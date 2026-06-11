@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Compile-time Debug Mode Flag",
+    "prompt_md": "## Goal\nRead one integer and print its value. When `debugMode` is `true`, also print a debug label before the value. When `debugMode` is `false`, print only the value.\n\n## Input\n- Line 1: one integer N (-1000 ≤ N ≤ 1000)\n\n## Output\n- When `debugMode` is `true`: print `Debug: N` (where N is the integer), then print `Value: N` on the next line.\n- When `debugMode` is `false`: print only `Value: N`.\n- (The exercise tests with `debugMode = true`.)\n\n## Requirements\n1. Use `if constexpr` with the `constexpr bool debugMode { true }` variable already provided.\n2. The debug line must be `Debug: ` followed by the integer with no extra spaces.\n3. The value line must be `Value: ` followed by the integer with no extra spaces.\n4. Edge cases: N = 0, N = -500.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    constexpr bool debugMode { true };\n\n    int n {};\n    std::cin >> n;\n\n    // TODO: use if constexpr to print \"Debug: n\" only when debugMode is true\n    // Always print \"Value: n\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    constexpr bool debugMode { true };\n\n    int n {};\n    std::cin >> n;\n\n    if constexpr (debugMode)\n        std::cout << \"Debug: \" << n << '\\n';\n\n    std::cout << \"Value: \" << n << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive number with debug",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Debug: 42\nValue: 42\n"
+      },
+      {
+        "label": "Hidden: negative number with debug",
+        "is_sample": false,
+        "stdin": "-15\n",
+        "expected_stdout": "Debug: -15\nValue: -15\n"
+      },
+      {
+        "label": "Hidden: zero with debug",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Debug: 0\nValue: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Platform-aware Size Report (complete the function)",
+    "prompt_md": "## Goal\nComplete the function `void printSizeInfo()` so it uses `if constexpr` to print either `Platform: 64-bit` or `Platform: 32-bit` based on the compile-time constant `platformBits`.\n\n## Input\n- No input (the function takes no arguments and reads nothing from stdin).\n\n## Output\n- If `platformBits == 64`: print `Platform: 64-bit`\n- If `platformBits == 32`: print `Platform: 32-bit`\n- (The exercise tests with `platformBits = 64`.)\n\n## Requirements\n1. Use `if constexpr` inside `printSizeInfo` on the `constexpr int platformBits` constant.\n2. The function must not read from `cin`.\n3. The output line must match exactly — no extra spaces or punctuation.",
+    "starter_code": "#include <iostream>\n\nconstexpr int platformBits { 64 };\n\n// TODO: implement using if constexpr on platformBits\nvoid printSizeInfo()\n{\n    // print \"Platform: 64-bit\" when platformBits == 64\n    // print \"Platform: 32-bit\" when platformBits == 32\n}\n\nint main()\n{\n    printSizeInfo();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nconstexpr int platformBits { 64 };\n\nvoid printSizeInfo()\n{\n    if constexpr (platformBits == 64)\n        std::cout << \"Platform: 64-bit\\n\";\n    else\n        std::cout << \"Platform: 32-bit\\n\";\n}\n\nint main()\n{\n    printSizeInfo();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 64-bit platform",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Platform: 64-bit\n"
+      },
+      {
+        "label": "Hidden: same run, no input",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Platform: 64-bit\n"
+      },
+      {
+        "label": "Hidden: verify no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Platform: 64-bit\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nstruct Tag { static void show() { std::cout << \"generic\\n\"; } };\ntemplate <typename T>\nstruct Tag<T*> { static void show() { std::cout << \"pointer\\n\"; } };\nint main() {\n    Tag<int>::show();\n    Tag<int*>::show();\n    Tag<double*>::show();\n    Tag<double>::show();\n}\n```",
+    "options": null,
+    "answer": "generic\npointer\npointer\ngeneric",
+    "explanation_md": "`Tag<int>` and `Tag<double>` have no pointer, so the primary template fires: `generic`. `Tag<int*>` and `Tag<double*>` both match the partial specialization `Tag<T*>`, printing `pointer`. The partial specialization matches any pointer type, not just `int*`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can't you write a partial specialization of a function template in C++?",
+    "options": {
+      "a": "Function templates can only be specialized with `template <>`, not `template <typename T>`.",
+      "b": "The C++ standard simply does not allow partial specializations for function templates — only class templates support them.",
+      "c": "Function templates cannot be specialized at all; you must use virtual functions instead.",
+      "d": "Partial function specialization is allowed but only inside a namespace."
+    },
+    "answer": "b",
+    "explanation_md": "The C++ standard explicitly forbids partial specialization of function templates. The usual workaround is a non-template function overload or a partially specialized helper class that the function delegates to. Full specializations (`template <>`) are allowed for function templates."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants a partial specialization for `Printer<T*>` but this code does not compile. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nclass Printer {\npublic:\n    static void print(T v) { std::cout << \"val: \" << v << \"\\n\"; }\n};\ntemplate <>          // BUG\nclass Printer<T*> {\npublic:\n    static void print(T* v) { std::cout << \"ptr: \" << *v << \"\\n\"; }\n};\nint main() { int x=5; Printer<int*>::print(&x); }\n```",
+    "options": {
+      "a": "`Printer<T*>` should be written as `Printer<typename T*>` to declare the pointer type.",
+      "b": "The header `template <>` has empty brackets, but partial specializations still have open parameters — it should be `template <typename T>`.",
+      "c": "The `print` function in the specialization should be non-static.",
+      "d": "`*v` in the specialization body dereferences a potentially null pointer."
+    },
+    "answer": "b",
+    "explanation_md": "A partial specialization still has open template parameters (here `T` is still unknown), so the header must be `template <typename T>`. Using `template <>` would mean all parameters are fixed, but `T*` still contains the free parameter `T` — the compiler reports an error that `T` is undeclared."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have `template <typename T, typename U> class Pair {};` and two partial specializations: `Pair<T, int>` and `Pair<int, T>`. What happens when you instantiate `Pair<int, int>`?",
+    "options": {
+      "a": "The compiler picks `Pair<T, int>` because it was declared first.",
+      "b": "The compiler picks `Pair<int, T>` because it is more specific.",
+      "c": "The compiler reports an ambiguity error — both specializations match.",
+      "d": "The compiler falls back to the primary template."
+    },
+    "answer": "c",
+    "explanation_md": "`Pair<int, int>` matches both `Pair<T, int>` (with T=int) and `Pair<int, T>` (with T=int). Neither is more specialized than the other, so the compiler cannot choose and emits an ambiguity error. Specializations must be designed to be non-overlapping."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T, int N>\nstruct Buf {\n    void info() { std::cout << \"size \" << N << \"\\n\"; }\n};\ntemplate <typename T>\nstruct Buf<T, 1> {\n    void info() { std::cout << \"single\\n\"; }\n};\nint main() {\n    Buf<int, 3> a;\n    Buf<double, 1> b;\n    Buf<char, 1> c;\n    a.info(); b.info(); c.info();\n}\n```",
+    "options": null,
+    "answer": "size 3\nsingle\nsingle",
+    "explanation_md": "`Buf<int, 3>` does not match the `N=1` partial specialization, so the primary template prints `size 3`. `Buf<double, 1>` and `Buf<char, 1>` both have `N=1`, matching the partial specialization and printing `single` each."
+  }
+]

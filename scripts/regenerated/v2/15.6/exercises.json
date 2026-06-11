@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Instance Counter",
+    "prompt_md": "## Goal\nComplete class `Sensor` so it tracks how many `Sensor` objects have ever been created (total, not current alive) using a static member variable, and provides a static function to print that count.\n\n## Input\nLine 1: integer N (1 ≤ N ≤ 10) — number of sensors to create.\n\n## Output\nPrint exactly one line: `Created: <N>` where N is the total number of `Sensor` objects that have been constructed.\n\n## Requirements\n1. `Sensor` must have a `static` member variable `s_created` (initialized to 0) incremented in the constructor.\n2. `static void printCreated()` must print `Created: <value>` followed by a newline.\n3. The provided `main()` creates N sensors in a loop, then calls `Sensor::printCreated()`.\n4. Edge case: N = 1 should print `Created: 1`; N = 10 should print `Created: 10`.",
+    "starter_code": "#include <iostream>\n\nclass Sensor {\npublic:\n    // TODO: declare a static member variable s_created initialized to 0\n\n    Sensor() {\n        // TODO: increment s_created\n    }\n\n    static void printCreated() {\n        // TODO: print \"Created: \" followed by s_created and a newline\n    }\n};\n\n// TODO: provide an out-of-class definition for s_created, or make it inline\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i) {\n        Sensor s;  // constructed and immediately destroyed, but the count persists\n    }\n    Sensor::printCreated();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Sensor {\npublic:\n    static inline int s_created{ 0 };\n\n    Sensor() { ++s_created; }\n\n    static void printCreated() {\n        std::cout << \"Created: \" << s_created << \"\\n\";\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i) {\n        Sensor s;\n    }\n    Sensor::printCreated();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 3 sensors", "is_sample": true, "stdin": "3\n", "expected_stdout": "Created: 3" },
+      { "label": "Hidden: 1 sensor", "is_sample": false, "stdin": "1\n", "expected_stdout": "Created: 1" },
+      { "label": "Hidden: 10 sensors", "is_sample": false, "stdin": "10\n", "expected_stdout": "Created: 10" }
+    ]
+  },
+  {
+    "title": "Running Total Tracker",
+    "prompt_md": "## Goal\nComplete the function `addValue(int v)` in class `Accumulator` so it adds `v` to a class-wide running total and returns the new total.\n\n## Input\nLine 1: integer N (1 ≤ N ≤ 10).\nLines 2..N+1: one integer per line.\n\n## Output\nFor each input value, print one line: `Total: <running_total>`.\n\n## Requirements\n1. `Accumulator` must store the running total in a `static` member variable `s_total` (initialized to 0).\n2. `static int addValue(int v)` adds `v` to `s_total` and returns the new value of `s_total`.\n3. `main()` reads N values and calls `Accumulator::addValue(val)` for each, printing the result on its own line.\n4. Edge case: N = 1 with value 5 should print `Total: 5`.\n5. Edge case: negative values are valid — the running total can be negative.",
+    "starter_code": "#include <iostream>\n\nclass Accumulator {\npublic:\n    // TODO: declare static member s_total initialized to 0\n\n    // TODO: implement addValue — add v to s_total and return s_total\n    static int addValue(int v) {\n        (void)v;\n        return 0; // TODO\n    }\n};\n\n// TODO: define s_total outside the class (or make it inline)\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        int total{ Accumulator::addValue(val) };\n        std::cout << \"Total: \" << total << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Accumulator {\npublic:\n    static inline int s_total{ 0 };\n\n    static int addValue(int v) {\n        s_total += v;\n        return s_total;\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i) {\n        int val;\n        std::cin >> val;\n        int total{ Accumulator::addValue(val) };\n        std::cout << \"Total: \" << total << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 3 values", "is_sample": true, "stdin": "3\n10\n5\n7\n", "expected_stdout": "Total: 10\nTotal: 15\nTotal: 22" },
+      { "label": "Hidden: single value", "is_sample": false, "stdin": "1\n5\n", "expected_stdout": "Total: 5" },
+      { "label": "Hidden: negative values", "is_sample": false, "stdin": "4\n10\n-3\n2\n-5\n", "expected_stdout": "Total: 10\nTotal: 7\nTotal: 9\nTotal: 4" }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Overload operator+ for Duration as a Normal Free Function",
+    "prompt_md": "## Goal\nOverload `operator+` for a `Duration` class as a normal (non-friend) free function, using the class's public interface.\n\n## Input\nLine 1: two space-separated integers — minutes and seconds for the first duration.\nLine 2: two space-separated integers — minutes and seconds for the second duration.\n\n## Output\nOne line: `M:SS` where M is the total minutes and SS is the remaining seconds (0-padded to 2 digits).\n\n## Requirements\n1. `Duration` has private `int m_min` and `int m_sec`, with public accessors `int minutes() const` and `int seconds() const`.\n2. `operator+` must be a normal (non-friend) free function — no `friend` keyword.\n3. The result's total seconds are normalized: if combined seconds >= 60, carry into minutes (e.g. 1:45 + 0:30 = 2:15).\n4. Print in format `M:SS` — seconds always 2 digits with leading zero if needed (e.g. `2:05`).\n5. Edge case: seconds sum exactly 60 (carry produces 0 remaining seconds).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Duration {\n    int m_min{};\n    int m_sec{};\npublic:\n    Duration(int min, int sec) : m_min{min}, m_sec{sec} {}\n    int minutes() const { return m_min; }\n    int seconds() const { return m_sec; }\n};\n\n// TODO: implement operator+ as a normal free function (no friend)\n// Add the two durations together, normalizing so seconds < 60\n// Use only the public minutes() and seconds() accessors\nDuration operator+(const Duration& a, const Duration& b) {\n    return Duration{0, 0};  // replace this\n}\n\nint main() {\n    int m1, s1, m2, s2;\n    std::cin >> m1 >> s1;\n    std::cin >> m2 >> s2;\n    Duration d1{m1, s1}, d2{m2, s2};\n    Duration r = d1 + d2;\n    std::cout << r.minutes() << \":\" << std::setfill('0') << std::setw(2) << r.seconds() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Duration {\n    int m_min{};\n    int m_sec{};\npublic:\n    Duration(int min, int sec) : m_min{min}, m_sec{sec} {}\n    int minutes() const { return m_min; }\n    int seconds() const { return m_sec; }\n};\n\nDuration operator+(const Duration& a, const Duration& b) {\n    int totalSec = a.seconds() + b.seconds();\n    int carry = totalSec / 60;\n    int remSec = totalSec % 60;\n    int totalMin = a.minutes() + b.minutes() + carry;\n    return Duration{totalMin, remSec};\n}\n\nint main() {\n    int m1, s1, m2, s2;\n    std::cin >> m1 >> s1;\n    std::cin >> m2 >> s2;\n    Duration d1{m1, s1}, d2{m2, s2};\n    Duration r = d1 + d2;\n    std::cout << r.minutes() << \":\" << std::setfill('0') << std::setw(2) << r.seconds() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: carry seconds",
+        "is_sample": true,
+        "stdin": "1 45\n0 30\n",
+        "expected_stdout": "2:15"
+      },
+      {
+        "label": "Hidden: seconds sum exactly 60",
+        "is_sample": false,
+        "stdin": "0 30\n0 30\n",
+        "expected_stdout": "1:00"
+      },
+      {
+        "label": "Hidden: no carry",
+        "is_sample": false,
+        "stdin": "3 10\n2 5\n",
+        "expected_stdout": "5:15"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Rectangle Area Comparison",
+    "prompt_md": "## Goal\nThe program defines a `Rectangle` class with a public `area()` accessor and overloads `operator<` as a normal free function to compare areas. Find and fix the one logic bug.\n\n## Input\nLine 1: two space-separated integers — width and height of rectangle A.\nLine 2: two space-separated integers — width and height of rectangle B.\n\n## Output\nOne line: `A is smaller`, `B is smaller`, or `Equal` depending on area comparison.\n\n## Requirements\n1. `Rectangle::area()` returns `width * height`.\n2. `operator<` compares by area using the public `area()` accessor.\n3. The hidden tests fail on the buggy version and pass once fixed.\n4. Edge cases: equal areas; one has zero dimension.",
+    "starter_code": "#include <iostream>\n\nclass Rectangle {\n    int m_w{}, m_h{};\npublic:\n    Rectangle(int w, int h) : m_w{w}, m_h{h} {}\n    // Bug: area() computes sum instead of product\n    int area() const { return m_w + m_h; }\n};\n\nbool operator<(const Rectangle& a, const Rectangle& b) {\n    return a.area() < b.area();\n}\n\nint main() {\n    int w1, h1, w2, h2;\n    std::cin >> w1 >> h1;\n    std::cin >> w2 >> h2;\n    Rectangle a{w1, h1}, b{w2, h2};\n    if (a < b)\n        std::cout << \"A is smaller\\n\";\n    else if (b < a)\n        std::cout << \"B is smaller\\n\";\n    else\n        std::cout << \"Equal\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rectangle {\n    int m_w{}, m_h{};\npublic:\n    Rectangle(int w, int h) : m_w{w}, m_h{h} {}\n    int area() const { return m_w * m_h; }\n};\n\nbool operator<(const Rectangle& a, const Rectangle& b) {\n    return a.area() < b.area();\n}\n\nint main() {\n    int w1, h1, w2, h2;\n    std::cin >> w1 >> h1;\n    std::cin >> w2 >> h2;\n    Rectangle a{w1, h1}, b{w2, h2};\n    if (a < b)\n        std::cout << \"A is smaller\\n\";\n    else if (b < a)\n        std::cout << \"B is smaller\\n\";\n    else\n        std::cout << \"Equal\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: B is larger",
+        "is_sample": true,
+        "stdin": "2 3\n4 5\n",
+        "expected_stdout": "A is smaller"
+      },
+      {
+        "label": "Hidden: A is larger",
+        "is_sample": false,
+        "stdin": "10 10\n3 4\n",
+        "expected_stdout": "B is smaller"
+      },
+      {
+        "label": "Hidden: equal areas",
+        "is_sample": false,
+        "stdin": "4 3\n6 2\n",
+        "expected_stdout": "Equal"
+      }
+    ]
+  }
+]

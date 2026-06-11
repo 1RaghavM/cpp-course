@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Heap-Allocated Integer Array Sum",
+    "prompt_md": "## Goal\nWrite a program that reads N integers into a heap-allocated array, computes their sum, prints it, then frees the array.\n\n## Input\n- Line 1: integer N (1 <= N <= 20)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly one line: `Sum: X` where X is the sum of all N integers.\n\n## Requirements\n1. Allocate the array with `new int[N]`.\n2. Read the N integers into the array.\n3. Compute the sum by iterating over the array.\n4. Print in the format `Sum: X`.\n5. Free the array with `delete[]` before the program ends.\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: allocate a heap array of n ints\n    int* arr = nullptr;\n\n    // TODO: read n integers into arr\n\n    // TODO: compute the sum\n    int sum = 0;\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n\n    // TODO: free the array\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int sum = 0;\n    for (int i = 0; i < n; ++i)\n        sum += arr[i];\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n\n    delete[] arr;\n    arr = nullptr;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three integers",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "Sum: 60"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "Sum: 42"
+      },
+      {
+        "label": "Hidden: five integers",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5\n",
+        "expected_stdout": "Sum: 15"
+      }
+    ]
+  },
+  {
+    "title": "Compute Statistics on a Dynamic Array",
+    "prompt_md": "## Goal\nComplete the function `computeMin` that finds the minimum value in a heap-allocated integer array.\n\n## Input\n- Line 1: integer N (1 <= N <= 10)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly two lines:\n- `Count: N`\n- `Min: X` where X is the minimum value in the array\n\n## Requirements\n1. `computeMin(int* arr, int n)` must return the smallest value in `arr` of length `n`.\n2. The function must not allocate any additional heap memory.\n3. `main` allocates the array with `new int[n]`, reads the values, calls `computeMin`, prints the two output lines, then frees the array with `delete[]`.\n4. Edge case: N = 1 (single element is the minimum).\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function\n// Returns the minimum value in arr[0..n-1]\nint computeMin(int* arr, int n) {\n    return 0;  // replace this\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int minVal = computeMin(arr, n);\n    std::cout << \"Count: \" << n << \"\\n\";\n    std::cout << \"Min: \" << minVal << \"\\n\";\n\n    delete[] arr;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint computeMin(int* arr, int n) {\n    int minVal = arr[0];\n    for (int i = 1; i < n; ++i)\n        if (arr[i] < minVal)\n            minVal = arr[i];\n    return minVal;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int minVal = computeMin(arr, n);\n    std::cout << \"Count: \" << n << \"\\n\";\n    std::cout << \"Min: \" << minVal << \"\\n\";\n\n    delete[] arr;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: four values",
+        "is_sample": true,
+        "stdin": "4\n8\n3\n15\n6\n",
+        "expected_stdout": "Count: 4\nMin: 3"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n99\n",
+        "expected_stdout": "Count: 1\nMin: 99"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "5\n-4\n2\n-10\n7\n0\n",
+        "expected_stdout": "Count: 5\nMin: -10"
+      }
+    ]
+  }
+]

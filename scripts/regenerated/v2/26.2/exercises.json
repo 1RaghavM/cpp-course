@@ -1,0 +1,56 @@
+[
+  {
+    "title": "FixedBuffer: compile-time sized buffer with fill and sum",
+    "prompt_md": "## Goal\nComplete the template class `FixedBuffer<T, N>` that stores exactly `N` elements of type `T`. Read `N` values from stdin, store them, then print their sum.\n\n## Input\nLine 1: integer `N` (between 1 and 10 inclusive — matches the compile-time parameter).\nLines 2..N+1: one integer per line.\n\n## Output\nPrint exactly one line: `Sum: <total>`\n\n## Requirements\n1. `FixedBuffer<T, N>` is a class template with type parameter `T` and non-type parameter `int N`.\n2. `void set(int index, T value)` stores a value at the given index.\n3. `T get(int index) const` retrieves a value.\n4. `int size() const` returns `N`.\n5. The program instantiates `FixedBuffer<int, 5>` and reads exactly 5 integers from stdin, stores them, then prints their sum.\n6. Use `size()` in the loop — do not hard-code 5.\n\n## Notes\n- Hidden tests use different stored values; the sum must be computed correctly.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T, int N>\nclass FixedBuffer {\n    T data_[N]{};\npublic:\n    // TODO: implement void set(int index, T value)\n    void set(int index, T value) {}\n\n    // TODO: implement T get(int index) const\n    T get(int index) const { return T{}; }\n\n    // TODO: implement int size() const — return N\n    int size() const { return 0; }\n};\n\nint main() {\n    FixedBuffer<int, 5> buf;\n\n    for (int i = 0; i < buf.size(); ++i) {\n        int v;\n        std::cin >> v;\n        buf.set(i, v);\n    }\n\n    int total = 0;\n    for (int i = 0; i < buf.size(); ++i)\n        total += buf.get(i);\n\n    std::cout << \"Sum: \" << total << \"\\n\";\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T, int N>\nclass FixedBuffer {\n    T data_[N]{};\npublic:\n    void set(int index, T value) { data_[index] = value; }\n    T get(int index) const { return data_[index]; }\n    int size() const { return N; }\n};\n\nint main() {\n    FixedBuffer<int, 5> buf;\n\n    for (int i = 0; i < buf.size(); ++i) {\n        int v;\n        std::cin >> v;\n        buf.set(i, v);\n    }\n\n    int total = 0;\n    for (int i = 0; i < buf.size(); ++i)\n        total += buf.get(i);\n\n    std::cout << \"Sum: \" << total << \"\\n\";\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic five values",
+        "is_sample": true,
+        "stdin": "1\n2\n3\n4\n5\n",
+        "expected_stdout": "Sum: 15"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0\n0\n0\n0\n0\n",
+        "expected_stdout": "Sum: 0"
+      },
+      {
+        "label": "Hidden: mixed values",
+        "is_sample": false,
+        "stdin": "10\n20\n30\n40\n50\n",
+        "expected_stdout": "Sum: 150"
+      }
+    ]
+  },
+  {
+    "title": "Complete the function: MinMax using FixedArray non-type template",
+    "prompt_md": "## Goal\nComplete the function `findMinMax` that accepts a `FixedArray<int, N>` by const reference and returns the minimum and maximum values stored in it.\n\n## Input\nLine 1: integer `N` (always 4 for this exercise — the compile-time size).\nLines 2..5: four integers, one per line.\n\n## Output\nPrint exactly two lines:\n- `Min: <minimum>`\n- `Max: <maximum>`\n\n## Requirements\n1. `FixedArray<T, N>` is provided; do not modify it.\n2. Complete `findMinMax(const FixedArray<int, 4>& arr, int& minVal, int& maxVal)` — it sets `minVal` and `maxVal` by reference.\n3. Use `arr.size()` and `arr[i]` inside `findMinMax`.\n4. `main()` reads 4 values, calls `findMinMax`, then prints the results.\n\n## Notes\n- Hidden tests include cases where all values are equal, and cases with negative values.",
+    "starter_code": "#include <iostream>\n#include <cassert>\n\ntemplate <typename T, int N>\nclass FixedArray {\n    T data_[N]{};\npublic:\n    T& operator[](int i) { assert(i >= 0 && i < N); return data_[i]; }\n    const T& operator[](int i) const { assert(i >= 0 && i < N); return data_[i]; }\n    int size() const { return N; }\n};\n\n// TODO: implement this function\n// Sets minVal and maxVal to the minimum and maximum values in arr.\nvoid findMinMax(const FixedArray<int, 4>& arr, int& minVal, int& maxVal) {\n    minVal = arr[0];\n    maxVal = arr[0];\n    // TODO: loop through arr and update minVal / maxVal\n}\n\nint main() {\n    FixedArray<int, 4> arr;\n    for (int i = 0; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    int mn, mx;\n    findMinMax(arr, mn, mx);\n    std::cout << \"Min: \" << mn << \"\\n\";\n    std::cout << \"Max: \" << mx << \"\\n\";\n    return 0;\n}",
+    "solution_code": "#include <iostream>\n#include <cassert>\n\ntemplate <typename T, int N>\nclass FixedArray {\n    T data_[N]{};\npublic:\n    T& operator[](int i) { assert(i >= 0 && i < N); return data_[i]; }\n    const T& operator[](int i) const { assert(i >= 0 && i < N); return data_[i]; }\n    int size() const { return N; }\n};\n\nvoid findMinMax(const FixedArray<int, 4>& arr, int& minVal, int& maxVal) {\n    minVal = arr[0];\n    maxVal = arr[0];\n    for (int i = 1; i < arr.size(); ++i) {\n        if (arr[i] < minVal) minVal = arr[i];\n        if (arr[i] > maxVal) maxVal = arr[i];\n    }\n}\n\nint main() {\n    FixedArray<int, 4> arr;\n    for (int i = 0; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    int mn, mx;\n    findMinMax(arr, mn, mx);\n    std::cout << \"Min: \" << mn << \"\\n\";\n    std::cout << \"Max: \" << mx << \"\\n\";\n    return 0;\n}",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: four distinct values",
+        "is_sample": true,
+        "stdin": "7\n3\n9\n1\n",
+        "expected_stdout": "Min: 1\nMax: 9"
+      },
+      {
+        "label": "Hidden: all values equal",
+        "is_sample": false,
+        "stdin": "5\n5\n5\n5\n",
+        "expected_stdout": "Min: 5\nMax: 5"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-3\n-10\n0\n-1\n",
+        "expected_stdout": "Min: -10\nMax: 0"
+      }
+    ]
+  }
+]

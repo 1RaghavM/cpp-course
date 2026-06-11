@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Course` object stores an `Instructor*` member that it did not create. The instructor was created separately and passed in via `setInstructor(Instructor*)`. What relationship does `Course` have with `Instructor`?",
+    "options": {
+      "a": "Composition — Course stores the Instructor as a member.",
+      "b": "Aggregation — Course holds a pointer to a sub-part it manages.",
+      "c": "Association — the two are independent peers; Course holds a navigational reference.",
+      "d": "Dependency — Instructor is only used inside a function body."
+    },
+    "answer": "c",
+    "explanation_md": "Association is a peer relationship where neither object owns the other. Course stores a pointer to an independently-existing Instructor — neither created by Course nor subject to Course's lifetime. Option d (dependency) would apply if Instructor was only a function parameter."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\nstruct Patient { std::string name; };\nstruct Doctor {\n    Patient* current{nullptr};\n    void assign(Patient* p) { current = p; }\n    void greet() {\n        if (current)\n            std::cout << \"Treating \" << current->name << \"\\n\";\n        else\n            std::cout << \"No patient\\n\";\n    }\n};\nint main() {\n    Patient p1{\"Alice\"}, p2{\"Bob\"};\n    Doctor d;\n    d.greet();\n    d.assign(&p1);\n    d.greet();\n    d.assign(&p2);\n    d.greet();\n}\n```",
+    "options": null,
+    "answer": "No patient\nTreating Alice\nTreating Bob",
+    "explanation_md": "Initially current is nullptr so the else branch prints \"No patient\". After assigning p1, current points to Alice. After assigning p2, current is reseated to Bob. The pointer member is reassignable, unlike a reference."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the main risk of a bidirectional stored association (both objects hold a pointer to each other)?",
+    "options": {
+      "a": "The constructor will be called twice for each object.",
+      "b": "If one object is destroyed and the other's pointer is not cleared, the remaining pointer is dangling.",
+      "c": "Bidirectional associations require virtual destructors.",
+      "d": "The compiler will automatically null out both pointers when one is destroyed."
+    },
+    "answer": "b",
+    "explanation_md": "When one side of a bidirectional association is destroyed, its pointer ceases to be valid. The other side still holds the old address. Accessing it is undefined behavior. The compiler does not automatically null out raw pointers."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code tries to log an order ID but crashes. What is the bug?\n\n```cpp\n#include <iostream>\nstruct Logger {\n    void log(int id) { std::cout << \"Order: \" << id << \"\\n\"; }\n};\nstruct Processor {\n    Logger* log;\n};\nint main() {\n    Processor p;\n    p.log->log(42);\n}\n```",
+    "options": {
+      "a": "Logger::log is not a valid member function name.",
+      "b": "Processor::log is never initialized, so it is a null or garbage pointer.",
+      "c": "The Processor constructor must take a Logger argument.",
+      "d": "log is a reserved identifier and cannot be used as a member name."
+    },
+    "answer": "b",
+    "explanation_md": "Processor::log is declared as a raw pointer with no initializer in main(). It holds an indeterminate value (garbage address). Dereferencing it with `->` is undefined behavior. The fix is either to initialize it with a valid Logger address, or to default-initialize it to nullptr and check before use."
+  }
+]

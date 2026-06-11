@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum with Range-Based For Loop",
+    "prompt_md": "## Goal\nRead N integers and use a range-based for loop to print their sum.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50).\n- Line 2: N space-separated integers.\n\n## Output\n- Print exactly one line: the integer sum, followed by a newline.\n\n## Requirements\n1. Use a range-based for loop (not an index-based loop) to accumulate the sum.\n2. The loop variable must be `int x` (a copy, not a reference — you are not modifying elements).\n3. Hidden tests include N=1, all negatives, and a mix summing to zero.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    int sum { 0 };\n    // TODO: use a range-based for loop to add each element of nums to sum\n    // for (int x : nums) ...\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    int sum { 0 };\n    for (int x : nums)\n        sum += x;\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic sum",
+        "is_sample": true,
+        "stdin": "4\n1 2 3 4\n",
+        "expected_stdout": "10\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n-7\n",
+        "expected_stdout": "-7\n"
+      },
+      {
+        "label": "Hidden: mix summing to zero",
+        "is_sample": false,
+        "stdin": "4\n-10 5 3 2\n",
+        "expected_stdout": "0\n"
+      }
+    ]
+  },
+  {
+    "title": "Double Elements In Place",
+    "prompt_md": "## Goal\nComplete the function `doubleAll` that takes a `std::vector<int>` by reference and doubles every element in place using a range-based for loop with a reference loop variable.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20).\n- Line 2: N space-separated integers.\n\n## Output\n- Print the doubled values separated by spaces on one line, followed by a newline.\n\n## Requirements\n1. `doubleAll` must have signature `void doubleAll(std::vector<int>& v)`.\n2. Use a range-based for loop with `int& x` to modify elements in place.\n3. Do not create a new vector; modify `v` directly.\n4. Hidden tests include N=1 and negative numbers.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement doubleAll\n// Doubles every element of v in place using a range-based for loop\n// with a reference loop variable.\nvoid doubleAll(std::vector<int>& v)\n{\n    // TODO: for (int& x : v) x *= 2;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    doubleAll(nums);\n\n    for (int i = 0; i < static_cast<int>(nums.size()); ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << nums[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nvoid doubleAll(std::vector<int>& v)\n{\n    for (int& x : v)\n        x *= 2;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    doubleAll(nums);\n\n    for (int i = 0; i < static_cast<int>(nums.size()); ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << nums[i];\n    }\n    std::cout << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: double four values",
+        "is_sample": true,
+        "stdin": "4\n1 3 5 7\n",
+        "expected_stdout": "2 6 10 14\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n9\n",
+        "expected_stdout": "18\n"
+      },
+      {
+        "label": "Hidden: negative numbers",
+        "is_sample": false,
+        "stdin": "3\n-2 0 4\n",
+        "expected_stdout": "-4 0 8\n"
+      }
+    ]
+  }
+]

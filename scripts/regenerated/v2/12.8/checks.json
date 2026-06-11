@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x = 10;\n    int* p = nullptr;\n    if (p != nullptr) {\n        std::cout << *p << '\\n';\n    } else {\n        std::cout << \"empty\\n\";\n    }\n    p = &x;\n    if (p != nullptr) {\n        std::cout << *p << '\\n';\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "empty\n10",
+    "explanation_md": "On the first check, `p` is `nullptr` so the else branch runs, printing `\"empty\"`. Then `p = &x` points `p` at `x`. The second check passes (`p != nullptr` is true) so `*p` dereferences to `x`'s value, 10."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when you dereference a null pointer?\n\n```cpp\nint* p = nullptr;\n*p = 5;\n```",
+    "options": {
+      "a": "The value 5 is stored at address 0 in memory — harmless",
+      "b": "The compiler produces an error at compile time",
+      "c": "Undefined behavior — typically a crash at runtime",
+      "d": "The assignment is silently ignored"
+    },
+    "answer": "c",
+    "explanation_md": "A null pointer holds no valid address. Dereferencing it attempts to write to address 0 (or wherever nullptr maps on the platform), which is undefined behavior — the OS or hardware typically raises a fault and crashes the program. The compiler does not catch this at compile time because pointer validity is a runtime property."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A pointer `p` is non-null and points to an `int` that holds the value `0`. What does the condition `if (p != nullptr)` evaluate to?",
+    "options": {
+      "a": "false, because the pointed-to value is 0",
+      "b": "true, because p holds a valid (non-null) address",
+      "c": "false, because 0 is falsy in C++",
+      "d": "A compile error because you cannot compare a pointer to nullptr"
+    },
+    "answer": "b",
+    "explanation_md": "`p != nullptr` tests only whether `p` itself holds a valid address — it says nothing about the value stored at that address. Since `p` points to a real `int` object (even though that `int` is 0), the pointer is non-null and the condition is true."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint* getPtr(int& n) {\n    if (n > 0) return &n;\n    return nullptr;\n}\n\nint main() {\n    int a = -3;\n    int* p = getPtr(a);\n    if (p != nullptr) {\n        std::cout << *p << '\\n';\n    } else {\n        std::cout << \"none\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "none",
+    "explanation_md": "`a` is -3, which is not greater than 0, so `getPtr` returns `nullptr`. The null check in `main` fails (`p == nullptr`), so the else branch runs and prints `\"none\"`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to print the value only when `p` is valid, but the program crashes. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int* p = nullptr;\n    int x = 7;\n    std::cout << *p << '\\n';  // intended to print x\n    p = &x;\n    return 0;\n}\n```",
+    "options": {
+      "a": "You cannot print `*p` with `std::cout` when the type is `int*`",
+      "b": "`*p` is dereferenced before `p` is set to `&x`, so it dereferences a null pointer",
+      "c": "`int x = 7` must come before `int* p = nullptr`",
+      "d": "The `&x` assignment should use `p = *x` instead"
+    },
+    "answer": "b",
+    "explanation_md": "The `std::cout << *p` line runs while `p` is still `nullptr`. Dereferencing a null pointer is undefined behavior and causes a crash. The fix is to move `p = &x` before the `std::cout` line, or add a null-check before dereferencing."
+  }
+]

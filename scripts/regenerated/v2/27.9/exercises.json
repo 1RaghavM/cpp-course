@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Query noexcept Properties",
+    "prompt_md": "## Goal\nWrite a program that reads a single integer selector and prints whether certain operations are `noexcept` at compile time.\n\n## Input\n- Line 1: integer selector (1, 2, or 3).\n\n## Output\nFor selector 1, print `int add: true`.\nFor selector 2, print `vector push: false`.\nFor selector 3, print `string move: true`.\n\n## Requirements\n1. Define a free function `int add_ints(int a, int b) noexcept` that returns `a + b`.\n2. Use `std::boolalpha` so bool values print as `true`/`false`.\n3. For selector 1, use the `noexcept` operator to query `add_ints(0, 0)` and print the result.\n4. For selector 2, declare a `std::vector<int> v;` and print `noexcept(v.push_back(0))` — this is `false` because `push_back` may allocate.\n5. For selector 3, declare a `std::string s;` and print `noexcept(std::string(std::move(s)))` — this is `true` because `std::string` move constructor is `noexcept`.\n6. Edge case: selector values are exactly 1, 2, or 3 — no other values will be tested.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\n// TODO: declare add_ints with the noexcept specifier\nint add_ints(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    std::cout << std::boolalpha;\n    int sel;\n    std::cin >> sel;\n    if (sel == 1) {\n        // TODO: print \"int add: \" followed by noexcept query of add_ints(0, 0)\n    } else if (sel == 2) {\n        std::vector<int> v;\n        // TODO: print \"vector push: \" followed by noexcept query of v.push_back(0)\n    } else {\n        std::string s;\n        // TODO: print \"string move: \" followed by noexcept query of std::string(std::move(s))\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint add_ints(int a, int b) noexcept {\n    return a + b;\n}\n\nint main() {\n    std::cout << std::boolalpha;\n    int sel;\n    std::cin >> sel;\n    if (sel == 1) {\n        std::cout << \"int add: \" << noexcept(add_ints(0, 0)) << \"\\n\";\n    } else if (sel == 2) {\n        std::vector<int> v;\n        std::cout << \"vector push: \" << noexcept(v.push_back(0)) << \"\\n\";\n    } else {\n        std::string s;\n        std::cout << \"string move: \" << noexcept(std::string(std::move(s))) << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: noexcept add_ints",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "int add: true"
+      },
+      {
+        "label": "Hidden: vector push_back is not noexcept",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "vector push: false"
+      },
+      {
+        "label": "Hidden: string move is noexcept",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "string move: true"
+      }
+    ]
+  },
+  {
+    "title": "noexcept Move Constructor Bug",
+    "prompt_md": "## Goal\nThis program defines a `Wrapper` class and tries to detect whether its move constructor is `noexcept`. Find and fix the one bug so that the program prints `move is noexcept: true`.\n\n## Input\nNo input (the program reads nothing from stdin).\n\n## Output\nPrint exactly one line: `move is noexcept: true`\n\n## Requirements\n1. The program contains exactly one bug — find it and fix it.\n2. The bug is a logic issue; the starter code compiles and runs, but prints the wrong answer.\n3. Do not change the structure of main or add extra output.\n4. Edge case: the fix is a single annotation on the move constructor.",
+    "starter_code": "#include <iostream>\n\nstruct Wrapper {\n    int value;\n    explicit Wrapper(int v) : value(v) {}\n    Wrapper(Wrapper&& other) { // bug is here\n        value = other.value;\n        other.value = 0;\n    }\n    Wrapper& operator=(Wrapper&&) noexcept = default;\n};\n\nint main() {\n    std::cout << std::boolalpha;\n    Wrapper a(42);\n    std::cout << \"move is noexcept: \" << noexcept(Wrapper(std::move(a))) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Wrapper {\n    int value;\n    explicit Wrapper(int v) : value(v) {}\n    Wrapper(Wrapper&& other) noexcept { // fixed: added noexcept\n        value = other.value;\n        other.value = 0;\n    }\n    Wrapper& operator=(Wrapper&&) noexcept = default;\n};\n\nint main() {\n    std::cout << std::boolalpha;\n    Wrapper a(42);\n    std::cout << \"move is noexcept: \" << noexcept(Wrapper(std::move(a))) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: move is noexcept after fix",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "move is noexcept: true"
+      },
+      {
+        "label": "Hidden: same check, same fix",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "move is noexcept: true"
+      },
+      {
+        "label": "Hidden: consistent output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "move is noexcept: true"
+      }
+    ]
+  }
+]

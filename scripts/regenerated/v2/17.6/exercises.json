@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Day-of-Week Temperature Tracker",
+    "prompt_md": "## Goal\nRead seven integers and store them in a `std::array` indexed by a `Day` enumeration; then print the value for each named day on its own line.\n\n## Input\n- Line 1: seven integers separated by spaces representing temperatures for Monday through Sunday (in order).\n\n## Output\n- Seven lines, each in the format `DAY: VALUE` where DAY is the full name of the day (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday) and VALUE is the corresponding integer.\n\n## Requirements\n1. Declare an unscoped enum `Day` with enumerators `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, `Sunday`, and a sentinel `NumDays`.\n2. Declare `std::array<int, NumDays> temps` and fill it by reading seven integers from stdin in the order Monday–Sunday.\n3. Print each day using the exact names above followed by `: ` and the value.\n4. The hidden tests cover the minimum (all zeros), negative values, and maximum plausible temperatures.",
+    "starter_code": "#include <array>\n#include <iostream>\n\nenum Day { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, NumDays };\n\nint main() {\n    std::array<int, NumDays> temps{};\n\n    // TODO: read NumDays integers from stdin into temps\n\n    // TODO: print each day and its temperature in the format \"DAY: VALUE\"\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nenum Day { Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, NumDays };\n\nint main() {\n    std::array<int, NumDays> temps{};\n\n    for (std::size_t i = 0; i < NumDays; ++i) {\n        std::cin >> temps[i];\n    }\n\n    const std::array<const char*, NumDays> names{\n        \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\",\n        \"Friday\", \"Saturday\", \"Sunday\"\n    };\n\n    for (std::size_t i = 0; i < NumDays; ++i) {\n        std::cout << names[i] << \": \" << temps[i] << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: typical week",
+        "is_sample": true,
+        "stdin": "15 18 22 19 25 30 28",
+        "expected_stdout": "Monday: 15\nTuesday: 18\nWednesday: 22\nThursday: 19\nFriday: 25\nSaturday: 30\nSunday: 28"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0 0 0 0",
+        "expected_stdout": "Monday: 0\nTuesday: 0\nWednesday: 0\nThursday: 0\nFriday: 0\nSaturday: 0\nSunday: 0"
+      },
+      {
+        "label": "Hidden: negative temperatures",
+        "is_sample": false,
+        "stdin": "-5 -3 -1 0 2 4 6",
+        "expected_stdout": "Monday: -5\nTuesday: -3\nWednesday: -1\nThursday: 0\nFriday: 2\nSaturday: 4\nSunday: 6"
+      }
+    ]
+  },
+  {
+    "title": "Enum-Indexed Stat Lookup",
+    "prompt_md": "## Goal\nComplete the function `int getStat(const std::array<int, static_cast<std::size_t>(Stat::Count)>& stats, Stat which)` that returns the value in `stats` for the given `Stat` enumerator.\n\n## Input\n- Line 1: four integers separated by spaces representing Strength, Dexterity, Constitution, and Intelligence values (in that order).\n- Line 2: an integer 0–3 indicating which stat to query (0 = Strength, 1 = Dexterity, 2 = Constitution, 3 = Intelligence).\n\n## Output\n- A single line: `Stat value: N` where N is the integer stored at the requested position.\n\n## Requirements\n1. Use the scoped enum `Stat` exactly as declared in the starter code (Strength, Dexterity, Constitution, Intelligence, Count).\n2. `getStat` must perform the correct `static_cast<std::size_t>` to index into `stats` and return the integer at that position.\n3. `main` reads four stat values, reads the query index, casts it to `Stat`, calls `getStat`, and prints the result.\n4. Hidden tests cover querying the first stat, the last stat, and a mid-range stat.",
+    "starter_code": "#include <array>\n#include <iostream>\n\nenum class Stat { Strength, Dexterity, Constitution, Intelligence, Count };\n\nconstexpr std::size_t statIdx(Stat s) {\n    return static_cast<std::size_t>(s);\n}\n\n// TODO: implement getStat — return the value in stats for the given Stat enumerator\nint getStat(const std::array<int, statIdx(Stat::Count)>& stats, Stat which) {\n    return 0; // replace this\n}\n\nint main() {\n    std::array<int, statIdx(Stat::Count)> stats{};\n    for (std::size_t i = 0; i < statIdx(Stat::Count); ++i) {\n        std::cin >> stats[i];\n    }\n    int query{};\n    std::cin >> query;\n    Stat which = static_cast<Stat>(query);\n    std::cout << \"Stat value: \" << getStat(stats, which) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nenum class Stat { Strength, Dexterity, Constitution, Intelligence, Count };\n\nconstexpr std::size_t statIdx(Stat s) {\n    return static_cast<std::size_t>(s);\n}\n\nint getStat(const std::array<int, statIdx(Stat::Count)>& stats, Stat which) {\n    return stats[statIdx(which)];\n}\n\nint main() {\n    std::array<int, statIdx(Stat::Count)> stats{};\n    for (std::size_t i = 0; i < statIdx(Stat::Count); ++i) {\n        std::cin >> stats[i];\n    }\n    int query{};\n    std::cin >> query;\n    Stat which = static_cast<Stat>(query);\n    std::cout << \"Stat value: \" << getStat(stats, which) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: query Dexterity",
+        "is_sample": true,
+        "stdin": "10 14 12 8\n1",
+        "expected_stdout": "Stat value: 14"
+      },
+      {
+        "label": "Hidden: query Strength (first)",
+        "is_sample": false,
+        "stdin": "18 10 14 12\n0",
+        "expected_stdout": "Stat value: 18"
+      },
+      {
+        "label": "Hidden: query Intelligence (last)",
+        "is_sample": false,
+        "stdin": "10 12 14 16\n3",
+        "expected_stdout": "Stat value: 16"
+      }
+    ]
+  }
+]

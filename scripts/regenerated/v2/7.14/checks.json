@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace Outer {\n    inline namespace Inner {\n        int value = 10;\n    }\n}\n\nint main() {\n    std::cout << Outer::value << \"\\n\";\n    std::cout << Outer::Inner::value << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n10",
+    "explanation_md": "Because `Inner` is declared `inline`, its members are accessible directly through `Outer::`. Both `Outer::value` and `Outer::Inner::value` refer to the same object, so both lines print `10`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary purpose of placing definitions inside an unnamed namespace (e.g. `namespace { int x = 5; }`)?",
+    "options": {
+      "a": "It creates a globally accessible name that other namespaces can import.",
+      "b": "It gives everything inside it internal linkage, making it invisible outside the translation unit.",
+      "c": "It prevents the compiler from optimizing those definitions.",
+      "d": "It is equivalent to declaring everything `inline`."
+    },
+    "answer": "b",
+    "explanation_md": "An unnamed namespace gives all its members internal linkage. They are accessible within the same translation unit but the linker cannot see them from other translation units. This is the modern, preferred alternative to using `static` on global variables and functions."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a correct statement about `inline namespace`?",
+    "options": {
+      "a": "`inline namespace v2` is the same as writing `using namespace v2` inside the enclosing namespace.",
+      "b": "`inline namespace v2` makes `v2`'s members accessible through the enclosing namespace without qualification.",
+      "c": "`inline namespace v2` prevents other code from calling `v2::` directly.",
+      "d": "`inline namespace v2` means every function inside is automatically inlined by the compiler."
+    },
+    "answer": "b",
+    "explanation_md": "The `inline` keyword on a namespace declaration causes its members to be treated as if they also belong to the enclosing namespace, enabling unqualified access through the outer name. It does not suppress qualified access (`Outer::v2::name` still works), and it has nothing to do with function inlining."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer put a shared counter in an unnamed namespace in a header to make it reachable from multiple `.cpp` files. What is wrong?\n\n```cpp\n// counter.h\n#pragma once\nnamespace {\n    int sharedCount = 0;\n}\n\nvoid increment() { ++sharedCount; }\nint getCount()   { return sharedCount; }\n```",
+    "options": {
+      "a": "You cannot define variables inside unnamed namespaces.",
+      "b": "Each translation unit that includes this header gets its own separate copy of `sharedCount`, so increments in one file are invisible in others.",
+      "c": "The unnamed namespace in a header causes a linker error because the symbol is defined twice.",
+      "d": "`increment` and `getCount` must also be inside the unnamed namespace."
+    },
+    "answer": "b",
+    "explanation_md": "An unnamed namespace in a header gives each including translation unit its own private copy of the definitions. There is no shared state; each `.cpp` file has an independent `sharedCount`. The fix is to keep `sharedCount` in a single `.cpp` file with external linkage (or use a static local inside a function)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nnamespace Lib {\n    namespace v1 { int compute(int x) { return x + 1; } }\n    inline namespace v2 { int compute(int x) { return x * 2; } }\n}\n\nint main() {\n    std::cout << Lib::compute(5) << \"\\n\";\n    std::cout << Lib::v1::compute(5) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n6",
+    "explanation_md": "`Lib::compute` resolves to `Lib::v2::compute` because `v2` is the inline namespace, so `5 * 2 = 10` is printed first. `Lib::v1::compute(5)` explicitly selects the old version, returning `5 + 1 = 6`."
+  }
+]

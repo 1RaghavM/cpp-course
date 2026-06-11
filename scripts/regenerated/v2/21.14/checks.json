@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nT addTwo(T a, T b) { return a + b; }\nint main() {\n    std::cout << addTwo(3, 4) << '\\n';\n    std::cout << addTwo(1.5, 2.5) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "7\n4",
+    "explanation_md": "`addTwo(3, 4)` instantiates `addTwo<int>` and returns `3 + 4 = 7`. `addTwo(1.5, 2.5)` instantiates `addTwo<double>` and returns `1.5 + 2.5 = 4.0`. Since `4.0` has no fractional part, `std::cout` prints `4`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Inside a `template <typename T>` class, a member `operator==` needs to compare two instances of the same class type. Which declaration is correct?",
+    "options": {
+      "a": "`template <typename T> bool operator==(const MyClass<T>& rhs) const;`",
+      "b": "`bool operator==(const MyClass& rhs) const;`",
+      "c": "`template <typename U> bool operator==(const MyClass<U>& rhs) const;`",
+      "d": "`static bool operator==(const MyClass& a, const MyClass& b);`"
+    },
+    "answer": "b",
+    "explanation_md": "Inside the template class body, `MyClass` already refers to `MyClass<T>` — the class's own type. A plain `bool operator==(const MyClass& rhs) const` is the correct member signature. Option A would shadow the outer `T`; option C compares different template instantiations; option D is a static function (not the same as a member operator)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When does the compiler report an error for a template function that uses `operator<` on type `T`?",
+    "options": {
+      "a": "When the template is first defined, even before it is called.",
+      "b": "Only when the template is instantiated for a specific type that does not define `operator<`.",
+      "c": "The compiler never reports this error — it silently uses integer comparison instead.",
+      "d": "The linker reports the error, not the compiler."
+    },
+    "answer": "b",
+    "explanation_md": "Template bodies are not fully type-checked at the point of definition. The error surfaces only when the template is *instantiated* — when the compiler tries to generate code for a specific `T` that lacks `operator<`. This is why template errors sometimes appear far from the template's definition."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The following `Pair<T>` template tries to define `operator==` but fails to compile. What is wrong?\n\n```cpp\ntemplate <typename T>\nclass Pair {\n    T m_a, m_b;\npublic:\n    Pair(T a, T b) : m_a{a}, m_b{b} {}\n    template <typename T>          // line X\n    bool operator==(const Pair<T>& rhs) const {\n        return m_a == rhs.m_a && m_b == rhs.m_b;\n    }\n};\n```",
+    "options": {
+      "a": "`rhs` should be passed by value, not by const reference.",
+      "b": "Line X re-declares `T`, shadowing the class-level `T` — the inner `template <typename T>` is redundant and conflicts.",
+      "c": "The operator must be declared `static`.",
+      "d": "`operator==` must be a free function, not a member."
+    },
+    "answer": "b",
+    "explanation_md": "Inside a template class, member functions already have access to the class's template parameter `T`. Adding `template <typename T>` on the member function introduces a second `T` that shadows or conflicts with the outer one. Remove line X entirely — `bool operator==(const Pair& rhs) const` works correctly."
+  }
+]

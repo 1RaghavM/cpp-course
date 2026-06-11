@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Default-Constructed Score",
+    "prompt_md": "## Goal\nWrite a `Score` class that can be constructed with no arguments (defaulting to score 0) or with one integer argument.\n\n## Input\nLine 1: one integer N (0 ≤ N ≤ 1000).\n\n## Output\nPrint exactly two lines:\n- Line 1: `Default: 0`\n- Line 2: `Provided: N` where N is the value read from input.\n\n## Requirements\n1. `Score` must have a `private int m_value`.\n2. Write one constructor with a default argument so that both `Score{}` and `Score{N}` compile.\n3. Provide a `const` member function `getValue()` that returns `m_value`.\n4. `main()` reads N, creates `Score s1` (no argument) and `Score s2{ N }`, and prints both values in the format shown.\n",
+    "starter_code": "#include <iostream>\n\nclass Score {\n    int m_value;\npublic:\n    // TODO: write one constructor with a default argument of 0\n    Score(int value = 0)\n        : m_value{ value }\n    {}\n\n    int getValue() const { return m_value; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    Score s1{};\n    Score s2{ n };\n    std::cout << \"Default: \" << s1.getValue() << \"\\n\";\n    std::cout << \"Provided: \" << s2.getValue() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Score {\n    int m_value;\npublic:\n    Score(int value = 0)\n        : m_value{ value }\n    {}\n\n    int getValue() const { return m_value; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    Score s1{};\n    Score s2{ n };\n    std::cout << \"Default: \" << s1.getValue() << \"\\n\";\n    std::cout << \"Provided: \" << s2.getValue() << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic value",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Default: 0\nProvided: 42\n"
+      },
+      {
+        "label": "Hidden: zero provided",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Default: 0\nProvided: 0\n"
+      },
+      {
+        "label": "Hidden: max value",
+        "is_sample": false,
+        "stdin": "1000\n",
+        "expected_stdout": "Default: 0\nProvided: 1000\n"
+      }
+    ]
+  },
+  {
+    "title": "Buggy Default-Argument Constructor",
+    "prompt_md": "## Goal\nFind and fix the single logic bug in this program. The program should print the area of a `Box` constructed with default dimensions (width=4, height=3) on the first line, and the area of a box with user-supplied dimensions on the second line.\n\n## Input\nLine 1: two integers W and H (1 ≤ W, H ≤ 100), separated by a space.\n\n## Output\nPrint exactly two lines:\n- Line 1: `Default area: 12`\n- Line 2: `Custom area: X` where X is W * H.\n\n## Requirements\n1. The program compiles and runs but prints wrong output.\n2. The bug is a single logic error related to default arguments.\n3. Do not change the output format or add/remove members.\n",
+    "starter_code": "#include <iostream>\n\nclass Box {\n    int m_width;\n    int m_height;\npublic:\n    Box(int width = 3, int height = 4)\n        : m_width{ width }, m_height{ height }\n    {}\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n    Box b1{};\n    Box b2{ w, h };\n    std::cout << \"Default area: \" << b1.area() << \"\\n\";\n    std::cout << \"Custom area: \" << b2.area() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Box {\n    int m_width;\n    int m_height;\npublic:\n    Box(int width = 4, int height = 3)\n        : m_width{ width }, m_height{ height }\n    {}\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n    Box b1{};\n    Box b2{ w, h };\n    std::cout << \"Default area: \" << b1.area() << \"\\n\";\n    std::cout << \"Custom area: \" << b2.area() << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic custom box",
+        "is_sample": true,
+        "stdin": "5 6\n",
+        "expected_stdout": "Default area: 12\nCustom area: 30\n"
+      },
+      {
+        "label": "Hidden: square custom box",
+        "is_sample": false,
+        "stdin": "7 7\n",
+        "expected_stdout": "Default area: 12\nCustom area: 49\n"
+      },
+      {
+        "label": "Hidden: unit custom box",
+        "is_sample": false,
+        "stdin": "1 1\n",
+        "expected_stdout": "Default area: 12\nCustom area: 1\n"
+      }
+    ]
+  }
+]

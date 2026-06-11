@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint g_val { 5 };\n\nvoid increment() { g_val = g_val + 1; }\n\nint main()\n{\n    increment();\n    increment();\n    std::cout << g_val << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`g_val` is a global variable initialized to 5. Each call to `increment` adds 1 to it. After two calls, `g_val` is 7. The output is `7`. Because globals live for the entire program, `increment` modifies the same storage both times."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What value does an uninitialized global `int` variable have in C++?\n\n- a. Indeterminate (undefined behavior to read it).\n- b. Zero — global variables are zero-initialized before `main` runs.\n- c. 1 — the compiler always starts counters at 1.\n- d. Whatever value happens to be at that memory address.",
+    "options": {
+      "a": "Indeterminate (undefined behavior to read it).",
+      "b": "Zero — global variables are zero-initialized before `main` runs.",
+      "c": "1 — the compiler always starts counters at 1.",
+      "d": "Whatever value happens to be at that memory address."
+    },
+    "answer": "b",
+    "explanation_md": "The C++ standard guarantees that variables with static storage duration (which includes all globals) are zero-initialized before any other initialization. An `int` global with no explicit initializer is `0`, not indeterminate. This is different from local variables, which are indeterminate if not initialized."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint g_x { 10 };\n\nint main()\n{\n    int g_x { 20 };\n    std::cout << g_x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "The local variable `g_x { 20 }` in `main` shadows the global `g_x { 10 }`. Inside `main`, the name `g_x` refers to the local. The program prints `20`. The global is hidden but not modified."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Where must a global variable be defined in a C++ source file?\n\n- a. Inside `main()`, before any other statement.\n- b. Inside a namespace block.\n- c. Outside all function definitions, at file scope.\n- d. At the very top of the file, before any `#include` directives.",
+    "options": {
+      "a": "Inside `main()`, before any other statement.",
+      "b": "Inside a namespace block.",
+      "c": "Outside all function definitions, at file scope.",
+      "d": "At the very top of the file, before any `#include` directives."
+    },
+    "answer": "c",
+    "explanation_md": "A global variable is defined at file scope — outside any function. It does not have to be first in the file (it can appear after `#include` lines or other declarations), and it does not have to be inside a namespace (though it may be). The key requirement is that it is not nested inside any function body."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is the `g_` prefix convention used for global variables?\n\n- a. It is required by the C++ standard for global variables.\n- b. It prevents the variable from being modified inside functions.\n- c. It makes the global status visible at the use site, so readers know the variable is not local.\n- d. It tells the linker that the variable should not be exported.",
+    "options": {
+      "a": "It is required by the C++ standard for global variables.",
+      "b": "It prevents the variable from being modified inside functions.",
+      "c": "It makes the global status visible at the use site, so readers know the variable is not local.",
+      "d": "It tells the linker that the variable should not be exported."
+    },
+    "answer": "c",
+    "explanation_md": "The `g_` prefix is a naming convention, not a language requirement. Its purpose is readability: when you see `g_maxScore` inside a function, you immediately know it is a global and not a parameter or local variable. The prefix has no effect on the variable's accessibility, constness, or linkage."
+  }
+]

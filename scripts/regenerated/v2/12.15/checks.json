@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <optional>\n\nint main() {\n    std::optional<int> a = 5;\n    std::optional<int> b;\n    std::cout << a.value_or(99) << '\\n';\n    std::cout << b.value_or(99) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5\n99",
+    "explanation_md": "`a` holds 5, so `a.value_or(99)` returns 5. `b` is empty (default-constructed), so `b.value_or(99)` returns the fallback value 99. Learners who print 99 twice confuse `value_or` with always using the default; learners who print 5 twice forget that `b` is empty."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the safest way to access the value inside a `std::optional<int> opt` when you want a guaranteed exception (not undefined behaviour) if `opt` is empty?",
+    "options": {
+      "a": "`*opt`",
+      "b": "`opt.value()`",
+      "c": "`opt.value_or(0)`",
+      "d": "`opt.get()`"
+    },
+    "answer": "b",
+    "explanation_md": "`opt.value()` throws `std::bad_optional_access` if the optional is empty — defined, catchable behaviour. `*opt` on an empty optional is undefined behaviour. `opt.value_or(0)` is safe but silently substitutes a default rather than signalling an error. `opt.get()` is not a member of `std::optional`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <optional>\n\nstd::optional<int> first_even(const int* arr, int n) {\n    for (int i = 0; i < n; ++i)\n        if (arr[i] % 2 == 0) return arr[i];\n    return std::nullopt;\n}\n\nint main() {\n    int a[] = {1, 3, 5};\n    int b[] = {1, 4, 6};\n    auto ra = first_even(a, 3);\n    auto rb = first_even(b, 3);\n    std::cout << ra.has_value() << '\\n';\n    std::cout << *rb << '\\n';\n}\n```",
+    "options": null,
+    "answer": "0\n4",
+    "explanation_md": "`first_even` over `{1,3,5}` finds no even number and returns `std::nullopt`, so `ra.has_value()` is `false` (0). `first_even` over `{1,4,6}` returns 4 (the first even number), so `*rb` is 4. Learners who print 1 for the first line confuse `has_value()` returning `bool` with it returning the count of elements."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function `std::optional<int> find(...)` returns `std::nullopt` when no result is found. A caller writes `auto idx = find(...);` and then immediately does `std::cout << *idx;` without any check. What is the risk?",
+    "options": {
+      "a": "It always prints 0 because nullopt evaluates to zero",
+      "b": "It causes a compile error because optional cannot be dereferenced",
+      "c": "If `find` returned nullopt, dereferencing an empty optional is undefined behaviour",
+      "d": "It is safe because `auto` deduces int, not optional<int>"
+    },
+    "answer": "c",
+    "explanation_md": "Dereferencing an empty `std::optional` with `*` is undefined behaviour — the compiler does not insert a check, and the program may crash, print garbage, or appear to work. The caller must test `if (idx)` or `idx.has_value()` before using `*idx`. Option d is wrong: `auto idx = find(...)` deduces `std::optional<int>`, not `int`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The function below should return the square root candidate that, when squared, gives exactly `n`, or nothing if no such integer exists (1 ≤ n ≤ 10000). There is one bug — the wrong answer is returned for perfect squares.\n\n```cpp\n#include <optional>\n\nstd::optional<int> intSqrt(int n) {\n    for (int i = 1; i * i <= n; ++i)\n        if (i * i == n) return std::nullopt;  // bug\n    return std::nullopt;\n}\n```",
+    "options": {
+      "a": "The loop condition `i * i <= n` should be `i <= n`",
+      "b": "`return std::nullopt` inside the if should be `return i` — a match should return the value, not empty",
+      "c": "The function should return `std::optional<double>` because square roots are not always integers",
+      "d": "`i * i` causes integer overflow for large n"
+    },
+    "answer": "b",
+    "explanation_md": "The bug is that when the loop finds a perfect square (`i * i == n`), it returns `std::nullopt` — empty — instead of returning `i`. The fix is `return i;`. The function correctly returns `std::nullopt` at the end for numbers with no integer square root. Option d is a distractor: with n ≤ 10000, `i` reaches at most 100, so `i * i` is at most 10000, well within `int` range."
+  }
+]

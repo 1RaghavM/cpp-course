@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Inventory tag with scoped enum and class template",
+    "prompt_md": "## Goal\nBuild a small system that combines a class template with a scoped enum. A `Tagged<T>` struct holds a `Category` (a scoped enum with values `food`, `tool`, `book`) and a value of type `T`. Read a category number and a value from input, store them in a `Tagged<int>`, and print the category name and the value.\n\n## Input\nA single line containing two integers separated by a space. The first integer is `0`, `1`, or `2` (category code: 0=food, 1=tool, 2=book). The second is an arbitrary integer (the value).\n\n## Output\nOne line: `<name>: <value>` followed by a newline, where `<name>` is `food`, `tool`, or `book` depending on the input category.\n\n## Requirements\n1. Define `enum class Category { food, tool, book };` at file scope.\n2. Define `template <typename T> struct Tagged { Category category; T value; };` at file scope.\n3. Read two `int` values from `std::cin`; convert the first to `Category` using `static_cast<Category>(...)`.\n4. Construct a `Tagged<int>` from the category and the value.\n5. Print `<name>: <value>` where `<name>` is determined by a `switch` on the category. End with a newline.\n6. You may assume the first input is always 0, 1, or 2.\n\n## Notes\nThis exercise pulls together scoped enums (13.2/13.6), structs (13.7), and class templates (13.13).",
+    "starter_code": "#include <iostream>\n\n// TODO: define Category and Tagged<T> here\n\nint main()\n{\n    int code{};\n    int v{};\n    std::cin >> code >> v;\n    // TODO: construct a Tagged<int>, then switch on its category to print name: value\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nenum class Category { food, tool, book };\n\ntemplate <typename T>\nstruct Tagged\n{\n    Category category;\n    T value;\n};\n\nint main()\n{\n    int code{};\n    int v{};\n    std::cin >> code >> v;\n    Tagged<int> t{ static_cast<Category>(code), v };\n    switch (t.category)\n    {\n        case Category::food: std::cout << \"food\"; break;\n        case Category::tool: std::cout << \"tool\"; break;\n        case Category::book: std::cout << \"book\"; break;\n    }\n    std::cout << \": \" << t.value << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "0 5\n",
+        "expected_stdout": "food: 5\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "1 42\n",
+        "expected_stdout": "tool: 42\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "2 -3\n",
+        "expected_stdout": "book: -3\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Complete sumPair with an alias template",
+    "prompt_md": "## Goal\nComplete the function `sumPair` so it returns the sum of the two members of a `SameTypePair<int>`. The class template `Pair`, the alias template `SameTypePair`, and `main` are already provided. `main` reads two integers, builds a `SameTypePair<int>` using CTAD, calls `sumPair`, and prints the result.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing the sum of the two integers, followed by a newline.\n\n## Requirements\n1. Implement the function with the exact signature `int sumPair(const SameTypePair<int>& p)`.\n2. Return `p.first + p.second`.\n3. Do not modify the templates, the alias, or `main`.\n4. The program must compile under `g++ -std=c++20 -Wall -Wextra` with no warnings.\n\n## Notes\nThis exercise touches class templates (13.13), CTAD (13.14), alias templates (13.15), and passing structs by const reference (13.10).",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Pair\n{\n    T first;\n    U second;\n};\n\ntemplate <typename T>\nusing SameTypePair = Pair<T, T>;\n\n// TODO: implement sumPair with the exact signature below.\n// The stub returns 0 so the starter compiles; replace it with the real logic.\nint sumPair(const SameTypePair<int>& p)\n{\n    (void)p;\n    return 0;\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    SameTypePair<int> p{ a, b };\n    std::cout << sumPair(p) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Pair\n{\n    T first;\n    U second;\n};\n\ntemplate <typename T>\nusing SameTypePair = Pair<T, T>;\n\nint sumPair(const SameTypePair<int>& p)\n{\n    return p.first + p.second;\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    SameTypePair<int> p{ a, b };\n    std::cout << sumPair(p) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "3 4\n",
+        "expected_stdout": "7\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "-10 10\n",
+        "expected_stdout": "0\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "100 23\n",
+        "expected_stdout": "123\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

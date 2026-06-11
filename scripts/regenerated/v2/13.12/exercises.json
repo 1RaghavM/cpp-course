@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Write a pointer-based struct modifier",
+    "prompt_md": "## Goal\nWrite a function `applyBonus` that takes a `Player*` and an `int` and adds the bonus to the player's score through the pointer.\n\n## Input\nNo stdin. The program uses hardcoded values.\n\n## Output\n```\nBefore: Alice 100\nAfter: Alice 125\n```\n\n## Requirements\n1. Define `struct Player` with `std::string name{ \"unknown\" }` and `int score{ 0 }`.\n2. Write `void applyBonus(Player* p, int bonus)` that uses `->` to add `bonus` to `p->score`. Guard against null pointer before accessing.\n3. In `main`, create `Player alice{ .name=\"Alice\", .score=100 }`, print `Before: alice.name alice.score`, call `applyBonus(&alice, 25)`, then print `After: alice.name alice.score`.\n\n## Notes\n- Print format: `Before: <name> <score>` and `After: <name> <score>`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Player with name and score.\n\n// TODO: Write void applyBonus(Player* p, int bonus).\n//       Use -> to access p->score. Guard against nullptr.\n\nint main() {\n    // TODO: Create alice with name=\"Alice\" and score=100.\n    // TODO: Print \"Before: \" then alice's name and score.\n    // TODO: Call applyBonus(&alice, 25).\n    // TODO: Print \"After: \" then alice's name and score.\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Player {\n    std::string name{ \"unknown\" };\n    int score{ 0 };\n};\n\nvoid applyBonus(Player* p, int bonus) {\n    if (p != nullptr)\n        p->score += bonus;\n}\n\nint main() {\n    Player alice{ .name = \"Alice\", .score = 100 };\n    std::cout << \"Before: \" << alice.name << ' ' << alice.score << '\\n';\n    applyBonus(&alice, 25);\n    std::cout << \"After: \" << alice.name << ' ' << alice.score << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Before: Alice 100\nAfter: Alice 125\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Before: Alice 100\nAfter: Alice 125\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Before: Alice 100\nAfter: Alice 125\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Complete the pointer-reading function",
+    "prompt_md": "## Goal\nComplete `sumCoords` which takes a `const Point*` and returns the sum of `x` and `y` using `->` syntax.\n\n## Input\nNo stdin.\n\n## Output\n```\nSum: 15\nSum: 0\n```\n\n## Requirements\n1. `struct Point` with `int x{ 0 }` and `int y{ 0 }` is already defined.\n2. Complete `int sumCoords(const Point* p)` \u2014 returns `p->x + p->y` when `p` is not null; returns `0` when `p` is null.\n3. `main` is complete; do not modify it.\n4. The function must use `->` to access members (not the dereference-dot form).",
+    "starter_code": "#include <iostream>\n\nstruct Point {\n    int x{ 0 };\n    int y{ 0 };\n};\n\n// TODO: Complete this function.\n// Return p->x + p->y if p is not null, otherwise return 0.\nint sumCoords(const Point* p) {\n    // your code here\n}\n\nint main() {\n    Point pt{ 6, 9 };\n    std::cout << \"Sum: \" << sumCoords(&pt) << '\\n';\n    std::cout << \"Sum: \" << sumCoords(nullptr) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Point {\n    int x{ 0 };\n    int y{ 0 };\n};\n\nint sumCoords(const Point* p) {\n    if (p == nullptr)\n        return 0;\n    return p->x + p->y;\n}\n\nint main() {\n    Point pt{ 6, 9 };\n    std::cout << \"Sum: \" << sumCoords(&pt) << '\\n';\n    std::cout << \"Sum: \" << sumCoords(nullptr) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Sum: 15\nSum: 0\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Sum: 15\nSum: 0\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Sum: 15\nSum: 0\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

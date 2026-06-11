@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nvoid printA()\n{\n    std::cout << \"A\\n\";\n}\n\nvoid printB()\n{\n    printA();\n    std::cout << \"B\\n\";\n}\n\nint main()\n{\n    printB();\n    printA();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\nB\nA",
+    "explanation_md": "When `printB()` is called, it first calls `printA()` which prints `A`, then prints `B`. Back in `main`, the second call to `printA()` prints `A` again. Execution follows each call to its body, then returns to the next statement after the call site."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In C++, what happens if you write `sayHello;` (without parentheses) instead of `sayHello();` inside `main`?",
+    "options": {
+      "a": "It calls the function and runs its body.",
+      "b": "It causes a compile error every time.",
+      "c": "It compiles but the function body does not run.",
+      "d": "It prints the function's name to the screen."
+    },
+    "answer": "c",
+    "explanation_md": "Without parentheses, `sayHello` is a reference to the function object, not a call. On many compilers this produces at most a warning but does compile. The body never executes, so no output is produced. The parentheses `()` are what trigger execution."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid line()\n{\n    std::cout << \"---\\n\";\n}\n\nint main()\n{\n    std::cout << \"start\\n\";\n    line();\n    std::cout << \"end\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "start\n---\nend",
+    "explanation_md": "`main` runs sequentially: it prints `start`, then calls `line` which prints `---`, then prints `end`. After `line()` returns, execution continues at the statement immediately after the call site."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the following program fail to compile?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    greet();\n    return 0;\n}\n\nvoid greet()\n{\n    std::cout << \"Hi\\n\";\n}\n```",
+    "options": {
+      "a": "Functions cannot be named `greet`.",
+      "b": "The compiler reads top-to-bottom and has not seen `greet` before the call.",
+      "c": "You cannot call a `void` function from `main`.",
+      "d": "The `return 0;` must come after `greet()`."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler processes a file from top to bottom. When it encounters `greet()` inside `main`, the function definition for `greet` has not appeared yet, so the compiler reports an undeclared identifier error. Moving the definition above `main` (or adding a forward declaration) fixes it."
+  }
+]

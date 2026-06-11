@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Km {\n    int val;\n    Km(int v) : val{v} {}\n};\nvoid trip(Km k) { std::cout << k.val << \"km\\n\"; }\nint main() {\n    trip(42);\n    trip(Km{10});\n}\n```",
+    "options": null,
+    "answer": "42km\n10km",
+    "explanation_md": "`Km(int)` is not marked `explicit`, so `trip(42)` silently converts `42` to `Km{42}` and prints `42km`. `trip(Km{10})` constructs explicitly and prints `10km`. Both calls succeed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which initialization forms are still valid after marking a constructor `explicit`?\n\n```cpp\nstruct Box {\n    explicit Box(int size);\n};\n```\n\nWhich of the following compiles without error?",
+    "options": {
+      "a": "`Box b = 5;`",
+      "b": "`Box b{5};`",
+      "c": "`void f(Box); f(5);`",
+      "d": "`Box b = {5};`"
+    },
+    "answer": "b",
+    "explanation_md": "`explicit` only blocks implicit conversions and copy-initialization from a mismatched type. Direct-list initialization `Box b{5}` names the type explicitly and is always permitted. Copy initialization `Box b = 5` (option A) and passing a raw `int` to a function expecting `Box` (option C) are both implicit and are blocked. Copy-list initialization `Box b = {5}` (option D) is also blocked by `explicit`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants `Sensor` to reject implicit conversions. They add `explicit` but the code still compiles. What is the bug?\n\n```cpp\n#include <iostream>\nstruct Sensor {\n    int id;\n    explicit Sensor(int i, int channel = 0) : id{i} {}\n};\nvoid read(Sensor s) { std::cout << s.id << \"\\n\"; }\nint main() {\n    read(7);  // student expects compile error\n}\n```",
+    "options": {
+      "a": "`explicit` has no effect on constructors with default arguments.",
+      "b": "`explicit` only applies to copy constructors, not converting constructors.",
+      "c": "The constructor can be called with one argument (because `channel` has a default), so the implicit conversion path still exists, and `explicit` should prevent `read(7)` — but there is a bug: `explicit` IS applied here, so `read(7)` should fail. The student may have a compiler that predates C++11.",
+      "d": "`explicit` blocks direct-list initialization, not implicit calls through function parameters."
+    },
+    "answer": "c",
+    "explanation_md": "The student's understanding is actually correct: `explicit Sensor(int i, int channel = 0)` does block `read(7)` in C++11 and later. If the code compiled, the student is likely using a pre-C++11 compiler or a non-conforming mode where `explicit` on multi-parameter constructors was not yet enforced. The fix is to ensure the compiler is in C++11 mode or newer (`-std=c++20`). The `explicit` keyword applies to any single-argument-callable constructor regardless of default parameters."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it almost always wrong to mark a copy constructor `explicit`?\n\n```cpp\nstruct Widget {\n    explicit Widget(const Widget&) = default;\n};\nWidget a{};\nWidget b = a; // What happens?\n```",
+    "options": {
+      "a": "It compiles fine; `explicit` has no effect on copy constructors.",
+      "b": "It makes `b = a` a compile error because copy initialization is an implicit conversion.",
+      "c": "It causes undefined behavior at runtime when copying.",
+      "d": "It only breaks move construction, not copy construction."
+    },
+    "answer": "b",
+    "explanation_md": "`Widget b = a` is copy initialization, which uses the implicit conversion path. An `explicit` copy constructor blocks this, making even simple copy idioms fail. Standard containers, pass-by-value, and return-by-value all rely on implicit copy construction, so marking it `explicit` breaks almost everything. Copy constructors should virtually never be `explicit`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Does this program compile? If yes, what does it print?\n\n```cpp\n#include <iostream>\nstruct Flag {\n    bool val;\n    explicit Flag(bool b) : val{b} {}\n};\nvoid show(Flag f) { std::cout << (f.val ? \"on\" : \"off\") << \"\\n\"; }\nint main() {\n    Flag f{true};\n    show(f);\n    show(Flag{false});\n}\n```",
+    "options": null,
+    "answer": "on\noff",
+    "explanation_md": "`Flag{true}` is direct-list initialization — `explicit` does not block it. `show(f)` passes an existing `Flag` lvalue, so no conversion occurs. `show(Flag{false})` explicitly constructs a `Flag`. Both calls compile and print `on` then `off`."
+  }
+]
