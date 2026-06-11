@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v{3};\n    std::cout << v.size() << ' ' << v[0] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1 3",
+    "explanation_md": "`std::vector<int> v{3}` uses brace initialisation, which selects the initialiser-list constructor. The vector contains one element with value 3. `size()` is 1 and `v[0]` is 3."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the correct two-step idiom for reading and removing the top of a `std::vector<int>` stack?\n\na) `int top = v.pop_back();`\nb) `v.pop_back(); int top = v.back();`\nc) `int top = v.back(); v.pop_back();`\nd) `int top = v.front(); v.pop_back();`",
+    "options": {
+      "a": "`int top = v.pop_back();` — pop returns the removed element",
+      "b": "`v.pop_back(); int top = v.back();` — remove first, then read",
+      "c": "`int top = v.back(); v.pop_back();` — read then remove",
+      "d": "`int top = v.front(); v.pop_back();` — read front, pop back"
+    },
+    "answer": "c",
+    "explanation_md": "`pop_back()` returns void, so option (a) does not compile. Option (b) reads the element *after* removing it — that is the previous second-to-last, not the top. Option (d) reads the front (oldest element), not the top."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `std::vector<int> v` has `size() == 3` and `capacity() == 8`. After `v.resize(5)`, what are the new values?\n\na) `size() == 5`, `capacity() == 5`\nb) `size() == 5`, `capacity() == 8` (unchanged)\nc) `size() == 5`, `capacity() == 10` (doubled)\nd) `size() == 8`, `capacity() == 8`",
+    "options": {
+      "a": "`size() == 5`, `capacity() == 5`",
+      "b": "`size() == 5`, `capacity() == 8` (unchanged)",
+      "c": "`size() == 5`, `capacity() == 10` (doubled)",
+      "d": "`size() == 8`, `capacity() == 8`"
+    },
+    "answer": "b",
+    "explanation_md": "`resize(5)` grows the size from 3 to 5, value-initialising the two new elements. Because the current capacity (8) is already sufficient, no reallocation occurs and capacity stays at 8. Capacity only changes when size needs to exceed it."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nenum Season { spring, summer, autumn, winter, numSeasons };\n\nint main()\n{\n    std::vector<int> temps(numSeasons, 0);\n    temps[summer]  = 30;\n    temps[winter]  = -5;\n\n    for (int i = 0; i < numSeasons; ++i)\n        std::cout << temps[i] << ' ';\n    std::cout << '\\n';\n}\n```",
+    "options": null,
+    "answer": "0 30 0 -5",
+    "explanation_md": "`numSeasons` is 4, so the vector has four slots initialised to 0. `summer` is index 1 (value 30) and `winter` is index 3 (value -5). The loop prints all four values in order: 0 30 0 -5."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the safest way to iterate a `std::vector<bool>` without a compile error?\n\na) `for (bool& b : v) { ... }`\nb) `for (bool* b = &v[0]; b != &v[v.size()]; ++b) { ... }`\nc) `for (auto b : v) { ... }`\nd) `for (bool&& b : v) { ... }`",
+    "options": {
+      "a": "`for (bool& b : v)` — lvalue reference to each element",
+      "b": "`for (bool* b = &v[0]; ...)` — pointer arithmetic over the buffer",
+      "c": "`for (auto b : v)` — deduce the element type automatically",
+      "d": "`for (bool&& b : v)` — rvalue reference to each element"
+    },
+    "answer": "c",
+    "explanation_md": "`std::vector<bool>` elements are proxy objects, not real `bool` values. `bool&` (option a) and `bool&&` (option d) cannot bind to proxies — compile errors. Option (b) takes the address of a bit, which is also invalid. `auto` deduces the proxy type and works transparently."
+  }
+]

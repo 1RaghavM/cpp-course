@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build and print a Circle struct",
+    "prompt_md": "## Goal\nDefine a `Circle` struct and write a function `printCircle` that prints its fields.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact lines:\n```\nradius=5 color=blue\nradius=12 color=red\n```\n(trailing newline after the second line)\n\n## Requirements\n1. Define a struct `Circle` with members `int radius` and `std::string color` (in that order).\n2. Write a function `void printCircle(Circle c)` that prints exactly: `radius=<r> color=<c>` followed by `'\\n'`.\n3. In `main`, create two `Circle` variables:\n   - First: radius `5`, color `\"blue\"`\n   - Second: radius `12`, color `\"red\"`\n4. Call `printCircle` for each.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO 1: Define struct Circle with members int radius and std::string color\n\n// TODO 2: Write void printCircle(Circle c)\n//         Print: radius=<r> color=<c>  (then '\\n')\n\nint main()\n{\n    // TODO 3: Create Circle c1 with radius=5, color=\"blue\" and print it\n    // TODO 4: Create Circle c2 with radius=12, color=\"red\" and print it\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Circle\n{\n    int radius;\n    std::string color;\n};\n\nvoid printCircle(Circle c)\n{\n    std::cout << \"radius=\" << c.radius << \" color=\" << c.color << '\\n';\n}\n\nint main()\n{\n    Circle c1;\n    c1.radius = 5;\n    c1.color  = \"blue\";\n    printCircle(c1);\n\n    Circle c2;\n    c2.radius = 12;\n    c2.color  = \"red\";\n    printCircle(c2);\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "radius=5 color=blue\nradius=12 color=red\n",
+        "is_sample": true,
+        "stdin": "",
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "radius=5 color=blue\nradius=12 color=red\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "radius=5 color=blue\nradius=12 color=red\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the broken score tracker",
+    "prompt_md": "## Goal\nFix the single bug in the program so it correctly tracks a player's score using a struct.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact lines:\n```\nAlice: 100\nAlice: 150\n```\n(trailing newline after the second line)\n\n## Requirements\n1. The program uses a `Player` struct with members `std::string name` and `int score`.\n2. It creates a `Player`, prints the initial score, adds 50 points, then prints the updated score.\n3. The code contains **one bug** \u2014 find and fix it. Do not change anything else.\n\n## Notes\n- The bug causes the score update to not persist.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nstruct Player\n{\n    std::string name;\n    int score;\n};\n\nvoid addPoints(Player p, int points)\n{\n    p.score += points;\n}\n\nint main()\n{\n    Player alice;\n    alice.name  = \"Alice\";\n    alice.score = 100;\n    std::cout << alice.name << \": \" << alice.score << '\\n';\n    addPoints(alice, 50);\n    std::cout << alice.name << \": \" << alice.score << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Player\n{\n    std::string name;\n    int score;\n};\n\nvoid addPoints(Player& p, int points)\n{\n    p.score += points;\n}\n\nint main()\n{\n    Player alice;\n    alice.name  = \"Alice\";\n    alice.score = 100;\n    std::cout << alice.name << \": \" << alice.score << '\\n';\n    addPoints(alice, 50);\n    std::cout << alice.name << \": \" << alice.score << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Alice: 100\nAlice: 150\n",
+        "is_sample": true,
+        "stdin": "",
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Alice: 100\nAlice: 150\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Alice: 100\nAlice: 150\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

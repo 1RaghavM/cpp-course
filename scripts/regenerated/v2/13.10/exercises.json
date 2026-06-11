@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build a struct-passing distance calculator",
+    "prompt_md": "## Goal\nWrite a function `distance` that takes two `Point` structs by const reference and returns a new `Point` representing the delta (dx, dy).\n\n## Input\nNo stdin. The program uses hardcoded points.\n\n## Output\n```\ndx=5 dy=3\n```\n\n## Requirements\n1. Define `struct Point` with `int x{ 0 }` and `int y{ 0 }`.\n2. Write `Point delta(const Point& a, const Point& b)` that returns `Point{ b.x - a.x, b.y - a.y }`.\n3. In `main`, create `Point p1{ 2, 4 }` and `Point p2{ 7, 7 }`, compute `Point d{ delta(p1, p2) }`, and print `dx=` then the value, space, `dy=` then the value, newline.\n4. Verify that `p1` and `p2` are unchanged after the call (no output needed for this, just ensure the function takes const references).",
+    "starter_code": "#include <iostream>\n\n// TODO: Define struct Point with x and y, both defaulting to 0.\n\n// TODO: Write Point delta(const Point& a, const Point& b)\n//       returning a Point with the difference in each coordinate.\n\nint main() {\n    // TODO: Create p1{2,4} and p2{7,7}.\n    // TODO: Compute d = delta(p1, p2).\n    // TODO: Print dx=<d.x> dy=<d.y>\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Point {\n    int x{ 0 };\n    int y{ 0 };\n};\n\nPoint delta(const Point& a, const Point& b) {\n    return Point{ b.x - a.x, b.y - a.y };\n}\n\nint main() {\n    Point p1{ 2, 4 };\n    Point p2{ 7, 7 };\n    Point d{ delta(p1, p2) };\n    std::cout << \"dx=\" << d.x << \" dy=\" << d.y << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "dx=5 dy=3\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "dx=5 dy=3\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "dx=5 dy=3\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the pass-by-value bug",
+    "prompt_md": "## Goal\nFix the one bug so the function actually modifies the caller's struct.\n\n## Input\nNo stdin.\n\n## Output\n```\nBefore: 0\nAfter: 10\n```\n\n## Requirements\n1. The program defines a `Score` struct with a single `int value` member defaulting to `0`.\n2. `addPoints` is supposed to add `n` points to the caller's `Score`, but there is exactly one bug preventing this.\n3. Find and fix the bug. Do not change `main`.",
+    "starter_code": "#include <iostream>\n\nstruct Score {\n    int value{ 0 };\n};\n\nvoid addPoints(Score s, int n) {  // BUG is here\n    s.value += n;\n}\n\nint main() {\n    Score player{};\n    std::cout << \"Before: \" << player.value << '\\n';\n    addPoints(player, 10);\n    std::cout << \"After: \" << player.value << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Score {\n    int value{ 0 };\n};\n\nvoid addPoints(Score& s, int n) {  // FIX: pass by reference\n    s.value += n;\n}\n\nint main() {\n    Score player{};\n    std::cout << \"Before: \" << player.value << '\\n';\n    addPoints(player, 10);\n    std::cout << \"After: \" << player.value << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Before: 0\nAfter: 10\n",
+        "stdin": "",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Before: 0\nAfter: 10\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Before: 0\nAfter: 10\n",
+        "stdin": "",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

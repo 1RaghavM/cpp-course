@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid tick() {\n    static int n = 0;\n    ++n;\n    std::cout << n << \"\\n\";\n}\n\nint main() {\n    tick();\n    tick();\n    tick();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n2\n3",
+    "explanation_md": "`static int n = 0` is initialised once. Each call increments the surviving value: first call prints 1, second 2, third 3. A learner who thinks `n` resets to 0 on each call would guess `1\\n1\\n1`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid f() {\n    static int x = 5;\n    x *= 2;\n    std::cout << x << \"\\n\";\n}\n\nint main() {\n    f();\n    f();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n20",
+    "explanation_md": "`x` starts at 5 (initialised once). First call: `x = 5 * 2 = 10`, prints 10. Second call: `x = 10 * 2 = 20`, prints 20. The static variable retains its value between calls."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "How many times does the initialiser `= 0` in `static int count = 0;` execute if the containing function is called 10 times?",
+    "options": {
+      "a": "10 times — once per call.",
+      "b": "0 times — static variables are not initialised.",
+      "c": "1 time — on the first call only.",
+      "d": "It depends on whether the function is `inline`."
+    },
+    "answer": "c",
+    "explanation_md": "A static local variable is initialised exactly once, the first time execution reaches its declaration. On all subsequent calls the variable already exists and the initialiser is skipped. This is the defining behaviour that distinguishes static locals from ordinary locals."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between a `static` local variable and a global variable that holds the same data?",
+    "options": {
+      "a": "A static local has static storage duration, but a global does not.",
+      "b": "A static local is only accessible inside the function that declares it; a global can be read and modified from any function in the file.",
+      "c": "A static local is faster to access because it lives on the stack.",
+      "d": "There is no difference — they behave identically."
+    },
+    "answer": "b",
+    "explanation_md": "Both have static storage duration (they persist for the lifetime of the program), but their scope differs: a static local is accessible only within its enclosing function, while a global is visible to every function in the translation unit (or beyond, with `extern`). This scoping is what makes static locals a better design than globals for function-private state."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer expects `getId()` to return 1, 2, 3 on successive calls. What is wrong?\n\n```cpp\n#include <iostream>\n\nint getId() {\n    static int id = 0;\n    id = 0;        // reset before incrementing\n    return ++id;\n}\n\nint main() {\n    std::cout << getId() << \"\\n\";\n    std::cout << getId() << \"\\n\";\n    std::cout << getId() << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`static int id = 0` should be `int id = 0` for the counter to work.",
+      "b": "The line `id = 0;` explicitly resets the static variable on every call, so it always returns 1 instead of incrementing.",
+      "c": "`++id` should be `id++` to return the correct incremented value.",
+      "d": "The function must be declared `inline` for `static` locals to work correctly."
+    },
+    "answer": "b",
+    "explanation_md": "The `static int id = 0` initialiser runs once — that part is correct. But the unconditional `id = 0;` assignment on the next line runs on every call, wiping out the accumulated state. The static variable persists between calls, but then gets immediately reset. The fix is to remove the `id = 0;` line."
+  }
+]

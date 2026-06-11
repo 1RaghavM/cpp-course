@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Circle Class with Area and Perimeter",
+    "prompt_md": "## Goal\nComplete a `Circle` class that stores a radius and provides two member functions: `area()` returning the area, and `perimeter()` returning the circumference.\n\n## Input\n- Line 1: a floating-point number `r` (0.1 ≤ r ≤ 100.0), the radius.\n\n## Output\nPrint exactly two lines:\n```\nArea: <value>\nPerimeter: <value>\n```\nUse `3.14159` for π. Print values with exactly 2 decimal places.\n\n## Requirements\n1. Define a `class Circle` with a `public` member `double radius`.\n2. Define member function `double area()` that returns `3.14159 * radius * radius`.\n3. Define member function `double perimeter()` that returns `2 * 3.14159 * radius`.\n4. `main()` reads `r`, sets `circle.radius = r`, then prints both results.\n5. Use `std::fixed` and `std::setprecision(2)` for formatting.\n\n## Notes\n- Include `<iomanip>` for `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Circle {\npublic:\n    double radius;\n\n    // TODO: replace the return with 3.14159 * radius * radius\n    double area() {\n        return 0.0;\n    }\n\n    // TODO: replace the return with 2 * 3.14159 * radius\n    double perimeter() {\n        return 0.0;\n    }\n};\n\nint main() {\n    double r;\n    std::cin >> r;\n    Circle circle;\n    circle.radius = r;\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << circle.area() << \"\\n\";\n    std::cout << \"Perimeter: \" << circle.perimeter() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Circle {\npublic:\n    double radius;\n\n    double area() {\n        return 3.14159 * radius * radius;\n    }\n\n    double perimeter() {\n        return 2 * 3.14159 * radius;\n    }\n};\n\nint main() {\n    double r;\n    std::cin >> r;\n    Circle circle;\n    circle.radius = r;\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << circle.area() << \"\\n\";\n    std::cout << \"Perimeter: \" << circle.perimeter() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: radius 5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Area: 78.54\nPerimeter: 31.42"
+      },
+      {
+        "label": "Hidden: radius 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Area: 3.14\nPerimeter: 6.28"
+      },
+      {
+        "label": "Hidden: radius 10",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "Area: 314.16\nPerimeter: 62.83"
+      }
+    ]
+  },
+  {
+    "title": "Temperature Converter Class — Complete the Function",
+    "prompt_md": "## Goal\nComplete the member function `toCelsius()` in the `Temperature` class, which converts a Fahrenheit value to Celsius.\n\n## Input\n- Line 1: a floating-point number, the temperature in Fahrenheit.\n\n## Output\nPrint exactly one line:\n```\n<value> C\n```\nPrint the Celsius value with exactly 2 decimal places, followed by a space and the letter `C`.\n\n## Requirements\n1. The class stores temperature in Fahrenheit in member `double fahrenheit`.\n2. Complete `double toCelsius()` using the formula: `(fahrenheit - 32) * 5.0 / 9.0`.\n3. Do not change `main()` or any other part of the starter.\n4. Edge case: 32°F must produce `0.00 C`; 212°F must produce `100.00 C`.\n\n## Notes\n- Use `std::fixed` and `std::setprecision(2)` (already in starter).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\npublic:\n    double fahrenheit;\n\n    // TODO: implement toCelsius() that returns (fahrenheit - 32) * 5.0 / 9.0\n    double toCelsius() {\n        return 0.0;  // placeholder\n    }\n};\n\nint main() {\n    double f;\n    std::cin >> f;\n    Temperature t;\n    t.fahrenheit = f;\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << t.toCelsius() << \" C\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\npublic:\n    double fahrenheit;\n\n    double toCelsius() {\n        return (fahrenheit - 32) * 5.0 / 9.0;\n    }\n};\n\nint main() {\n    double f;\n    std::cin >> f;\n    Temperature t;\n    t.fahrenheit = f;\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << t.toCelsius() << \" C\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 32F = 0C",
+        "is_sample": true,
+        "stdin": "32\n",
+        "expected_stdout": "0.00 C"
+      },
+      {
+        "label": "Hidden: 212F = 100C",
+        "is_sample": false,
+        "stdin": "212\n",
+        "expected_stdout": "100.00 C"
+      },
+      {
+        "label": "Hidden: 98.6F = 37C",
+        "is_sample": false,
+        "stdin": "98.6\n",
+        "expected_stdout": "37.00 C"
+      }
+    ]
+  }
+]

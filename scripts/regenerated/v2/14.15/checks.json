@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nstruct Widget {\n    int val;\n    Widget(int v) : val{v} { std::cout << \"C\" << v << \" \"; }\n    Widget(const Widget& o) : val{o.val} { std::cout << \"CP\" << o.val << \" \"; }\n};\nWidget make(int x) { return Widget{x}; }\nint main() {\n    Widget w = make(7);\n    std::cout << w.val << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "C7 7",
+    "explanation_md": "In C++17, `return Widget{x}` is a prvalue return and `Widget w = make(7)` triggers mandatory copy elision. The Widget is constructed exactly once, directly into `w`. The copy constructor is never called, so only `C7` is printed, followed by the value `7`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following initializations is guaranteed by the C++17 standard to skip the copy constructor, even if the copy constructor is marked `= delete`?\n\n```cpp\nFraction a{1, 3};\nFraction b = a;              // option A\nFraction c = Fraction{1, 3}; // option B\nFraction d(Fraction{1, 3});  // option C\nFraction e = {1, 3};         // option D\n```",
+    "options": {
+      "a": "A — copy from named variable `a`",
+      "b": "B — copy initialization from a prvalue",
+      "c": "C — direct initialization from a prvalue",
+      "d": "D — copy-list initialization from a braced list"
+    },
+    "answer": "b",
+    "explanation_md": "C++17 mandates copy elision only when the source is a prvalue of the same type. `Fraction c = Fraction{1, 3}` fits this exactly — the right-hand side is an unnamed temporary (prvalue), so no copy or move is performed. Option A copies from an lvalue, which invokes the copy constructor. Options C and D also benefit from elision or direct construction but option B is the textbook definition of mandatory copy elision."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to verify that copy elision prevents the copy constructor from running when returning a local variable. They run this and expect to see only `ctor` printed, but they also see `copy`. What is the bug?\n\n```cpp\n#include <iostream>\nstruct Box {\n    int v;\n    Box(int x) : v{x} { std::cout << \"ctor\\n\"; }\n    Box(const Box& o) : v{o.v} { std::cout << \"copy\\n\"; }\n};\nBox make() {\n    Box b{42};\n    return b;\n}\nint main() {\n    Box result = make();\n    std::cout << result.v << \"\\n\";\n}\n```",
+    "options": {
+      "a": "The function should return by reference, not by value.",
+      "b": "Returning a named local variable uses NRVO, which is permitted but not guaranteed by the standard — the copy may legally run.",
+      "c": "The copy constructor has a side effect (printing) which prevents the compiler from eliding it.",
+      "d": "The student should have used `return Box{42}` to guarantee elision."
+    },
+    "answer": "b",
+    "explanation_md": "Named Return Value Optimization (NRVO) applies when a named local variable is returned. Unlike the prvalue case, NRVO is optional in C++17. A conforming compiler is allowed to call the copy constructor here. The student should `return Box{42}` directly (a prvalue return) to get the mandatory C++17 guarantee. Side effects in the copy constructor have no impact on whether the compiler is permitted to elide — option C is incorrect."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? Assume C++17 or later.\n\n```cpp\n#include <iostream>\nstruct Tag {\n    Tag() { std::cout << \"default \"; }\n    Tag(int) { std::cout << \"int-ctor \"; }\n    Tag(const Tag&) { std::cout << \"copy \"; }\n};\nint main() {\n    Tag a = {5};   // copy-list init\n    Tag b = a;     // copy init from lvalue\n    std::cout << \"done\\n\";\n}\n```",
+    "options": null,
+    "answer": "int-ctor copy done",
+    "explanation_md": "`Tag a = {5}` is copy-list initialization; the braced list `{5}` selects `Tag(int)` directly — no copy constructor is invoked. `Tag b = a` copies from the lvalue `a`, so the copy constructor runs and prints `copy`. The output is therefore `int-ctor copy done`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "NRVO (Named Return Value Optimization) can be applied when:\n\n```cpp\nWidget make() {\n    Widget w{10};\n    return w;\n}\n```\n\nWhich statement is most accurate about NRVO in C++17?",
+    "options": {
+      "a": "NRVO is mandatory in C++17 whenever a named local variable is returned.",
+      "b": "NRVO is permitted but not required; a conforming compiler may call the copy/move constructor.",
+      "c": "NRVO only applies when the copy constructor is trivial.",
+      "d": "NRVO is never applied when the return type has a user-defined copy constructor."
+    },
+    "answer": "b",
+    "explanation_md": "C++17 made copy elision mandatory only for prvalue returns. NRVO for named local variables remains a permitted optimization — the standard allows, but does not require, the compiler to elide the copy or move. In practice, almost all modern compilers apply NRVO here, but code must not rely on the copy constructor not running."
+  }
+]

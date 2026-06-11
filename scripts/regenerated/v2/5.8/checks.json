@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\n#include <string_view>\n\nint main() {\n    std::string s{ \"hello\" };\n    std::string_view sv{ s };\n    std::cout << sv.length() << '\\n';\n    std::cout << sv << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5\nhello",
+    "explanation_md": "`std::string_view` stores the pointer and length of the underlying string without copying. `sv.length()` returns 5 (the number of characters in `\"hello\"`), and outputting `sv` prints the characters it views. No allocation occurs."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the **primary** advantage of using `std::string_view` over `const std::string&` as a function parameter?",
+    "options": {
+      "a": "string_view allows the function to modify the string.",
+      "b": "string_view can accept string literals without creating a temporary std::string object.",
+      "c": "string_view automatically null-terminates the viewed characters.",
+      "d": "string_view stores a copy of the characters so it is always safe to return from a function."
+    },
+    "answer": "b",
+    "explanation_md": "A `const std::string&` parameter that is bound to a string literal causes a temporary `std::string` to be constructed (with a heap allocation). `std::string_view` stores only a pointer and length, so passing a literal is free — no temporary is created. Options a, c, and d are false: string_view is read-only, makes no null-termination guarantee, and is *not* safe to return when it views a local."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below is intended to print the word `\"quick\"`. What is wrong?\n\n```cpp\n#include <iostream>\n#include <string>\n#include <string_view>\n\nstd::string_view getWord() {\n    std::string sentence{ \"the quick brown fox\" };\n    return sentence.substr(4, 5);\n}\n\nint main() {\n    std::string_view word{ getWord() };\n    std::cout << word << '\\n';\n}\n```",
+    "options": {
+      "a": "substr returns a std::string, so the returned string_view dangles after the function returns.",
+      "b": "substr's second argument should be 6, not 5.",
+      "c": "std::string_view cannot be created from a substr result.",
+      "d": "The function should return std::string, not std::string_view, because substr is always safe."
+    },
+    "answer": "a",
+    "explanation_md": "`std::string::substr` returns a brand-new `std::string` (a temporary). The function returns a `string_view` into that temporary, but the temporary is destroyed when the function returns. The caller holds a dangling view. The fix is to return `std::string` from the function. Option b is wrong (index 4, length 5 gives `\"quick\"` correctly)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nvoid printFirst(std::string_view sv) {\n    std::cout << sv.substr(0, 3) << '\\n';\n}\n\nint main() {\n    printFirst(\"elephant\");\n    printFirst(\"ant\");\n}\n```",
+    "options": null,
+    "answer": "ele\nant",
+    "explanation_md": "`std::string_view::substr(0, 3)` returns a view of the first 3 characters. For `\"elephant\"` that is `\"ele\"`, and for `\"ant\"` (which has exactly 3 characters) it is `\"ant\"`. Both calls pass string literals directly — no `std::string` is constructed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After the following code, is it safe to use `sv`?\n\n```cpp\nstd::string_view sv;\n{\n    std::string tmp{ \"data\" };\n    sv = tmp;\n}\nstd::cout << sv;\n```",
+    "options": {
+      "a": "Yes — string_view keeps the characters alive.",
+      "b": "Yes — std::string has a reference-counting mechanism that delays destruction.",
+      "c": "No — tmp is destroyed when the block ends, leaving sv as a dangling view.",
+      "d": "No — you cannot assign a std::string to a string_view."
+    },
+    "answer": "c",
+    "explanation_md": "`std::string_view` never owns its data. When `tmp` is destroyed at the closing brace, `sv` still holds a pointer into `tmp`'s (now freed) buffer. Using `sv` after that is undefined behavior. `std::string` does not use reference counting in the standard library."
+  }
+]

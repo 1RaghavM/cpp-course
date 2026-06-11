@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build and Print a Full Name",
+    "prompt_md": "## Goal\nWrite a program that reads a first name and a last name on separate lines and prints the full name along with its character count.\n\n## Input\n- Line 1: a first name (one word, no spaces).\n- Line 2: a last name (one word, no spaces).\n\n## Output\nPrint exactly two lines:\n```\nFull name: <first> <last>\nCharacters: <N>\n```\nwhere `<N>` is the total number of characters in `<first> <last>` (including the space between them).\n\nExample: for input `Alice` / `Smith`, print:\n```\nFull name: Alice Smith\nCharacters: 11\n```\n\n## Requirements\n1. Read first name and last name using `std::cin >>`.\n2. Build the full name by concatenating: `first + \" \" + last`.\n3. Use `.length()` or `.size()` to count the characters.\n4. Print the two lines with the exact labels shown.\n5. Edge case: input `Bo` / `Li` should print `Full name: Bo Li` and `Characters: 5`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string first;\n    std::string last;\n    // TODO: read first and last from std::cin\n    // TODO: build full = first + \" \" + last\n    // TODO: print \"Full name: \" followed by full\n    // TODO: print \"Characters: \" followed by full.length()\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string first;\n    std::string last;\n    std::cin >> first;\n    std::cin >> last;\n    std::string full = first + \" \" + last;\n    std::cout << \"Full name: \" << full << \"\\n\";\n    std::cout << \"Characters: \" << full.length() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Alice Smith",
+        "is_sample": true,
+        "stdin": "Alice\nSmith\n",
+        "expected_stdout": "Full name: Alice Smith\nCharacters: 11"
+      },
+      {
+        "label": "Hidden: short names",
+        "is_sample": false,
+        "stdin": "Bo\nLi\n",
+        "expected_stdout": "Full name: Bo Li\nCharacters: 5"
+      },
+      {
+        "label": "Hidden: longer names",
+        "is_sample": false,
+        "stdin": "Jonathan\nWilliamson\n",
+        "expected_stdout": "Full name: Jonathan Williamson\nCharacters: 19"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Greeting Builder",
+    "prompt_md": "## Goal\nThe program below is supposed to read a name from the user and print a personalized greeting with the name's character count. It compiles and runs but produces wrong output. Find and fix the one logic bug.\n\n## Input\n- Line 1: a name (one word, no spaces).\n\n## Output\nPrint exactly two lines:\n```\nHello, <name>!\nYour name has <N> characters.\n```\nwhere `<N>` is the number of characters in `<name>` only (not including the greeting prefix or suffix).\n\nExample: for input `Ada`, print:\n```\nHello, Ada!\nYour name has 3 characters.\n```\n\n## Requirements\n1. The greeting line must be exactly `Hello, <name>!`.\n2. The count line must report the length of the name, not the full greeting string.\n3. The bug is in how the character count is computed — fix it without changing the output format or variable names.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name;\n    std::cin >> name;\n    std::string greeting = \"Hello, \" + name + \"!\";\n    std::cout << greeting << \"\\n\";\n    std::cout << \"Your name has \" << greeting.length() << \" characters.\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name;\n    std::cin >> name;\n    std::string greeting = \"Hello, \" + name + \"!\";\n    std::cout << greeting << \"\\n\";\n    std::cout << \"Your name has \" << name.length() << \" characters.\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Ada",
+        "is_sample": true,
+        "stdin": "Ada\n",
+        "expected_stdout": "Hello, Ada!\nYour name has 3 characters."
+      },
+      {
+        "label": "Hidden: single character name",
+        "is_sample": false,
+        "stdin": "J\n",
+        "expected_stdout": "Hello, J!\nYour name has 1 characters."
+      },
+      {
+        "label": "Hidden: longer name",
+        "is_sample": false,
+        "stdin": "Christopher\n",
+        "expected_stdout": "Hello, Christopher!\nYour name has 11 characters."
+      }
+    ]
+  }
+]

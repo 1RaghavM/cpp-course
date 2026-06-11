@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string_view>\n\nenum Mode\n{\n    off,\n    on,\n    autoMode,\n};\n\nstd::string_view modeName(Mode m)\n{\n    switch (m)\n    {\n        case off:      return \"off\";\n        case on:       return \"on\";\n        case autoMode: return \"auto\";\n    }\n    return \"?\";\n}\n\nint main()\n{\n    Mode m { autoMode };\n    std::cout << modeName(m) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "auto",
+    "explanation_md": "The variable `m` is initialized with the enumerator `autoMode`. The switch matches the `case autoMode:` arm and returns the string literal `\"auto\"`. The `<<` operator handles `std::string_view` correctly, so `auto` is printed followed by the newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `std::string_view` a better return type than `std::string` for an enum-to-name helper that returns string literals?",
+    "options": {
+      "a": "`std::string_view` is the only return type that can hold a string literal; `std::string` cannot.",
+      "b": "Returning a `std::string` allocates and copies on every call, while a `std::string_view` is a non-owning view into a literal that already lives for the lifetime of the program.",
+      "c": "`std::string_view` returns are required by the C++ standard for enum lookups.",
+      "d": "`std::string` cannot be passed to `std::cout`."
+    },
+    "answer": "b",
+    "explanation_md": "String literals like `\"red\"` have static storage duration — they live for the whole program. A `std::string_view` is a non-owning pointer plus length that views those characters at zero cost. A `std::string` return would copy the characters into a new dynamically allocated buffer on every call, which is pure waste here. Option (a) is wrong (both types can hold the literal), (c) is fabricated, and (d) is also false."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is the bug in this function?\n\n```cpp\n#include <string_view>\n\nenum Color\n{\n    red,\n    green,\n    blue,\n};\n\nstd::string_view colorName(Color c)\n{\n    switch (c)\n    {\n        case red:   return \"red\";\n        case green: return \"green\";\n        case blue:  return \"blue\";\n    }\n}\n```",
+    "options": {
+      "a": "The function should be declared `inline` to compile.",
+      "b": "The switch is missing `break` after each `return`.",
+      "c": "If `c` ever holds a value outside the named enumerators, the function falls off the end without returning — undefined behavior.",
+      "d": "`std::string_view` cannot be used as a return type."
+    },
+    "answer": "c",
+    "explanation_md": "An unscoped enum variable can hold integer values outside the named enumerators (e.g. via `static_cast`). The switch covers `red`, `green`, and `blue` only; if `c` is `static_cast<Color>(99)`, control reaches the end of the function with no return, which is undefined behavior. Adding `return \"unknown\";` after the switch fixes it. Option (b) is wrong because `return` already exits the function; the other options are also incorrect."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\n#include <string_view>\n\nenum Pet\n{\n    cat,\n    dog,\n    fish,\n    none,\n};\n\nPet petFromName(std::string_view name)\n{\n    if (name == \"cat\")  return cat;\n    if (name == \"dog\")  return dog;\n    if (name == \"fish\") return fish;\n    return none;\n}\n\nint main()\n{\n    std::string s { \"dog\" };\n    Pet p { petFromName(s) };\n    std::cout << p << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "`petFromName(\"dog\")` matches the second `if` and returns the enumerator `dog`. The variable `p` is initialized to `dog`, whose underlying integer value is 1 (it is the second unscoped enumerator). Printing `p` triggers the implicit enum-to-int conversion, producing `1`."
+  }
+]

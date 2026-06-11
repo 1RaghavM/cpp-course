@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nenum Fruit { apple, banana, cherry, count };\n\nint main()\n{\n    std::vector<int> qty(count, 10);\n    qty[banana] = 5;\n    std::cout << qty[apple] << ' ' << qty[banana] << ' ' << qty[cherry] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10 5 10",
+    "explanation_md": "`count` equals 3, so the vector is initialised with three elements all set to 10. Then `qty[banana]` (index 1) is overwritten with 5. The three values printed are therefore 10, 5, 10."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `enum Color { red, green, blue, count };`, which expression correctly creates a `std::vector<int>` with exactly one slot per colour?\n\na) `std::vector<int> v(Color::count);`\nb) `std::vector<int> v(count);`\nc) `std::vector<int> v(count - 1);`\nd) `std::vector<int> v(count + 1);`",
+    "options": {
+      "a": "`std::vector<int> v(Color::count);` — scoped-enum syntax for an unscoped enum",
+      "b": "`std::vector<int> v(count);` — sentinel equals the number of real slots",
+      "c": "`std::vector<int> v(count - 1);` — one less than the sentinel",
+      "d": "`std::vector<int> v(count + 1);` — one more for safety"
+    },
+    "answer": "b",
+    "explanation_md": "For an unscoped enum, `count` equals 3 (one past the last real enumerator), which is exactly the number of slots needed. Option (a) uses scope-resolution on an unscoped enum — that compiles but is not idiomatic. Options (c) and (d) produce the wrong size."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program tries to print the score for every subject, but it has one bug. What is it?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nenum Subject { english, math, science, count };\n\nint main()\n{\n    std::vector<int> scores(count);\n    scores[english] = 85;\n    scores[math]    = 90;\n    scores[science] = 78;\n\n    for (int i = 0; i <= count; ++i)\n        std::cout << scores[i] << '\\n';\n}\n```",
+    "options": {
+      "a": "The vector should be constructed with `count + 1` elements",
+      "b": "The loop condition `i <= count` accesses index `count`, which is out of bounds",
+      "c": "Unscoped enumerators cannot be used as vector subscripts",
+      "d": "The initialiser list form should be used instead of the size constructor"
+    },
+    "answer": "b",
+    "explanation_md": "Valid indices are 0 through `count - 1` (i.e., 0, 1, 2). The condition `i <= count` lets `i` reach the value `count` (3), which is one past the last valid index — undefined behaviour. The correct condition is `i < count`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why do scoped enumerators (`enum class`) require an explicit cast when used as vector subscripts, while unscoped enumerators do not?\n\na) `enum class` enumerators have a different underlying type than `int`\nb) `enum class` enumerators do not implicitly convert to integer types\nc) `std::vector` subscript operator only accepts `enum class` values\nd) Scoped enumerators start at 1 by default instead of 0",
+    "options": {
+      "a": "`enum class` enumerators have a different underlying type than `int`",
+      "b": "`enum class` enumerators do not implicitly convert to integer types",
+      "c": "`std::vector` subscript operator only accepts `enum class` values",
+      "d": "Scoped enumerators start at 1 by default instead of 0"
+    },
+    "answer": "b",
+    "explanation_md": "Scoped enumerations deliberately suppress implicit conversions to integers — that is their main safety benefit. The underlying type is still `int` by default, and enumerators still start at 0, so options (a) and (d) are wrong. Option (c) is the opposite of reality: the subscript operator accepts integers, not scoped enumerators directly."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Value via Const Reference",
+    "prompt_md": "## Goal\nWrite a program that reads an integer and prints it twice: once directly and once through a `const int&` alias, to confirm they show the same value.\n\n## Input\n- Line 1: integer `n` (-1000 ≤ n ≤ 1000)\n\n## Output\nPrint exactly two lines:\n```\nDirect: <n>\nRef: <n>\n```\nwhere both lines show the same value.\n\n## Requirements\n1. Read `n` as a named `int`.\n2. Declare `const int& r { n };` — a const lvalue reference to `n`.\n3. Print `Direct: ` followed by `n`, then `Ref: ` followed by `r`.\n4. Do not modify `n` after reading it.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n    // TODO: declare const int& r that aliases n\n    std::cout << \"Direct: \" << n << '\\n';\n    // TODO: print \"Ref: \" followed by r\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n {};\n    std::cin >> n;\n    const int& r { n };\n    std::cout << \"Direct: \" << n << '\\n';\n    std::cout << \"Ref: \" << r << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 42",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Direct: 42\nRef: 42"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-7\n",
+        "expected_stdout": "Direct: -7\nRef: -7"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Direct: 0\nRef: 0"
+      }
+    ]
+  },
+  {
+    "title": "Max of Two via Const Reference Parameter",
+    "prompt_md": "## Goal\nComplete the function `maxOf` that takes two integers by `const int&` and returns the larger one.\n\n## Input\n- Line 1: integer `a` (-500 ≤ a ≤ 500)\n- Line 2: integer `b` (-500 ≤ b ≤ 500)\n\n## Output\nPrint exactly one line: `Max: <value>` where `<value>` is the larger of `a` and `b`. If they are equal, print either value.\n\n## Requirements\n1. Complete `int maxOf(const int& x, const int& y)` — it must return the greater of `x` and `y` using an `if` statement.\n2. The parameters must be `const int&` — do not change the signature.\n3. In `main`, call `maxOf(a, b)` and store the result in a named `int` variable.\n4. Print `Max: ` (capital M, colon, space) followed by the result.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete this function — return the larger of x and y\nint maxOf(const int& x, const int& y)\n{\n    return 0;  // TODO: fix this\n}\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n    // TODO: call maxOf and store in a named int variable, then print\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint maxOf(const int& x, const int& y)\n{\n    if (x >= y)\n        return x;\n    return y;\n}\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n    int result { maxOf(a, b) };\n    std::cout << \"Max: \" << result << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 8",
+        "is_sample": true,
+        "stdin": "3\n8\n",
+        "expected_stdout": "Max: 8"
+      },
+      {
+        "label": "Hidden: first larger",
+        "is_sample": false,
+        "stdin": "10\n2\n",
+        "expected_stdout": "Max: 10"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5\n5\n",
+        "expected_stdout": "Max: 5"
+      }
+    ]
+  }
+]

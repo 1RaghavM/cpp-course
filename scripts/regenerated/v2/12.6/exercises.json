@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print the Larger of Two Integers",
+    "prompt_md": "## Goal\nWrite a function `printLarger` that takes two integers by const lvalue reference and prints the larger one.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\nPrint exactly one line: the larger of the two integers. If they are equal, print either (they are the same).\n\n## Requirements\n1. The function signature must be `void printLarger(const int& a, const int& b)`.\n2. The function must not modify either parameter.\n3. `main` reads `a` and `b`, calls `printLarger(a, b)`, and prints nothing itself.\n4. Edge case: a equals b — print that value.\n5. Edge case: one or both values are negative.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement printLarger using const lvalue references\nvoid printLarger(const int& a, const int& b) {\n    // your code here\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    printLarger(a, b);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printLarger(const int& a, const int& b) {\n    if (a >= b) {\n        std::cout << a << '\\n';\n    } else {\n        std::cout << b << '\\n';\n    }\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    printLarger(a, b);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: first larger",
+        "is_sample": true,
+        "stdin": "10\n3\n",
+        "expected_stdout": "10"
+      },
+      {
+        "label": "Hidden: second larger",
+        "is_sample": false,
+        "stdin": "-5\n2\n",
+        "expected_stdout": "2"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "8\n8\n",
+        "expected_stdout": "8"
+      }
+    ]
+  },
+  {
+    "title": "Count Negative Numbers",
+    "prompt_md": "## Goal\nComplete the function `countNegative` that counts how many of three integers are negative. The function returns the count as an `int`.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\nLine 3: integer `c`.\n\n## Output\nPrint exactly one line: the count of negative integers among `a`, `b`, and `c`.\n\n## Requirements\n1. The function signature must be `int countNegative(const int& a, const int& b, const int& c)`.\n2. The function returns the number of parameters that are strictly less than zero.\n3. `main` reads three integers, calls `countNegative`, and prints the returned value.\n4. Edge case: all three negative (answer 3), none negative (answer 0), zero is not negative.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement countNegative\n// Return the count of parameters that are strictly < 0\nint countNegative(const int& a, const int& b, const int& c) {\n    return 0; // replace this\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << countNegative(a, b, c) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint countNegative(const int& a, const int& b, const int& c) {\n    int count = 0;\n    if (a < 0) ++count;\n    if (b < 0) ++count;\n    if (c < 0) ++count;\n    return count;\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << countNegative(a, b, c) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two negatives",
+        "is_sample": true,
+        "stdin": "-3\n5\n-1\n",
+        "expected_stdout": "2"
+      },
+      {
+        "label": "Hidden: none negative",
+        "is_sample": false,
+        "stdin": "0\n10\n5\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: all negative",
+        "is_sample": false,
+        "stdin": "-1\n-2\n-3\n",
+        "expected_stdout": "3"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "On a typical 64-bit platform, what does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    std::cout << sizeof(char) << \"\\n\";\n    std::cout << sizeof(int)  << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n4",
+    "explanation_md": "`sizeof(char)` is always 1 by the C++ standard. `sizeof(int)` is 4 on virtually all modern 32-bit and 64-bit platforms. The values are guaranteed at compile time and have no runtime cost."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What unit does `sizeof` return values in?",
+    "options": {
+      "a": "Bits",
+      "b": "Bytes",
+      "c": "Kilobytes",
+      "d": "The number of decimal digits the type can hold"
+    },
+    "answer": "b",
+    "explanation_md": "`sizeof` always returns the size in bytes. `sizeof(int)` is typically 4, meaning 4 bytes (32 bits). Option a is a very common mistake — multiplying by 8 gives the bit count."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What type does `sizeof` return?",
+    "options": {
+      "a": "`int`",
+      "b": "`unsigned int`",
+      "c": "`std::size_t`",
+      "d": "`long long`"
+    },
+    "answer": "c",
+    "explanation_md": "The C++ standard specifies that `sizeof` returns a value of type `std::size_t`, which is defined in `<cstddef>`. It is an implementation-defined unsigned integer type, typically 8 bytes on 64-bit platforms."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wants to compute how many bits an `int` holds and writes this code. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    std::cout << sizeof(int) << \" bits\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`sizeof(int)` returns the size in bits, so this is correct.",
+      "b": "`sizeof(int)` returns the size in bytes; to get bits you must multiply by 8.",
+      "c": "`sizeof` does not work on types — only on variables.",
+      "d": "The output label `bits` causes a compile error."
+    },
+    "answer": "b",
+    "explanation_md": "`sizeof` measures bytes, not bits. On a typical platform `sizeof(int)` is 4 (bytes), so the program prints `4 bits` instead of the correct `32 bits`. The fix is `sizeof(int) * 8`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (Assume a typical 64-bit platform.)\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a{10};\n    int b{20};\n    std::cout << sizeof(a + b) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4",
+    "explanation_md": "`sizeof` evaluates the type of its operand without running the expression. `a + b` produces an `int`, so `sizeof(a + b)` is `sizeof(int)`, which is 4 on a typical platform. The addition `10 + 20` never actually executes."
+  }
+]

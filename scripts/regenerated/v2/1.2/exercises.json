@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Uncomment the Hidden Line",
+    "prompt_md": "## Goal\nModify the program so it prints all four lines in the correct order by uncommenting exactly one statement.\n\n## Input\nNone. This program takes no input.\n\n## Output\nPrint exactly four lines:\n```\nAlpha\nBeta\nGamma\nDelta\n```\n\n## Requirements\n1. Remove exactly one `//` comment marker to enable a disabled statement.\n2. Do not add, remove, or reorder any other statements.\n3. The output must match the four lines above exactly, one per line.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Alpha\\n\";\n    // std::cout << \"Beta\\n\";\n    std::cout << \"Gamma\\n\";\n    std::cout << \"Delta\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    std::cout << \"Alpha\\n\";\n    std::cout << \"Beta\\n\";\n    std::cout << \"Gamma\\n\";\n    std::cout << \"Delta\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all four lines",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Alpha\nBeta\nGamma\nDelta"
+      },
+      {
+        "label": "Hidden: exact order check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Alpha\nBeta\nGamma\nDelta"
+      },
+      {
+        "label": "Hidden: no missing lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Alpha\nBeta\nGamma\nDelta"
+      }
+    ]
+  },
+  {
+    "title": "Add Explanatory Comments",
+    "prompt_md": "## Goal\nComplete the program by filling in `print_greeting()` so it prints the required greeting. The function body has a TODO stub — implement it using `std::cout`.\n\n## Input\nNone. This program takes no input.\n\n## Output\nPrint exactly two lines:\n```\nWelcome to cpproad!\nLet the learning begin.\n```\n\n## Requirements\n1. Implement the body of `print_greeting()` using exactly two `std::cout` statements.\n2. Do not modify `main()` or the function signature.\n3. Add at least one `//` comment inside `print_greeting()` explaining what it does.\n4. The output must match the two lines above exactly.\n\n## Notes\n- You may use `\\n` or `std::endl` to end each line.",
+    "starter_code": "#include <iostream>\n\nvoid print_greeting()\n{\n    // TODO: print the two greeting lines using std::cout\n}\n\nint main()\n{\n    print_greeting();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid print_greeting()\n{\n    // Print the welcome banner and motivational line\n    std::cout << \"Welcome to cpproad!\\n\";\n    std::cout << \"Let the learning begin.\\n\";\n}\n\nint main()\n{\n    print_greeting();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two-line greeting",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Welcome to cpproad!\nLet the learning begin."
+      },
+      {
+        "label": "Hidden: exact text match",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Welcome to cpproad!\nLet the learning begin."
+      },
+      {
+        "label": "Hidden: no extra lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Welcome to cpproad!\nLet the learning begin."
+      }
+    ]
+  }
+]

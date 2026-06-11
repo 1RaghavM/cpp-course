@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Transpose a 2x3 std::array Grid",
+    "prompt_md": "## Goal\nRead a 2×3 grid of integers and print its transpose as a 3×2 grid.\n\n## Input\n- 2 lines, each containing 3 space-separated integers.\n\n## Output\n- 3 lines, each containing 2 space-separated integers (the transposed values).\n- No trailing space after the last number on each line.\n\n## Requirements\n1. Use `std::array<std::array<int, 3>, 2>` to store the input grid.\n2. Use `std::array<std::array<int, 2>, 3>` to store the transposed result.\n3. Build the transposed array with nested loops: `transposed[c][r] = grid[r][c]`.\n4. Print the transposed grid row by row, values separated by a single space.\n5. Hidden tests cover grids with negative values and a grid of all zeros.\n\n## Notes\n- Include `<array>` and `<iostream>` only.",
+    "starter_code": "#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array<std::array<int, 3>, 2> grid{};\n\n    // TODO: read 2 rows of 3 integers each into 'grid'\n\n    std::array<std::array<int, 2>, 3> transposed{};\n\n    // TODO: fill 'transposed' so that transposed[c][r] == grid[r][c]\n\n    // TODO: print 'transposed' row by row, values separated by a single space\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array<std::array<int, 3>, 2> grid{};\n\n    for (std::size_t r = 0; r < grid.size(); ++r)\n        for (std::size_t c = 0; c < grid[r].size(); ++c)\n            std::cin >> grid[r][c];\n\n    std::array<std::array<int, 2>, 3> transposed{};\n\n    for (std::size_t r = 0; r < grid.size(); ++r)\n        for (std::size_t c = 0; c < grid[r].size(); ++c)\n            transposed[c][r] = grid[r][c];\n\n    for (std::size_t r = 0; r < transposed.size(); ++r)\n    {\n        for (std::size_t c = 0; c < transposed[r].size(); ++c)\n        {\n            if (c > 0) std::cout << ' ';\n            std::cout << transposed[r][c];\n        }\n        std::cout << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive values",
+        "is_sample": true,
+        "stdin": "1 2 3\n4 5 6\n",
+        "expected_stdout": "1 4\n2 5\n3 6\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-1 -2 -3\n-4 -5 -6\n",
+        "expected_stdout": "-1 -4\n-2 -5\n-3 -6\n"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0\n0 0 0\n",
+        "expected_stdout": "0 0\n0 0\n0 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Grid Diagonal Sum Bug Fix",
+    "prompt_md": "## Goal\nThe program below reads a 3×3 grid and is supposed to print the sum of its main diagonal (top-left to bottom-right). It compiles cleanly but produces a wrong answer — find and fix the one logic bug.\n\n## Input\n- 3 lines, each containing 3 space-separated integers.\n\n## Output\n- Print exactly one line: `Diagonal sum: X` where X is the sum of elements `grid[0][0]`, `grid[1][1]`, `grid[2][2]`.\n\n## Requirements\n1. The bug is a logic error, not a compile error.\n2. The starter compiles and runs, but gives a wrong diagonal sum for most inputs.\n3. After your fix, the program must print the correct sum for all inputs.\n4. Hidden tests cover a grid of all 1s (diagonal sum = 3) and a grid with negative diagonal values.\n\n## Notes\n- Do not change the `main()` structure or the output format.",
+    "starter_code": "#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array<std::array<int, 3>, 3> grid{};\n\n    for (std::size_t r = 0; r < grid.size(); ++r)\n        for (std::size_t c = 0; c < grid[r].size(); ++c)\n            std::cin >> grid[r][c];\n\n    int sum = 0;\n    for (std::size_t r = 0; r < grid.size(); ++r)\n        sum += grid[r][0];  // BUG: always uses column 0 instead of column r\n\n    std::cout << \"Diagonal sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array<std::array<int, 3>, 3> grid{};\n\n    for (std::size_t r = 0; r < grid.size(); ++r)\n        for (std::size_t c = 0; c < grid[r].size(); ++c)\n            std::cin >> grid[r][c];\n\n    int sum = 0;\n    for (std::size_t r = 0; r < grid.size(); ++r)\n        sum += grid[r][r];  // fixed: use column r for the main diagonal\n\n    std::cout << \"Diagonal sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1 2 3 / 4 5 6 / 7 8 9 (diagonal 1+5+9=15)",
+        "is_sample": true,
+        "stdin": "1 2 3\n4 5 6\n7 8 9\n",
+        "expected_stdout": "Diagonal sum: 15\n"
+      },
+      {
+        "label": "Hidden: all ones (diagonal sum = 3)",
+        "is_sample": false,
+        "stdin": "1 1 1\n1 1 1\n1 1 1\n",
+        "expected_stdout": "Diagonal sum: 3\n"
+      },
+      {
+        "label": "Hidden: negative diagonal values",
+        "is_sample": false,
+        "stdin": "-1 0 0\n0 -2 0\n0 0 -3\n",
+        "expected_stdout": "Diagonal sum: -6\n"
+      }
+    ]
+  }
+]

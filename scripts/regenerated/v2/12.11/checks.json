@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nvoid changePtr(int* p, int* other) {\n    p = other;\n}\nint main() {\n    int a { 10 }, b { 20 };\n    int* ptr { &a };\n    changePtr(ptr, &b);\n    std::cout << *ptr << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "`changePtr` receives `p` as a copy of `ptr`. Assigning `p = other` changes only the local copy inside the function. The caller's `ptr` still points to `a`, so `*ptr` is 10."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What parameter type allows a function to change *which address* the caller's pointer holds?",
+    "options": {
+      "a": "`int*` — the usual pointer type",
+      "b": "`const int*` — a pointer to const",
+      "c": "`int**` — a pointer to a pointer",
+      "d": "`int&` — an lvalue reference"
+    },
+    "answer": "c",
+    "explanation_md": "To modify the caller's pointer variable itself (not just what it points at), the function needs the address of that pointer — hence `int**`. Inside the function, `*pptr = newAddr` writes through to the caller's pointer. An `int*&` reference to the pointer would also work, but the question asks for the pointer-to-pointer option."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The function is supposed to reset the caller's pointer to `nullptr`, but it doesn't work. What is the bug?\n\n```cpp\n#include <iostream>\nvoid resetToNull(int* ptr) {\n    ptr = nullptr;\n}\nint main() {\n    int x { 5 };\n    int* p { &x };\n    resetToNull(p);\n    std::cout << (p == nullptr ? \"null\" : \"not null\") << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`nullptr` cannot be assigned to an `int*`",
+      "b": "The parameter must be `int**` (or `int*&`) so the caller's pointer is modified",
+      "c": "`p` must be declared `const int*` before passing it",
+      "d": "`p == nullptr` should be `*p == nullptr`"
+    },
+    "answer": "b",
+    "explanation_md": "The function receives a copy of the pointer. Assigning `ptr = nullptr` changes only that local copy; the caller's `p` is unaffected. To change the caller's pointer, declare the parameter as `int** ptr` and write `*ptr = nullptr`, then call `resetToNull(&p)`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer a reference parameter over a pointer parameter?",
+    "options": {
+      "a": "When the argument might be `nullptr`",
+      "b": "When the function should not be able to modify the value",
+      "c": "When the argument is mandatory and will never be `nullptr`",
+      "d": "When you are calling a C-style library function"
+    },
+    "answer": "c",
+    "explanation_md": "References cannot be null, so they are safer and cleaner when the argument is always required. Pointer parameters are appropriate when null is a meaningful sentinel (optional argument) or when interfacing with C APIs. Making a parameter `const T*` vs `const T&` is roughly equivalent for read-only access, but a reference conveys that the argument is mandatory."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nvoid reseat(int** pptr, int* target) {\n    *pptr = target;\n}\nint main() {\n    int a { 1 }, b { 99 };\n    int* p { &a };\n    reseat(&p, &b);\n    std::cout << *p << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "99",
+    "explanation_md": "`reseat` receives a pointer to `p` (type `int**`). `*pptr = target` writes `&b` into `p`. After the call, `p` points to `b`, so `*p` is 99."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "You add a watch on the variable `sum` (which is declared inside function `add`). You are paused at a breakpoint inside `main`, *outside* `add`. What will the watch panel show for `sum`?",
+    "options": {
+      "a": "The last value `sum` had before `add` returned.",
+      "b": "0, because local variables are reset to zero when out of scope.",
+      "c": "An error or \"not in scope\" message, because `sum` does not exist in the current stack frame.",
+      "d": "The same value as the return value of `add`."
+    },
+    "answer": "c",
+    "explanation_md": "Local variables only exist while their enclosing function is on the call stack. When `add` has returned and you are paused in `main`, the variable `sum` is gone. The debugger cannot evaluate it and reports an out-of-scope error. Beginners often expect watches to persist across function boundaries, but they do not."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "A developer uses `std::cerr` to simulate watching intermediate values. What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint calc(int x, int y) {\n    int a = x + y;\n    std::cerr << \"[watch] a=\" << a << \"\\n\";\n    int b = a * x;\n    std::cerr << \"[watch] b=\" << b << \"\\n\";\n    return b - y;\n}\n\nint main() {\n    std::cout << calc(3, 2) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "13",
+    "explanation_md": "`a = 3 + 2 = 5`. `b = 5 * 3 = 15`. Return `15 - 2 = 13`. The cerr lines go to stderr only. Stdout receives `13`. Tracing through intermediate values manually is exactly what the watch window does automatically in an IDE."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the advantage of watching an expression like `a * (b - 1)` rather than watching `a` and `b` separately?",
+    "options": {
+      "a": "Watching compound expressions is faster for the debugger to compute.",
+      "b": "You can observe the derived value directly instead of mentally combining two separate numbers each time you step.",
+      "c": "It prevents the variables `a` and `b` from going out of scope.",
+      "d": "Compound watches automatically fix bugs in the watched expression."
+    },
+    "answer": "b",
+    "explanation_md": "When you watch `a * (b - 1)`, the debugger computes and displays the result of that full expression at every step, saving you from doing the arithmetic in your head. This reduces the chance of making a mental-arithmetic mistake while debugging. Options a, c, and d are false."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint offset_product(int base, int offset) {\n    std::cerr << \"[watch] base*(offset-1)=\"\n              << base * (offset - 1) << \"\\n\";\n    return base * (offset - 1);\n}\n\nint main() {\n    std::cout << offset_product(6, 4) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "18",
+    "explanation_md": "`base * (offset - 1) = 6 * (4 - 1) = 6 * 3 = 18`. The cerr message goes to stderr; stdout prints `18`. This mirrors watching a compound expression in a debugger: you see the full result, not just `base` and `offset` separately."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After adding a watch expression to the debugger and rerunning the program, a bug you previously observed seems to have disappeared. What is the most likely explanation?",
+    "options": {
+      "a": "The watch expression fixed the bug by observing the variable.",
+      "b": "Watches inject extra instructions that change the program's output.",
+      "c": "Something else changed — perhaps the program was rebuilt with corrected source, or prior run state was cleaned up.",
+      "d": "Watches only work when there is no bug; the bug never existed."
+    },
+    "answer": "c",
+    "explanation_md": "Watches are read-only. They observe values but cannot modify them or change program behavior. If a bug disappeared after adding a watch, the cause is external: a successful recompile fixed a stale build, a global state was reset between runs, or the bug was intermittent. Never attribute a fix to adding a watch."
+  }
+]

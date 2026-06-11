@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    std::weak_ptr<int> w;\n    {\n        auto s = std::make_shared<int>(5);\n        w = s;\n        std::cout << s.use_count() << \"\\n\";\n    }\n    std::cout << w.expired() << \"\\n\";\n    auto locked = w.lock();\n    std::cout << (locked ? \"alive\" : \"dead\") << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n1\ndead",
+    "explanation_md": "Assigning to a `weak_ptr` does not change `use_count()` — it stays at 1. After the block, the `shared_ptr` `s` destructs and the int is deleted. `w.expired()` returns true (1). `w.lock()` returns a null `shared_ptr` because the object is gone, so the ternary prints \"dead\"."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary purpose of `std::weak_ptr`?",
+    "options": {
+      "a": "To give faster access to a shared object than shared_ptr provides",
+      "b": "To observe a shared object without contributing to its reference count, breaking potential cycles",
+      "c": "To enable move semantics on shared_ptr",
+      "d": "To hold a reference to a unique_ptr without owning it"
+    },
+    "answer": "b",
+    "explanation_md": "`weak_ptr` is a non-owning observer. It holds a reference to the control block but does not increment the strong reference count, so it cannot prevent the managed object from being deleted. This makes it the correct tool for back-pointers and cycle-breaking. It has nothing to do with move semantics (option c) and cannot observe a `unique_ptr` (option d)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `weak_ptr::lock()` return if the managed object has already been deleted?",
+    "options": {
+      "a": "A shared_ptr pointing to the freed memory (unsafe access)",
+      "b": "An empty (null) shared_ptr",
+      "c": "The last known value of the object before deletion",
+      "d": "A compile-time error"
+    },
+    "answer": "b",
+    "explanation_md": "`lock()` atomically checks whether the strong reference count is greater than zero. If the object is gone, it returns a default-constructed (null) `shared_ptr<T>`. You must always check the result with `if (locked)` before dereferencing."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is meant to print the value if it is still alive, but it crashes. What is the bug?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    std::weak_ptr<int> w;\n    {\n        auto s = std::make_shared<int>(42);\n        w = s;\n    }\n    auto locked = w.lock();\n    std::cout << *locked << \"\\n\"; // always safe?\n    return 0;\n}\n```",
+    "options": {
+      "a": "`weak_ptr` cannot be assigned from `shared_ptr`",
+      "b": "The shared object is deleted when `s` goes out of scope; `locked` is null and dereferencing it is undefined behavior",
+      "c": "`w.lock()` throws an exception when the object is expired",
+      "d": "`locked` must be declared as `weak_ptr<int>` not `auto`"
+    },
+    "answer": "b",
+    "explanation_md": "After the inner block, `s` destructs and the integer is freed. `w.lock()` returns a null `shared_ptr`. The code then dereferences null — undefined behavior, typically a crash. The fix is to wrap the dereference in `if (locked) { std::cout << *locked; }`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <memory>\n\nint main() {\n    auto a = std::make_shared<int>(10);\n    std::weak_ptr<int> w = a;\n    if (auto lk = w.lock()) {\n        std::cout << \"count: \" << a.use_count() << \"\\n\";\n    }\n    std::cout << \"after: \" << a.use_count() << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "count: 2\nafter: 1",
+    "explanation_md": "Inside the if-block, `lk` is a `shared_ptr` that shares ownership — `use_count()` is 2. Once the if-block ends, `lk` destructs and the count returns to 1. The object is still alive because `a` holds it."
+  }
+]

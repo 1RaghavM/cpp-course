@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 1 };\n    {\n        int x { 2 };\n        x = 3;\n    }\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "The inner block declares its own `x`, separate from the outer one. Assigning `3` to `x` inside the block modifies only the inner variable. Once the block ends, the inner `x` is destroyed and the outer `x` (still `1`) becomes visible again."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint val { 10 };\n\nvoid show(int val)\n{\n    std::cout << val << '\\n';\n}\n\nint main()\n{\n    val = 7;\n    show(42);\n    std::cout << val << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42\n7",
+    "explanation_md": "Inside `show`, the parameter `val` shadows the global `val`. `std::cout << val` prints the parameter `42`, not the global. Back in `main`, `val` refers to the global again, which was set to `7`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A local variable in an inner block has the same name as a variable in the enclosing function. Which statement is true?",
+    "options": {
+      "a": "The code does not compile because two variables cannot share a name.",
+      "b": "Inside the inner block, the inner variable is used; outside the block, the outer variable is used.",
+      "c": "Both variables are accessible throughout the function using the same name.",
+      "d": "The outer variable is destroyed when the inner block is entered."
+    },
+    "answer": "b",
+    "explanation_md": "Shadowing is legal in C++. Inside the inner block, the inner declaration hides the outer one. Once the inner block ends and that variable goes out of scope, the outer variable becomes visible again. The outer variable is never destroyed — it lives until the end of its own scope."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does the unqualified scope resolution operator `::x` mean?",
+    "options": {
+      "a": "The most recently declared variable named `x`.",
+      "b": "The `x` in the global namespace, bypassing any local shadowing.",
+      "c": "A compile-time constant named `x`.",
+      "d": "The `x` declared in the innermost enclosing block."
+    },
+    "answer": "b",
+    "explanation_md": "An empty left-hand side before `::` explicitly names the global namespace. This bypasses any local variable that shadows a global with the same name. It is a diagnostic escape hatch, not a recommended coding style."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to double the value of `result` and then print it, but it always prints `0`. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int result { 0 };\n    {\n        int result { 5 };\n        result = result * 2;\n    }\n    std::cout << result << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Multiplying an `int` by `2` causes integer overflow.",
+      "b": "The inner block declares a new `result` that shadows the outer one; the outer `result` is never modified.",
+      "c": "The inner `result` is uninitialized, causing undefined behavior.",
+      "d": "`result * 2` is evaluated before `result` is assigned, giving 0."
+    },
+    "answer": "b",
+    "explanation_md": "The inner block declares `int result { 5 }`, a completely separate variable from the outer `int result { 0 }`. All writes inside the block affect only the inner `result`. When the block ends, the inner variable is destroyed and the outer `result` (still `0`) is what `std::cout` sees."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    const char* p = \"Coder\";\n    std::cout << p << '\\n';\n    std::cout << *p << '\\n';\n    std::cout << *(p + 2) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Coder\nC\nd",
+    "explanation_md": "`p` points at the first character of the literal \"Coder\". `<<` on a `const char*` prints all characters until `'\\0'`, so the first line is `Coder`. `*p` dereferences to `'C'`, the first character. `*(p + 2)` advances two positions past 'C' and 'o', landing on `'d'`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why must you write `const char* msg = \"Hello\";` rather than `char* msg = \"Hello\";` in C++?",
+    "options": {
+      "a": "Because `char*` is not large enough to hold a string",
+      "b": "Because string literals are stored in read-only memory and must not be modified through the pointer",
+      "c": "Because `const char*` automatically appends the null terminator",
+      "d": "Because `char*` requires a cast before it can hold any address"
+    },
+    "answer": "b",
+    "explanation_md": "String literals reside in read-only (static) memory. Assigning the address to a non-`const` pointer creates the false impression that you can modify those bytes. Writing through such a pointer is undefined behavior and will likely crash. `const char*` makes the read-only nature explicit. Option (a), (c), and (d) are all incorrect — the pointer width and the null terminator are unrelated to the `const` qualifier."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program intends to check whether two inputs are the same word, but it does not work correctly. Find the bug.\n\n```cpp\n#include <iostream>\nint main()\n{\n    const char* a = \"apple\";\n    const char* b = \"apple\";\n    if (a == b)\n        std::cout << \"same\\n\";\n    else\n        std::cout << \"different\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The program uses `const char*` instead of `char[]`",
+      "b": "`==` compares pointer addresses, not the string contents, so the result is implementation-defined",
+      "c": "You cannot initialize two `const char*` variables with the same string literal",
+      "d": "The `if` condition should use `!= nullptr` before comparing"
+    },
+    "answer": "b",
+    "explanation_md": "`==` on two `const char*` values compares the stored addresses, not the characters they point to. Some compilers merge identical literals so `a == b` is true, but this is not guaranteed by the standard. To compare string contents you need `std::strcmp` from `<cstring>`, or use `std::string` which overloads `==` for content comparison."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is stored in each element of the array `const char* colors[] = {\"red\", \"green\", \"blue\"};`?",
+    "options": {
+      "a": "The actual characters of each color word, null-terminated, inline in the array",
+      "b": "A pointer to the first character of each string literal",
+      "c": "The integer ASCII values of the first character of each word",
+      "d": "A reference to a `std::string` object"
+    },
+    "answer": "b",
+    "explanation_md": "An array of `const char*` stores pointers, one per element. Each pointer points to the first character of the corresponding string literal in read-only program memory. The array itself contains only pointer values (typically 4 or 8 bytes each), not the characters themselves."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    const char* words[3] = {\"cat\", \"dog\", \"bird\"};\n    for (int i = 0; i < 3; ++i)\n        std::cout << words[i][0] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "c\nd\nb",
+    "explanation_md": "`words[i]` is a `const char*` pointing to the i-th string literal. Applying `[0]` to it gives the first character of that literal. So `words[0][0]` is `'c'`, `words[1][0]` is `'d'`, and `words[2][0]` is `'b'`."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nvoid inner(int x)\n{\n    std::cout << x + 1 << '\\n';\n}\n\nvoid outer(int x)\n{\n    inner(x * 2);\n}\n\nint main()\n{\n    outer(3);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`outer(3)` calls `inner(3 * 2)` = `inner(6)`, which prints `6 + 1 = 7`. The call stack at the point of printing is: `inner` → `outer` → `main`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When you pause at a breakpoint inside a deeply nested function and click on a *parent* frame in the call stack panel, what happens?",
+    "options": {
+      "a": "The program resumes execution from that parent frame.",
+      "b": "The editor jumps to the call site in the parent frame and shows that frame's local variables, but execution stays paused at the original breakpoint.",
+      "c": "All frames below the selected one are popped from the stack.",
+      "d": "The debugger sets a new breakpoint at the parent frame's call site."
+    },
+    "answer": "b",
+    "explanation_md": "Clicking a frame in the call stack panel is purely navigational: the editor moves to that frame's call site and the variable watch reflects that frame's locals. Execution does not resume or rewind — it remains paused at the original breakpoint location."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You crash inside function `f3`, which was called by `f2`, which was called by `f1`, which was called by `main`. The call stack shows four frames with `f3` at the top. Where is the most likely location of the root cause?",
+    "options": {
+      "a": "Always in `f3`, because that is where execution stopped.",
+      "b": "Always in `main`, because that is where execution started.",
+      "c": "Potentially in any frame — you must inspect each frame's variables to locate the bad value.",
+      "d": "In `f2`, because it is one frame below the crash site."
+    },
+    "answer": "c",
+    "explanation_md": "The top frame shows *where* execution stopped, not *where* the bug originated. A wrong value can be passed down through every frame before manifesting as a crash. Clicking through each frame and inspecting its locals is the correct diagnostic approach."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "How many active frames does the call stack show when execution is paused at the `std::cout` line in `c` below?\n\n```cpp\n#include <iostream>\n\nvoid c()\n{\n    std::cout << \"here\\n\";\n}\n\nvoid b() { c(); }\nvoid a() { b(); }\n\nint main()\n{\n    a();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "here",
+    "explanation_md": "The program prints `here` and exits normally. At the paused `std::cout` line inside `c`, the call stack has four frames: `c` → `b` → `a` → `main`. The question asks what the program prints, which is the single word `here` followed by a newline."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wants to trace the value flowing through this chain but reports that clicking the `helper` frame in the call stack shows a different `val` than expected. What is wrong?\n\n```cpp\n#include <iostream>\n\nvoid helper(int val)\n{\n    std::cout << val << '\\n';\n}\n\nvoid caller(int x)\n{\n    int val = x + 5;\n    helper(val);\n}\n\nint main()\n{\n    caller(10);\n    return 0;\n}\n```",
+    "options": {
+      "a": "The variable `val` in `helper` is uninitialized, so the output is undefined.",
+      "b": "There is no bug — `helper` receives `15` (10+5) and prints it correctly; the programmer was inspecting the `caller` frame's `val`, which is also `15`.",
+      "c": "The programmer confused the `val` parameter in `helper` with the `val` local variable in `caller`; both hold `15` but are separate slots — there is no mismatch.",
+      "d": "Clicking `caller` in the call stack modifies the value of `val` in `helper`."
+    },
+    "answer": "c",
+    "explanation_md": "Both `helper`'s parameter `val` and `caller`'s local `val` hold `15` because `caller` computes `10 + 5 = 15` and passes it. They are separate memory slots in separate frames, but their values are identical — so any apparent mismatch is the programmer misreading which frame is highlighted, not an actual bug."
+  }
+]

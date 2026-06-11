@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Area via Composed Points",
+    "prompt_md": "## Goal\nBuild a `Rectangle` class that composes two `Point` structs and computes its area.\n\n## Input\n- Line 1: four space-separated doubles: `x1 y1 x2 y2` representing the top-left and bottom-right corners.\n\n## Output\nPrint exactly one line: `Area: <value>` where `<value>` is the area as a double with 2 decimal places.\n\n## Requirements\n1. Define a `struct Point` with `double x` and `double y` members.\n2. Define a `class Rectangle` that composes two `Point` members (by value) named `topLeft` and `bottomRight`.\n3. `Rectangle` must have a constructor taking `(double x1, double y1, double x2, double y2)`.\n4. `Rectangle` must have a `double area() const` method that returns `(bottomRight.x - topLeft.x) * (bottomRight.y - topLeft.y)`. Treat inputs so that x2 > x1 and y2 > y1.\n5. Print with `std::fixed` and `std::setprecision(2)`.\n6. No dynamic allocation.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nstruct Point {\n    double x{};\n    double y{};\n};\n\nclass Rectangle {\n    // TODO: add two Point members named topLeft and bottomRight (type Point)\n    Point topLeft;\n    Point bottomRight;\npublic:\n    // TODO: implement this constructor using member initializer list\n    Rectangle(double x1, double y1, double x2, double y2)\n        : topLeft{x1, y1}, bottomRight{x2, y2}\n    {}\n    // TODO: implement area() to return (width) * (height)\n    double area() const {\n        return 0.0;  // replace with correct formula\n    }\n};\n\nint main() {\n    double x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Rectangle r{x1, y1, x2, y2};\n    std::cout << std::fixed << std::setprecision(2)\n              << \"Area: \" << r.area() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nstruct Point {\n    double x{};\n    double y{};\n};\n\nclass Rectangle {\n    Point topLeft;\n    Point bottomRight;\npublic:\n    Rectangle(double x1, double y1, double x2, double y2)\n        : topLeft{x1, y1}, bottomRight{x2, y2}\n    {}\n\n    double area() const {\n        return (bottomRight.x - topLeft.x) * (bottomRight.y - topLeft.y);\n    }\n};\n\nint main() {\n    double x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n    Rectangle r{x1, y1, x2, y2};\n    std::cout << std::fixed << std::setprecision(2)\n              << \"Area: \" << r.area() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic rectangle",
+        "is_sample": true,
+        "stdin": "0.0 0.0 5.0 3.0\n",
+        "expected_stdout": "Area: 15.00"
+      },
+      {
+        "label": "Hidden: non-origin rectangle",
+        "is_sample": false,
+        "stdin": "1.5 2.0 4.5 6.0\n",
+        "expected_stdout": "Area: 12.00"
+      },
+      {
+        "label": "Hidden: square",
+        "is_sample": false,
+        "stdin": "0.0 0.0 4.0 4.0\n",
+        "expected_stdout": "Area: 16.00"
+      }
+    ]
+  },
+  {
+    "title": "Car Fuel Check via Composition",
+    "prompt_md": "## Goal\nA `Car` class composes a `FuelTank` sub-object. The code has one logic bug — it checks fuel level incorrectly. Find and fix it.\n\n## Input\n- Line 1: double `capacity` (maximum liters, > 0).\n- Line 2: double `current` (current liters, 0 ≤ current ≤ capacity).\n- Line 3: double `requested` (liters needed for trip, > 0).\n\n## Output\nPrint exactly one line:\n- `Go` if `current >= requested`.\n- `Refuel` otherwise.\n\n## Requirements\n1. The bug is in the fuel-sufficiency check — it uses `>` instead of `>=`, so when current equals requested it incorrectly prints `Refuel`.\n2. After fixing, `current == requested` must print `Go`.\n3. Do not change the overall structure; only fix the comparison operator.",
+    "starter_code": "#include <iostream>\n\nstruct FuelTank {\n    double capacity{};\n    double current{};\n    FuelTank(double cap, double cur) : capacity{cap}, current{cur} {}\n};\n\nclass Car {\n    FuelTank tank;\npublic:\n    Car(double cap, double cur) : tank{cap, cur} {}\n    // Returns true if there is enough fuel for the trip\n    bool canTravel(double litersNeeded) const {\n        return tank.current > litersNeeded;  // BUG: wrong comparison\n    }\n};\n\nint main() {\n    double cap{}, cur{}, needed{};\n    std::cin >> cap >> cur >> needed;\n    Car c{cap, cur};\n    if (c.canTravel(needed))\n        std::cout << \"Go\\n\";\n    else\n        std::cout << \"Refuel\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct FuelTank {\n    double capacity{};\n    double current{};\n    FuelTank(double cap, double cur) : capacity{cap}, current{cur} {}\n};\n\nclass Car {\n    FuelTank tank;\npublic:\n    Car(double cap, double cur) : tank{cap, cur} {}\n    bool canTravel(double litersNeeded) const {\n        return tank.current >= litersNeeded;  // FIXED: >= instead of >\n    }\n};\n\nint main() {\n    double cap{}, cur{}, needed{};\n    std::cin >> cap >> cur >> needed;\n    Car c{cap, cur};\n    if (c.canTravel(needed))\n        std::cout << \"Go\\n\";\n    else\n        std::cout << \"Refuel\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: exact fuel match",
+        "is_sample": true,
+        "stdin": "50.0\n30.0\n30.0\n",
+        "expected_stdout": "Go"
+      },
+      {
+        "label": "Hidden: insufficient fuel",
+        "is_sample": false,
+        "stdin": "50.0\n20.0\n35.0\n",
+        "expected_stdout": "Refuel"
+      },
+      {
+        "label": "Hidden: more than enough",
+        "is_sample": false,
+        "stdin": "60.0\n55.0\n40.0\n",
+        "expected_stdout": "Go"
+      }
+    ]
+  }
+]

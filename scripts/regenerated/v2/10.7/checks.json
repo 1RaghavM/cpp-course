@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `using Distance = double;`, which of the following statements is true?",
+    "options": {
+      "a": "You cannot assign a plain `double` to a `Distance` variable because they are different types",
+      "b": "`Distance` is simply another name for `double`; they are the same type and interchangeable",
+      "c": "The compiler generates a separate internal type for `Distance` with its own conversion rules",
+      "d": "Using `Distance` instead of `double` makes the program run faster"
+    },
+    "answer": "b",
+    "explanation_md": "A `using` alias creates a synonym, not a new type. `Distance` and `double` are exactly the same type to the compiler. You can assign one to the other, pass them to the same functions, and mix them freely without any cast."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nusing Score = int;\nint main()\n{\n    Score s { 90 };\n    int  raw { 10 };\n    Score total { s + raw };\n    std::cout << total << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "100",
+    "explanation_md": "`Score` is just `int`. Adding a `Score` and an `int` is the same as adding two `int` values. `total` is 100, and that is what is printed."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `uval` to hold the value 5,000,000,000. What is wrong?\n\n```cpp\n#include <iostream>\ntypedef unsigned int UInt;\nint main()\n{\n    UInt uval { 5000000000u };\n    std::cout << uval << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`typedef` is not valid C++; you must use `using`",
+      "b": "`unsigned int` is typically 32 bits, which cannot hold 5,000,000,000; `unsigned long long` is needed",
+      "c": "The `u` suffix on the literal causes a narrowing error that prevents compilation",
+      "d": "You must cast 5,000,000,000 with `static_cast<UInt>` or the alias is ignored"
+    },
+    "answer": "b",
+    "explanation_md": "`unsigned int` is typically 32 bits and can hold values up to about 4.29 billion. 5,000,000,000 exceeds that, so the value wraps around silently. The alias should be `typedef unsigned long long int UInt;` or `using UInt = unsigned long long int;`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why do C++ programmers prefer `using Name = Type;` over `typedef Type Name;` in modern code?",
+    "options": {
+      "a": "`using` aliases compile to faster machine code than `typedef`",
+      "b": "`using` always puts the alias name on the left and the underlying type on the right, making it easier to read",
+      "c": "`typedef` was removed in C++20 and no longer compiles",
+      "d": "`using` creates a new distinct type while `typedef` only creates a synonym"
+    },
+    "answer": "b",
+    "explanation_md": "`using Name = Type` is more readable because the introduced name is consistently on the left. `typedef` places the new name in varying positions depending on the type (especially confusing for pointers). Both are valid in modern C++; `typedef` was not removed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nusing Temp = double;\nint main()\n{\n    Temp celsius { 100.0 };\n    Temp fahrenheit { celsius * 9.0 / 5.0 + 32.0 };\n    std::cout << fahrenheit << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "212",
+    "explanation_md": "`Temp` is `double`. The formula `100 * 9/5 + 32 = 212`. Because all values are `double`, no integer division occurs, and the result `212.0` is printed as `212` by default (no trailing `.0` unless formatting is forced)."
+  }
+]

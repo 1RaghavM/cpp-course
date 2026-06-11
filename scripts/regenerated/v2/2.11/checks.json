@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which `#include` form should you use when including a header from your own project?",
+    "options": {
+      "a": "`#include <myheader.h>` — angle brackets for all includes",
+      "b": "`#include \"myheader.h\"` — double quotes for project headers",
+      "c": "`#include myheader.h` — no brackets needed for local files",
+      "d": "Either form works identically; it is a matter of style"
+    },
+    "answer": "b",
+    "explanation_md": "Double quotes tell the compiler to search relative to the current file first, which is correct for project-local headers. Angle brackets search system/standard paths and are reserved for standard library and third-party headers. The two forms are NOT interchangeable — using angle brackets for a local header can fail to find it."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Given these two files, what does `main.cpp` print?\n\n```cpp\n// util.h\nint triple(int x);\n```\n\n```cpp\n// util.cpp\nint triple(int x) { return x * 3; }\n```\n\n```cpp\n// main.cpp\n#include \"util.h\"\n#include <iostream>\nint main() {\n    std::cout << triple(4) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12",
+    "explanation_md": "`triple(4)` returns `4 * 3 = 12`. The header provides the declaration so `main.cpp` compiles; the linker finds the definition in `util.cpp` and links everything together."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A header file named `shapes.h` defines a function body (not just a declaration):\n\n```cpp\n// shapes.h\nint area(int w, int h) { return w * h; }\n```\n\nTwo `.cpp` files both include `shapes.h`. What happens?",
+    "options": {
+      "a": "Everything works fine — the compiler deduplicates identical definitions",
+      "b": "The compiler errors on the second `#include` because the function is already defined",
+      "c": "The linker errors with a multiple-definition error",
+      "d": "The program compiles and links but produces wrong output at runtime"
+    },
+    "answer": "c",
+    "explanation_md": "Each `.cpp` file that includes the header gets its own compiled definition of `area`. When the linker tries to combine them, it sees two definitions of the same symbol and refuses with a 'multiple definition' error. The fix is to keep only the declaration (`int area(int w, int h);`) in the header and move the body to a `.cpp` file."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should `math_utils.cpp` include its own `math_utils.h`?",
+    "options": {
+      "a": "It is required by the compiler; without it the file will not compile",
+      "b": "It lets the compiler verify the definition matches the declaration, catching mismatches early",
+      "c": "It prevents the linker from seeing the function at all",
+      "d": "It is optional and only done for documentation purposes"
+    },
+    "answer": "b",
+    "explanation_md": "Including the own header is not strictly required for compilation, but it is a vital practice. When the `.cpp` includes its header, the compiler cross-checks each definition against the corresponding declaration. If a parameter type or return type was changed in one place but not the other, the compiler reports an error immediately rather than allowing a silent mismatch."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this single-file program print?\n\n```cpp\n#include <iostream>\nint double_it(int x);\nint double_it(int x) { return x * 2; }\nint main() {\n    std::cout << double_it(5) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "A forward declaration followed by a full definition in the same file is perfectly valid. The declaration and definition both refer to `double_it(int)`, so the compiler is happy. `double_it(5)` returns `10`, which is printed followed by a newline."
+  }
+]

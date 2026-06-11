@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Protected Balance in Bank Account",
+    "prompt_md": "## Goal\nImplement a `BankAccount` base class with a `protected` balance member and a `SavingsAccount` derived class that applies interest.\n\n## Input\nLine 1: a double — the initial balance.\nLine 2: a double — the annual interest rate as a decimal (e.g. `0.05` for 5%).\n\n## Output\nPrint exactly two lines:\n```\nInitial: <balance>\nAfter interest: <new_balance>\n```\nPrint balances with exactly 2 decimal places.\n\n## Requirements\n1. `BankAccount` must have a `protected` `double balance` member and a constructor `BankAccount(double b)` that sets it.\n2. `BankAccount` must have a `public` `void printBalance(std::string label)` that prints `<label>: <balance>` with 2 decimal places.\n3. `SavingsAccount` must publicly inherit `BankAccount` and have a `void applyInterest(double rate)` method that multiplies `balance` by `(1.0 + rate)`. It accesses `balance` directly as a protected member.\n4. In `main()`: construct a `SavingsAccount`, call `printBalance(\"Initial\")`, call `applyInterest`, then call `printBalance(\"After interest\")`.\n5. Edge case: rate = 0.0 (balance unchanged).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\n// TODO: Define BankAccount with:\n//   protected: double balance\n//   public: BankAccount(double b) constructor\n//   public: void printBalance(std::string label) — prints \"<label>: <balance>\" with 2 decimal places\nclass BankAccount {\nprotected:\n    double balance;\npublic:\n    BankAccount(double b) : balance(b) {}\n    void printBalance(std::string label) {\n        // TODO: print label + \": \" + balance with 2 decimal places\n    }\n};\n\n// TODO: Define SavingsAccount that publicly inherits BankAccount\n//   public: void applyInterest(double rate) — multiplies balance by (1.0 + rate)\nclass SavingsAccount : public BankAccount {\npublic:\n    SavingsAccount(double b) : BankAccount(b) {}\n    void applyInterest(double rate) {\n        // TODO: balance *= (1.0 + rate)\n    }\n};\n\nint main() {\n    double initial, rate;\n    std::cin >> initial >> rate;\n    SavingsAccount sa(initial);\n    sa.printBalance(\"Initial\");\n    sa.applyInterest(rate);\n    sa.printBalance(\"After interest\");\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass BankAccount {\nprotected:\n    double balance;\npublic:\n    BankAccount(double b) : balance(b) {}\n    void printBalance(std::string label) {\n        std::cout << std::fixed << std::setprecision(2);\n        std::cout << label << \": \" << balance << \"\\n\";\n    }\n};\n\nclass SavingsAccount : public BankAccount {\npublic:\n    SavingsAccount(double b) : BankAccount(b) {}\n    void applyInterest(double rate) {\n        balance *= (1.0 + rate);\n    }\n};\n\nint main() {\n    double initial, rate;\n    std::cin >> initial >> rate;\n    SavingsAccount sa(initial);\n    sa.printBalance(\"Initial\");\n    sa.applyInterest(rate);\n    sa.printBalance(\"After interest\");\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5% interest on 1000",
+        "is_sample": true,
+        "stdin": "1000.0\n0.05\n",
+        "expected_stdout": "Initial: 1000.00\nAfter interest: 1050.00"
+      },
+      {
+        "label": "Hidden: 10% interest on 500",
+        "is_sample": false,
+        "stdin": "500.0\n0.10\n",
+        "expected_stdout": "Initial: 500.00\nAfter interest: 550.00"
+      },
+      {
+        "label": "Hidden: 0% rate unchanged",
+        "is_sample": false,
+        "stdin": "200.0\n0.0\n",
+        "expected_stdout": "Initial: 200.00\nAfter interest: 200.00"
+      }
+    ]
+  },
+  {
+    "title": "Access Specifier Logic Bug",
+    "prompt_md": "## Goal\nThe program below models an `Employee` base class and a `Manager` derived class. It should print the manager's name and team size. Find and fix the one logic bug.\n\n## Input\nLine 1: a string — the manager's name (no spaces).\nLine 2: an integer — the team size.\n\n## Output\nPrint exactly two lines:\n```\nManager: <name>\nTeam size: <size>\n```\n\n## Requirements\n1. The bug is a logic error — the program compiles, but prints incorrect output.\n2. `Manager` inherits `name` from `Employee`. The `name` must be printed with the value from stdin.\n3. Do not change the output format or the class structure.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Employee {\nprotected:\n    std::string name;\npublic:\n    Employee(std::string n) : name(n) {}\n};\n\nclass Manager : public Employee {\npublic:\n    int teamSize;\n    Manager(std::string n, int ts) : Employee(\"boss\"), teamSize(ts) {} // BUG: wrong argument\n    void print() {\n        std::cout << \"Manager: \" << name << \"\\n\";\n        std::cout << \"Team size: \" << teamSize << \"\\n\";\n    }\n};\n\nint main() {\n    std::string name;\n    int ts;\n    std::cin >> name >> ts;\n    Manager m(name, ts);\n    m.print();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Employee {\nprotected:\n    std::string name;\npublic:\n    Employee(std::string n) : name(n) {}\n};\n\nclass Manager : public Employee {\npublic:\n    int teamSize;\n    Manager(std::string n, int ts) : Employee(n), teamSize(ts) {}\n    void print() {\n        std::cout << \"Manager: \" << name << \"\\n\";\n        std::cout << \"Team size: \" << teamSize << \"\\n\";\n    }\n};\n\nint main() {\n    std::string name;\n    int ts;\n    std::cin >> name >> ts;\n    Manager m(name, ts);\n    m.print();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Alice with team of 5",
+        "is_sample": true,
+        "stdin": "Alice\n5\n",
+        "expected_stdout": "Manager: Alice\nTeam size: 5"
+      },
+      {
+        "label": "Hidden: Bob with team of 12",
+        "is_sample": false,
+        "stdin": "Bob\n12\n",
+        "expected_stdout": "Manager: Bob\nTeam size: 12"
+      },
+      {
+        "label": "Hidden: team size 1",
+        "is_sample": false,
+        "stdin": "Carol\n1\n",
+        "expected_stdout": "Manager: Carol\nTeam size: 1"
+      }
+    ]
+  }
+]

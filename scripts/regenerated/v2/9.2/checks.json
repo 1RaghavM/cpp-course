@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A function has this body:\n\n```cpp\nint sign(int n) {\n    if (n > 0) return 1;\n    if (n < 0) return -1;\n    return 0;\n}\n```\n\nYou test it with only `sign(5)` and `sign(-3)`. Which branches are NOT covered?",
+    "options": {
+      "a": "Only the `return 1` branch is untested.",
+      "b": "The `return 0` branch (when n == 0) is untested.",
+      "c": "All branches are covered because the function ran twice.",
+      "d": "The `return -1` branch is untested."
+    },
+    "answer": "b",
+    "explanation_md": "There are three branches: `n > 0`, `n < 0`, and neither (zero). Testing `sign(5)` covers the first, `sign(-3)` covers the second, but no test passes `0` so the `return 0` branch is never reached. Options a and d are wrong — those branches were covered. Option c is wrong because running the function twice is not the same as taking every branch."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint clamp(int val, int lo, int hi) {\n    if (val < lo) return lo;\n    if (val > hi) return hi;\n    return val;\n}\n\nint main() {\n    std::cout << (clamp(5, 1, 10) == 5  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (clamp(0, 1, 10) == 1  ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (clamp(15,1, 10) == 10 ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "PASS\nPASS\nPASS",
+    "explanation_md": "`clamp(5,1,10)` is between 1 and 10, so it returns `5` → `5 == 5` is true → `PASS`. `clamp(0,1,10)` is below `lo=1`, so it returns `1` → `1 == 1` → `PASS`. `clamp(15,1,10)` is above `hi=10`, so it returns `10` → `10 == 10` → `PASS`. All three branches are covered and correct."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the difference between statement coverage and branch coverage?",
+    "options": {
+      "a": "Statement coverage checks that functions return the right value; branch coverage checks that they compile.",
+      "b": "Statement coverage requires every line to execute at least once; branch coverage additionally requires every conditional outcome (true and false) to be taken.",
+      "c": "Branch coverage is only needed for `switch` statements, not `if` statements.",
+      "d": "Statement coverage is more thorough than branch coverage."
+    },
+    "answer": "b",
+    "explanation_md": "Statement coverage means every line ran during testing, which is possible even if some branches of an `if` were never taken. Branch coverage is stricter: for every conditional, both the true-path and the false-path must be exercised. Options a, c, and d are false — branch coverage is a superset of statement coverage, applies to all conditionals, and says nothing about correct values by itself."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Which test input would expose the bug in this function, assuming it should return the absolute value?\n\n```cpp\nbool tested = false;\n```\n\nActually — what does this program print?\n\n```cpp\n#include <iostream>\n\nint absolute(int n) {\n    if (n < 0)\n        return n;   // BUG: forgot the minus\n    return n;\n}\n\nint main() {\n    std::cout << absolute(5)  << '\\n';\n    std::cout << absolute(-3) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\n-3",
+    "explanation_md": "`absolute(5)` takes the false branch (`5 < 0` is false) and returns `n = 5`. `absolute(-3)` takes the true branch (`-3 < 0` is true) and returns `n = -3` instead of `3` because the bug forgot the minus sign. This shows why branch coverage matters: the positive test passes but the negative test exposes the bug."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "For the function `int classify(int temp)` with thresholds at 15 and 30, which set of test inputs achieves branch coverage AND covers all three boundary values?",
+    "options": {
+      "a": "`classify(5)`, `classify(20)`, `classify(40)` — one value per branch",
+      "b": "`classify(14)`, `classify(15)`, `classify(29)`, `classify(30)`, `classify(31)` — boundaries plus interior",
+      "c": "`classify(15)`, `classify(30)` — the exact boundary values",
+      "d": "`classify(0)` — a single extreme value covers all paths"
+    },
+    "answer": "b",
+    "explanation_md": "Option a achieves branch coverage (one case per region) but misses the boundary values where off-by-one bugs hide. Option b covers all three regions and tests both sides of each boundary (14/15 and 29/30), which is the gold standard for catching condition errors. Option c hits the boundaries but skips interior values. Option d only covers the cold branch."
+  }
+]

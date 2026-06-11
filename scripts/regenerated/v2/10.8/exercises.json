@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Auto Type Deduction Explorer",
+    "prompt_md": "## Goal\nRead two integers from stdin and print the results of integer division and floating-point division on separate lines, using `auto` for all variables.\n\n## Input\n- Line 1: integer A (1 ≤ A ≤ 1000)\n- Line 2: integer B (1 ≤ B ≤ 1000, B ≠ 0)\n\n## Output\n- Line 1: `Int: X` where X is the integer division result (truncated).\n- Line 2: `Float: Y` where Y is the floating-point division result formatted to 2 decimal places.\n\n## Requirements\n1. Use `auto` for the variables that hold `a`, `b`, and both results.\n2. For integer division, divide `a` by `b` directly (both are `int`, so `auto` deduces `int`).\n3. For floating-point division, use `static_cast<double>` on one operand so `auto` deduces `double`.\n4. Format the float result with `std::fixed` and `std::setprecision(2)`.\n5. For A=7 and B=2: Int must be `3`, Float must be `3.50`.\n\n## Notes\n- Include `<iomanip>` for formatting.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    auto a { 0 };\n    auto b { 0 };\n    std::cin >> a >> b;\n\n    // TODO: compute integer division result using auto\n    // TODO: compute floating-point division result using auto and static_cast\n    // TODO: print both results in the format shown above\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    auto a { 0 };\n    auto b { 0 };\n    std::cin >> a >> b;\n\n    auto intResult   { a / b };\n    auto floatResult { static_cast<double>(a) / b };\n\n    std::cout << \"Int: \"   << intResult << '\\n';\n    std::cout << std::fixed << std::setprecision(2)\n              << \"Float: \" << floatResult << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7 / 2",
+        "is_sample": true,
+        "stdin": "7\n2\n",
+        "expected_stdout": "Int: 3\nFloat: 3.50\n"
+      },
+      {
+        "label": "Hidden: exact division",
+        "is_sample": false,
+        "stdin": "9\n3\n",
+        "expected_stdout": "Int: 3\nFloat: 3.00\n"
+      },
+      {
+        "label": "Hidden: small dividend",
+        "is_sample": false,
+        "stdin": "1\n4\n",
+        "expected_stdout": "Int: 0\nFloat: 0.25\n"
+      }
+    ]
+  },
+  {
+    "title": "Grade Classifier",
+    "prompt_md": "## Goal\nComplete the function `classify` that takes an `int` score (0–100) and returns a `char` grade: `'A'` for 90+, `'B'` for 80–89, `'C'` for 70–79, `'D'` for 60–69, `'F'` otherwise.\n\n## Input\n- Line 1: integer score (0 ≤ score ≤ 100).\n\n## Output\n- Print exactly one line: `Grade: X` where X is the single character grade.\n\n## Requirements\n1. Implement `classify(int score)` returning `char`.\n2. The `main` function reads the score and prints `Grade: ` followed by `classify(score)`.\n3. Use `auto` for the local variable that holds the return value of `classify` in `main`.\n4. Thresholds: 90+ → A, 80–89 → B, 70–79 → C, 60–69 → D, below 60 → F.\n5. Boundary values: score 90 → A, score 89 → B, score 0 → F.\n\n## Notes\n- `classify` must use `if` statements to determine the grade.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement classify(int score) that returns a char grade\nchar classify(int score)\n{\n    return 'F'; // placeholder\n}\n\nint main()\n{\n    int score {};\n    std::cin >> score;\n\n    // TODO: call classify and store result using 'auto', then print \"Grade: X\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nchar classify(int score)\n{\n    if (score >= 90) return 'A';\n    if (score >= 80) return 'B';\n    if (score >= 70) return 'C';\n    if (score >= 60) return 'D';\n    return 'F';\n}\n\nint main()\n{\n    int score {};\n    std::cin >> score;\n\n    auto grade { classify(score) };\n    std::cout << \"Grade: \" << grade << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: B grade",
+        "is_sample": true,
+        "stdin": "85\n",
+        "expected_stdout": "Grade: B\n"
+      },
+      {
+        "label": "Hidden: boundary A",
+        "is_sample": false,
+        "stdin": "90\n",
+        "expected_stdout": "Grade: A\n"
+      },
+      {
+        "label": "Hidden: failing score",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Grade: F\n"
+      }
+    ]
+  }
+]

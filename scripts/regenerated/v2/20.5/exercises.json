@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Ellipsis Sum Function",
+    "prompt_md": "## Goal\nWrite a program using an ellipsis function to compute the sum of N integers passed as variadic arguments.\n\n## Input\n- Line 1: integer N (1 <= N <= 5)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly one line: the sum of the N integers.\n\n## Requirements\n1. Implement `int sumN(int count, ...)` using `va_list`, `va_start`, `va_arg`, and `va_end`.\n2. `main` reads all N values into local variables and calls `sumN` passing each as a separate argument.\n3. Print the result on a single line.\n4. For simplicity, read up to 5 values from stdin; for N < 5, only pass N values to `sumN`.\n\n## Notes\n- Include `<cstdarg>` for the va_* macros.\n- This exercise demonstrates the mechanics of ellipsis; in real code, prefer `std::initializer_list`.\n",
+    "starter_code": "#include <iostream>\n#include <cstdarg>\n\n// TODO: implement this function\n// Sums 'count' integer arguments passed as variadic args\nint sumN(int count, ...) {\n    return 0; // replace this\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int a[5] = {};\n    for (int i = 0; i < n; ++i)\n        std::cin >> a[i];\n\n    // Call sumN with exactly n values\n    int result = 0;\n    if      (n == 1) result = sumN(1, a[0]);\n    else if (n == 2) result = sumN(2, a[0], a[1]);\n    else if (n == 3) result = sumN(3, a[0], a[1], a[2]);\n    else if (n == 4) result = sumN(4, a[0], a[1], a[2], a[3]);\n    else             result = sumN(5, a[0], a[1], a[2], a[3], a[4]);\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cstdarg>\n\nint sumN(int count, ...) {\n    va_list args;\n    va_start(args, count);\n    int total = 0;\n    for (int i = 0; i < count; ++i)\n        total += va_arg(args, int);\n    va_end(args);\n    return total;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int a[5] = {};\n    for (int i = 0; i < n; ++i)\n        std::cin >> a[i];\n\n    int result = 0;\n    if      (n == 1) result = sumN(1, a[0]);\n    else if (n == 2) result = sumN(2, a[0], a[1]);\n    else if (n == 3) result = sumN(3, a[0], a[1], a[2]);\n    else if (n == 4) result = sumN(4, a[0], a[1], a[2], a[3]);\n    else             result = sumN(5, a[0], a[1], a[2], a[3], a[4]);\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three integers",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "60"
+      },
+      {
+        "label": "Hidden: single integer",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42"
+      },
+      {
+        "label": "Hidden: five integers",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5\n",
+        "expected_stdout": "15"
+      }
+    ]
+  },
+  {
+    "title": "Ellipsis Count Bug",
+    "prompt_md": "## Goal\nFind and fix the bug in this program that uses an ellipsis function to find the maximum of N integers.\n\n## Input\n- Line 1: integer N (1 <= N <= 5)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly one line: the maximum of the N integers.\n\n## Requirements\n1. The bug causes the function to read the wrong number of values from the variadic list.\n2. Fixing the bug is a one-character or one-number change.\n3. All five dispatch branches in `main` are correct and should not be changed.\n",
+    "starter_code": "#include <iostream>\n#include <cstdarg>\n\nint maxN(int count, ...) {\n    va_list args;\n    va_start(args, count);\n    int best = va_arg(args, int);\n    for (int i = 0; i < count; ++i)  // bug: should start loop from i=1\n        best = (va_arg(args, int) > best) ? va_arg(args, int) : best;  // bug: calls va_arg twice per iteration\n    va_end(args);\n    return best;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int a[5] = {};\n    for (int i = 0; i < n; ++i)\n        std::cin >> a[i];\n\n    int result = 0;\n    if      (n == 1) result = maxN(1, a[0]);\n    else if (n == 2) result = maxN(2, a[0], a[1]);\n    else if (n == 3) result = maxN(3, a[0], a[1], a[2]);\n    else if (n == 4) result = maxN(4, a[0], a[1], a[2], a[3]);\n    else             result = maxN(5, a[0], a[1], a[2], a[3], a[4]);\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cstdarg>\n\nint maxN(int count, ...) {\n    va_list args;\n    va_start(args, count);\n    int best = va_arg(args, int);\n    for (int i = 1; i < count; ++i) {\n        int val = va_arg(args, int);\n        if (val > best) best = val;\n    }\n    va_end(args);\n    return best;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int a[5] = {};\n    for (int i = 0; i < n; ++i)\n        std::cin >> a[i];\n\n    int result = 0;\n    if      (n == 1) result = maxN(1, a[0]);\n    else if (n == 2) result = maxN(2, a[0], a[1]);\n    else if (n == 3) result = maxN(3, a[0], a[1], a[2]);\n    else if (n == 4) result = maxN(4, a[0], a[1], a[2], a[3]);\n    else             result = maxN(5, a[0], a[1], a[2], a[3], a[4]);\n\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three values",
+        "is_sample": true,
+        "stdin": "3\n5\n12\n3\n",
+        "expected_stdout": "12"
+      },
+      {
+        "label": "Hidden: single value",
+        "is_sample": false,
+        "stdin": "1\n7\n",
+        "expected_stdout": "7"
+      },
+      {
+        "label": "Hidden: five values",
+        "is_sample": false,
+        "stdin": "5\n3\n9\n1\n6\n4\n",
+        "expected_stdout": "9"
+      }
+    ]
+  }
+]

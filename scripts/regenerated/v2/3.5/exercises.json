@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Trace Function Call Order with std::cerr",
+    "prompt_md": "## Goal\nAdd `std::cerr` trace messages to two functions so you can verify which function is called and what values it receives.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\n- Stderr trace messages (not checked by the judge — only stdout is checked).\n- Stdout: one line containing the value returned by `process(a, b)`, which is defined as `double_it(a) + b`.\n\n## Requirements\n1. `double_it(int x)` returns `x * 2`. Add a `std::cerr` trace line inside it that prints exactly: `[trace] double_it x=<value>` where `<value>` is the argument received.\n2. `process(int a, int b)` calls `double_it(a)` and returns the result plus `b`. Add a `std::cerr` trace line inside it that prints exactly: `[trace] process a=<a> b=<b>`.\n3. `main` reads `a` and `b` from stdin, calls `process(a, b)`, and prints the result to stdout followed by a newline.\n4. The stdout output is exactly the integer result of `process(a, b)`, nothing else.",
+    "starter_code": "#include <iostream>\n\nint double_it(int x) {\n    // TODO: add std::cerr trace line printing \"[trace] double_it x=<x>\"\n    return x * 2;\n}\n\nint process(int a, int b) {\n    // TODO: add std::cerr trace line printing \"[trace] process a=<a> b=<b>\"\n    return double_it(a) + b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << process(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint double_it(int x) {\n    std::cerr << \"[trace] double_it x=\" << x << \"\\n\";\n    return x * 2;\n}\n\nint process(int a, int b) {\n    std::cerr << \"[trace] process a=\" << a << \" b=\" << b << \"\\n\";\n    return double_it(a) + b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << process(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "10\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n7\n",
+        "expected_stdout": "7\n"
+      },
+      {
+        "label": "Hidden: both large",
+        "is_sample": false,
+        "stdin": "10\n5\n",
+        "expected_stdout": "25\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Wrong Arithmetic in Traced Function",
+    "prompt_md": "## Goal\nFix the single logic bug in a program that uses `std::cerr` tracing. The program should print `a * 3 + b` to stdout.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\nOne line containing `a * 3 + b`.\n\n## Requirements\n1. The program contains exactly one logic bug — find and fix it.\n2. The `std::cerr` trace lines must stay in the code (they do not affect stdout).\n3. The function `triple_and_add(int a, int b)` must return `a * 3 + b`.\n4. Edge case: the hidden tests include `a = 0` and `b = 0`.",
+    "starter_code": "#include <iostream>\n\nint triple_and_add(int a, int b) {\n    std::cerr << \"[trace] triple_and_add a=\" << a << \" b=\" << b << \"\\n\";\n    int tripled = a * 2;   // bug: should multiply by 3\n    std::cerr << \"[trace] tripled=\" << tripled << \"\\n\";\n    return tripled + b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << triple_and_add(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint triple_and_add(int a, int b) {\n    std::cerr << \"[trace] triple_and_add a=\" << a << \" b=\" << b << \"\\n\";\n    int tripled = a * 3;\n    std::cerr << \"[trace] tripled=\" << tripled << \"\\n\";\n    return tripled + b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << triple_and_add(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "4\n5\n",
+        "expected_stdout": "17\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n9\n",
+        "expected_stdout": "9\n"
+      },
+      {
+        "label": "Hidden: b is zero",
+        "is_sample": false,
+        "stdin": "6\n0\n",
+        "expected_stdout": "18\n"
+      }
+    ]
+  }
+]

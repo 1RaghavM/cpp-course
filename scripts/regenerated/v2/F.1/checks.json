@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\nconstexpr int cube(int x) { return x * x * x; }\nint main() {\n    constexpr int a = cube(3);\n    int b = cube(4);\n    std::cout << a << \" \" << b << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "27 64",
+    "explanation_md": "`cube(3)` is evaluated at compile time (stored in `constexpr int a`) and produces 27. `cube(4)` is a runtime call stored in a plain `int`—but the function is correct either way, so it produces 64. Both are printed separated by a space."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following statements about `constexpr` functions is correct?",
+    "options": {
+      "a": "A `constexpr` function is always evaluated at compile time, no matter how it is called.",
+      "b": "A `constexpr` function is evaluated at compile time only when its result is used in a context that requires a compile-time constant.",
+      "c": "A `constexpr` function cannot be called with runtime arguments.",
+      "d": "Marking a function `constexpr` causes a compile error if the function contains a loop."
+    },
+    "answer": "b",
+    "explanation_md": "Option b is correct: `constexpr` evaluation is triggered by context (assignment to a `constexpr` variable, array size, template argument, etc.). Option a is wrong—the compiler may evaluate it at runtime when stored in a plain variable. Option c is wrong—`constexpr` functions work fine with runtime arguments. Option d is wrong—loops are perfectly legal inside `constexpr` functions in C++14 and later."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `half` to be a compile-time constant equal to 10. What is wrong?\n\n```cpp\nconstexpr int halve(int x) { return x / 2; }\nint main() {\n    int n = 20;\n    constexpr int half = halve(n);\n}\n```",
+    "options": {
+      "a": "`halve` is missing a return type annotation.",
+      "b": "`n` is not a constant expression, so passing it to `halve` in a `constexpr` context is a compile error.",
+      "c": "Integer division by 2 is undefined behavior.",
+      "d": "`constexpr int half` requires the function to be marked `inline`."
+    },
+    "answer": "b",
+    "explanation_md": "`n` is declared as a plain `int`, not `constexpr int`. When the result must be a compile-time constant (assigned to `constexpr int half`), every argument to the `constexpr` function must also be a constant expression—and `n` is not. Fix: declare `constexpr int n = 20;`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nconstexpr int add(int a, int b) { return a + b; }\nint main() {\n    constexpr int x = add(add(1, 2), add(3, 4));\n    std::cout << x << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "All arguments are compile-time constants, so both inner calls—`add(1,2)` = 3 and `add(3,4)` = 7—and the outer call `add(3, 7)` = 10 are evaluated at compile time. The program prints `10`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `constexpr` function result can be used as an array size. Why does the following compile successfully?\n\n```cpp\nconstexpr int size() { return 8; }\nint main() {\n    int arr[size()];\n}\n```",
+    "options": {
+      "a": "C++ allows any function call as an array size.",
+      "b": "`size()` is a `constexpr` function called with no arguments, so its return value is a compile-time constant.",
+      "c": "The compiler automatically converts the return value to a compile-time constant for array sizes.",
+      "d": "Array sizes only need to be known before linking, not at compile time."
+    },
+    "answer": "b",
+    "explanation_md": "Because `size()` is `constexpr` and its single argument list is empty (trivially all constant-expression arguments), the compiler evaluates it at compile time and gets 8—a valid constant expression for an array size. Option a is wrong; non-`constexpr` calls as array sizes produce variable-length arrays, which are not standard C++."
+  }
+]

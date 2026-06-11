@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    unsigned int x { 0 };\n    x = x - 1;\n    std::cout << x << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4294967295",
+    "explanation_md": "Subtracting 1 from an `unsigned int` of value 0 wraps around to the maximum value for a 32-bit unsigned integer, which is 2³² − 1 = 4,294,967,295. This is defined behavior for unsigned types in C++. A signed integer would produce undefined behavior in a similar overflow situation, but unsigned wraparound is guaranteed."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    unsigned int a { 2 };\n    unsigned int b { 5 };\n    unsigned int result { a - b };\n    std::cout << (result > 100) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "`a - b` is `2 - 5`. Because both are `unsigned int`, the result wraps around to 4,294,967,293 — a very large number that is certainly greater than 100. So `result > 100` is true (1). Learners often expect -3, but unsigned subtraction never produces negative results."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "On a system where `unsigned int` is 32 bits, what is the range of values an `unsigned int` can hold?",
+    "options": {
+      "a": "−2,147,483,648 to 2,147,483,647",
+      "b": "0 to 2,147,483,647",
+      "c": "0 to 4,294,967,295",
+      "d": "−4,294,967,295 to 4,294,967,295"
+    },
+    "answer": "c",
+    "explanation_md": "A 32-bit unsigned integer uses all 32 bits for non-negative values, giving a range of 0 to 2³² − 1 = 4,294,967,295. Option (a) is the range for a 32-bit signed `int`. Option (b) is half of (a) — a common mix-up. Option (d) doubles the signed range incorrectly."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When a signed `int` and an `unsigned int` appear together in an arithmetic or comparison expression, what does C++ do?",
+    "options": {
+      "a": "Converts the `unsigned int` to `signed int` before the operation",
+      "b": "Converts the `signed int` to `unsigned int` before the operation",
+      "c": "Signals a compile-time error",
+      "d": "Promotes both to `long long` before the operation"
+    },
+    "answer": "b",
+    "explanation_md": "C++'s usual arithmetic conversions convert the signed value to unsigned when the two types are otherwise the same size. This means a negative signed value becomes a large positive unsigned value, which can produce counter-intuitive comparisons. No error is issued — the conversion is silent."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wants to print how many items remain after removing some from a stock count. What is wrong?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    unsigned int stock { 3 };\n    unsigned int removed { 7 };\n    unsigned int remaining { stock - removed };\n    std::cout << remaining << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The subtraction should use `long long` instead of `unsigned int`",
+      "b": "`stock - removed` wraps around because the result is negative, producing a huge positive number instead of a negative remainder",
+      "c": "Using unsigned integers for stock counts is a syntax error",
+      "d": "The program will crash with an underflow exception at runtime"
+    },
+    "answer": "b",
+    "explanation_md": "When `stock` (3) is less than `removed` (7), the subtraction produces a mathematically negative result. But `unsigned int` cannot represent negative values, so the result wraps around to a large positive number (4,294,967,292). There is no exception — the program runs silently with wrong output. The fix is to use a signed type so the negative result is representable."
+  }
+]

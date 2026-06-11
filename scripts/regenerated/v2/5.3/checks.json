@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the most accurate description of the as-if rule?",
+    "options": {
+      "a": "The compiler must execute every line of your source code exactly as written",
+      "b": "The compiler may transform your code in any way, provided the observable output remains the same",
+      "c": "The compiler only optimizes code inside `constexpr` functions",
+      "d": "The as-if rule only applies to constant expressions, not to runtime variables"
+    },
+    "answer": "b",
+    "explanation_md": "The as-if rule gives the compiler permission to rearrange, eliminate, or combine operations however it chooses, as long as the program's observable behavior (output, side effects) is unchanged. This is what allows constant folding, dead-code elimination, and other optimizations. It is not restricted to `constexpr` or to constant expressions."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    constexpr int minutes_per_hour{ 60 };\n    constexpr int hours_per_day{ 24 };\n    constexpr int minutes_per_day{ minutes_per_hour * hours_per_day };\n    std::cout << minutes_per_day << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1440",
+    "explanation_md": "`minutes_per_hour` is 60 and `hours_per_day` is 24. Both are `constexpr`, so `minutes_per_hour * hours_per_day` is a constant expression evaluated at compile time: 60 * 24 = 1440. The program prints 1440. There is no runtime computation involved — the compiler embeds the value directly."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. What is the problem?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    constexpr int doubled{ n * 2 };\n    std::cout << doubled << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "`n` is not initialized with a value before use",
+      "b": "`n * 2` causes integer overflow for large values of `n`",
+      "c": "`n` is a runtime variable, so `n * 2` is not a constant expression and cannot initialize `constexpr`",
+      "d": "`constexpr` variables cannot be declared inside `main()`"
+    },
+    "answer": "c",
+    "explanation_md": "`constexpr` requires the initializer to be a constant expression — something the compiler can evaluate before the program runs. `n` is read from `std::cin` at runtime, so its value is unknown at compile time. The expression `n * 2` is therefore not a constant expression, and `constexpr int doubled{ n * 2 }` is a compile error. The fix is to use `const` instead of `constexpr` if runtime initialization is needed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between `const int x{ 5 }` and `constexpr int y{ 5 }`?",
+    "options": {
+      "a": "`const` prevents modification at runtime; `constexpr` prevents modification at compile time",
+      "b": "`constexpr` guarantees the value is evaluated at compile time; `const` only guarantees it cannot change after initialization",
+      "c": "`const` and `constexpr` are identical for integer literals — there is no practical difference",
+      "d": "`constexpr` variables use less memory than `const` variables"
+    },
+    "answer": "b",
+    "explanation_md": "Both `const` and `constexpr` prevent modification, but `constexpr` additionally requires and guarantees compile-time evaluation. A `const int x{ runtime_value }` is perfectly valid — the value is not known until the program runs, but it cannot be changed afterward. `constexpr int y{ runtime_value }` would be a compile error. `constexpr` is the stronger promise."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    constexpr int base{ 10 };\n    constexpr int exponent{ 3 };\n    constexpr int result{ base * base * base };\n    std::cout << result << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1000",
+    "explanation_md": "`base` is 10 and `exponent` is 3 (though `exponent` is not directly used in the computation). `result = 10 * 10 * 10 = 1000`. All operands are `constexpr`, so the entire computation is a constant expression evaluated at compile time. The program prints `1000`."
+  }
+]

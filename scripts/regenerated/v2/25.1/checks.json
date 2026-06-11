@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    void greet() const { std::cout << \"Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    void greet() const { std::cout << \"Derived\\n\"; }\n    void extra() const { std::cout << \"Extra\\n\"; }\n};\n\nint main() {\n    Derived d;\n    Base* p = &d;\n    p->greet();\n}\n```",
+    "options": null,
+    "answer": "Base",
+    "explanation_md": "Even though `p` points to a `Derived` object, its static type is `Base*`. For a non-virtual function, the compiler picks the version based on the pointer's declared type, not the actual runtime type. So `Base::greet` is called and prints `Base`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following statements about base-class pointers is correct?",
+    "options": {
+      "a": "A `Base*` pointer can only point to `Base` objects, never to derived objects.",
+      "b": "A `Base*` pointer can point to any `Derived` object without a cast, but you can only access members declared in `Base` through it.",
+      "c": "A `Base*` pointer that points to a `Derived` object automatically gives access to all `Derived` members.",
+      "d": "Assigning a `Base` object's address to a `Derived*` pointer is valid without a cast."
+    },
+    "answer": "b",
+    "explanation_md": "The implicit conversion from derived-to-base (upcast) is always safe and requires no cast. However, through a `Base*` pointer only `Base` members are accessible at compile time. Option (c) is wrong — derived-only members are hidden. Option (d) is wrong — the implicit conversion only goes derived→base, not base→derived."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Vehicle {\npublic:\n    std::string type = \"vehicle\";\n    void describe() const {\n        std::cout << \"I am a \" << type << \"\\n\";\n    }\n};\n\nclass Car : public Vehicle {\npublic:\n    Car() { type = \"car\"; }\n};\n\nvoid print(const Vehicle& v) {\n    v.describe();\n}\n\nint main() {\n    Car c;\n    print(c);\n}\n```",
+    "options": null,
+    "answer": "I am a car",
+    "explanation_md": "A `Car` object is passed to `print` which takes a `const Vehicle&`. Inside `print`, `describe()` is called on the reference. `describe` accesses `type`, which was set to `\"car\"` in `Car`'s constructor. Since `type` is a data member (not a virtual function), its value reflects what was stored in the object."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer writes this code expecting to print the dog's name, but gets a compile error. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Animal {\npublic:\n    std::string name;\n    Animal(std::string n) : name(n) {}\n};\n\nclass Dog : public Animal {\npublic:\n    Dog(std::string n) : Animal(n) {}\n    void bark() const { std::cout << name << \" says Woof!\\n\"; }\n};\n\nint main() {\n    Animal a{\"Rex\"};\n    Dog* dp = &a;\n    dp->bark();\n}\n```",
+    "options": {
+      "a": "You cannot store a string in a base class member; it must be in the derived class.",
+      "b": "`Dog*` cannot be assigned the address of an `Animal` object without an explicit cast — the implicit conversion only goes derived-to-base.",
+      "c": "The `bark()` function is not declared in `Animal`, so it cannot be called.",
+      "d": "The `name` member must be declared `public` in `Dog` before `bark()` can access it."
+    },
+    "answer": "b",
+    "explanation_md": "The implicit upcast (derived→base) is safe, but the downcast (base→derived) is not. `&a` is an `Animal*`; assigning it to a `Dog*` without a cast is a compile error. Option (c) is true but irrelevant — the compile error happens before `bark()` is even reached."
+  }
+]

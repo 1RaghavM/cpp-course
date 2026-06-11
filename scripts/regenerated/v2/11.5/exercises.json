@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Configurable line printer with default arguments",
+    "prompt_md": "## Goal\nWrite a function `printLine` that prints a line of repeated characters, using default arguments to simplify common calls.\n\n## Input\nFour integers on one line: `count fill_char indent repeat`\n- `count` (1–50): how many times to repeat the fill character per line\n- `fill_char` (ASCII code, 33–126): the character to repeat\n- `indent` (0–20): spaces to print before each line\n- `repeat` (1–5): how many lines to print\n\n## Output\nPrint `repeat` lines. Each line: `indent` spaces followed by `count` copies of the character whose ASCII code is `fill_char`, followed by a newline.\n\n## Requirements\n1. Declare `void printLine(int count, int fillChar = 45, int indent = 0, int repeat = 1)` where `45` is the ASCII code for `'-'`.\n2. Read the four integers from stdin and call `printLine` with all four arguments.\n3. The function must compile and work correctly when called with 1, 2, 3, or 4 arguments.\n4. Edge cases covered by hidden tests: `indent=0`, `repeat=1`, `count=1`.",
+    "starter_code": "#include <iostream>\n\n// TODO: Declare and define void printLine(int count, int fillChar = 45, int indent = 0, int repeat = 1)\n// - Print 'repeat' lines\n// - Each line: 'indent' spaces, then 'count' copies of (char)fillChar, then '\\n'\n\nint main()\n{\n    int count, fillChar, indent, repeat;\n    std::cin >> count >> fillChar >> indent >> repeat;\n    // TODO: Call printLine with all four arguments\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printLine(int count, int fillChar = 45, int indent = 0, int repeat = 1)\n{\n    for (int r = 0; r < repeat; ++r)\n    {\n        for (int i = 0; i < indent; ++i)\n            std::cout << ' ';\n        for (int c = 0; c < count; ++c)\n            std::cout << (char)fillChar;\n        std::cout << '\\n';\n    }\n}\n\nint main()\n{\n    int count, fillChar, indent, repeat;\n    std::cin >> count >> fillChar >> indent >> repeat;\n    printLine(count, fillChar, indent, repeat);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 dashes, indent 2, repeat 3",
+        "is_sample": true,
+        "stdin": "5 45 2 3",
+        "expected_stdout": "  -----\n  -----\n  -----\n"
+      },
+      {
+        "label": "Hidden: 10 equals signs, no indent, 1 line",
+        "is_sample": false,
+        "stdin": "10 61 0 1",
+        "expected_stdout": "==========\n"
+      },
+      {
+        "label": "Hidden: 1 asterisk, indent 0, repeat 2",
+        "is_sample": false,
+        "stdin": "1 42 0 2",
+        "expected_stdout": "*\n*\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the broken temperature converter",
+    "prompt_md": "## Goal\nFind and fix the single bug in this program so it prints the correct converted temperatures.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact lines:\n```\n32.0 F = 0.0 C\n212.0 F = 100.0 C\n98.6 F = 37.0 C\n```\n\n## Requirements\n1. The program converts Fahrenheit to Celsius using the formula `(F - 32) * 5 / 9`.\n2. `printTemp` takes two `double` parameters: `fahrenheit` and `celsius`.\n3. There is **one bug** — find and fix it. Do not change anything else.\n4. The bug causes the wrong Celsius value to be computed before being passed to `printTemp`.",
+    "starter_code": "#include <iostream>\n\nvoid printTemp(double fahrenheit, double celsius)\n{\n    std::cout << fahrenheit << \" F = \" << celsius << \" C\\n\";\n}\n\ndouble toCelsius(double f, double offset = 32.0)\n{\n    return (f - offset) * 5 / 9;\n}\n\nint main()\n{\n    std::cout << std::fixed;\n    std::cout.precision(1);\n    // Bug: passing wrong offset — should use default (32.0) but passes 0.0\n    printTemp(32.0,  toCelsius(32.0,  0.0));\n    printTemp(212.0, toCelsius(212.0, 0.0));\n    printTemp(98.6,  toCelsius(98.6,  0.0));\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printTemp(double fahrenheit, double celsius)\n{\n    std::cout << fahrenheit << \" F = \" << celsius << \" C\\n\";\n}\n\ndouble toCelsius(double f, double offset = 32.0)\n{\n    return (f - offset) * 5 / 9;\n}\n\nint main()\n{\n    std::cout << std::fixed;\n    std::cout.precision(1);\n    // Fixed: use the default offset (32.0) by not passing the second argument\n    printTemp(32.0,  toCelsius(32.0));\n    printTemp(212.0, toCelsius(212.0));\n    printTemp(98.6,  toCelsius(98.6));\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three conversions",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "32.0 F = 0.0 C\n212.0 F = 100.0 C\n98.6 F = 37.0 C\n"
+      },
+      {
+        "label": "Hidden: same output check 2",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "32.0 F = 0.0 C\n212.0 F = 100.0 C\n98.6 F = 37.0 C\n"
+      },
+      {
+        "label": "Hidden: same output check 3",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "32.0 F = 0.0 C\n212.0 F = 100.0 C\n98.6 F = 37.0 C\n"
+      }
+    ]
+  }
+]

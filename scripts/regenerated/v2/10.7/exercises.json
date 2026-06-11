@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Unit Conversion Using Type Aliases",
+    "prompt_md": "## Goal\nRead a temperature in Celsius and print its Fahrenheit equivalent, using `using` type aliases for readability.\n\n## Input\n- Line 1: a decimal number representing degrees Celsius (e.g. `0.0`, `100.0`, `-40.0`).\n\n## Output\n- Print exactly one line: `Fahrenheit: X` where X is the result formatted to one decimal place.\n\n## Requirements\n1. Define `using Celsius = double;` and `using Fahrenheit = double;` before `main`.\n2. Read the input into a `Celsius` variable.\n3. Compute the Fahrenheit value using the formula: `F = C * 9.0 / 5.0 + 32.0`.\n4. Store the result in a `Fahrenheit` variable and print it with `std::fixed` and `std::setprecision(1)`.\n5. For `-40.0` Celsius, output must be `Fahrenheit: -40.0`.\n\n## Notes\n- Include `<iomanip>` for `std::fixed` and `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: add 'using' aliases for Celsius and Fahrenheit here\n\nint main()\n{\n    // TODO: read a Celsius value and print the Fahrenheit equivalent\n    //       formatted to 1 decimal place as \"Fahrenheit: X\"\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nusing Celsius    = double;\nusing Fahrenheit = double;\n\nint main()\n{\n    Celsius c {};\n    std::cin >> c;\n    Fahrenheit f { c * 9.0 / 5.0 + 32.0 };\n    std::cout << std::fixed << std::setprecision(1)\n              << \"Fahrenheit: \" << f << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: boiling point",
+        "is_sample": true,
+        "stdin": "100.0\n",
+        "expected_stdout": "Fahrenheit: 212.0\n"
+      },
+      {
+        "label": "Hidden: freezing point",
+        "is_sample": false,
+        "stdin": "0.0\n",
+        "expected_stdout": "Fahrenheit: 32.0\n"
+      },
+      {
+        "label": "Hidden: crossover point",
+        "is_sample": false,
+        "stdin": "-40.0\n",
+        "expected_stdout": "Fahrenheit: -40.0\n"
+      }
+    ]
+  },
+  {
+    "title": "Pixel Density Calculator",
+    "prompt_md": "## Goal\nA program computes pixel density (pixels per inch) from a display's pixel count across the diagonal and its diagonal size in inches. It contains one logic bug — find and fix it.\n\n## Input\n- Line 1: integer pixel count across the diagonal (e.g. `2202`).\n- Line 2: decimal diagonal size in inches (e.g. `15.6`).\n\n## Output\n- Print exactly one line: `PPI: X` where X is the pixel density formatted to one decimal place.\n\n## Requirements\n1. PPI is computed as `pixels / inches`.\n2. The division must produce a precise floating-point result.\n3. The result is formatted with `std::fixed` and `std::setprecision(1)`.\n4. For 2202 pixels and 15.6 inches, the correct output is `PPI: 141.2`.\n5. The bug is a logic error — the program compiles cleanly but produces wrong output.\n\n## Notes\n- The starter code compiles and runs but produces wrong output — there is exactly one bug to find and fix.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nusing Pixels = int;\nusing Inches = double;\nusing PPI    = double;\n\nint main()\n{\n    Pixels px {};\n    Inches diag {};\n    std::cin >> px >> diag;\n\n    // bug: diag is truncated to int before division, causing integer division\n    int idiag = static_cast<int>(diag);\n    PPI density = px / idiag;\n    std::cout << std::fixed << std::setprecision(1)\n              << \"PPI: \" << density << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nusing Pixels = int;\nusing Inches = double;\nusing PPI    = double;\n\nint main()\n{\n    Pixels px {};\n    Inches diag {};\n    std::cin >> px >> diag;\n\n    PPI density { static_cast<double>(px) / diag };\n    std::cout << std::fixed << std::setprecision(1)\n              << \"PPI: \" << density << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: FHD on 15.6-inch",
+        "is_sample": true,
+        "stdin": "2202\n15.6\n",
+        "expected_stdout": "PPI: 141.2\n"
+      },
+      {
+        "label": "Hidden: non-integer inches",
+        "is_sample": false,
+        "stdin": "1280\n10.1\n",
+        "expected_stdout": "PPI: 126.7\n"
+      },
+      {
+        "label": "Hidden: 4K panel",
+        "is_sample": false,
+        "stdin": "4405\n27.0\n",
+        "expected_stdout": "PPI: 163.1\n"
+      }
+    ]
+  }
+]

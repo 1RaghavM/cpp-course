@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "You pass a `std::array<int, 10>` by value to a function. Inside the function, `.size()` returns:",
+    "options": {
+      "a": "0, because the array decayed to a pointer",
+      "b": "10, because `std::array` never decays and carries its size in the type",
+      "c": "The result depends on the compiler optimization level",
+      "d": "sizeof(int), because only the element size is available"
+    },
+    "answer": "b",
+    "explanation_md": "`std::array` is a struct that wraps a C-style array. When passed by value (or by reference), the type itself encodes the element count — there is no decay. `.size()` always returns the compile-time constant N. This is the core difference from a C-style array, which decays to a pointer and loses its length."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nint main()\n{\n    std::array<int, 5> a = {10, 20, 30, 40, 50};\n    a.fill(0);\n    a[2] = 99;\n    std::cout << a[0] << ' ' << a[2] << ' ' << a[4] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0 99 0",
+    "explanation_md": "`a.fill(0)` sets every element to 0. Then `a[2] = 99` overwrites only the element at index 2. So `a[0]` is 0, `a[2]` is 99, and `a[4]` is still 0."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does this function need the length parameter `n`?\n\n```cpp\nvoid sumArray(int arr[], int n)\n{\n    int s = 0;\n    for (int i = 0; i < n; ++i) s += arr[i];\n    std::cout << s << '\\n';\n}\n```",
+    "options": {
+      "a": "Because `int arr[]` is syntactic sugar for `int* arr` — the array decayed and `.size()` is unavailable",
+      "b": "Because C++ arrays store their length as a negative sentinel at the start",
+      "c": "Because the compiler cannot determine the element type from `int arr[]`",
+      "d": "Because `std::array` and C-style arrays both require a separate length parameter"
+    },
+    "answer": "a",
+    "explanation_md": "When a C-style array is passed to a function, it decays to a pointer. The function only sees `int*` — the count is gone. The programmer must pass it as a separate argument. This is one of the key reasons to prefer `std::array`: it never decays, so its size is always accessible via `.size()`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    const char* words[3] = {\"alpha\", \"beta\", \"gamma\"};\n    for (int i = 0; i < 3; ++i)\n        std::cout << words[i][0];\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "abg",
+    "explanation_md": "`words[i]` is a `const char*` pointing to the i-th string literal. `words[i][0]` gives the first character of that literal: 'a' for \"alpha\", 'b' for \"beta\", 'g' for \"gamma\". All three are printed without spaces, followed by a newline, giving `abg`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program tries to print every element of a 2×3 `std::array` grid but gets the dimensions wrong:\n\n```cpp\n#include <array>\n#include <iostream>\nint main()\n{\n    std::array<std::array<int, 3>, 2> g = {{\n        {1, 2, 3},\n        {4, 5, 6}\n    }};\n    for (std::size_t r = 0; r < g.size(); ++r)\n        for (std::size_t c = 0; c < g.size(); ++c)  // BUG\n            std::cout << g[r][c] << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`g.size()` returns the total element count (6) so the inner loop overflows",
+      "b": "The inner loop should use `g[r].size()` (column count = 3) instead of `g.size()` (row count = 2), causing columns 2 to be skipped",
+      "c": "Double braces `{{` are not valid syntax for `std::array` initialization",
+      "d": "`std::size_t` cannot be used as a loop counter with `std::array`"
+    },
+    "answer": "b",
+    "explanation_md": "`g.size()` returns 2 (the outer dimension — number of rows). Using it for the inner loop limit means the loop only iterates c = 0 and c = 1, skipping column 2. The fix is `g[r].size()` (or the constant 3). Options (a), (c), and (d) are false: `g.size()` is 2 not 6, double braces are needed and valid, and `std::size_t` works fine as a loop counter."
+  }
+]

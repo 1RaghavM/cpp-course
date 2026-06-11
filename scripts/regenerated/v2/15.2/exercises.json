@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Single-file Temperature Class",
+    "prompt_md": "## Goal\nComplete a `Temperature` class in a single `.cpp` file that stores a temperature in Celsius and provides two member functions.\n\n## Input\nLine 1: one floating-point number — the temperature in Celsius.\n\n## Output\nTwo lines:\n- Line 1: `Celsius: <value>` (one decimal place)\n- Line 2: `Fahrenheit: <value>` (one decimal place)\n\nFormula: `F = C * 9.0 / 5.0 + 32.0`.\n\n## Requirements\n1. `Temperature(double c)` — constructor that stores the Celsius value.\n2. `double getCelsius() const` — returns the stored Celsius value.\n3. `double getFahrenheit() const` — computes and returns the Fahrenheit equivalent.\n4. Both getter functions must be declared `const`.\n5. `main` reads one double from stdin, creates a `Temperature`, and prints both values with `std::fixed` and `std::setprecision(1)`.\n6. Hidden tests include 0.0 (freezing) and 100.0 (boiling).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\npublic:\n    // TODO: add a private data member 'm_celsius' of type double\n\n    // TODO: implement constructor Temperature(double c)\n    Temperature(double c);\n\n    // TODO: implement double getCelsius() const\n    double getCelsius() const;\n\n    // TODO: implement double getFahrenheit() const\n    double getFahrenheit() const;\n\nprivate:\n    double m_celsius{0.0};\n};\n\nTemperature::Temperature(double c) : m_celsius{c} {}\n\ndouble Temperature::getCelsius() const { return 0.0; /* TODO */ }\ndouble Temperature::getFahrenheit() const { return 0.0; /* TODO */ }\n\nint main() {\n    double c;\n    std::cin >> c;\n    Temperature t{c};\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\npublic:\n    Temperature(double c) : m_celsius{c} {}\n    double getCelsius() const { return m_celsius; }\n    double getFahrenheit() const { return m_celsius * 9.0 / 5.0 + 32.0; }\nprivate:\n    double m_celsius{0.0};\n};\n\nint main() {\n    double c;\n    std::cin >> c;\n    Temperature t{c};\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: room temperature",
+        "is_sample": true,
+        "stdin": "25.0",
+        "expected_stdout": "Celsius: 25.0\nFahrenheit: 77.0"
+      },
+      {
+        "label": "Hidden: freezing point",
+        "is_sample": false,
+        "stdin": "0.0",
+        "expected_stdout": "Celsius: 0.0\nFahrenheit: 32.0"
+      },
+      {
+        "label": "Hidden: boiling point",
+        "is_sample": false,
+        "stdin": "100.0",
+        "expected_stdout": "Celsius: 100.0\nFahrenheit: 212.0"
+      }
+    ]
+  },
+  {
+    "title": "Complete getFahrenheit Implementation",
+    "prompt_md": "## Goal\nComplete the function `double Temperature::getFahrenheit() const` so the `Temperature` class correctly converts from Celsius to Fahrenheit.\n\n## Input\nLine 1: one floating-point number — the temperature in Celsius.\n\n## Output\nTwo lines:\n- Line 1: `C: <value>` (one decimal place)\n- Line 2: `F: <value>` (one decimal place)\n\n## Requirements\n1. Implement the `TODO` stub in `getFahrenheit` using the formula `F = C * 9.0 / 5.0 + 32.0`.\n2. Do not change any other function or `main`.\n3. The function must be `const` and must not modify any member.\n4. Hidden tests include negative Celsius values (e.g. -40.0) and 37.0 (body temperature).",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\npublic:\n    Temperature(double c) : m_celsius{c} {}\n    double getCelsius() const { return m_celsius; }\n    // TODO: implement getFahrenheit() — return m_celsius * 9.0 / 5.0 + 32.0\n    double getFahrenheit() const { return 0.0; }\nprivate:\n    double m_celsius{0.0};\n};\n\nint main() {\n    double c;\n    std::cin >> c;\n    Temperature t{c};\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"C: \" << t.getCelsius() << '\\n';\n    std::cout << \"F: \" << t.getFahrenheit() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\npublic:\n    Temperature(double c) : m_celsius{c} {}\n    double getCelsius() const { return m_celsius; }\n    double getFahrenheit() const { return m_celsius * 9.0 / 5.0 + 32.0; }\nprivate:\n    double m_celsius{0.0};\n};\n\nint main() {\n    double c;\n    std::cin >> c;\n    Temperature t{c};\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"C: \" << t.getCelsius() << '\\n';\n    std::cout << \"F: \" << t.getFahrenheit() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: body temperature",
+        "is_sample": true,
+        "stdin": "37.0",
+        "expected_stdout": "C: 37.0\nF: 98.6"
+      },
+      {
+        "label": "Hidden: negative Celsius",
+        "is_sample": false,
+        "stdin": "-40.0",
+        "expected_stdout": "C: -40.0\nF: -40.0"
+      },
+      {
+        "label": "Hidden: boiling",
+        "is_sample": false,
+        "stdin": "100.0",
+        "expected_stdout": "C: 100.0\nF: 212.0"
+      }
+    ]
+  }
+]

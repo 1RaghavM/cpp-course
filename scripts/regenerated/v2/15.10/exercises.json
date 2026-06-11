@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Ref-Qualified Value Reporter",
+    "prompt_md": "## Goal\nComplete class `Holder` with two ref-qualified overloads of `report()` that print different prefixes depending on whether the object is an lvalue or rvalue.\n\n## Input\nLine 1: integer V.\n\n## Output\nTwo lines:\n- Line 1: `Named: <V>` (from calling `report()` on a named variable — lvalue overload)\n- Line 2: `Temp: <V>` (from calling `report()` on a temporary — rvalue overload)\n\n## Requirements\n1. `Holder` stores an integer value `m_val` as a private member.\n2. `void report() &` prints `Named: <m_val>` followed by a newline.\n3. `void report() &&` prints `Temp: <m_val>` followed by a newline.\n4. `main()` reads V, creates a named `Holder h{V}`, calls `h.report()`, then calls `Holder{V}.report()`.\n5. Edge case: V = 0 should still print both lines with value 0.",
+    "starter_code": "#include <iostream>\n\nclass Holder {\n    int m_val;\npublic:\n    Holder(int v) : m_val{ v } {}\n\n    // TODO: implement void report() &\n    // print \"Named: \" + m_val + newline\n    void report() & {\n        // TODO\n    }\n\n    // TODO: implement void report() &&\n    // print \"Temp: \" + m_val + newline\n    void report() && {\n        // TODO\n    }\n};\n\nint main() {\n    int v;\n    std::cin >> v;\n    Holder h{ v };\n    h.report();              // lvalue — calls report() &\n    Holder{ v }.report();   // rvalue — calls report() &&\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Holder {\n    int m_val;\npublic:\n    Holder(int v) : m_val{ v } {}\n\n    void report() & {\n        std::cout << \"Named: \" << m_val << \"\\n\";\n    }\n\n    void report() && {\n        std::cout << \"Temp: \" << m_val << \"\\n\";\n    }\n};\n\nint main() {\n    int v;\n    std::cin >> v;\n    Holder h{ v };\n    h.report();\n    Holder{ v }.report();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 42", "is_sample": true, "stdin": "42\n", "expected_stdout": "Named: 42\nTemp: 42" },
+      { "label": "Hidden: 0", "is_sample": false, "stdin": "0\n", "expected_stdout": "Named: 0\nTemp: 0" },
+      { "label": "Hidden: -7", "is_sample": false, "stdin": "-7\n", "expected_stdout": "Named: -7\nTemp: -7" }
+    ]
+  },
+  {
+    "title": "Safe Getter Bug Fix",
+    "prompt_md": "## Goal\nThe program below uses ref-qualified getters to safely return a value from both lvalue and rvalue `Packet` objects. It compiles and runs but prints the wrong value on one of the lines. Find and fix the one logic bug.\n\n## Input\nLine 1: integer N.\n\n## Output\nTwo lines:\n- Line 1: `Lvalue: <N>`\n- Line 2: `Rvalue: <N>`\n\n## Requirements\n1. Both lines should print the same value N.\n2. The bug is a logic error — it produces the wrong number on one of the lines.\n3. Hidden tests include N = 0 and negative N.",
+    "starter_code": "#include <iostream>\n\nclass Packet {\n    int m_id;\npublic:\n    Packet(int id) : m_id{ id } {}\n\n    int id() const & { return m_id; }\n    int id() && { return m_id + 1; }  // BUG: off by one\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Packet p{ n };\n    std::cout << \"Lvalue: \" << p.id() << \"\\n\";\n    std::cout << \"Rvalue: \" << Packet{ n }.id() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Packet {\n    int m_id;\npublic:\n    Packet(int id) : m_id{ id } {}\n\n    int id() const & { return m_id; }\n    int id() && { return m_id; }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Packet p{ n };\n    std::cout << \"Lvalue: \" << p.id() << \"\\n\";\n    std::cout << \"Rvalue: \" << Packet{ n }.id() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      { "label": "Sample: 10", "is_sample": true, "stdin": "10\n", "expected_stdout": "Lvalue: 10\nRvalue: 10" },
+      { "label": "Hidden: 0", "is_sample": false, "stdin": "0\n", "expected_stdout": "Lvalue: 0\nRvalue: 0" },
+      { "label": "Hidden: -5", "is_sample": false, "stdin": "-5\n", "expected_stdout": "Lvalue: -5\nRvalue: -5" }
+    ]
+  }
+]

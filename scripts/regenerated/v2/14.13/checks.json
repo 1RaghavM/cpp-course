@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Num {\n    int m_val;\npublic:\n    Num(int v) : m_val{ v } {}\n    int get() const { return m_val; }\n};\n\nint doubled(const Num& n) { return n.get() * 2; }\n\nint main() {\n    std::cout << doubled(Num{ 7 }) << \"\\n\";\n    std::cout << Num{ 5 }.get() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "14\n5",
+    "explanation_md": "`doubled(Num{ 7 })` creates a temporary `Num` with value 7, passes it by `const` reference to `doubled`, which returns 14. The second line directly calls `.get()` on the temporary `Num{ 5 }`, returning 5. Both temporaries are destroyed at the end of their respective statement."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement is true about binding a temporary to a reference?",
+    "options": {
+      "a": "A temporary can be bound to both `const T&` and `T&` (non-const reference).",
+      "b": "A temporary can only be bound to a `const T&`; binding to a non-const `T&` is a compile error.",
+      "c": "Binding a temporary to a `const T&` causes immediate destruction of the temporary.",
+      "d": "Temporaries cannot be bound to references at all."
+    },
+    "answer": "b",
+    "explanation_md": "Temporaries are rvalues. Non-const lvalue references (`T&`) can only bind to lvalues (named objects), so `T& r = T{};` is a compile error. A `const T&` can bind to a temporary, and doing so extends the temporary's lifetime to match the reference's lifetime. This is a specific C++ rule designed to make passing temporaries to const-reference parameters safe."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is a temporary object's lifetime normally ended?",
+    "options": {
+      "a": "At the end of the function that created it.",
+      "b": "At the end of the full expression (statement) in which it was created, unless bound to a `const` reference.",
+      "c": "At the end of the enclosing block `{}`.",
+      "d": "Immediately after the constructor returns."
+    },
+    "answer": "b",
+    "explanation_md": "By default, a temporary's lifetime ends at the semicolon of the full expression that created it. The exception is binding to a `const` reference, which extends the temporary's lifetime to match the reference's lifetime. It does not live until end of function or block unless the reference survives that long."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "Why does this code have undefined behavior?\n\n```cpp\n#include <iostream>\n\nclass Val {\n    int m_n;\npublic:\n    Val(int n) : m_n{ n } {}\n    int get() const { return m_n; }\n};\n\nint main() {\n    const Val* p = &Val{ 42 };\n    std::cout << p->get() << \"\\n\";  // uses p after temporary is destroyed\n}\n```",
+    "options": {
+      "a": "You cannot take the address of a `const` object.",
+      "b": "The temporary `Val{ 42 }` is destroyed at the semicolon of the first statement; `p` dangling-points to a destroyed object.",
+      "c": "`const Val*` should be `Val* const` to allow the pointer to point to temporaries.",
+      "d": "The compiler moves `Val{ 42 }` to stack memory, making `p` safe to use."
+    },
+    "answer": "b",
+    "explanation_md": "Taking the address of a temporary and storing it in a pointer does NOT extend the temporary's lifetime. The temporary `Val{ 42 }` is destroyed at the end of the statement `const Val* p = &Val{ 42 };`. On the next line, `p` is a dangling pointer and `p->get()` is undefined behavior. To extend the lifetime, use `const Val& r = Val{ 42 };` (reference binding extends lifetime)."
+  }
+]

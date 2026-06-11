@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Use a #define macro in a calculation",
+    "prompt_md": "## Goal\nWrite a program that reads an integer and prints the result of multiplying it by a `#define`-d constant.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- Line 1: `Base: <n>`\n- Line 2: `Scaled: <n * FACTOR>` where `FACTOR` is defined as `6`.\n\n## Requirements\n1. Define a macro `FACTOR` with the value `6` using `#define`.\n2. Do NOT wrap `FACTOR` in parentheses in the define — just `#define FACTOR 6`.\n3. `main` reads `n` and prints both lines with the exact labels shown.\n4. Do not declare any variable named `FACTOR` — use the macro directly.\n5. The hidden tests include `n = 0` and `n = 7`.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\n// TODO: #define FACTOR 6\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    // TODO: print \"Base: \" followed by n\n    // TODO: print \"Scaled: \" followed by n * FACTOR\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\n#define FACTOR 6\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Base: \" << n << \"\\n\";\n    std::cout << \"Scaled: \" << n * FACTOR << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Base: 5\nScaled: 30"
+      },
+      {
+        "label": "Hidden: n=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Base: 0\nScaled: 0"
+      },
+      {
+        "label": "Hidden: n=7",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Base: 7\nScaled: 42"
+      }
+    ]
+  },
+  {
+    "title": "Complete a function that applies a preprocessor-defined offset",
+    "prompt_md": "## Goal\nComplete the function `int applyOffset(int value)` which adds a preprocessor-defined constant `OFFSET` to `value`.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- One line: `Adjusted: <n + OFFSET>` where `OFFSET` is defined as `100`.\n\n## Requirements\n1. `#define OFFSET 100` is already provided — do not change it.\n2. Implement `int applyOffset(int value)` to return `value + OFFSET`.\n3. Do not change `main`.\n4. The hidden tests cover `n = 0`, `n = 1`, and `n = -100` (valid signed int).\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\n#define OFFSET 100\n\n// TODO: implement int applyOffset(int value)\n// Return value + OFFSET\nint applyOffset(int value)\n{\n    return 0; // replace this line\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Adjusted: \" << applyOffset(n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\n#define OFFSET 100\n\nint applyOffset(int value)\n{\n    return value + OFFSET;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Adjusted: \" << applyOffset(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Adjusted: 105"
+      },
+      {
+        "label": "Hidden: n=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Adjusted: 100"
+      },
+      {
+        "label": "Hidden: n=-100",
+        "is_sample": false,
+        "stdin": "-100\n",
+        "expected_stdout": "Adjusted: 0"
+      }
+    ]
+  }
+]

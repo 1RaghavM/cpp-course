@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print to **stdout** (ignore stderr)?\n\n```cpp\n#include <iostream>\n\nint double_it(int x)\n{\n    std::cerr << \"in double_it\\n\";\n    return x * 2;\n}\n\nint main()\n{\n    std::cout << double_it(7) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "14",
+    "explanation_md": "`double_it(7)` returns `7 * 2 = 14`. The `std::cerr` line writes to stderr, which the question says to ignore. `std::cout` prints `14` followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you use `std::cerr` instead of `std::cout` for debug trace statements?",
+    "options": {
+      "a": "`std::cerr` is faster than `std::cout` at runtime.",
+      "b": "`std::cerr` is unbuffered and goes to a separate stream, so traces appear immediately and do not mix with program output.",
+      "c": "`std::cerr` automatically removes its output before the program exits.",
+      "d": "`std::cerr` outputs in red text so it is easier to spot."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cerr` writes immediately (unbuffered), so output appears even if the program crashes before flushing. It also writes to the stderr stream, which is separate from stdout, so debug messages do not corrupt test-case output comparisons."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which compiler command will report an uninitialized-variable warning?",
+    "options": {
+      "a": "`g++ -std=c++20 main.cpp`",
+      "b": "`g++ -std=c++20 -Wall -Wextra main.cpp`",
+      "c": "`g++ -std=c++20 -O2 main.cpp`",
+      "d": "`g++ -std=c++20 -pedantic main.cpp`"
+    },
+    "answer": "b",
+    "explanation_md": "`-Wall -Wextra` enables the extended warning set that includes `-Wuninitialized`. The default warning level (`-std=c++20` alone) is very low and silently compiles many dubious patterns. `-O2` is an optimization flag; `-pedantic` enforces strict standard conformance but does not add the same uninitialized-variable check."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Compile with `-Wall -Wextra`. What kind of diagnostic does the compiler emit for the variable `unused` below, and what does the program print to stdout?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int unused = 99;\n    std::cout << 42 << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "42",
+    "explanation_md": "The compiler emits a warning about the unused variable `unused` (to stderr / the compilation log), but the program still compiles. At runtime it prints `42` to stdout. Warnings do not prevent compilation unless you add `-Werror`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student added debug traces to check their function, but the traces never appear when the program crashes. What is the bug?\n\n```cpp\n#include <iostream>\n\nint divide(int a, int b)\n{\n    std::cout << \"[divide] a=\" << a << \" b=\" << b << '\\n';\n    return a / b;\n}\n\nint main()\n{\n    std::cout << divide(10, 0) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The function should be declared before `main`.",
+      "b": "`std::cout` is buffered — if the program crashes before flushing, the trace may never appear; `std::cerr` should be used instead.",
+      "c": "Integer division by zero is a syntax error caught at compile time.",
+      "d": "The trace will always appear because `std::cout` flushes automatically at each `<<`."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cout` is buffered. A crash (here, undefined behavior from division by zero that often manifests as a fatal signal) can terminate the process before the buffer is flushed. `std::cerr` is unbuffered and would emit the trace immediately, making it the correct choice for debug checkpoints."
+  }
+]

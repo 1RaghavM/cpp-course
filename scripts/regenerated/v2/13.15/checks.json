@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is an alias template?",
+    "options": {
+      "a": "A class template that has been instantiated for one specific type.",
+      "b": "A `using` declaration that takes its own template parameter(s) and expands to a different template specialization.",
+      "c": "A way to create a new type with the same shape as another but distinct in the type system.",
+      "d": "A forward declaration of a template before it is defined."
+    },
+    "answer": "b",
+    "explanation_md": "An alias template is `template <...> using Name = SomeTemplate<...>;`. It introduces a parameterised synonym — `Name<X>` expands to a specific instantiation of the underlying template. It is not a new type, not an instantiation by itself, and not a forward declaration."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T, typename U>\nstruct Pair { T first; U second; };\n\ntemplate <typename T>\nusing Same = Pair<T, T>;\n\nint main()\n{\n    Same<int> p{ 5, 7 };\n    std::cout << p.first * p.second << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "35",
+    "explanation_md": "`Same<int>` expands to `Pair<int, int>`, an aggregate with two `int` members. `p.first` is 5 and `p.second` is 7, and their product is 35. The alias does not change the underlying behaviour — it is purely a different way to spell the same type."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `template <typename T> using SameTypePair = Pair<T, T>;`, what is the relationship between `SameTypePair<int>` and `Pair<int, int>`?",
+    "options": {
+      "a": "They are different types that share a common base class.",
+      "b": "They are the same type — the alias is a synonym, not a new type.",
+      "c": "`SameTypePair<int>` is implicitly convertible to `Pair<int, int>` but they are distinct.",
+      "d": "`SameTypePair<int>` is a derived type of `Pair<int, int>`."
+    },
+    "answer": "b",
+    "explanation_md": "Type aliases — including alias templates — do not introduce new types. They are alternative names. Any function or variable declared with one spelling matches the other exactly, which is why declaring overloads using both spellings produces a redefinition error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this code?\n\n```cpp\ntemplate <typename T, typename U>\nstruct Pair { T first; U second; };\n\ntemplate <typename T>\nusing SameTypePair = Pair<T, T>;\n\nvoid f(Pair<int, int>) {}\nvoid f(SameTypePair<int>) {}\n```",
+    "options": {
+      "a": "Nothing — these are two valid overloads of `f`.",
+      "b": "`SameTypePair<int>` and `Pair<int, int>` name the same type, so the second `f` is a redefinition of the first.",
+      "c": "Alias templates cannot be used as function parameter types.",
+      "d": "The `using` line must appear before the `Pair` template definition."
+    },
+    "answer": "b",
+    "explanation_md": "Alias templates produce synonyms, not new types. `SameTypePair<int>` expands to `Pair<int, int>`, so the two `f` signatures are identical. The compiler reports the second as a redefinition of the first. Order is fine in this snippet — the alias references `Pair` after it is defined."
+  }
+]

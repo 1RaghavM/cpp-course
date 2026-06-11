@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nvoid show(T v) { std::cout << \"generic: \" << v << \"\\n\"; }\n\ntemplate <>\nvoid show<bool>(bool v) {\n    std::cout << (v ? \"yes\" : \"no\") << \"\\n\";\n}\n\nint main() {\n    show(42);\n    show(true);\n    show(3.14);\n}\n```",
+    "options": null,
+    "answer": "generic: 42\nyes\ngeneric: 3.14",
+    "explanation_md": "`show(42)` and `show(3.14)` use the primary template and print with the `generic:` prefix. `show(true)` uses the full specialization for `bool`, which prints `yes` without the prefix. The compiler always picks the most specific match."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Can you write a partial template specialization for a function template (e.g., `template <typename T> void f<T*>(T* p)`)?",
+    "options": {
+      "a": "Yes — partial specialization works the same way for function and class templates",
+      "b": "No — function templates only support full specialization; use overloading for partial matching",
+      "c": "Yes, but only if the function is a member of a class",
+      "d": "No — function templates cannot be specialized at all"
+    },
+    "answer": "b",
+    "explanation_md": "C++ does not allow partial specialization of function templates. Only class (and variable) templates support partial specialization. For functions, use overloading to handle different patterns of types — a separate `template <typename T> void f(T* p)` overload matches all pointers and works alongside the original template."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T, int N>\nstruct Fixed {\n    int size() const { return N; }\n};\n\nint main() {\n    Fixed<int, 5> a;\n    Fixed<double, 3> b;\n    std::cout << a.size() << \"\\n\";\n    std::cout << b.size() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "5\n3",
+    "explanation_md": "`N` is a non-type template parameter bound at compile time. `Fixed<int, 5>` has `N = 5` baked in; `size()` returns 5. `Fixed<double, 3>` has `N = 3`; `size()` returns 3. Each instantiation is a distinct class with its own compile-time constant."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The developer expects `Store<int*>` to store a copy of the pointed-to value, but the value it returns changes after the original variable is modified. What is the bug?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nclass Store {\n    T data_;\npublic:\n    explicit Store(T v) : data_{v} {}\n    T get() const { return data_; }\n};\n\ntemplate <typename T>\nclass Store<T*> {\n    T* ptr_;          // stores the pointer, not a copy\npublic:\n    explicit Store(T* p) : ptr_{p} {}\n    T get() const { return *ptr_; }\n};\n\nint main() {\n    int x = 10;\n    Store<int*> s{&x};\n    x = 99;\n    std::cout << s.get() << \"\\n\";  // developer expects 10, but gets 99\n}\n```",
+    "options": {
+      "a": "The primary template is wrong and should also use a pointer member",
+      "b": "The pointer specialization stores the pointer itself (`T* ptr_`) instead of copying the value; changing `x` changes what `get()` returns",
+      "c": "`get()` should return `T*` not `T` to avoid the copy overhead",
+      "d": "The specialization is missing a `const` qualifier on `ptr_`"
+    },
+    "answer": "b",
+    "explanation_md": "The pointer specialization stores the raw pointer, so `get()` always dereferences the current pointed-to value. When `x` changes to 99, `*ptr_` is 99. The fix is to store `T copy_` instead: `explicit Store(T* p) : copy_{*p} {}` and `T get() const { return copy_; }`. This way the value is captured at construction time and is independent of what happens to `x` later."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A full class template specialization `template <> class Wrapper<bool> { ... };` is different from the primary `template <typename T> class Wrapper`. Which of the following is true?",
+    "options": {
+      "a": "The specialization must have the same member variables and functions as the primary",
+      "b": "The specialization is an entirely separate class — it can have completely different members, constructors, and functions",
+      "c": "The specialization automatically inherits all members of the primary and can only add new ones",
+      "d": "The specialization can only override member functions, not add new ones"
+    },
+    "answer": "b",
+    "explanation_md": "A full class template specialization is compiled as a completely independent class definition. It shares no members with the primary template unless you explicitly define them. You can add different data members, different constructors, and different functions — or even remove functions that the primary has. This is what makes specialization powerful for types like `bool` that need fundamentally different storage or behavior."
+  }
+]

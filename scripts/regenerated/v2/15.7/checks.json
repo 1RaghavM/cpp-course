@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass IdFactory {\n    static inline int s_next{ 1 };\npublic:\n    static int generate() { return s_next++; }\n};\n\nint main() {\n    std::cout << IdFactory::generate() << \"\\n\";\n    std::cout << IdFactory::generate() << \"\\n\";\n    std::cout << IdFactory::generate() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "1\n2\n3",
+    "explanation_md": "Each call to `generate()` returns the current value of `s_next` and then post-increments it. The first call returns 1 (s_next becomes 2), the second returns 2 (s_next becomes 3), and the third returns 3. Because `s_next` is a static member, it persists across calls and is shared, so each call sees the updated value."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about static member functions is correct?",
+    "options": {
+      "a": "A static member function has a `this` pointer that points to the most recently created object.",
+      "b": "A static member function can access non-static member variables directly.",
+      "c": "A static member function has no `this` pointer and can only access static members of the class.",
+      "d": "A static member function must be called through an object of the class."
+    },
+    "answer": "c",
+    "explanation_md": "Static member functions have no `this` pointer because they are not associated with any particular object. This means they can only directly access static members (variables or functions) of the class. Attempting to access a non-static member inside a static function is a compile error. They can be called through the class name without any object: `ClassName::func()`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Logger {\n    static inline int s_msgCount{ 0 };\n    int m_id{ 0 };\npublic:\n    Logger(int id) : m_id{ id } {}\n\n    static void logMessage() {\n        ++s_msgCount;\n        std::cout << \"Message from logger \" << m_id << \"\\n\";\n    }\n};\n\nint main() {\n    Logger lg{ 42 };\n    lg.logMessage();\n}\n```",
+    "options": {
+      "a": "`s_msgCount` is private, so it cannot be accessed inside `logMessage()`.",
+      "b": "`logMessage()` is `static` but tries to access `m_id`, which is a non-static member — no `this` exists.",
+      "c": "`lg.logMessage()` is invalid syntax; static functions must be called via `Logger::logMessage()`.",
+      "d": "`static inline` is not valid C++ syntax for member variables."
+    },
+    "answer": "b",
+    "explanation_md": "`logMessage()` is a `static` member function, so it has no `this` pointer. Accessing `m_id` inside it requires `this`, which does not exist. The fix is to either make `logMessage()` a regular (non-static) member function so it has `this`, or remove the `m_id` reference from `logMessage()`. Option (c) is wrong because calling a static function through an object like `lg.logMessage()` is valid (just unusual style)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You are splitting a class definition across a header and a `.cpp` file. The class declares `static int getVersion();` in the header. How should the out-of-class definition in the `.cpp` file look?",
+    "options": {
+      "a": "`static int MyClass::getVersion() { return 1; }`",
+      "b": "`int MyClass::getVersion() { return 1; }`",
+      "c": "`MyClass::static int getVersion() { return 1; }`",
+      "d": "`int static MyClass::getVersion() { return 1; }`"
+    },
+    "answer": "b",
+    "explanation_md": "The `static` keyword must appear only in the in-class declaration, not in the out-of-class definition. Writing `static` in the definition causes a compile error. Option (b) is correct: `int MyClass::getVersion() { return 1; }`. This mirrors the rule for static member variables, where `static` appears only in the in-class declaration as well."
+  }
+]

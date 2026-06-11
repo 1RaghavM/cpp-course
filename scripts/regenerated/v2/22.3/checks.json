@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Box {\n    int* val;\n    Box(int v) : val(new int(v)) {}\n    Box(Box&& o) noexcept : val(o.val) { o.val = nullptr; }\n    ~Box() { if (val) std::cout << \"destroy \" << *val << \"\\n\"; }\n};\n\nint main() {\n    Box a(7);\n    Box b = std::move(a);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "destroy 7",
+    "explanation_md": "After the move, `a.val` is nullptr so its destructor prints nothing. `b.val` still points to the integer 7, so when `b` destructs it prints `destroy 7`. Only one destruction message appears."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should a move constructor be marked `noexcept`?",
+    "options": {
+      "a": "It is a language requirement — the program will not compile without it",
+      "b": "It allows std::vector and other containers to use the move constructor during reallocation instead of falling back to copy",
+      "c": "It prevents the destructor from being called on the moved-from object",
+      "d": "It makes the move constructor run faster at runtime"
+    },
+    "answer": "b",
+    "explanation_md": "Containers like `std::vector` check if the move constructor is `noexcept` before choosing it during reallocation. Without `noexcept`, the container must use the copy constructor to guarantee strong exception safety, defeating the purpose of move semantics. It is not a language requirement (option a is wrong) and has no effect on destruction (option c is wrong)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After executing `Box b = std::move(a);` using a correct move constructor, what is the state of `a`?",
+    "options": {
+      "a": "a is destroyed immediately",
+      "b": "a still holds a valid copy of the original data",
+      "c": "a is in a valid but empty (null pointer) state — do not dereference it",
+      "d": "a and b share ownership of the same resource"
+    },
+    "answer": "c",
+    "explanation_md": "A correct move constructor nulls the donor's pointer. `a` remains alive (its destructor still runs at the end of scope) but its internal pointer is null. The moved-from object is valid to destruct or reassign — just not to use for its original purpose. Option d would describe `shared_ptr`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This move constructor has a bug that causes a double-free crash. What is it?\n\n```cpp\nstruct Buffer {\n    int* data;\n    int  size;\n    Buffer(int n) : data(new int[n]), size(n) {}\n    Buffer(Buffer&& o) noexcept : data(o.data), size(o.size) {\n        // nothing else\n    }\n    ~Buffer() { delete[] data; }\n};\n```",
+    "options": {
+      "a": "The move constructor should use `const Buffer&&` as its parameter type",
+      "b": "The donor's `data` pointer is not nulled after stealing, so both objects delete the same memory",
+      "c": "`noexcept` is not allowed on constructors",
+      "d": "The destructor should check `if (data)` before calling `delete[]`"
+    },
+    "answer": "b",
+    "explanation_md": "After `data(o.data)`, both `this->data` and `o.data` point to the same allocation. When both destructors run, `delete[] data` is called twice on the same pointer — undefined behavior (typically a crash). The fix is to add `o.data = nullptr; o.size = 0;` at the end of the move constructor. Option d is unnecessary because `delete[] nullptr` is already safe."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Tag {\n    Tag()             { std::cout << \"C\\n\"; }\n    Tag(const Tag&)   { std::cout << \"copy\\n\"; }\n    Tag(Tag&&) noexcept { std::cout << \"move\\n\"; }\n    ~Tag()            {}\n};\n\nTag make() { return Tag{}; }\n\nint main() {\n    Tag t = make();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "C",
+    "explanation_md": "The compiler applies copy/move elision (NRVO): the object constructed inside `make()` is constructed directly into `t` in the caller. No copy or move constructor is called. Only the default constructor prints `C`. This is guaranteed in C++17 for prvalues (mandatory copy elision)."
+  }
+]

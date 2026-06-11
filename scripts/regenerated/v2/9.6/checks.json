@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the fundamental purpose of `assert` in C++?",
+    "options": {
+      "a": "To handle errors from user input gracefully without crashing.",
+      "b": "To document and enforce programmer assumptions — conditions that must always be true if the code is correct.",
+      "c": "To print debug output that is automatically removed in release builds.",
+      "d": "To replace `if` statements with a shorter syntax."
+    },
+    "answer": "b",
+    "explanation_md": "`assert` is for programmer errors — invariants that you guarantee hold if your code is correct. When an assertion fires, it means there is a bug in the calling code, not in the user's input. It is not a user-facing error handler. Options a, c, and d miss the core purpose; option c comes closest but the assertion terminates the program, it doesn't merely print."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (Assume `NDEBUG` is NOT defined.)\n\n```cpp\n#include <iostream>\n#include <cassert>\n\nint clamp(int val, int lo, int hi) {\n    assert(lo <= hi);\n    if (val < lo) return lo;\n    if (val > hi) return hi;\n    return val;\n}\n\nint main() {\n    std::cout << clamp(5, 1, 10) << '\\n';\n    std::cout << clamp(0, 1, 10) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5\n1",
+    "explanation_md": "Both calls satisfy `lo <= hi` (1 <= 10), so the assertion passes silently. `clamp(5, 1, 10)`: 5 is between 1 and 10, so `val` is returned → `5`. `clamp(0, 1, 10)`: 0 < lo=1, so `lo` is returned → `1`. The assertion only fires if you call `clamp(5, 10, 1)` where lo > hi."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it wrong to put a side-effect expression inside `assert`, like `assert(++x > 0)`?",
+    "options": {
+      "a": "Assertions can only contain integer comparisons, not increment operators.",
+      "b": "When `NDEBUG` is defined, the entire `assert` expression is removed, so `++x` never executes in release builds — the variable `x` has a different value depending on build mode.",
+      "c": "The `++x` will always make the assertion pass, so it defeats the purpose.",
+      "d": "Side effects inside `assert` cause undefined behavior in all builds."
+    },
+    "answer": "b",
+    "explanation_md": "When compiled with `NDEBUG` defined (typically in release/optimized builds), the preprocessor removes the entire `assert(...)` call. Any side effects — like `++x`, calling a function that modifies global state, or allocating memory — are also removed. The program then behaves differently in debug vs. release builds, which is a subtle and serious bug."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you use `static_assert` instead of `assert`?",
+    "options": {
+      "a": "When you want the check to run faster at runtime.",
+      "b": "When the condition involves runtime values like user input or function parameters.",
+      "c": "When the condition can be evaluated at compile time, such as `sizeof(int) >= 4` or a `constexpr` constant.",
+      "d": "When you want the program to continue running even if the check fails."
+    },
+    "answer": "c",
+    "explanation_md": "`static_assert` is evaluated by the compiler before the program runs. It only works on conditions that are constant at compile time — type sizes, `constexpr` values, or compile-time integer arithmetic. Runtime values like parameters or user input are not known at compile time, so `assert` is required for those. Option a is wrong because `static_assert` has zero runtime cost precisely because it runs at compile time."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Does this code compile, and if so, what does it print?\n\n```cpp\n#include <iostream>\n\nstatic_assert(sizeof(int) >= 2, \"int must be at least 2 bytes\");\n\nint main() {\n    std::cout << sizeof(int) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4",
+    "explanation_md": "On virtually all modern platforms, `sizeof(int)` is 4 bytes, which satisfies `>= 2`, so the `static_assert` passes at compile time with no error. The program compiles and runs, printing `4`. If the platform had `sizeof(int) == 1` (extremely unusual), the compilation would fail with the message `\"int must be at least 2 bytes\"`."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes the difference between a syntax error and a semantic error?",
+    "options": {
+      "a": "A syntax error crashes the program at runtime; a semantic error prevents compilation.",
+      "b": "A syntax error prevents compilation; a semantic error compiles and runs but produces wrong behavior.",
+      "c": "A syntax error is caused by wrong logic; a semantic error is caused by missing semicolons.",
+      "d": "Both prevent the program from running, but syntax errors are harder to find."
+    },
+    "answer": "b",
+    "explanation_md": "A syntax error violates the grammar of the language and is caught by the compiler before the program ever runs. A semantic error is grammatically valid C++ that the compiler accepts, but the program's meaning or behavior is wrong — a miscalculation, an uninitialized variable, or an off-by-one error."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint halve(int x)\n{\n    std::cerr << \"halving \" << x << '\\n';\n    return x / 2;\n}\n\nint main()\n{\n    std::cout << halve(9) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4",
+    "explanation_md": "`9 / 2` in C++ is integer division, which truncates toward zero, giving `4`. The `std::cerr` line writes `halving 9` to stderr, which is not stdout. So stdout contains only `4`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "During a debugging session you suspect a wrong value is being passed from `main` to `compute` to `format`. Which debugger feature most efficiently shows you the argument value at each level without adding print statements?",
+    "options": {
+      "a": "Step over — execute the whole call chain one statement at a time.",
+      "b": "The call stack panel — navigate to each frame and inspect its local variables.",
+      "c": "Run to cursor — jump execution past all functions to the return statement.",
+      "d": "Restart the program with different input."
+    },
+    "answer": "b",
+    "explanation_md": "The call stack panel lets you click each active frame and immediately see that frame's local variables without stepping through every statement. This is the most direct way to trace a value through multiple layers of function calls when execution is already paused."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program produces wrong output intermittently — sometimes correct, sometimes not — depending on seemingly unrelated run-time conditions. What is the most likely category of bug, and what is the best first step?",
+    "options": {
+      "a": "A syntax error; re-read the code carefully for typos.",
+      "b": "An uninitialized variable (a semantic error); enable -Wall -Wextra to get a compiler warning.",
+      "c": "A linker error; recompile with a different standard.",
+      "d": "A hardware fault; restart the computer."
+    },
+    "answer": "b",
+    "explanation_md": "Intermittent, run-dependent wrong output is a classic symptom of reading an uninitialized variable — its value is whatever happened to be in memory, which varies. Compiling with `-Wall -Wextra` will emit an uninitialized-variable warning, pinpointing the line immediately."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nvoid report(int a, int b)\n{\n    std::cout << a + b << '\\n';\n}\n\nint main()\n{\n    int x = 3;\n    int y = 4;\n    report(x, y);\n    report(y, x);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7\n7",
+    "explanation_md": "Both calls pass `3` and `4` (in different order), but addition is commutative: `3 + 4 = 7` and `4 + 3 = 7`. The program prints `7` twice, each on its own line."
+  }
+]

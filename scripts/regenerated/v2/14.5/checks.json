@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\nprivate:\n    int m_count{ 3 };\n\npublic:\n    void increment() { ++m_count; }\n    int getCount() const { return m_count; }\n};\n\nint main() {\n    Counter c;\n    c.increment();\n    c.increment();\n    std::cout << c.getCount() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5",
+    "explanation_md": "`m_count` starts at 3 (the in-class initializer). Each call to `increment()` adds 1, so after two calls it is 5. The `getCount()` accessor returns that value and `std::cout` prints `5` followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes the default access level for members declared inside a `class` (not a `struct`) in C++?",
+    "options": {
+      "a": "They are public by default.",
+      "b": "They are private by default.",
+      "c": "They are protected by default.",
+      "d": "There is no default; you must always specify an access specifier."
+    },
+    "answer": "b",
+    "explanation_md": "In a `class`, members are `private` by default — the opposite of `struct`, where members are `public` by default. This is, in fact, the only language-level difference between `class` and `struct` in C++."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `printValue` to print the stored value, but it does not compile. What is wrong?\n\n```cpp\n#include <iostream>\n\nclass Box {\n    int m_value{ 42 };\npublic:\n    int getValue() const { return m_value; }\n};\n\nvoid printValue(const Box& b) {\n    std::cout << b.m_value << '\\n';\n}\n\nint main() {\n    Box b;\n    printValue(b);\n    return 0;\n}\n```",
+    "options": {
+      "a": "`printValue` should be a `const` function.",
+      "b": "`m_value` is private (class default) so a free function cannot access it.",
+      "c": "`Box` needs a constructor to initialize `m_value`.",
+      "d": "`printValue` must return `int`, not `void`."
+    },
+    "answer": "b",
+    "explanation_md": "Because `class` defaults to private, `m_value` is private. `printValue` is a free function — it is not a member of `Box` — so it cannot access `m_value` directly. The fix is to call `b.getValue()` instead, which is the public accessor."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Inside a `Score` member function, can you read the `private` member of a *different* `Score` object passed as a parameter?",
+    "options": {
+      "a": "No — private means per-object, so only `this` object's private members are accessible.",
+      "b": "Yes — access is per-class, so any `Score` member function can read private members of any `Score` object.",
+      "c": "Only if the parameter is passed by value, not by reference.",
+      "d": "Only if you cast the parameter to `void*` first."
+    },
+    "answer": "b",
+    "explanation_md": "Access control in C++ is per-class, not per-object. A member function of `Score` can access the private members of any `Score` object it can see — including a separate instance passed as a parameter. This is how comparison member functions (like `isHigherThan`) are typically written."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nstruct Point {\n    int x;\n    int y;\n};\n\nclass Pixel {\nprivate:\n    int m_x;\n    int m_y;\npublic:\n    Pixel(int x, int y) : m_x(x), m_y(y) {}\n    void print() const {\n        std::cout << m_x << ' ' << m_y << '\\n';\n    }\n};\n\nint main() {\n    Point p{ 1, 2 };\n    Pixel px{ 3, 4 };\n    std::cout << p.x << ' ' << p.y << '\\n';\n    px.print();\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 2\n3 4",
+    "explanation_md": "`Point` is a `struct`, so `x` and `y` are public and can be read directly. `Pixel` is a `class` with private members; the `print()` member function accesses them legally from inside the class. Both output lines print the stored values separated by a space."
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    bool a { true };\n    bool b { false };\n    std::cout << a << ' ' << b << '\\n';\n    std::cout << std::boolalpha << a << ' ' << b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 0\ntrue false",
+    "explanation_md": "Without `std::boolalpha`, `std::cout` prints `true` as `1` and `false` as `0`. After `std::boolalpha` is activated, the same values print as the words \"true\" and \"false\". The manipulator stays active for subsequent output until `std::noboolalpha` is used."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x { 7 };\n    int y { 7 };\n    bool same   { x == y };\n    bool greater{ x > y };\n    std::cout << std::boolalpha;\n    std::cout << same << '\\n' << greater << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "true\nfalse",
+    "explanation_md": "`x == y` is `7 == 7` which is `true`. `x > y` is `7 > 7` which is `false` (equal is not greater). Both are stored in `bool` variables and printed with `std::boolalpha`, so they appear as words."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `std::cout << myBool` print when `myBool` is `true` and `std::boolalpha` has NOT been set?",
+    "options": {
+      "a": "true",
+      "b": "1",
+      "c": "yes",
+      "d": "TRUE"
+    },
+    "answer": "b",
+    "explanation_md": "Without `std::boolalpha`, C++ prints boolean values as integers: `true` becomes `1` and `false` becomes `0`. To get the text \"true\" or \"false\", you must output `std::boolalpha` first. Options c and d are never printed by the standard stream."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following initializations is valid in C++ and sets `b` to `true`?\n\n```cpp\nbool b { 5 };\n```",
+    "options": {
+      "a": "It is invalid; brace-initialization rejects non-bool values with an error.",
+      "b": "It is valid; any non-zero integer converts to true.",
+      "c": "It is valid; b stores the value 5, not true.",
+      "d": "It is invalid; only 0 and 1 are valid bool initializers."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, any non-zero integer value converts to `true` when assigned to a `bool`. The value is not stored as `5`; internally `bool` normalises it to `1` (true). Brace-initialization may produce a narrowing conversion warning but the code compiles and the result is `true`, not 5."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    bool p { true };\n    bool q { false };\n    bool r { p && q };\n    bool s { p || q };\n    bool t { !p };\n    std::cout << std::boolalpha;\n    std::cout << r << '\\n' << s << '\\n' << t << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "false\ntrue\nfalse",
+    "explanation_md": "`p && q` is `true && false` = `false`. `p || q` is `true || false` = `true`. `!p` is `!true` = `false`. All three are printed with `std::boolalpha` so they appear as words."
+  }
+]

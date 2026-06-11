@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Vec {\n    int x{}, y{};\n};\n\nVec operator+(const Vec& a, const Vec& b) {\n    return Vec{a.x + b.x, a.y + b.y};\n}\n\nint main() {\n    Vec u{3, 5};\n    Vec v{1, 2};\n    Vec w = u + v;\n    std::cout << w.x << \" \" << w.y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4 7",
+    "explanation_md": "`operator+` adds the `x` and `y` fields independently: `3+1=4`, `5+2=7`. The result is printed separated by a space."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following operators **cannot** be overloaded in C++?",
+    "options": {
+      "a": "`+` (addition)",
+      "b": "`[]` (subscript)",
+      "c": "`::` (scope resolution)",
+      "d": "`==` (equality)"
+    },
+    "answer": "c",
+    "explanation_md": "`::` (scope resolution) is one of a small set of operators that C++ forbids overloading, along with `.`, `.*`, `?:`, `sizeof`, `typeid`, and `alignof`. The others listed — `+`, `[]`, and `==` — can all be overloaded."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A free function `operator+(const Foo& a, const Foo& b)` returns a local `Foo` by value. What happens to the returned object when the function exits?",
+    "options": {
+      "a": "It is destroyed immediately — the caller gets a dangling reference",
+      "b": "It is copied (or moved) into the caller's expression — the caller owns a valid object",
+      "c": "The compiler refuses to compile a return-by-value from an overloaded operator",
+      "d": "It stays alive until the end of the program because it's on the heap"
+    },
+    "answer": "b",
+    "explanation_md": "Returning by value copies (or moves) the result to the call site. The local variable inside the function is destroyed, but the caller already has its own copy. This is the correct pattern for arithmetic operators; returning a reference to a local would be a dangling reference."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct N {\n    int v{};\n};\n\nN operator+(const N& a, const N& b) {\n    return N{a.v + b.v};\n}\n\nint main() {\n    N x{2};\n    N y{3};\n    N z{4};\n    N r = x + y + z;\n    std::cout << r.v << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "9",
+    "explanation_md": "`x + y + z` is evaluated left to right: `(x + y)` produces `N{5}`, then `N{5} + z` produces `N{9}`. Each call returns a new value, enabling chaining."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is supposed to compute the sum of two points, but it has a bug:\n\n```cpp\n#include <iostream>\n\nstruct Point {\n    int x{}, y{};\n};\n\nconst Point& operator+(const Point& a, const Point& b) {\n    Point result{a.x + b.x, a.y + b.y};\n    return result;\n}\n\nint main() {\n    Point p{1, 2}, q{3, 4};\n    Point r = p + q;\n    std::cout << r.x << \" \" << r.y << \"\\n\";\n    return 0;\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "The operator should not take const references — it needs non-const references to modify the operands",
+      "b": "The function returns a reference to `result`, which is a local variable that is destroyed when the function returns, causing undefined behavior",
+      "c": "Operator overloads for structs must be member functions, not free functions",
+      "d": "The return type should be `void`; storing the result separately is not allowed"
+    },
+    "answer": "b",
+    "explanation_md": "`result` is a local variable on the stack inside `operator+`. Returning a `const Point&` to it is a dangling reference — `result` is destroyed when the function exits. The fix is to return by value: `Point operator+(const Point& a, const Point& b)`."
+  }
+]

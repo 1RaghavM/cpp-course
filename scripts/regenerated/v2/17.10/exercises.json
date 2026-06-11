@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Vowels in C-style String",
+    "prompt_md": "## Goal\nRead a single word (no spaces) from stdin and print the number of vowels it contains.\n\n## Input\n- Line 1: a single word of at most 49 lowercase letters (a–z), no spaces.\n\n## Output\n- One line: `Vowels: N` where N is the count of vowel characters (`a`, `e`, `i`, `o`, `u`) in the word.\n\n## Requirements\n1. Store the word in `char word[50]{}` and read it with `std::cin >> word`.\n2. Walk the array character-by-character until the null terminator using a pointer or index.\n3. Count characters that are `'a'`, `'e'`, `'i'`, `'o'`, or `'u'`.\n4. Print exactly `Vowels: N`.\n5. Hidden tests cover a word with no vowels, a word that is all vowels, and a single-character word.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    char word[50]{};\n    std::cin >> word;\n\n    int vowelCount = 0;\n\n    // TODO: walk word until '\\0' and count vowels (a e i o u)\n\n    std::cout << \"Vowels: \" << vowelCount << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    char word[50]{};\n    std::cin >> word;\n\n    int vowelCount = 0;\n    for (const char* p = word; *p != '\\0'; ++p) {\n        char c = *p;\n        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')\n            ++vowelCount;\n    }\n\n    std::cout << \"Vowels: \" << vowelCount << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: typical word",
+        "is_sample": true,
+        "stdin": "hello",
+        "expected_stdout": "Vowels: 2"
+      },
+      {
+        "label": "Hidden: no vowels",
+        "is_sample": false,
+        "stdin": "rhythm",
+        "expected_stdout": "Vowels: 0"
+      },
+      {
+        "label": "Hidden: all vowels",
+        "is_sample": false,
+        "stdin": "aeiou",
+        "expected_stdout": "Vowels: 5"
+      }
+    ]
+  },
+  {
+    "title": "Measure C-style String Length",
+    "prompt_md": "## Goal\nComplete the function `int cstrLen(const char* s)` that computes and returns the length of a C-style string (not counting the null terminator).\n\n## Input\n- Line 1: a single word of at most 49 lowercase letters.\n\n## Output\n- One line: `Length: N` where N is the number of characters before the null terminator.\n\n## Requirements\n1. `cstrLen` must walk `s` using a pointer until `*s == '\\0'` and count each non-null character.\n2. Do not use `std::strlen` or any standard string-length function inside `cstrLen`.\n3. `main` reads the word into `char word[50]{}`, calls `cstrLen(word)`, and prints the result.\n4. Hidden tests cover a single-character word, a word of length 1, and a 10-character word.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement cstrLen — count characters until '\\0'\nint cstrLen(const char* s) {\n    return 0; // replace this\n}\n\nint main() {\n    char word[50]{};\n    std::cin >> word;\n    std::cout << \"Length: \" << cstrLen(word) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint cstrLen(const char* s) {\n    int len = 0;\n    while (*s != '\\0') {\n        ++len;\n        ++s;\n    }\n    return len;\n}\n\nint main() {\n    char word[50]{};\n    std::cin >> word;\n    std::cout << \"Length: \" << cstrLen(word) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: five-letter word",
+        "is_sample": true,
+        "stdin": "apple",
+        "expected_stdout": "Length: 5"
+      },
+      {
+        "label": "Hidden: single character",
+        "is_sample": false,
+        "stdin": "z",
+        "expected_stdout": "Length: 1"
+      },
+      {
+        "label": "Hidden: ten characters",
+        "is_sample": false,
+        "stdin": "abcdefghij",
+        "expected_stdout": "Length: 10"
+      }
+    ]
+  }
+]

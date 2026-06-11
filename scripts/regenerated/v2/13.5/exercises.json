@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print a planet enum",
+    "prompt_md": "## Goal\nOverload `operator<<` for a `Planet` enum so it prints the planet's name.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact lines:\n```\nMercury\nVenus\nEarth\nMars\n```\n(trailing newline after `Mars`)\n\n## Requirements\n1. Define an unscoped enum `Planet` with values `mercury`, `venus`, `earth`, `mars` (in that order).\n2. Overload `std::ostream& operator<<(std::ostream& out, Planet p)` using a `switch` statement.\n3. Each case must print the capitalised name (e.g. `Mercury`).\n4. The function must return `out`.\n5. `main` must print all four planets, each on its own line, using `std::cout << planet << '\\n'`.",
+    "starter_code": "#include <iostream>\n\n// TODO 1: Define enum Planet with values mercury, venus, earth, mars\n\n// TODO 2: Overload operator<< for Planet\n//         Signature: std::ostream& operator<<(std::ostream& out, Planet p)\n//         Use a switch. Return out at the end.\n\nint main()\n{\n    // TODO 3: Print mercury, venus, earth, mars each on its own line\n    //         using std::cout << <planet value> << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nenum Planet { mercury, venus, earth, mars };\n\nstd::ostream& operator<<(std::ostream& out, Planet p)\n{\n    switch (p)\n    {\n        case mercury: out << \"Mercury\"; break;\n        case venus:   out << \"Venus\";   break;\n        case earth:   out << \"Earth\";   break;\n        case mars:    out << \"Mars\";    break;\n    }\n    return out;\n}\n\nint main()\n{\n    std::cout << mercury << '\\n';\n    std::cout << venus   << '\\n';\n    std::cout << earth   << '\\n';\n    std::cout << mars    << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Mercury\nVenus\nEarth\nMars\n",
+        "is_sample": true,
+        "stdin": "",
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Mercury\nVenus\nEarth\nMars\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Mercury\nVenus\nEarth\nMars\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the broken direction printer",
+    "prompt_md": "## Goal\nFix the single bug in the program below so it correctly reads a direction and prints it back.\n\n## Input\nOne word on stdin: `north`, `south`, `east`, or `west`.\n\n## Output\nThe same word, capitalised:\n```\nNorth\n```\n(trailing newline)\n\n## Requirements\n1. The program reads a direction word from stdin into a `Direction` variable using `operator>>`.\n2. It then prints the direction name (capitalised) via `operator<<`.\n3. The code already contains **one bug** \u2014 find and fix it. Do not change anything else.\n\n## Notes\n- The bug is in the parameter list of one of the operator overloads.\n- Any unrecognised word should map to `west`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nenum Direction { north, south, east, west };\n\nstd::ostream& operator<<(std::ostream& out, Direction d)\n{\n    switch (d)\n    {\n        case north: out << \"North\"; break;\n        case south: out << \"South\"; break;\n        case east:  out << \"East\";  break;\n        case west:  out << \"West\";  break;\n    }\n    return out;\n}\n\nstd::istream& operator>>(std::istream& in, Direction d)\n{\n    std::string token;\n    in >> token;\n    if (token == \"north\")      d = north;\n    else if (token == \"south\") d = south;\n    else if (token == \"east\")  d = east;\n    else                       d = west;\n    return in;\n}\n\nint main()\n{\n    Direction d{ west };\n    std::cin >> d;\n    std::cout << d << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nenum Direction { north, south, east, west };\n\nstd::ostream& operator<<(std::ostream& out, Direction d)\n{\n    switch (d)\n    {\n        case north: out << \"North\"; break;\n        case south: out << \"South\"; break;\n        case east:  out << \"East\";  break;\n        case west:  out << \"West\";  break;\n    }\n    return out;\n}\n\nstd::istream& operator>>(std::istream& in, Direction& d)\n{\n    std::string token;\n    in >> token;\n    if (token == \"north\")      d = north;\n    else if (token == \"south\") d = south;\n    else if (token == \"east\")  d = east;\n    else                       d = west;\n    return in;\n}\n\nint main()\n{\n    Direction d{ west };\n    std::cin >> d;\n    std::cout << d << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "north",
+        "stdin": "north\n",
+        "expected_stdout": "North\n",
+        "is_sample": true
+      },
+      {
+        "label": "east",
+        "stdin": "east\n",
+        "expected_stdout": "East\n",
+        "is_sample": false
+      },
+      {
+        "label": "south",
+        "stdin": "south\n",
+        "expected_stdout": "South\n",
+        "is_sample": false
+      }
+    ]
+  }
+]

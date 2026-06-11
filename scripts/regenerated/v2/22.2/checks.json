@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(int& x)  { std::cout << \"L\\n\"; }\nvoid show(int&& x) { std::cout << \"R\\n\"; }\n\nint main() {\n    int a = 1;\n    int&& r = 2;\n    show(a);\n    show(r);\n    show(3);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "L\nL\nR",
+    "explanation_md": "`a` is a named variable — lvalue, prints L. `r` is an rvalue reference *variable*; once it has a name it becomes an lvalue — prints L. The literal `3` is a temporary with no name — rvalue, prints R."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following can bind to `int&&`?",
+    "options": {
+      "a": "A named `int` variable",
+      "b": "The result of `a + b` where both are `int`",
+      "c": "A `const int` variable",
+      "d": "An `int*` pointer dereference like `*p`"
+    },
+    "answer": "b",
+    "explanation_md": "The expression `a + b` produces a temporary integer with no name — it is an rvalue and binds to `int&&`. Named variables (`int`, `const int`) and lvalue expressions like `*p` are lvalues; they do not bind to a plain `int&&`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code is intended to pass a temporary to `consume`, but it fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nvoid consume(int&& x) {\n    std::cout << x << \"\\n\";\n}\n\nvoid relay(int&& x) {\n    consume(x); // meant to pass the rvalue along\n}\n\nint main() {\n    relay(42);\n    return 0;\n}\n```",
+    "options": {
+      "a": "`relay` should take `int&` not `int&&`",
+      "b": "`x` inside `relay` is a named variable and therefore an lvalue; `consume` requires an rvalue",
+      "c": "`consume` cannot accept `int&&` — it should accept `const int&`",
+      "d": "42 is not a valid argument for `int&&`"
+    },
+    "answer": "b",
+    "explanation_md": "Even though the type of `x` is `int&&`, the variable `x` has a name and therefore is treated as an lvalue inside `relay`. `consume` demands an rvalue reference (`int&&`), but gets an lvalue, causing a compile error. The fix is `consume(std::move(x))`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary purpose of rvalue references (`T&&`) in C++?",
+    "options": {
+      "a": "To allow references to const objects without const_cast",
+      "b": "To enable functions to detect temporaries and avoid unnecessary copies",
+      "c": "To provide a second syntax for pointers",
+      "d": "To allow returning multiple values from a function"
+    },
+    "answer": "b",
+    "explanation_md": "Rvalue references exist so that move constructors and move assignment operators can detect when they are receiving a temporary (or an explicitly moved-from object) and steal its resources instead of copying them. This avoids expensive deep copies for large objects like strings and vectors."
+  }
+]

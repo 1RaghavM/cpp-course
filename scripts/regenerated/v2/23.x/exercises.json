@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build an IntBag Container with initializer_list",
+    "prompt_md": "## Goal\nBuild a fixed-capacity `IntBag` class that can be initialized with a brace list and supports basic operations.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 6), number of initial values.\n- Line 2: N space-separated integers (each 1–99).\n- Line 3: integer Q (1 ≤ Q ≤ 5), number of queries.\n- Lines 4..Q+3: one query per line:\n  - `size` — print current element count.\n  - `get <i>` — print element at index i (0-based).\n  - `add <v>` — append v to the bag (guaranteed not to exceed capacity of 16).\n\n## Output\nFor `size` and `get` queries, print the result on its own line.\n\n## Requirements\n1. `IntBag` stores elements in a fixed `int data_[16]` array and tracks count in `int count_`.\n2. Constructor accepts `std::initializer_list<int>` and copies all values into `data_`.\n3. `void add(int v)` appends v.\n4. `int size() const` returns the count.\n5. `int get(int i) const` returns `data_[i]`.\n6. Reading initial values: read them from stdin and construct the bag using `add()` in a loop (not with a brace list from stdin — that is compile-time only).",
+    "starter_code": "#include <iostream>\n#include <initializer_list>\n\nclass IntBag {\n    int data_[16]{};\n    int count_{0};\npublic:\n    IntBag() = default;\n\n    IntBag(std::initializer_list<int> list) {\n        // TODO: copy each value from list into data_, incrementing count_\n    }\n\n    void add(int v) {\n        // TODO: store v at data_[count_] and increment count_\n    }\n\n    int size() const { return count_; }\n\n    int get(int i) const {\n        // TODO: return element at index i\n        return 0;\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    IntBag bag;\n    for (int i = 0; i < n; ++i) {\n        int v{};\n        std::cin >> v;\n        bag.add(v);\n    }\n\n    int q{};\n    std::cin >> q;\n    for (int i = 0; i < q; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"size\") {\n            std::cout << bag.size() << \"\\n\";\n        } else if (op == \"get\") {\n            int idx{};\n            std::cin >> idx;\n            std::cout << bag.get(idx) << \"\\n\";\n        } else if (op == \"add\") {\n            int v{};\n            std::cin >> v;\n            bag.add(v);\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <initializer_list>\n#include <string>\n\nclass IntBag {\n    int data_[16]{};\n    int count_{0};\npublic:\n    IntBag() = default;\n\n    IntBag(std::initializer_list<int> list) {\n        for (int v : list)\n            data_[count_++] = v;\n    }\n\n    void add(int v) {\n        data_[count_++] = v;\n    }\n\n    int size() const { return count_; }\n\n    int get(int i) const {\n        return data_[i];\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    IntBag bag;\n    for (int i = 0; i < n; ++i) {\n        int v{};\n        std::cin >> v;\n        bag.add(v);\n    }\n\n    int q{};\n    std::cin >> q;\n    for (int i = 0; i < q; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"size\") {\n            std::cout << bag.size() << \"\\n\";\n        } else if (op == \"get\") {\n            int idx{};\n            std::cin >> idx;\n            std::cout << bag.get(idx) << \"\\n\";\n        } else if (op == \"add\") {\n            int v{};\n            std::cin >> v;\n            bag.add(v);\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: size, get, add",
+        "is_sample": true,
+        "stdin": "3\n10 20 30\n4\nsize\nget 1\nadd 40\nsize\n",
+        "expected_stdout": "3\n20\n4"
+      },
+      {
+        "label": "Hidden: single element, get 0",
+        "is_sample": false,
+        "stdin": "1\n99\n2\nsize\nget 0\n",
+        "expected_stdout": "1\n99"
+      },
+      {
+        "label": "Hidden: multiple adds then get last",
+        "is_sample": false,
+        "stdin": "2\n5 7\n4\nadd 11\nadd 13\nsize\nget 3\n",
+        "expected_stdout": "4\n13"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Aggregating Roster",
+    "prompt_md": "## Goal\nComplete the `addStudent` function in a `Roster` class that aggregates (but does not own) `Student` objects.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), number of students.\n- Lines 2..N+1: one name per line.\n- Line N+2: integer Q (1 ≤ Q ≤ 5), number of queries.\n- Lines N+3..N+Q+2: one query per line:\n  - `count` — print number of students in roster.\n  - `name <i>` — print name of student at index i (0-based).\n\n## Output\nFor each query, print the result on its own line.\n\n## Requirements\n1. `Student` has a `std::string name_` member and `const std::string& name() const` getter.\n2. `Roster` stores up to 10 `Student*` pointers in a fixed array; it does not call `new` or `delete`.\n3. Complete `void addStudent(Student* s)`: store `s` in the pointer array and increment the count.\n4. `int count() const` and `const std::string& nameAt(int i) const` are already implemented; do not change them.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Student {\n    std::string name_;\npublic:\n    explicit Student(std::string n) : name_{std::move(n)} {}\n    const std::string& name() const { return name_; }\n};\n\nclass Roster {\n    Student* students_[10]{};\n    int count_{0};\npublic:\n    void addStudent(Student* s) {\n        // TODO: store s in students_[count_] and increment count_\n    }\n    int count() const { return count_; }\n    const std::string& nameAt(int i) const { return students_[i]->name(); }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    Student* arr[5]{};\n    for (int i = 0; i < n; ++i) {\n        std::string nm;\n        std::getline(std::cin, nm);\n        arr[i] = new Student{nm};\n    }\n\n    Roster r;\n    for (int i = 0; i < n; ++i)\n        r.addStudent(arr[i]);\n\n    int q{};\n    std::cin >> q;\n    std::cin.ignore();\n    for (int i = 0; i < q; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        if (line == \"count\") {\n            std::cout << r.count() << \"\\n\";\n        } else if (line.substr(0, 4) == \"name\") {\n            int idx = std::stoi(line.substr(5));\n            std::cout << r.nameAt(idx) << \"\\n\";\n        }\n    }\n\n    for (int i = 0; i < n; ++i)\n        delete arr[i];\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Student {\n    std::string name_;\npublic:\n    explicit Student(std::string n) : name_{std::move(n)} {}\n    const std::string& name() const { return name_; }\n};\n\nclass Roster {\n    Student* students_[10]{};\n    int count_{0};\npublic:\n    void addStudent(Student* s) {\n        students_[count_++] = s;\n    }\n    int count() const { return count_; }\n    const std::string& nameAt(int i) const { return students_[i]->name(); }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cin.ignore();\n\n    Student* arr[5]{};\n    for (int i = 0; i < n; ++i) {\n        std::string nm;\n        std::getline(std::cin, nm);\n        arr[i] = new Student{nm};\n    }\n\n    Roster r;\n    for (int i = 0; i < n; ++i)\n        r.addStudent(arr[i]);\n\n    int q{};\n    std::cin >> q;\n    std::cin.ignore();\n    for (int i = 0; i < q; ++i) {\n        std::string line;\n        std::getline(std::cin, line);\n        if (line == \"count\") {\n            std::cout << r.count() << \"\\n\";\n        } else if (line.substr(0, 4) == \"name\") {\n            int idx = std::stoi(line.substr(5));\n            std::cout << r.nameAt(idx) << \"\\n\";\n        }\n    }\n\n    for (int i = 0; i < n; ++i)\n        delete arr[i];\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: count and name queries",
+        "is_sample": true,
+        "stdin": "3\nAlice\nBob\nCarla\n3\ncount\nname 0\nname 2\n",
+        "expected_stdout": "3\nAlice\nCarla"
+      },
+      {
+        "label": "Hidden: single student",
+        "is_sample": false,
+        "stdin": "1\nZara\n2\ncount\nname 0\n",
+        "expected_stdout": "1\nZara"
+      },
+      {
+        "label": "Hidden: five students, query middle",
+        "is_sample": false,
+        "stdin": "5\nAna\nBen\nCal\nDee\nEve\n2\ncount\nname 3\n",
+        "expected_stdout": "5\nDee"
+      }
+    ]
+  }
+]

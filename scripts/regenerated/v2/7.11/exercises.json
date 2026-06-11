@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Call Counter (Fixed Calls)",
+    "prompt_md": "## Goal\nWrite a program that calls `logCall()` exactly three times and prints the call number each time, using a `static int` local variable inside `logCall` to track the count.\n\n## Input\nNone — the program reads nothing from stdin.\n\n## Output\nPrint exactly three lines:\n```\nCall: 1\nCall: 2\nCall: 3\n```\n\n## Requirements\n1. Define `void logCall()` with a `static int count` initialised to 0.\n2. Each call increments `count` and prints `Call: ` followed by the count, then a newline.\n3. Call `logCall()` exactly three times from `main` — do not use a loop.\n4. The hidden tests run the program and check the output; no input is read.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement logCall() with a static local int 'count' starting at 0.\n// Each call should increment count and print \"Call: \" followed by the count.\nvoid logCall() {\n    // static int count = ...\n}\n\nint main() {\n    logCall();\n    logCall();\n    logCall();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid logCall() {\n    static int count = 0;\n    ++count;\n    std::cout << \"Call: \" << count << \"\\n\";\n}\n\nint main() {\n    logCall();\n    logCall();\n    logCall();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three calls",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Call: 1\nCall: 2\nCall: 3\n"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Call: 1\nCall: 2\nCall: 3\n"
+      },
+      {
+        "label": "Hidden: output format check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Call: 1\nCall: 2\nCall: 3\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Static Reset Bug",
+    "prompt_md": "## Goal\nThe program below is supposed to generate unique IDs 1, 2, 3 on three successive calls to `nextId()`. Instead, it always prints 1. Find and fix the one logic bug.\n\n## Input\nNone — the program reads nothing from stdin.\n\n## Output\nPrint exactly three lines:\n```\n1\n2\n3\n```\n\n## Requirements\n1. The bug is a logic error — the program compiles and runs but produces wrong output (`1`, `1`, `1`).\n2. `nextId()` must retain the `static int id` local variable.\n3. Do not add a loop — keep the three explicit calls in `main`.\n4. Hidden tests check that all three IDs are distinct and in order.",
+    "starter_code": "#include <iostream>\n\nint nextId() {\n    static int id = 0;\n    id = 0;        // reset to zero before incrementing\n    return ++id;\n}\n\nint main() {\n    std::cout << nextId() << \"\\n\";\n    std::cout << nextId() << \"\\n\";\n    std::cout << nextId() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint nextId() {\n    static int id = 0;\n    return ++id;\n}\n\nint main() {\n    std::cout << nextId() << \"\\n\";\n    std::cout << nextId() << \"\\n\";\n    std::cout << nextId() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: IDs 1 2 3",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "1\n2\n3\n"
+      },
+      {
+        "label": "Hidden: same output check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "1\n2\n3\n"
+      },
+      {
+        "label": "Hidden: output format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "1\n2\n3\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum All Elements in a Vector",
+    "prompt_md": "## Goal\nRead N integers into a `std::vector<int>` and print their sum.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100).\n- Line 2: N space-separated integers (each in the range -1000 to 1000).\n\n## Output\n- Print exactly one line: the integer sum of all elements, followed by a newline.\n\n## Requirements\n1. Use an index-based `for` loop (not a range-based for loop).\n2. Store `static_cast<int>(v.size())` in a variable before the loop.\n3. Hidden tests include: N=1, all negatives, mix of positives and negatives summing to zero.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    // TODO: use an index-based for loop to compute the sum of nums\n    // Store static_cast<int>(nums.size()) in a variable first.\n    int sum { 0 };\n    // Your loop here\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> nums;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        nums.push_back(x);\n    }\n\n    int sum { 0 };\n    int len { static_cast<int>(nums.size()) };\n    for (int i = 0; i < len; ++i)\n        sum += nums[i];\n\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic sum",
+        "is_sample": true,
+        "stdin": "5\n10 20 30 40 50\n",
+        "expected_stdout": "150\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42\n"
+      },
+      {
+        "label": "Hidden: mixed signs summing to zero",
+        "is_sample": false,
+        "stdin": "4\n-5 3 -3 5\n",
+        "expected_stdout": "0\n"
+      }
+    ]
+  },
+  {
+    "title": "Count Values Above Threshold",
+    "prompt_md": "## Goal\nComplete the function `countAbove` that takes a `std::vector<int>` and an `int` threshold, and returns the count of elements strictly greater than the threshold.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50), then integer T on the same line (separated by a space). T is the threshold (-100 ≤ T ≤ 100).\n- Line 2: N space-separated integers.\n\n## Output\n- Print exactly one line: the count of elements > T, followed by a newline.\n\n## Requirements\n1. Implement `int countAbove(std::vector<int> v, int threshold)` using an index-based loop.\n2. Store the vector size as `int` before the loop.\n3. Elements equal to T are NOT counted.\n4. Hidden tests include: threshold higher than all elements (count 0), threshold lower than all elements (count = N), N = 1.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement countAbove\n// Returns the number of elements in v strictly greater than threshold.\nint countAbove(std::vector<int> v, int threshold)\n{\n    int count { 0 };\n    int len { static_cast<int>(v.size()) };\n    // TODO: loop from 0 to len-1, increment count when v[i] > threshold\n    return count;\n}\n\nint main()\n{\n    int n, threshold;\n    std::cin >> n >> threshold;\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n    std::cout << countAbove(data, threshold) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint countAbove(std::vector<int> v, int threshold)\n{\n    int count { 0 };\n    int len { static_cast<int>(v.size()) };\n    for (int i = 0; i < len; ++i)\n    {\n        if (v[i] > threshold)\n            ++count;\n    }\n    return count;\n}\n\nint main()\n{\n    int n, threshold;\n    std::cin >> n >> threshold;\n    std::vector<int> data;\n    for (int i = 0; i < n; ++i)\n    {\n        int x;\n        std::cin >> x;\n        data.push_back(x);\n    }\n    std::cout << countAbove(data, threshold) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: some above threshold",
+        "is_sample": true,
+        "stdin": "6 5\n3 7 5 9 2 8\n",
+        "expected_stdout": "3\n"
+      },
+      {
+        "label": "Hidden: none above threshold",
+        "is_sample": false,
+        "stdin": "3 100\n10 50 99\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: all above threshold, N=1",
+        "is_sample": false,
+        "stdin": "1 -1\n0\n",
+        "expected_stdout": "1\n"
+      }
+    ]
+  }
+]

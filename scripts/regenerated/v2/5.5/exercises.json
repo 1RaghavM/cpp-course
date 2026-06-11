@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Chessboard Constants",
+    "prompt_md": "## Goal\nWrite a program that declares chessboard-related constants as constant expressions and prints them.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly three lines:\n```\nSquares per side: 8\nTotal squares: 64\nMax piece value: 39\n```\n\n## Requirements\n1. Declare `const int squares_per_side = 8;`.\n2. Declare `const int total_squares` computed as `squares_per_side * squares_per_side`.\n3. Declare `const int max_piece_value = 9 + 5 + 5 + 3 + 3 + 14;` (queen + 2 rooks + 2 bishops + 2 knights, from common chess piece values — just compute the arithmetic in the initializer).\n4. Print each value with the exact label shown: `Squares per side: `, `Total squares: `, `Max piece value: `.\n5. All three must be constant expressions (initialized only from literals and other constants).",
+    "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare const int squares_per_side = 8;\n    // TODO: declare const int total_squares = squares_per_side * squares_per_side;\n    // TODO: declare const int max_piece_value = 9 + 5 + 5 + 3 + 3 + 14;\n\n    // TODO: print the three lines\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    const int squares_per_side = 8;\n    const int total_squares = squares_per_side * squares_per_side;\n    const int max_piece_value = 9 + 5 + 5 + 3 + 3 + 14;\n\n    std::cout << \"Squares per side: \" << squares_per_side << \"\\n\";\n    std::cout << \"Total squares: \" << total_squares << \"\\n\";\n    std::cout << \"Max piece value: \" << max_piece_value << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Squares per side: 8\nTotal squares: 64\nMax piece value: 39"
+      },
+      {
+        "label": "Hidden: exact labels",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Squares per side: 8\nTotal squares: 64\nMax piece value: 39"
+      },
+      {
+        "label": "Hidden: no extra lines",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Squares per side: 8\nTotal squares: 64\nMax piece value: 39"
+      }
+    ]
+  },
+  {
+    "title": "Spot the Non-Constant Initializer",
+    "prompt_md": "## Goal\nThe program below is supposed to print `Constant: 50` but contains exactly one bug: a variable that claims to be a constant expression but is initialized from a non-constant expression, causing incorrect output. Find and fix the bug.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly one line:\n```\nConstant: 50\n```\n\n## Requirements\n1. `base` must be a `const int` initialized from a literal.\n2. `multiplier` must be a `const int` initialized from a literal.\n3. `result` must be a `const int` computed from `base` and `multiplier` only.\n4. The program must print `Constant: 50`.\n5. The bug is a logic error in one of the initializers — fix it without changing the variable names or the print statement.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    const int base = 10;\n    const int multiplier = 4;  // BUG: should produce result = 50 with base = 10\n    const int result = base * multiplier;\n    std::cout << \"Constant: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    const int base = 10;\n    const int multiplier = 5;\n    const int result = base * multiplier;\n    std::cout << \"Constant: \" << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: prints 50",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Constant: 50"
+      },
+      {
+        "label": "Hidden: same fixed output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Constant: 50"
+      },
+      {
+        "label": "Hidden: exact label format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Constant: 50"
+      }
+    ]
+  }
+]

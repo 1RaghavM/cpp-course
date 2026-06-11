@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Read and Write via Subscript Operator",
+    "prompt_md": "## Goal\nAdd `operator[]` (both non-`const` and `const` overloads) to a `Buffer` class that wraps a fixed array of 5 integers, then read and update elements via the operator.\n\n## Input\n- Line 1: five integers (the initial buffer contents).\n- Line 2: index I (0-based, 0 ≤ I ≤ 4) and value V to write at that index.\n- Line 3: index J (0-based, 0 ≤ J ≤ 4) to read.\n\n## Output\n- Line 1: the value at index J read through a `const Buffer` reference after the write.\n\n## Requirements\n1. `int& operator[](int i)` — non-`const` overload that returns a reference to the element.\n2. `const int& operator[](int i) const` — `const` overload for read-only access.\n3. The write at index I must be performed through the non-`const` overload.\n4. The read at index J must be performed through the `const` overload (pass the buffer as `const Buffer&`).\n5. Hidden tests include writing and reading the same index, and reading an index that was not written.",
+    "starter_code": "#include <iostream>\n\nclass Buffer {\n    int m_data[5]{};\npublic:\n    Buffer(int a, int b, int c, int d, int e) {\n        m_data[0] = a; m_data[1] = b; m_data[2] = c;\n        m_data[3] = d; m_data[4] = e;\n    }\n\n    // TODO: non-const operator[] — return a reference to m_data[i]\n    int& operator[](int i) { return m_data[0]; }\n\n    // TODO: const operator[] — return a const reference to m_data[i]\n    const int& operator[](int i) const { return m_data[0]; }\n};\n\nvoid printAt(const Buffer& buf, int j) {\n    std::cout << buf[j] << '\\n';\n}\n\nint main() {\n    int a{}, b{}, c{}, d{}, e{};\n    std::cin >> a >> b >> c >> d >> e;\n    int idx{}, val{}, j{};\n    std::cin >> idx >> val;\n    std::cin >> j;\n    Buffer buf{ a, b, c, d, e };\n    buf[idx] = val;\n    printAt(buf, j);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Buffer {\n    int m_data[5]{};\npublic:\n    Buffer(int a, int b, int c, int d, int e) {\n        m_data[0] = a; m_data[1] = b; m_data[2] = c;\n        m_data[3] = d; m_data[4] = e;\n    }\n\n    int& operator[](int i) { return m_data[i]; }\n    const int& operator[](int i) const { return m_data[i]; }\n};\n\nvoid printAt(const Buffer& buf, int j) {\n    std::cout << buf[j] << '\\n';\n}\n\nint main() {\n    int a{}, b{}, c{}, d{}, e{};\n    std::cin >> a >> b >> c >> d >> e;\n    int idx{}, val{}, j{};\n    std::cin >> idx >> val;\n    std::cin >> j;\n    Buffer buf{ a, b, c, d, e };\n    buf[idx] = val;\n    printAt(buf, j);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: write index 2, read index 2",
+        "is_sample": true,
+        "stdin": "1 2 3 4 5\n2 99\n2",
+        "expected_stdout": "99"
+      },
+      {
+        "label": "Hidden: write index 0, read index 4",
+        "is_sample": false,
+        "stdin": "10 20 30 40 50\n0 77\n4",
+        "expected_stdout": "50"
+      },
+      {
+        "label": "Hidden: write index 3, read index 1",
+        "is_sample": false,
+        "stdin": "5 6 7 8 9\n3 42\n1",
+        "expected_stdout": "6"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Subscript Operator Bug in a Score Board",
+    "prompt_md": "## Goal\nThe `ScoreBoard` class below stores three scores and should print the sum of all three. It has a logic bug in `operator[]`. Find and fix it.\n\n## Input\n- Line 1: three integers representing scores.\n\n## Output\n- One line: the sum of the three scores.\n\n## Requirements\n1. The program contains exactly one logic bug: `operator[]` always returns the element at index 0 instead of the requested index.\n2. Fix the bug so `operator[]` returns the element at the correct index.\n3. Do not change `main()` or add new members.\n4. Hidden tests cover all-zero scores and scores where the sum would differ based on which element is returned.",
+    "starter_code": "#include <iostream>\n\nclass ScoreBoard {\n    int m_scores[3]{};\npublic:\n    ScoreBoard(int a, int b, int c) {\n        m_scores[0] = a; m_scores[1] = b; m_scores[2] = c;\n    }\n\n    // BUG: always returns m_scores[0] instead of m_scores[i]\n    int& operator[](int i) { return m_scores[0]; }\n    const int& operator[](int i) const { return m_scores[0]; }\n};\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n    ScoreBoard board{ a, b, c };\n    int sum = board[0] + board[1] + board[2];\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass ScoreBoard {\n    int m_scores[3]{};\npublic:\n    ScoreBoard(int a, int b, int c) {\n        m_scores[0] = a; m_scores[1] = b; m_scores[2] = c;\n    }\n\n    int& operator[](int i) { return m_scores[i]; }\n    const int& operator[](int i) const { return m_scores[i]; }\n};\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n    ScoreBoard board{ a, b, c };\n    int sum = board[0] + board[1] + board[2];\n    std::cout << sum << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: distinct scores",
+        "is_sample": true,
+        "stdin": "10 20 30",
+        "expected_stdout": "60"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: asymmetric scores",
+        "is_sample": false,
+        "stdin": "1 100 1000",
+        "expected_stdout": "1101"
+      }
+    ]
+  }
+]

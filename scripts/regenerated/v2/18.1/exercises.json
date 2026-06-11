@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sort integers from stdin using selection sort",
+    "prompt_md": "## Goal\nRead N integers from stdin and print them in ascending order using selection sort.\n\n## Input\n- Line 1: integer N (1 <= N <= 20)\n- Lines 2..N+1: one integer per line\n\n## Output\nPrint exactly one line containing the N integers separated by single spaces, followed by a newline.\n\n## Requirements\n1. Read exactly N integers into a `std::vector<int>`.\n2. Sort the vector in-place using selection sort (outer loop + inner loop finding minimum + swap).\n3. Print the sorted values separated by single spaces with no trailing space, then `'\\n'`.\n4. N = 1 must work (single element, already sorted).\n5. All values may be negative.\n\n## Notes\n- Use `std::vector<int>` and index-based loops.\n- You may use `std::swap` from `<utility>` or a manual three-variable swap.",
+    "starter_code": "#include <iostream>\n#include <vector>\n#include <utility>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> a(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> a[i];\n\n    // TODO: implement selection sort on vector a\n    // Outer loop: i from 0 to n-2\n    //   find index of minimum in a[i..n-1]\n    //   swap a[i] with that minimum\n\n    for (int i = 0; i < n; ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << a[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n#include <utility>\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::vector<int> a(n);\n    for (int i = 0; i < n; ++i)\n        std::cin >> a[i];\n\n    for (int i = 0; i < n - 1; ++i)\n    {\n        int minIdx = i;\n        for (int j = i + 1; j < n; ++j)\n            if (a[j] < a[minIdx])\n                minIdx = j;\n        std::swap(a[i], a[minIdx]);\n    }\n\n    for (int i = 0; i < n; ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << a[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: five elements",
+        "is_sample": true,
+        "stdin": "5\n64\n25\n12\n22\n11\n",
+        "expected_stdout": "11 12 22 25 64\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "42\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "4\n-3\n7\n-1\n2\n",
+        "expected_stdout": "-3 -1 2 7\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the broken descending sort",
+    "prompt_md": "## Goal\nThe program below is supposed to sort an array in descending order (largest first) using a variant of selection sort, then print the result. It contains one bug — find and fix it.\n\n## Input\nNone (the array is hardcoded).\n\n## Output\nExact line:\n```\n9 7 5 3 1\n```\n(trailing newline)\n\n## Requirements\n1. The program must use selection sort adapted to find the **maximum** on each pass.\n2. After the fix, it must print `9 7 5 3 1` on a single line followed by `'\\n'`.\n3. The bug is a logic bug — the program compiles and runs, but produces wrong output.\n4. Do not change anything except the one buggy line.\n\n## Notes\n- Only one line needs changing.",
+    "starter_code": "#include <iostream>\n#include <array>\n#include <utility>\n\nint main()\n{\n    std::array<int, 5> a { 3, 9, 1, 7, 5 };\n    int n = static_cast<int>(a.size());\n\n    for (int i = 0; i < n - 1; ++i)\n    {\n        int maxIdx = i;\n        for (int j = i + 1; j < n; ++j)\n        {\n            if (a[j] < a[maxIdx])   // bug: wrong comparison\n                maxIdx = j;\n        }\n        std::swap(a[i], a[maxIdx]);\n    }\n\n    for (int i = 0; i < n; ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << a[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <array>\n#include <utility>\n\nint main()\n{\n    std::array<int, 5> a { 3, 9, 1, 7, 5 };\n    int n = static_cast<int>(a.size());\n\n    for (int i = 0; i < n - 1; ++i)\n    {\n        int maxIdx = i;\n        for (int j = i + 1; j < n; ++j)\n        {\n            if (a[j] > a[maxIdx])   // fixed: > for descending\n                maxIdx = j;\n        }\n        std::swap(a[i], a[maxIdx]);\n    }\n\n    for (int i = 0; i < n; ++i)\n    {\n        if (i > 0) std::cout << ' ';\n        std::cout << a[i];\n    }\n    std::cout << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: hardcoded array",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "9 7 5 3 1\n"
+      },
+      {
+        "label": "Hidden: same array, same check",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "9 7 5 3 1\n"
+      },
+      {
+        "label": "Hidden: verify descending order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "9 7 5 3 1\n"
+      }
+    ]
+  }
+]

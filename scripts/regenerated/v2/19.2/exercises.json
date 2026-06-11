@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Dynamic Array Sum and Average",
+    "prompt_md": "## Goal\nWrite a program that reads N integers into a dynamically allocated array, then prints their sum and the minimum value.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 100).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- Line 1: `Sum: <total>`\n- Line 2: `Min: <minimum>`\n\n## Requirements\n1. Allocate the array on the heap using `new int[N]`.\n2. Read all N integers into the array.\n3. Compute the sum and minimum by iterating over the array.\n4. Print exactly in the format shown (`Sum: ` and `Min: ` with a capital letter, colon, space).\n5. Free the array with `delete[]` before the program ends.\n6. Edge case: N = 1 — single element is both sum and minimum.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: allocate a dynamic array of n ints\n    // TODO: read n integers into the array\n    // TODO: compute sum and minimum\n    // TODO: print Sum: and Min:\n    // TODO: free the array with delete[]\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    int sum = 0;\n    int minVal = arr[0];\n    for (int i = 0; i < n; ++i) {\n        sum += arr[i];\n        if (arr[i] < minVal)\n            minVal = arr[i];\n    }\n\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    std::cout << \"Min: \" << minVal << \"\\n\";\n\n    delete[] arr;\n    arr = nullptr;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 numbers",
+        "is_sample": true,
+        "stdin": "4\n3\n7\n1\n5\n",
+        "expected_stdout": "Sum: 16\nMin: 1\n"
+      },
+      {
+        "label": "Hidden: N=1",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "Sum: 42\nMin: 42\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "3\n-5\n2\n-1\n",
+        "expected_stdout": "Sum: -4\nMin: -5\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Reverse a Dynamic Array",
+    "prompt_md": "## Goal\nComplete the function `reverseArray` that reverses the elements of a dynamically allocated array in place.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50).\n- Line 2: N space-separated integers.\n\n## Output\n- Print the N integers in reversed order, space-separated, followed by a newline.\n\n## Requirements\n1. Complete the function with signature `void reverseArray(int* arr, int size)` that reverses the array in place without allocating any extra heap memory.\n2. The reversal must swap elements using index arithmetic on the pointer.\n3. `main` allocates the array with `new int[n]`, calls `reverseArray`, prints the result, then frees with `delete[]`.\n4. Edge case: N = 1 — output is the same single integer.\n5. The output has a single trailing newline; integers are separated by single spaces with no trailing space.\n\n## Notes\n- You may use a local `int tmp` variable inside the function for swapping.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement reverseArray\n// Reverse the elements of arr[0..size-1] in place.\nvoid reverseArray(int* arr, int size) {\n    // TODO\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    reverseArray(arr, n);\n\n    for (int i = 0; i < n; ++i) {\n        if (i > 0) std::cout << \" \";\n        std::cout << arr[i];\n    }\n    std::cout << \"\\n\";\n\n    delete[] arr;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid reverseArray(int* arr, int size) {\n    for (int i = 0; i < size / 2; ++i) {\n        int tmp = arr[i];\n        arr[i] = arr[size - 1 - i];\n        arr[size - 1 - i] = tmp;\n    }\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int* arr = new int[n];\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr[i];\n\n    reverseArray(arr, n);\n\n    for (int i = 0; i < n; ++i) {\n        if (i > 0) std::cout << \" \";\n        std::cout << arr[i];\n    }\n    std::cout << \"\\n\";\n\n    delete[] arr;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 elements",
+        "is_sample": true,
+        "stdin": "5\n1 2 3 4 5\n",
+        "expected_stdout": "5 4 3 2 1\n"
+      },
+      {
+        "label": "Hidden: N=1",
+        "is_sample": false,
+        "stdin": "1\n7\n",
+        "expected_stdout": "7\n"
+      },
+      {
+        "label": "Hidden: even count",
+        "is_sample": false,
+        "stdin": "4\n10 20 30 40\n",
+        "expected_stdout": "40 30 20 10\n"
+      }
+    ]
+  }
+]

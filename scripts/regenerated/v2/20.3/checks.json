@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint countdown(int n) {\n    if (n <= 0) return 0;\n    std::cout << n << \"\\n\";\n    return countdown(n - 1);\n}\nint main() {\n    countdown(3);\n}\n```",
+    "options": null,
+    "answer": "3\n2\n1",
+    "explanation_md": "`countdown(3)` prints 3, then calls `countdown(2)`, which prints 2, then calls `countdown(1)`, which prints 1, then calls `countdown(0)` which returns immediately. Output is 3, 2, 1 on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when a recursive function has no base case?",
+    "options": {
+      "a": "It compiles but always returns 0",
+      "b": "It calls itself forever, eventually causing a stack overflow",
+      "c": "The compiler detects the infinite recursion and reports an error",
+      "d": "It runs once and returns without producing output"
+    },
+    "answer": "b",
+    "explanation_md": "Without a base case, each call generates another call, pushing stack frames until the stack is exhausted — a stack overflow. The compiler cannot generally detect infinite recursion (it's undecidable in general). Option (a) and (d) are both wrong — no implicit return or early exit occurs."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function computes the sum 1 + 2 + ... + n. What is wrong?\n\n```cpp\nint sum(int n) {\n    if (n == 0) return 0;\n    return n + sum(n);   // recursive call\n}\n```",
+    "options": {
+      "a": "The base case should be `n == 1`, not `n == 0`",
+      "b": "The recursive call passes `n` unchanged instead of `n - 1`, causing infinite recursion",
+      "c": "The function should return `n * sum(n - 1)` for summation",
+      "d": "The return type should be `long` to handle large sums"
+    },
+    "answer": "b",
+    "explanation_md": "`sum(n)` calls `sum(n)` — the argument never decreases, so the base case `n == 0` is never reached. The recursive call should be `sum(n - 1)`. Option (a) is wrong: `n == 0` is a valid base case for this sum. Option (c) confuses sum with factorial."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint power(int base, int exp) {\n    if (exp == 0) return 1;\n    return base * power(base, exp - 1);\n}\nint main() {\n    std::cout << power(2, 4) << \"\\n\";\n    std::cout << power(3, 0) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "16\n1",
+    "explanation_md": "`power(2, 4)` computes 2*2*2*2 = 16 by multiplying 2 four times. `power(3, 0)` hits the base case immediately and returns 1, because anything to the power of 0 is 1."
+  }
+]

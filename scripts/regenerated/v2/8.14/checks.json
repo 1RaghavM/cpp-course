@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (Answer with one integer per line.)\n\n```cpp\n#include <random>\n#include <iostream>\nint main()\n{\n    std::mt19937 rng{ 0u };\n    std::uniform_int_distribution<int> d{ 1, 4 };\n    std::cout << d(rng) << '\\n';\n    std::cout << d(rng) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1\n4",
+    "explanation_md": "With seed `0u`, `std::mt19937` produces a fixed deterministic sequence. For `uniform_int_distribution{1,4}`, the first draw is 1 and the second is 4. The key concept is reproducibility: the same seed always yields the same sequence regardless of when or how many times you run the program."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the output range of a single call to `rng()` when `rng` is a `std::mt19937`?",
+    "options": {
+      "a": "[0, 32767] — the classic RAND_MAX range.",
+      "b": "[0, 2^31 − 1] — the positive half of a 32-bit signed integer.",
+      "c": "[0, 2^32 − 1] — the full unsigned 32-bit range.",
+      "d": "[0, 1) — a floating-point value like uniform_real_distribution."
+    },
+    "answer": "c",
+    "explanation_md": "`std::mt19937` is a 32-bit engine. Its `operator()` returns `result_type`, which is `std::uint_fast32_t` — a 32-bit unsigned integer whose range is `[0, 2^32 − 1]`. That is why you almost always pass the output through a distribution rather than using it directly."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The student wants a uniform distribution over integers 1 through 6. What is wrong?\n\n```cpp\n#include <random>\n#include <iostream>\nint main()\n{\n    std::mt19937 rng{ 99u };\n    std::uniform_int_distribution<int> d{ rng(), 6 };\n    std::cout << d(rng) << '\\n';\n}\n```",
+    "options": {
+      "a": "The template argument to `uniform_int_distribution` must be `unsigned`, not `int`.",
+      "b": "`rng()` is called as the lower bound in the distribution constructor, consuming one engine value and producing a huge lower bound instead of 1.",
+      "c": "The distribution should be constructed with `{0, 5}` for zero-based die faces.",
+      "d": "`std::uniform_int_distribution` is not available until C++17."
+    },
+    "answer": "b",
+    "explanation_md": "The distribution constructor takes the range limits as plain values, not calls to the engine. Writing `d{ rng(), 6 }` draws the first value from the engine (a number in the billions) as the lower bound and uses `6` as the upper bound. This is a logic error: the lower bound ends up larger than the upper bound, causing undefined behavior. The fix is `d{ 1, 6 }`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which seeding approach should you use when you want a different sequence of random numbers every time the program runs?",
+    "options": {
+      "a": "Use a fixed literal seed like `42u` — it produces a different sequence on each machine.",
+      "b": "Omit the seed entirely; `std::mt19937` defaults to a time-based seed.",
+      "c": "Seed with the system clock (`std::chrono::steady_clock`) or `std::random_device` so the seed differs each run.",
+      "d": "Call `srand(time(nullptr))` before constructing the engine."
+    },
+    "answer": "c",
+    "explanation_md": "A fixed seed always produces the same sequence — that is its defining property. `std::mt19937` has no automatic time-based default; you must supply a seed explicitly. `srand` seeds the old C `rand()` function and has no effect on `std::mt19937`. Seeding from `std::chrono::steady_clock` or `std::random_device` gives a different starting point each run."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <random>\n#include <iostream>\nint main()\n{\n    std::mt19937 rng{ 5u };\n    std::mt19937 rng2{ 5u };\n    std::uniform_int_distribution<int> d{ 0, 1 };\n    std::cout << d(rng) << ' ' << d(rng) << '\\n';\n    std::cout << d(rng2) << ' ' << d(rng2) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "1 0\n1 0",
+    "explanation_md": "Both engines are seeded with `5u`, so they start in identical states and produce identical sequences. The first line prints the first two draws from `rng`; the second line prints the first two draws from `rng2`. Since both engines started with the same seed, the outputs are identical. For seed 5 with distribution `{0,1}`, the first draw is 1 and the second is 0."
+  }
+]

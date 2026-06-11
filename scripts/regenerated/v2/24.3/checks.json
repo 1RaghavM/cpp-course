@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass A {\npublic:\n    A()  { std::cout << \"A\\n\"; }\n    ~A() { std::cout << \"~A\\n\"; }\n};\nclass B : public A {\npublic:\n    B()  { std::cout << \"B\\n\"; }\n    ~B() { std::cout << \"~B\\n\"; }\n};\nint main() {\n    B obj;\n}\n```",
+    "options": null,
+    "answer": "A\nB\n~B\n~A",
+    "explanation_md": "The base class `A` constructor runs first (printing `A`), then `B`'s constructor (printing `B`). On destruction, the derived destructor `~B` runs first, then the base `~A`. Construction order is base-first; destruction is the reverse."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In a three-level chain `X -> Y -> Z` (Z inherits Y, Y inherits X), which constructor runs LAST when you create a `Z` object?",
+    "options": {
+      "a": "X's constructor",
+      "b": "Y's constructor",
+      "c": "Z's constructor",
+      "d": "They all run simultaneously"
+    },
+    "answer": "c",
+    "explanation_md": "Construction always goes from the root of the hierarchy downward. For a three-level chain, X is constructed first, then Y, then Z. Z's constructor runs last. Destruction reverses this: Z first, then Y, then X."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Base {\npublic:\n    int x;\n    Base() : x(10) { std::cout << \"Base x=\" << x << \"\\n\"; }\n};\nclass Derived : public Base {\npublic:\n    int y;\n    Derived() : y(20) {\n        std::cout << \"Derived x=\" << x << \" y=\" << y << \"\\n\";\n    }\n};\nint main() {\n    Derived d;\n}\n```",
+    "options": null,
+    "answer": "Base x=10\nDerived x=10 y=20",
+    "explanation_md": "The `Base` constructor runs first and initializes `x` to 10, printing `Base x=10`. By the time `Derived`'s constructor body executes, `x` is already `10` (from the base sub-object), so it prints `Derived x=10 y=20`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Do you need to explicitly call `Base::~Base()` inside a derived destructor?",
+    "options": {
+      "a": "Yes — you must always call the base destructor explicitly at the end of the derived destructor",
+      "b": "No — the compiler automatically calls the base destructor after the derived destructor body finishes",
+      "c": "Only if the base class has a user-defined destructor",
+      "d": "Only if the base class has virtual functions"
+    },
+    "answer": "b",
+    "explanation_md": "The compiler automatically inserts a call to the base class destructor after the derived destructor body runs. You never need to call it manually. Calling it explicitly would cause it to run twice, which is undefined behavior."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Decompose a rectangle report into focused functions",
+    "prompt_md": "## Goal\nWrite a program that reads the width and height of a rectangle and prints a two-line report using focused helper functions.\n\n## Input\n- Line 1: two integers `w` and `h` separated by a space (1 ≤ w, h ≤ 1000), representing width and height.\n\n## Output\n- Line 1: `Perimeter: <value>` where value is `2 * (w + h)`.\n- Line 2: `Area: <value>` where value is `w * h`.\n\n## Requirements\n1. Implement a function `int perimeter(int w, int h)` that returns `2 * (w + h)`.\n2. Implement a function `int area(int w, int h)` that returns `w * h`.\n3. `main` reads `w` and `h`, then calls both functions and prints their results with the exact labels shown.\n4. No computation may appear directly in `main` — all arithmetic goes in the helper functions.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement int perimeter(int w, int h)\n// Returns 2 * (w + h)\n\n// TODO: implement int area(int w, int h)\n// Returns w * h\n\nint main()\n{\n    int w;\n    int h;\n    std::cin >> w >> h;\n\n    // TODO: call perimeter and area, then print the results\n    // Expected output:\n    // Perimeter: <value>\n    // Area: <value>\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint perimeter(int w, int h)\n{\n    return 2 * (w + h);\n}\n\nint area(int w, int h)\n{\n    return w * h;\n}\n\nint main()\n{\n    int w;\n    int h;\n    std::cin >> w >> h;\n\n    std::cout << \"Perimeter: \" << perimeter(w, h) << \"\\n\";\n    std::cout << \"Area: \" << area(w, h) << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 by 3 rectangle",
+        "is_sample": true,
+        "stdin": "4 3\n",
+        "expected_stdout": "Perimeter: 14\nArea: 12"
+      },
+      {
+        "label": "Hidden: square 5 by 5",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "Perimeter: 20\nArea: 25"
+      },
+      {
+        "label": "Hidden: 1 by 1000 extreme",
+        "is_sample": false,
+        "stdin": "1 1000\n",
+        "expected_stdout": "Perimeter: 2002\nArea: 1000"
+      }
+    ]
+  },
+  {
+    "title": "Complete a function that computes a scaled sum",
+    "prompt_md": "## Goal\nComplete the function `int scaledSum(int a, int b, int factor)` so the program reads three integers and prints their scaled sum.\n\n## Input\n- Line 1: three integers `a`, `b`, and `factor` separated by spaces.\n\n## Output\n- One line: `Scaled sum: <value>` where value is `(a + b) * factor`.\n\n## Requirements\n1. Implement `int scaledSum(int a, int b, int factor)` — it must return `(a + b) * factor`.\n2. Do not change `main`.\n3. The hidden tests include cases where `a` and/or `b` are 0, and where `factor` is 1.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement int scaledSum(int a, int b, int factor)\n// Returns (a + b) * factor\nint scaledSum(int a, int b, int factor)\n{\n    return 0; // replace this line\n}\n\nint main()\n{\n    int a;\n    int b;\n    int factor;\n    std::cin >> a >> b >> factor;\n    std::cout << \"Scaled sum: \" << scaledSum(a, b, factor) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint scaledSum(int a, int b, int factor)\n{\n    return (a + b) * factor;\n}\n\nint main()\n{\n    int a;\n    int b;\n    int factor;\n    std::cin >> a >> b >> factor;\n    std::cout << \"Scaled sum: \" << scaledSum(a, b, factor) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 4 2",
+        "is_sample": true,
+        "stdin": "3 4 2\n",
+        "expected_stdout": "Scaled sum: 14"
+      },
+      {
+        "label": "Hidden: zeros and factor 5",
+        "is_sample": false,
+        "stdin": "0 0 5\n",
+        "expected_stdout": "Scaled sum: 0"
+      },
+      {
+        "label": "Hidden: factor 1 identity",
+        "is_sample": false,
+        "stdin": "7 3 1\n",
+        "expected_stdout": "Scaled sum: 10"
+      }
+    ]
+  }
+]

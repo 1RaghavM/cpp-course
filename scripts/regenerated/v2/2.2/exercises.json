@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Square and Sum",
+    "prompt_md": "## Goal\nRead two integers from stdin, compute the square of each, add the two squares together, and print the result.\n\n## Input\n- Line 1: integer A (-100 ≤ A ≤ 100).\n- Line 2: integer B (-100 ≤ B ≤ 100).\n\n## Output\nPrint exactly one line: the integer result of A*A + B*B, followed by a newline.\n\nExample: if A=3, B=4, print `25`.\n\n## Requirements\n1. Define a function `int square(int n)` that returns `n * n`.\n2. In `main`, read A and B from `std::cin`, call `square` on each, add the results, and print the sum.\n3. No additional output labels — print only the number.",
+    "starter_code": "#include <iostream>\n\n// TODO: define int square(int n) that returns n*n\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    // TODO: compute square(a) + square(b) and print it\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint square(int n)\n{\n    return n * n;\n}\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << square(a) + square(b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 4",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "25\n"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0\n0\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-5\n3\n",
+        "expected_stdout": "34\n"
+      }
+    ]
+  },
+  {
+    "title": "Double or Nothing Bug",
+    "prompt_md": "## Goal\nRead an integer N from stdin and print its double.\n\nThe program below is supposed to print `N * 2`, but it contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: integer N (-1000 ≤ N ≤ 1000).\n\n## Output\nPrint exactly one line: the integer `N * 2`, followed by a newline.\n\nExample: if N=7, print `14`.\n\n## Requirements\n1. The function `doubleVal` must return the correct doubled value.\n2. The printed result must equal N * 2 for all inputs.\n3. Fix only the logic bug — do not change the program's overall structure.",
+    "starter_code": "#include <iostream>\n\nint doubleVal(int x)\n{\n    return x + 2;   // bug: should double x, not add 2\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << doubleVal(n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint doubleVal(int x)\n{\n    return x * 2;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << doubleVal(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7 → 14",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "14\n"
+      },
+      {
+        "label": "Hidden: zero → 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: negative → -10",
+        "is_sample": false,
+        "stdin": "-5\n",
+        "expected_stdout": "-10\n"
+      }
+    ]
+  }
+]

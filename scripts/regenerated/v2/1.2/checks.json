@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << \"Start\\n\";\n    // std::cout << \"Middle\\n\";\n    std::cout << \"End\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Start\nEnd",
+    "explanation_md": "The second `std::cout` line is inside a `//` comment, so the compiler ignores it entirely. Only `\"Start\\n\"` and `\"End\\n\"` are executed, printing two lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when the compiler encounters a comment?",
+    "options": {
+      "a": "It stores the comment text in the compiled binary for later inspection.",
+      "b": "It skips the comment entirely; comments have no effect on the program.",
+      "c": "It prints the comment text when the program runs.",
+      "d": "It raises a warning if the comment is longer than 80 characters."
+    },
+    "answer": "b",
+    "explanation_md": "Comments are stripped out during compilation. They leave no trace in the compiled binary and produce no output at runtime. They exist solely for human readers of the source code."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    /* First line\n    std::cout << \"Hello\\n\";\n    /* Second comment */\n    std::cout << \"World\\n\";\n    */\n    return 0;\n}\n```",
+    "options": {
+      "a": "`std::cout` cannot appear inside a multi-line comment.",
+      "b": "The inner `*/` on line 7 closes the outer `/*` comment, leaving `std::cout << \"World\\n\";` and the stray `*/` outside the comment, causing a syntax error.",
+      "c": "Multi-line comments must start on their own line, not after code.",
+      "d": "`#include <iostream>` must appear inside the comment block."
+    },
+    "answer": "b",
+    "explanation_md": "Multi-line `/* ... */` comments do not nest. The `*/` that ends the inner comment also ends the outer one. Everything after it — including `std::cout << \"World\\n\";` and the orphaned `*/` — is treated as code, producing a compile error. Use `//` when commenting out code that already contains `/* ... */`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which comment style is safest when you want to temporarily disable a single statement?",
+    "options": {
+      "a": "`/* */` because it can span multiple lines.",
+      "b": "`//` because it ends automatically at the line boundary and cannot accidentally swallow adjacent code.",
+      "c": "Both are equally safe for a single statement.",
+      "d": "Neither; you should delete the statement instead."
+    },
+    "answer": "b",
+    "explanation_md": "`//` is safer for disabling a single statement because its scope is exactly one line — it cannot accidentally disable adjacent lines. `/* */` requires you to place the closing `*/` correctly, which is error-prone when the block grows or contains inner comments."
+  }
+]

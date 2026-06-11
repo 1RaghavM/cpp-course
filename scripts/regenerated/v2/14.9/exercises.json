@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Area via Constructor",
+    "prompt_md": "## Goal\nComplete the `Rectangle` class so it stores width and height via a constructor and provides an `area()` member function.\n\n## Input\n- Line 1: two positive integers `w` and `h` separated by a space.\n\n## Output\n- Line 1: `Area: <value>` where `<value>` is `w * h`.\n\n## Requirements\n1. `Rectangle` must store width and height in `private` members `m_width` and `m_height` (both `int`).\n2. The constructor `Rectangle(int width, int height)` must initialize both members.\n3. `int area() const` must return `m_width * m_height`.\n4. `main()` reads two integers, constructs a `Rectangle`, and prints the area.\n5. Edge cases tested: w = 1 and h = 1, large values.",
+    "starter_code": "#include <iostream>\n\nclass Rectangle {\nprivate:\n    int m_width;\n    int m_height;\n\npublic:\n    Rectangle(int width, int height) {\n        // TODO: initialize m_width and m_height\n    }\n\n    int area() const {\n        // TODO: return m_width * m_height\n        return 0;\n    }\n};\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rectangle {\nprivate:\n    int m_width;\n    int m_height;\n\npublic:\n    Rectangle(int width, int height) {\n        m_width  = width;\n        m_height = height;\n    }\n\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 x 3",
+        "is_sample": true,
+        "stdin": "4 3",
+        "expected_stdout": "Area: 12"
+      },
+      {
+        "label": "Hidden: 1 x 1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Area: 1"
+      },
+      {
+        "label": "Hidden: 10 x 25",
+        "is_sample": false,
+        "stdin": "10 25",
+        "expected_stdout": "Area: 250"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Countdown Timer",
+    "prompt_md": "## Goal\nThe following program creates a `Countdown` object and is supposed to print the remaining seconds after subtracting the elapsed time. It compiles and runs but produces wrong output. Find and fix the one logic bug.\n\n## Input\n- Line 1: integer `start` — starting number of seconds.\n- Line 2: integer `elapsed` — seconds that have passed.\n\n## Output\n- Line 1: `Remaining: <value>` where `<value>` is `start - elapsed`.\n\n## Requirements\n1. `Countdown` stores `m_seconds` privately.\n2. The constructor takes `int start` and stores it in `m_seconds`.\n3. `void tick(int elapsed)` subtracts `elapsed` from `m_seconds`.\n4. `int getSeconds() const` returns `m_seconds`.\n5. The bug is a logic error in the constructor or `tick` — the program compiles cleanly but prints the wrong value.",
+    "starter_code": "#include <iostream>\n\nclass Countdown {\nprivate:\n    int m_seconds;\n\npublic:\n    Countdown(int start) {\n        // Bug: adds instead of assigns\n        m_seconds = m_seconds + start;\n    }\n\n    void tick(int elapsed) { m_seconds -= elapsed; }\n    int getSeconds() const { return m_seconds; }\n};\n\nint main() {\n    int start, elapsed;\n    std::cin >> start >> elapsed;\n\n    Countdown c{ start };\n    c.tick(elapsed);\n\n    std::cout << \"Remaining: \" << c.getSeconds() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Countdown {\nprivate:\n    int m_seconds;\n\npublic:\n    Countdown(int start) {\n        m_seconds = start;\n    }\n\n    void tick(int elapsed) { m_seconds -= elapsed; }\n    int getSeconds() const { return m_seconds; }\n};\n\nint main() {\n    int start, elapsed;\n    std::cin >> start >> elapsed;\n\n    Countdown c{ start };\n    c.tick(elapsed);\n\n    std::cout << \"Remaining: \" << c.getSeconds() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 60 start, 10 elapsed",
+        "is_sample": true,
+        "stdin": "60\n10",
+        "expected_stdout": "Remaining: 50"
+      },
+      {
+        "label": "Hidden: 100 start, 100 elapsed",
+        "is_sample": false,
+        "stdin": "100\n100",
+        "expected_stdout": "Remaining: 0"
+      },
+      {
+        "label": "Hidden: 30 start, 5 elapsed",
+        "is_sample": false,
+        "stdin": "30\n5",
+        "expected_stdout": "Remaining: 25"
+      }
+    ]
+  }
+]

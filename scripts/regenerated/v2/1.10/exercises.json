@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Evaluate and Print Compound Expressions",
+    "prompt_md": "## Goal\nRead two integers from stdin and print the results of three compound expressions involving them.\n\n## Input\n- Line 1: integer `a` (1 ≤ a ≤ 100)\n- Line 2: integer `b` (1 ≤ b ≤ 100)\n\n## Output\nPrint exactly three lines:\n```\nexpr1: <a + b * 2>\nexpr2: <(a + b) * 2>\nexpr3: <a * a - b * b>\n```\nAll results are integers. No blank lines.\n\n## Requirements\n1. Use `std::cin` to read both values.\n2. Compute each expression in a separate variable before printing.\n3. `expr1` must use standard precedence (no extra parentheses around `b * 2`).\n4. `expr2` uses parentheses to override precedence.\n5. Hidden tests verify that the three expressions produce distinct values.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    // TODO: compute and print expr1, expr2, expr3\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int expr1 = a + b * 2;\n    int expr2 = (a + b) * 2;\n    int expr3 = a * a - b * b;\n\n    std::cout << \"expr1: \" << expr1 << '\\n';\n    std::cout << \"expr2: \" << expr2 << '\\n';\n    std::cout << \"expr3: \" << expr3 << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a=3, b=4",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "expr1: 11\nexpr2: 14\nexpr3: -7\n"
+      },
+      {
+        "label": "Hidden: a=10, b=2",
+        "is_sample": false,
+        "stdin": "10\n2\n",
+        "expected_stdout": "expr1: 14\nexpr2: 24\nexpr3: 96\n"
+      },
+      {
+        "label": "Hidden: a=5, b=5",
+        "is_sample": false,
+        "stdin": "5\n5\n",
+        "expected_stdout": "expr1: 15\nexpr2: 20\nexpr3: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Accumulate Sum Step by Step",
+    "prompt_md": "## Goal\nComplete the function `accumulate` that takes three integers and returns their running sum at each step, printed from `main`.\n\n## Input\n- Line 1: integer `x` (1 ≤ x ≤ 1000)\n- Line 2: integer `y` (1 ≤ y ≤ 1000)\n- Line 3: integer `z` (1 ≤ z ≤ 1000)\n\n## Output\nPrint exactly three lines showing the running total after adding each value:\n```\nafter x: <x>\nafter y: <x + y>\nafter z: <x + y + z>\n```\n\n## Requirements\n1. The function signature is: `int accumulate(int running, int next)`. It takes a running total and the next value, adds them, and returns the new total.\n2. `main` reads the three values, calls `accumulate` three times, and prints each result with the label shown above.\n3. Do not use any global variables.\n4. Hidden tests use all three values distinct from each other.\n\n## Notes\n- `#include <iostream>` is already provided.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement accumulate(int running, int next) -> int\n// It should return running + next\nint accumulate(int running, int next)\n{\n    return 0; // stub — replace with correct expression\n}\n\nint main()\n{\n    int x = 0;\n    int y = 0;\n    int z = 0;\n    std::cin >> x >> y >> z;\n\n    int total = 0;\n    total = accumulate(total, x);\n    std::cout << \"after x: \" << total << '\\n';\n    total = accumulate(total, y);\n    std::cout << \"after y: \" << total << '\\n';\n    total = accumulate(total, z);\n    std::cout << \"after z: \" << total << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint accumulate(int running, int next)\n{\n    return running + next;\n}\n\nint main()\n{\n    int x = 0;\n    int y = 0;\n    int z = 0;\n    std::cin >> x >> y >> z;\n\n    int total = 0;\n    total = accumulate(total, x);\n    std::cout << \"after x: \" << total << '\\n';\n    total = accumulate(total, y);\n    std::cout << \"after y: \" << total << '\\n';\n    total = accumulate(total, z);\n    std::cout << \"after z: \" << total << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 1, 2, 3",
+        "is_sample": true,
+        "stdin": "1\n2\n3\n",
+        "expected_stdout": "after x: 1\nafter y: 3\nafter z: 6\n"
+      },
+      {
+        "label": "Hidden: 10, 20, 30",
+        "is_sample": false,
+        "stdin": "10\n20\n30\n",
+        "expected_stdout": "after x: 10\nafter y: 30\nafter z: 60\n"
+      },
+      {
+        "label": "Hidden: 100, 1, 999",
+        "is_sample": false,
+        "stdin": "100\n1\n999\n",
+        "expected_stdout": "after x: 100\nafter y: 101\nafter z: 1100\n"
+      }
+    ]
+  }
+]

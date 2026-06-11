@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print String Table from const char* Array",
+    "prompt_md": "## Goal\nRead an integer index from stdin and print the corresponding planet name from a fixed table of `const char*` pointers.\n\n## Input\n- Line 1: one integer N (0 ≤ N ≤ 7), representing a 0-based index into the planet table.\n\n## Output\n- Print exactly one line: the planet name at index N, followed by a newline.\n- Planet table (0-indexed): Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.\n\n## Requirements\n1. Declare a `const char*` array named `planets` containing exactly 8 string literals in the order listed above.\n2. Read one integer from stdin and print `planets[index]`.\n3. Assume the input is always a valid index (0–7); no bounds checking required.\n4. Do not use `std::string` — use `const char*` throughout.\n\n## Notes\n- Include `<iostream>` only.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare a const char* array named 'planets' with 8 string literals\n    // (Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune)\n\n    int index{};\n    std::cin >> index;\n\n    // TODO: print planets[index] followed by a newline\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    const char* planets[8] = {\n        \"Mercury\", \"Venus\", \"Earth\", \"Mars\",\n        \"Jupiter\", \"Saturn\", \"Uranus\", \"Neptune\"\n    };\n\n    int index{};\n    std::cin >> index;\n\n    std::cout << planets[index] << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: index 2 (Earth)",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "Earth\n"
+      },
+      {
+        "label": "Hidden: index 0 (Mercury)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Mercury\n"
+      },
+      {
+        "label": "Hidden: index 7 (Neptune)",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Neptune\n"
+      }
+    ]
+  },
+  {
+    "title": "Find First Character in Pointer Table",
+    "prompt_md": "## Goal\nThe program below reads a lowercase letter and is supposed to print the first color in the table whose name starts with that letter, or `Not found` if none does. It compiles cleanly but contains one logic bug — find and fix it.\n\n## Input\n- Line 1: one lowercase letter.\n\n## Output\n- Print the matching color name followed by a newline, or `Not found` followed by a newline if no color starts with that letter.\n\n## Requirements\n1. The table contains: `red`, `green`, `blue`, `gold`, `gray`.\n2. Comparison must use the first character of each `const char*` entry (`colors[i][0]`).\n3. Print the first match; stop searching after finding one.\n4. The bug is a logic error — the starter compiles and runs, but produces wrong output for some inputs.\n\n## Notes\n- Do not use `std::string` or `<cstring>`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    const char* colors[5] = {\"red\", \"green\", \"blue\", \"gold\", \"gray\"};\n    char ch{};\n    std::cin >> ch;\n\n    bool found = false;\n    for (int i = 0; i < 5; ++i)\n    {\n        if (colors[i][0] == ch)\n        {\n            std::cout << colors[i] << '\\n';\n            found = true;\n        }\n    }\n\n    if (!found)\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    const char* colors[5] = {\"red\", \"green\", \"blue\", \"gold\", \"gray\"};\n    char ch{};\n    std::cin >> ch;\n\n    bool found = false;\n    for (int i = 0; i < 5; ++i)\n    {\n        if (colors[i][0] == ch)\n        {\n            std::cout << colors[i] << '\\n';\n            found = true;\n            break;\n        }\n    }\n\n    if (!found)\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 'g' matches green (first g-word)",
+        "is_sample": true,
+        "stdin": "g\n",
+        "expected_stdout": "green\n"
+      },
+      {
+        "label": "Hidden: 'r' matches red",
+        "is_sample": false,
+        "stdin": "r\n",
+        "expected_stdout": "red\n"
+      },
+      {
+        "label": "Hidden: 'z' not found",
+        "is_sample": false,
+        "stdin": "z\n",
+        "expected_stdout": "Not found\n"
+      }
+    ]
+  }
+]

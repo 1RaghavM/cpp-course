@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build a Simple Inheritance Hierarchy",
+    "prompt_md": "## Goal\nDefine a base class `Vehicle` and a derived class `Truck` that inherits from it, then print details of a `Truck` object.\n\n## Input\nLine 1: a string — the vehicle's brand name.\nLine 2: an integer — the vehicle's year.\nLine 3: an integer — the truck's payload capacity in kg.\n\n## Output\nPrint exactly two lines:\n```\nBrand: <brand>, Year: <year>\nPayload: <capacity> kg\n```\n\n## Requirements\n1. `Vehicle` must have `std::string brand` and `int year` as public members.\n2. `Truck` must inherit from `Vehicle` using public inheritance and add `int payload_kg`.\n3. Read the three values from stdin and assign them to a `Truck` object.\n4. Print the first line using `brand` and `year` from the inherited members.\n5. Print the second line using `payload_kg`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define class Vehicle with public members: brand (std::string) and year (int)\n\n// TODO: Define class Truck that publicly inherits from Vehicle\n//       and adds public member: payload_kg (int)\n\nint main() {\n    // TODO: Declare a Truck object\n    // Read brand, year, payload_kg from stdin and assign them\n    // Print the two required output lines\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Vehicle {\npublic:\n    std::string brand;\n    int year;\n};\n\nclass Truck : public Vehicle {\npublic:\n    int payload_kg;\n};\n\nint main() {\n    Truck t;\n    std::cin >> t.brand >> t.year >> t.payload_kg;\n    std::cout << \"Brand: \" << t.brand << \", Year: \" << t.year << \"\\n\";\n    std::cout << \"Payload: \" << t.payload_kg << \" kg\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic truck",
+        "is_sample": true,
+        "stdin": "Ford\n2020\n5000\n",
+        "expected_stdout": "Brand: Ford, Year: 2020\nPayload: 5000 kg"
+      },
+      {
+        "label": "Hidden: different brand",
+        "is_sample": false,
+        "stdin": "Toyota\n2015\n3200\n",
+        "expected_stdout": "Brand: Toyota, Year: 2015\nPayload: 3200 kg"
+      },
+      {
+        "label": "Hidden: newer model",
+        "is_sample": false,
+        "stdin": "Volvo\n2023\n12000\n",
+        "expected_stdout": "Brand: Volvo, Year: 2023\nPayload: 12000 kg"
+      }
+    ]
+  },
+  {
+    "title": "Three-Level Hierarchy Bug Fix",
+    "prompt_md": "## Goal\nThe program below models a three-level inheritance chain: `LivingThing -> Animal -> Pet`. It should print the pet's classification, name, and owner. Find and fix the one logic bug.\n\n## Input\nLine 1: a string — the pet's name.\nLine 2: a string — the owner's name.\n\n## Output\nPrint exactly three lines:\n```\nClassification: living thing\nName: <name>\nOwner: <owner>\n```\n\n## Requirements\n1. The bug is a logic error — the program compiles, but prints incorrect output.\n2. Do not change the class structure or the input/output format.\n3. The hidden tests verify that the classification line always says exactly `Classification: living thing`.\n4. The name and owner lines use the exact labels shown.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass LivingThing {\npublic:\n    std::string classification = \"organism\"; // BUG: wrong value\n};\n\nclass Animal : public LivingThing {\npublic:\n    std::string name;\n};\n\nclass Pet : public Animal {\npublic:\n    std::string owner;\n};\n\nint main() {\n    Pet p;\n    std::cin >> p.name >> p.owner;\n    std::cout << \"Classification: \" << p.classification << \"\\n\";\n    std::cout << \"Name: \" << p.name << \"\\n\";\n    std::cout << \"Owner: \" << p.owner << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass LivingThing {\npublic:\n    std::string classification = \"living thing\";\n};\n\nclass Animal : public LivingThing {\npublic:\n    std::string name;\n};\n\nclass Pet : public Animal {\npublic:\n    std::string owner;\n};\n\nint main() {\n    Pet p;\n    std::cin >> p.name >> p.owner;\n    std::cout << \"Classification: \" << p.classification << \"\\n\";\n    std::cout << \"Name: \" << p.name << \"\\n\";\n    std::cout << \"Owner: \" << p.owner << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic pet",
+        "is_sample": true,
+        "stdin": "Buddy Alice\n",
+        "expected_stdout": "Classification: living thing\nName: Buddy\nOwner: Alice"
+      },
+      {
+        "label": "Hidden: different names",
+        "is_sample": false,
+        "stdin": "Whiskers Bob\n",
+        "expected_stdout": "Classification: living thing\nName: Whiskers\nOwner: Bob"
+      },
+      {
+        "label": "Hidden: edge names",
+        "is_sample": false,
+        "stdin": "Goldie Carol\n",
+        "expected_stdout": "Classification: living thing\nName: Goldie\nOwner: Carol"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Track Copy vs Move Construction",
+    "prompt_md": "## Goal\nWrite a program using a `Tracker` struct that counts copy and move constructions, then report how many of each occurred.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), the number of operations.\n- Lines 2..N+1: a letter, either `C` (copy-construct from `original`) or `M` (move-construct from a fresh temporary `Tracker{}`).\n\n## Output\nPrint exactly two lines:\n```\nCopies: X\nMoves: Y\n```\n\n## Requirements\n1. Declare `struct Tracker` with a static `int copies` and `int moves` (initialized to 0).\n2. Copy constructor increments `copies`; move constructor increments `moves`. Both are `noexcept` for the move.\n3. For `C`: write `Tracker t = original;` (copy).\n4. For `M`: write `Tracker t = Tracker{};` — rely on copy elision: this constructs directly without a move, so counts 0. Instead write `Tracker tmp; Tracker t = std::move(tmp);` to force a move.\n5. Print counts after all operations.\n",
+    "starter_code": "#include <iostream>\n\nstruct Tracker {\n    static int copies;\n    static int moves;\n\n    Tracker() = default;\n\n    Tracker(const Tracker&) {\n        // TODO: increment copies\n    }\n\n    Tracker(Tracker&&) noexcept {\n        // TODO: increment moves\n    }\n};\n\nint Tracker::copies = 0;\nint Tracker::moves  = 0;\n\nint main() {\n    int n;\n    std::cin >> n;\n    Tracker original;\n    for (int i = 0; i < n; ++i) {\n        char op;\n        std::cin >> op;\n        if (op == 'C') {\n            Tracker t = original;\n            (void)t;\n        } else {\n            Tracker tmp;\n            Tracker t = std::move(tmp);\n            (void)t;\n        }\n    }\n    std::cout << \"Copies: \" << Tracker::copies << \"\\n\";\n    std::cout << \"Moves: \" << Tracker::moves << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Tracker {\n    static int copies;\n    static int moves;\n\n    Tracker() = default;\n\n    Tracker(const Tracker&) {\n        ++copies;\n    }\n\n    Tracker(Tracker&&) noexcept {\n        ++moves;\n    }\n};\n\nint Tracker::copies = 0;\nint Tracker::moves  = 0;\n\nint main() {\n    int n;\n    std::cin >> n;\n    Tracker original;\n    for (int i = 0; i < n; ++i) {\n        char op;\n        std::cin >> op;\n        if (op == 'C') {\n            Tracker t = original;\n            (void)t;\n        } else {\n            Tracker tmp;\n            Tracker t = std::move(tmp);\n            (void)t;\n        }\n    }\n    std::cout << \"Copies: \" << Tracker::copies << \"\\n\";\n    std::cout << \"Moves: \" << Tracker::moves << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2 copies 1 move",
+        "is_sample": true,
+        "stdin": "3\nC\nM\nC\n",
+        "expected_stdout": "Copies: 2\nMoves: 1"
+      },
+      {
+        "label": "Hidden: all moves",
+        "is_sample": false,
+        "stdin": "4\nM\nM\nM\nM\n",
+        "expected_stdout": "Copies: 0\nMoves: 4"
+      },
+      {
+        "label": "Hidden: single copy",
+        "is_sample": false,
+        "stdin": "1\nC\n",
+        "expected_stdout": "Copies: 1\nMoves: 0"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Move Constructor",
+    "prompt_md": "## Goal\nThe program below models a `Wallet` that owns a heap-allocated integer balance. It moves a wallet and then destroys both. It should print the balance after the move, but due to a bug it causes a double-free crash. Find and fix the one logic bug in the move constructor.\n\n## Input\nLine 1: a single integer B (the initial balance).\n\n## Output\nPrint exactly one line: `Balance: B`\n\n## Requirements\n1. After the move, printing `*b.balance` must give the original value.\n2. The program must not crash (no double-free).\n3. Do not change `main` or any other member function — fix only the move constructor.\n",
+    "starter_code": "#include <iostream>\n\nstruct Wallet {\n    int* balance;\n\n    Wallet(int b) : balance(new int(b)) {}\n\n    // Bug is here\n    Wallet(Wallet&& other) noexcept : balance(other.balance) {\n        // forgot to null other.balance\n    }\n\n    ~Wallet() { delete balance; }\n};\n\nint main() {\n    int b;\n    std::cin >> b;\n    Wallet a(b);\n    Wallet moved = std::move(a);\n    std::cout << \"Balance: \" << *moved.balance << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Wallet {\n    int* balance;\n\n    Wallet(int b) : balance(new int(b)) {}\n\n    Wallet(Wallet&& other) noexcept : balance(other.balance) {\n        other.balance = nullptr;\n    }\n\n    ~Wallet() { delete balance; }\n};\n\nint main() {\n    int b;\n    std::cin >> b;\n    Wallet a(b);\n    Wallet moved = std::move(a);\n    std::cout << \"Balance: \" << *moved.balance << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: balance 500",
+        "is_sample": true,
+        "stdin": "500\n",
+        "expected_stdout": "Balance: 500"
+      },
+      {
+        "label": "Hidden: balance 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Balance: 0"
+      },
+      {
+        "label": "Hidden: negative balance",
+        "is_sample": false,
+        "stdin": "-100\n",
+        "expected_stdout": "Balance: -100"
+      }
+    ]
+  }
+]

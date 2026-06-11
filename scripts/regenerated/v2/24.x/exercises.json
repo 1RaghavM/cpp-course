@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Inheritance Chain: Employee and Manager",
+    "prompt_md": "## Goal\nBuild an `Employee`/`Manager` inheritance chain that reads records from stdin and prints them using each class's own `print()` function.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 4), number of records.\n- Lines 2..N+1: one record per line in one of two formats:\n  - `E <name> <salary>` — an Employee record.\n  - `M <name> <salary> <teamSize>` — a Manager record.\n  (name is a single word; salary and teamSize are integers)\n\n## Output\nFor each record, print on its own line:\n- Employee: `<name> $<salary>`\n- Manager: `<name> $<salary> team=<teamSize>`\n\n## Requirements\n1. `Employee` stores `std::string name_` and `int salary_` (initialized via constructor); `void print() const` prints the employee line format.\n2. `Manager` inherits publicly from `Employee`, adds `int teamSize_`; `void print() const` prints the manager line format. Use `name()` and `salary()` getters from `Employee`.\n3. `Employee` provides `name()` and `salary()` public getters.\n4. Call `print()` on the concrete type in `main` (not through a base pointer) so the correct version is dispatched without needing virtual.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Employee {\n    std::string name_;\n    int salary_;\npublic:\n    Employee(std::string n, int s) : name_{std::move(n)}, salary_{s} {}\n    const std::string& name()   const { return name_; }\n    int                salary() const { return salary_; }\n    void print() const {\n        // TODO: print \"<name> $<salary>\" followed by a newline\n    }\n};\n\nclass Manager : public Employee {\n    int teamSize_;\npublic:\n    Manager(std::string n, int s, int ts)\n        : Employee{std::move(n), s}, teamSize_{ts} {}\n    void print() const {\n        // TODO: print \"<name> $<salary> team=<teamSize>\" followed by a newline\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        char type{};\n        std::string nm;\n        int sal{};\n        std::cin >> type >> nm >> sal;\n        if (type == 'E') {\n            Employee e{nm, sal};\n            e.print();\n        } else {\n            int ts{};\n            std::cin >> ts;\n            Manager m{nm, sal, ts};\n            m.print();\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Employee {\n    std::string name_;\n    int salary_;\npublic:\n    Employee(std::string n, int s) : name_{std::move(n)}, salary_{s} {}\n    const std::string& name()   const { return name_; }\n    int                salary() const { return salary_; }\n    void print() const {\n        std::cout << name_ << \" $\" << salary_ << \"\\n\";\n    }\n};\n\nclass Manager : public Employee {\n    int teamSize_;\npublic:\n    Manager(std::string n, int s, int ts)\n        : Employee{std::move(n), s}, teamSize_{ts} {}\n    void print() const {\n        std::cout << name() << \" $\" << salary() << \" team=\" << teamSize_ << \"\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        char type{};\n        std::string nm;\n        int sal{};\n        std::cin >> type >> nm >> sal;\n        if (type == 'E') {\n            Employee e{nm, sal};\n            e.print();\n        } else {\n            int ts{};\n            std::cin >> ts;\n            Manager m{nm, sal, ts};\n            m.print();\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: one Employee, one Manager",
+        "is_sample": true,
+        "stdin": "2\nE Alice 50000\nM Bob 80000 5\n",
+        "expected_stdout": "Alice $50000\nBob $80000 team=5"
+      },
+      {
+        "label": "Hidden: only employees",
+        "is_sample": false,
+        "stdin": "2\nE Carol 45000\nE Dave 55000\n",
+        "expected_stdout": "Carol $45000\nDave $55000"
+      },
+      {
+        "label": "Hidden: only managers",
+        "is_sample": false,
+        "stdin": "2\nM Eve 90000 3\nM Frank 120000 10\n",
+        "expected_stdout": "Eve $90000 team=3\nFrank $120000 team=10"
+      }
+    ]
+  },
+  {
+    "title": "Complete the printRecord Function",
+    "prompt_md": "## Goal\nComplete `printRecord`, a function that takes a `const Employee&` and a flag, and prints either the employee line or the manager line.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 4), number of records.\n- Lines 2..N+1: `E <name> <salary>` or `M <name> <salary> <teamSize>` (same format as exercise 1).\n\n## Output\nFor each record, one line:\n- Employee: `Employee: <name> salary=<salary>`\n- Manager: `Manager: <name> salary=<salary> team=<teamSize>`\n\n## Requirements\n1. `Employee` stores `name_` and `salary_` with public getters `name()` and `salary()`.\n2. `Manager` inherits from `Employee`, adds `teamSize_` with public getter `teamSize()`.\n3. Complete `void printRecord(const Employee& e, bool isManager, int teamSize)`: if `isManager` is true, print the Manager line; otherwise print the Employee line.\n4. `main` is already written; do not change it.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Employee {\n    std::string name_;\n    int salary_;\npublic:\n    Employee(std::string n, int s) : name_{std::move(n)}, salary_{s} {}\n    const std::string& name()   const { return name_; }\n    int                salary() const { return salary_; }\n};\n\nclass Manager : public Employee {\n    int teamSize_;\npublic:\n    Manager(std::string n, int s, int ts)\n        : Employee{std::move(n), s}, teamSize_{ts} {}\n    int teamSize() const { return teamSize_; }\n};\n\nvoid printRecord(const Employee& e, bool isManager, int teamSize) {\n    // TODO: if isManager, print \"Manager: <name> salary=<salary> team=<teamSize>\"\n    //       otherwise print \"Employee: <name> salary=<salary>\"\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        char type{};\n        std::string nm;\n        int sal{};\n        std::cin >> type >> nm >> sal;\n        if (type == 'E') {\n            Employee e{nm, sal};\n            printRecord(e, false, 0);\n        } else {\n            int ts{};\n            std::cin >> ts;\n            Manager m{nm, sal, ts};\n            printRecord(m, true, ts);\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Employee {\n    std::string name_;\n    int salary_;\npublic:\n    Employee(std::string n, int s) : name_{std::move(n)}, salary_{s} {}\n    const std::string& name()   const { return name_; }\n    int                salary() const { return salary_; }\n};\n\nclass Manager : public Employee {\n    int teamSize_;\npublic:\n    Manager(std::string n, int s, int ts)\n        : Employee{std::move(n), s}, teamSize_{ts} {}\n    int teamSize() const { return teamSize_; }\n};\n\nvoid printRecord(const Employee& e, bool isManager, int teamSize) {\n    if (isManager) {\n        std::cout << \"Manager: \" << e.name() << \" salary=\" << e.salary()\n                  << \" team=\" << teamSize << \"\\n\";\n    } else {\n        std::cout << \"Employee: \" << e.name() << \" salary=\" << e.salary() << \"\\n\";\n    }\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        char type{};\n        std::string nm;\n        int sal{};\n        std::cin >> type >> nm >> sal;\n        if (type == 'E') {\n            Employee e{nm, sal};\n            printRecord(e, false, 0);\n        } else {\n            int ts{};\n            std::cin >> ts;\n            Manager m{nm, sal, ts};\n            printRecord(m, true, ts);\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: one employee, one manager",
+        "is_sample": true,
+        "stdin": "2\nE Alice 60000\nM Bob 95000 4\n",
+        "expected_stdout": "Employee: Alice salary=60000\nManager: Bob salary=95000 team=4"
+      },
+      {
+        "label": "Hidden: three employees",
+        "is_sample": false,
+        "stdin": "3\nE Zoe 40000\nE Leo 52000\nE Mia 67000\n",
+        "expected_stdout": "Employee: Zoe salary=40000\nEmployee: Leo salary=52000\nEmployee: Mia salary=67000"
+      },
+      {
+        "label": "Hidden: two managers",
+        "is_sample": false,
+        "stdin": "2\nM Sam 110000 8\nM Kim 130000 12\n",
+        "expected_stdout": "Manager: Sam salary=110000 team=8\nManager: Kim salary=130000 team=12"
+      }
+    ]
+  }
+]

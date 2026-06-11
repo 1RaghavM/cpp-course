@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Use namespaces to separate two competing functions",
+    "prompt_md": "## Goal\nWrite a program with two namespaces, each containing a function named `compute`. Read an integer and print the results of both.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- Line 1: `Double: <n*2>` (from namespace `doubler`)\n- Line 2: `Triple: <n*3>` (from namespace `tripler`)\n\n## Requirements\n1. Define `namespace doubler` containing `int compute(int n)` that returns `n * 2`.\n2. Define `namespace tripler` containing `int compute(int n)` that returns `n * 3`.\n3. `main` reads `n` and calls both with the qualified names `doubler::compute` and `tripler::compute`.\n4. Do not use `using namespace` — use fully qualified names throughout.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\n// TODO: define namespace doubler containing int compute(int n) { return n * 2; }\n\n// TODO: define namespace tripler containing int compute(int n) { return n * 3; }\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    // TODO: print \"Double: \" followed by doubler::compute(n)\n    // TODO: print \"Triple: \" followed by tripler::compute(n)\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nnamespace doubler\n{\n    int compute(int n) { return n * 2; }\n}\n\nnamespace tripler\n{\n    int compute(int n) { return n * 3; }\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Double: \" << doubler::compute(n) << \"\\n\";\n    std::cout << \"Triple: \" << tripler::compute(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Double: 10\nTriple: 15"
+      },
+      {
+        "label": "Hidden: n=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Double: 0\nTriple: 0"
+      },
+      {
+        "label": "Hidden: n=7",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Double: 14\nTriple: 21"
+      }
+    ]
+  },
+  {
+    "title": "Fix the namespace qualification bug",
+    "prompt_md": "## Goal\nThe program below defines a function in a namespace and tries to call it, but calls the wrong function. Find and fix the one logic bug.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- One line: `Result: <n*4>`\n\n## Requirements\n1. The bug is that the wrong namespace is being called — the call resolves to a different `compute` function than intended.\n2. Fix only the call in `main`; do not change the namespace definitions.\n3. The hidden tests verify `n = 0`, `n = 3`, and `n = 10`.\n\n## Notes\n- There is exactly one bug to fix.",
+    "starter_code": "#include <iostream>\n\nnamespace quad\n{\n    int compute(int n) { return n * 4; }\n}\n\nnamespace dbl\n{\n    int compute(int n) { return n * 2; }\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Result: \" << dbl::compute(n) << \"\\n\";  // bug: wrong namespace\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nnamespace quad\n{\n    int compute(int n) { return n * 4; }\n}\n\nnamespace dbl\n{\n    int compute(int n) { return n * 2; }\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Result: \" << quad::compute(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Result: 20"
+      },
+      {
+        "label": "Hidden: n=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Result: 0"
+      },
+      {
+        "label": "Hidden: n=10",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "Result: 40"
+      }
+    ]
+  }
+]

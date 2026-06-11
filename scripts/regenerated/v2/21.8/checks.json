@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass C {\n    int v{};\npublic:\n    C(int n) : v{ n } {}\n    int get() const { return v; }\n    C& operator++() { ++v; return *this; }\n    C operator++(int) { C old{*this}; ++(*this); return old; }\n};\nint main() {\n    C a{ 3 };\n    std::cout << (a++).get() << ' ' << a.get() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "3 4",
+    "explanation_md": "Postfix `a++` saves a copy of `a` (value 3), increments `a` to 4, then returns the saved copy. So `(a++).get()` is `3` and `a.get()` after the expression is `4`. Output: `3 4`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the purpose of the dummy `int` parameter in `Counter operator++(int)`?",
+    "options": {
+      "a": "It specifies how many steps to increment",
+      "b": "It is the value returned by the postfix expression",
+      "c": "It distinguishes the postfix overload from the prefix overload at compile time",
+      "d": "It is required so the function can access private members"
+    },
+    "answer": "c",
+    "explanation_md": "Both prefix and postfix `operator++` have no real parameters (the left-hand object comes from `this`), so the compiler needs a way to tell the two signatures apart. The dummy `int` is a syntactic convention that marks the postfix overload. It is never used inside the function and carries no meaningful value."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass C {\n    int v{};\npublic:\n    C(int n) : v{ n } {}\n    int get() const { return v; }\n    C& operator--() { --v; return *this; }\n    C operator--(int) { C old{*this}; --(*this); return old; }\n};\nint main() {\n    C x{ 5 };\n    C y = x--;\n    std::cout << x.get() << ' ' << y.get() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "4 5",
+    "explanation_md": "Postfix `x--` saves a copy (value 5) into `y`, then decrements `x` to 4. After the statement, `x.get()` is 4 and `y.get()` is 5. Output: `4 5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does postfix `operator++` return `Counter` by value rather than by reference?",
+    "options": {
+      "a": "Because postfix operators are not allowed to return references",
+      "b": "Because the old copy is a local variable that is destroyed when the function returns, so returning a reference would be undefined behavior",
+      "c": "Because the caller needs to receive a copy to avoid aliasing issues",
+      "d": "Because returning by value is faster for postfix operations"
+    },
+    "answer": "b",
+    "explanation_md": "The saved copy (`old`) is a local variable on the stack. Once the function returns, that variable is gone. Returning a reference to it would leave the caller with a dangling reference — undefined behavior. Returning by value copies the local out safely before it is destroyed."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `5 6` but instead causes undefined behavior. What is the bug?\n\n```cpp\n#include <iostream>\nclass C {\n    int v{};\npublic:\n    C(int n) : v{ n } {}\n    int get() const { return v; }\n    C& operator++(int) {   // postfix\n        C old{ *this };\n        ++v;\n        return old;        // returns reference to local\n    }\n};\nint main() {\n    C a{ 5 };\n    C b = a++;\n    std::cout << b.get() << ' ' << a.get() << '\\n';\n}\n```",
+    "options": {
+      "a": "`++v` should be `v++` inside the postfix operator",
+      "b": "The postfix operator returns `C&` (reference to a local variable) instead of `C` (by value)",
+      "c": "The dummy `int` parameter should be named to use its value",
+      "d": "`b` should be declared `C&` to receive the reference correctly"
+    },
+    "answer": "b",
+    "explanation_md": "`old` is a local variable. Returning a reference to it leaves a dangling reference after the function returns. The fix is to change the return type from `C&` to `C` so the local is copied out by value before it is destroyed. Renaming the dummy `int` or changing `++v` to `v++` would not fix the undefined behavior."
+  }
+]

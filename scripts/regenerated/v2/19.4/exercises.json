@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Dynamic 2D Grid: Row Sums",
+    "prompt_md": "## Goal\nWrite a program that allocates a dynamic 2D grid using `int**`, fills it with values read from stdin, computes the sum of each row, and prints the sums.\n\n## Input\n- Line 1: two integers R and C (1 ≤ R ≤ 5, 1 ≤ C ≤ 5) — number of rows and columns.\n- Lines 2..R+1: C space-separated integers per line (the grid values).\n\n## Output\n- Print R lines. Line i (0-indexed): `Row <i>: <sum>` where `<i>` is the 0-based row index and `<sum>` is the sum of that row's elements.\n\n## Requirements\n1. Allocate the grid using `int** grid = new int*[R]` and `grid[r] = new int[C]` for each row.\n2. Read all R*C values into the grid row by row.\n3. For each row, sum all C elements and print in the required format.\n4. Free all rows with `delete[]` then free the outer array with `delete[]`.\n5. Edge case: R=1, C=1 — print `Row 0: <single value>`.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int R, C;\n    std::cin >> R >> C;\n\n    // TODO: allocate int** grid\n    // TODO: read values into grid\n    // TODO: print row sums\n    // TODO: free memory\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int R, C;\n    std::cin >> R >> C;\n\n    int** grid = new int*[R];\n    for (int r = 0; r < R; ++r)\n        grid[r] = new int[C]{};\n\n    for (int r = 0; r < R; ++r)\n        for (int c = 0; c < C; ++c)\n            std::cin >> grid[r][c];\n\n    for (int r = 0; r < R; ++r) {\n        int sum = 0;\n        for (int c = 0; c < C; ++c)\n            sum += grid[r][c];\n        std::cout << \"Row \" << r << \": \" << sum << \"\\n\";\n    }\n\n    for (int r = 0; r < R; ++r)\n        delete[] grid[r];\n    delete[] grid;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2x3 grid",
+        "is_sample": true,
+        "stdin": "2 3\n1 2 3\n4 5 6\n",
+        "expected_stdout": "Row 0: 6\nRow 1: 15\n"
+      },
+      {
+        "label": "Hidden: 1x1",
+        "is_sample": false,
+        "stdin": "1 1\n7\n",
+        "expected_stdout": "Row 0: 7\n"
+      },
+      {
+        "label": "Hidden: 3 rows",
+        "is_sample": false,
+        "stdin": "3 2\n10 20\n-5 5\n3 3\n",
+        "expected_stdout": "Row 0: 30\nRow 1: 0\nRow 2: 6\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete: Double Dereference Modifier",
+    "prompt_md": "## Goal\nComplete the function `addToAll` that takes a pointer to a pointer (`int**`) and uses double indirection to modify the pointed-to value by adding a delta.\n\n## Input\n- Line 1: two integers `val` and `delta`.\n\n## Output\n- Print exactly one line: `Result: <val + delta>`.\n\n## Requirements\n1. Complete `void addToAll(int** pp, int delta)` that adds `delta` to the integer that `pp` ultimately points to, using `**pp += delta`.\n2. `main` creates one `int` on the heap, reads `val` into it, calls `addToAll` passing `&p` (where `p` is the heap pointer), then prints the result, then frees the memory.\n3. Do not change `main`.\n4. Edge cases: `delta` may be negative or zero.\n\n## Notes\n- The function must use `**pp` to modify the value, not a copy.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement addToAll\n// Add delta to the integer pointed to by *pp using double dereference.\nvoid addToAll(int** pp, int delta) {\n    // TODO\n}\n\nint main() {\n    int val, delta;\n    std::cin >> val >> delta;\n\n    int* p = new int{val};\n    addToAll(&p, delta);\n    std::cout << \"Result: \" << *p << \"\\n\";\n    delete p;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid addToAll(int** pp, int delta) {\n    **pp += delta;\n}\n\nint main() {\n    int val, delta;\n    std::cin >> val >> delta;\n\n    int* p = new int{val};\n    addToAll(&p, delta);\n    std::cout << \"Result: \" << *p << \"\\n\";\n    delete p;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 10 + 5",
+        "is_sample": true,
+        "stdin": "10 5\n",
+        "expected_stdout": "Result: 15\n"
+      },
+      {
+        "label": "Hidden: delta is negative",
+        "is_sample": false,
+        "stdin": "20 -8\n",
+        "expected_stdout": "Result: 12\n"
+      },
+      {
+        "label": "Hidden: delta is zero",
+        "is_sample": false,
+        "stdin": "7 0\n",
+        "expected_stdout": "Result: 7\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "RAII Counter with Constructor and Destructor",
+    "prompt_md": "## Goal\nComplete a `Tracker` class whose constructor prints `\"open <id>\"` and destructor prints `\"close <id>\"`. Then trace the exact construction/destruction order for two objects.\n\n## Input\nLine 1: two integers `a` and `b` — the IDs for the two `Tracker` objects.\n\n## Output\nFour lines, in the exact order they occur:\n- Construction of first object: `open <a>`\n- Construction of second object: `open <b>`\n- Destruction of second object: `close <b>`\n- Destruction of first object: `close <a>`\n\n## Requirements\n1. `Tracker(int id)` — constructor stores `id` and prints `open <id>` followed by a newline.\n2. `~Tracker()` — destructor prints `close <id>` followed by a newline.\n3. In `main`, declare `Tracker t1{a}` then `Tracker t2{b}` in the same scope.\n4. Do not call the destructor explicitly.\n5. Hidden tests use IDs 0 and 99.",
+    "starter_code": "#include <iostream>\n\nclass Tracker {\npublic:\n    // TODO: implement constructor — store id, print \"open <id>\"\n    Tracker(int id);\n\n    // TODO: implement destructor — print \"close <id>\"\n    ~Tracker();\n\nprivate:\n    int m_id;\n};\n\nTracker::Tracker(int id) : m_id{id} { /* TODO: print open */ }\nTracker::~Tracker() { /* TODO: print close */ }\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    Tracker t1{a};\n    Tracker t2{b};\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Tracker {\npublic:\n    Tracker(int id) : m_id{id} {\n        std::cout << \"open \" << m_id << '\\n';\n    }\n    ~Tracker() {\n        std::cout << \"close \" << m_id << '\\n';\n    }\nprivate:\n    int m_id;\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    Tracker t1{a};\n    Tracker t2{b};\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: IDs 1 and 2",
+        "is_sample": true,
+        "stdin": "1 2",
+        "expected_stdout": "open 1\nopen 2\nclose 2\nclose 1"
+      },
+      {
+        "label": "Hidden: IDs 0 and 99",
+        "is_sample": false,
+        "stdin": "0 99",
+        "expected_stdout": "open 0\nopen 99\nclose 99\nclose 0"
+      },
+      {
+        "label": "Hidden: same IDs",
+        "is_sample": false,
+        "stdin": "5 5",
+        "expected_stdout": "open 5\nopen 5\nclose 5\nclose 5"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Destructor for a Scoped Logger",
+    "prompt_md": "## Goal\nComplete the `~ScopedLog()` destructor so it prints the closing message when the logger goes out of scope.\n\n## Input\nLine 1: a string `name` (one word, no spaces).\n\n## Output\nThree lines:\n- Line 1: `[<name>] start` (from constructor)\n- Line 2: `[<name>] working` (from `main`)\n- Line 3: `[<name>] end` (from destructor, when logger goes out of scope)\n\n## Requirements\n1. The constructor `ScopedLog(const std::string& name)` stores the name and prints `[<name>] start`.\n2. Complete `~ScopedLog()` so it prints `[<name>] end`.\n3. Do not modify the constructor or `main`.\n4. Hidden tests include names with numbers like `task42`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass ScopedLog {\npublic:\n    ScopedLog(const std::string& name) : m_name{name} {\n        std::cout << '[' << m_name << \"] start\\n\";\n    }\n    // TODO: implement destructor — print \"[<m_name>] end\"\n    ~ScopedLog() {}\n\nprivate:\n    std::string m_name;\n};\n\nint main() {\n    std::string name;\n    std::cin >> name;\n    ScopedLog log{name};\n    std::cout << '[' << name << \"] working\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass ScopedLog {\npublic:\n    ScopedLog(const std::string& name) : m_name{name} {\n        std::cout << '[' << m_name << \"] start\\n\";\n    }\n    ~ScopedLog() {\n        std::cout << '[' << m_name << \"] end\\n\";\n    }\nprivate:\n    std::string m_name;\n};\n\nint main() {\n    std::string name;\n    std::cin >> name;\n    ScopedLog log{name};\n    std::cout << '[' << name << \"] working\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: name 'alpha'",
+        "is_sample": true,
+        "stdin": "alpha",
+        "expected_stdout": "[alpha] start\n[alpha] working\n[alpha] end"
+      },
+      {
+        "label": "Hidden: name with numbers",
+        "is_sample": false,
+        "stdin": "task42",
+        "expected_stdout": "[task42] start\n[task42] working\n[task42] end"
+      },
+      {
+        "label": "Hidden: short name",
+        "is_sample": false,
+        "stdin": "x",
+        "expected_stdout": "[x] start\n[x] working\n[x] end"
+      }
+    ]
+  }
+]

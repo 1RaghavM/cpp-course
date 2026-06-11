@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(int x)    { std::cout << \"int\\n\"; }\nvoid show(double x) { std::cout << \"double\\n\"; }\n\nint main() {\n    show(10);\n    show(10.0);\n    show('Z');\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "int\ndouble\nint",
+    "explanation_md": "`show(10)` — `10` is an `int`, exact match → `int`. `show(10.0)` — `10.0` is a `double`, exact match → `double`. `show('Z')` — `char` undergoes numeric promotion to `int` (higher rank than standard conversion to `double`) → `int`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given:\n\n```cpp\nvoid f(long x)   {}\nvoid f(double x) {}\n```\n\nWhat happens when you write `f(5)`?",
+    "options": {
+      "a": "The `long` overload is called because `int` promotes to `long`",
+      "b": "The `double` overload is called because floating-point is preferred",
+      "c": "A compile error: the call is ambiguous",
+      "d": "A compile error: no overload takes an `int`"
+    },
+    "answer": "c",
+    "explanation_md": "`5` is an `int`. Converting `int` to `long` is a standard conversion; so is converting `int` to `double`. Both conversions have the same priority, so neither overload is a better match. The compiler reports an ambiguous call. You can fix it with `f(5L)` or `f(5.0)` or by adding an `f(int)` overload."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which step comes FIRST in the compiler's overload resolution process?",
+    "options": {
+      "a": "Ranking candidates by conversion quality",
+      "b": "Finding all functions with the right name in scope (candidate set)",
+      "c": "Checking that the return types are compatible",
+      "d": "Removing overloads that would cause ambiguity"
+    },
+    "answer": "b",
+    "explanation_md": "Overload resolution proceeds in three stages: first collect all same-name candidates, then filter to viable candidates (right argument count, convertible types), then rank the viable candidates by match quality. Return types are never considered during overload resolution."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid test(int x, double y)    { std::cout << \"A\\n\"; }\nvoid test(double x, int y)    { std::cout << \"B\\n\"; }\nvoid test(double x, double y) { std::cout << \"C\\n\"; }\n\nint main() {\n    test(1.0, 2.0);\n    test(1, 2);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "C\nA",
+    "explanation_md": "`test(1.0, 2.0)`: both are `double`, exact match to `test(double, double)` → `C`. `test(1, 2)`: both are `int`. For `test(int, double)`: arg1 exact, arg2 standard conv. For `test(double, int)`: arg1 standard conv, arg2 exact. For `test(double, double)`: both standard conv. The first overload wins because arg1 is exact (best) while arg2 is only a standard conv — same as the second overload's arg2 — but arg1 beats both alternatives → `A`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student writes code expecting it to call `process(double)`, but it calls `process(int)` instead. What is the reason?\n\n```cpp\n#include <iostream>\nvoid process(int x)    { std::cout << \"int\\n\"; }\nvoid process(double x) { std::cout << \"double\\n\"; }\nint main() {\n    process('x');\n    return 0;\n}\n```",
+    "options": {
+      "a": "`char` cannot be passed to functions taking numeric types",
+      "b": "`char` promotes to `int` (numeric promotion, rank 3), which beats the standard conversion to `double` (rank 4)",
+      "c": "The `double` overload is never reachable when `int` is defined first",
+      "d": "`process(double)` is ambiguous with `process(int)` when a `char` is passed"
+    },
+    "answer": "b",
+    "explanation_md": "Numeric promotion (e.g. `char` → `int`) ranks higher than a standard conversion (e.g. `int` → `double`). Since `char` can be promoted to `int` at rank 3, but only standard-converted to `double` at rank 4, the `process(int)` overload is the better match. The fix is to cast: `process(static_cast<double>('x'))`."
+  }
+]

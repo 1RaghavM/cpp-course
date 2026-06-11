@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Rectangle\n{\n    int width;\n    int height;\n};\n\nint main()\n{\n    Rectangle r;\n    r.width  = 5;\n    r.height = 3;\n    std::cout << r.width * r.height << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "`r.width` is `5` and `r.height` is `3`. The expression `r.width * r.height` evaluates to `15`. The `'\\n'` ends the line, so the output is `15` followed by a newline."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nstruct Point\n{\n    int x;\n    int y;\n}\n\nint main()\n{\n    Point p;\n    p.x = 1;\n    p.y = 2;\n    std::cout << p.x << ' ' << p.y << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Line 3: struct name must be lowercase",
+      "b": "Line 7: the closing `}` of the struct definition is missing the semicolon",
+      "c": "Line 11: you cannot use the dot operator on a non-pointer variable",
+      "d": "Line 6: `y` needs a default value"
+    },
+    "answer": "b",
+    "explanation_md": "A struct definition must end with `};` (closing brace followed by a semicolon). Without it the compiler cannot determine where the struct definition ends and where the rest of the code begins, producing an error on or after line 8. Options (a), (c), and (d) describe non-issues."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have two `Point` variables, `a` and `b`. After executing `a.x = 10; b = a; b.x = 99;`, what is `a.x`?",
+    "options": {
+      "a": "99, because `b = a` makes `b` an alias for `a`",
+      "b": "10, because structs are copied by value, so `b` is an independent copy",
+      "c": "Indeterminate, because `a.x` was not re-assigned after the copy",
+      "d": "0, because integer members are zeroed when copied"
+    },
+    "answer": "b",
+    "explanation_md": "Assigning one struct variable to another copies all member values. `b` becomes an independent copy of `a`. After `b.x = 99`, only `b.x` changes; `a.x` remains `10`. Structs are not reference types — they do not alias each other."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\n\nstruct Person\n{\n    std::string name;\n    int age;\n};\n\nint main()\n{\n    Person p;\n    p.name = \"Bob\";\n    p.age  = 30;\n    std::cout << p.name << ' ' << p.age << '\\n';\n    p.age = p.age + 1;\n    std::cout << p.age << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Bob 30\n31",
+    "explanation_md": "The first `cout` outputs `p.name` (\"Bob\"), a space, and `p.age` (30), then a newline. The next line increments `p.age` to 31, and the second `cout` prints `31` followed by a newline."
+  }
+]

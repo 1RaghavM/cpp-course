@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Use forward declarations to call functions defined later",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints the larger of them using a helper function defined **after** `main`.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space, where `a >= b >= 0`.\n\n## Output\n- One line: `Larger: <value>` where value is the larger integer.\n\n## Requirements\n1. Write a forward declaration `int larger(int a, int b);` before `main`.\n2. Define `larger` after `main`. It must return the larger of its two arguments. Hint: `(a + b + (a - b)) / 2` equals `a` when `a >= b`.\n3. `main` reads the two integers and calls `larger` using the forward declaration.\n4. Print the result with the exact label `Larger: `.\n\n## Notes\n- All test inputs satisfy `a >= b >= 0`.",
+    "starter_code": "#include <iostream>\n\n// TODO: write a forward declaration for int larger(int a, int b)\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    // TODO: call larger(a, b) and print \"Larger: \" followed by the result\n    return 0;\n}\n\n// TODO: define int larger(int a, int b)\n// Return the larger of a and b.\n// Hint: (a + b + (a - b)) / 2 equals a when a >= b\nint larger(int a, int b)\n{\n    return 0; // replace this line\n}\n",
+    "solution_code": "#include <iostream>\n\nint larger(int a, int b);\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cout << \"Larger: \" << larger(a, b) << \"\\n\";\n    return 0;\n}\n\nint larger(int a, int b)\n{\n    return (a + b + (a - b)) / 2;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 8 and 3",
+        "is_sample": true,
+        "stdin": "8 3\n",
+        "expected_stdout": "Larger: 8"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "Larger: 5"
+      },
+      {
+        "label": "Hidden: 100 and 1",
+        "is_sample": false,
+        "stdin": "100 1\n",
+        "expected_stdout": "Larger: 100"
+      }
+    ]
+  },
+  {
+    "title": "Fix the forward declaration mismatch bug",
+    "prompt_md": "## Goal\nThe program below tries to use a forward declaration so `main` can call `triple` before its definition. It compiles and runs, but produces the wrong output. Find and fix the one logic bug.\n\n## Input\n- Line 1: one integer `n`.\n\n## Output\n- One line: `Triple: <value>` where value is `n * 3`.\n\n## Requirements\n1. The bug is in the body of the `triple` function — the declaration and definition structure are correct.\n2. Do not restructure the file; keep `main` before the `triple` definition.\n3. The hidden tests verify correct output for several values of `n`.\n\n## Notes\n- There is exactly one bug to fix.",
+    "starter_code": "#include <iostream>\n\nint triple(int x);\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Triple: \" << triple(n) << \"\\n\";\n    return 0;\n}\n\nint triple(int x)\n{\n    return x * 2;  // bug: wrong multiplier\n}\n",
+    "solution_code": "#include <iostream>\n\nint triple(int x);\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cout << \"Triple: \" << triple(n) << \"\\n\";\n    return 0;\n}\n\nint triple(int x)\n{\n    return x * 3;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4",
+        "is_sample": true,
+        "stdin": "4\n",
+        "expected_stdout": "Triple: 12"
+      },
+      {
+        "label": "Hidden: 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Triple: 0"
+      },
+      {
+        "label": "Hidden: 7",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Triple: 21"
+      }
+    ]
+  }
+]

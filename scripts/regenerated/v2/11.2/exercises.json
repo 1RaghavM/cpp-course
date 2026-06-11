@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Overloaded Scale Function",
+    "prompt_md": "## Goal\nWrite two overloaded functions named `scale` that double a value: one taking an `int` and returning an `int`, another taking a `double` and returning a `double`.\n\n## Input\nLine 1: an integer N.\nLine 2: a floating-point number D.\n\n## Output\nLine 1: `Scaled int: <N*2>`\nLine 2: `Scaled double: <D*2>` (default double precision).\n\n## Requirements\n1. Both functions must be named `scale`.\n2. `scale(int)` returns `int` equal to the input multiplied by 2.\n3. `scale(double)` returns `double` equal to the input multiplied by 2.\n4. `main` reads one `int` and one `double`, calls `scale` on each, and prints in the order shown.\n5. No extra blank lines.",
+    "starter_code": "#include <iostream>\n\n// TODO: define int scale(int x) — return x * 2\nint scale(int x) {\n    return 0; // TODO: fix this\n}\n\n// TODO: define double scale(double x) — return x * 2\ndouble scale(double x) {\n    return 0.0; // TODO: fix this\n}\n\nint main() {\n    int n;\n    double d;\n    std::cin >> n >> d;\n    std::cout << \"Scaled int: \" << scale(n) << \"\\n\";\n    std::cout << \"Scaled double: \" << scale(d) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint scale(int x) {\n    return x * 2;\n}\n\ndouble scale(double x) {\n    return x * 2.0;\n}\n\nint main() {\n    int n;\n    double d;\n    std::cin >> n >> d;\n    std::cout << \"Scaled int: \" << scale(n) << \"\\n\";\n    std::cout << \"Scaled double: \" << scale(d) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 1.5",
+        "is_sample": true,
+        "stdin": "3\n1.5",
+        "expected_stdout": "Scaled int: 6\nScaled double: 3"
+      },
+      {
+        "label": "Hidden: 0 and 0.0",
+        "is_sample": false,
+        "stdin": "0\n0.0",
+        "expected_stdout": "Scaled int: 0\nScaled double: 0"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-4\n-2.5",
+        "expected_stdout": "Scaled int: -8\nScaled double: -5"
+      }
+    ]
+  },
+  {
+    "title": "Overloaded Format — Complete the Function",
+    "prompt_md": "## Goal\nComplete the function `formatLabel` which is overloaded: one version accepts an `int` code and returns a message string, another accepts a `double` value and returns a different message string.\n\n## Input\nLine 1: an integer C.\nLine 2: a floating-point number V.\n\n## Output\nLine 1: `Code: <C>` (from `formatLabel(int)`)\nLine 2: `Value: <V>` (from `formatLabel(double)`, default precision)\n\n## Requirements\n1. `formatLabel(int code)` must return the string `\"Code: \"` followed by the integer.\n2. `formatLabel(double val)` must return the string `\"Value: \"` followed by the double.\n3. Both overloads must be named `formatLabel`.\n4. `main` calls `formatLabel` for each input and prints the result with `std::cout`.\n5. Use `std::string` for return types.\n\n## Notes\n- `#include <string>` and `#include <iostream>` are already provided.\n- You can build strings with `std::to_string()` or by using a `std::ostringstream`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: implement formatLabel(int code)\n// Returns \"Code: \" followed by the integer as text\nstd::string formatLabel(int code) {\n    return \"\"; // TODO\n}\n\n// TODO: implement formatLabel(double val)\n// Returns \"Value: \" followed by the double as text (default precision)\nstd::string formatLabel(double val) {\n    return \"\"; // TODO\n}\n\nint main() {\n    int c;\n    double v;\n    std::cin >> c >> v;\n    std::cout << formatLabel(c) << \"\\n\";\n    std::cout << formatLabel(v) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <sstream>\n\nstd::string formatLabel(int code) {\n    return \"Code: \" + std::to_string(code);\n}\n\nstd::string formatLabel(double val) {\n    std::ostringstream oss;\n    oss << val;\n    return \"Value: \" + oss.str();\n}\n\nint main() {\n    int c;\n    double v;\n    std::cin >> c >> v;\n    std::cout << formatLabel(c) << \"\\n\";\n    std::cout << formatLabel(v) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: code=42, value=9.9",
+        "is_sample": true,
+        "stdin": "42\n9.9",
+        "expected_stdout": "Code: 42\nValue: 9.9"
+      },
+      {
+        "label": "Hidden: code=0, value=0",
+        "is_sample": false,
+        "stdin": "0\n0",
+        "expected_stdout": "Code: 0\nValue: 0"
+      },
+      {
+        "label": "Hidden: code=-1, value=3.5",
+        "is_sample": false,
+        "stdin": "-1\n3.5",
+        "expected_stdout": "Code: -1\nValue: 3.5"
+      }
+    ]
+  }
+]

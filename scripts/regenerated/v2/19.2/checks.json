@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int* arr = new int[4]{10, 20, 30, 40};\n    arr[1] = arr[0] + arr[3];\n    std::cout << arr[1] << \"\\n\";\n    delete[] arr;\n}\n```",
+    "options": null,
+    "answer": "50",
+    "explanation_md": "`arr[0]` is 10 and `arr[3]` is 40. Their sum is 50, which is stored in `arr[1]` and then printed. The original value 20 in `arr[1]` is overwritten."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A program allocates a dynamic array with `int* p = new int[8];`. Which statement correctly frees this memory?",
+    "options": {
+      "a": "`delete p;`",
+      "b": "`delete[] p;`",
+      "c": "`free(p);`",
+      "d": "No call is needed — heap memory is freed automatically when `p` goes out of scope"
+    },
+    "answer": "b",
+    "explanation_md": "`new[]` must always be paired with `delete[]`. Using plain `delete` is undefined behavior for arrays. `free()` is the C function and must not be mixed with `new`. Heap memory is never freed automatically for raw pointers — that is exactly the problem smart pointers and `std::vector` solve."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int* arr = new int[5]{};\n    for (int i = 0; i < 5; ++i)\n        arr[i] = i + 1;\n    std::cout << arr[0] + arr[4] << \"\\n\";\n    delete[] arr;\n}\n```",
+    "options": null,
+    "answer": "6",
+    "explanation_md": "After the loop, `arr[0]` is 1 and `arr[4]` is 5. Their sum is 6. The `{}` initialiser zeroes all elements first, but the loop overwrites them with 1 through 5."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program compiles and runs but contains one bug. What is it?\n\n```cpp\n#include <iostream>\nint main() {\n    int n = 3;\n    int* arr = new int[n]{1, 2, 3};\n    for (int i = 0; i <= n; ++i)\n        std::cout << arr[i] << \" \";\n    std::cout << \"\\n\";\n    delete[] arr;\n}\n```",
+    "options": {
+      "a": "`delete` should be `delete[]`",
+      "b": "The loop condition `i <= n` accesses `arr[n]`, which is one past the end — out-of-bounds access",
+      "c": "A dynamic array cannot be initialised with a brace list",
+      "d": "The variable `n` must be `const` to use it as an array size with `new[]`"
+    },
+    "answer": "b",
+    "explanation_md": "Valid indices for an array of size `n` are 0 through `n-1`. The condition `i <= n` causes the loop to execute when `i == n`, which reads `arr[n]` — one element past the end of the allocated block. This is undefined behavior. The fix is `i < n`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens to the elements of `int* p = new int[6]{};` immediately after allocation?",
+    "options": {
+      "a": "All six elements contain unpredictable garbage values",
+      "b": "All six elements are zero-initialised to 0",
+      "c": "The first element is 0 and the rest are undefined",
+      "d": "The array is not allocated; the `{}` causes a compile error"
+    },
+    "answer": "b",
+    "explanation_md": "An empty brace initialiser `{}` on a `new[]` expression value-initialises all elements. For `int`, value-initialisation means zero-initialisation — every element is set to 0. Without `{}`, elements would be uninitialised (contain garbage)."
+  }
+]

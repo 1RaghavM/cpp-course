@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Read and Echo an Initialized Integer",
+    "prompt_md": "## Goal\nRead one integer from standard input and print whether it was successfully stored by printing it back on one line.\n\n## Input\n- Line 1: a single integer `n` (-10000 ≤ n ≤ 10000).\n\n## Output\n- Print exactly one line: `Value: <n>` where `<n>` is the integer read.\n\n## Requirements\n1. Declare and initialize the variable to `0` before calling `std::cin`.\n2. Read the integer using `std::cin`.\n3. Print the result in the exact format `Value: <n>` (capital V, colon, space).\n4. End output with a newline.\n\n## Notes\n- This exercise practices the habit of initializing before reading.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare and initialize n to 0\n    // TODO: read n from std::cin\n    // TODO: print \"Value: \" followed by n and a newline\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n    std::cout << \"Value: \" << n << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive integer",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Value: 42\n"
+      },
+      {
+        "label": "Hidden: negative integer",
+        "is_sample": false,
+        "stdin": "-99\n",
+        "expected_stdout": "Value: -99\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Value: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Double-Sum Program",
+    "prompt_md": "## Goal\nComplete the function `doubleSum` so that the program reads two integers, computes twice their sum, and prints it.\n\n## Input\n- Line 1: two space-separated integers `a` and `b` (-500 ≤ a, b ≤ 500).\n\n## Output\n- Print exactly one line: `Result: <value>` where `<value>` is `2 * (a + b)`.\n\n## Requirements\n1. The function `doubleSum` takes two `int` parameters and returns an `int`.\n2. The function must return `2 * (a + b)` — not `2*a + b` or any other expression.\n3. Both variables in `main` must be initialized to `0` before reading from `std::cin`.\n4. Output must be in the exact format shown (capital R, colon, space, no extra blank lines).\n\n## Notes\n- Declare and initialize both variables before passing them to the function.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement doubleSum — it takes two int parameters a and b\n// and returns 2 * (a + b)\nint doubleSum(int a, int b)\n{\n    return 0; // replace this stub\n}\n\nint main()\n{\n    int x = 0;\n    int y = 0;\n    std::cin >> x >> y;\n    std::cout << \"Result: \" << doubleSum(x, y) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint doubleSum(int a, int b)\n{\n    return 2 * (a + b);\n}\n\nint main()\n{\n    int x = 0;\n    int y = 0;\n    std::cin >> x >> y;\n    std::cout << \"Result: \" << doubleSum(x, y) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3 4\n",
+        "expected_stdout": "Result: 14\n"
+      },
+      {
+        "label": "Hidden: negative numbers",
+        "is_sample": false,
+        "stdin": "-2 5\n",
+        "expected_stdout": "Result: 6\n"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0 0\n",
+        "expected_stdout": "Result: 0\n"
+      }
+    ]
+  }
+]

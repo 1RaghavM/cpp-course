@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Arr {\n    int d[3]{ 10, 20, 30 };\npublic:\n    int& operator[](int i) { return d[i]; }\n    const int& operator[](int i) const { return d[i]; }\n};\nint main() {\n    Arr a;\n    a[1] = 99;\n    const Arr b = a;\n    std::cout << b[0] << ' ' << b[1] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10 99",
+    "explanation_md": "`a[1] = 99` writes through the non-`const` overload. `b` is a copy of `a`, so `b[0]` is 10 and `b[1]` is 99. The `const` overload is called on `b` (which is `const`), returning `const int&`. Output: `10 99`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should `operator[]` return `T&` (a reference) rather than `T` (a value) for a non-`const` object?",
+    "options": {
+      "a": "Returning by value is slower, so references are preferred for performance",
+      "b": "Returning by value means `arr[i] = x` assigns to a temporary and the value is not stored in the array",
+      "c": "References are required by the C++ standard for subscript operators",
+      "d": "Returning by value prevents the caller from reading the element"
+    },
+    "answer": "b",
+    "explanation_md": "If `operator[]` returns `T` by value, the expression `arr[i] = x` creates a temporary copy, assigns `x` to that copy, and then discards it. The array element is unchanged. Returning `T&` makes `arr[i]` an lvalue that refers to the actual element, so assignment modifies the stored data."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class provides only a non-`const` `operator[]`. What happens when you try to read an element through a `const` reference to that class?",
+    "options": {
+      "a": "It compiles, but the value is read as zero",
+      "b": "It compiles and works correctly because `const` references automatically call non-`const` operators",
+      "c": "It fails to compile because the non-`const` overload cannot be called on a `const` object",
+      "d": "It compiles but triggers undefined behavior at runtime"
+    },
+    "answer": "c",
+    "explanation_md": "A non-`const` member function cannot be called on a `const`-qualified object. If the only overload is non-`const`, any code that tries to index through a `const` reference will get a compile error. The fix is to add a separate `const` overload that returns `const T&`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Row {\n    int d[4]{ 1, 2, 3, 4 };\npublic:\n    int& operator[](int i) { return d[i]; }\n    const int& operator[](int i) const { return d[i]; }\n};\nint main() {\n    Row r;\n    r[0] = r[3];\n    r[1] = r[1] * 2;\n    std::cout << r[0] << ' ' << r[1] << ' ' << r[2] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "4 4 3",
+    "explanation_md": "`r[0] = r[3]` sets `d[0]` to `d[3]` which is 4. `r[1] = r[1] * 2` reads `d[1]` (2), multiplies by 2, and stores 4 back. `d[2]` is untouched at 3. Output: `4 4 3`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program intends to set element 2 to 50 and print it, but it prints the original value. What is the bug?\n\n```cpp\n#include <iostream>\nclass Buf {\n    int d[5]{ 10, 20, 30, 40, 50 };\npublic:\n    int operator[](int i) const { return d[i]; }  // only overload\n};\nint main() {\n    Buf b;\n    b[2] = 50;  // intended write\n    std::cout << b[2] << '\\n';\n}\n```",
+    "options": {
+      "a": "The array `d` should be initialized with `{}` rather than explicit values",
+      "b": "`operator[]` returns `int` by value, so `b[2] = 50` assigns to a temporary and never modifies the array",
+      "c": "The `const` qualifier on `operator[]` prevents any reads from the array",
+      "d": "Array indices start at 1 in overloaded subscript operators, so index 2 accesses element 3"
+    },
+    "answer": "b",
+    "explanation_md": "The operator returns `int` by value, creating a temporary copy of `d[i]`. Assigning 50 to that temporary has no effect on the stored array. The fix is to add a non-`const` overload that returns `int&`, allowing the assignment to modify the actual element."
+  }
+]

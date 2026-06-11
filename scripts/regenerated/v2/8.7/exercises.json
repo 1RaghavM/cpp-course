@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Trace the Goto Jump",
+    "prompt_md": "## Goal\nRead an integer from stdin and use `goto` to print either `positive`, `negative`, or `zero` by jumping to the appropriate label.\n\n## Input\nLine 1: one integer N.\n\n## Output\nPrint exactly one line: `positive`, `negative`, or `zero`.\n\n## Requirements\n1. Use exactly three labels: `is_positive`, `is_negative`, `is_zero`.\n2. Use `goto` to jump to the correct label based on the sign of N.\n3. After printing the word, use another `goto end` to jump to the end label before the `return 0;` so the other labels are not accidentally executed.\n4. No trailing spaces; output ends with a newline.\n\n## Notes\n- This exercise is purely to practice reading and writing goto mechanics; in real code you would use if/else.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: use goto to jump to is_positive, is_negative, or is_zero\n    // based on the value of n\n    // After printing, goto end to skip the other labels\n\nis_positive:\n    std::cout << \"positive\\n\";\n    goto end;\nis_negative:\n    std::cout << \"negative\\n\";\n    goto end;\nis_zero:\n    std::cout << \"zero\\n\";\nend:\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    if (n > 0)      goto is_positive;\n    else if (n < 0) goto is_negative;\n    else            goto is_zero;\n\nis_positive:\n    std::cout << \"positive\\n\";\n    goto end;\nis_negative:\n    std::cout << \"negative\\n\";\n    goto end;\nis_zero:\n    std::cout << \"zero\\n\";\nend:\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive number",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "positive\n"
+      },
+      {
+        "label": "Hidden: negative number",
+        "is_sample": false,
+        "stdin": "-3\n",
+        "expected_stdout": "negative\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "zero\n"
+      }
+    ]
+  },
+  {
+    "title": "Goto Accumulator (Fix the Bug)",
+    "prompt_md": "## Goal\nThis program should read N integers and print their sum. It uses `goto` to simulate a loop. The program compiles and runs but produces incorrect output — find and fix the one logic bug.\n\n## Input\nLine 1: integer N (1 ≤ N ≤ 10).\nLines 2..N+1: one integer per line.\n\n## Output\nPrint exactly one line: `Sum: X` where X is the sum of all N integers.\n\n## Requirements\n1. The bug is a logic error; do not change the overall structure (keep the goto loop).\n2. Hidden tests check N = 1, N = 3, and a case where values include negative numbers.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    int sum = 0;\n    int i = 0;\nloop:\n    if (i < n) {\n        int val;\n        std::cin >> val;\n        sum = sum + val;\n        goto loop;     // BUG: i is never incremented\n    }\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    int sum = 0;\n    int i = 0;\nloop:\n    if (i < n) {\n        int val;\n        std::cin >> val;\n        sum = sum + val;\n        ++i;\n        goto loop;\n    }\n    std::cout << \"Sum: \" << sum << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three numbers",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "Sum: 60\n"
+      },
+      {
+        "label": "Hidden: single number",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "Sum: 42\n"
+      },
+      {
+        "label": "Hidden: includes negatives",
+        "is_sample": false,
+        "stdin": "4\n5\n-3\n8\n-2\n",
+        "expected_stdout": "Sum: 8\n"
+      }
+    ]
+  }
+]

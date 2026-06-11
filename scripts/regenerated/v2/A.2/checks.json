@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "In Visual Studio, you add the path to a library's headers. Which property page setting does this correspond to?",
+    "options": {
+      "a": "Linker → Input → Additional Dependencies",
+      "b": "Linker → General → Additional Library Directories",
+      "c": "C/C++ → General → Additional Include Directories",
+      "d": "Build Events → Post-Build Event"
+    },
+    "answer": "c",
+    "explanation_md": "The compiler (C/C++ toolchain) needs to know where headers are; that goes in **C/C++ → General → Additional Include Directories**. Linker settings control `.lib` files and paths, not headers. Post-Build events handle file copying, not compilation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A project builds successfully but crashes at startup with \"foo.dll is missing from your computer\". Which of the following is the most likely fix?",
+    "options": {
+      "a": "Add `foo.lib` to Linker → Input → Additional Dependencies",
+      "b": "Add the folder containing `foo.dll` to Linker → General → Additional Library Directories",
+      "c": "Copy `foo.dll` to the same directory as the built `.exe` or add a post-build copy step",
+      "d": "Add `foo.h` to C/C++ → General → Additional Include Directories"
+    },
+    "answer": "c",
+    "explanation_md": "The build already succeeded, so the `.lib` is linked correctly. The runtime loader needs the `.dll` in a searched location — typically the executable's directory. Options a, b, and d affect the build step, not the runtime loader."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer links `thirdparty\\foo\\lib\\x86\\Release\\foo.lib` into an x64 Release build. What error does Visual Studio most likely produce?",
+    "options": {
+      "a": "C2011: 'Foo': struct type redefinition",
+      "b": "LNK1112: module machine type 'X86' conflicts with target machine type 'x64'",
+      "c": "LNK2019: unresolved external symbol in function main",
+      "d": "C1083: cannot open include file 'foo/foo.h'"
+    },
+    "answer": "b",
+    "explanation_md": "Mixing architectures at link time produces LNK1112. The linker detects that the `.lib` was built for a different machine type than the current target. LNK2019 means a symbol is missing entirely; C1083 is a missing header; C2011 is a duplicate type definition."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Suppose a Visual Studio post-build event runs:\n```\nxcopy /Y \"$(SolutionDir)libs\\foo.dll\" \"$(OutDir)\"\n```\nand `$(SolutionDir)` expands to `C:\\Projects\\MyApp\\` while `$(OutDir)` expands to `C:\\Projects\\MyApp\\x64\\Release\\`. After a successful build, where is `foo.dll` located?",
+    "options": null,
+    "answer": "C:\\Projects\\MyApp\\x64\\Release\\foo.dll",
+    "explanation_md": "The `xcopy` command copies `foo.dll` from the `libs` subfolder of the solution directory to the output directory. The `/Y` flag suppresses the overwrite confirmation. The result is the DLL placed next to the `.exe` in the Release output folder."
+  }
+]

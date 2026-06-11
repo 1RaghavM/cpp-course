@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    Base() { std::cout << \"Base\\n\"; }\n    ~Base() { std::cout << \"~Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    Derived() { std::cout << \"Derived\\n\"; }\n    ~Derived() { std::cout << \"~Derived\\n\"; }\n};\n\nint main() {\n    Derived d;\n}\n```",
+    "options": null,
+    "answer": "Base\nDerived\n~Derived\n~Base",
+    "explanation_md": "Base class constructors run before the derived class constructor body. Destructors run in reverse: `Derived`'s destructor first, then `Base`'s destructor. This ordering is fundamental to the lifetime contract of inheritance."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `Manager` inherits from `Employee` using `public` inheritance. `Employee` has a `private` member `double salary_`. Can `Manager`'s member functions access `salary_` directly?",
+    "options": {
+      "a": "Yes — derived classes can access all members of the base",
+      "b": "Yes — but only through a special `protected` accessor",
+      "c": "No — `private` members are inaccessible to derived classes; use `protected` instead",
+      "d": "No — unless `Manager` is declared as a `friend` of `Employee`"
+    },
+    "answer": "c",
+    "explanation_md": "`private` means accessible only by the class's own member functions and friends — not by derived classes. To allow derived classes to access a data member directly, declare it `protected`. To preserve encapsulation, keep it `private` and expose it through a `protected` getter."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The developer expects `ptr->greet()` to call `Dog::greet`, but it always prints \"Animal greet\". What is the problem?\n\n```cpp\n#include <iostream>\n\nclass Animal {\npublic:\n    void greet() { std::cout << \"Animal greet\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void greet() { std::cout << \"Dog greet\\n\"; }\n};\n\nint main() {\n    Dog d;\n    Animal* ptr = &d;\n    ptr->greet();\n}\n```",
+    "options": {
+      "a": "`Dog::greet` is private so it cannot override `Animal::greet`",
+      "b": "Without `virtual` on `Animal::greet`, the call is dispatched based on the static type `Animal*`, always calling `Animal::greet`",
+      "c": "The `Animal*` pointer is null so no function runs",
+      "d": "`Dog` should inherit with `protected` instead of `public` inheritance"
+    },
+    "answer": "b",
+    "explanation_md": "Without `virtual`, C++ resolves function calls at compile time based on the *static type* of the expression. `ptr` is declared as `Animal*`, so `ptr->greet()` always calls `Animal::greet`. Adding `virtual` to `Animal::greet` would enable runtime dispatch to `Dog::greet` through a base pointer."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the effect of `protected` inheritance (e.g., `class B : protected A`)compared to `public` inheritance?",
+    "options": {
+      "a": "All of A's members become private in B",
+      "b": "A's public and protected members both become protected in B; B's further derived classes can still access them but external code cannot",
+      "c": "A's public members stay public; only protected members change",
+      "d": "Protected inheritance is identical to public inheritance"
+    },
+    "answer": "b",
+    "explanation_md": "Protected inheritance sets a ceiling of `protected` on the inherited access: A's `public` members are reduced to `protected` in B, and A's `protected` members remain `protected`. This means external code (code that holds a B object) cannot call A's originally-public functions, but classes that further derive from B can still access them. `public` inheritance would leave A's public members public in B."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass A {\npublic:\n    void hello() { std::cout << \"A\\n\"; }\n};\n\nclass B {\npublic:\n    void hello() { std::cout << \"B\\n\"; }\n};\n\nclass C : public A, public B {\npublic:\n    void run() {\n        A::hello();\n        B::hello();\n    }\n};\n\nint main() {\n    C c;\n    c.run();\n}\n```",
+    "options": null,
+    "answer": "A\nB",
+    "explanation_md": "`run()` calls `A::hello()` explicitly (prints \"A\") then `B::hello()` explicitly (prints \"B\"). Scope qualifiers resolve the ambiguity that would arise from calling just `hello()` on a `C` object — without qualifiers, the compiler cannot choose between `A::hello` and `B::hello`."
+  }
+]

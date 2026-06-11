@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Multiple Inheritance: Amphibious Vehicle",
+    "prompt_md": "## Goal\nBuild an `Amphibious` class that inherits from both `LandVehicle` and `WaterVehicle` and reports its combined capabilities.\n\n## Input\n- Line 1: two integers `speed` and `depth` separated by a space.\n  - `speed` is the land speed (1–200).\n  - `depth` is the dive depth in meters (1–100).\n- Line 2: integer N (1 ≤ N ≤ 4), number of queries.\n- Lines 3..N+2: one query per line:\n  - `land` — print `land speed: <speed>`.\n  - `water` — print `water depth: <depth>`.\n  - `describe` — print `amphibious: speed=<speed> depth=<depth>`.\n\n## Output\nFor each query, print the result on its own line.\n\n## Requirements\n1. `LandVehicle` stores `int speed_` (initialized via constructor) and has `int speed() const`.\n2. `WaterVehicle` stores `int depth_` (initialized via constructor) and has `int depth() const`.\n3. `Amphibious` inherits publicly from both (list `LandVehicle` first, then `WaterVehicle`) and initializes both base constructors in its initializer list.\n4. `Amphibious` has its own `void describe() const` that prints the combined line.\n5. No name conflicts: `speed()` and `depth()` come from different bases so no scope qualifier is needed.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass LandVehicle {\n    int speed_;\npublic:\n    explicit LandVehicle(int s) : speed_{s} {}\n    int speed() const { return speed_; }\n};\n\nclass WaterVehicle {\n    int depth_;\npublic:\n    explicit WaterVehicle(int d) : depth_{d} {}\n    int depth() const { return depth_; }\n};\n\n// TODO: define Amphibious inheriting from both LandVehicle and WaterVehicle\n// Constructor: Amphibious(int speed, int depth)\n// Member: void describe() const — prints \"amphibious: speed=<s> depth=<d>\"\nclass Amphibious : public LandVehicle, public WaterVehicle {\npublic:\n    Amphibious(int s, int d)\n        // TODO: initialize both base classes\n        : LandVehicle{s}, WaterVehicle{d}\n    {}\n    void describe() const {\n        // TODO: print \"amphibious: speed=<speed()> depth=<depth()>\"\n    }\n};\n\nint main() {\n    int s{}, d{};\n    std::cin >> s >> d;\n    Amphibious a{s, d};\n\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string q;\n        std::cin >> q;\n        if (q == \"land\") {\n            std::cout << \"land speed: \" << a.speed() << \"\\n\";\n        } else if (q == \"water\") {\n            std::cout << \"water depth: \" << a.depth() << \"\\n\";\n        } else if (q == \"describe\") {\n            a.describe();\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass LandVehicle {\n    int speed_;\npublic:\n    explicit LandVehicle(int s) : speed_{s} {}\n    int speed() const { return speed_; }\n};\n\nclass WaterVehicle {\n    int depth_;\npublic:\n    explicit WaterVehicle(int d) : depth_{d} {}\n    int depth() const { return depth_; }\n};\n\nclass Amphibious : public LandVehicle, public WaterVehicle {\npublic:\n    Amphibious(int s, int d) : LandVehicle{s}, WaterVehicle{d} {}\n    void describe() const {\n        std::cout << \"amphibious: speed=\" << speed() << \" depth=\" << depth() << \"\\n\";\n    }\n};\n\nint main() {\n    int s{}, d{};\n    std::cin >> s >> d;\n    Amphibious a{s, d};\n\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string q;\n        std::cin >> q;\n        if (q == \"land\") {\n            std::cout << \"land speed: \" << a.speed() << \"\\n\";\n        } else if (q == \"water\") {\n            std::cout << \"water depth: \" << a.depth() << \"\\n\";\n        } else if (q == \"describe\") {\n            a.describe();\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all three queries",
+        "is_sample": true,
+        "stdin": "80 30\n3\nland\nwater\ndescribe\n",
+        "expected_stdout": "land speed: 80\nwater depth: 30\namphibious: speed=80 depth=30"
+      },
+      {
+        "label": "Hidden: describe only",
+        "is_sample": false,
+        "stdin": "120 50\n1\ndescribe\n",
+        "expected_stdout": "amphibious: speed=120 depth=50"
+      },
+      {
+        "label": "Hidden: land and water queries only",
+        "is_sample": false,
+        "stdin": "40 10\n2\nwater\nland\n",
+        "expected_stdout": "water depth: 10\nland speed: 40"
+      }
+    ]
+  },
+  {
+    "title": "Fix the bug: wrong scope qualifier in multiple inheritance",
+    "prompt_md": "## Goal\nThe program defines classes `A` and `B` with a `status()` function each. Class `C` inherits from both and has a `report()` member that is supposed to print `A` first, then `B`. The code compiles, but `report()` prints the wrong order. Find and fix the single logic bug.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nStatus A\nStatus B\n```\n\n## Requirements\n1. The bug is in `C::report()` — the scope qualifiers are in the wrong order.\n2. Fix only the two lines in `report()`; do not change `A`, `B`, or `main`.\n3. Hidden tests verify the same two-line output.",
+    "starter_code": "#include <iostream>\n\nclass A {\npublic:\n    void status() { std::cout << \"Status A\\n\"; }\n};\n\nclass B {\npublic:\n    void status() { std::cout << \"Status B\\n\"; }\n};\n\nclass C : public A, public B {\npublic:\n    void report() {\n        B::status();  // BUG: should print A first\n        A::status();  // BUG: should print B second\n    }\n};\n\nint main() {\n    C c;\n    c.report();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass A {\npublic:\n    void status() { std::cout << \"Status A\\n\"; }\n};\n\nclass B {\npublic:\n    void status() { std::cout << \"Status B\\n\"; }\n};\n\nclass C : public A, public B {\npublic:\n    void report() {\n        A::status();\n        B::status();\n    }\n};\n\nint main() {\n    C c;\n    c.report();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: A then B",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Status A\nStatus B"
+      },
+      {
+        "label": "Hidden: same output check 1",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Status A\nStatus B"
+      },
+      {
+        "label": "Hidden: same output check 2",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Status A\nStatus B"
+      }
+    ]
+  }
+]

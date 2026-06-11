@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary advantage of using `constexpr` over `const` for a compile-time constant?",
+    "options": {
+      "a": "`constexpr` variables run faster at runtime because the CPU has a special register for them.",
+      "b": "`constexpr` forces a compile error if the initializer is not a constant expression, catching mistakes early.",
+      "c": "`constexpr` allows a variable to be modified once, while `const` prevents all modification.",
+      "d": "`constexpr` variables are automatically initialized to zero if no initializer is provided."
+    },
+    "answer": "b",
+    "explanation_md": "The key benefit of `constexpr` is the compile-time enforcement: if the initializer is not a constant expression, the compiler reports an error immediately. This turns a potential silent runtime issue into a loud compile-time error. Performance is a side effect, not the purpose."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    constexpr int base = 5;\n    constexpr int squared = base * base;\n    constexpr int cubed = squared * base;\n    std::cout << cubed << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "125",
+    "explanation_md": "`base` is `5`, `squared` is `25`, `cubed` is `125`. All three are `constexpr` so the compiler evaluates them at build time. The program prints `125`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following will cause a compile error?\n\n```cpp\n// A:\nconst int a = 10;\nconstexpr int b = a + 5;\n\n// B:\nint x = 10;\nconstexpr int c = x + 5;\n```",
+    "options": {
+      "a": "Both A and B compile without error.",
+      "b": "Only A causes a compile error.",
+      "c": "Only B causes a compile error.",
+      "d": "Both A and B cause compile errors."
+    },
+    "answer": "c",
+    "explanation_md": "In A, `a` is a `const int` initialized from the literal `10`, making it a constant expression. So `b`'s initializer `a + 5` is also a constant expression — A compiles fine. In B, `x` is a plain `int` (not `const`), so it is not a constant expression, and `x + 5` is not a constant expression either. Trying to use it as a `constexpr` initializer is a compile error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student writes this program and expects it to compile. What is wrong?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    constexpr int doubled = n * 2;\n    std::cout << doubled << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "There is no bug — `constexpr int doubled = n * 2;` compiles fine.",
+      "b": "`constexpr` cannot be used with multiplication; use `const` instead.",
+      "c": "`n` is not a constant expression (it comes from user input), so `doubled` cannot be `constexpr`. The program will not compile.",
+      "d": "The bug is that `std::cin` should be replaced with a literal before using `constexpr`."
+    },
+    "answer": "c",
+    "explanation_md": "`n` is a plain non-`const` variable initialized from `std::cin`. Its value is only known at runtime, so `n * 2` is not a constant expression. Declaring `doubled` as `constexpr` requires its initializer to be a constant expression — this is a compile error. The fix is to use `const` instead of `constexpr` here."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    constexpr int width = 7;\n    constexpr int height = 3;\n    constexpr int perimeter = 2 * (width + height);\n    std::cout << perimeter << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`width + height` is `10`, and `2 * 10` is `20`. All values are `constexpr` constant expressions evaluated at compile time. The program prints `20`."
+  }
+]

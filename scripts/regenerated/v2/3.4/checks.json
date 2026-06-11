@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to `std::cout` when input is `5`? (Ignore `std::cerr` output.)\n\n```cpp\n#include <iostream>\n\nint process(int n)\n{\n    std::cerr << \"[process] n=\" << n << \"\\n\";\n    int r = n * 3;\n    std::cerr << \"[process] r=\" << r << \"\\n\";\n    return r;\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    std::cout << process(x) - 2 << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "13",
+    "explanation_md": "`process(5)` computes `5 * 3 = 15`. `main` then prints `15 - 2 = 13` to `std::cout`. The `std::cerr` lines output `[process] n=5` and `[process] r=15` to the error stream, which does not appear in stdout."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should debug output go to `std::cerr` rather than `std::cout`?",
+    "options": {
+      "a": "`std::cerr` output is hidden from the user entirely",
+      "b": "`std::cerr` keeps debug messages on a separate stream so they do not corrupt the program's real stdout output",
+      "c": "`std::cerr` is faster to type than `std::cout`",
+      "d": "`std::cerr` messages are automatically removed when the program is compiled in release mode"
+    },
+    "answer": "b",
+    "explanation_md": "`std::cerr` and `std::cout` are separate output streams. Automated test harnesses read only stdout; debug messages on cerr do not appear there and do not corrupt test case comparisons. Option a is false — cerr still prints to the same terminal. Options c and d are also false."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You suspect the bug is inside function `compute`. You temporarily replace its body with `return 42;` and the final output is still wrong. What does this tell you?",
+    "options": {
+      "a": "The bug is definitely inside the original `compute` body",
+      "b": "The bug is in the code that calls `compute` or uses its return value",
+      "c": "The bug is in the `#include` directives",
+      "d": "There is no bug — `42` is a valid return value"
+    },
+    "answer": "b",
+    "explanation_md": "If replacing `compute` with a known-good stub still produces wrong output, the problem is not inside `compute` — it must be in the calling code that uses whatever `compute` returns. This is the purpose of the stub technique: isolating whether the bug is inside a function or outside it."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The program should print the entry message before calling `work`, but no `[main] calling work` message appears in cerr output when run. What is the bug?\n\n```cpp\n#include <iostream>\n\nint work(int n)\n{\n    std::cerr << \"[work] n=\" << n << \"\\n\";\n    return n + 1;\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    int r = work(x);\n    std::cerr << \"[main] calling work\" << \"\\n\";\n    std::cout << r << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The cerr statement in `work` should use `std::cout` instead",
+      "b": "The `[main] calling work` cerr line is placed after the call to `work`, not before it",
+      "c": "`std::cerr` requires a different `#include` to work",
+      "d": "The function `work` never returns correctly"
+    },
+    "answer": "b",
+    "explanation_md": "The `std::cerr << \"[main] calling work\"` line appears *after* `int r = work(x);`, not before it. So by the time that cerr line executes, `work` has already run. Moving the cerr line to before the `work(x)` call would produce the expected debug output in the right order."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to `std::cout` when input is `8`?\n\n```cpp\n#include <iostream>\n\nint halve(int n)\n{\n    std::cerr << \"[halve] \" << n << \"\\n\";\n    return n / 2;\n}\n\nint main()\n{\n    int x;\n    std::cin >> x;\n    std::cerr << \"[main] x=\" << x << \"\\n\";\n    std::cout << halve(x) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4",
+    "explanation_md": "`halve(8)` returns `8 / 2 = 4`. The cerr lines `[main] x=8` and `[halve] 8` go to stderr and do not appear in stdout. The program prints `4` to stdout."
+  }
+]

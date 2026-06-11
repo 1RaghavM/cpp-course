@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Use std::min from the algorithm header",
+    "prompt_md": "## Goal\nReimplement a tiny utility by looking up the correct standard-library function. Read two integers from input and print the smaller of them on one line. You must use the standard-library function whose cppreference page begins with the signature shown below \u2014 do not write the comparison yourself with `if`/`?:`.\n\n```cpp\n// from https://en.cppreference.com/w/cpp/algorithm/min (overload 1)\n// template< class T >\n// constexpr const T& min( const T& a, const T& b );\n```\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing the smaller of the two integers, followed by a newline.\n\n## Requirements\n1. Include the standard header that contains the function shown in the snippet (the cppreference page tells you which one).\n2. Read two `int` values from `std::cin`.\n3. Call the standard-library function from the snippet to compute the smaller value.\n4. Print the result, followed by a newline.\n\n## Notes\nThe function you need lives in the `<algorithm>` header. If the two inputs are equal, the function returns the first argument \u2014 printing either is fine for the test cases (they avoid equal values for non-tied cases and tie inputs produce that same value either way).",
+    "starter_code": "#include <iostream>\n// TODO: include the header that declares the function in the prompt\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    // TODO: use the standard-library function from the prompt to print the smaller value\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <algorithm>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    std::cout << std::min(a, b) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "3 7\n",
+        "expected_stdout": "3\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "10 -4\n",
+        "expected_stdout": "-4\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "5 5\n",
+        "expected_stdout": "5\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the wrong standard-library call",
+    "prompt_md": "## Goal\nThe program below is supposed to read three integers and print the largest of them. It calls a standard-library function with the right syntax, but the wrong function name. Use the cppreference signatures below to identify the correct function and swap it in. The current code calls `std::min` (smallest), but the goal needs the function whose page begins:\n\n```cpp\n// from https://en.cppreference.com/w/cpp/algorithm/max\n// constexpr T max( std::initializer_list<T> ilist );\n```\n\n## Input\nA single line containing three integers separated by spaces.\n\n## Output\nOne line containing the largest of the three integers, followed by a newline.\n\n## Requirements\n1. Keep the `#include` lines, variable declarations, and input reads as written.\n2. Change the function name on the single call line so the program returns the *largest* value, not the smallest.\n3. The braced-initializer-list syntax `{ a, b, c }` is already correct; only the function name needs fixing.\n4. The program must compile cleanly under `g++ -std=c++20 -Wall -Wextra`.\n\n## Notes\nThe planted bug is `std::min({ a, b, c })`. The fix is `std::max({ a, b, c })` \u2014 same overload pattern (initializer-list overload), opposite direction.",
+    "starter_code": "#include <iostream>\n#include <algorithm>\n\nint main()\n{\n    int a{};\n    int b{};\n    int c{};\n    std::cin >> a >> b >> c;\n    std::cout << std::min({ a, b, c }) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <algorithm>\n\nint main()\n{\n    int a{};\n    int b{};\n    int c{};\n    std::cin >> a >> b >> c;\n    std::cout << std::max({ a, b, c }) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "1 2 3\n",
+        "expected_stdout": "3\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "-5 -1 -10\n",
+        "expected_stdout": "-1\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "7 7 4\n",
+        "expected_stdout": "7\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <vector>\nint main()\n{\n    std::vector<int> v { 10, 20, 30, 40 };\n    auto it = v.begin();\n    ++it;\n    std::cout << *it << '\\n';\n    ++it;\n    ++it;\n    std::cout << *it << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20\n40",
+    "explanation_md": "`v.begin()` points at 10. After one `++it`, it points at 20, which is printed. Two more increments move it past 30 to 40, which is printed. The result is `20` then `40`, each on its own line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does `v.end()` return for a non-empty `std::vector<int> v`?",
+    "options": {
+      "a": "An iterator pointing one past the last element — it must not be dereferenced.",
+      "b": "An iterator pointing at the last element.",
+      "c": "The integer index of the last element.",
+      "d": "An iterator pointing at the first element, same as `v.begin()`."
+    },
+    "answer": "a",
+    "explanation_md": "`end()` is a past-the-end sentinel. It marks where the range stops and must never be dereferenced — doing so is undefined behaviour. To access the last element you would use `v.back()` or `*(v.end() - 1)` for random-access iterators."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below is supposed to double every element of the vector, but it has a bug. What is it?\n\n```cpp\n#include <iostream>\n#include <vector>\nint main()\n{\n    std::vector<int> v { 1, 2, 3 };\n    for (auto it = v.begin(); it != v.end(); ++it)\n        it *= 2;   // intended to double each element\n    for (auto it = v.begin(); it != v.end(); ++it)\n        std::cout << *it << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`it *= 2` tries to multiply the iterator itself, not the element it points at; it should be `*it *= 2`.",
+      "b": "The loop condition should be `it < v.end()` rather than `it != v.end()`.",
+      "c": "`auto` cannot be used to declare an iterator; you must write `std::vector<int>::iterator`.",
+      "d": "The second loop uses a separate iterator, so it will not see the modifications."
+    },
+    "answer": "a",
+    "explanation_md": "Iterators are not integers. `it *= 2` attempts to multiply the iterator object itself, which will not compile (or produce a nonsensical result for pointer-based iterators). The correct form is `*it *= 2` — dereference first to get a reference to the element, then multiply."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you write `it != v.end()` rather than `it < v.end()` as the loop condition when using iterators?",
+    "options": {
+      "a": "`!=` works for all standard container iterators, while `<` only works for random-access iterators like those of `std::vector` and `std::array`.",
+      "b": "`<` compares memory addresses, which causes undefined behaviour.",
+      "c": "`!=` is faster than `<` for all container types.",
+      "d": "`it < v.end()` will never be true, so the loop would never run."
+    },
+    "answer": "a",
+    "explanation_md": "Only random-access iterators (like those of `std::vector` and `std::array`) support `<`. Bidirectional iterators (like those of `std::list`) only support `==` and `!=`. Using `!=` makes your iterator loops portable across more container types."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <array>\nint main()\n{\n    std::array<int, 3> a { 4, 5, 6 };\n    for (auto it = a.begin(); it != a.end(); ++it)\n        *it += 1;\n    for (auto it = a.begin(); it != a.end(); ++it)\n        std::cout << *it << ' ';\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "5 6 7 \n",
+    "explanation_md": "The first loop adds 1 to each element through the iterator, turning `{4,5,6}` into `{5,6,7}`. The second loop prints each element followed by a space, then a newline, giving `5 6 7 ` with a trailing space."
+  }
+]

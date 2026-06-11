@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Identify Library Type from Build Flags",
+    "prompt_md": "## Goal\nWrite a program that reads library build command descriptions from stdin and reports whether each describes building a static library, a dynamic library, or neither.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 20), the number of commands to classify.\n- Lines 2..N+1: each line is one of the following single-word tokens:\n  - `STATIC` — represents a command that uses `ar rcs` to archive object files\n  - `DYNAMIC` — represents a command that uses `-shared -fPIC` flags\n  - `OTHER` — represents a command that does neither\n\n## Output\nFor each line, print one of:\n- `static library`\n- `dynamic library`\n- `other`\n\n## Requirements\n1. Read exactly N tokens.\n2. Match `STATIC` → print `static library`, `DYNAMIC` → print `dynamic library`, `OTHER` → print `other`.\n3. Each result on its own line, no trailing spaces.\n4. N=1 with any token must work correctly.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string token;\n        std::cin >> token;\n        // TODO: print \"static library\", \"dynamic library\", or \"other\"\n        // based on whether token is \"STATIC\", \"DYNAMIC\", or \"OTHER\"\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        std::string token;\n        std::cin >> token;\n        if (token == \"STATIC\") {\n            std::cout << \"static library\\n\";\n        } else if (token == \"DYNAMIC\") {\n            std::cout << \"dynamic library\\n\";\n        } else {\n            std::cout << \"other\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed types",
+        "is_sample": true,
+        "stdin": "3\nSTATIC\nDYNAMIC\nOTHER\n",
+        "expected_stdout": "static library\ndynamic library\nother"
+      },
+      {
+        "label": "Hidden: all static",
+        "is_sample": false,
+        "stdin": "2\nSTATIC\nSTATIC\n",
+        "expected_stdout": "static library\nstatic library"
+      },
+      {
+        "label": "Hidden: single dynamic",
+        "is_sample": false,
+        "stdin": "1\nDYNAMIC\n",
+        "expected_stdout": "dynamic library"
+      }
+    ]
+  },
+  {
+    "title": "Library Size Estimator Bug Fix",
+    "prompt_md": "## Goal\nThe program below is supposed to estimate the size of a statically linked executable by summing the sizes of all object files that are actually used (i.e., not marked unused). Find and fix the logic bug.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 50), the number of object files.\n- Lines 2..N+1: two values per line: an integer `size` (bytes) and a string `status` (`used` or `unused`).\n\n## Output\nPrint one line: `Total: X bytes` where X is the sum of sizes of all `used` object files.\n\n## Requirements\n1. Only sum object files with status `used`.\n2. Output exactly `Total: X bytes` with no extra whitespace.\n3. If no files are `used`, output `Total: 0 bytes`.\n\n## Notes\n- The program contains exactly one logic bug — find and fix it.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    long long total = 0;\n    for (int i = 0; i < n; ++i) {\n        long long size;\n        std::string status;\n        std::cin >> size >> status;\n        // Bug: sums unused files instead of used files\n        if (status == \"unused\") {\n            total += size;\n        }\n    }\n    std::cout << \"Total: \" << total << \" bytes\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    int n;\n    std::cin >> n;\n    long long total = 0;\n    for (int i = 0; i < n; ++i) {\n        long long size;\n        std::string status;\n        std::cin >> size >> status;\n        if (status == \"used\") {\n            total += size;\n        }\n    }\n    std::cout << \"Total: \" << total << \" bytes\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed used and unused",
+        "is_sample": true,
+        "stdin": "4\n1024 used\n512 unused\n2048 used\n256 unused\n",
+        "expected_stdout": "Total: 3072 bytes"
+      },
+      {
+        "label": "Hidden: all unused",
+        "is_sample": false,
+        "stdin": "2\n100 unused\n200 unused\n",
+        "expected_stdout": "Total: 0 bytes"
+      },
+      {
+        "label": "Hidden: single used file",
+        "is_sample": false,
+        "stdin": "1\n4096 used\n",
+        "expected_stdout": "Total: 4096 bytes"
+      }
+    ]
+  }
+]

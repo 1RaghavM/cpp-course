@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nenum class Status { ok, warn, error };\n\ntemplate <typename T>\nstruct Result\n{\n    Status s;\n    T value;\n};\n\nint main()\n{\n    Result<int> r{ Status::warn, 42 };\n    std::cout << static_cast<int>(r.s) << ' ' << r.value << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 42",
+    "explanation_md": "`Status::warn` is the second enumerator of the scoped enum, so it has the value 1. The struct `Result<int>` instantiates with a scoped-enum member and an `int` member; the `static_cast<int>(r.s)` prints `1`, and `r.value` is the literal `42`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which combination correctly describes a struct that bundles a 2D position with a scoped enum for the player's team?\n\n```cpp\nenum class Team { red, blue };\nstruct Player\n{\n    int x;\n    int y;\n    Team t;\n};\n```",
+    "options": {
+      "a": "`Player p{ .x = 0, .y = 0, .t = Team::red };` uses designated initializers — valid in C++20.",
+      "b": "`Player p{ 0, 0, red };` is valid because unscoped names from `Team` enter the surrounding scope.",
+      "c": "`Player p = { 0, 0 };` initializes `t` to a garbage value because aggregates do not zero unspecified members.",
+      "d": "Defining `Player` like this is invalid because a struct cannot mix fundamental types and enum types."
+    },
+    "answer": "a",
+    "explanation_md": "Designated initializers (C++20) name members explicitly, which is the readable choice when several fields have similar types. Option (b) is wrong because `Team::red` is scoped and does not appear bare. Option (c) is wrong: aggregate members left out of the brace list are value-initialized (zero for fundamental types, the enum's zero state for `Team`). Option (d) is simply false — structs can hold members of any type."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this code?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nstruct Box { T value; };\n\nvoid bump(Box<int> b) { b.value += 1; }\n\nint main()\n{\n    Box<int> b{ 10 };\n    bump(b);\n    std::cout << b.value << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "The program prints `11` — there is no bug.",
+      "b": "`bump` takes its parameter by value, so it modifies a copy and the original `b.value` is still 10 when printed.",
+      "c": "Class templates cannot have member values that are modified.",
+      "d": "`Box<int>` and `Box` are different types and the call fails to compile."
+    },
+    "answer": "b",
+    "explanation_md": "Passing a struct (templated or not) by value copies it into the parameter. `bump` then modifies its local copy. The caller's `b` is untouched, so the program prints `10`. To actually mutate the caller's object the parameter must be `Box<int>&`. Option (d) is wrong: with CTAD or explicit `Box<int>`, the call type-checks; the issue is purely the value-vs-reference choice."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Point { int x{}; int y{ 5 }; };\n\nint main()\n{\n    Point a{};\n    Point b{ .x = 2 };\n    std::cout << a.x << a.y << ' ' << b.x << b.y << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "05 25",
+    "explanation_md": "Default member initializers fill in for any field not given a value. For `a{}` both members default — `x` to 0, `y` to 5. For `b{ .x = 2 }`, `x` is 2 and `y` keeps its default of 5. The four digits are printed without separators inside each pair, giving `05 25`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does `Pair<int>` not accept a `Pair<long>` value?\n\n```cpp\ntemplate <typename T> struct Pair { T first; T second; };\nPair<int> a{ 1, 2 };\nPair<long> b = a;\n```",
+    "options": {
+      "a": "Because templates only support a single instantiation per program.",
+      "b": "Because `Pair<int>` and `Pair<long>` are different, unrelated types — different instantiations of the same template do not implicitly convert to one another.",
+      "c": "Because `long` and `int` are the same size on most platforms, so the compiler refuses the redundant copy.",
+      "d": "Because aggregate initialization only allows literal initializers."
+    },
+    "answer": "b",
+    "explanation_md": "Two instantiations of a class template are distinct types in the type system, even when the underlying types (`int` and `long`) freely convert in arithmetic expressions. The compiler treats `Pair<int>` and `Pair<long>` as unrelated and refuses the assignment, just as it would refuse to assign a `std::string` to a `std::vector`."
+  }
+]

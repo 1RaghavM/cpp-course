@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Initialize Derived Class via Base Constructor",
+    "prompt_md": "## Goal\nDefine a `Rectangle` base class and a `ColoredRectangle` derived class. Use the member initializer list to pass constructor arguments to the base.\n\n## Input\nLine 1: two integers W H separated by a space — width and height of the rectangle.\nLine 2: a string — the color name (no spaces).\n\n## Output\nPrint exactly two lines:\n```\nRectangle: <W>x<H>\nColor: <color>\n```\n\n## Requirements\n1. `Rectangle` must have a constructor `Rectangle(int w, int h)` that stores `w` and `h`. It must NOT have a default (no-argument) constructor.\n2. `ColoredRectangle` must publicly inherit from `Rectangle` and add a `std::string color` member.\n3. `ColoredRectangle` must have a constructor `ColoredRectangle(int w, int h, std::string c)` that uses the initializer list to call `Rectangle(w, h)` and initialize `color`.\n4. `main()` reads the input, constructs a `ColoredRectangle`, and calls a `void print()` member function that prints both output lines.\n5. Edge case: W=1, H=1.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define class Rectangle with:\n//   int width, height (no default constructor)\n//   Constructor Rectangle(int w, int h) using initializer list\nclass Rectangle {\npublic:\n    int width;\n    int height;\n    Rectangle(int w, int h) : width(w), height(h) {}\n};\n\n// TODO: Define class ColoredRectangle that publicly inherits Rectangle\n//   Adds: std::string color\n//   Constructor uses initializer list to call Rectangle(w, h) and init color\n//   Member function void print() prints the two output lines\nclass ColoredRectangle : public Rectangle {\npublic:\n    std::string color;\n    ColoredRectangle(int w, int h, std::string c)\n        : Rectangle(0, 0), color(c) // TODO: fix the base constructor call\n    {}\n    void print() {\n        // TODO: print \"Rectangle: <width>x<height>\" and \"Color: <color>\"\n    }\n};\n\nint main() {\n    int w, h;\n    std::string c;\n    std::cin >> w >> h >> c;\n    ColoredRectangle cr(w, h, c);\n    cr.print();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Rectangle {\npublic:\n    int width;\n    int height;\n    Rectangle(int w, int h) : width(w), height(h) {}\n};\n\nclass ColoredRectangle : public Rectangle {\npublic:\n    std::string color;\n    ColoredRectangle(int w, int h, std::string c)\n        : Rectangle(w, h), color(c)\n    {}\n    void print() {\n        std::cout << \"Rectangle: \" << width << \"x\" << height << \"\\n\";\n        std::cout << \"Color: \" << color << \"\\n\";\n    }\n};\n\nint main() {\n    int w, h;\n    std::string c;\n    std::cin >> w >> h >> c;\n    ColoredRectangle cr(w, h, c);\n    cr.print();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic rectangle",
+        "is_sample": true,
+        "stdin": "10 5\nblue\n",
+        "expected_stdout": "Rectangle: 10x5\nColor: blue"
+      },
+      {
+        "label": "Hidden: different dimensions",
+        "is_sample": false,
+        "stdin": "3 7\nred\n",
+        "expected_stdout": "Rectangle: 3x7\nColor: red"
+      },
+      {
+        "label": "Hidden: W=1 H=1",
+        "is_sample": false,
+        "stdin": "1 1\ngreen\n",
+        "expected_stdout": "Rectangle: 1x1\nColor: green"
+      }
+    ]
+  },
+  {
+    "title": "Fix Base Constructor Initialization",
+    "prompt_md": "## Goal\nComplete the function `std::string buildLabel(std::string prefix, int value)` that concatenates a prefix and value into a label like `Item-42`.\n\n## Input\nLine 1: a string prefix (no spaces).\nLine 2: an integer value.\n\n## Output\nPrint exactly one line: `<prefix>-<value>`\n\n## Requirements\n1. Implement `buildLabel(std::string prefix, int value)` to return `prefix + \"-\" + std::to_string(value)`.\n2. `main()` reads prefix and value, calls `buildLabel`, and prints the result.\n3. Edge case: value = 0.\n4. Edge case: value = 1000.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Implement buildLabel that returns prefix + \"-\" + the integer as a string\nstd::string buildLabel(std::string prefix, int value) {\n    return prefix; // TODO: fix this — should append \"-\" and value\n}\n\nint main() {\n    std::string prefix;\n    int value;\n    std::cin >> prefix >> value;\n    std::cout << buildLabel(prefix, value) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstd::string buildLabel(std::string prefix, int value) {\n    return prefix + \"-\" + std::to_string(value);\n}\n\nint main() {\n    std::string prefix;\n    int value;\n    std::cin >> prefix >> value;\n    std::cout << buildLabel(prefix, value) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: Item-42",
+        "is_sample": true,
+        "stdin": "Item\n42\n",
+        "expected_stdout": "Item-42"
+      },
+      {
+        "label": "Hidden: value=0",
+        "is_sample": false,
+        "stdin": "Node\n0\n",
+        "expected_stdout": "Node-0"
+      },
+      {
+        "label": "Hidden: value=1000",
+        "is_sample": false,
+        "stdin": "Record\n1000\n",
+        "expected_stdout": "Record-1000"
+      }
+    ]
+  }
+]

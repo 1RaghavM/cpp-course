@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A non-`const` global variable defined at file scope (no `static` keyword) has which linkage by default?",
+    "options": {
+      "a": "Internal linkage — it is private to the translation unit.",
+      "b": "External linkage — it can be accessed from other translation units.",
+      "c": "No linkage — it cannot be named outside its block.",
+      "d": "Static linkage — it persists for the lifetime of the program."
+    },
+    "answer": "b",
+    "explanation_md": "Non-`const` global variables have external linkage by default in C++. Adding `static` at file scope changes this to internal linkage. `const` and `constexpr` globals are the exception — they default to internal linkage."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following gives a variable internal linkage at file scope?",
+    "options": {
+      "a": "Declaring it inside a function.",
+      "b": "Prefixing the definition with `static`.",
+      "c": "Using `extern` before the definition.",
+      "d": "Initializing it to zero."
+    },
+    "answer": "b",
+    "explanation_md": "`static` at file scope changes the linkage of a variable or function from external (the default for non-const globals) to internal, hiding it from other translation units. `extern` does the opposite — it declares a name with external linkage. Placement inside a function gives the name *no* linkage (it is a local variable)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assume this is the only translation unit in the program. What does it print?\n\n```cpp\n#include <iostream>\n\nstatic int count { 0 };\n\nstatic void bump()\n{\n    ++count;\n}\n\nint main()\n{\n    bump();\n    bump();\n    bump();\n    std::cout << count << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`count` starts at `0` and `bump()` increments it each call. After three calls, `count` is `3`. The `static` keyword gives `count` and `bump` internal linkage, but since this is the only file, that has no observable runtime effect here."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You define `static int helper { 5 };` in a header file and include that header in three `.cpp` files. How many `helper` variables exist at runtime?",
+    "options": {
+      "a": "One shared variable across all three files.",
+      "b": "Three independent variables, one per translation unit.",
+      "c": "Zero — `static` in a header prevents the variable from being created.",
+      "d": "The program fails to link because of duplicate definitions."
+    },
+    "answer": "b",
+    "explanation_md": "Each `.cpp` file that includes the header gets its own translation unit, and `static` gives each definition internal linkage. So there are three separate variables named `helper`, one per translation unit — not one shared variable. This is almost never what the programmer intends when placing `static` definitions in headers."
+  }
+]

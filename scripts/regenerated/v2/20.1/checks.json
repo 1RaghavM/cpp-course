@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint square(int x) { return x * x; }\nint cube(int x) { return x * x * x; }\nint main() {\n    int (*f)(int) = square;\n    std::cout << f(3) << \"\\n\";\n    f = cube;\n    std::cout << f(3) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "9\n27",
+    "explanation_md": "First `f` points to `square`, so `f(3)` returns `3*3 = 9`. Then `f` is reassigned to `cube`, so `f(3)` returns `3*3*3 = 27`. Each call through the pointer behaves exactly like a direct call to the pointed-to function."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `int (*op)(int, int);` declared but not assigned, what happens when you call `op(1, 2)`?",
+    "options": {
+      "a": "It returns 0 because uninitialized pointers are zero-initialized by default",
+      "b": "It is undefined behavior — the pointer is uninitialized (or null) and calling it crashes or corrupts state",
+      "c": "It calls the most recently defined `int(int,int)` function in the program",
+      "d": "It is a compile error — the compiler rejects calling an uninitialized pointer"
+    },
+    "answer": "b",
+    "explanation_md": "Function pointers declared but not initialized contain an indeterminate value (or null for static storage). Calling through them is undefined behavior. The compiler does not reject this at compile time, and there is no implicit fallback. Option (a) is wrong: local variables are not zero-initialized. Option (c) has no basis in C++."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which declaration correctly creates a pointer `fp` to a function that takes two `int` parameters and returns `double`?",
+    "options": {
+      "a": "`double *fp(int, int);`",
+      "b": "`double (*fp)(int, int);`",
+      "c": "`(*double fp)(int, int);`",
+      "d": "`double *(fp)(int, int);`"
+    },
+    "answer": "b",
+    "explanation_md": "Option (b) is the correct syntax: the `*` must be inside parentheses together with the pointer name, like `(*fp)`, to distinguish it from a function returning a pointer. Option (a) declares a function named `fp` returning `double*`. Options (c) and (d) are not valid C++ syntax."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nusing Op = int (*)(int, int);\nint add(int a, int b) { return a + b; }\nint run(Op f, int x, int y) { return f(x, y); }\nint main() {\n    std::cout << run(add, 10, 5) << \"\\n\";\n    std::cout << run(add, 3, 7) << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "15\n10",
+    "explanation_md": "`run` takes a function pointer and two ints. The first call passes `add` with (10, 5), producing 15. The second call passes `add` with (3, 7), producing 10. The type alias `Op` simply names the function pointer type but changes no behavior."
+  }
+]

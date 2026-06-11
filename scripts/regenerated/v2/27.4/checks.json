@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    try {\n        throw 3.14;\n    } catch (const int& v) {\n        std::cout << \"int\\n\";\n    } catch (...) {\n        std::cout << \"other\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "other",
+    "explanation_md": "`3.14` is a `double`, not an `int`, so `catch (const int& v)` does not match. The catch-all `catch (...)` matches any type and runs, printing `\"other\"`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Where must `catch (...)` be placed relative to other catch clauses?",
+    "options": {
+      "a": "First, so it runs before any typed handler",
+      "b": "Last, after all typed catch clauses",
+      "c": "Anywhere — C++ picks the best match regardless of order",
+      "d": "It cannot be combined with typed catch clauses"
+    },
+    "answer": "b",
+    "explanation_md": "`catch (...)` matches anything, so if it appears before a typed catch, that typed catch can never be reached — it becomes dead code. The catch-all must always be last. Most compilers warn if a catch clause follows `catch (...)`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\nvoid f() { throw std::runtime_error(\"oops\"); }\nint main() {\n    try {\n        f();\n    } catch (const std::logic_error&) {\n        std::cout << \"logic\\n\";\n    } catch (...) {\n        std::cout << \"fallback\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "fallback",
+    "explanation_md": "`std::runtime_error` does not derive from `std::logic_error` — they are separate branches of the `std::exception` hierarchy. The first catch does not match, so the catch-all fires and prints `\"fallback\"`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the main danger of an empty `catch (...) {}` block?",
+    "options": {
+      "a": "It causes undefined behavior",
+      "b": "It silently swallows all exceptions, hiding bugs and leaving the program in an unknown state",
+      "c": "It prevents the destructor from running during stack unwinding",
+      "d": "The compiler rejects empty catch blocks"
+    },
+    "answer": "b",
+    "explanation_md": "An empty `catch (...)` swallows every exception without any record that anything went wrong. The program continues as if nothing happened, but invariants may be violated. This makes bugs very hard to diagnose. Always at minimum log or report the fact that an unknown exception occurred."
+  }
+]

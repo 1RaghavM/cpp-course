@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print String Info via string_view Parameter",
+    "prompt_md": "## Goal\nWrite a function `printInfo` that accepts a `std::string_view` and prints its length and content on two separate lines.\n\n## Input\nLine 1: a single word (no spaces, at most 50 characters).\n\n## Output\nLine 1: `Length: N` where N is the number of characters.\nLine 2: the word itself.\nNo extra blank lines.\n\n## Requirements\n1. `printInfo` must take a `std::string_view` parameter (not `std::string` or `const char*`).\n2. `main` reads one word from stdin into a `std::string`, then calls `printInfo` with that string.\n3. The output must use the exact label `Length: ` (capital L, colon, space).",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: implement printInfo so it accepts a std::string_view\n// and prints Length: <n> on one line, then the string on the next.\nvoid printInfo(std::string_view sv) {\n    // TODO\n}\n\nint main() {\n    std::string word{};\n    std::cin >> word;\n    printInfo(word);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nvoid printInfo(std::string_view sv) {\n    std::cout << \"Length: \" << sv.length() << '\\n';\n    std::cout << sv << '\\n';\n}\n\nint main() {\n    std::string word{};\n    std::cin >> word;\n    printInfo(word);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal word",
+        "is_sample": true,
+        "stdin": "hello\n",
+        "expected_stdout": "Length: 5\nhello"
+      },
+      {
+        "label": "Hidden: single character",
+        "is_sample": false,
+        "stdin": "x\n",
+        "expected_stdout": "Length: 1\nx"
+      },
+      {
+        "label": "Hidden: longer word",
+        "is_sample": false,
+        "stdin": "programming\n",
+        "expected_stdout": "Length: 11\nprogramming"
+      }
+    ]
+  },
+  {
+    "title": "Extract First Word via substr",
+    "prompt_md": "## Goal\nComplete the function `std::string_view firstWord(std::string_view sentence)` that returns a `std::string_view` of the first word in `sentence`.\n\n## Input\nLine 1: a sentence where words are separated by single spaces. The first word is at least 1 character long. Total length at most 100 characters.\n\n## Output\nPrint exactly one line: the first word of the sentence.\n\n## Requirements\n1. Implement `firstWord` so it finds the position of the first space in `sentence` using `sentence.find(' ')`, then returns `sentence.substr(0, pos)`.\n2. If there is no space (the sentence is a single word), return the entire `sentence` unchanged.\n3. `main` reads a full line with `std::getline` into a `std::string`, creates a `std::string_view` from it, calls `firstWord`, and prints the result.\n4. The returned `string_view` must not outlive the `std::string` created in `main`.\n\n## Notes\n- `std::string_view::find(char)` returns `std::string_view::npos` when the character is not found.\n- Use `#include <string_view>` and `#include <string>`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: implement firstWord\n// Returns a string_view of the first word in sentence.\n// If there is no space, return the entire sentence.\nstd::string_view firstWord(std::string_view sentence) {\n    return sentence; // TODO: fix this\n}\n\nint main() {\n    std::string line{};\n    std::getline(std::cin, line);\n    std::string_view sv{ line };\n    std::cout << firstWord(sv) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nstd::string_view firstWord(std::string_view sentence) {\n    std::size_t pos{ sentence.find(' ') };\n    if (pos == std::string_view::npos)\n        return sentence;\n    return sentence.substr(0, pos);\n}\n\nint main() {\n    std::string line{};\n    std::getline(std::cin, line);\n    std::string_view sv{ line };\n    std::cout << firstWord(sv) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two-word sentence",
+        "is_sample": true,
+        "stdin": "hello world\n",
+        "expected_stdout": "hello"
+      },
+      {
+        "label": "Hidden: single word",
+        "is_sample": false,
+        "stdin": "cpp\n",
+        "expected_stdout": "cpp"
+      },
+      {
+        "label": "Hidden: three-word sentence",
+        "is_sample": false,
+        "stdin": "the quick brown\n",
+        "expected_stdout": "the"
+      }
+    ]
+  }
+]

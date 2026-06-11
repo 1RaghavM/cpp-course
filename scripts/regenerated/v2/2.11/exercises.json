@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Declare and Call a Header Function",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints their sum by calling a function `add` that you declare and define.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space (each between -1000 and 1000).\n\n## Output\n- Print exactly one line: `Sum: X` where `X` is `a + b`.\n\n## Requirements\n1. Define a function `int add(int a, int b)` that returns `a + b`.\n2. Place a forward declaration of `add` above `main`.\n3. Call `add` from inside `main` and print the result in the format `Sum: X`.\n4. No other output; no trailing spaces.\n\n## Notes\n- Everything in a single `main.cpp`; no separate header file needed here.",
+    "starter_code": "#include <iostream>\n\n// TODO: forward declaration of add goes here\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    // TODO: call add and print \"Sum: X\"\n    return 0;\n}\n\n// TODO: definition of add goes here\n",
+    "solution_code": "#include <iostream>\n\nint add(int a, int b);\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << \"Sum: \" << add(a, b) << \"\\n\";\n    return 0;\n}\n\nint add(int a, int b) {\n    return a + b;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive",
+        "is_sample": true,
+        "stdin": "3 7\n",
+        "expected_stdout": "Sum: 10"
+      },
+      {
+        "label": "Hidden: negative numbers",
+        "is_sample": false,
+        "stdin": "-4 -6\n",
+        "expected_stdout": "Sum: -10"
+      },
+      {
+        "label": "Hidden: one zero",
+        "is_sample": false,
+        "stdin": "0 999\n",
+        "expected_stdout": "Sum: 999"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bad Include",
+    "prompt_md": "## Goal\nThe program below should read an integer and print its square, but it has a bug related to how header declarations work. Find and fix the bug.\n\n## Input\n- Line 1: one integer `n` (0 ≤ n ≤ 100).\n\n## Output\n- Print exactly one line: `Square: X` where `X` is `n * n`.\n\n## Requirements\n1. The program must compile cleanly.\n2. The output must match `Square: X` exactly.\n3. There is exactly one bug — find and fix it.\n\n## Notes\n- The bug is a logic or declaration error, not a typo in the output string.",
+    "starter_code": "#include <iostream>\n\nint square(int n);\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    return 0;\n}\n\nint square(int n) {\n    return n + n;  // BUG: wrong operation\n}\n",
+    "solution_code": "#include <iostream>\n\nint square(int n);\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << \"Square: \" << square(n) << \"\\n\";\n    return 0;\n}\n\nint square(int n) {\n    return n * n;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=5",
+        "is_sample": true,
+        "stdin": "5\n",
+        "expected_stdout": "Square: 25"
+      },
+      {
+        "label": "Hidden: n=0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Square: 0"
+      },
+      {
+        "label": "Hidden: n=10",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "Square: 100"
+      }
+    ]
+  }
+]

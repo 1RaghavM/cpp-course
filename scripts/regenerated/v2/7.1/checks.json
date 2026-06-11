@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 1 };\n    {\n        int y { 2 };\n        x = x + y;\n    }\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "Inside the inner block, `x` (from the outer block) is modified to `1 + 2 = 3`. The inner variable `y` is destroyed when the inner block ends, but `x` lives in the outer block and retains the updated value. The program prints `3`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In C++, a compound statement (block) is delimited by:\n\n- a. parentheses `()`\n- b. square brackets `[]`\n- c. curly braces `{}`\n- d. angle brackets `<>`",
+    "options": {
+      "a": "parentheses `()`",
+      "b": "square brackets `[]`",
+      "c": "curly braces `{}`",
+      "d": "angle brackets `<>`"
+    },
+    "answer": "c",
+    "explanation_md": "A compound statement in C++ is always enclosed in curly braces `{}`. Parentheses group expressions or enclose conditions; square brackets are used for array subscripts; angle brackets appear in template syntax — none of those delimit a block."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program should print `positive` only when `x > 0`. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { -1 };\n    if (x > 0)\n        std::cout << \"positive\\n\";\n        std::cout << \"done\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The condition `x > 0` is written incorrectly — it should be `x >= 0`.",
+      "b": "Both `std::cout` lines are inside the `if` because indentation controls scope in C++.",
+      "c": "Only the first `std::cout` is the `if` body; the second always runs because there are no braces.",
+      "d": "The missing `return 0` causes the program to crash."
+    },
+    "answer": "c",
+    "explanation_md": "C++ ignores indentation for determining scope. Without curly braces, only the immediately following statement belongs to the `if`. The second `std::cout << \"done\\n\"` is a separate statement that executes unconditionally. Wrapping both outputs in `{}` fixes the bug."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int a { 5 };\n    {\n        int a { 10 };\n        std::cout << a << '\\n';\n    }\n    std::cout << a << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n5",
+    "explanation_md": "The inner block defines its own `a` initialized to 10, which shadows the outer `a` while inside the block. The first `std::cout` prints `10`. Once the inner block closes, the inner `a` is destroyed and the outer `a` (value 5) is visible again, so the second `std::cout` prints `5`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is a local variable defined inside a nested block destroyed?\n\n- a. At the end of the function it is defined in.\n- b. At the end of the block it is defined in.\n- c. When the program reaches the `return` statement.\n- d. Only when the program exits.",
+    "options": {
+      "a": "At the end of the function it is defined in.",
+      "b": "At the end of the block it is defined in.",
+      "c": "When the program reaches the `return` statement.",
+      "d": "Only when the program exits."
+    },
+    "answer": "b",
+    "explanation_md": "A variable's lifetime matches the block it was defined in. When execution reaches the closing `}` of that block, the variable goes out of scope and is destroyed — regardless of where the surrounding function's `return` statement is."
+  }
+]

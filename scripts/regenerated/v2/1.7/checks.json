@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a valid C++ identifier?",
+    "options": {
+      "a": "`2count`",
+      "b": "`user-age`",
+      "c": "`_totalScore`",
+      "d": "`my value`"
+    },
+    "answer": "c",
+    "explanation_md": "`_totalScore` is valid: it starts with an underscore (allowed) and contains only letters and digits after that. `2count` starts with a digit, which is forbidden. `user-age` contains a hyphen, which is not a valid identifier character. `my value` contains a space, which is also forbidden."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int Value = 10;\n    int value = 20;\n    std::cout << Value << ' ' << value << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10 20",
+    "explanation_md": "C++ identifiers are case-sensitive, so `Value` (capital V) and `value` (lowercase v) are two completely separate variables. `Value` holds `10` and `value` holds `20`. The output is `10 20` with a space between them and a newline at the end."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes `int return = 7;`. What happens?",
+    "options": {
+      "a": "The program compiles and `return` holds `7`.",
+      "b": "The program compiles but `return` is always `0`.",
+      "c": "The compiler reports an error because `return` is a keyword.",
+      "d": "The program runs but prints nothing."
+    },
+    "answer": "c",
+    "explanation_md": "`return` is a reserved keyword in C++. It cannot be used as an identifier (variable name, function name, etc.). The compiler immediately rejects the declaration and reports a syntax error such as \"expected unqualified-id before 'return'\"."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which naming convention does the identifier `playerScore` follow?",
+    "options": {
+      "a": "snake_case",
+      "b": "UPPER_CASE",
+      "c": "camelCase",
+      "d": "PascalCase"
+    },
+    "answer": "c",
+    "explanation_md": "`playerScore` is camelCase: the first word is lowercase (`player`) and each subsequent word starts with an uppercase letter (`Score`). snake_case would look like `player_score`. PascalCase (also called UpperCamelCase) would look like `PlayerScore`. UPPER_CASE would be `PLAYER_SCORE`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print? (It compiles without errors.)\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x = 5;\n    int X = 10;\n    std::cout << x + X << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "`x` (lowercase) and `X` (uppercase) are distinct variables because C++ is case-sensitive. `x` is `5` and `X` is `10`, so `x + X` is `15`. The program prints `15` followed by a newline."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Abstract Shape Hierarchy",
+    "prompt_md": "## Goal\nComplete the abstract `Shape` hierarchy so the program prints the correct area for a circle and a rectangle.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nCircle area: 78.54\nRect area: 24.00\n```\n\n## Requirements\n1. Make `area()` in `Shape` a pure virtual function by adding `= 0`.\n2. Implement `Circle::area()` to return `3.14159 * radius_ * radius_`.\n3. Implement `Rect::area()` to return `w_ * h_`.\n4. In `main`, complete the loop to print each label and area using the `shapes` array.\n5. Use `std::fixed` and `std::setprecision(2)` for formatting.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Shape {\npublic:\n    virtual double area() const { return 0.0; }  // TODO: make this pure virtual\n    virtual ~Shape() = default;\n};\n\nclass Circle : public Shape {\n    double radius_;\npublic:\n    Circle(double r) : radius_(r) {}\n    double area() const override { return 0.0; }  // TODO: return 3.14159 * radius_ * radius_\n};\n\nclass Rect : public Shape {\n    double w_, h_;\npublic:\n    Rect(double w, double h) : w_(w), h_(h) {}\n    double area() const override { return 0.0; }  // TODO: return w_ * h_\n};\n\nint main() {\n    Circle c{5.0};\n    Rect r{6.0, 4.0};\n    Shape* shapes[2] = {&c, &r};\n    std::string labels[2] = {\"Circle\", \"Rect\"};\n    std::cout << std::fixed << std::setprecision(2);\n    for (int i = 0; i < 2; ++i) {\n        // TODO: print labels[i] << \" area: \" << shapes[i]->area()\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Shape {\npublic:\n    virtual double area() const = 0;\n    virtual ~Shape() = default;\n};\n\nclass Circle : public Shape {\n    double radius_;\npublic:\n    Circle(double r) : radius_(r) {}\n    double area() const override { return 3.14159 * radius_ * radius_; }\n};\n\nclass Rect : public Shape {\n    double w_, h_;\npublic:\n    Rect(double w, double h) : w_(w), h_(h) {}\n    double area() const override { return w_ * h_; }\n};\n\nint main() {\n    Circle c{5.0};\n    Rect r{6.0, 4.0};\n    Shape* shapes[2] = {&c, &r};\n    std::string labels[2] = {\"Circle\", \"Rect\"};\n    std::cout << std::fixed << std::setprecision(2);\n    for (int i = 0; i < 2; ++i)\n        std::cout << labels[i] << \" area: \" << shapes[i]->area() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: circle and rect",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Circle area: 78.54\nRect area: 24.00"
+      },
+      {
+        "label": "Hidden: same run",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Circle area: 78.54\nRect area: 24.00"
+      },
+      {
+        "label": "Hidden: exact output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Circle area: 78.54\nRect area: 24.00"
+      }
+    ]
+  },
+  {
+    "title": "Polymorphic Speak Bug",
+    "prompt_md": "## Goal\nFix the single logic bug so the program prints the correct sound for each animal via virtual dispatch.\n\n## Input\nNo input.\n\n## Output\nPrint exactly two lines:\n```\nmeow\nbark\n```\n\n## Requirements\n1. `Animal` is an abstract base with `virtual std::string sound() const = 0` and a virtual destructor.\n2. `Cat::sound()` must return `\"meow\"` and `Dog::sound()` must return `\"bark\"`.\n3. The program contains exactly one logic bug that causes wrong output. Find and fix it.\n4. Do not change the class structure or `main`.",
+    "starter_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual std::string sound() const = 0;\n    virtual ~Animal() = default;\n};\n\nclass Cat : public Animal {\npublic:\n    std::string sound() const override { return \"meow\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    std::string sound() const override { return \"meow\"; }  // Bug: wrong return value\n};\n\nvoid speak(const Animal& a) {\n    std::cout << a.sound() << \"\\n\";\n}\n\nint main() {\n    Cat cat;\n    Dog dog;\n    speak(cat);\n    speak(dog);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Animal {\npublic:\n    virtual std::string sound() const = 0;\n    virtual ~Animal() = default;\n};\n\nclass Cat : public Animal {\npublic:\n    std::string sound() const override { return \"meow\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    std::string sound() const override { return \"bark\"; }\n};\n\nvoid speak(const Animal& a) {\n    std::cout << a.sound() << \"\\n\";\n}\n\nint main() {\n    Cat cat;\n    Dog dog;\n    speak(cat);\n    speak(dog);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: cat then dog",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "meow\nbark"
+      },
+      {
+        "label": "Hidden: same output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "meow\nbark"
+      },
+      {
+        "label": "Hidden: exact order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "meow\nbark"
+      }
+    ]
+  }
+]

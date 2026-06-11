@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    const int limit = 10;\n    auto copy = limit;\n    copy = 20;\n    std::cout << limit << ' ' << copy << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10 20",
+    "explanation_md": "`auto copy = limit` deduces `int`, not `const int` — top-level `const` is stripped. So `copy = 20` is legal and modifies only `copy`. `limit` remains 10. Learners who expect a compile error or expect `copy` to remain 10 are applying the rule backwards: `const` on the source does not carry through `auto` deduction."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given:\n```cpp\nint n = 5;\nint& ref = n;\nauto x = ref;\nx = 99;\n```\nWhat is the value of `n` after these lines?",
+    "options": {
+      "a": "99, because x is a reference to n",
+      "b": "5, because auto strips the reference and x is a copy",
+      "c": "Undefined, because x and n alias the same memory",
+      "d": "Compile error: cannot assign to auto-deduced variable"
+    },
+    "answer": "b",
+    "explanation_md": "`auto x = ref` deduces `int` — the reference is stripped — so `x` is an independent copy of `n`. Modifying `x` does not affect `n`. To get an alias, you would need `auto& x = ref;`. Option a is the most common misconception: learners assume that because `ref` is a reference, anything copying from it must also be a reference."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a = 3;\n    auto& r = a;\n    r = 7;\n    std::cout << a << '\\n';\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`auto& r = a` deduces `int&` — the `&` in the declaration forces `r` to be a reference to `a`. Writing `r = 7` modifies `a` directly through the reference. The output is 7. This is the correct way to use `auto` when you want an alias rather than a copy."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `const int* ptr` (a pointer to `const int`), what type does `auto p = ptr` deduce for `p`?",
+    "options": {
+      "a": "`int*` — both the pointer and the const are stripped",
+      "b": "`const int*` — the low-level const on the pointee is preserved",
+      "c": "`const int* const` — both the pointer and the pointee are const",
+      "d": "`int` — auto deduces the value type by following the pointer"
+    },
+    "answer": "b",
+    "explanation_md": "`auto` strips top-level `const` (const on the pointer variable itself) but keeps low-level `const` (const on what the pointer points to). Since `const int*` means the pointer points to a `const int`, the `const int` part is the pointee type — it is low-level and is preserved. The deduced type is `const int*`. Option a is the common error of thinking all `const` is dropped."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below is supposed to alias `value` through `r` and triple it, but `value` ends up unchanged. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int value = 4;\n    auto r = value;   // intended as a reference\n    r = r * 3;\n    std::cout << value << '\\n';\n}\n```",
+    "options": {
+      "a": "`r = r * 3` causes integer overflow",
+      "b": "`auto r = value` deduces `int`, not `int&`, so `r` is a copy and modifying it does not change `value`",
+      "c": "`value` should be declared `const` for `auto` to deduce the reference",
+      "d": "`auto` cannot be used with multiplication on the right-hand side"
+    },
+    "answer": "b",
+    "explanation_md": "`auto r = value` gives `r` the type `int` — a fresh copy — because `auto` strips references. Assigning to `r` has no effect on `value`. The fix is `auto& r = value;` which forces `r` to be an `int&` alias for `value`."
+  }
+]

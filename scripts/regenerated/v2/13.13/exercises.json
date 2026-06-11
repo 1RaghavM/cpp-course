@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Generic Pair sum",
+    "prompt_md": "## Goal\nDefine a class template `Pair<T>` with two members `first` and `second`, then read two integers from input, store them in a `Pair<int>`, and print their sum.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing a single integer: the sum of the two input numbers.\n\n## Requirements\n1. Define `template <typename T> struct Pair { T first; T second; };` at file scope.\n2. In `main`, read two `int` values from `std::cin` into a `Pair<int>` named `p` (so `p.first` is the first number, `p.second` is the second).\n3. Print `p.first + p.second` followed by a newline.\n4. Output must contain only the sum and a trailing newline \u2014 no extra text.\n\n## Notes\nWhen instantiating the template you must write `Pair<int>`, not bare `Pair`.",
+    "starter_code": "#include <iostream>\n\n// TODO: define class template Pair<T> here\n\nint main()\n{\n    // TODO: read two ints into a Pair<int> and print their sum\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Pair\n{\n    T first;\n    T second;\n};\n\nint main()\n{\n    Pair<int> p{};\n    std::cin >> p.first >> p.second;\n    std::cout << p.first + p.second << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "1 2\n",
+        "expected_stdout": "3\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "100 -50\n",
+        "expected_stdout": "50\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "0 0\n",
+        "expected_stdout": "0\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the broken Box template",
+    "prompt_md": "## Goal\nThe program below is supposed to read two integers and print their product. It uses a class template `Box<T>` to wrap each input value, then multiplies the two contents. The program compiles, but the output is wrong because the second `Box` is instantiated with the wrong type, causing one of the inputs to be silently truncated for some inputs. Find the single line related to template instantiation that has the wrong type and fix it.\n\n## Input\nA single line containing two integers separated by a space.\n\n## Output\nOne line containing the product of the two input integers, followed by a newline.\n\n## Requirements\n1. Keep the `template <typename T> struct Box { T value; };` definition exactly as written.\n2. Keep the variable names and the structure of `main`. Only change the type argument on the second `Box`.\n3. After the fix both boxes hold `int` and the product is correct for all valid integer inputs, including ones that would not fit in a `bool` (which is what the current code uses).\n4. The program must compile cleanly under `g++ -std=c++20 -Wall -Wextra`.\n\n## Notes\nThe planted bug is `Box<bool>` where `Box<int>` is intended. `Box<bool>` compiles but converts any non-zero input to `1`, breaking the product for non-trivial inputs.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Box\n{\n    T value;\n};\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    Box<int> first{ a };\n    Box<bool> second{ static_cast<bool>(b) };\n    std::cout << first.value * second.value << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nstruct Box\n{\n    T value;\n};\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n    Box<int> first{ a };\n    Box<int> second{ b };\n    std::cout << first.value * second.value << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "stdin": "3 4\n",
+        "expected_stdout": "12\n",
+        "is_sample": true,
+        "label": "Sample test 1"
+      },
+      {
+        "stdin": "7 6\n",
+        "expected_stdout": "42\n",
+        "is_sample": false,
+        "label": "Hidden test 2"
+      },
+      {
+        "stdin": "10 -5\n",
+        "expected_stdout": "-50\n",
+        "is_sample": false,
+        "label": "Hidden test 3"
+      }
+    ]
+  }
+]

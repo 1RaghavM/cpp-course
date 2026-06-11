@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <int N>\nstruct Repeated {\n    int value{ N * N };\n};\nint main() {\n    Repeated<3> a;\n    Repeated<5> b;\n    std::cout << a.value << \"\\n\" << b.value << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "9\n25",
+    "explanation_md": "`N` is a compile-time constant. `Repeated<3>` sets `value = 3 * 3 = 9`; `Repeated<5>` sets `value = 5 * 5 = 25`. The initializer runs at object construction but uses the template constant."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a valid non-type template argument?",
+    "options": {
+      "a": "A `std::string` variable read from `std::cin`.",
+      "b": "An `int` variable declared at local scope in `main()`.",
+      "c": "An integer literal such as `42`.",
+      "d": "A `double` runtime result from `std::sqrt(2.0)`."
+    },
+    "answer": "c",
+    "explanation_md": "Non-type template arguments must be compile-time constants. Integer literals satisfy this requirement. Local variables, `std::string` objects, and runtime floating-point results do not — they are not known until the program runs."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code should compile and print `3`, but it does not compile. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <typename T, int N>\nclass Ring {\n    T buf_[N]{};\n    int head_{0};\npublic:\n    void insert(const T& v);\n    int capacity() const;\n};\ntemplate <typename T>\nvoid Ring<T>::insert(const T& v) { buf_[head_] = v; head_ = (head_+1) % N; }\ntemplate <typename T>\nint Ring<T>::capacity() const { return N; }\nint main() { Ring<int, 3> r; std::cout << r.capacity(); }\n```",
+    "options": {
+      "a": "`buf_[head_]` accesses a private member, which is not allowed outside the class.",
+      "b": "The out-of-class definitions use `template <typename T>` and `Ring<T>::` instead of `template <typename T, int N>` and `Ring<T, N>::`, omitting the non-type parameter.",
+      "c": "`N` cannot be used in a `return` statement of a member function.",
+      "d": "The class body uses a brace-initializer `{}` on `buf_`, which is not allowed for raw arrays."
+    },
+    "answer": "b",
+    "explanation_md": "The out-of-class definitions drop `int N` from the template parameter list and `N` from the qualifier. Both `template <typename T, int N>` and `Ring<T, N>::` are required. The compiler reports a mismatch between the declaration and the out-of-class definition."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Are `FixedArray<int, 5>` and `FixedArray<int, 10>` the same type?",
+    "options": {
+      "a": "Yes — they share the same type parameter `int`, so they are the same template instantiation.",
+      "b": "No — each unique combination of template arguments produces a distinct type.",
+      "c": "It depends on whether `FixedArray` defines a conversion operator.",
+      "d": "Yes — the non-type parameter is erased at compile time, leaving identical types."
+    },
+    "answer": "b",
+    "explanation_md": "Every unique set of template arguments produces a completely separate type. `FixedArray<int, 5>` and `FixedArray<int, 10>` are as different as `int` and `double`. Non-type parameters are part of the type identity — they are never erased."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T, int N>\nclass Stack {\n    T data_[N]{};\n    int top_{0};\npublic:\n    void push(T v) { if (top_ < N) data_[top_++] = v; }\n    T   top()  const { return data_[top_ - 1]; }\n    int count() const { return top_; }\n};\nint main() {\n    Stack<int, 4> s;\n    s.push(10);\n    s.push(20);\n    s.push(30);\n    std::cout << s.count() << \" \" << s.top() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "3 30",
+    "explanation_md": "Three values are pushed: `top_` increments to 3. `top()` returns `data_[top_ - 1]` = `data_[2]` = 30. The output is `3 30`."
+  }
+]

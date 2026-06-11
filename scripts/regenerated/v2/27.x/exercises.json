@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Exception Chain Through Levels",
+    "prompt_md": "## Goal\nWrite a program that simulates a three-level call chain, throws from the deepest level, and catches in main — printing the depth where the exception originated.\n\n## Input\n- Line 1: integer depth (1, 2, or 3). If depth is 1, throw from `level1`; if 2, throw from `level2`; if 3, throw from `level3`.\n\n## Output\nPrint exactly one line: `caught from level N` where N is the depth read from input.\n\n## Requirements\n1. Define three functions: `level1(int d)`, `level2(int d)`, and `level3(int d)`.\n2. `level1` calls `level2`, `level2` calls `level3`.\n3. Each function throws `std::runtime_error(\"from level N\")` (with its own number) when `d == N`.\n4. In `main`, catch `const std::runtime_error&` and print `caught ` followed by the exception message.\n5. Edge cases: depth 1 throws before calling level2; depth 3 throws at the bottom and unwinds through all levels.",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nvoid level3(int d) {\n    if (d == 3) throw std::runtime_error(\"from level 3\");\n}\n\nvoid level2(int d) {\n    if (d == 2) throw std::runtime_error(\"from level 2\");\n    level3(d);\n}\n\nvoid level1(int d) {\n    if (d == 1) throw std::runtime_error(\"from level 1\");\n    level2(d);\n}\n\nint main() {\n    int d;\n    std::cin >> d;\n    try {\n        level1(d);\n    } catch (const std::runtime_error& e) {\n        // TODO: print \"caught \" followed by e.what()\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nvoid level3(int d) {\n    if (d == 3) throw std::runtime_error(\"from level 3\");\n}\n\nvoid level2(int d) {\n    if (d == 2) throw std::runtime_error(\"from level 2\");\n    level3(d);\n}\n\nvoid level1(int d) {\n    if (d == 1) throw std::runtime_error(\"from level 1\");\n    level2(d);\n}\n\nint main() {\n    int d;\n    std::cin >> d;\n    try {\n        level1(d);\n    } catch (const std::runtime_error& e) {\n        std::cout << \"caught \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: throw from level 2",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "caught from level 2"
+      },
+      {
+        "label": "Hidden: throw from level 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "caught from level 1"
+      },
+      {
+        "label": "Hidden: throw from level 3 unwinds all",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "caught from level 3"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Exception Handler Order",
+    "prompt_md": "## Goal\nThis program has one bug: the catch clauses are in the wrong order, causing the specific handler to be unreachable dead code. Fix it so both handlers can fire correctly.\n\n## Input\n- Line 1: integer selector (1 or 2). Selector 1 throws `std::runtime_error`; selector 2 throws `std::logic_error`.\n\n## Output\nFor selector 1, print `runtime: runtime problem`.\nFor selector 2, print `generic: invalid argument`.\n\n## Requirements\n1. The program contains exactly one bug — the ordering of the two catch clauses.\n2. Fix only the ordering; do not change throw sites, handler bodies, or any other logic.\n3. After the fix: `std::runtime_error` must reach the specific handler; `std::logic_error` must reach the generic handler.\n4. Edge case: selector 2 uses `std::invalid_argument` (which derives from `std::logic_error`, which derives from `std::exception`).",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\nint main() {\n    int sel;\n    std::cin >> sel;\n    try {\n        if (sel == 1)\n            throw std::runtime_error(\"runtime problem\");\n        else\n            throw std::invalid_argument(\"invalid argument\");\n    } catch (const std::exception& e) {        // BUG: too general, placed first\n        std::cout << \"generic: \" << e.what() << \"\\n\";\n    } catch (const std::runtime_error& e) {    // dead code\n        std::cout << \"runtime: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nint main() {\n    int sel;\n    std::cin >> sel;\n    try {\n        if (sel == 1)\n            throw std::runtime_error(\"runtime problem\");\n        else\n            throw std::invalid_argument(\"invalid argument\");\n    } catch (const std::runtime_error& e) {    // specific first\n        std::cout << \"runtime: \" << e.what() << \"\\n\";\n    } catch (const std::exception& e) {        // general second\n        std::cout << \"generic: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: runtime_error hits specific handler",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "runtime: runtime problem"
+      },
+      {
+        "label": "Hidden: logic_error hits generic handler",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "generic: invalid argument"
+      },
+      {
+        "label": "Hidden: runtime again after fix",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "runtime: runtime problem"
+      }
+    ]
+  }
+]

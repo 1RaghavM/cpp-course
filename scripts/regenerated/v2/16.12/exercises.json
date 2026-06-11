@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Set Flags in a bool Vector",
+    "prompt_md": "## Goal\nRead N boolean values (0 or 1) into a `std::vector<bool>`, then print how many are `true`.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20).\n- Line 2: N space-separated integers, each 0 or 1.\n\n## Output\n- Print exactly one line: `True count: X` where X is the number of 1 values.\n\n## Requirements\n1. Use `push_back` to build the vector.\n2. Use a `for` loop with an integer index to count `true` entries — do NOT use `bool&` in the loop (it will not compile).\n3. Hidden tests: all zeros (count = 0) and all ones (count = N).",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<bool> flags;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        flags.push_back(x != 0);\n    }\n\n    int count = 0;\n    // TODO: iterate with an integer index and count the true values\n\n    std::cout << \"True count: \" << count << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<bool> flags;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        flags.push_back(x != 0);\n    }\n\n    int count = 0;\n    for (int i = 0; i < (int)flags.size(); ++i)\n    {\n        if (flags[i])\n            ++count;\n    }\n\n    std::cout << \"True count: \" << count << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed values",
+        "is_sample": true,
+        "stdin": "5\n1 0 1 1 0\n",
+        "expected_stdout": "True count: 3\n"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "4\n0 0 0 0\n",
+        "expected_stdout": "True count: 0\n"
+      },
+      {
+        "label": "Hidden: all ones",
+        "is_sample": false,
+        "stdin": "3\n1 1 1\n",
+        "expected_stdout": "True count: 3\n"
+      }
+    ]
+  },
+  {
+    "title": "Sieve of Eratosthenes Up to N — Complete the Function",
+    "prompt_md": "## Goal\nComplete the function `sieve` that fills a `std::vector<bool>` of size `n+1` to mark prime numbers, then `main` reads N and prints all primes up to N.\n\n## Input\n- Line 1: integer `N` (2 ≤ N ≤ 50).\n\n## Output\n- Print all prime numbers from 2 to N, one per line, in ascending order.\n\n## Requirements\n1. The function signature is `std::vector<bool> sieve(int n)`.\n2. Inside `sieve`: create a `std::vector<bool>` of size `n+1` initialised to `true`, set index 0 and 1 to `false`, then for each `i` from 2 to `n`, if `is_prime[i]` is still `true`, mark all multiples of `i` (starting at `i*i` or `2*i`) as `false`.\n3. `main` calls `sieve(n)` and prints every index where the entry is `true`.\n4. Hidden tests: N=2 (only one prime) and N=30.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\n// TODO: implement sieve\n// Create a vector<bool> of size n+1, all true.\n// Set index 0 and 1 to false.\n// For i from 2 to n: if is_prime[i] is true,\n//   mark all multiples starting from 2*i as false.\n// Return the vector.\nstd::vector<bool> sieve(int n)\n{\n    return std::vector<bool>(n + 1, true); // replace with your implementation\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<bool> is_prime = sieve(n);\n\n    for (int i = 2; i <= n; ++i)\n    {\n        if (is_prime[i])\n            std::cout << i << '\\n';\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nstd::vector<bool> sieve(int n)\n{\n    std::vector<bool> is_prime(n + 1, true);\n    is_prime[0] = false;\n    if (n >= 1) is_prime[1] = false;\n\n    for (int i = 2; i <= n; ++i)\n    {\n        if (is_prime[i])\n        {\n            for (int j = 2 * i; j <= n; j += i)\n                is_prime[j] = false;\n        }\n    }\n\n    return is_prime;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<bool> is_prime = sieve(n);\n\n    for (int i = 2; i <= n; ++i)\n    {\n        if (is_prime[i])\n            std::cout << i << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: primes up to 10",
+        "is_sample": true,
+        "stdin": "10\n",
+        "expected_stdout": "2\n3\n5\n7\n"
+      },
+      {
+        "label": "Hidden: N=2 (single prime)",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "2\n"
+      },
+      {
+        "label": "Hidden: primes up to 30",
+        "is_sample": false,
+        "stdin": "30\n",
+        "expected_stdout": "2\n3\n5\n7\n11\n13\n17\n19\n23\n29\n"
+      }
+    ]
+  }
+]

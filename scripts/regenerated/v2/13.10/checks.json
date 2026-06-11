@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Vec2 {\n    int x{ 0 };\n    int y{ 0 };\n};\n\nvoid scale(Vec2 v, int factor) {\n    v.x *= factor;\n    v.y *= factor;\n    std::cout << v.x << ' ' << v.y << '\\n';\n}\n\nint main() {\n    Vec2 v{ 3, 5 };\n    scale(v, 2);\n    std::cout << v.x << ' ' << v.y << '\\n';\n}\n```",
+    "options": null,
+    "answer": "6 10\n3 5\n",
+    "explanation_md": "`scale` receives a copy of `v`, so changes inside the function do not affect the caller's `v`. The function prints the scaled copy (`6 10`), then `main` prints the original (`3 5`) unchanged."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nstruct Pair {\n    int a{ 1 };\n    int b{ 2 };\n};\n\nPair swap_pair(Pair p) {\n    return Pair{ p.b, p.a };\n}\n\nint main() {\n    Pair original{ 10, 20 };\n    Pair swapped{ swap_pair(original) };\n    std::cout << swapped.a << ' ' << swapped.b << '\\n';\n    std::cout << original.a << ' ' << original.b << '\\n';\n}\n```",
+    "options": null,
+    "answer": "20 10\n10 20\n",
+    "explanation_md": "`swap_pair` returns a new `Pair` with `a` and `b` exchanged. The original is passed by value, so it is unmodified. `swapped` holds the returned struct with the fields reversed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer passing a struct by `const` reference rather than by value?",
+    "options": {
+      "a": "When the function needs to modify the struct and have the caller see the changes.",
+      "b": "When the function only reads the struct and you want to avoid copying every field.",
+      "c": "When the struct has no default member initializers.",
+      "d": "When you need the function to have its own independent copy to work with."
+    },
+    "answer": "b",
+    "explanation_md": "`const` reference avoids copying all the struct's fields while still preventing the function from modifying the caller's data. Option `a` describes a non-const reference. Option `d` describes pass-by-value. Default member initializers (option `c`) are unrelated to how you pass the struct."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants `reset` to set the caller's counter back to zero. Spot the bug.\n\n```cpp\n#include <iostream>\n\nstruct Counter {\n    int count{ 0 };\n};\n\nvoid reset(Counter c) {\n    c.count = 0;\n}\n\nint main() {\n    Counter c{ .count = 42 };\n    reset(c);\n    std::cout << c.count << '\\n'; // expected 0\n}\n```",
+    "options": {
+      "a": "`Counter` cannot be passed to a function.",
+      "b": "`reset` takes `c` by value, so the change does not affect the caller's struct.",
+      "c": "`c.count = 0` inside `reset` causes a compile error because `count` has a default initializer.",
+      "d": "Designated initialization `{ .count = 42 }` is not valid in C++20."
+    },
+    "answer": "b",
+    "explanation_md": "`reset` takes `Counter` by value, meaning it operates on a local copy. Setting `c.count = 0` in the copy has no effect on the caller's object. The fix is to change the parameter to `Counter& c` (non-const reference) so the function modifies the original."
+  }
+]

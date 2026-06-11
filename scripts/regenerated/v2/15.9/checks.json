@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Safe {\n    int m_code{ 7 };\n    friend class Inspector;\n};\n\nclass Inspector {\npublic:\n    void reveal(const Safe& s) {\n        std::cout << s.m_code << \"\\n\";\n    }\n};\n\nint main() {\n    Safe s;\n    Inspector i;\n    i.reveal(s);\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`Inspector` is declared a friend of `Safe`, so all of `Inspector`'s member functions can access `Safe`'s private members. `reveal` reads `s.m_code` which was initialized to 7. The output is `7`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Class `A` declares `friend class B;` inside its body. Which statement is true?",
+    "options": {
+      "a": "`A` can now access private members of `B`, and `B` can access private members of `A`.",
+      "b": "`B` can access private members of `A`, but `A` cannot access private members of `B`.",
+      "c": "All classes that inherit from `B` can also access `A`'s private members.",
+      "d": "Any member function in `A` can now access private members of `B` through a `B` object."
+    },
+    "answer": "b",
+    "explanation_md": "Friendship is one-directional and non-inherited. Declaring `friend class B` inside `A` grants `B` access to `A`'s private members — not the other way around. `A` does not automatically get access to `B`'s private members. Classes derived from `B` do not inherit the friendship — they would have to be separately declared friends of `A`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You want to grant only one specific function `void Printer::print(const Doc&)` access to `Doc`'s private members, rather than granting all of `Printer` access. What should you write inside `Doc`'s class body?",
+    "options": {
+      "a": "`friend class Printer;`",
+      "b": "`friend void Printer::print(const Doc&);`",
+      "c": "`friend print;`",
+      "d": "`friend void print(const Doc&);`"
+    },
+    "answer": "b",
+    "explanation_md": "To grant access to a single member function of another class, use the fully qualified name of that member function in the `friend` declaration: `friend void Printer::print(const Doc&);`. Option (a) would grant all of `Printer`'s functions access, which is broader than desired. Option (d) would declare a standalone (non-member) free function `print` as a friend, not `Printer`'s member function."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the secret value, but it does not compile. What is wrong?\n\n```cpp\n#include <iostream>\n\nclass Chest {\n    int m_treasure{ 99 };\n};\n\nclass Explorer {\npublic:\n    void loot(const Chest& c) {\n        std::cout << c.m_treasure << \"\\n\";\n    }\n};\n\nint main() {\n    Chest c;\n    Explorer e;\n    e.loot(c);\n}\n```",
+    "options": {
+      "a": "`Explorer::loot` is `const` but modifies `c` through `m_treasure`.",
+      "b": "`Chest` never declared `Explorer` (or `Explorer::loot`) as a friend, so `loot` cannot access `m_treasure`.",
+      "c": "`m_treasure` must be in a `public:` section for any function to access it.",
+      "d": "You cannot pass a class object to a free function by reference."
+    },
+    "answer": "b",
+    "explanation_md": "`m_treasure` is private in `Chest`. For `Explorer::loot` to access it, `Chest` must declare either `friend class Explorer;` or `friend void Explorer::loot(const Chest&);` inside its class body. Without that declaration, `loot` is an outsider and the access is a compile error. Option (c) is technically true but overly broad — making it `public` would fix the compile error but breaks encapsulation; the proper fix is `friend`."
+  }
+]

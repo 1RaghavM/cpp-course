@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Recursive Power Function",
+    "prompt_md": "## Goal\nWrite a program that reads a base and exponent, then computes `base^exponent` recursively and prints the result.\n\n## Input\n- Line 1: two space-separated integers `base` and `exp` (0 <= exp <= 10, -100 <= base <= 100)\n\n## Output\nPrint exactly one line: the integer value of `base` raised to the power `exp`.\n\n## Requirements\n1. Implement `int power(int base, int exp)` recursively.\n2. Base case: `exp == 0` returns 1.\n3. Recursive case: returns `base * power(base, exp - 1)`.\n4. Read the two values from stdin and print `power(base, exp)`.\n",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function recursively\nint power(int base, int exp) {\n    return 0; // replace this\n}\n\nint main() {\n    int base, exp;\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint power(int base, int exp) {\n    if (exp == 0) return 1;\n    return base * power(base, exp - 1);\n}\n\nint main() {\n    int base, exp;\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 2^8",
+        "is_sample": true,
+        "stdin": "2 8\n",
+        "expected_stdout": "256"
+      },
+      {
+        "label": "Hidden: anything to the 0",
+        "is_sample": false,
+        "stdin": "5 0\n",
+        "expected_stdout": "1"
+      },
+      {
+        "label": "Hidden: 3^4",
+        "is_sample": false,
+        "stdin": "3 4\n",
+        "expected_stdout": "81"
+      }
+    ]
+  },
+  {
+    "title": "Recursive Digit Sum Bug",
+    "prompt_md": "## Goal\nFind and fix the bug in this program that computes the digit sum of a non-negative integer recursively.\n\n## Input\n- Line 1: a non-negative integer N (0 <= N <= 1000000)\n\n## Output\nPrint exactly one line: the sum of the decimal digits of N.\n\n## Requirements\n1. `digitSum(0)` should return 0.\n2. `digitSum(n)` for n > 0 should return `(n % 10) + digitSum(n / 10)`.\n3. The program compiles and runs, but produces wrong output.\n4. The fix is a one-line logic change.\n",
+    "starter_code": "#include <iostream>\n\nint digitSum(int n) {\n    if (n == 0) return 1;   // bug: wrong base case return value\n    return (n % 10) + digitSum(n / 10);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << digitSum(n) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint digitSum(int n) {\n    if (n == 0) return 0;\n    return (n % 10) + digitSum(n / 10);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << digitSum(n) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 123",
+        "is_sample": true,
+        "stdin": "123\n",
+        "expected_stdout": "6"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: 9999",
+        "is_sample": false,
+        "stdin": "9999\n",
+        "expected_stdout": "36"
+      }
+    ]
+  }
+]

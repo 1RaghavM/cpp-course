@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x = 5;\n    int* p = &x;\n    *p = 20;\n    std::cout << x << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`p` holds the address of `x`. Assigning `*p = 20` dereferences `p` and writes 20 directly into `x`. When `std::cout << x` runs, `x` is already 20, not 5."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a = 3;\n    int b = 7;\n    int* p = &a;\n    p = &b;\n    std::cout << *p << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`p` starts pointing to `a` (value 3). Then `p = &b` reassigns the pointer — it now points to `b`. Dereferencing `*p` gives the value stored at `b`, which is 7. Unlike references, pointers can be reseated to point to different objects."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In the expression `int* p = &x;`, what does the `&` operator do?",
+    "options": {
+      "a": "Declares `x` as a reference",
+      "b": "Returns the memory address of `x`",
+      "c": "Dereferences the pointer to get `x`'s value",
+      "d": "Creates a copy of `x` and stores it in `p`"
+    },
+    "answer": "b",
+    "explanation_md": "When `&` appears in an expression (not in a type declaration), it is the address-of operator. `&x` produces the memory address where `x` is stored, which is then assigned to the pointer `p`. It does not dereference anything or make a copy."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer expects to print 99, but the program has undefined behavior. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int* p;\n    *p = 99;\n    std::cout << *p << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`int*` must be initialized with `new int` before use",
+      "b": "`p` is uninitialized — it holds a garbage address, so `*p = 99` writes to an unknown memory location",
+      "c": "You cannot print a dereferenced pointer with `std::cout`",
+      "d": "The type should be `int& p` instead of `int* p`"
+    },
+    "answer": "b",
+    "explanation_md": "An uninitialized pointer holds whatever random bits are in memory at that location. Dereferencing it (`*p = 99`) attempts to write to whatever address those bits happen to encode — this is undefined behavior and typically causes a crash. Always initialize a pointer to `nullptr` or to the address of a valid variable before dereferencing."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between an lvalue reference (`int& r = x`) and a pointer (`int* p = &x`)?",
+    "options": {
+      "a": "A reference stores the address; a pointer stores the value",
+      "b": "A reference can be rebound to a different variable; a pointer cannot",
+      "c": "A pointer can be reassigned to point to a different object; a reference is permanently bound to its initial object",
+      "d": "Dereferencing a reference requires `*r`; dereferencing a pointer requires just `p`"
+    },
+    "answer": "c",
+    "explanation_md": "Once a reference is initialized to a variable, it is permanently bound to that variable for its entire lifetime — you cannot reseat it. A pointer is just a variable holding an address; you can assign a new address to it at any time (`p = &y`). Dereferencing a pointer uses `*p`; using a reference is transparent and requires no special syntax."
+  }
+]

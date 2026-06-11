@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Celsius to Fahrenheit with constexpr Constants",
+    "prompt_md": "## Goal\nWrite a program that converts a Celsius temperature to Fahrenheit using `constexpr` constants for the conversion factors.\n\n## Input\nLine 1: an integer Celsius temperature (range: -100 to 1000).\n\n## Output\nPrint exactly one line: `F: X` where X is the Fahrenheit value as an integer (truncate, do not round).\nExample: `F: 32` for input `0`.\n\n## Requirements\n1. Declare `constexpr int FACTOR{ 9 }` and `constexpr int DIVISOR{ 5 }` and `constexpr int OFFSET{ 32 }` as named constants.\n2. Read the integer Celsius value from stdin into a `const int celsius`.\n3. Compute Fahrenheit as `celsius * FACTOR / DIVISOR + OFFSET` using integer arithmetic.\n4. Print `F: ` (capital F, colon, space) followed by the integer result.\n5. No floating-point arithmetic.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare constexpr int FACTOR, DIVISOR, OFFSET\n    // TODO: read celsius from stdin into const int\n    // TODO: compute fahrenheit using integer arithmetic\n    // TODO: print \"F: \" followed by the result\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    constexpr int FACTOR{ 9 };\n    constexpr int DIVISOR{ 5 };\n    constexpr int OFFSET{ 32 };\n    int raw{};\n    std::cin >> raw;\n    const int celsius{ raw };\n    int fahrenheit{ celsius * FACTOR / DIVISOR + OFFSET };\n    std::cout << \"F: \" << fahrenheit << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: freezing point",
+        "is_sample": true,
+        "stdin": "0\n",
+        "expected_stdout": "F: 32"
+      },
+      {
+        "label": "Hidden: boiling point",
+        "is_sample": false,
+        "stdin": "100\n",
+        "expected_stdout": "F: 212"
+      },
+      {
+        "label": "Hidden: negative temperature",
+        "is_sample": false,
+        "stdin": "-40\n",
+        "expected_stdout": "F: -40"
+      }
+    ]
+  },
+  {
+    "title": "String Classifier",
+    "prompt_md": "## Goal\nComplete the function `std::string_view classify(std::string_view word)` that returns a `std::string_view` identifying what kind of word was given.\n\n## Input\nLine 1: a single word, at most 50 characters, no spaces.\n\n## Output\nPrint exactly one line: the classification string.\n\n## Requirements\n1. Implement `classify` so it returns:\n   - `\"greeting\"` if the word starts with `\"hello\"` (case-sensitive)\n   - `\"farewell\"` if the word starts with `\"bye\"`\n   - `\"unknown\"` otherwise\n2. `main` reads one word from stdin into a `std::string`, then calls `classify` and prints the returned `string_view`.\n3. The returned `string_view` must refer to a string literal (not a local variable), so it is always safe to use.\n4. Use `std::string_view::starts_with` for the checks.\n\n## Notes\n- Return string literals directly; they have static storage duration and are always valid.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\n// TODO: implement classify\n// Returns \"greeting\", \"farewell\", or \"unknown\" based on starts_with checks.\nstd::string_view classify(std::string_view word) {\n    return \"unknown\"; // TODO: fix this\n}\n\nint main() {\n    std::string word{};\n    std::cin >> word;\n    std::cout << classify(word) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nstd::string_view classify(std::string_view word) {\n    if (word.starts_with(\"hello\"))\n        return \"greeting\";\n    if (word.starts_with(\"bye\"))\n        return \"farewell\";\n    return \"unknown\";\n}\n\nint main() {\n    std::string word{};\n    std::cin >> word;\n    std::cout << classify(word) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: greeting",
+        "is_sample": true,
+        "stdin": "hello\n",
+        "expected_stdout": "greeting"
+      },
+      {
+        "label": "Hidden: farewell",
+        "is_sample": false,
+        "stdin": "bye\n",
+        "expected_stdout": "farewell"
+      },
+      {
+        "label": "Hidden: unknown word",
+        "is_sample": false,
+        "stdin": "morning\n",
+        "expected_stdout": "unknown"
+      }
+    ]
+  }
+]

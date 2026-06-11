@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << \"A\\n\";\n    std::cout << \"B\\n\";\n    std::cout << \"C\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\nB\nC",
+    "explanation_md": "Statements execute top to bottom in the order they appear. `\"A\\n\"` is printed first, then `\"B\\n\"`, then `\"C\\n\"`. Each `\\n` moves the cursor to the next line, so each letter appears on its own line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which line below is a **statement** in C++?",
+    "options": {
+      "a": "`#include <iostream>`",
+      "b": "`int main()`",
+      "c": "`std::cout << \"Hello\\n\";`",
+      "d": "`}`"
+    },
+    "answer": "c",
+    "explanation_md": "A statement is an instruction that ends with a semicolon and performs an action at runtime. `#include` is a preprocessor directive (no semicolon, no runtime action), `int main()` is a function header, and `}` is a brace. Only `std::cout << \"Hello\\n\";` is a statement."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes:\n\n```cpp\nint main()\n{\n    return 0;\n}\n```\n\nThe program compiles and runs. What does `return 0;` communicate to the operating system?",
+    "options": {
+      "a": "The program printed zero lines of output.",
+      "b": "The program finished successfully (no errors).",
+      "c": "The program ran for zero seconds.",
+      "d": "The value 0 is stored in memory for later use."
+    },
+    "answer": "b",
+    "explanation_md": "By convention, returning 0 from `main` signals successful completion to the operating system. A non-zero return value signals an error. It has nothing to do with output, timing, or memory."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << \"Hello\\n\"\n    return 0;\n}\n```",
+    "options": {
+      "a": "`#include <iostream>` should be inside `main()`.",
+      "b": "The string `\"Hello\\n\"` is not valid C++.",
+      "c": "The `std::cout` statement is missing its terminating semicolon.",
+      "d": "`return 0` should be `return 1` to signal success."
+    },
+    "answer": "c",
+    "explanation_md": "Every statement must end with a semicolon. The line `std::cout << \"Hello\\n\"` is missing the `;`, so the compiler tries to merge it with `return 0;` and reports a syntax error. `#include` directives belong at the top (not inside `main`), and `return 0` correctly signals success."
+  }
+]

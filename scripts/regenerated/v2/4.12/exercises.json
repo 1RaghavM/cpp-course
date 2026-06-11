@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Integer vs Floating-Point Division Comparison",
+    "prompt_md": "## Goal\nRead two positive integers and print both the integer division result and the true floating-point division result on separate lines.\n\n## Input\n- Line 1: integer `a` (1 to 1000)\n- Line 2: integer `b` (1 to 1000, non-zero)\n\n## Output\n- Line 1: `Integer: ` followed by the result of integer division `a / b`\n- Line 2: `Float: ` followed by the result of floating-point division, printed with 2 decimal places\n\n## Requirements\n1. Compute integer division using plain `a / b` (both `int`).\n2. Compute floating-point division by casting `a` to `double` with `static_cast<double>` before dividing.\n3. Use `std::fixed` and `std::setprecision(2)` to print the float result with exactly 2 decimal places.\n4. No if/else needed.\n\n## Notes\n- `#include <iomanip>` for `std::setprecision`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int    intResult   { a / b };\n    // TODO: compute floatResult using static_cast<double> on a before dividing\n    double floatResult { 0.0 };\n\n    std::cout << \"Integer: \" << intResult << '\\n';\n    std::cout << \"Float: \"   << std::fixed << std::setprecision(2) << floatResult << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main()\n{\n    int a {};\n    int b {};\n    std::cin >> a >> b;\n\n    int    intResult   { a / b };\n    double floatResult { static_cast<double>(a) / b };\n\n    std::cout << \"Integer: \" << intResult << '\\n';\n    std::cout << \"Float: \"   << std::fixed << std::setprecision(2) << floatResult << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 7 / 2",
+        "is_sample": true,
+        "stdin": "7\n2\n",
+        "expected_stdout": "Integer: 3\nFloat: 3.50"
+      },
+      {
+        "label": "Hidden: exact division",
+        "is_sample": false,
+        "stdin": "10\n5\n",
+        "expected_stdout": "Integer: 2\nFloat: 2.00"
+      },
+      {
+        "label": "Hidden: 1 / 4",
+        "is_sample": false,
+        "stdin": "1\n4\n",
+        "expected_stdout": "Integer: 0\nFloat: 0.25"
+      }
+    ]
+  },
+  {
+    "title": "ASCII Value Converter",
+    "prompt_md": "## Goal\nComplete the function `charToCode` that takes a `char` and returns its integer ASCII value using `static_cast`.\n\n## Input\n- Line 1: one non-whitespace character.\n\n## Output\n- Line 1: `Char: ` followed by the character itself\n- Line 2: `Code: ` followed by its ASCII integer value\n\n## Requirements\n1. Complete the function with this exact signature: `int charToCode(char c)`\n2. The function must return `static_cast<int>(c)`.\n3. `main()` reads one char, prints the char on line 1, calls `charToCode` and prints the result on line 2.\n\n## Notes\n- Use `std::cin >> c` to read the character (this skips whitespace).",
+    "starter_code": "#include <iostream>\n\nint charToCode(char c)\n{\n    // TODO: return the integer ASCII value of c using static_cast\n    return 0;  // stub\n}\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n    std::cout << \"Char: \" << c << '\\n';\n    std::cout << \"Code: \" << charToCode(c) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint charToCode(char c)\n{\n    return static_cast<int>(c);\n}\n\nint main()\n{\n    char c {};\n    std::cin >> c;\n    std::cout << \"Char: \" << c << '\\n';\n    std::cout << \"Code: \" << charToCode(c) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: letter A",
+        "is_sample": true,
+        "stdin": "A\n",
+        "expected_stdout": "Char: A\nCode: 65"
+      },
+      {
+        "label": "Hidden: lowercase z",
+        "is_sample": false,
+        "stdin": "z\n",
+        "expected_stdout": "Char: z\nCode: 122"
+      },
+      {
+        "label": "Hidden: digit 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Char: 0\nCode: 48"
+      }
+    ]
+  }
+]

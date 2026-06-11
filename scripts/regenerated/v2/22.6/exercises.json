@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Track Shared Pointer Reference Count",
+    "prompt_md": "## Goal\nWrite a program that creates a `shared_ptr<int>`, copies it N times, then resets each copy one by one while printing the use count after each reset.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 4), the number of copies to make.\n\n## Output\n- Print N+1 lines. The first line is the initial use count (N+1, counting the original). Then for each reset print the new use count.\n- Format: `Count: X` on each line.\n\n## Requirements\n1. Use `std::make_shared<int>(0)` to create the original pointer.\n2. Store N copies in an array `std::shared_ptr<int> copies[4]`.\n3. Print `Count: ` then the use count of the original after creating all copies.\n4. Reset copies[0], copies[1], ... copies[N-1] one at a time; after each reset print the use count of the original.\n5. Edge: N=1 → prints `Count: 2` then `Count: 1`.\n",
+    "starter_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    auto original = std::make_shared<int>(0);\n    std::shared_ptr<int> copies[4];\n\n    // TODO: fill copies[0..n-1] with copies of original\n    for (int i = 0; i < n; ++i) {\n        copies[i] = original; // this is correct — keep it\n    }\n\n    // TODO: print the use count\n    std::cout << \"Count: \" << original.use_count() << \"\\n\";\n\n    // TODO: reset each copy and print the use count after each reset\n    for (int i = 0; i < n; ++i) {\n        copies[i].reset();\n        std::cout << \"Count: \" << original.use_count() << \"\\n\";\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    auto original = std::make_shared<int>(0);\n    std::shared_ptr<int> copies[4];\n\n    for (int i = 0; i < n; ++i) {\n        copies[i] = original;\n    }\n\n    std::cout << \"Count: \" << original.use_count() << \"\\n\";\n\n    for (int i = 0; i < n; ++i) {\n        copies[i].reset();\n        std::cout << \"Count: \" << original.use_count() << \"\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 copies",
+        "is_sample": true,
+        "stdin": "3\n",
+        "expected_stdout": "Count: 4\nCount: 3\nCount: 2\nCount: 1"
+      },
+      {
+        "label": "Hidden: 1 copy",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Count: 2\nCount: 1"
+      },
+      {
+        "label": "Hidden: 4 copies",
+        "is_sample": false,
+        "stdin": "4\n",
+        "expected_stdout": "Count: 5\nCount: 4\nCount: 3\nCount: 2\nCount: 1"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Resource Sharing Function",
+    "prompt_md": "## Goal\nComplete the function `share_resource` that accepts a `shared_ptr<int>` by value, prints the current use count, and returns the pointer so the caller can continue using it.\n\n## Input\n- Line 1: integer V (the value stored).\n- Line 2: integer N (1 ≤ N ≤ 3), number of times to call `share_resource`.\n\n## Output\nFor each call print one line: `Inside: C` where C is the use count inside the function (should be 2 because the call created a copy). Then after all calls print `Final: V` where V is the stored value.\n\n## Requirements\n1. Implement `std::shared_ptr<int> share_resource(std::shared_ptr<int> p)` that prints `Inside: ` then `p.use_count()`, then returns `p`.\n2. In `main`, create the initial `shared_ptr` with `make_shared<int>(V)`, call `share_resource` N times, and print `Final: ` + the value.\n3. Inside each call the use count must be exactly 2 (the original + the copy parameter).\n",
+    "starter_code": "#include <iostream>\n#include <memory>\n\n// TODO: implement share_resource\nstd::shared_ptr<int> share_resource(std::shared_ptr<int> p) {\n    // TODO: print \"Inside: \" then p.use_count()\n    // TODO: return p\n    return p;\n}\n\nint main() {\n    int v, n;\n    std::cin >> v >> n;\n    auto resource = std::make_shared<int>(v);\n    for (int i = 0; i < n; ++i) {\n        resource = share_resource(resource);\n    }\n    std::cout << \"Final: \" << *resource << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nstd::shared_ptr<int> share_resource(std::shared_ptr<int> p) {\n    std::cout << \"Inside: \" << p.use_count() << \"\\n\";\n    return p;\n}\n\nint main() {\n    int v, n;\n    std::cin >> v >> n;\n    auto resource = std::make_shared<int>(v);\n    for (int i = 0; i < n; ++i) {\n        resource = share_resource(resource);\n    }\n    std::cout << \"Final: \" << *resource << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value 7, 2 calls",
+        "is_sample": true,
+        "stdin": "7 2\n",
+        "expected_stdout": "Inside: 2\nInside: 2\nFinal: 7"
+      },
+      {
+        "label": "Hidden: value 0, 1 call",
+        "is_sample": false,
+        "stdin": "0 1\n",
+        "expected_stdout": "Inside: 2\nFinal: 0"
+      },
+      {
+        "label": "Hidden: value 99, 3 calls",
+        "is_sample": false,
+        "stdin": "99 3\n",
+        "expected_stdout": "Inside: 2\nInside: 2\nInside: 2\nFinal: 99"
+      }
+    ]
+  }
+]

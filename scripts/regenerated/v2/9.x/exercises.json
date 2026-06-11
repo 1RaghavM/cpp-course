@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Integer Division with Validation",
+    "prompt_md": "## Goal\nWrite a program that reads two integers from stdin and prints their integer quotient, or an error message if the denominator is zero.\n\n## Input\n- Line 1: integer `a` (the numerator).\n- Line 2: integer `b` (the denominator).\n\n## Output\n- If `b` is not zero: print exactly one line `Result: N` where `N` is the integer result of `a / b` (truncated toward zero, as C++ integer division performs).\n- If `b` is zero: print exactly one line `Error: division by zero`.\n\n## Requirements\n1. Read both integers with `std::cin`.\n2. Check whether `b == 0` before dividing.\n3. Print exactly the format shown above — `Result: ` (capital R, colon, space) or `Error: division by zero` (capital E, colon, space, no period).\n4. Do not call `assert` for the zero-denominator case; this is an expected runtime condition, not a programmer invariant.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n\n    // TODO: check if b is zero and print the appropriate message\n    // If b != 0, print \"Result: \" followed by the integer quotient\n    // If b == 0, print \"Error: division by zero\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a, b;\n    std::cin >> a >> b;\n\n    if (b == 0)\n    {\n        std::cout << \"Error: division by zero\\n\";\n    }\n    else\n    {\n        std::cout << \"Result: \" << a / b << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal division",
+        "is_sample": true,
+        "stdin": "10\n2\n",
+        "expected_stdout": "Result: 5"
+      },
+      {
+        "label": "Hidden: zero denominator",
+        "is_sample": false,
+        "stdin": "7\n0\n",
+        "expected_stdout": "Error: division by zero"
+      },
+      {
+        "label": "Hidden: negative result",
+        "is_sample": false,
+        "stdin": "-15\n4\n",
+        "expected_stdout": "Result: -3"
+      }
+    ]
+  },
+  {
+    "title": "Assertion-Guarded Percentage Calculator",
+    "prompt_md": "## Goal\nA `percentage` function is provided. It contains one planted logic bug. Find and fix the bug so it computes a percentage correctly.\n\n## Input\n- Line 1: integer `part`.\n- Line 2: integer `total`.\n\n## Output\n- Print exactly one line: `Percentage: P` where `P` is the integer percentage of `part` out of `total` (use integer division, which truncates).\n- Example: `part = 3`, `total = 4` → `Percentage: 75`.\n\n## Requirements\n1. The program reads `part` and `total` from stdin.\n2. The `percentage` function is given; it contains exactly one logic bug.\n3. `assert(total > 0)` is already in the function — do not remove it.\n4. The printed integer must match the expected value exactly.\n5. Do not change the function signature.\n\n## Notes\n- The bug causes wrong output for most inputs.",
+    "starter_code": "#include <iostream>\n#include <cassert>\n\nint percentage(int part, int total)\n{\n    assert(total > 0);\n    return part / 100 * total;  // BUG: wrong formula\n}\n\nint main()\n{\n    int part, total;\n    std::cin >> part >> total;\n    std::cout << \"Percentage: \" << percentage(part, total) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cassert>\n\nint percentage(int part, int total)\n{\n    assert(total > 0);\n    return part * 100 / total;\n}\n\nint main()\n{\n    int part, total;\n    std::cin >> part >> total;\n    std::cout << \"Percentage: \" << percentage(part, total) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 out of 4",
+        "is_sample": true,
+        "stdin": "3\n4\n",
+        "expected_stdout": "Percentage: 75"
+      },
+      {
+        "label": "Hidden: 1 out of 5",
+        "is_sample": false,
+        "stdin": "1\n5\n",
+        "expected_stdout": "Percentage: 20"
+      },
+      {
+        "label": "Hidden: 7 out of 10",
+        "is_sample": false,
+        "stdin": "7\n10\n",
+        "expected_stdout": "Percentage: 70"
+      }
+    ]
+  }
+]

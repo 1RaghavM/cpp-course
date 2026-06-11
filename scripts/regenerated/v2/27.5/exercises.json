@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Custom Exception with Error Code",
+    "prompt_md": "## Goal\nWrite a program that defines a custom `FileError` exception class carrying an error code, throws it from a function, and catches it by both its own type and its base type.\n\n## Input\n- Line 1: integer code (1 = throw FileError, 2 = throw std::runtime_error, 3 = no throw)\n\n## Output\n- Code 1: catch `const FileError&` prints `FileError 404: file not found`\n- Code 2: catch `const std::runtime_error&` (base) prints `runtime: generic error`\n- Code 3: prints `ok`\n\n## Requirements\n1. Define `class FileError : public std::runtime_error` with `int error_code` member and a constructor `FileError(const std::string& msg, int code)`.\n2. Implement `void trigger(int code)` that throws per spec.\n3. In `main`'s try block, catch `const FileError&` first, then `const std::runtime_error&`.\n4. `FileError` catch prints: `FileError <code>: <message>`.\n5. `std::runtime_error` catch prints: `runtime: <message>`.\n6. No exception: print `ok`.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\n// TODO: define class FileError : public std::runtime_error\n// - int error_code member\n// - constructor FileError(const std::string& msg, int code)\n\n// TODO: implement trigger(int code)\n// code 1: throw FileError(\"file not found\", 404)\n// code 2: throw std::runtime_error(\"generic error\")\n// code 3: do nothing\nvoid trigger(int code) {\n}\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    // TODO: call trigger in a try block\n    // catch FileError first: print FileError <code>: <message>\n    // catch std::runtime_error: print runtime: <message>\n    // no exception: print ok\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nclass FileError : public std::runtime_error {\npublic:\n    int error_code;\n    FileError(const std::string& msg, int code)\n        : std::runtime_error(msg), error_code(code) {}\n};\n\nvoid trigger(int code) {\n    if (code == 1) throw FileError(\"file not found\", 404);\n    if (code == 2) throw std::runtime_error(\"generic error\");\n}\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    try {\n        trigger(code);\n        std::cout << \"ok\\n\";\n    } catch (const FileError& e) {\n        std::cout << \"FileError \" << e.error_code << \": \" << e.what() << \"\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"runtime: \" << e.what() << \"\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: FileError",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "FileError 404: file not found\n"
+      },
+      {
+        "label": "Hidden: runtime_error",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "runtime: generic error\n"
+      },
+      {
+        "label": "Hidden: no exception",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "ok\n"
+      }
+    ]
+  },
+  {
+    "title": "Hierarchy Catch Order Bug",
+    "prompt_md": "## Goal\nThis program defines `SpecificError` derived from `std::runtime_error` and intends to print `specific: 7` when it catches `SpecificError`. But it always prints `base error` instead. Find and fix the bug.\n\n## Input\n- No input\n\n## Output\n```\nspecific: 7\n```\n\n## Requirements\n1. The bug is a catch ordering mistake — the base catch fires before the derived catch.\n2. Fix only the catch ordering in `main`; do not change the class or the throw.\n3. Do not add any new lines of code beyond reordering.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nclass SpecificError : public std::runtime_error {\npublic:\n    int value;\n    SpecificError(int v)\n        : std::runtime_error(\"specific error\"), value(v) {}\n};\n\nint main() {\n    try {\n        throw SpecificError(7);\n    } catch (const std::runtime_error& e) {  // BUG: fires first, SpecificError never reached\n        std::cout << \"base error\\n\";\n    } catch (const SpecificError& e) {\n        std::cout << \"specific: \" << e.value << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nclass SpecificError : public std::runtime_error {\npublic:\n    int value;\n    SpecificError(int v)\n        : std::runtime_error(\"specific error\"), value(v) {}\n};\n\nint main() {\n    try {\n        throw SpecificError(7);\n    } catch (const SpecificError& e) {\n        std::cout << \"specific: \" << e.value << \"\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"base error\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: derived catch fires",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "specific: 7\n"
+      },
+      {
+        "label": "Hidden: same (deterministic)",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "specific: 7\n"
+      },
+      {
+        "label": "Hidden: verify output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "specific: 7\n"
+      }
+    ]
+  }
+]

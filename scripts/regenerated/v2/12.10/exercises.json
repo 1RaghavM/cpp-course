@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Triple a Value via Pointer",
+    "prompt_md": "## Goal\nWrite a program that reads an integer, triples it using a helper function that takes a pointer, and prints the result.\n\n## Input\nLine 1: integer `n` (-1000 ≤ n ≤ 1000).\n\n## Output\nPrint exactly one line: `Result: <tripled_value>`\n\n## Requirements\n1. Implement `void triple(int* ptr)` that multiplies the value at `*ptr` by 3 in-place.\n2. Read `n` in `main`, call `triple(&n)`, then print the result.\n3. For input `4`, output must be `Result: 12`.\n4. For input `0`, output must be `Result: 0`.\n5. For input `-5`, output must be `Result: -15`.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement triple(int* ptr)\n// The function must multiply the value at *ptr by 3 in-place.\nvoid triple(int* ptr) {\n    // TODO\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n    triple(&n);\n    std::cout << \"Result: \" << n << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid triple(int* ptr) {\n    *ptr *= 3;\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n    triple(&n);\n    std::cout << \"Result: \" << n << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4",
+        "is_sample": true,
+        "stdin": "4\n",
+        "expected_stdout": "Result: 12"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Result: 0"
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-5\n",
+        "expected_stdout": "Result: -15"
+      }
+    ]
+  },
+  {
+    "title": "Conditional Increment via Pointer",
+    "prompt_md": "## Goal\nComplete function `incrementIfPositive(int* ptr)` that increments the value at `*ptr` by 1 only when the current value is greater than zero; otherwise it leaves it unchanged.\n\n## Input\nLine 1: integer `n`.\n\n## Output\nPrint exactly one line: the value of `n` after the call.\n\n## Requirements\n1. If `n > 0`, the function must add 1 to `*ptr`.\n2. If `n <= 0`, the function must leave `*ptr` unchanged.\n3. The parameter must be `int*` (non-const) because the function may modify the value.\n4. For input `3`, output must be `4`.\n5. For input `0`, output must be `0`.\n6. For input `-7`, output must be `-7`.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete this function\n// Increment *ptr by 1 if *ptr > 0; otherwise leave it unchanged.\nvoid incrementIfPositive(int* ptr) {\n    // TODO\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n    incrementIfPositive(&n);\n    std::cout << n << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid incrementIfPositive(int* ptr) {\n    if (*ptr > 0)\n        *ptr += 1;\n}\n\nint main() {\n    int n {};\n    std::cin >> n;\n    incrementIfPositive(&n);\n    std::cout << n << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: positive 3",
+        "is_sample": true,
+        "stdin": "3\n",
+        "expected_stdout": "4"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-7\n",
+        "expected_stdout": "-7"
+      }
+    ]
+  }
+]

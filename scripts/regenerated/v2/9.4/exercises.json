@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Safe Integer Square Root with Sentinel",
+    "prompt_md": "## Goal\nWrite a program that reads an integer from stdin and prints its integer square root, or an error message if the input is negative or not a perfect square.\n\n## Input\nLine 1: one integer N.\n\n## Output\n- If N < 0: print `Error: negative input`\n- If N is a perfect square: print `Result: K` where K is the integer square root (K*K == N, K >= 0).\n- If N >= 0 but not a perfect square: print `Error: not a perfect square`\n\n## Requirements\n1. Implement `int safeSqrt(int n)` that returns the non-negative integer square root when `n` is a perfect square, or `-1` as a sentinel for any error condition (negative input or non-perfect-square).\n2. In `main`, check the return value: if it equals `-1`, determine which error message to print based on whether the original `n` was negative or just non-square.\n3. N = 0 is a valid input: sqrt(0) = 0.\n4. Do not use `<cmath>` — compute the integer root by incrementing an integer counter.\n\n## Notes\n- Your function must compile with `-Wall -Wextra`.",
+    "starter_code": "#include <iostream>\n\n// Returns non-negative integer square root of n, or -1 on error\n// (negative input or not a perfect square)\nint safeSqrt(int n) {\n    // TODO: handle n < 0: return -1\n    // TODO: find integer root by counting up from 0\n    // TODO: return root if root*root == n, else return -1\n    return -1; // replace this\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int result = safeSqrt(n);\n    // TODO: if result == -1, print the right error message\n    // TODO: otherwise print \"Result: \" followed by the root\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint safeSqrt(int n) {\n    if (n < 0) return -1;\n    int root = 0;\n    while (root * root < n)\n        ++root;\n    if (root * root == n)\n        return root;\n    return -1;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    int result = safeSqrt(n);\n    if (result == -1) {\n        if (n < 0)\n            std::cout << \"Error: negative input\\n\";\n        else\n            std::cout << \"Error: not a perfect square\\n\";\n    } else {\n        std::cout << \"Result: \" << result << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: perfect square",
+        "is_sample": true,
+        "stdin": "25",
+        "expected_stdout": "Result: 5"
+      },
+      {
+        "label": "Hidden: negative input",
+        "is_sample": false,
+        "stdin": "-4",
+        "expected_stdout": "Error: negative input"
+      },
+      {
+        "label": "Hidden: not a perfect square",
+        "is_sample": false,
+        "stdin": "7",
+        "expected_stdout": "Error: not a perfect square"
+      }
+    ]
+  },
+  {
+    "title": "Complete safeModulo with Error Handling",
+    "prompt_md": "## Goal\nComplete the function `safeModulo` that computes `a % b` but returns a sentinel value of `-1` when `b == 0` to prevent division by zero.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space.\n\n## Output\n- If `b == 0`: print `Error: modulo by zero`\n- Otherwise: print `Result: R` where R is `a % b`.\n\n## Requirements\n1. Complete `int safeModulo(int a, int b)` that returns `a % b` normally, or `-1` when `b == 0`.\n2. In `main`, call `safeModulo(a, b)`. If the result equals `-1` AND `b == 0`, print the error message. Otherwise print `Result: R`.\n3. Edge case: `a % 1` must print `Result: 0`.\n4. Edge case: `a = 0, b = 5` must print `Result: 0`.\n\n## Notes\n- The sentinel `-1` is safe here because `a % b` for positive `b` is always in [0, b-1] and for negative `b` is implementation-defined but never `-1` when `b != 0` in the test cases provided.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete safeModulo — return a % b normally, -1 if b == 0\nint safeModulo(int a, int b) {\n    return 0; // replace this\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int result = safeModulo(a, b);\n    // TODO: check result and b to determine output\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint safeModulo(int a, int b) {\n    if (b == 0) return -1;\n    return a % b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    int result = safeModulo(a, b);\n    if (b == 0)\n        std::cout << \"Error: modulo by zero\\n\";\n    else\n        std::cout << \"Result: \" << result << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal modulo",
+        "is_sample": true,
+        "stdin": "10 3",
+        "expected_stdout": "Result: 1"
+      },
+      {
+        "label": "Hidden: b == 0 triggers error",
+        "is_sample": false,
+        "stdin": "10 0",
+        "expected_stdout": "Error: modulo by zero"
+      },
+      {
+        "label": "Hidden: a = 0",
+        "is_sample": false,
+        "stdin": "0 5",
+        "expected_stdout": "Result: 0"
+      }
+    ]
+  }
+]

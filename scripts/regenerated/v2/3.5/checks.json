@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to **stdout** (not stderr)?\n\n```cpp\n#include <iostream>\n\nint addThree(int x) {\n    std::cerr << \"called\\n\";\n    return x + 3;\n}\n\nint main() {\n    int v = addThree(7);\n    std::cout << v << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "`std::cerr` writes to the error stream, not stdout. Only `std::cout << v` goes to stdout, and `v` is `7 + 3 = 10`. Beginners often expect the `cerr` message to appear mixed into the stdout output, but they are separate streams."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why should you use `std::cerr` rather than `std::cout` for debug trace messages?",
+    "options": {
+      "a": "`std::cerr` is faster to type than `std::cout`.",
+      "b": "`std::cerr` is unbuffered, so messages appear even if the program crashes, and output stays separate from real program output.",
+      "c": "`std::cerr` automatically adds a timestamp to each message.",
+      "d": "`std::cerr` writes to a log file instead of the terminal."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cerr` is not buffered, which means the OS writes each message immediately. If the program crashes, you still see the last `cerr` message. Additionally, keeping debug output on stderr and real output on stdout means automated tests that check stdout are not polluted by debug noise. Options a, c, and d are false."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint triple(int x) {\n    std::cerr << \"[trace] triple x=\" << x << \"\\n\";\n    return x * 3;\n}\n\nint main() {\n    std::cout << triple(4) << \"\\n\";\n    std::cout << triple(0) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n0",
+    "explanation_md": "`triple(4)` returns `12` and `triple(0)` returns `0`. The `std::cerr` trace lines go to stderr only and do not appear in stdout. The two `std::cout` calls print `12` and `0` on separate lines."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You comment out 30 lines of a function to isolate a bug. The code now fails to compile with an \"undeclared identifier\" error on a line *below* the commented region. What most likely happened?",
+    "options": {
+      "a": "The compiler is confused by the comments and needs to be restarted.",
+      "b": "A variable that was declared inside the commented region is being used below it.",
+      "c": "The bug you are looking for moved to the line that now fails to compile.",
+      "d": "Commenting out code always causes new compile errors; this technique should not be used."
+    },
+    "answer": "b",
+    "explanation_md": "When you comment out a declaration, anything that references that variable below the comment becomes an undeclared-identifier error. This is a side-effect of commenting out too large a region at once. The fix is to comment out smaller, self-contained sections so you do not accidentally remove declarations that later code depends on."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After you find and fix a bug using `std::cerr` trace messages, what should you do with those trace lines?",
+    "options": {
+      "a": "Leave them in the code — they are useful for future debugging sessions.",
+      "b": "Convert them all to `std::cout` statements so they appear in the normal output.",
+      "c": "Remove them, because they add noise to the output and make real error messages harder to spot.",
+      "d": "Move them all to the top of `main` so they are easy to find later."
+    },
+    "answer": "c",
+    "explanation_md": "Debug trace messages serve their purpose during the investigation. Once the bug is fixed, leaving them in causes noise in stderr, makes the code harder to read, and can confuse future debugging sessions where the old messages appear mixed with new ones. Always clean them out after fixing the bug."
+  }
+]

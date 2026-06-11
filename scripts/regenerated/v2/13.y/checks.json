@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "On a cppreference page you see two numbered lines:\n\n```cpp\n(1) constexpr const T& min( const T& a, const T& b );\n(2) constexpr T  min( std::initializer_list<T> ilist );\n```\n\nWhat does the numbering mean?",
+    "options": {
+      "a": "The numbers are revision counters — `(2)` is a newer version that replaces `(1)`.",
+      "b": "They are distinct overloads of the same function; the description below uses the numbers to refer to each one individually.",
+      "c": "`(1)` is the public version and `(2)` is the implementation detail you should not rely on.",
+      "d": "`(2)` is only available on certain platforms."
+    },
+    "answer": "b",
+    "explanation_md": "cppreference numbers the overloads on a page so the prose can talk about each one separately — `(1) returns the smaller of `a` and `b`; (2) returns the smallest element of `ilist`'. Both are part of the standard and both are usable; which one your call invokes depends on the arguments you pass."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Suppose you look up `std::min` on cppreference. Its description says: `Returns the smaller of the two values. If the values are equivalent, returns a`. Based on that signature, what does this program print?\n\n```cpp\n#include <iostream>\n#include <algorithm>\n\nint main()\n{\n    std::cout << std::min(7, 3) << ' ' << std::min(4, 4) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3 4",
+    "explanation_md": "From the documented behaviour, `std::min(7, 3)` returns the smaller value `3`. For `std::min(4, 4)`, the documentation states it returns the first argument when the two are equivalent, which is `4`. The two values are printed separated by a single space on one line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A cppreference entry for a function says `(since C++20)` at the top. Your project compiles with `-std=c++17`. What is the practical consequence?",
+    "options": {
+      "a": "The function will work but emit a warning.",
+      "b": "The function does not exist in your compilation mode; calling it will fail to compile.",
+      "c": "The function works at runtime but cannot be inlined.",
+      "d": "The function is forbidden in production code."
+    },
+    "answer": "b",
+    "explanation_md": "`(since C++20)` markers tell you the entry was added in that standard. Compiling against an earlier standard means the declaration is simply not visible — the name is undeclared and the call is rejected at compile time. Matching the reference to your `-std=` flag is part of using cppreference correctly."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is the bug here?\n\n```cpp\n#include <iostream>\n#include <algorithm>\n\nint main()\n{\n    // Trying to call std::min(int, int) — the two-argument overload.\n    std::cout << std::min({ 7 }) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Nothing is wrong; it prints `7`.",
+      "b": "The call accidentally selects the initializer-list overload of `std::min` instead of the two-argument overload — the comment says one thing, the code does another.",
+      "c": "`std::min` does not exist in C++; this is a typo for `std::minimum`.",
+      "d": "`std::min` requires both arguments to be `const T&` references."
+    },
+    "answer": "b",
+    "explanation_md": "`{ 7 }` is a single `std::initializer_list<int>`, so the call resolves to the initializer-list overload that takes a list and returns its smallest element. It compiles and prints `7`, but it is not the two-argument overload the comment promised. The fix is to write `std::min(7, 7)` (two arguments) if that is what you wanted, or to read the reference's overload list before writing the call."
+  }
+]

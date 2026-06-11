@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Inline Clamp Function",
+    "prompt_md": "## Goal\nWrite a program that reads two integers and prints the first one clamped to the range [0, 100] using an `inline` helper function.\n\n## Input\n- Line 1: integer `value` (-1000 to 1000 inclusive)\n- Line 2: (unused — read it but ignore) integer `ignored`\n\nActually, just one integer per run:\n- Line 1: integer `value` (-1000 to 1000 inclusive)\n\n## Input\n- Line 1: a single integer `value` (-1000 to 1000 inclusive)\n\n## Output\nPrint exactly one line: the clamped value, followed by a newline.\n- If `value < 0`, print `0`\n- If `value > 100`, print `100`\n- Otherwise print `value`\n\n## Requirements\n1. Define an `inline` function `int clampTo100(int v)` that returns `v` clamped to [0, 100].\n2. Call `clampTo100` from `main` with the input value.\n3. Hidden tests cover: value = -50, value = 0, value = 50, value = 100, value = 200.",
+    "starter_code": "#include <iostream>\n\n// TODO: define an inline function clampTo100(int v)\n// that returns v clamped to the range [0, 100].\ninline int clampTo100(int v) {\n    return v; // TODO: fix this\n}\n\nint main() {\n    int value;\n    std::cin >> value;\n    std::cout << clampTo100(value) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ninline int clampTo100(int v) {\n    if (v < 0) return 0;\n    if (v > 100) return 100;\n    return v;\n}\n\nint main() {\n    int value;\n    std::cin >> value;\n    std::cout << clampTo100(value) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value in range",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "42\n"
+      },
+      {
+        "label": "Hidden: value below zero",
+        "is_sample": false,
+        "stdin": "-50\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: value above 100",
+        "is_sample": false,
+        "stdin": "200\n",
+        "expected_stdout": "100\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Inline Constant Bug",
+    "prompt_md": "## Goal\nThe program below uses an `inline` constant and an `inline` helper to convert a Celsius temperature to Fahrenheit and print the result. It compiles and runs, but prints the wrong answer. Find and fix the one logic bug.\n\n## Input\n- Line 1: an integer Celsius temperature (-100 to 200 inclusive)\n\n## Output\nPrint exactly one line in the format: `X C = Y F` where X is the input and Y is the Fahrenheit equivalent.\n- Conversion formula: F = C * 9 / 5 + 32\n- Example: `100 C = 212 F`\n\n## Requirements\n1. The bug is a logic error — the program compiles without errors.\n2. The `inline` constant and `inline` function must remain in place after the fix.\n3. Hidden tests cover: 0 C = 32 F, 100 C = 212 F, -40 C = -40 F.",
+    "starter_code": "#include <iostream>\n\ninline const int kOffset = 32;\n\ninline int celsiusToFahrenheit(int c) {\n    // Bug: wrong order of operations\n    return (c + kOffset) * 9 / 5;\n}\n\nint main() {\n    int celsius;\n    std::cin >> celsius;\n    std::cout << celsius << \" C = \" << celsiusToFahrenheit(celsius) << \" F\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ninline const int kOffset = 32;\n\ninline int celsiusToFahrenheit(int c) {\n    return c * 9 / 5 + kOffset;\n}\n\nint main() {\n    int celsius;\n    std::cin >> celsius;\n    std::cout << celsius << \" C = \" << celsiusToFahrenheit(celsius) << \" F\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 100 C = 212 F",
+        "is_sample": true,
+        "stdin": "100\n",
+        "expected_stdout": "100 C = 212 F\n"
+      },
+      {
+        "label": "Hidden: 0 C = 32 F",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0 C = 32 F\n"
+      },
+      {
+        "label": "Hidden: -40 C = -40 F",
+        "is_sample": false,
+        "stdin": "-40\n",
+        "expected_stdout": "-40 C = -40 F\n"
+      }
+    ]
+  }
+]

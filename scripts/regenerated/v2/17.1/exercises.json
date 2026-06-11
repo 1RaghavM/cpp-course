@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum and Average of a Fixed-Size Array",
+    "prompt_md": "## Goal\nRead 5 integers from stdin into a `std::array<int, 5>`, then print their sum and average.\n\n## Input\n- Line 1: exactly 5 integers separated by spaces.\n\n## Output\n- Line 1: `Sum: X` where X is the sum of the 5 integers.\n- Line 2: `Average: Y` where Y is the average as a double rounded to 1 decimal place.\n\n## Requirements\n1. Declare the array as `std::array<int, 5>`.\n2. Use a range-based for loop to compute the sum.\n3. Print the average as a double with exactly 1 decimal place using `std::fixed` and `std::setprecision(1)`.\n4. The sample test uses `1 2 3 4 5`. Hidden tests use `10 20 30 40 50` and `0 0 0 0 0`.\n\n## Notes\n- Include `<array>`, `<iostream>`, and `<iomanip>`.",
+    "starter_code": "#include <array>\n#include <iostream>\n#include <iomanip>\n\nint main() {\n    std::array<int, 5> nums {};\n    // TODO: read 5 integers from stdin into nums\n\n    // TODO: compute sum using a range-based for loop\n    int sum = 0;\n\n    // TODO: print sum and average\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n#include <iomanip>\n\nint main() {\n    std::array<int, 5> nums {};\n    for (int i = 0; i < 5; ++i) {\n        std::cin >> nums[i];\n    }\n\n    int sum = 0;\n    for (int x : nums) {\n        sum += x;\n    }\n\n    double avg = static_cast<double>(sum) / 5.0;\n    std::cout << \"Sum: \" << sum << '\\n';\n    std::cout << \"Average: \" << std::fixed << std::setprecision(1) << avg << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "1 2 3 4 5\n",
+        "expected_stdout": "Sum: 15\nAverage: 3.0"
+      },
+      {
+        "label": "Hidden: larger values",
+        "is_sample": false,
+        "stdin": "10 20 30 40 50\n",
+        "expected_stdout": "Sum: 150\nAverage: 30.0"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0 0\n",
+        "expected_stdout": "Sum: 0\nAverage: 0.0"
+      }
+    ]
+  },
+  {
+    "title": "Find the Maximum in a Fixed-Size Array",
+    "prompt_md": "## Goal\nRead 4 integers from stdin, store them in a `std::array<int, 4>`, then print the maximum value. The program contains one logic bug — find and fix it.\n\n## Input\n- Line 1: exactly 4 integers separated by spaces.\n\n## Output\n- Line 1: `Max: X` where X is the largest of the 4 integers.\n\n## Requirements\n1. The program must correctly find the maximum for any 4 integers.\n2. Edge case: all values the same (e.g. `5 5 5 5` → `Max: 5`).\n3. Edge case: maximum appears at index 0.\n4. The bug is a logic bug only — the starter compiles cleanly.",
+    "starter_code": "#include <array>\n#include <iostream>\n\nint main() {\n    std::array<int, 4> vals {};\n    for (int i = 0; i < 4; ++i) {\n        std::cin >> vals[i];\n    }\n\n    int maxVal = 0;  // BUG: incorrect initial value for general inputs\n    for (int v : vals) {\n        if (v > maxVal) {\n            maxVal = v;\n        }\n    }\n\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nint main() {\n    std::array<int, 4> vals {};\n    for (int i = 0; i < 4; ++i) {\n        std::cin >> vals[i];\n    }\n\n    int maxVal = vals[0];  // FIX: start with first element, not 0\n    for (int v : vals) {\n        if (v > maxVal) {\n            maxVal = v;\n        }\n    }\n\n    std::cout << \"Max: \" << maxVal << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3 7 2 9\n",
+        "expected_stdout": "Max: 9"
+      },
+      {
+        "label": "Hidden: all negative values",
+        "is_sample": false,
+        "stdin": "-5 -1 -8 -3\n",
+        "expected_stdout": "Max: -1"
+      },
+      {
+        "label": "Hidden: max at index 0",
+        "is_sample": false,
+        "stdin": "100 20 50 30\n",
+        "expected_stdout": "Max: 100"
+      }
+    ]
+  }
+]

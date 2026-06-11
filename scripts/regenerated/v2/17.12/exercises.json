@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Sum Each Row of a 2D Array",
+    "prompt_md": "## Goal\nRead a 3×4 grid of integers from stdin and print the sum of each row on its own line.\n\n## Input\n- 3 lines, each containing 4 space-separated integers.\n- All values fit in `int`.\n\n## Output\n- Print exactly 3 lines, each containing the sum of the corresponding row.\n\n## Requirements\n1. Declare a `int grid[3][4]` and read all 12 integers from stdin.\n2. Compute each row's sum using a nested loop — outer loop over rows, inner loop over columns.\n3. Print one sum per line with no extra whitespace.\n4. No edge cases: input is always exactly 3×4.\n\n## Notes\n- Use `<iostream>` only.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int grid[3][4]{};\n\n    // TODO: read 12 integers into grid row by row\n\n    // TODO: for each row, compute the sum and print it\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int grid[3][4]{};\n\n    for (int r = 0; r < 3; ++r)\n        for (int c = 0; c < 4; ++c)\n            std::cin >> grid[r][c];\n\n    for (int r = 0; r < 3; ++r)\n    {\n        int sum = 0;\n        for (int c = 0; c < 4; ++c)\n            sum += grid[r][c];\n        std::cout << sum << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive values",
+        "is_sample": true,
+        "stdin": "1 2 3 4\n5 6 7 8\n9 10 11 12\n",
+        "expected_stdout": "10\n26\n42\n"
+      },
+      {
+        "label": "Hidden: mixed positive and negative",
+        "is_sample": false,
+        "stdin": "-1 -2 -3 -4\n0 0 0 0\n10 20 30 40\n",
+        "expected_stdout": "-10\n0\n100\n"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0 0\n0 0 0 0\n0 0 0 0\n",
+        "expected_stdout": "0\n0\n0\n"
+      }
+    ]
+  },
+  {
+    "title": "Row Maximum Finder",
+    "prompt_md": "## Goal\nComplete the function `rowMax` that receives a pointer to a row of 5 integers and returns the maximum value in that row.\n\n## Input\n- 2 lines, each containing 5 space-separated integers. Each value is between -1000 and 1000.\n\n## Output\n- Print 2 lines, each containing the maximum value from the corresponding row in the format `Row 0: <max>`, `Row 1: <max>`.\n\n## Requirements\n1. Complete the function `int rowMax(int row[], int cols)` that returns the largest element in the array segment.\n2. `main()` declares `int mat[2][5]`, reads the values, then calls `rowMax(mat[r], 5)` for each row.\n3. Print exactly `Row 0: X` and `Row 1: X` (where X is the max), each on its own line.\n4. Hidden tests cover a row of all identical values and a row containing -1000.\n\n## Notes\n- Use `<iostream>` only. No `<algorithm>`.",
+    "starter_code": "#include <iostream>\n\n// TODO: complete this function — return the maximum value in row[0..cols-1]\nint rowMax(int row[], int cols)\n{\n    return 0; // placeholder\n}\n\nint main()\n{\n    int mat[2][5]{};\n    for (int r = 0; r < 2; ++r)\n        for (int c = 0; c < 5; ++c)\n            std::cin >> mat[r][c];\n\n    for (int r = 0; r < 2; ++r)\n        std::cout << \"Row \" << r << \": \" << rowMax(mat[r], 5) << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint rowMax(int row[], int cols)\n{\n    int best = row[0];\n    for (int c = 1; c < cols; ++c)\n        if (row[c] > best)\n            best = row[c];\n    return best;\n}\n\nint main()\n{\n    int mat[2][5]{};\n    for (int r = 0; r < 2; ++r)\n        for (int c = 0; c < 5; ++c)\n            std::cin >> mat[r][c];\n\n    for (int r = 0; r < 2; ++r)\n        std::cout << \"Row \" << r << \": \" << rowMax(mat[r], 5) << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "3 1 4 1 5\n9 2 6 5 3\n",
+        "expected_stdout": "Row 0: 5\nRow 1: 9\n"
+      },
+      {
+        "label": "Hidden: all identical values in row 0",
+        "is_sample": false,
+        "stdin": "7 7 7 7 7\n-10 -5 -1 -8 -3\n",
+        "expected_stdout": "Row 0: 7\nRow 1: -1\n"
+      },
+      {
+        "label": "Hidden: includes -1000",
+        "is_sample": false,
+        "stdin": "-1000 -999 -998 -997 -996\n100 200 300 400 500\n",
+        "expected_stdout": "Row 0: -996\nRow 1: 500\n"
+      }
+    ]
+  }
+]

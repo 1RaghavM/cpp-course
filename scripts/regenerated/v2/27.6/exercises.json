@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Logging Middleware with Rethrow",
+    "prompt_md": "## Goal\nWrite a program that simulates a logging middleware layer: a function catches any exception, logs its message, then rethrows it for the outer handler to process.\n\n## Input\n- Line 1: integer code (1 = throw std::runtime_error, 2 = no throw)\n\n## Output\n- Code 1 (throws):\n  ```\n  [LOG] caught: connection failed\n  [OUTER] handled: connection failed\n  ```\n- Code 2 (no throw): print `ok`\n\n## Requirements\n1. Implement `void do_work(int code)` that throws `std::runtime_error(\"connection failed\")` when code == 1.\n2. Implement `void logged_call(int code)` that calls `do_work` in a try block, catches `const std::exception&`, prints `[LOG] caught: <message>`, then re-throws using bare `throw;`.\n3. In `main`, call `logged_call` in a try block that catches `const std::exception&` and prints `[OUTER] handled: <message>`.\n4. If no exception, print `ok` in main.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\n// TODO: implement do_work(int code)\n// code 1: throw std::runtime_error(\"connection failed\")\nvoid do_work(int code) {\n}\n\n// TODO: implement logged_call(int code)\n// - call do_work in a try block\n// - catch const std::exception&, print: [LOG] caught: <message>\n// - then rethrow with bare throw;\nvoid logged_call(int code) {\n}\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    // TODO: call logged_call in a try block\n    // catch const std::exception& -> print: [OUTER] handled: <message>\n    // no exception -> print: ok\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nvoid do_work(int code) {\n    if (code == 1)\n        throw std::runtime_error(\"connection failed\");\n}\n\nvoid logged_call(int code) {\n    try {\n        do_work(code);\n    } catch (const std::exception& e) {\n        std::cout << \"[LOG] caught: \" << e.what() << \"\\n\";\n        throw;\n    }\n}\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    try {\n        logged_call(code);\n        std::cout << \"ok\\n\";\n    } catch (const std::exception& e) {\n        std::cout << \"[OUTER] handled: \" << e.what() << \"\\n\";\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: throw and rethrow",
+        "is_sample": true,
+        "stdin": "1\n",
+        "expected_stdout": "[LOG] caught: connection failed\n[OUTER] handled: connection failed\n"
+      },
+      {
+        "label": "Hidden: no exception",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "ok\n"
+      },
+      {
+        "label": "Hidden: same throw case",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "[LOG] caught: connection failed\n[OUTER] handled: connection failed\n"
+      }
+    ]
+  },
+  {
+    "title": "Rethrow Type Preservation",
+    "prompt_md": "## Goal\nComplete the function `void pass_through()` that catches an exception from an inner call and re-throws it with bare `throw;` so the outer handler can see the derived type.\n\n## Input\n- No input\n\n## Output\n```\nDerivedError caught: specialized failure\n```\n\n## Requirements\n1. `class DerivedError : public std::runtime_error` is provided with member `int id`.\n2. Implement `void inner()` that throws `DerivedError(\"specialized failure\", 9)`.\n3. Implement `void pass_through()` that calls `inner()` in a try block, catches `const std::runtime_error&`, and re-throws using bare `throw;`.\n4. In `main`, call `pass_through()` in a try block; catch `const DerivedError&` and print `DerivedError caught: <message>`; also catch `const std::runtime_error&` and print `runtime caught: <message>` (should not fire if rethrow is correct).\n\n## Notes\n- If you use `throw e;` instead of `throw;` in `pass_through`, the `DerivedError` catch will not fire (the test will fail). Use the bare `throw;`.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nclass DerivedError : public std::runtime_error {\npublic:\n    int id;\n    DerivedError(const std::string& msg, int i)\n        : std::runtime_error(msg), id(i) {}\n};\n\n// TODO: implement inner() — throws DerivedError(\"specialized failure\", 9)\nvoid inner() {\n}\n\n// TODO: implement pass_through()\n// calls inner() in a try block\n// catches const std::runtime_error&\n// re-throws using bare throw; (NOT throw e;)\nvoid pass_through() {\n}\n\nint main() {\n    try {\n        pass_through();\n    } catch (const DerivedError& e) {\n        std::cout << \"DerivedError caught: \" << e.what() << \"\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"runtime caught: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nclass DerivedError : public std::runtime_error {\npublic:\n    int id;\n    DerivedError(const std::string& msg, int i)\n        : std::runtime_error(msg), id(i) {}\n};\n\nvoid inner() {\n    throw DerivedError(\"specialized failure\", 9);\n}\n\nvoid pass_through() {\n    try {\n        inner();\n    } catch (const std::runtime_error& e) {\n        throw; // bare rethrow preserves DerivedError type\n    }\n}\n\nint main() {\n    try {\n        pass_through();\n    } catch (const DerivedError& e) {\n        std::cout << \"DerivedError caught: \" << e.what() << \"\\n\";\n    } catch (const std::runtime_error& e) {\n        std::cout << \"runtime caught: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: DerivedError preserved",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "DerivedError caught: specialized failure\n"
+      },
+      {
+        "label": "Hidden: same (deterministic)",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "DerivedError caught: specialized failure\n"
+      },
+      {
+        "label": "Hidden: verify type preserved",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "DerivedError caught: specialized failure\n"
+      }
+    ]
+  }
+]

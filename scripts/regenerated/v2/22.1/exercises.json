@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Track unique_ptr Ownership Transfer",
+    "prompt_md": "## Goal\nWrite a program that creates a `std::unique_ptr<int>`, transfers ownership twice, and prints the value at each step.\n\n## Input\nLine 1: a single integer N.\n\n## Output\nPrint exactly three lines:\n- `Created: N` after constructing the unique_ptr\n- `After first move: N` after moving to a second unique_ptr\n- `After second move: N` after moving to a third unique_ptr\n\n## Requirements\n1. Use `std::make_unique<int>` to create the initial smart pointer.\n2. Transfer ownership using `std::move` — do not copy.\n3. The original pointer must be null after each move; you do not need to print this fact.\n4. Print the integer value (not the pointer address) from the final owner.\n",
+    "starter_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    // TODO: create a unique_ptr<int> holding n using make_unique\n    std::unique_ptr<int> a = std::make_unique<int>(n);\n    std::cout << \"Created: \" << *a << \"\\n\";\n\n    // TODO: move ownership from a to b\n    std::unique_ptr<int> b; // replace this stub\n    std::cout << \"After first move: \" << *b << \"\\n\";\n\n    // TODO: move ownership from b to c\n    std::unique_ptr<int> c; // replace this stub\n    std::cout << \"After second move: \" << *c << \"\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::unique_ptr<int> a = std::make_unique<int>(n);\n    std::cout << \"Created: \" << *a << \"\\n\";\n\n    std::unique_ptr<int> b = std::move(a);\n    std::cout << \"After first move: \" << *b << \"\\n\";\n\n    std::unique_ptr<int> c = std::move(b);\n    std::cout << \"After second move: \" << *c << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value 42",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Created: 42\nAfter first move: 42\nAfter second move: 42"
+      },
+      {
+        "label": "Hidden: value 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Created: 0\nAfter first move: 0\nAfter second move: 0"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-7\n",
+        "expected_stdout": "Created: -7\nAfter first move: -7\nAfter second move: -7"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Ownership Bug",
+    "prompt_md": "## Goal\nThe program below is supposed to create a `unique_ptr<int>`, transfer ownership to a second pointer, then print the value from the new owner. It compiles and runs but prints the wrong thing. Find and fix the one logic bug.\n\n## Input\nLine 1: a single integer N.\n\n## Output\nPrint exactly one line: `Value: N`\n\n## Requirements\n1. Ownership must be transferred via `std::move`.\n2. The value printed must come from the second pointer after the transfer.\n3. Do not add extra print statements.\n",
+    "starter_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::unique_ptr<int> first = std::make_unique<int>(n);\n    std::unique_ptr<int> second = std::move(first);\n\n    // Bug: printing from the wrong pointer\n    std::cout << \"Value: \" << *first << \"\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    std::unique_ptr<int> first = std::make_unique<int>(n);\n    std::unique_ptr<int> second = std::move(first);\n\n    std::cout << \"Value: \" << *second << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value 10",
+        "is_sample": true,
+        "stdin": "10\n",
+        "expected_stdout": "Value: 10"
+      },
+      {
+        "label": "Hidden: value 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Value: 1"
+      },
+      {
+        "label": "Hidden: large value",
+        "is_sample": false,
+        "stdin": "9999\n",
+        "expected_stdout": "Value: 9999"
+      }
+    ]
+  }
+]

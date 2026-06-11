@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\n\nenum class Planet { Mercury, Venus, Earth, Mars, Count };\n\nconstexpr std::size_t idx(Planet p) {\n    return static_cast<std::size_t>(p);\n}\n\nint main() {\n    std::array<int, idx(Planet::Count)> dist{ 58, 108, 150, 228 };\n    std::cout << dist[idx(Planet::Earth)] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "150",
+    "explanation_md": "`Planet::Earth` is the third enumerator (index 2 starting from 0), so `idx(Planet::Earth)` returns 2. `dist[2]` is 150. `Planet::Count` has value 4, sizing the array correctly at 4 elements."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have `enum class Suit { Clubs, Diamonds, Hearts, Spades, Count };` and want to create a `std::array` with one `int` per suit. Which declaration is correct and idiomatic?",
+    "options": {
+      "a": "`std::array<int, 4> counts;`",
+      "b": "`std::array<int, Suit::Count> counts;`",
+      "c": "`std::array<int, static_cast<std::size_t>(Suit::Count)> counts;`",
+      "d": "`std::array<int, (int)Suit::Count> counts;`"
+    },
+    "answer": "c",
+    "explanation_md": "Scoped enum values do not convert implicitly to integers, so `Suit::Count` alone (option b) is a compile error. Option a uses a magic number. Option c uses the proper `static_cast<std::size_t>`, which is both correct and the recommended form. Option d uses a C-style cast, which compiles but is not preferred in modern C++."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\n\nenum Color { Red, Green, Blue, NumColors };\n\nint main() {\n    std::array<int, NumColors> vals{ 10, 20, 30 };\n    std::cout << vals[Green] << '\\n';\n    std::cout << vals[NumColors - 1] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "20\n30",
+    "explanation_md": "`Color` is an unscoped enum, so enumerators convert implicitly to `int`. `Green` is 1, so `vals[1]` is 20. `NumColors` is 3, so `NumColors - 1` is 2, and `vals[2]` is 30."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer writes:\n\n```cpp\nenum class Axis { X = 1, Y = 2, Z = 3, Count };\nstd::array<double, static_cast<std::size_t>(Axis::Count)> pos{};\n```\n\nThey intend `pos[0]` for X, `pos[1]` for Y, `pos[2]` for Z. What is the actual problem?",
+    "options": {
+      "a": "The array has 4 elements, not 3, so `pos[3]` is wasted and `Axis::X` maps to index 1, not 0.",
+      "b": "Scoped enums cannot be used as template arguments.",
+      "c": "The array is zero-initialized, which is wrong for floating-point types.",
+      "d": "There is no problem; this code is correct."
+    },
+    "answer": "a",
+    "explanation_md": "`Axis::Count` has value 4 (one past Z=3), so the array has 4 elements. But the developer wants `Axis::X` (value 1) to index element 0, which doesn't work — `pos[static_cast<std::size_t>(Axis::X)]` accesses element 1, not 0. The sentinel pattern only works correctly when enumerators start at 0 and are consecutive."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print the boiling point of water (100) but prints the wrong value. What is the bug?\n\n```cpp\n#include <array>\n#include <iostream>\n\nenum class Liquid { Water, Ethanol, Mercury, Count };\n\nconstexpr std::size_t idx(Liquid l) {\n    return static_cast<std::size_t>(l);\n}\n\nint main() {\n    std::array<int, idx(Liquid::Count)> boiling{ 78, 100, 357 };\n    std::cout << boiling[idx(Liquid::Ethanol)] << '\\n';\n}\n```",
+    "options": {
+      "a": "The array initializer puts ethanol's boiling point (78) at index 0 and water's (100) at index 1, but the code prints index 1 (ethanol's), which is 100 not 78.",
+      "b": "The array initializer lists values in the wrong order: `{ 78, 100, 357 }` assigns 78 to `Water`, 100 to `Ethanol`, 357 to `Mercury`, but water boils at 100 and ethanol at 78.",
+      "c": "The `idx` helper cannot be used as a template argument because it is `constexpr`.",
+      "d": "`Liquid::Count` resolves to 2, so the array only has 2 elements, causing undefined behavior."
+    },
+    "answer": "b",
+    "explanation_md": "`Liquid::Water` maps to index 0, `Liquid::Ethanol` to index 1, and `Liquid::Mercury` to index 2. The initializer `{ 78, 100, 357 }` places 78 at Water's slot and 100 at Ethanol's slot — but water boils at 100°C and ethanol at 78°C, so the values are swapped. The fix is `{ 100, 78, 357 }`."
+  }
+]

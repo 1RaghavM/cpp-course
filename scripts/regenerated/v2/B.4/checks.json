@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the primary benefit of C++20 Concepts over pre-C++20 SFINAE template constraints?",
+    "options": {
+      "a": "Concepts make templates run faster at runtime.",
+      "b": "Concepts produce clear, constraint-violation error messages at the call site rather than deep inside template instantiation output.",
+      "c": "Concepts allow templates to work with runtime polymorphism.",
+      "d": "Concepts automatically generate default implementations for missing operations."
+    },
+    "answer": "b",
+    "explanation_md": "SFINAE errors are famously hard to read because the compiler reports a failure buried inside template instantiation chains. Concepts produce a single, readable error at the call site stating which constraint was violated. They also serve as self-documenting requirements visible in the function signature."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <compare>\n#include <iostream>\n\nstruct Val {\n    int n;\n    auto operator<=>(const Val&) const = default;\n};\n\nint main() {\n    Val a{5}, b{3};\n    std::cout << (a > b) << \"\\n\";\n    std::cout << (a == b) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1\n0",
+    "explanation_md": "Defaulting `operator<=>` synthesizes all six comparison operators using member-wise comparison. `a.n` (5) > `b.n` (3), so `a > b` is `true` (prints `1`). `5 != 3`, so `a == b` is `false` (prints `0`)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does a C++20 range view (such as `std::views::filter`) return when applied to a vector?",
+    "options": {
+      "a": "A new std::vector containing only the matching elements.",
+      "b": "A lazy wrapper that produces matching elements on demand without allocating storage.",
+      "c": "An iterator pointing to the first matching element.",
+      "d": "A std::span over the matching subset of the original vector."
+    },
+    "answer": "b",
+    "explanation_md": "Range views are non-owning, lazy adaptors. They wrap the original range and generate elements one at a time when iterated — no new container is allocated. This is why you cannot call `push_back` on a view and why chaining multiple views is still efficient: each element is touched at most once during the final iteration."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When is it appropriate to use `std::span<const int>` as a function parameter instead of `const std::vector<int>&`?",
+    "options": {
+      "a": "When you want the function to own its own copy of the data.",
+      "b": "When the function needs to work with any contiguous sequence — vectors, arrays, and subranges — without requiring the caller to create a vector.",
+      "c": "When the function needs to append elements to the sequence.",
+      "d": "Only when the data is stored in a C-style array."
+    },
+    "answer": "b",
+    "explanation_md": "`std::span<const int>` accepts any contiguous range: raw arrays, `std::vector`, `std::array`, or a subrange thereof. This is more flexible than `const std::vector<int>&` which forces the caller to have a vector. The function sees a uniform (pointer, length) pair under the hood, so it works identically regardless of the source container."
+  }
+]

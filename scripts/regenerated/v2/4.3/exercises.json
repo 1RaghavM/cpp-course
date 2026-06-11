@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Type Sizes in Bytes and Bits",
+    "prompt_md": "## Goal\nWrite a program that prints the size (in bytes) and the size (in bits) of three fundamental types: `short`, `int`, and `double`.\n\n## Input\nNone. The program reads no input.\n\n## Output\nPrint exactly three lines in this order:\n- `short: <sizeof(short)> bytes, <sizeof(short)*8> bits`\n- `int: <sizeof(int)> bytes, <sizeof(int)*8> bits`\n- `double: <sizeof(double)> bytes, <sizeof(double)*8> bits`\n\nOn a typical 64-bit platform the output is:\n```\nshort: 2 bytes, 16 bits\nint: 4 bytes, 32 bits\ndouble: 8 bytes, 64 bits\n```\n\n## Requirements\n1. Use `sizeof` to obtain each size — do not hard-code the numbers.\n2. Multiply the byte count by 8 to compute bits.\n3. Output format is exactly `<type>: <bytes> bytes, <bits> bits` per line.\n4. The program must produce correct output on any platform (by using `sizeof` rather than literal numbers).\n\n## Notes\n- `sizeof` is a built-in operator; no extra header is needed to use it.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: print the sizeof short in bytes and bits\n    // Format: \"short: X bytes, Y bits\"\n\n    // TODO: print the sizeof int in bytes and bits\n    // Format: \"int: X bytes, Y bits\"\n\n    // TODO: print the sizeof double in bytes and bits\n    // Format: \"double: X bytes, Y bits\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    std::cout << \"short: \"  << sizeof(short)  << \" bytes, \" << sizeof(short)  * 8 << \" bits\\n\";\n    std::cout << \"int: \"    << sizeof(int)    << \" bytes, \" << sizeof(int)    * 8 << \" bits\\n\";\n    std::cout << \"double: \" << sizeof(double) << \" bytes, \" << sizeof(double) * 8 << \" bits\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: typical 64-bit platform",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "short: 2 bytes, 16 bits\nint: 4 bytes, 32 bits\ndouble: 8 bytes, 64 bits"
+      },
+      {
+        "label": "Hidden: same platform check 1",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "short: 2 bytes, 16 bits\nint: 4 bytes, 32 bits\ndouble: 8 bytes, 64 bits"
+      },
+      {
+        "label": "Hidden: same platform check 2",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "short: 2 bytes, 16 bits\nint: 4 bytes, 32 bits\ndouble: 8 bytes, 64 bits"
+      }
+    ]
+  },
+  {
+    "title": "Fix the sizeof Bug",
+    "prompt_md": "## Goal\nThe program below should print the size of three types in bytes. It compiles and runs, but produces wrong output. Find and fix the one logic bug.\n\n## Input\nNone. The program reads no input.\n\n## Output\nPrint exactly three lines:\n- `char: 1`\n- `int: 4`\n- `double: 8`\n\n## Requirements\n1. The program contains exactly one bug — a wrong `sizeof` argument that makes one line report the wrong type's size.\n2. Fix only that bug; do not change the rest of the program.\n3. Output labels and values must match the expected output exactly.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    std::cout << \"char: \"   << sizeof(char)   << \"\\n\";\n    std::cout << \"int: \"    << sizeof(double) << \"\\n\";\n    std::cout << \"double: \" << sizeof(double) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    std::cout << \"char: \"   << sizeof(char)   << \"\\n\";\n    std::cout << \"int: \"    << sizeof(int)    << \"\\n\";\n    std::cout << \"double: \" << sizeof(double) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct sizes",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "char: 1\nint: 4\ndouble: 8"
+      },
+      {
+        "label": "Hidden: same output check 1",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "char: 1\nint: 4\ndouble: 8"
+      },
+      {
+        "label": "Hidden: same output check 2",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "char: 1\nint: 4\ndouble: 8"
+      }
+    ]
+  }
+]

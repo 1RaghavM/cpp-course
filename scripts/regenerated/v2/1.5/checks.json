@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x;\n    int y;\n    std::cin >> x >> y;\n    std::cout << x << y << '\\n';\n    return 0;\n}\n```\n\nAssume the user enters: `3 7`",
+    "options": null,
+    "answer": "37",
+    "explanation_md": "`std::cin >> x >> y` reads `3` into `x` and `7` into `y`. Then `std::cout << x << y` prints them concatenated without any space — `37`. A common mistake is expecting a space between the two numbers, but `<<` does not add any separators automatically."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement correctly reads an integer from standard input into the variable `n`?",
+    "options": {
+      "a": "`std::cout >> n;`",
+      "b": "`std::cin << n;`",
+      "c": "`std::cin >> n;`",
+      "d": "`std::cout << n;`"
+    },
+    "answer": "c",
+    "explanation_md": "`std::cin` is the input stream and `>>` is the extraction operator that reads *from* the stream *into* a variable. Option (a) incorrectly uses `>>` with `cout` (the output stream), and option (b) incorrectly uses `<<` with `cin` (the input stream). Option (d) sends `n` to output rather than reading into it."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << \"A\";\n    std::cout << \"B\";\n    std::cout << \"C\" << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "ABC",
+    "explanation_md": "Each `<<` insertion appends its value directly to the output stream with no automatic spacing or newlines. The three insertions print `A`, then `B`, then `C`, all on one line. The final `'\\n'` moves the cursor to the next line but does not appear in the output text itself."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A student writes the following program but it does not compile. What is the most likely cause?\n\n```cpp\nint main()\n{\n    std::cout << \"Hello, world!\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The string literal uses `\\n` instead of `std::endl`.",
+      "b": "The `#include <iostream>` directive is missing.",
+      "c": "`std::cout` must always be followed by `std::cin`.",
+      "d": "`main` must return a value other than `0`."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cout` is declared inside `<iostream>`. Without `#include <iostream>` at the top of the file, the compiler cannot find `std::cout` and reports something like `'cout' was not declared in this scope`. Using `'\\n'` instead of `std::endl` is fine; both produce a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the key difference between `std::endl` and `'\\n'` when used with `std::cout`?",
+    "options": {
+      "a": "`std::endl` adds two blank lines; `'\\n'` adds one.",
+      "b": "`std::endl` flushes the output buffer; `'\\n'` does not.",
+      "c": "`'\\n'` requires `<iostream>` but `std::endl` does not.",
+      "d": "They are completely identical in every way."
+    },
+    "answer": "b",
+    "explanation_md": "Both `std::endl` and `'\\n'` move the cursor to the next line, but `std::endl` also flushes the internal output buffer, which is slower. They produce the same visible result in most programs, but `'\\n'` is preferred for performance when printing many lines."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "HTTP Status Description",
+    "prompt_md": "## Goal\nRead an HTTP status code (integer) from stdin and print a short description using a switch statement.\n\n## Input\nLine 1: one integer — the HTTP status code.\n\n## Output\nPrint exactly one line:\n- 200 → `OK`\n- 301 → `Moved Permanently`\n- 302 → `Found`\n- 404 → `Not Found`\n- 500 → `Internal Server Error`\n- Any other value → `Unknown`\n\n## Requirements\n1. Use a `switch` statement.\n2. 301 and 302 must share a single block using intentional fallthrough — both print `Redirect`, not their individual messages. Wait: use the exact mapping above. Each code prints its own description.\n3. No trailing spaces; output ends with a newline.\n\n## Notes\n- Use `break` after every case.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    // TODO: use a switch statement to print the status description\n    // 200 -> OK\n    // 301 -> Moved Permanently\n    // 302 -> Found\n    // 404 -> Not Found\n    // 500 -> Internal Server Error\n    // anything else -> Unknown\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int code;\n    std::cin >> code;\n\n    switch (code) {\n        case 200:\n            std::cout << \"OK\\n\";\n            break;\n        case 301:\n            std::cout << \"Moved Permanently\\n\";\n            break;\n        case 302:\n            std::cout << \"Found\\n\";\n            break;\n        case 404:\n            std::cout << \"Not Found\\n\";\n            break;\n        case 500:\n            std::cout << \"Internal Server Error\\n\";\n            break;\n        default:\n            std::cout << \"Unknown\\n\";\n            break;\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 404 Not Found",
+        "is_sample": true,
+        "stdin": "404\n",
+        "expected_stdout": "Not Found\n"
+      },
+      {
+        "label": "Hidden: 200 OK",
+        "is_sample": false,
+        "stdin": "200\n",
+        "expected_stdout": "OK\n"
+      },
+      {
+        "label": "Hidden: unknown code",
+        "is_sample": false,
+        "stdin": "418\n",
+        "expected_stdout": "Unknown\n"
+      }
+    ]
+  },
+  {
+    "title": "Permission Level Printer (Complete the Function)",
+    "prompt_md": "## Goal\nComplete the function `printPermissions(int level)` that prints all permissions held at the given access level using intentional fallthrough.\n\n## Input\nLine 1: one integer L (0 ≤ L ≤ 3).\n\n## Output\nPrint one line per permission, highest first, then a blank line:\n- L = 0: (no permissions printed, then blank line)\n- L = 1: `Read` then blank line\n- L = 2: `Write` then `Read` then blank line\n- L = 3: `Admin` then `Write` then `Read` then blank line\n\nSo for L = 3, output is:\n```\nAdmin\nWrite\nRead\n\n```\n\n## Requirements\n1. Implement using a `switch` with intentional `[[fallthrough]]` so higher levels accumulate lower-level permissions.\n2. The switch cases must be in descending order: 3, 2, 1, then default (for 0).\n3. After the switch, always print one blank line.\n4. Do not add any output inside `main()` except the call to `printPermissions` and the final blank line.\n\n## Notes\n- Use `[[fallthrough]]` in cases 3 and 2 to fall through to lower cases.",
+    "starter_code": "#include <iostream>\n\nvoid printPermissions(int level) {\n    // TODO: implement using switch with [[fallthrough]]\n    // case 3 prints \"Admin\" then falls through to case 2\n    // case 2 prints \"Write\" then falls through to case 1\n    // case 1 prints \"Read\" then breaks\n    // default (0): break immediately (no permissions)\n}\n\nint main() {\n    int level;\n    std::cin >> level;\n    printPermissions(level);\n    std::cout << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printPermissions(int level) {\n    switch (level) {\n        case 3:\n            std::cout << \"Admin\\n\";\n            [[fallthrough]];\n        case 2:\n            std::cout << \"Write\\n\";\n            [[fallthrough]];\n        case 1:\n            std::cout << \"Read\\n\";\n            break;\n        default:\n            break;\n    }\n}\n\nint main() {\n    int level;\n    std::cin >> level;\n    printPermissions(level);\n    std::cout << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: level 2",
+        "is_sample": true,
+        "stdin": "2\n",
+        "expected_stdout": "Write\nRead\n\n"
+      },
+      {
+        "label": "Hidden: level 3 (all permissions)",
+        "is_sample": false,
+        "stdin": "3\n",
+        "expected_stdout": "Admin\nWrite\nRead\n\n"
+      },
+      {
+        "label": "Hidden: level 0 (no permissions)",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "\n"
+      }
+    ]
+  }
+]

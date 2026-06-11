@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "What does the `override` specifier do when placed on a derived class function?",
+    "options": {
+      "a": "It forces the base class to declare the function `virtual` automatically.",
+      "b": "It asks the compiler to verify that the function actually overrides a virtual function in a base class, and reports an error if it does not.",
+      "c": "It prevents any further derived class from overriding the function.",
+      "d": "It changes the function's linkage to make it callable from C."
+    },
+    "answer": "b",
+    "explanation_md": "`override` is a compile-time check — it tells the compiler to verify the signature matches a virtual function in a base class. Option (c) describes `final`, not `override`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Will this code compile? If not, what is the error?\n\n```cpp\nclass Base {\npublic:\n    virtual void render() const {}\n};\n\nclass Derived : public Base {\npublic:\n    void render() override {}\n};\n\nint main() {}\n```",
+    "options": null,
+    "answer": "Compile error: 'render' does not override any base class virtual function",
+    "explanation_md": "`Base::render` is `const` but `Derived::render` is not. Their signatures differ, so `Derived::render` is not an override of `Base::render`. With `override` specified, the compiler catches this mismatch and reports an error. Without `override` it would silently compile as an unrelated function."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The developer expects `draw()` to print `Circle` when called on a `Circle*` through a `Shape*`. But calling `s->draw()` always prints `Shape`. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Shape {\npublic:\n    virtual void draw() const { std::cout << \"Shape\\n\"; }\n};\n\nclass Circle : public Shape {\npublic:\n    void draw() const override { std::cout << \"Circle\\n\"; }\n};\n\nclass BigCircle : public Circle {\npublic:\n    void draw() const { std::cout << \"BigCircle\\n\"; }\n};\n\nint main() {\n    BigCircle bc;\n    Shape* s = &bc;\n    s->draw();\n}\n```",
+    "options": {
+      "a": "`BigCircle::draw` is missing `override` so it shadows `Circle::draw` as a new non-virtual function, meaning `s->draw()` calls `Circle::draw`.",
+      "b": "`BigCircle::draw` is missing `override` but that is fine; `s->draw()` should still dispatch to `BigCircle::draw`.",
+      "c": "The virtual table only supports two levels of overriding.",
+      "d": "`s->draw()` dispatches to `BigCircle::draw` and prints `BigCircle`."
+    },
+    "answer": "d",
+    "explanation_md": "The correct answer is (d) — the program actually prints `BigCircle`, not `Shape`. Once `draw` is declared `virtual` in `Shape`, all overrides in the hierarchy (including `BigCircle::draw`) participate in virtual dispatch even without explicit `virtual` or `override`. Option (a) is wrong: missing `override` does not prevent the override from working — it just removes the compile-time safety check."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does marking a class `final` do?",
+    "options": {
+      "a": "Prevents any virtual functions in the class from being overridden by derived classes.",
+      "b": "Prevents any other class from inheriting from this class.",
+      "c": "Makes all member functions of the class non-virtual.",
+      "d": "Prevents the class from having a destructor."
+    },
+    "answer": "b",
+    "explanation_md": "`final` on a class prevents further inheritance — any attempt to derive from it is a compile error. It does not change the virtual-ness of existing functions (option a), does not affect whether functions are virtual (option c), and has nothing to do with destructors (option d)."
+  }
+]

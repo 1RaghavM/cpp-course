@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Call a Void Printer Function Twice",
+    "prompt_md": "## Goal\nWrite a `void` function named `printSquare` that takes one `int` parameter and prints that integer followed by `^2 = ` and the square of the integer on one line. Call it from `main` with two hard-coded values read from stdin.\n\n## Input\n- Line 1: integer `a` (1 ≤ a ≤ 100)\n- Line 2: integer `b` (1 ≤ b ≤ 100)\n\n## Output\nPrint exactly two lines:\n- Line 1: `<a>^2 = <a*a>`\n- Line 2: `<b>^2 = <b*b>`\n\n## Requirements\n1. Define `void printSquare(int n)` that prints `n^2 = ` followed by `n * n` and a newline.\n2. `main` reads two integers and calls `printSquare` once for each.\n3. Do not use any return value from `printSquare` — it is void.\n4. Output format is exactly `n^2 = result` with no extra spaces.",
+    "starter_code": "#include <iostream>\n\n// TODO: define void printSquare(int n)\n// It should print: n^2 = <n*n>\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: call printSquare with a, then with b\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printSquare(int n) {\n    std::cout << n << \"^2 = \" << n * n << \"\\n\";\n}\n\nint main() {\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    printSquare(a);\n    printSquare(b);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 and 5",
+        "is_sample": true,
+        "stdin": "3\n5\n",
+        "expected_stdout": "3^2 = 9\n5^2 = 25"
+      },
+      {
+        "label": "Hidden: 10 and 7",
+        "is_sample": false,
+        "stdin": "10\n7\n",
+        "expected_stdout": "10^2 = 100\n7^2 = 49"
+      },
+      {
+        "label": "Hidden: 1 and 100",
+        "is_sample": false,
+        "stdin": "1\n100\n",
+        "expected_stdout": "1^2 = 1\n100^2 = 10000"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Void Summary Printer",
+    "prompt_md": "## Goal\nComplete the function `printSummary` that takes two `int` parameters and prints three computed values about them.\n\n## Input\n- Line 1: integer `x` (−1000 ≤ x ≤ 1000)\n- Line 2: integer `y` (−1000 ≤ y ≤ 1000)\n\n## Output\nPrint exactly three lines:\n- Line 1: `Sum: <x+y>`\n- Line 2: `Difference: <x-y>`\n- Line 3: `Product: <x*y>`\n\n## Requirements\n1. Complete the body of `void printSummary(int x, int y)` — do not change its signature.\n2. Print each label followed by the computed value using `std::cout`.\n3. Labels are exactly `Sum: `, `Difference: `, `Product: ` (capital first letter, colon, space).\n4. `main` already reads the two integers and calls `printSummary` — do not modify `main`.",
+    "starter_code": "#include <iostream>\n\nvoid printSummary(int x, int y) {\n    // TODO: print \"Sum: \" followed by x+y\n    // TODO: print \"Difference: \" followed by x-y\n    // TODO: print \"Product: \" followed by x*y\n    (void)x; (void)y;  // suppress unused-parameter warnings in the stub\n}\n\nint main() {\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n    printSummary(x, y);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid printSummary(int x, int y) {\n    std::cout << \"Sum: \" << x + y << \"\\n\";\n    std::cout << \"Difference: \" << x - y << \"\\n\";\n    std::cout << \"Product: \" << x * y << \"\\n\";\n}\n\nint main() {\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n    printSummary(x, y);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 8 and 3",
+        "is_sample": true,
+        "stdin": "8\n3\n",
+        "expected_stdout": "Sum: 11\nDifference: 5\nProduct: 24"
+      },
+      {
+        "label": "Hidden: negative values",
+        "is_sample": false,
+        "stdin": "-4\n6\n",
+        "expected_stdout": "Sum: 2\nDifference: -10\nProduct: -24"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0\n0\n",
+        "expected_stdout": "Sum: 0\nDifference: 0\nProduct: 0"
+      }
+    ]
+  }
+]

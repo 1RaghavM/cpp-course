@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nint main() {\n    std::array<int, 4> a { 5, 10, 15, 20 };\n    std::cout << a.size() << '\\n';\n    std::cout << a.front() << '\\n';\n    std::cout << a.back() << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4\n5\n20",
+    "explanation_md": "`a.size()` returns 4 (the template argument). `.front()` returns the first element (5) and `.back()` returns the last element (20). Each is printed on its own line."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does the compiler warn about this loop?\n\n```cpp\nstd::array<int, 5> a {};\nfor (int i = 0; i < a.size(); ++i) { /* ... */ }\n```",
+    "options": {
+      "a": "The loop will iterate one too many times",
+      "b": "`int i` is signed while `a.size()` returns an unsigned type, causing a signed/unsigned comparison warning",
+      "c": "`a.size()` cannot be called in a loop condition",
+      "d": "The array is not initialized so `a.size()` is undefined"
+    },
+    "answer": "b",
+    "explanation_md": "`a.size()` returns `std::size_t`, which is an unsigned integer type. Comparing it with the signed `int i` generates a signed/unsigned comparison warning under `-Wextra`. Fix by declaring `i` as `std::size_t`. The loop count and array initialization are both fine."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nint main() {\n    std::array<int, 3> v { 4, 8, 12 };\n    for (std::size_t i = 0; i < v.size(); ++i) {\n        std::cout << v[i] + i << ' ';\n    }\n    std::cout << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4 9 14",
+    "explanation_md": "For each index i, the program prints `v[i] + i`. At i=0: 4+0=4. At i=1: 8+1=9. At i=2: 12+2=14. They are separated by spaces, followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `std::array<int, 5> arr {};`, what is `arr.size()`?",
+    "options": {
+      "a": "0, because the elements were zero-initialized",
+      "b": "5, always — the size is fixed at compile time regardless of initialization",
+      "c": "It depends on how many elements were explicitly listed in the initializer",
+      "d": "`arr.size()` is not available; you must use `sizeof(arr) / sizeof(arr[0])`"
+    },
+    "answer": "b",
+    "explanation_md": "`std::array<int, 5>` always has exactly 5 elements. The `{}` initializer zero-initializes those 5 elements but does not change the count. `.size()` always returns the template argument N, which is 5 here."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int a{7};\n    int b{2};\n    std::cout << a / b << \"\\n\";\n    std::cout << a % b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3\n1",
+    "explanation_md": "Integer division truncates toward zero: `7 / 2 = 3` (the `.5` is dropped). The `%` operator gives the remainder: `7 % 2 = 1`. Both operands are `int`, so no floating-point arithmetic occurs."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x{1};\n    int y{4};\n    std::cout << x / y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0",
+    "explanation_md": "`1 / 4` with two `int` operands performs integer division. The true result is 0.25, but the fractional part is truncated, leaving 0. This surprises programmers who expect `/` to always produce a decimal."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which signed integer type should you choose to store a value like 5 000 000 000 (five billion)?",
+    "options": {
+      "a": "`short` — it is the most efficient type.",
+      "b": "`int` — it always handles any whole number.",
+      "c": "`long long` — it can hold values up to about 9.2 × 10¹⁸.",
+      "d": "`double` — integers should be stored as floating-point when large."
+    },
+    "answer": "c",
+    "explanation_md": "Five billion exceeds `INT_MAX` (~2.1 billion) on a 32-bit `int`. `long long` is at least 8 bytes and can hold values up to about 9.2 × 10¹⁸. `double` can represent large values but loses precision for exact integers above ~2⁵³."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What happens when a signed `int` overflows?",
+    "options": {
+      "a": "The program terminates immediately with a runtime error.",
+      "b": "The compiler catches it and produces a compile error in all cases.",
+      "c": "The behaviour is undefined — the compiler may produce any result.",
+      "d": "The value saturates at the maximum and stays there."
+    },
+    "answer": "c",
+    "explanation_md": "Signed integer overflow is undefined behaviour in C++. The compiler does not guarantee any particular outcome — it may wrap around, crash, or even optimise away code that relies on the overflow. In practice two's-complement wrapping is most common, but you cannot rely on it. Use a wider type to avoid overflow."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A programmer wants to compute `1/3` as a decimal. What is wrong?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int numerator{1};\n    int denominator{3};\n    std::cout << numerator / denominator << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The variable names are too long and cause a compile error.",
+      "b": "Integer division truncates toward zero, so this prints `0`, not `0.333`.",
+      "c": "The `/` operator is not defined for `int` — use `std::div` instead.",
+      "d": "The output will print `0.333` because `cout` promotes the result to `double`."
+    },
+    "answer": "b",
+    "explanation_md": "Both operands are `int`, so `/` performs integer division. The result is 0 (truncated from 0.333). To get a decimal result, at least one operand must be a floating-point type, for example `static_cast<double>(numerator) / denominator`."
+  }
+]

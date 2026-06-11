@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A class header file should contain which of the following?",
+    "options": {
+      "a": "The class definition with member declarations, protected by an include guard or `#pragma once`",
+      "b": "The full implementations of all member functions, including multi-line ones",
+      "c": "Only `#include` directives and no class content",
+      "d": "The `main()` function along with the class definition"
+    },
+    "answer": "a",
+    "explanation_md": "A header file holds the class definition (member names, types, and function declarations) plus an include guard to prevent double-inclusion. Multi-line function bodies go in the `.cpp` implementation file. `main()` belongs in a `.cpp` file, never in a header."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When defining a member function *outside* the class body in a `.cpp` file, what must appear before the function name?",
+    "options": {
+      "a": "Nothing — just write the function name as usual",
+      "b": "The keyword `member`",
+      "c": "The class name followed by `::` (scope resolution operator)",
+      "d": "The keyword `extern`"
+    },
+    "answer": "c",
+    "explanation_md": "Without `ClassName::`, the compiler treats the function as an ordinary free function unrelated to the class. The scope resolution operator `::` tells the compiler this definition belongs to `ClassName`, matching the declaration in the header."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "Two `.cpp` files both `#include \"widget.h\"`. The header is shown below. What problem will occur at link time?\n\n```cpp\n// widget.h  (no include guard)\nclass Widget {\npublic:\n    int id;\n    void show();\n};\n\nvoid Widget::show() {\n    std::cout << id << '\\n';\n}\n```",
+    "options": {
+      "a": "The class definition will be processed twice, causing a redefinition error",
+      "b": "`Widget::show` is defined in the header outside the class body with no `inline` keyword, causing a multiple-definition linker error when two translation units include the header",
+      "c": "The header is missing `#include <iostream>`, causing a compile error",
+      "d": "Both (a) and (b) will occur simultaneously"
+    },
+    "answer": "d",
+    "explanation_md": "Both problems apply. Without an include guard, the class definition is seen twice in any file that includes the header more than once, causing a redefinition error. And even with an include guard, defining `Widget::show` outside the class body in the header (without `inline`) gives each including `.cpp` its own copy of the function, producing a multiple-definition linker error when the program is linked."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why are member functions defined *inside* the class body (in the header) safe to include from multiple `.cpp` files?",
+    "options": {
+      "a": "They are automatically marked `static`, giving each translation unit its own copy",
+      "b": "The compiler ignores redefinitions for class members",
+      "c": "Functions defined inside a class body are implicitly `inline`, which allows multiple identical definitions across translation units",
+      "d": "Header files are not compiled separately, so there is only one definition"
+    },
+    "answer": "c",
+    "explanation_md": "The C++ standard permits multiple identical `inline` function definitions across translation units as long as they are identical. Member functions defined inside the class body are implicitly `inline`, which is why short getters or one-liners are safe to put directly in the header."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "Assuming a single-file program (no separate `.h`), what does this print?\n\n```cpp\n#include <iostream>\nclass Temp {\npublic:\n    int val;\n    Temp(int v) : val{v} {}\n    void show() const { std::cout << val * 2 << '\\n'; }\n};\nint main() {\n    Temp t{7};\n    t.show();\n}\n```",
+    "options": null,
+    "answer": "14",
+    "explanation_md": "`Temp` is constructed with `val = 7`. `show()` prints `val * 2`, which is `14`. In a single-file setup the class definition and its inline member function are both in the same translation unit, which is perfectly valid."
+  }
+]

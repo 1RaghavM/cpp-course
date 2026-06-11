@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Box {\npublic:\n    enum class Size { Small, Medium, Large };\n    Size getSize() const { return m_size; }\nprivate:\n    Size m_size{Size::Medium};\n};\nint main() {\n    Box b;\n    if (b.getSize() == Box::Size::Medium)\n        std::cout << \"medium\\n\";\n    else\n        std::cout << \"other\\n\";\n}\n```",
+    "options": null,
+    "answer": "medium",
+    "explanation_md": "`m_size` is initialized to `Size::Medium`. `getSize()` returns that value. The comparison `b.getSize() == Box::Size::Medium` is true, so `\"medium\"` is printed. Note that outside the class, the enum must be qualified as `Box::Size::Medium`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Outside a class named `Ship`, how do you refer to a nested struct named `Cargo`?",
+    "options": {
+      "a": "`Cargo` — nested types are visible globally",
+      "b": "`Ship.Cargo` — use dot notation like accessing a member",
+      "c": "`Ship::Cargo` — use the scope resolution operator",
+      "d": "`nested<Ship>::Cargo` — use a template syntax"
+    },
+    "answer": "c",
+    "explanation_md": "Nested types are scoped to the enclosing class, so they must be accessed via the scope resolution operator `::`. `Ship::Cargo` is the correct qualified name. Dot notation is for object member access, not type names."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A nested class defined in the `private` section of an outer class is:",
+    "options": {
+      "a": "Accessible to all code that includes the header",
+      "b": "Accessible only inside the outer class's member functions",
+      "c": "Automatically made `public` because it is a type, not a variable",
+      "d": "Accessible to subclasses but not to other external code"
+    },
+    "answer": "b",
+    "explanation_md": "Nested types follow the same access control rules as data members. A `private` nested type can only be named by the outer class's own member functions. Code outside the class — even code in the same file — cannot refer to the type by name."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code fails to compile. What is the bug?\n\n```cpp\n#include <iostream>\nclass Lamp {\npublic:\n    enum class Mode { Off, Dim, Bright };\n    Mode m_mode{Mode::Off};\n};\nint main() {\n    Lamp lamp;\n    if (lamp.m_mode == Mode::Off)\n        std::cout << \"off\\n\";\n}\n```",
+    "options": {
+      "a": "`m_mode` should be private, not public",
+      "b": "`Mode::Off` is not in scope outside the class; it should be `Lamp::Mode::Off`",
+      "c": "Enum class values cannot be used in `if` conditions",
+      "d": "The initializer `{Mode::Off}` is not valid for an enum class member"
+    },
+    "answer": "b",
+    "explanation_md": "Inside `main`, the name `Mode` is not visible directly — it is scoped to `Lamp`. The comparison must use the fully qualified name `Lamp::Mode::Off`. The class and its initializer are fine; the bug is purely a missing qualifier on the outside usage."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer a nested type over a type defined in the global namespace?",
+    "options": {
+      "a": "Always — all types should be nested inside a class for safety",
+      "b": "When the type is tightly coupled to one class and would be meaningless without it",
+      "c": "When the type needs to be used in more than two different classes",
+      "d": "Only when the type is a `struct`, not an `enum class`"
+    },
+    "answer": "b",
+    "explanation_md": "Nesting is appropriate when the type only makes sense as part of one class — its name conveys the coupling, and the qualified name `ClassName::TypeName` reads naturally. Types used across many unrelated classes should live in the broader namespace or their own header to avoid artificial dependencies."
+  }
+]

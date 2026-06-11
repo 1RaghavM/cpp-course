@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual void hello() const { std::cout << \"Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    void hello() const { std::cout << \"Derived\\n\"; }\n};\n\nvoid call(const Base& b) { b.hello(); }\n\nint main() {\n    Derived d;\n    call(d);\n}\n```",
+    "options": null,
+    "answer": "Derived",
+    "explanation_md": "`hello` is declared `virtual` in `Base`. When `call` receives a `Derived` object as a `const Base&`, the virtual dispatch mechanism looks at the runtime type of the object, which is `Derived`, and calls `Derived::hello`, printing `Derived`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Animal {\npublic:\n    void speak() const { std::cout << \"Animal\\n\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    void speak() const { std::cout << \"Meow\\n\"; }\n};\n\nint main() {\n    Cat c;\n    Animal* p = &c;\n    p->speak();\n}\n```",
+    "options": null,
+    "answer": "Animal",
+    "explanation_md": "`speak` is NOT marked `virtual` in `Animal`. With a non-virtual function, the compiler resolves the call using the static type of the pointer, which is `Animal*`. So `Animal::speak` is called and `Animal` is printed, even though the object is really a `Cat`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A base class declares `virtual void draw() const`. A derived class defines `void draw()` (without `const`). What happens when `draw` is called through a `Base*` pointing to a `Derived` object?",
+    "options": {
+      "a": "The derived `draw()` is called because the function name matches.",
+      "b": "A compile error is generated because the signatures differ.",
+      "c": "The base `draw()` is called because the missing `const` means the derived version is NOT an override.",
+      "d": "Undefined behavior at runtime."
+    },
+    "answer": "c",
+    "explanation_md": "A function only overrides a virtual base function if its full signature matches, including `const` qualification. Dropping `const` creates a separate, unrelated function in `Derived`. The virtual dispatch mechanism finds no override and calls the base version. Using `override` (lesson 25.3) would make the compiler flag this mismatch."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The developer expects this to print `Dog` but it prints `Animal`. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Animal {\npublic:\n    void speak() const { std::cout << \"Animal\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const { std::cout << \"Dog\\n\"; }\n};\n\nint main() {\n    Dog d;\n    Animal* p = &d;\n    p->speak();\n}\n```",
+    "options": {
+      "a": "`Dog::speak` must be declared `virtual` — only derived classes need the keyword.",
+      "b": "`Animal::speak` is not declared `virtual`, so the call dispatches on the static type of the pointer (`Animal*`), ignoring the runtime type.",
+      "c": "The pointer `p` must be a `Dog*` for virtual dispatch to work.",
+      "d": "`speak` must return a value for polymorphism to apply."
+    },
+    "answer": "b",
+    "explanation_md": "Virtual dispatch is triggered only when the base class declares the function `virtual`. Without `virtual` on `Animal::speak`, the compiler uses the declared type of `p` (`Animal*`) to resolve the call at compile time. Marking `Animal::speak` as `virtual` fixes the issue."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about virtual functions in C++ is true?",
+    "options": {
+      "a": "Only the most-derived class in a hierarchy needs to declare a function `virtual`.",
+      "b": "Once a function is declared `virtual` in a base class, all overrides in derived classes are automatically virtual too.",
+      "c": "A virtual function must always be pure (= 0) to enable polymorphism.",
+      "d": "Virtual dispatch works only with pointers, not references."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, once a function is declared `virtual` in a base class, any function in a derived class with the same name and signature is implicitly virtual as well — even without the `virtual` keyword in the derived class. Virtual dispatch works through both pointers and references (option d is wrong). Pure virtual functions (option c) are a separate concept for abstract classes."
+  }
+]

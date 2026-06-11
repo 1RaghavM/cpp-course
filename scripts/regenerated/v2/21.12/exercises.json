@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Point3D with Custom Assignment Operator",
+    "prompt_md": "## Goal\nImplement `operator=` for a `Point3D` class so that assignment copies all three coordinates and supports chaining.\n\n## Input\n- Line 1: three integers — the x, y, z coordinates of point A (e.g. `1 2 3`)\n- Line 2: three integers — the x, y, z coordinates of point B (e.g. `4 5 6`)\n- Line 3: three integers — the x, y, z coordinates of point C (e.g. `7 8 9`)\n\n## Output\n- Print coordinates of A after the chain `A = B = C`, one line formatted as `A: x y z`.\n- Print coordinates of B after the chain, one line formatted as `B: x y z`.\n\n## Requirements\n1. `Point3D` stores three `int` members: `m_x`, `m_y`, `m_z`.\n2. A constructor takes three `int` arguments.\n3. `Point3D& operator=(const Point3D& rhs)` copies all three members and returns `*this`.\n4. Include a self-assignment guard.\n5. After `A = B = C`, both A and B must equal C's original values.\n6. A `print(char label)` member function prints `label: x y z` followed by a newline.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\nclass Point3D {\n    int m_x, m_y, m_z;\npublic:\n    Point3D(int x, int y, int z) : m_x{x}, m_y{y}, m_z{z} {}\n\n    // TODO: implement operator= with self-assignment guard, returning *this\n    Point3D& operator=(const Point3D& rhs) {\n        // your code here\n        return *this;\n    }\n\n    void print(char label) const {\n        std::cout << label << \": \" << m_x << ' ' << m_y << ' ' << m_z << '\\n';\n    }\n};\n\nint main() {\n    int ax, ay, az, bx, by, bz, cx, cy, cz;\n    std::cin >> ax >> ay >> az;\n    std::cin >> bx >> by >> bz;\n    std::cin >> cx >> cy >> cz;\n    Point3D A{ax, ay, az};\n    Point3D B{bx, by, bz};\n    Point3D C{cx, cy, cz};\n    A = B = C;\n    A.print('A');\n    B.print('B');\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Point3D {\n    int m_x, m_y, m_z;\npublic:\n    Point3D(int x, int y, int z) : m_x{x}, m_y{y}, m_z{z} {}\n\n    Point3D& operator=(const Point3D& rhs) {\n        if (this == &rhs)\n            return *this;\n        m_x = rhs.m_x;\n        m_y = rhs.m_y;\n        m_z = rhs.m_z;\n        return *this;\n    }\n\n    void print(char label) const {\n        std::cout << label << \": \" << m_x << ' ' << m_y << ' ' << m_z << '\\n';\n    }\n};\n\nint main() {\n    int ax, ay, az, bx, by, bz, cx, cy, cz;\n    std::cin >> ax >> ay >> az;\n    std::cin >> bx >> by >> bz;\n    std::cin >> cx >> cy >> cz;\n    Point3D A{ax, ay, az};\n    Point3D B{bx, by, bz};\n    Point3D C{cx, cy, cz};\n    A = B = C;\n    A.print('A');\n    B.print('B');\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic chain assignment",
+        "is_sample": true,
+        "stdin": "1 2 3\n4 5 6\n7 8 9\n",
+        "expected_stdout": "A: 7 8 9\nB: 7 8 9\n"
+      },
+      {
+        "label": "Hidden: negative coordinates",
+        "is_sample": false,
+        "stdin": "0 0 0\n-1 -2 -3\n10 20 30\n",
+        "expected_stdout": "A: 10 20 30\nB: 10 20 30\n"
+      },
+      {
+        "label": "Hidden: all same values",
+        "is_sample": false,
+        "stdin": "5 5 5\n5 5 5\n5 5 5\n",
+        "expected_stdout": "A: 5 5 5\nB: 5 5 5\n"
+      }
+    ]
+  },
+  {
+    "title": "Counter with Chained Assignment — Complete the Function",
+    "prompt_md": "## Goal\nComplete `operator=` for the `Counter` class so it correctly copies the count, returns `*this`, and supports chaining. The exercise also combines the lesson concept with unary `operator-` (negation) from the prior lesson.\n\n## Input\n- Line 1: an integer — initial value of counter A\n- Line 2: an integer — initial value of counter B\n\n## Output\n- Line 1: print `before: <B_val>` (B's original value)\n- Line 2: print `after: <A_val>` (A's value after `A = B`, which is B's original value)\n- Line 3: print `negated: <val>` (the result of `-A` after assignment, which is the negative of B's original value)\n\n## Requirements\n1. `Counter` stores one `int` member `m_count`.\n2. `Counter& operator=(const Counter& rhs)` must be implemented — copy `m_count` and return `*this`.\n3. `Counter operator-() const` is already implemented — do not change it.\n4. `getValue()` accessor is already provided.\n5. Include a self-assignment guard in `operator=`.\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\nclass Counter {\n    int m_count;\npublic:\n    Counter(int c) : m_count{c} {}\n\n    // TODO: implement operator= — copy m_count and return *this\n    Counter& operator=(const Counter& rhs) {\n        return *this; // stub — replace with real implementation\n    }\n\n    Counter operator-() const { return Counter{-m_count}; }\n    int getValue() const { return m_count; }\n};\n\nint main() {\n    int va, vb;\n    std::cin >> va >> vb;\n    Counter A{va};\n    Counter B{vb};\n    std::cout << \"before: \" << B.getValue() << '\\n';\n    A = B;\n    std::cout << \"after: \"   << A.getValue() << '\\n';\n    Counter neg = -A;\n    std::cout << \"negated: \" << neg.getValue() << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Counter {\n    int m_count;\npublic:\n    Counter(int c) : m_count{c} {}\n\n    Counter& operator=(const Counter& rhs) {\n        if (this == &rhs)\n            return *this;\n        m_count = rhs.m_count;\n        return *this;\n    }\n\n    Counter operator-() const { return Counter{-m_count}; }\n    int getValue() const { return m_count; }\n};\n\nint main() {\n    int va, vb;\n    std::cin >> va >> vb;\n    Counter A{va};\n    Counter B{vb};\n    std::cout << \"before: \" << B.getValue() << '\\n';\n    A = B;\n    std::cout << \"after: \"   << A.getValue() << '\\n';\n    Counter neg = -A;\n    std::cout << \"negated: \" << neg.getValue() << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic assignment and negation",
+        "is_sample": true,
+        "stdin": "10 7\n",
+        "expected_stdout": "before: 7\nafter: 7\nnegated: -7\n"
+      },
+      {
+        "label": "Hidden: negative source value",
+        "is_sample": false,
+        "stdin": "5 -3\n",
+        "expected_stdout": "before: -3\nafter: -3\nnegated: 3\n"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "99 0\n",
+        "expected_stdout": "before: 0\nafter: 0\nnegated: 0\n"
+      }
+    ]
+  }
+]

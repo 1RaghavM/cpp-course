@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nstd::vector<int> make()\n{\n    std::vector<int> v { 1, 2, 3 };\n    return v;\n}\n\nint main()\n{\n    std::vector<int> a { make() };\n    std::cout << a.size() << '\\n';\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "The local vector `v` is returned by value. The compiler uses NRVO or the move constructor to transfer the three elements into `a` with no copy. `a.size()` is therefore 3."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After the following code executes, what is the state of `src`?\n\n```cpp\nstd::vector<int> src { 10, 20, 30 };\nstd::vector<int> dst { std::move(src) };\n```",
+    "options": {
+      "a": "`src` still contains {10, 20, 30} because move makes a copy",
+      "b": "`src` is in a valid but unspecified (typically empty) state",
+      "c": "`src` contains zeros: {0, 0, 0}",
+      "d": "The program has undefined behavior immediately"
+    },
+    "answer": "b",
+    "explanation_md": "A move transfers ownership of the internal buffer from `src` to `dst`. The standard guarantees `src` remains in a valid but unspecified state — typically empty — so reading from it is safe only after reassignment. Option a is wrong because no copy is made; option d is wrong because the move itself is well-defined."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A developer writes the following function. What is the most likely consequence of returning a reference to a local vector?\n\n```cpp\nstd::vector<int>& getNumbers()\n{\n    std::vector<int> nums { 1, 2, 3 };\n    return nums;\n}\n```",
+    "options": {
+      "a": "The vector is automatically moved to the caller, so it is fine",
+      "b": "The program refuses to compile because local references cannot be returned",
+      "c": "The caller receives a dangling reference, leading to undefined behavior",
+      "d": "The vector is copied before the function returns, so the reference is valid"
+    },
+    "answer": "c",
+    "explanation_md": "`nums` is destroyed when the function returns, leaving the returned reference dangling. Accessing it is undefined behavior. Compilers often warn about this, but it compiles. The fix is to return by value, relying on move semantics."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nstd::vector<int> doubled(std::vector<int> v)\n{\n    for (int& x : v)\n        x *= 2;\n    return v;\n}\n\nint main()\n{\n    std::vector<int> a { 3, 5, 7 };\n    std::vector<int> b { doubled(a) };\n    std::cout << b[1] << '\\n';\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "`doubled` receives a copy of `a` (pass by value), doubles each element to give {6, 10, 14}, then returns that vector by value. `b[1]` is 10."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is writing `return std::move(localVec);` inside a function that returns `std::vector<int>` usually a bad idea?",
+    "options": {
+      "a": "It causes a compile error because `std::move` cannot be applied to a named variable",
+      "b": "It prevents the compiler from applying copy elision (NRVO), potentially making the code slower",
+      "c": "It destroys `localVec` before the caller can receive it",
+      "d": "It forces a deep copy instead of a move"
+    },
+    "answer": "b",
+    "explanation_md": "NRVO allows the compiler to construct the return value directly in the caller's storage, eliminating any move or copy. Using `std::move` turns the named variable into an rvalue expression, which disables NRVO. Just writing `return localVec;` lets the compiler choose the best strategy."
+  }
+]

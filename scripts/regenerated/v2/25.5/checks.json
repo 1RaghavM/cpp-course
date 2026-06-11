@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual void foo() const { std::cout << \"Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    void foo() const override { std::cout << \"Derived\\n\"; }\n};\n\nint main() {\n    Derived d;\n    Base b = d;    // copy by value\n    b.foo();\n}\n```",
+    "options": null,
+    "answer": "Base",
+    "explanation_md": "`Base b = d` copies the `Base` portion of `d` into `b` — this is object slicing. `b` is a plain `Base` object, not a `Derived`. Calling `b.foo()` on a value (not a pointer or reference) uses early binding: the static type of `b` is `Base`, so `Base::foo` is called."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following correctly describes the difference between early binding and late binding in C++?",
+    "options": {
+      "a": "Early binding resolves the function address at runtime; late binding resolves it at compile time.",
+      "b": "Early binding resolves the function address at compile time; late binding resolves it at runtime via a vtable lookup.",
+      "c": "Both resolve at runtime, but early binding skips the vtable.",
+      "d": "Late binding only applies to free functions, not member functions."
+    },
+    "answer": "b",
+    "explanation_md": "Early binding (static binding) bakes the function address into the call instruction at compile time. Late binding (dynamic binding) emits an indirect call that consults the vtable at runtime to find the correct override. Options (a) and (c) have the definitions reversed. Option (d) is wrong — late binding applies specifically to virtual member functions."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Animal {\npublic:\n    virtual void speak() const { std::cout << \"Animal\\n\"; }\n};\n\nclass Dog : public Animal {\npublic:\n    void speak() const override {\n        Animal::speak();\n        std::cout << \"Dog\\n\";\n    }\n};\n\nint main() {\n    Dog d;\n    Animal* p = &d;\n    p->speak();\n}\n```",
+    "options": null,
+    "answer": "Animal\nDog",
+    "explanation_md": "`p->speak()` uses late binding and dispatches to `Dog::speak`. Inside `Dog::speak`, `Animal::speak()` is called with explicit scope resolution — this is early binding to `Animal::speak`, which prints `Animal`. Then `Dog::speak` continues and prints `Dog`."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer expects `\"Derived\"` to be printed but sees `\"Base\"`. What is wrong?\n\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    Base() { report(); }\n    virtual void report() const { std::cout << \"Base\\n\"; }\n};\n\nclass Derived : public Base {\npublic:\n    void report() const override { std::cout << \"Derived\\n\"; }\n};\n\nint main() {\n    Derived d;\n}\n```",
+    "options": {
+      "a": "`report` should not be `const` in `Base`.",
+      "b": "Virtual calls inside constructors use early binding — the vtable is not yet set up for `Derived` when `Base::Base()` runs.",
+      "c": "`Derived` must also call `report()` from its own constructor.",
+      "d": "The compiler cannot resolve virtual calls to functions declared in the same class."
+    },
+    "answer": "b",
+    "explanation_md": "During the execution of `Base::Base()`, the object's vtable pointer is set to `Base`'s vtable — `Derived`'s overrides are not yet registered. So `report()` inside `Base::Base()` dispatches via early binding to `Base::report`. This is a well-known C++ pitfall: never rely on virtual dispatch in constructors or destructors."
+  }
+]

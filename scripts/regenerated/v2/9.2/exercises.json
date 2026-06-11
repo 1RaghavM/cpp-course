@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Test a Grade Classifier for Branch Coverage",
+    "prompt_md": "## Goal\nWrite a function `letterGrade` that converts an integer score to a letter grade, then write test cases that achieve branch coverage.\n\n## Input\nNo stdin. All test values are hard-coded.\n\n## Output\nPrint one line per test case in the format `PASS` or `FAIL`.\nTest these 6 cases in this exact order:\n- score 95 → 'A'\n- score 90 → 'A' (boundary: exactly 90)\n- score 89 → 'B' (boundary: just below 90)\n- score 70 → 'C'\n- score 60 → 'D' (boundary: exactly 60)\n- score 59 → 'F' (boundary: just below 60)\n\n## Requirements\n1. Implement `char letterGrade(int score)` with this logic:\n   - 90 and above → 'A'\n   - 80 to 89 → 'B'\n   - 70 to 79 → 'C'\n   - 60 to 69 → 'D'\n   - below 60 → 'F'\n2. Print exactly 6 lines; each line contains only `PASS` or `FAIL`.\n3. Test inputs must be exactly as listed above (in that order).",
+    "starter_code": "#include <iostream>\n\n// TODO: implement letterGrade(int score)\n// 90+ -> 'A', 80-89 -> 'B', 70-79 -> 'C', 60-69 -> 'D', <60 -> 'F'\nchar letterGrade(int score) {\n    return 'F'; // replace this stub\n}\n\nint main() {\n    // TODO: write 6 PASS/FAIL tests covering every branch and boundary\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nchar letterGrade(int score) {\n    if (score >= 90) return 'A';\n    if (score >= 80) return 'B';\n    if (score >= 70) return 'C';\n    if (score >= 60) return 'D';\n    return 'F';\n}\n\nint main() {\n    std::cout << (letterGrade(95) == 'A' ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (letterGrade(90) == 'A' ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (letterGrade(89) == 'B' ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (letterGrade(70) == 'C' ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (letterGrade(60) == 'D' ? \"PASS\" : \"FAIL\") << '\\n';\n    std::cout << (letterGrade(59) == 'F' ? \"PASS\" : \"FAIL\") << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all six boundary+branch tests pass",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS\nPASS\nPASS"
+      },
+      {
+        "label": "Hidden: stub returns F for everything",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS\nPASS\nPASS"
+      },
+      {
+        "label": "Hidden: solution consistency",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "PASS\nPASS\nPASS\nPASS\nPASS\nPASS"
+      }
+    ]
+  },
+  {
+    "title": "Complete branchCount: Count Untested Branches",
+    "prompt_md": "## Goal\nComplete the function `branchCount` that returns the number of distinct output values a `clamp` function can return, given the bounds `lo` and `hi`.\n\n## Input\nLine 1: two integers `lo` and `hi` separated by a space (lo < hi).\n\n## Output\nPrint exactly one line: the integer count of distinct branches reachable in `clamp(val, lo, hi)` for all possible integer values of `val`.\n\n## Requirements\n1. The function `int clamp(int val, int lo, int hi)` returns `lo` if `val < lo`, `hi` if `val > hi`, and `val` otherwise.\n2. Complete `int branchCount(int lo, int hi)` which returns `3` when `lo < hi` (three distinct regions: below lo, between lo and hi inclusive, above hi).\n3. If `lo == hi`, there is only 1 possible output from `clamp`; return `1`.\n4. You may assume `lo <= hi`.\n\n## Notes\n- Use only `if` statements and integer arithmetic.",
+    "starter_code": "#include <iostream>\n\nint clamp(int val, int lo, int hi) {\n    if (val < lo) return lo;\n    if (val > hi) return hi;\n    return val;\n}\n\n// TODO: complete branchCount(int lo, int hi)\n// Return 3 if lo < hi (three distinct branches in clamp),\n// return 1 if lo == hi (only one possible output).\nint branchCount(int lo, int hi) {\n    return 0; // replace this\n}\n\nint main() {\n    int lo, hi;\n    std::cin >> lo >> hi;\n    std::cout << branchCount(lo, hi) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint clamp(int val, int lo, int hi) {\n    if (val < lo) return lo;\n    if (val > hi) return hi;\n    return val;\n}\n\nint branchCount(int lo, int hi) {\n    if (lo == hi) return 1;\n    return 3;\n}\n\nint main() {\n    int lo, hi;\n    std::cin >> lo >> hi;\n    std::cout << branchCount(lo, hi) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: lo < hi gives 3",
+        "is_sample": true,
+        "stdin": "1 10",
+        "expected_stdout": "3"
+      },
+      {
+        "label": "Hidden: lo == hi gives 1",
+        "is_sample": false,
+        "stdin": "5 5",
+        "expected_stdout": "1"
+      },
+      {
+        "label": "Hidden: negative bounds, lo < hi",
+        "is_sample": false,
+        "stdin": "-10 0",
+        "expected_stdout": "3"
+      }
+    ]
+  }
+]

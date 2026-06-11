@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 10;\n    auto addX = [x](int n) { return n + x; };\n    x = 99;\n    std::cout << addX(5) << \"\\n\";\n    std::cout << x << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "15\n99",
+    "explanation_md": "`addX` captures `x` by value when x equals 10. The later assignment `x = 99` changes the original but not the captured copy inside the lambda. So `addX(5)` uses the frozen copy (10), returning 15. Printing `x` shows the modified original, 99."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int count = 0;\n    auto inc = [&count]() { ++count; };\n    inc(); inc(); inc();\n    std::cout << count << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`inc` captures `count` by reference. Each call increments the original `count` variable. After three calls, `count` is 3. Reference captures read and write through to the original — they are not copies."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A lambda captures a local variable by reference and is stored in a `std::function`. The function that created the lambda returns. What happens when the stored lambda is called later?",
+    "options": {
+      "a": "The lambda safely uses a copy of the variable made at the time the function returned",
+      "b": "The lambda uses undefined behavior — the referenced variable was destroyed when the function returned",
+      "c": "C++ automatically extends the lifetime of the variable to match the lambda's lifetime",
+      "d": "The lambda returns a default-constructed value instead of the original variable's value"
+    },
+    "answer": "b",
+    "explanation_md": "Capturing by reference means the lambda holds a reference (essentially a pointer) to a local variable. When the enclosing function returns, that variable is destroyed. Using the reference afterward is undefined behavior — a dangling reference. C++ does not extend lifetimes through lambda captures. The fix is to capture by value."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This lambda is supposed to count how many times it has been called, but it doesn't work correctly. What is wrong?\n\n```cpp\n#include <iostream>\nint main() {\n    int calls = 0;\n    auto counter = [calls]() {\n        ++calls;\n        std::cout << calls << \"\\n\";\n    };\n    counter();\n    counter();\n}\n```",
+    "options": {
+      "a": "`calls` must be declared as `static` to persist across lambda invocations",
+      "b": "`[calls]` captures by value — the lambda gets a const copy it cannot modify; use `[&calls]` to capture by reference",
+      "c": "The lambda should declare its own `int calls = 0` inside the body instead of capturing",
+      "d": "Lambdas cannot print to `std::cout` — a free function is needed"
+    },
+    "answer": "b",
+    "explanation_md": "`[calls]` captures by value, making `calls` a `const` copy inside the lambda. Attempting to modify it with `++calls` is a compile error. To count across calls to the original variable, capture by reference: `[&calls]`. Alternatively, use `mutable` to modify a local copy, but then `calls` in `main` won't reflect the count."
+  }
+]

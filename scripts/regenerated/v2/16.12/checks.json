@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<bool> v(4, false);\n    v[1] = true;\n    v[3] = true;\n    for (int i = 0; i < (int)v.size(); ++i)\n        std::cout << v[i];\n    std::cout << '\\n';\n}\n```",
+    "options": null,
+    "answer": "0101",
+    "explanation_md": "The vector starts as {false, false, false, false}. Setting v[1] and v[3] to true gives {false, true, false, true}. Printing the bool values (0 for false, 1 for true) without separators produces `0101`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does `for (bool& bit : bits)` fail to compile when `bits` is a `std::vector<bool>`?\n\na) Range-based for loops do not support `bool` element types\nb) `std::vector<bool>` subscript returns a proxy object, not a real `bool&`\nc) The `&` syntax is not allowed in range-based for loop variable declarations\nd) `std::vector<bool>` stores chars internally, so the type mismatch causes the error",
+    "options": {
+      "a": "Range-based for loops do not support `bool` element types",
+      "b": "`std::vector<bool>` subscript returns a proxy object, not a real `bool&`",
+      "c": "The `&` syntax is not allowed in range-based for loop variable declarations",
+      "d": "`std::vector<bool>` stores chars internally, so the type mismatch causes the error"
+    },
+    "answer": "b",
+    "explanation_md": "The C++ standard allows `std::vector<bool>` to bit-pack elements. Because individual bits have no addresses, the subscript operator returns a proxy instead of a real `bool&`. The compiler cannot bind a `bool&` to a proxy, so `bool& bit` is a compile error. `auto bit` works because it deduces the proxy type."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have `std::vector<bool> flags;` and need to pass `flags[2]` to a function `void enable(bool& b) { b = true; }`. What is the cleanest fix?\n\na) Change the function to `void enable(std::vector<bool>::reference b) { b = true; }`\nb) Copy the value out, call the function on the copy, then write it back\nc) Use `flags.at(2)` instead of `flags[2]` to get a real reference\nd) Cast `flags[2]` to `bool&` with `reinterpret_cast`",
+    "options": {
+      "a": "Change the function to `void enable(std::vector<bool>::reference b) { b = true; }`",
+      "b": "Copy the value out, call the function on the copy, then write it back",
+      "c": "Use `flags.at(2)` instead of `flags[2]` to get a real reference",
+      "d": "Cast `flags[2]` to `bool&` with `reinterpret_cast`"
+    },
+    "answer": "a",
+    "explanation_md": "Option (a) is the canonical solution: `std::vector<bool>::reference` is the proxy type that `operator[]` and `at()` return, and it supports assignment. Option (b) works but does not actually call through `enable` — it sidesteps the issue rather than fixing it. Option (c) is wrong: `at(2)` returns the same proxy as `operator[]`. Option (d) is undefined behaviour."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code tries to count how many `true` values are in a `std::vector<bool>`, but it has a subtle issue:\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint countTrue(const std::vector<bool>& v)\n{\n    int count = 0;\n    for (bool& b : v)    // problem here\n        if (b) ++count;\n    return count;\n}\n\nint main()\n{\n    std::vector<bool> v = {true, false, true, true};\n    std::cout << countTrue(v) << '\\n';\n}\n```",
+    "options": {
+      "a": "`bool& b` cannot bind to the proxy returned by iterating a `std::vector<bool>` — use `auto b` or `bool b`",
+      "b": "The function parameter should be `std::vector<bool>&` not `const std::vector<bool>&`",
+      "c": "Range-based for loops do not work with `const` vector parameters",
+      "d": "The count variable should be `std::size_t` not `int`"
+    },
+    "answer": "a",
+    "explanation_md": "Iterating a `std::vector<bool>` yields proxy objects, not real `bool` values. Binding a `bool&` to a proxy is a compile error. The fix is `auto b` (deduces proxy type) or `bool b` (copies the value into a plain bool). Options (b), (c), and (d) are incorrect diagnoses."
+  }
+]

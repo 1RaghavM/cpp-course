@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n\nvoid inner() { throw std::logic_error(\"oops\"); }\nvoid middle() { inner(); }\n\nint main() {\n    try {\n        middle();\n    } catch (const std::exception& e) {\n        std::cout << e.what() << \"\\n\";\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "oops",
+    "explanation_md": "`inner()` throws `std::logic_error`. Stack unwinding passes through `middle()` (no local handler). The catch in `main` accepts `const std::exception&` — a base class reference — which matches `std::logic_error` (which derives from `std::logic_error` → `std::exception`). The handler prints `e.what()` which returns \"oops\"."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In a catch handler, you write `throw;` (with no operand). What does this do compared to `throw e;`?",
+    "options": {
+      "a": "Both are identical — they rethrow the same exception object.",
+      "b": "`throw;` rethrows the original exception object without slicing; `throw e;` may create a new copy of the caught type, potentially slicing if `e` is a base reference to a derived exception.",
+      "c": "`throw;` terminates the program; `throw e;` propagates the exception.",
+      "d": "`throw;` only works inside function try blocks; `throw e;` works anywhere."
+    },
+    "answer": "b",
+    "explanation_md": "`throw;` re-activates the currently active exception — the original derived object — without any copying or slicing. `throw e;` when `e` is a `const std::exception&` constructs a new `std::exception` from the reference, discarding any derived-class data. Always use `throw;` to rethrow from a catch handler when you want to preserve the original exception."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which ordering of catch clauses is correct when you want to handle `std::runtime_error` specifically and all other `std::exception` types generically?",
+    "options": {
+      "a": "`catch (const std::exception& e)` first, then `catch (const std::runtime_error& e)`.",
+      "b": "`catch (const std::runtime_error& e)` first, then `catch (const std::exception& e)`.",
+      "c": "Order does not matter — the most-derived handler always wins.",
+      "d": "You cannot catch both in the same try block."
+    },
+    "answer": "b",
+    "explanation_md": "Catch clauses are tried in order. If `std::exception` appears first, it matches every standard exception including `std::runtime_error`, leaving the second handler unreachable. The most-derived (most-specific) type must come first so it gets a chance to match before the more general handler swallows everything."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to be exception-safe. What is the bug?\n\n```cpp\n#include <stdexcept>\n\nstruct Widget {\n    ~Widget() {\n        if (!save()) {\n            throw std::runtime_error(\"save failed\");\n        }\n    }\n    bool save() { return false; }\n};\n```",
+    "options": {
+      "a": "save() should be called in the constructor, not the destructor.",
+      "b": "The destructor throws an exception, which calls std::terminate if the destructor runs during stack unwinding.",
+      "c": "The if condition is inverted — it should throw when save() returns true.",
+      "d": "Destructors cannot call member functions."
+    },
+    "answer": "b",
+    "explanation_md": "Destructors are implicitly `noexcept`. If `~Widget()` runs while another exception is propagating (stack unwinding), throwing a second exception causes `std::terminate`. The fix is to wrap `save()` in a try/catch inside the destructor and swallow or log any failure — never allow an exception to escape a destructor."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid f() noexcept {}\n\nint main() {\n    std::cout << std::boolalpha;\n    std::cout << noexcept(f()) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "true",
+    "explanation_md": "`noexcept(f())` is a compile-time operator that evaluates to `true` when the expression is guaranteed not to throw. `f()` is declared `noexcept`, so it returns `true`. With `std::boolalpha`, the bool value prints as `true` rather than `1`."
+  }
+]

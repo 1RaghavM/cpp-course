@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Counter {\npublic:\n    Counter() : Counter{0} {}\n    explicit Counter(int start) : m_count{start} {}\n    void tick() { ++m_count; }\n    int value() const { return m_count; }\nprivate:\n    int m_count;\n};\nint main() {\n    Counter a;\n    Counter b{5};\n    a.tick(); a.tick();\n    b.tick();\n    std::cout << a.value() << \" \" << b.value() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "2 6",
+    "explanation_md": "`Counter a` uses the default constructor which delegates to `Counter{0}`, setting `m_count` to 0. Two `tick()` calls bring it to 2. `Counter b{5}` initializes `m_count` to 5; one `tick()` call brings it to 6. Output is `2 6`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes why member initializer lists are preferred over assignment in the constructor body?\n\n```cpp\n// Version A\nclass Box {\npublic:\n    Box(int side) : m_side{side} {}\nprivate:\n    int m_side;\n};\n\n// Version B\nclass Box {\npublic:\n    Box(int side) { m_side = side; }\nprivate:\n    int m_side;\n};\n```",
+    "options": {
+      "a": "Version A is syntactic sugar for Version B; both produce identical machine code.",
+      "b": "Version A directly initializes `m_side`; Version B default-initializes it then assigns — and for `const` or reference members, Version B is ill-formed.",
+      "c": "Version B is preferred because it is easier to read.",
+      "d": "Version A requires `m_side` to be `const`; Version B does not."
+    },
+    "answer": "b",
+    "explanation_md": "Member initializer lists initialize the member directly during construction. Constructor-body assignment first default-initializes the member, then assigns a new value — two operations instead of one. More critically, `const` members and reference members have no default initialization and cannot be assigned after construction, making body assignment ill-formed for those cases."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The student expects `implicit_ok` to print `true` but it prints `false`. What is the bug?\n\n```cpp\n#include <iostream>\nstruct Temp {\n    double val;\n    explicit Temp(double v) : val{v} {}\n};\nbool implicit_ok(Temp t) { return t.val > 0.0; }\nint main() {\n    bool result = implicit_ok(36.6);\n    std::cout << (result ? \"true\" : \"false\") << \"\\n\";\n}\n```",
+    "options": {
+      "a": "`explicit` blocks the implicit conversion of `36.6` to `Temp`, so the call fails to compile — not a runtime bug.",
+      "b": "The `val` member is `double`, so `36.6` is truncated to an `int` before conversion.",
+      "c": "`val > 0.0` should be `val >= 0.0`.",
+      "d": "The copy constructor is missing, causing `val` to be zero."
+    },
+    "answer": "a",
+    "explanation_md": "`Temp(double)` is marked `explicit`, so passing the raw literal `36.6` to `implicit_ok(Temp t)` is an implicit conversion — which `explicit` forbids. This is a compile error, not a runtime bug that prints `false`. The student should call `implicit_ok(Temp{36.6})` explicitly."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why can a `constexpr` constructor still be called with runtime values?\n\n```cpp\nclass Clamp {\npublic:\n    constexpr Clamp(int v) : m_v{v} {}\n    constexpr int get() const { return m_v; }\nprivate:\n    int m_v;\n};\nint x;\nstd::cin >> x;\nClamp c{x};   // x is a runtime value\n```",
+    "options": {
+      "a": "This is undefined behavior because a constexpr constructor was given a non-constant argument.",
+      "b": "`constexpr` on a constructor means it can be used at compile time if given constant arguments, but it still works as a normal constructor at runtime.",
+      "c": "The program will only compile in debug mode, not release mode.",
+      "d": "`constexpr` constructors are forbidden from accepting `int` parameters."
+    },
+    "answer": "b",
+    "explanation_md": "`constexpr` on a constructor enables compile-time use; it does not restrict runtime use. When called with runtime values, the constructor behaves exactly like a non-constexpr constructor. When called with constant expressions, the compiler can evaluate it at compile time. The two modes coexist transparently."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nclass Val {\npublic:\n    explicit Val(int v) : m_v{v} {}\n    Val(const Val& other) : m_v{other.m_v} {\n        std::cout << \"copy \";\n    }\n    int get() const { return m_v; }\nprivate:\n    int m_v;\n};\nVal make(int x) { return Val{x}; }\nint main() {\n    Val v = make(7);\n    std::cout << v.get() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`make(7)` returns a prvalue `Val{7}`. In C++17, `Val v = make(7)` triggers mandatory copy elision — the prvalue is constructed directly into `v` without calling the copy constructor. No `copy ` is printed. Only `7` is printed."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Build and Print a Reverse-Sorted Selection Using push_back and Stack Drain",
+    "prompt_md": "## Goal\nRead N integers, store only the even ones using `push_back`, then drain the resulting vector as a stack (using `back()` and `pop_back()`) to print the even numbers in reverse-insertion order.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 20).\n- Lines 2 through N+1: one integer per line.\n\n## Output\n- Print the even numbers in reverse-insertion order, one per line.\n- If there are no even numbers, print `None`.\n\n## Requirements\n1. Filter with `% 2 == 0` as you read; push even numbers with `push_back`.\n2. Drain using `while (!v.empty())` with `back()` then `pop_back()`.\n3. Hidden tests: no even numbers (print `None`) and all even numbers.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> evens;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        // TODO: push_back x only if it is even\n    }\n\n    if (evens.empty())\n    {\n        std::cout << \"None\\n\";\n    }\n    else\n    {\n        // TODO: drain evens as a stack, printing each element\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> evens;\n    for (int i = 0; i < n; ++i)\n    {\n        int x{};\n        std::cin >> x;\n        if (x % 2 == 0)\n            evens.push_back(x);\n    }\n\n    if (evens.empty())\n    {\n        std::cout << \"None\\n\";\n    }\n    else\n    {\n        while (!evens.empty())\n        {\n            std::cout << evens.back() << '\\n';\n            evens.pop_back();\n        }\n    }\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed odd and even",
+        "is_sample": true,
+        "stdin": "5\n3\n8\n7\n2\n4\n",
+        "expected_stdout": "4\n2\n8\n"
+      },
+      {
+        "label": "Hidden: no even numbers",
+        "is_sample": false,
+        "stdin": "3\n1\n5\n9\n",
+        "expected_stdout": "None\n"
+      },
+      {
+        "label": "Hidden: all even",
+        "is_sample": false,
+        "stdin": "4\n6\n10\n2\n4\n",
+        "expected_stdout": "4\n2\n10\n6\n"
+      }
+    ]
+  },
+  {
+    "title": "Enum-Indexed Score Tracker — Fix the Bug",
+    "prompt_md": "## Goal\nFix the one logic bug in this program that uses an enum-indexed `std::vector` to store and print three student scores.\n\n## Input\n- Line 1: integer for Alice's score.\n- Line 2: integer for Bob's score.\n- Line 3: integer for Carol's score.\n\n## Output\n- Print exactly three lines in this order:\n  ```\n  Alice: A\n  Bob: B\n  Carol: C\n  ```\n  where A, B, C are the respective scores.\n\n## Requirements\n1. The program uses `enum Student { alice, bob, carol, numStudents }` and a `std::vector<int>` sized with `numStudents`.\n2. The bug causes the scores to be printed in the wrong order.\n3. Fix only the loop that prints the scores — do not change the input loop or the enum.\n4. Hidden tests use different score values to confirm the correct order.\n\n## Notes\n- The starter compiles and runs; the bug is a logic error in loop direction.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nenum Student { alice, bob, carol, numStudents };\n\nint main()\n{\n    std::vector<int> scores(numStudents);\n\n    for (int i = 0; i < numStudents; ++i)\n        std::cin >> scores[i];\n\n    // bug: prints in reverse order\n    const char* names[] = {\"Alice\", \"Bob\", \"Carol\"};\n    for (int i = numStudents - 1; i >= 0; --i)\n        std::cout << names[i] << \": \" << scores[i] << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nenum Student { alice, bob, carol, numStudents };\n\nint main()\n{\n    std::vector<int> scores(numStudents);\n\n    for (int i = 0; i < numStudents; ++i)\n        std::cin >> scores[i];\n\n    const char* names[] = {\"Alice\", \"Bob\", \"Carol\"};\n    for (int i = 0; i < numStudents; ++i)\n        std::cout << names[i] << \": \" << scores[i] << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic scores",
+        "is_sample": true,
+        "stdin": "90\n85\n78\n",
+        "expected_stdout": "Alice: 90\nBob: 85\nCarol: 78\n"
+      },
+      {
+        "label": "Hidden: different values",
+        "is_sample": false,
+        "stdin": "60\n70\n80\n",
+        "expected_stdout": "Alice: 60\nBob: 70\nCarol: 80\n"
+      },
+      {
+        "label": "Hidden: all same score",
+        "is_sample": false,
+        "stdin": "100\n100\n100\n",
+        "expected_stdout": "Alice: 100\nBob: 100\nCarol: 100\n"
+      }
+    ]
+  }
+]

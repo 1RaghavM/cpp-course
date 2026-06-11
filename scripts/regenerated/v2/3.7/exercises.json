@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Simulated Breakpoint Trace",
+    "prompt_md": "## Goal\nAdd `std::cerr` trace messages at the start of each function call to simulate where a debugger would pause at a breakpoint, then print the final computed value to stdout.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\nLine 3: integer `c`.\n\n## Output\n- Stderr trace messages (not checked — only stdout is tested).\n- Stdout: one line containing the value of `combine(a, b, c)`, defined as `(a + b) * c`.\n\n## Requirements\n1. `add(int x, int y)` returns `x + y`. Print `[bp] add x=<x> y=<y>` to `std::cerr` before computing.\n2. `multiply(int x, int y)` returns `x * y`. Print `[bp] multiply x=<x> y=<y>` to `std::cerr` before computing.\n3. `combine(int a, int b, int c)` calls `add(a, b)` then calls `multiply` on the result and `c`.\n4. `main` reads three integers and prints `combine(a, b, c)` to stdout.",
+    "starter_code": "#include <iostream>\n\nint add(int x, int y) {\n    // TODO: print \"[bp] add x=<x> y=<y>\" to std::cerr\n    return x + y;\n}\n\nint multiply(int x, int y) {\n    // TODO: print \"[bp] multiply x=<x> y=<y>\" to std::cerr\n    return x * y;\n}\n\nint combine(int a, int b, int c) {\n    int sum = add(a, b);\n    return multiply(sum, c);\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << combine(a, b, c) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint add(int x, int y) {\n    std::cerr << \"[bp] add x=\" << x << \" y=\" << y << \"\\n\";\n    return x + y;\n}\n\nint multiply(int x, int y) {\n    std::cerr << \"[bp] multiply x=\" << x << \" y=\" << y << \"\\n\";\n    return x * y;\n}\n\nint combine(int a, int b, int c) {\n    int sum = add(a, b);\n    return multiply(sum, c);\n}\n\nint main() {\n    int a, b, c;\n    std::cin >> a >> b >> c;\n    std::cout << combine(a, b, c) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "2\n3\n4\n",
+        "expected_stdout": "20\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n5\n3\n",
+        "expected_stdout": "15\n"
+      },
+      {
+        "label": "Hidden: c is zero",
+        "is_sample": false,
+        "stdin": "4\n6\n0\n",
+        "expected_stdout": "0\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Wrong Breakpoint-Target Computation",
+    "prompt_md": "## Goal\nFix the single logic bug in a program that computes `(a - b) + (a * b)`. The `std::cerr` trace messages are already in place to help you identify where the wrong value appears — use them as you would use breakpoint observations.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\nOne line containing `(a - b) + (a * b)`.\n\n## Requirements\n1. The program contains exactly one logic bug — find and fix it.\n2. The `std::cerr` trace lines must remain unchanged.\n3. `diff_and_product(int a, int b)` must return `(a - b) + (a * b)`.\n4. Edge cases: the hidden tests include `a = 0` and `b = 0`.",
+    "starter_code": "#include <iostream>\n\nint diff_and_product(int a, int b) {\n    std::cerr << \"[bp] diff_and_product a=\" << a << \" b=\" << b << \"\\n\";\n    int diff = a + b;   // bug: should subtract, not add\n    std::cerr << \"[bp] diff=\" << diff << \"\\n\";\n    int product = a * b;\n    std::cerr << \"[bp] product=\" << product << \"\\n\";\n    return diff + product;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << diff_and_product(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint diff_and_product(int a, int b) {\n    std::cerr << \"[bp] diff_and_product a=\" << a << \" b=\" << b << \"\\n\";\n    int diff = a - b;\n    std::cerr << \"[bp] diff=\" << diff << \"\\n\";\n    int product = a * b;\n    std::cerr << \"[bp] product=\" << product << \"\\n\";\n    return diff + product;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << diff_and_product(a, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "5\n3\n",
+        "expected_stdout": "17\n"
+      },
+      {
+        "label": "Hidden: a is zero",
+        "is_sample": false,
+        "stdin": "0\n4\n",
+        "expected_stdout": "-4\n"
+      },
+      {
+        "label": "Hidden: b is zero",
+        "is_sample": false,
+        "stdin": "7\n0\n",
+        "expected_stdout": "7\n"
+      }
+    ]
+  }
+]

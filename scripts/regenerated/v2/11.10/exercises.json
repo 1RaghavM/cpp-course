@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Implement a Generic Min Function Template",
+    "prompt_md": "## Goal\nWrite a function template `myMin` that returns the smaller of two values of the same type. This exercise practices writing a complete, self-contained template definition — the kind that belongs in a header file so any translation unit can include and use it.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space.\n\n## Output\n- Print exactly one line: the smaller of the two values.\n\n## Requirements\n1. `myMin` must be a function template with a single type parameter `T`.\n2. It takes two parameters of type `T` by value and returns the smaller one.\n3. `main` reads two integers, calls `myMin`, and prints the result.\n4. Hidden tests include equal values and negative values.",
+    "starter_code": "#include <iostream>\n\n// TODO: replace this stub with a correct template definition.\n// myMin should return the smaller of two values of the same type T.\ntemplate <typename T>\nT myMin(T a, T b) {\n    return a; // stub — replace with correct logic\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << myMin(a, b) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT myMin(T a, T b) {\n    return (a < b) ? a : b;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    std::cout << myMin(a, b) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "7 3\n",
+        "expected_stdout": "3"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "5"
+      },
+      {
+        "label": "Hidden: negative numbers",
+        "is_sample": false,
+        "stdin": "-10 -3\n",
+        "expected_stdout": "-10"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Function: Generic Absolute Value",
+    "prompt_md": "## Goal\nComplete the function template `myAbs` that returns the absolute value of its argument. The function combines a type parameter with knowledge of prior lessons (overloading, templates).\n\n## Input\n- Line 1: one integer `n` (may be negative, zero, or positive; magnitude up to 1000).\n\n## Output\n- Print exactly one line: the absolute value of `n`.\n\n## Requirements\n1. Complete the function template `myAbs<T>` that takes one `T` by value and returns its absolute value.\n2. Use an `if`/`else` or ternary expression — do not use `<cmath>` or `<cstdlib>`.\n3. `main` reads one integer, calls `myAbs`, and prints the result.\n4. Hidden tests cover positive, negative, and zero values.\n\n## Notes\n- The template definition must be complete and correct so it could be placed in a header file.",
+    "starter_code": "#include <iostream>\n\ntemplate <typename T>\nT myAbs(T x) {\n    // TODO: return the absolute value of x\n    // Do not use cmath or cstdlib\n    return T{};\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << myAbs(n) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\ntemplate <typename T>\nT myAbs(T x) {\n    return (x < T{}) ? -x : x;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cout << myAbs(n) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: negative input",
+        "is_sample": true,
+        "stdin": "-42\n",
+        "expected_stdout": "42"
+      },
+      {
+        "label": "Hidden: positive input",
+        "is_sample": false,
+        "stdin": "17\n",
+        "expected_stdout": "17"
+      },
+      {
+        "label": "Hidden: zero",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "0"
+      }
+    ]
+  }
+]

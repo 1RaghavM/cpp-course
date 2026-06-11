@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Declare and Print Three Variables",
+    "prompt_md": "## Goal\nWrite a complete C++ program that declares three `int` variables, assigns specific values to them, and prints each value on its own line.\n\n## Input\nNone. This program takes no input.\n\n## Output\nPrint exactly three lines:\n```\n10\n25\n7\n```\n\n## Requirements\n1. Declare three separate `int` variables.\n2. Assign the value `10` to the first, `25` to the second, and `7` to the third.\n3. Print each variable's value on a separate line using `std::cout`.\n4. Each variable must be declared before it is used.\n5. `main` must return `0`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: declare three int variables\n    // TODO: assign 10, 25, and 7 to them\n    // TODO: print each value on its own line\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a;\n    int b;\n    int c;\n    a = 10;\n    b = 25;\n    c = 7;\n    std::cout << a << \"\\n\";\n    std::cout << b << \"\\n\";\n    std::cout << c << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three values",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "10\n25\n7"
+      },
+      {
+        "label": "Hidden: exact values and order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "10\n25\n7"
+      },
+      {
+        "label": "Hidden: no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "10\n25\n7"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Swapped Variables",
+    "prompt_md": "## Goal\nThe program below compiles and runs, but prints the wrong output because two variable assignments are swapped. Find the logic bug and fix it so the output matches the description.\n\n## Input\nNone. This program takes no input.\n\n## Output\nThe fixed program must print exactly:\n```\nWidth: 12\nHeight: 5\n```\n\n## Requirements\n1. Do not add or remove any variable declarations or `std::cout` statements.\n2. Fix exactly one thing: the values assigned to the two variables must match the labels printed.\n3. `main` must return `0`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int width;\n    int height;\n    width = 5;\n    height = 12;\n    std::cout << \"Width: \" << width << \"\\n\";\n    std::cout << \"Height: \" << height << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int width;\n    int height;\n    width = 12;\n    height = 5;\n    std::cout << \"Width: \" << width << \"\\n\";\n    std::cout << \"Height: \" << height << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: correct width and height",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Width: 12\nHeight: 5"
+      },
+      {
+        "label": "Hidden: exact label-value match",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Width: 12\nHeight: 5"
+      },
+      {
+        "label": "Hidden: values not swapped",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Width: 12\nHeight: 5"
+      }
+    ]
+  }
+]

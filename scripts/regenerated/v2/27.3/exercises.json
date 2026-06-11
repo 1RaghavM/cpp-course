@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Stack Unwind Tracer",
+    "prompt_md": "## Goal\nWrite a program with three nested functions where the innermost throws, and use RAII guard objects to print destruction order during unwinding.\n\n## Input\n- No input required (stdin is empty or ignored)\n\n## Output\nPrint exactly this sequence (no extra lines):\n```\nA constructed\nB constructed\nC constructed\nC destroyed\nB destroyed\nA destroyed\nCaught: error\n```\n\n## Requirements\n1. Define a struct `Guard` with a `std::string name` member, a constructor that prints `<name> constructed`, and a destructor that prints `<name> destroyed`.\n2. Function `c()` creates a `Guard` named `\"C\"`, then throws `std::runtime_error(\"error\")`.\n3. Function `b()` creates a `Guard` named `\"B\"`, then calls `c()`.\n4. Function `a()` creates a `Guard` named `\"A\"`, then calls `b()`.\n5. `main` calls `a()` inside a `try` block and catches `const std::runtime_error&`, printing `Caught: <message>`.\n6. All output lines end with `\\n`.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\n// TODO: define struct Guard\n// - std::string name member\n// - constructor: prints \"<name> constructed\"\n// - destructor: prints \"<name> destroyed\"\n\n// TODO: implement c() - creates Guard(\"C\"), throws std::runtime_error(\"error\")\nvoid c() {}\n\n// TODO: implement b() - creates Guard(\"B\"), calls c()\nvoid b() {}\n\n// TODO: implement a() - creates Guard(\"A\"), calls b()\nvoid a() {}\n\nint main() {\n    // TODO: call a() in a try block\n    // catch const std::runtime_error& and print: Caught: <message>\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n#include <string>\n\nstruct Guard {\n    std::string name;\n    Guard(const std::string& n) : name(n) {\n        std::cout << name << \" constructed\\n\";\n    }\n    ~Guard() {\n        std::cout << name << \" destroyed\\n\";\n    }\n};\n\nvoid c() {\n    Guard g(\"C\");\n    throw std::runtime_error(\"error\");\n}\n\nvoid b() {\n    Guard g(\"B\");\n    c();\n}\n\nvoid a() {\n    Guard g(\"A\");\n    b();\n}\n\nint main() {\n    try {\n        a();\n    } catch (const std::runtime_error& e) {\n        std::cout << \"Caught: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: destruction order",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "A constructed\nB constructed\nC constructed\nC destroyed\nB destroyed\nA destroyed\nCaught: error\n"
+      },
+      {
+        "label": "Hidden: same as sample (deterministic)",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "A constructed\nB constructed\nC constructed\nC destroyed\nB destroyed\nA destroyed\nCaught: error\n"
+      },
+      {
+        "label": "Hidden: verify catch message",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "A constructed\nB constructed\nC constructed\nC destroyed\nB destroyed\nA destroyed\nCaught: error\n"
+      }
+    ]
+  },
+  {
+    "title": "Exception Propagation Chain",
+    "prompt_md": "## Goal\nThis program is supposed to print `Caught in main: value too large` but the catch in `main` is never reached. Find and fix the single logic bug.\n\n## Input\n- No input (stdin ignored)\n\n## Output\n```\nCaught in main: value too large\n```\n\n## Requirements\n1. The bug is NOT a compile error — the program compiles and runs but terminates abnormally.\n2. Fix exactly one thing so `main`'s catch handles the exception.\n3. Do not add new catch clauses to `middle()` or `inner()`.\n\n## Notes\n- This is a fix-the-bug exercise.\n",
+    "starter_code": "#include <iostream>\n#include <stdexcept>\n\nvoid inner() {\n    throw std::runtime_error(\"value too large\");\n}\n\nvoid middle() {\n    try {\n        inner();\n    } catch (const std::runtime_error& e) {\n        // BUG: silently swallows exception without re-throwing\n        // do nothing — exception is lost here\n    }\n}\n\nint main() {\n    try {\n        middle();\n    } catch (const std::runtime_error& e) {\n        std::cout << \"Caught in main: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <stdexcept>\n\nvoid inner() {\n    throw std::runtime_error(\"value too large\");\n}\n\nvoid middle() {\n    try {\n        inner();\n    } catch (const std::runtime_error& e) {\n        throw; // re-throw so main can catch it\n    }\n}\n\nint main() {\n    try {\n        middle();\n    } catch (const std::runtime_error& e) {\n        std::cout << \"Caught in main: \" << e.what() << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: exception reaches main",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Caught in main: value too large\n"
+      },
+      {
+        "label": "Hidden: same program (deterministic)",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Caught in main: value too large\n"
+      },
+      {
+        "label": "Hidden: verify exact message",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Caught in main: value too large\n"
+      }
+    ]
+  }
+]

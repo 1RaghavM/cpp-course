@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\n    int m_count;\n    int m_step;\npublic:\n    Counter(int step)\n        : m_step{ step }, m_count{ m_step * 10 }\n    {}\n    void print() const { std::cout << m_count << \" \" << m_step << \"\\n\"; }\n};\n\nint main() {\n    Counter c{ 3 };\n    c.print();\n}\n```",
+    "options": null,
+    "answer": "0 3",
+    "explanation_md": "`m_count` is declared before `m_step` in the class, so it is initialized first regardless of the initializer list order. When `m_count{ m_step * 10 }` runs, `m_step` is still uninitialized (zero-initialized for the specific ABI here, but formally undefined behavior). The safe output is indeterminate, but on most compilers this prints `0 3` because `m_step` happens to be zero when `m_count` is initialized. The lesson: always initialize members in declaration order."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class has a `const int m_id` member. Which of the following correctly initializes it in a constructor?",
+    "options": {
+      "a": "Set `m_id = id;` inside the constructor body.",
+      "b": "Use `m_id{ id }` in the member initializer list.",
+      "c": "Declare it as `const int m_id = 0;` in the class and reassign in the constructor body.",
+      "d": "Omit initialization; `const` members default to zero automatically."
+    },
+    "answer": "b",
+    "explanation_md": "`const` members must be initialized, never assigned. The only place to do so is the member initializer list (option b). Option a fails to compile — you cannot assign to `const`. Option c's inline default works but cannot be overridden by the constructor body. Option d is wrong: uninitialized `const` members are a compile error."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This class compiles but produces the wrong output. What is the bug?\n\n```cpp\n#include <iostream>\n\nclass Range {\n    int m_lo;\n    int m_hi;\n    int m_span;\npublic:\n    Range(int lo, int hi)\n        : m_span{ m_hi - m_lo }, m_lo{ lo }, m_hi{ hi }\n    {}\n    int span() const { return m_span; }\n};\n\nint main() {\n    Range r{ 2, 8 };\n    std::cout << r.span() << \"\\n\";  // expected: 6\n}\n```",
+    "options": {
+      "a": "`m_lo` and `m_hi` should be public to allow initialization.",
+      "b": "Members are initialized in declaration order, so `m_span` is computed from uninitialized `m_lo` and `m_hi`.",
+      "c": "The subtraction `m_hi - m_lo` overflows because both are uninitialized.",
+      "d": "The constructor should use assignment (`=`) instead of brace initialization."
+    },
+    "answer": "b",
+    "explanation_md": "Members are always initialized in the order they are declared in the class body, not the order listed in the initializer list. `m_lo` and `m_hi` are declared before `m_span`, but the list places `m_span` first — so when `m_span` is computed, `m_lo` and `m_hi` are still uninitialized. Move `m_span` to the end of the initializer list, or better, reorder to match declaration order."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about member initializer lists is correct?",
+    "options": {
+      "a": "Members listed earlier in the initializer list are always initialized first.",
+      "b": "The member initializer list runs after the constructor body.",
+      "c": "Members are initialized in the order they are declared in the class, regardless of initializer list order.",
+      "d": "You can only use the member initializer list for `const` and reference members."
+    },
+    "answer": "c",
+    "explanation_md": "C++ guarantees initialization order follows declaration order in the class body. The order in the initializer list is irrelevant to the actual initialization sequence. The member initializer list also runs before the constructor body (not after), and it is beneficial — not restricted — to use for all members."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x { 3 };\n    const int& r { x };\n    x = 30;\n    std::cout << r << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "30",
+    "explanation_md": "`r` is a const reference that aliases `x`. Assigning `30` to `x` directly is fine because `x` itself is not const. Reading through `r` gives the current value of `x`, which is now `30`. The output is `30`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of these initializations compiles successfully?",
+    "options": {
+      "a": "`int& r { 7 };`",
+      "b": "`const int& r { 7 };`",
+      "c": "`int& r { 3.14 };`",
+      "d": "`int& r;`"
+    },
+    "answer": "b",
+    "explanation_md": "`const int& r { 7 }` is valid: a const lvalue reference can bind to an rvalue (the literal `7`). The compiler creates a temporary `int` with value `7` and extends its lifetime to match `r`. Option (a) fails because a non-const reference cannot bind to an rvalue. Option (c) would involve a narrowing temporary. Option (d) fails because references must be initialized."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function has this signature:\n\n```cpp\nvoid inspect(const int& n);\n```\n\nWhich calls are valid?",
+    "options": {
+      "a": "Only `inspect(x)` where `x` is a named non-const `int` variable.",
+      "b": "Only `inspect(x)` where `x` is a named `const int` variable.",
+      "c": "`inspect(x)`, `inspect(42)`, and `inspect(a + b)` are all valid.",
+      "d": "`inspect(x)` and `inspect(42)` are valid, but `inspect(a + b)` is not because expressions are not lvalues."
+    },
+    "answer": "c",
+    "explanation_md": "A `const T&` parameter accepts lvalues (named variables of any const-ness) and rvalues (literals, arithmetic expressions). The function takes a `const` reference, so it can safely bind to a temporary produced by `a + b`. All three calls are valid."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This code does not compile. What is the bug?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    const int limit { 100 };\n    int& r { limit };    // attempt to alias limit\n    std::cout << r << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`const int limit` must be declared as `constexpr` before it can be aliased.",
+      "b": "A non-const `int&` reference cannot bind to a `const` object because it would break the const guarantee.",
+      "c": "`limit` is a literal; literals cannot be aliased at all.",
+      "d": "The reference `r` must be initialized with braces, not used with `{}`."
+    },
+    "answer": "b",
+    "explanation_md": "Binding a non-const `int&` to a `const int` would let the programmer modify the object through `r`, violating the `const` promise on `limit`. The compiler rejects it. The fix is to declare `const int& r { limit };`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nvoid show(const int& n)\n{\n    std::cout << n << '\\n';\n}\n\nint main()\n{\n    show(5 * 4);\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "20",
+    "explanation_md": "`5 * 4` is an rvalue expression with value `20`. The `const int&` parameter can bind to this rvalue — the compiler creates a temporary holding `20` and passes a const reference to it. `show` prints `20`."
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    std::cout << 17 % 5 << '\\n';\n    std::cout << 20 % 5 << '\\n';\n    std::cout << -7 % 3 << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2\n0\n-1",
+    "explanation_md": "`17 % 5` is 2 (17 = 3*5 + 2). `20 % 5` is 0 (exactly divisible). `-7 % 3` is -1 in C++ because the result carries the sign of the left operand: -7 = (-2)*3 + (-1)."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which expression tests whether integer `n` is a multiple of 7?",
+    "options": {
+      "a": "`n / 7 == 0`",
+      "b": "`n % 7 == 0`",
+      "c": "`n * 7 == 0`",
+      "d": "`7 % n == 0`"
+    },
+    "answer": "b",
+    "explanation_md": "`n % 7 == 0` is true precisely when `n` divides evenly by 7 — the remainder is zero. `n / 7 == 0` only checks whether n is less than 7. `n * 7 == 0` checks whether n itself is zero. `7 % n` has the divisor and dividend swapped."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the return type of `std::pow(2.0, 8.0)`?",
+    "options": {
+      "a": "`int`",
+      "b": "`long long`",
+      "c": "`double`",
+      "d": "`float`"
+    },
+    "answer": "c",
+    "explanation_md": "`std::pow` always returns `double`. Even though the result (256) is a whole number, the value lives in a `double`. You need `static_cast<int>(...)` to convert it to an integer type, but be aware that floating-point rounding can occasionally produce results like 255.9999..."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to extract the last two digits of a number. Their code prints the wrong value for negative inputs. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int n = -193;\n    std::cout << n % 100 << '\\n'; // expects 93\n    return 0;\n}\n```",
+    "options": {
+      "a": "`%` requires both operands to be unsigned, so the result is undefined.",
+      "b": "The result of `n % 100` carries the sign of `n`, so it prints -93, not 93.",
+      "c": "Integer overflow occurs because -193 is outside the safe range for `%`.",
+      "d": "`%` with 100 extracts the hundreds digit, not the last two digits."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, `%` gives a result with the sign of the left operand. `-193 % 100` is `-93`, not `93`. To always get a non-negative result in range [0, 100), use `((n % 100) + 100) % 100`, which adds 100 before the second modulo to handle the negative case."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x = 3;\n    int cube = x * x * x;\n    std::cout << cube << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "27",
+    "explanation_md": "`x * x * x` is `3 * 3 * 3`. Multiplication is left-associative, so this evaluates as `(3 * 3) * 3 = 9 * 3 = 27`. Manual multiplication like this is preferred over `std::pow` for small integer exponents because it stays in integer arithmetic."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Letter Grade Classifier",
+    "prompt_md": "## Goal\nRead a numeric score and print the corresponding letter grade using the conditional operator.\n\n## Input\nLine 1: a single integer score (0 to 100 inclusive).\n\n## Output\nPrint exactly one line: `Grade: X` where X is the letter grade according to these thresholds:\n- 90 and above: `A`\n- 80 to 89: `B`\n- 70 to 79: `C`\n- 60 to 69: `D`\n- Below 60: `F`\n\n## Requirements\n1. Use at least one conditional (`?:`) expression to determine the letter grade.\n2. Print exactly the format `Grade: X` with a newline at the end.\n3. You may chain multiple conditional operators to cover all five grades.\n4. Edge cases covered by hidden tests: score exactly 90, score exactly 60, score 0, score 100.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int score;\n    std::cin >> score;\n\n    // TODO: use the conditional operator (or chained conditionals) to determine\n    // the letter grade and store it in a char or string variable.\n    char grade = '?';  // replace this with your conditional expression\n\n    std::cout << \"Grade: \" << grade << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int score;\n    std::cin >> score;\n\n    char grade = (score >= 90) ? 'A' :\n                 (score >= 80) ? 'B' :\n                 (score >= 70) ? 'C' :\n                 (score >= 60) ? 'D' : 'F';\n\n    std::cout << \"Grade: \" << grade << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mid-range score",
+        "is_sample": true,
+        "stdin": "75\n",
+        "expected_stdout": "Grade: C\n"
+      },
+      {
+        "label": "Hidden: boundary score 90",
+        "is_sample": false,
+        "stdin": "90\n",
+        "expected_stdout": "Grade: A\n"
+      },
+      {
+        "label": "Hidden: failing score 0",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Grade: F\n"
+      }
+    ]
+  },
+  {
+    "title": "Clamp Integer to Range",
+    "prompt_md": "## Goal\nComplete the function `clamp` that returns a value clamped to the inclusive range [lo, hi]: if the value is below `lo` return `lo`; if above `hi` return `hi`; otherwise return the value unchanged.\n\n## Input\nLine 1: three space-separated integers: `value lo hi` (lo <= hi, all values between -1000 and 1000 inclusive).\n\n## Output\nPrint exactly one line: the clamped integer followed by a newline.\n\n## Requirements\n1. Implement `int clamp(int value, int lo, int hi)` using two nested conditional (`?:`) expressions — no if-else statements inside the function body.\n2. The function must handle: value below lo, value above hi, and value already within range.\n3. `main` reads the three integers and passes them to `clamp`, then prints the result.\n4. Hidden tests cover: value equal to lo, value equal to hi, value far below lo, value far above hi.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement clamp using only the conditional operator (?:).\n// Do not use if-else inside this function.\nint clamp(int value, int lo, int hi) {\n    return 0;  // replace with your implementation\n}\n\nint main() {\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << clamp(value, lo, hi) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint clamp(int value, int lo, int hi) {\n    return (value < lo) ? lo : (value > hi) ? hi : value;\n}\n\nint main() {\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    std::cout << clamp(value, lo, hi) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value within range",
+        "is_sample": true,
+        "stdin": "5 1 10\n",
+        "expected_stdout": "5\n"
+      },
+      {
+        "label": "Hidden: value below lo",
+        "is_sample": false,
+        "stdin": "-50 0 100\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: value above hi",
+        "is_sample": false,
+        "stdin": "200 0 100\n",
+        "expected_stdout": "100\n"
+      }
+    ]
+  }
+]

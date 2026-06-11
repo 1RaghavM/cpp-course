@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int x = 0;\nstart:\n    if (x < 3) {\n        std::cout << x << \"\\n\";\n        ++x;\n        goto start;\n    }\n    std::cout << \"done\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0\n1\n2\ndone",
+    "explanation_md": "Execution enters at x=0, prints 0, increments x to 1, and jumps back to `start:`. This repeats for x=1 and x=2. When x becomes 3, the `if` condition is false so the loop body is skipped and `done` is printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which restriction does C++ impose on `goto`?",
+    "options": {
+      "a": "`goto` cannot jump backward — only forward",
+      "b": "`goto` cannot jump into a different function",
+      "c": "`goto` requires the label to be declared before the `goto` statement",
+      "d": "`goto` cannot appear inside an `if` body"
+    },
+    "answer": "b",
+    "explanation_md": "`goto` can jump both forward and backward within a function, and labels do not need to be declared before they are referenced — the compiler resolves them after parsing the entire function. The hard constraint is that `goto` cannot jump to a label in a different function; control flow is always confined to one function."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    std::cout << \"A\\n\";\n    goto end;\n    std::cout << \"B\\n\";\n    std::cout << \"C\\n\";\nend:\n    std::cout << \"D\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A\nD",
+    "explanation_md": "`goto end` jumps directly to the `end:` label, bypassing both the `B` and `C` output statements. Only `A` and `D` are printed."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `goto` strongly discouraged in modern C++?",
+    "options": {
+      "a": "It is slower than structured control flow at runtime",
+      "b": "It was removed from the C++20 standard",
+      "c": "Arbitrary jumps make control flow hard to follow and reason about, and every `goto` pattern has a cleaner structured alternative",
+      "d": "It can only jump forward, making loops impossible"
+    },
+    "answer": "c",
+    "explanation_md": "`goto` is still valid C++ — it was not removed. Its runtime performance is no different from a branch. The real problem is readability: arbitrary jumps break the top-to-bottom mental model of reading code, and every goto pattern (loop simulation, error cleanup, skipping code) has a cleaner equivalent in structured control flow."
+  }
+]

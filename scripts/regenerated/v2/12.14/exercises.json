@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Trace auto Deduction Types",
+    "prompt_md": "## Goal\nRead one integer and one pointer-reachable integer, then print three values that demonstrate `auto` deduction stripping `const` and references.\n\n## Input\n- Line 1: integer `a`.\n- Line 2: integer `b`.\n\n## Output\n- Line 1: the value of `a` doubled, computed through an `auto&` alias.\n- Line 2: the value of `b` after copying through plain `auto` from a `const` source (modification applied).\n- Line 3: the original value of `b` to confirm the const source was not modified.\n\nFormula for each line:\n- Line 1: `a * 2` (the alias doubles `a` in place, then we print `a`).\n- Line 2: copy of `b` + 10 (auto strips const so the copy can be modified).\n- Line 3: `b` (unchanged, demonstrating that the original const source was not touched).\n\n## Requirements\n1. Declare `const int cb = b;`. Use `auto copy = cb;` to get a mutable copy.\n2. Declare `auto& ra = a;` and set `ra = ra * 2;` to double `a` through the alias.\n3. Compute `copy = copy + 10;` (legal because `auto` stripped `const`).\n4. Print `a`, then `copy`, then `cb`, each on its own line.\n5. Hidden tests check that `a` is truly doubled (the alias wrote back) and `cb` is truly unchanged.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    const int cb = b;\n\n    // TODO: declare auto& ra = a; and double a through ra\n    auto& ra = a;\n    ra = ra * 2;\n\n    // TODO: declare auto copy = cb; and add 10 to copy\n    auto copy = cb;\n    copy = copy + 10;\n\n    // TODO: print a, then copy, then cb, each on its own line\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    const int cb = b;\n\n    auto& ra = a;\n    ra = ra * 2;\n\n    auto copy = cb;\n    copy = copy + 10;\n\n    std::cout << a << '\\n';\n    std::cout << copy << '\\n';\n    std::cout << cb << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a=3 b=5",
+        "is_sample": true,
+        "stdin": "3\n5\n",
+        "expected_stdout": "6\n15\n5"
+      },
+      {
+        "label": "Hidden: a=10 b=0",
+        "is_sample": false,
+        "stdin": "10\n0\n",
+        "expected_stdout": "20\n10\n0"
+      },
+      {
+        "label": "Hidden: negative a",
+        "is_sample": false,
+        "stdin": "-4\n7\n",
+        "expected_stdout": "-8\n17\n7"
+      }
+    ]
+  },
+  {
+    "title": "Complete: auto Reference Return Printer",
+    "prompt_md": "## Goal\nComplete the function `largerRef` that returns a reference to the larger of two integers, then use `auto&` to bind to the return value and increment it.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space.\n\n## Output\n- Line 1: the larger value after it has been incremented by 1.\n- Line 2: the value of `a`.\n- Line 3: the value of `b`.\n\n(One of lines 2–3 will be one greater than the original input because the reference modification wrote back.)\n\n## Requirements\n1. Implement `int& largerRef(int& x, int& y)` — return a reference to whichever of `x` or `y` is greater; if equal, return `x`.\n2. In `main`, call `auto& big = largerRef(a, b);` and then do `big += 1;`.\n3. Print `big`, then `a`, then `b`, each on its own line.\n4. Hidden tests check that exactly one of `a` or `b` is incremented (the one that was larger), not both.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement largerRef — return a reference to the larger of x or y\n// If equal, return x.\nint& largerRef(int& x, int& y) {\n    // TODO\n    return x;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    auto& big = largerRef(a, b);\n    big += 1;\n\n    std::cout << big << '\\n';\n    std::cout << a << '\\n';\n    std::cout << b << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint& largerRef(int& x, int& y) {\n    if (x >= y) return x;\n    return y;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    auto& big = largerRef(a, b);\n    big += 1;\n\n    std::cout << big << '\\n';\n    std::cout << a << '\\n';\n    std::cout << b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a=3 b=7",
+        "is_sample": true,
+        "stdin": "3 7\n",
+        "expected_stdout": "8\n3\n8"
+      },
+      {
+        "label": "Hidden: a=10 b=2",
+        "is_sample": false,
+        "stdin": "10 2\n",
+        "expected_stdout": "11\n11\n2"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "6\n6\n5"
+      }
+    ]
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "You split a program across `main.cpp` and `util.cpp`. `main.cpp` calls a function `int compute(int)` that is defined in `util.cpp`. What must appear in `main.cpp` for it to compile?",
+    "options": {
+      "a": "The full definition (body) of `compute` copied into `main.cpp`.",
+      "b": "A forward declaration `int compute(int);` before the call site.",
+      "c": "Nothing — the compiler automatically finds definitions in other `.cpp` files.",
+      "d": "A `#include \"util.cpp\"` directive."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler processes each `.cpp` file independently, so it never looks at `util.cpp` when compiling `main.cpp`. A forward declaration gives the compiler the type information it needs to accept the call. The linker (not the compiler) later connects the call to the definition in `util.cpp`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A project has `a.cpp` and `b.cpp`. Both files contain the definition `int add(int x, int y) { return x + y; }`. What happens when you compile and link both files?",
+    "options": {
+      "a": "The program compiles and links fine; duplicate definitions are merged.",
+      "b": "The compiler rejects one of the files immediately.",
+      "c": "The linker reports a 'multiple definition' error.",
+      "d": "The first definition wins; the second is silently ignored."
+    },
+    "answer": "c",
+    "explanation_md": "Each `.cpp` file compiles without error because each file, viewed in isolation, defines `add` once. The problem arises at link time: the linker sees two object files both claiming to define `add` and refuses to link, reporting a multiple-definition error. Functions must be defined in exactly one translation unit."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "This single-file program simulates the multi-file pattern using forward declarations. What does it print?\n\n```cpp\n#include <iostream>\n\nint double_it(int x);\nint halve(int x);\n\nint main()\n{\n    std::cout << double_it(5) << \"\\n\";\n    std::cout << halve(8) << \"\\n\";\n    return 0;\n}\n\nint double_it(int x) { return x * 2; }\nint halve(int x)     { return x / 2; }\n```",
+    "options": null,
+    "answer": "10\n4",
+    "explanation_md": "`double_it(5)` returns `5 * 2 = 10`. `halve(8)` uses integer division: `8 / 2 = 4`. Each result is printed on its own line."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A developer compiles their project with only `g++ -std=c++20 main.cpp -o app` even though `square` is defined in `util.cpp`. The compile step succeeds but the final step fails. What is wrong?\n\n```cpp\n// main.cpp\n#include <iostream>\nint square(int x);\nint main() { std::cout << square(4) << \"\\n\"; }\n```",
+    "options": {
+      "a": "The forward declaration is missing a semicolon.",
+      "b": "`util.cpp` was not passed to the compiler command, so the linker cannot find the definition of `square`.",
+      "c": "`main` must always be in the same file as the functions it calls.",
+      "d": "`int square(int x);` is not a valid forward declaration because the parameter name is missing."
+    },
+    "answer": "b",
+    "explanation_md": "The compile step succeeds because the forward declaration satisfies the compiler. The failure is a linker error: `util.cpp` (which contains the body of `square`) was never compiled, so the linker has no object file to pull the definition from. The fix is `g++ -std=c++20 main.cpp util.cpp -o app`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement best describes the role of the **linker** when building a multi-file C++ program?",
+    "options": {
+      "a": "It checks each `.cpp` file for syntax errors.",
+      "b": "It combines the compiled object files and resolves references between them into a single executable.",
+      "c": "It runs the program and reports runtime errors.",
+      "d": "It removes duplicate function definitions automatically."
+    },
+    "answer": "b",
+    "explanation_md": "The compiler turns each `.cpp` file into an object file, leaving cross-file references unresolved. The linker's job is to connect those references — for example, a call to `square` in `main.o` — to their definitions in other object files, producing the final executable. Syntax checking is the compiler's job; duplicate definitions cause linker errors, not automatic merging."
+  }
+]

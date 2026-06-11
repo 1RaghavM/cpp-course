@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Counter {\n    int m_count{ 0 };\npublic:\n    Counter& add(int n) { m_count += n; return *this; }\n    int get() const     { return m_count; }\n};\n\nint main() {\n    Counter c;\n    c.add(3).add(4).add(1);\n    std::cout << c.get() << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "8",
+    "explanation_md": "Each call to `add` mutates `m_count` and returns `*this` by reference. The chain `add(3).add(4).add(1)` operates on the same `Counter` object throughout: 0 + 3 = 3, 3 + 4 = 7, 7 + 1 = 8. Because `add` returns `Counter&` (reference to the object), not a copy, every mutation sticks."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A static data member of a class that is not `constexpr` must be defined outside the class body in exactly one translation unit. What happens if you forget this definition?",
+    "options": {
+      "a": "The compiler uses a default-initialized copy for each object that is created.",
+      "b": "The program compiles but prints 0 for the static member because the compiler zero-initializes it.",
+      "c": "The linker reports an undefined symbol error because the storage for the static member was never allocated.",
+      "d": "The class is unusable at compile time because the static member declaration is treated as an error."
+    },
+    "answer": "c",
+    "explanation_md": "The in-class declaration (`static int s_count;`) only declares the member — it tells other code the variable exists. The actual storage is created by the out-of-class definition (`int ClassName::s_count = 0;`). Without it, the linker cannot find the symbol and reports an undefined reference."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Tag {\npublic:\n    Tag()  { std::cout << \"born\\n\"; }\n    ~Tag() { std::cout << \"gone\\n\"; }\n};\n\nint main() {\n    Tag a;\n    {\n        Tag b;\n    }\n    std::cout << \"end\\n\";\n}\n```",
+    "options": null,
+    "answer": "born\nborn\ngone\nend\ngone",
+    "explanation_md": "`a` is constructed first (born), then `b` is constructed (born). The inner block ends, so `b` is destroyed (gone) before the `end` line executes. Then `main` ends and `a` is destroyed (gone). Objects are destroyed in reverse construction order when they share the same scope; here `b`'s scope ends before `a`'s."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement about `friend` declarations is correct?",
+    "options": {
+      "a": "A friend function becomes a member of the class and can access `this`.",
+      "b": "A friend declaration grants a specific non-member function or class access to the class's private and protected members.",
+      "c": "Declaring a function as `friend` inside a class also defines that function.",
+      "d": "Friend functions must be declared before the class definition that grants them access."
+    },
+    "answer": "b",
+    "explanation_md": "A `friend` declaration is a targeted access grant — it lets a named non-member function (or another class) read and write private members, but the friend does not become a member. It still has no `this` pointer and is called as a regular function. The class definition does not also define the friend function; the friend must be defined separately."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class template's member function definitions must be placed in the header file (not a separate `.cpp` file). Why?",
+    "options": {
+      "a": "Header files are parsed at link time, so the linker can resolve template symbols.",
+      "b": "The compiler must see the full definition to generate code for each instantiation; if the definition is in a separate `.cpp` file, other translation units cannot instantiate the template.",
+      "c": "Template functions are always inlined, and inlining is only possible in header files.",
+      "d": "The `template` keyword disables separate compilation entirely for the affected class."
+    },
+    "answer": "b",
+    "explanation_md": "Template instantiation happens at compile time, in each translation unit that uses the template. The compiler needs the full function bodies to generate `Box<int>::get()` or `Box<double>::get()`. If those bodies live only in a `.cpp` file, the other translation units never see them and the linker reports undefined symbols for every instantiation."
+  }
+]

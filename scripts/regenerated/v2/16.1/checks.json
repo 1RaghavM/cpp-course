@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> v { 10, 20, 30, 40, 50 };\n    std::cout << v[0] << '\\n';\n    std::cout << v[4] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10\n50",
+    "explanation_md": "The vector has 5 elements at indices 0–4. `v[0]` is the first element (10) and `v[4]` is the last element (50). The indices run from 0 to length−1, so index 4 is the last valid index for a 5-element vector."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A `std::vector<int>` contains 8 elements. What is the last valid index?",
+    "options": {
+      "a": "7",
+      "b": "8",
+      "c": "9",
+      "d": "0"
+    },
+    "answer": "a",
+    "explanation_md": "For a container of length N, valid indices run from 0 to N−1. With 8 elements the last valid index is 8−1 = 7. Accessing index 8 would be one past the end, which is undefined behavior."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Where does `std::vector` store its element data at runtime?",
+    "options": {
+      "a": "On the stack, because the variable is declared locally",
+      "b": "On the heap, managed automatically by the vector",
+      "c": "In a global segment, shared between all vectors",
+      "d": "In a CPU register for fast access"
+    },
+    "answer": "b",
+    "explanation_md": "The `std::vector` control structure (size, capacity, pointer) sits on the stack, but the actual elements are stored in a heap-allocated block. This is what allows the vector to grow at runtime beyond any fixed stack allocation."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main()\n{\n    std::vector<int> nums { 5, 10, 15 };\n    std::cout << nums[1] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10",
+    "explanation_md": "Arrays are zero-indexed. `nums[0]` is 5, `nums[1]` is 10, and `nums[2]` is 15. A common mistake is to think index 1 refers to the first element, but the first element is always at index 0."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is contiguous memory storage considered \"cache-friendly\"?",
+    "options": {
+      "a": "It compresses elements to use less memory",
+      "b": "The CPU can load several adjacent elements into cache in a single memory fetch",
+      "c": "It prevents elements from being swapped to disk",
+      "d": "It guarantees all elements fit in a single CPU register"
+    },
+    "answer": "b",
+    "explanation_md": "Modern CPUs load memory in cache lines (chunks of 64 bytes). When elements are stored contiguously, iterating over an array causes the CPU to load many elements at once, reducing expensive memory fetches. Non-contiguous structures like linked lists cannot benefit from this."
+  }
+]

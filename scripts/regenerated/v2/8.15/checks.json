@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does the following program print?\n\n```cpp\n#include <random>\n#include <iostream>\nstd::mt19937 rng{ 7u };\nint pick(int lo, int hi)\n{\n    std::uniform_int_distribution<int> d{ lo, hi };\n    return d(rng);\n}\nint main()\n{\n    std::cout << pick(1, 5) << '\\n';\n    std::cout << pick(1, 5) << '\\n';\n}\n```",
+    "options": null,
+    "answer": "5\n2",
+    "explanation_md": "The global engine `rng` is seeded once with `7u`. Both calls to `pick(1, 5)` use the same engine in sequence, so the state advances between calls and the two results differ. With seed 7, the first draw from `uniform_int_distribution{1,5}` is 5 and the second is 2."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is it better to seed a global `std::mt19937` with `std::random_device{}()` rather than `static_cast<unsigned>(time(nullptr))`?",
+    "options": {
+      "a": "`std::random_device` is faster to call than `time()`.",
+      "b": "`time()` only changes once per second, so multiple programs started within the same second receive the same seed; `std::random_device` draws from OS entropy that is much harder to predict.",
+      "c": "`time()` always returns 0 on modern operating systems.",
+      "d": "`std::random_device` produces a deterministic seed, which makes tests reproducible."
+    },
+    "answer": "b",
+    "explanation_md": "`time(nullptr)` returns the number of seconds since the Unix epoch. Two programs launched in the same second receive identical seeds and produce identical sequences — a real problem in scripts or automated tests. `std::random_device` draws from hardware entropy (keyboard timing, disk activity, etc.), producing values that are practically unpredictable and unique across simultaneous launches."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below is supposed to let `rollDie()` share a single engine with `main()`, but it has a scoping bug. What is wrong?\n\n```cpp\n#include <random>\n#include <iostream>\nint rollDie()\n{\n    std::uniform_int_distribution<int> d{ 1, 6 };\n    return d(rng);  // refers to rng\n}\nint main()\n{\n    std::mt19937 rng{ 42u };  // engine defined here\n    std::cout << rollDie() << '\\n';\n}\n```",
+    "options": {
+      "a": "`std::uniform_int_distribution` must be declared outside the function.",
+      "b": "`rng` is declared inside `main()`, making it a local variable that `rollDie()` cannot see.",
+      "c": "The seed `42u` is too small for `std::mt19937`.",
+      "d": "`rollDie()` should take an `int` parameter for the number of sides."
+    },
+    "answer": "b",
+    "explanation_md": "`rng` is a local variable of `main()`. It only exists on `main()`'s stack frame and is invisible to any other function. `rollDie()` tries to use `rng` but it is out of scope, causing a compile error. The fix is to move `rng` to file scope (outside both functions) so it is accessible to all functions in the translation unit."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In a single-file program with multiple functions that each need random numbers, what is the main advantage of a single file-scope `std::mt19937` engine over passing the engine as a parameter to each function?",
+    "options": {
+      "a": "A file-scope engine produces better-quality random numbers than a local engine.",
+      "b": "Functions do not need extra parameters, so call sites are simpler and each function can independently draw numbers without coupling through parameter lists.",
+      "c": "A file-scope engine is thread-safe by default.",
+      "d": "A file-scope engine automatically reseeds itself when the sequence runs out."
+    },
+    "answer": "b",
+    "explanation_md": "The statistical quality of `std::mt19937` depends only on its algorithm and seed, not on where it is stored. The real benefit of a file-scope engine is ergonomics: functions that need random numbers do not acquire an extra `std::mt19937&` parameter, and callers don't have to forward it. The trade-off is that global state is harder to reason about in large, multi-threaded programs."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <random>\n#include <iostream>\nstd::mt19937 rng{ 3u };\nint roll()\n{\n    std::uniform_int_distribution<int> d{ 1, 4 };\n    return d(rng);\n}\nint main()\n{\n    int sum = roll() + roll() + roll();\n    std::cout << sum << '\\n';\n}\n```",
+    "options": null,
+    "answer": "6",
+    "explanation_md": "The global engine `rng` seeded with `3u` advances once per call to `roll()`. Three calls draw three values from `uniform_int_distribution{1,4}`, which with seed 3 are 3, 1, and 2, summing to 6. The key point is that all three calls share the same engine state, so each call gets the next value in the sequence."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Midpoint Trace: Find the Bad Stage",
+    "prompt_md": "## Goal\nA two-stage pipeline reads an integer, scales it, then shifts it. Add `std::cerr` midpoint checkpoints and fix the bug in the broken stage.\n\n## Input\n- Line 1: one integer `n` (1 ≤ n ≤ 100)\n\n## Output\n- Print exactly one line to `std::cout`: the value of `n * 4 + 3`\n- `std::cerr` output is ignored by the tests\n\n## Requirements\n1. Fix the semantic error in the pipeline so the output equals `n * 4 + 3`.\n2. The program currently produces wrong output for most inputs.\n3. Output format: just the integer value, no label, no extra blank lines.\n4. Hidden tests: `n = 1` (expect `7`), `n = 5` (expect `23`).",
+    "starter_code": "#include <iostream>\n\nint scale(int n)\n{\n    return n * 4;\n}\n\nint shift(int n)\n{\n    return n - 3;   // bug: wrong operator\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cerr << \"input: \" << n << \"\\n\";\n    int after_scale = scale(n);\n    std::cerr << \"after scale: \" << after_scale << \"\\n\";\n    int result = shift(after_scale);\n    std::cerr << \"after shift: \" << result << \"\\n\";\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint scale(int n)\n{\n    return n * 4;\n}\n\nint shift(int n)\n{\n    return n + 3;\n}\n\nint main()\n{\n    int n;\n    std::cin >> n;\n    std::cerr << \"input: \" << n << \"\\n\";\n    int after_scale = scale(n);\n    std::cerr << \"after scale: \" << after_scale << \"\\n\";\n    int result = shift(after_scale);\n    std::cerr << \"after shift: \" << result << \"\\n\";\n    std::cout << result << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: n=2",
+        "is_sample": true,
+        "stdin": "2",
+        "expected_stdout": "11"
+      },
+      {
+        "label": "Hidden: n=1",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "7"
+      },
+      {
+        "label": "Hidden: n=5",
+        "is_sample": false,
+        "stdin": "5",
+        "expected_stdout": "23"
+      }
+    ]
+  },
+  {
+    "title": "Isolate the Buggy Function",
+    "prompt_md": "## Goal\nThe program below is supposed to read two integers and print `a * b + b`. It compiles and runs but prints the wrong answer. Find and fix the one logic bug.\n\n## Input\n- Line 1: two integers `a` and `b` separated by a space\n\n## Output\n- Print exactly one line: the integer value of `a * b + b`\n\n## Requirements\n1. The bug is a semantic error — the code compiles but the formula is implemented incorrectly in one function.\n2. Do not change the input/output format or the structure of `main`.\n3. Hidden tests: `a=2, b=3` (expect `9`), `a=4, b=2` (expect `10`).",
+    "starter_code": "#include <iostream>\n\nint multiply(int a, int b)\n{\n    return a * b;\n}\n\nint combine(int product, int b)\n{\n    return product - b;   // bug: should add b, not subtract\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cerr << \"a=\" << a << \" b=\" << b << \"\\n\";\n    int product = multiply(a, b);\n    std::cerr << \"product=\" << product << \"\\n\";\n    std::cout << combine(product, b) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint multiply(int a, int b)\n{\n    return a * b;\n}\n\nint combine(int product, int b)\n{\n    return product + b;\n}\n\nint main()\n{\n    int a;\n    int b;\n    std::cin >> a >> b;\n    std::cerr << \"a=\" << a << \" b=\" << b << \"\\n\";\n    int product = multiply(a, b);\n    std::cerr << \"product=\" << product << \"\\n\";\n    std::cout << combine(product, b) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: a=3, b=4",
+        "is_sample": true,
+        "stdin": "3 4",
+        "expected_stdout": "16"
+      },
+      {
+        "label": "Hidden: a=2, b=3",
+        "is_sample": false,
+        "stdin": "2 3",
+        "expected_stdout": "9"
+      },
+      {
+        "label": "Hidden: a=4, b=2",
+        "is_sample": false,
+        "stdin": "4 2",
+        "expected_stdout": "10"
+      }
+    ]
+  }
+]

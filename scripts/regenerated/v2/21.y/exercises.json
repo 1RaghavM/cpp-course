@@ -1,0 +1,56 @@
+[
+  {
+    "title": "IntStack with operator+= Push and operator<< Print",
+    "prompt_md": "## Goal\nComplete `IntStack` so it supports pushing elements via `operator+=` and printing via `operator<<`.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 8) — number of elements to push\n- Line 2: N integers separated by spaces\n\n## Output\n- Print the stack contents as `[a, b, c]` (bottom to top, comma-space separated), followed by a newline.\n- An empty stack prints `[]`.\n\n## Requirements\n1. `IntStack` uses a fixed internal array `int m_data[8]` and an `int m_count` (initially 0).\n2. `IntStack& operator+=(int value)` pushes `value` and returns `*this`. If `m_count == 8`, do nothing.\n3. `friend std::ostream& operator<<(std::ostream& out, const IntStack& s)` prints `[a, b, c]` iterating from index 0 to `m_count - 1`; empty stack prints `[]`.\n4. Hidden tests push exactly 1 element and exactly 8 elements (full capacity).\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\nclass IntStack {\n    static const int MAX_SIZE = 8;\n    int m_data[MAX_SIZE];\n    int m_count;\npublic:\n    IntStack() : m_count{0} {}\n\n    // TODO: implement operator+= to push a value (do nothing if full)\n    IntStack& operator+=(int value) {\n        return *this; // stub\n    }\n\n    // TODO: implement operator<< as a friend\n    friend std::ostream& operator<<(std::ostream& out, const IntStack& s);\n};\n\nstd::ostream& operator<<(std::ostream& out, const IntStack& s) {\n    out << \"[]\"; // stub\n    return out;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    IntStack s;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        s += v;\n    }\n    std::cout << s << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass IntStack {\n    static const int MAX_SIZE = 8;\n    int m_data[MAX_SIZE];\n    int m_count;\npublic:\n    IntStack() : m_count{0} {}\n\n    IntStack& operator+=(int value) {\n        if (m_count < MAX_SIZE)\n            m_data[m_count++] = value;\n        return *this;\n    }\n\n    friend std::ostream& operator<<(std::ostream& out, const IntStack& s);\n};\n\nstd::ostream& operator<<(std::ostream& out, const IntStack& s) {\n    out << '[';\n    for (int i = 0; i < s.m_count; ++i) {\n        if (i > 0) out << \", \";\n        out << s.m_data[i];\n    }\n    out << ']';\n    return out;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    IntStack s;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        s += v;\n    }\n    std::cout << s << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 elements",
+        "is_sample": true,
+        "stdin": "3\n10 20 30\n",
+        "expected_stdout": "[10, 20, 30]\n"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "[42]\n"
+      },
+      {
+        "label": "Hidden: full stack (8 elements)",
+        "is_sample": false,
+        "stdin": "8\n1 2 3 4 5 6 7 8\n",
+        "expected_stdout": "[1, 2, 3, 4, 5, 6, 7, 8]\n"
+      }
+    ]
+  },
+  {
+    "title": "IntStack with bool, Pop, and Copy — Complete the Function",
+    "prompt_md": "## Goal\nExtend `IntStack` by completing `explicit operator bool()`, prefix `operator--` (pop), and the copy constructor. The exercise combines multiple chapter 21 operators in one class.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 8) — number of elements to push\n- Line 2: N integers\n- Line 3: integer M (0 ≤ M ≤ N) — number of elements to pop from the copy\n\n## Output\n- Line 1: `original: [...]` — the original stack after all pushes (unchanged)\n- Line 2: `copy_after_pops: [...]` — the copy after M pops\n- Line 3: `copy_empty: 1` if the copy is now empty, `0` otherwise\n\n## Requirements\n1. Use the `IntStack` from exercise 1 (operator+=, operator<<) — they are already provided in the starter.\n2. Complete `explicit operator bool() const` — returns `true` if `m_count > 0`.\n3. Complete prefix `IntStack& operator--()` — decrements `m_count` if `m_count > 0`; returns `*this`.\n4. Complete the copy constructor `IntStack(const IntStack& src)` — copies both `m_count` and `m_data`.\n5. `main` pushes N values into the original, deep-copies to a second stack, pops M times from the copy, then prints as specified.\n6. Popping from an empty stack must not crash or underflow (guard with `m_count > 0`).\n\n## Notes\n- Only `<iostream>` is needed.",
+    "starter_code": "#include <iostream>\n\nclass IntStack {\n    static const int MAX_SIZE = 8;\n    int m_data[MAX_SIZE];\n    int m_count;\npublic:\n    IntStack() : m_count{0} {}\n\n    // TODO: implement copy constructor (deep copy both m_data and m_count)\n    IntStack(const IntStack& src) : m_count{0} {\n        // your code here\n    }\n\n    IntStack& operator+=(int value) {\n        if (m_count < MAX_SIZE)\n            m_data[m_count++] = value;\n        return *this;\n    }\n\n    // TODO: implement prefix operator-- (pop top, guard against empty)\n    IntStack& operator--() {\n        return *this; // stub\n    }\n\n    // TODO: implement explicit operator bool() const\n    explicit operator bool() const {\n        return false; // stub\n    }\n\n    friend std::ostream& operator<<(std::ostream& out, const IntStack& s);\n};\n\nstd::ostream& operator<<(std::ostream& out, const IntStack& s) {\n    out << '[';\n    for (int i = 0; i < s.m_count; ++i) {\n        if (i > 0) out << \", \";\n        out << s.m_data[i];\n    }\n    out << ']';\n    return out;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    IntStack original;\n    for (int i = 0; i < n; ++i) {\n        int v; std::cin >> v;\n        original += v;\n    }\n    int m;\n    std::cin >> m;\n    IntStack copy{original};\n    for (int i = 0; i < m; ++i) --copy;\n    std::cout << \"original: \"       << original << '\\n';\n    std::cout << \"copy_after_pops: \" << copy     << '\\n';\n    std::cout << \"copy_empty: \"      << (copy ? 0 : 1) << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass IntStack {\n    static const int MAX_SIZE = 8;\n    int m_data[MAX_SIZE];\n    int m_count;\npublic:\n    IntStack() : m_count{0} {}\n\n    IntStack(const IntStack& src) : m_count{src.m_count} {\n        for (int i = 0; i < m_count; ++i)\n            m_data[i] = src.m_data[i];\n    }\n\n    IntStack& operator+=(int value) {\n        if (m_count < MAX_SIZE)\n            m_data[m_count++] = value;\n        return *this;\n    }\n\n    IntStack& operator--() {\n        if (m_count > 0)\n            --m_count;\n        return *this;\n    }\n\n    explicit operator bool() const {\n        return m_count > 0;\n    }\n\n    friend std::ostream& operator<<(std::ostream& out, const IntStack& s);\n};\n\nstd::ostream& operator<<(std::ostream& out, const IntStack& s) {\n    out << '[';\n    for (int i = 0; i < s.m_count; ++i) {\n        if (i > 0) out << \", \";\n        out << s.m_data[i];\n    }\n    out << ']';\n    return out;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    IntStack original;\n    for (int i = 0; i < n; ++i) {\n        int v; std::cin >> v;\n        original += v;\n    }\n    int m;\n    std::cin >> m;\n    IntStack copy{original};\n    for (int i = 0; i < m; ++i) --copy;\n    std::cout << \"original: \"       << original << '\\n';\n    std::cout << \"copy_after_pops: \" << copy     << '\\n';\n    std::cout << \"copy_empty: \"      << (copy ? 0 : 1) << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 elements, pop 2",
+        "is_sample": true,
+        "stdin": "3\n10 20 30\n2\n",
+        "expected_stdout": "original: [10, 20, 30]\ncopy_after_pops: [10]\ncopy_empty: 0\n"
+      },
+      {
+        "label": "Hidden: pop all elements",
+        "is_sample": false,
+        "stdin": "3\n5 6 7\n3\n",
+        "expected_stdout": "original: [5, 6, 7]\ncopy_after_pops: []\ncopy_empty: 1\n"
+      },
+      {
+        "label": "Hidden: pop none",
+        "is_sample": false,
+        "stdin": "4\n1 2 3 4\n0\n",
+        "expected_stdout": "original: [1, 2, 3, 4]\ncopy_after_pops: [1, 2, 3, 4]\ncopy_empty: 0\n"
+      }
+    ]
+  }
+]

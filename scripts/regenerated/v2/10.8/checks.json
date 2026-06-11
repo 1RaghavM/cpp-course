@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    auto x { 5 };\n    auto y { 2 };\n    auto result { x / y };\n    std::cout << result << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2",
+    "explanation_md": "`5` and `2` are `int` literals, so `x` and `y` are deduced as `int`. Integer division of 5 by 2 gives `2` (truncated), and `result` is also `int`. Many learners expect `2.5`, but `auto` deduces from the literal type, not from what the programmer intends."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `const int max { 50 };`, what is the type of `copy` after `auto copy { max };`?",
+    "options": {
+      "a": "`const int` — `auto` preserves the `const` qualifier of the source",
+      "b": "`int` — `auto` strips top-level `const` when deducing from a value",
+      "c": "`auto` — the type remains unresolved until first use",
+      "d": "`const auto` — the compiler adds `const` automatically when the source is `const`"
+    },
+    "answer": "b",
+    "explanation_md": "`auto` deduces by value, which strips top-level `const`. To preserve `const`, write `const auto copy { max };`. This is a common surprise for learners who assume `auto` copies all qualifiers."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    auto a { 1.0 / 4 };\n    auto b { 1 / 4 };\n    std::cout << a << ' ' << b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "0.25 0",
+    "explanation_md": "In `1.0 / 4`, `1.0` is a `double` literal, so arithmetic conversions promote `4` to `double`, giving `0.25`. In `1 / 4`, both are `int` literals, so integer division gives `0`. The deduced types are `double` and `int` respectively."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants an unmodifiable variable. What is wrong?\n\n```cpp\n#include <iostream>\nint main()\n{\n    const int threshold { 100 };\n    auto limit { threshold };\n    limit = 200;\n    std::cout << limit << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "`auto` cannot deduce types from `const` variables",
+      "b": "`auto` strips top-level `const`, so `limit` is `int` and is modifiable — should be `const auto`",
+      "c": "Assigning to `limit` after declaration requires a `static_cast`",
+      "d": "The program does not compile because `auto` needs an explicit type alongside it"
+    },
+    "answer": "b",
+    "explanation_md": "`auto limit { threshold }` deduces `limit` as `int` (top-level `const` is stripped). The assignment `limit = 200` compiles without error. The fix is `const auto limit { threshold };` to explicitly request a `const int`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is a valid reason NOT to use `auto` for a variable?",
+    "options": {
+      "a": "The variable is initialized with a literal value",
+      "b": "The type distinction (`int` vs `long`) matters for correctness and `auto` would hide that choice",
+      "c": "`auto` does not work inside functions — it is only valid at file scope",
+      "d": "`auto` requires a semicolon after the closing brace"
+    },
+    "answer": "b",
+    "explanation_md": "When the exact numeric type matters — for example, choosing `long long` vs `int` for large numbers — making the type explicit is better than letting `auto` pick based on the literal. `auto` works inside and outside functions. The other options are false."
+  }
+]

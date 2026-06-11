@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    double a { 1.5e3 };\n    double b { 1500.0 };\n    std::cout << (a == b) << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "`1.5e3` means 1.5 × 10³ = 1500.0. Both `a` and `b` hold the same value, so `a == b` is true, which prints as `1`. There is no difference between these two ways of writing the literal — they compile to the same floating-point representation."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    double x { 2.5e-2 };\n    double y { 250.0 };\n    std::cout << x * y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "6.25",
+    "explanation_md": "`2.5e-2` = 2.5 × 10⁻² = 0.025. Multiplying 0.025 by 250.0 gives 6.25. The `e-2` shifts the decimal point two places to the left. `std::cout` prints 6.25 in plain decimal form since it fits in a short representation."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What does the `e` (or `E`) in a C++ scientific notation literal represent?",
+    "options": {
+      "a": "Times 2 to the power of the exponent (binary exponent)",
+      "b": "Times 10 to the power of the exponent (decimal exponent)",
+      "c": "The mathematical constant e (approximately 2.718)",
+      "d": "An error prefix indicating the number may not be exact"
+    },
+    "answer": "b",
+    "explanation_md": "In C++ floating-point literals, `e` always means 'times 10 to the power of' — it is standard scientific notation with base 10. It has nothing to do with the mathematical constant e or with binary exponents. Binary exponents are an internal implementation detail of the IEEE 754 representation, completely hidden from the literal syntax."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following C++ expressions represents the value 0.0035?",
+    "options": {
+      "a": "`3.5e3`",
+      "b": "`3.5e-3`",
+      "c": "`35.0e-4`",
+      "d": "Both b and c"
+    },
+    "answer": "d",
+    "explanation_md": "`3.5e-3` = 3.5 × 10⁻³ = 0.0035. `35.0e-4` = 35.0 × 10⁻⁴ = 0.0035. Both represent the same value — scientific notation does not require exactly one digit before the decimal point, even though that is the canonical style. `3.5e3` = 3500.0, which is wrong."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A student wants to represent the mass of a proton in kilograms (approximately 1.673 × 10⁻²⁷ kg). What is wrong with this code?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    double proton_mass { 1.673e27 };\n    std::cout << proton_mass << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The literal `1.673e27` is too large to be stored in a `double`",
+      "b": "The exponent sign is missing — the literal should be `1.673e-27` for a very small number",
+      "c": "Scientific notation cannot be used with `double`, only with `float`",
+      "d": "The significand must have exactly one digit before the decimal point"
+    },
+    "answer": "b",
+    "explanation_md": "The proton mass is 1.673 × 10⁻²⁷ kg — a very small number, requiring a negative exponent. `1.673e27` without the minus sign represents 1.673 × 10²⁷, which is a huge number — the opposite magnitude. The fix is `1.673e-27`. Scientific notation is fully valid with `double`; the significand may have any number of digits."
+  }
+]

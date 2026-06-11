@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Count Lines via istream",
+    "prompt_md": "## Goal\nComplete the function `countLines` that counts and returns the number of lines in any `std::istream`. `main()` reads all of stdin into a string stream and calls `countLines` on it.\n\n## Input\nZero or more lines of text on stdin (each up to 80 characters).\n\n## Output\nPrint exactly one line: `Lines: N` where N is the number of lines in the input.\n\nExample — input with 3 lines → output: `Lines: 3`\n\n## Requirements\n1. Function signature: `int countLines(std::istream& in)`.\n2. Use `std::getline` inside the function to count lines.\n3. `main()` must read all of stdin into a `std::string`, wrap it in a `std::istringstream`, and pass that to `countLines`.\n4. An empty input (zero lines) should produce `Lines: 0`.\n5. Hidden tests use 0 lines, 1 line, and 5 lines.",
+    "starter_code": "#include <iostream>\n#include <sstream>\n#include <string>\n\n// TODO: implement countLines — count lines in the stream using getline\nint countLines(std::istream& in) {\n    return 0; // TODO\n}\n\nint main() {\n    // Read all of stdin into a string\n    std::string all_input;\n    std::string line;\n    while (std::getline(std::cin, line)) {\n        all_input += line + \"\\n\";\n    }\n    std::istringstream ss(all_input);\n    std::cout << \"Lines: \" << countLines(ss) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <sstream>\n#include <string>\n\nint countLines(std::istream& in) {\n    int count = 0;\n    std::string line;\n    while (std::getline(in, line)) {\n        ++count;\n    }\n    return count;\n}\n\nint main() {\n    std::string all_input;\n    std::string line;\n    while (std::getline(std::cin, line)) {\n        all_input += line + \"\\n\";\n    }\n    std::istringstream ss(all_input);\n    std::cout << \"Lines: \" << countLines(ss) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three lines",
+        "is_sample": true,
+        "stdin": "hello\nworld\nfoo\n",
+        "expected_stdout": "Lines: 3\n"
+      },
+      {
+        "label": "Hidden: empty input",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Lines: 0\n"
+      },
+      {
+        "label": "Hidden: one line",
+        "is_sample": false,
+        "stdin": "only one\n",
+        "expected_stdout": "Lines: 1\n"
+      }
+    ]
+  },
+  {
+    "title": "Append-Mode Simulation with ostringstream",
+    "prompt_md": "## Goal\nComplete the function `appendEntry` that appends a formatted log entry to an `std::ostringstream`. The entry format is `[N] message` where N is a 1-based entry number.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), the number of entries.\n- Lines 2..N+1: one message per line (single word, no spaces).\n\n## Output\nPrint the accumulated log, one entry per line in the format `[1] message`, `[2] message`, etc.\n\nExample — input `2\\nstart\\nstop` → output:\n```\n[1] start\n[2] stop\n```\n\n## Requirements\n1. Function signature: `void appendEntry(std::ostringstream& log, int index, const std::string& msg)`.\n2. The function writes `[index] msg\\n` to `log`.\n3. `main()` calls `appendEntry` in a loop, then prints `log.str()`.\n4. Hidden tests use N=1 and N=5.",
+    "starter_code": "#include <iostream>\n#include <sstream>\n#include <string>\n\n// TODO: implement appendEntry — write \"[index] msg\\n\" to log\nvoid appendEntry(std::ostringstream& log, int index, const std::string& msg) {\n    // TODO\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n    std::ostringstream log;\n    for (int i = 1; i <= n; ++i) {\n        std::string msg;\n        std::getline(std::cin, msg);\n        appendEntry(log, i, msg);\n    }\n    std::cout << log.str();\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <sstream>\n#include <string>\n\nvoid appendEntry(std::ostringstream& log, int index, const std::string& msg) {\n    log << \"[\" << index << \"] \" << msg << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    std::cin.ignore();\n    std::ostringstream log;\n    for (int i = 1; i <= n; ++i) {\n        std::string msg;\n        std::getline(std::cin, msg);\n        appendEntry(log, i, msg);\n    }\n    std::cout << log.str();\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two entries",
+        "is_sample": true,
+        "stdin": "2\nstart\nstop\n",
+        "expected_stdout": "[1] start\n[2] stop\n"
+      },
+      {
+        "label": "Hidden: one entry",
+        "is_sample": false,
+        "stdin": "1\nboot\n",
+        "expected_stdout": "[1] boot\n"
+      },
+      {
+        "label": "Hidden: five entries",
+        "is_sample": false,
+        "stdin": "5\nalpha\nbeta\ngamma\ndelta\nepsilon\n",
+        "expected_stdout": "[1] alpha\n[2] beta\n[3] gamma\n[4] delta\n[5] epsilon\n"
+      }
+    ]
+  }
+]

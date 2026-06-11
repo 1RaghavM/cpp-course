@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Classify Object Relationships from Descriptions",
+    "prompt_md": "## Goal\nRead a series of relationship descriptions and print the correct relationship type for each one.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10), the number of descriptions.\n- Lines 2..N+1: one integer per line (1 through 4), encoding a scenario:\n  - 1 = An object creates and destroys another as part of its own storage.\n  - 2 = An object holds a non-owning pointer to another independently-managed object.\n  - 3 = Two objects know about each other; one stores a pointer/reference to the other but neither owns the other's lifetime in a hierarchical way.\n  - 4 = One object uses another only as a function parameter during a single call.\n\n## Output\nFor each input integer, print exactly one line:\n- 1 → `Composition`\n- 2 → `Aggregation`\n- 3 → `Association`\n- 4 → `Dependency`\n\n## Requirements\n1. Print exactly N lines, one per input.\n2. Each line is exactly the word above with no extra spaces.\n3. No blank lines between outputs.\n4. Handle all values 1–4; behavior for out-of-range values is undefined.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int code{};\n        std::cin >> code;\n        // TODO: print the relationship name for the given code\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int code{};\n        std::cin >> code;\n        if (code == 1) std::cout << \"Composition\\n\";\n        else if (code == 2) std::cout << \"Aggregation\\n\";\n        else if (code == 3) std::cout << \"Association\\n\";\n        else if (code == 4) std::cout << \"Dependency\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: mixed relationships",
+        "is_sample": true,
+        "stdin": "4\n1\n2\n3\n4\n",
+        "expected_stdout": "Composition\nAggregation\nAssociation\nDependency"
+      },
+      {
+        "label": "Hidden: single composition",
+        "is_sample": false,
+        "stdin": "1\n1\n",
+        "expected_stdout": "Composition"
+      },
+      {
+        "label": "Hidden: repeated types",
+        "is_sample": false,
+        "stdin": "5\n2\n2\n4\n1\n3\n",
+        "expected_stdout": "Aggregation\nAggregation\nDependency\nComposition\nAssociation"
+      }
+    ]
+  },
+  {
+    "title": "Relationship Strength Sorter",
+    "prompt_md": "## Goal\nRead N relationship names and print them sorted from strongest coupling to weakest coupling.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 4).\n- Lines 2..N+1: one relationship name per line, each exactly one of: `Composition`, `Aggregation`, `Association`, `Dependency`.\n\n## Output\nPrint the relationships in order from strongest to weakest coupling, one per line:\nStrongest → Weakest: `Composition`, `Aggregation`, `Association`, `Dependency`.\n\n## Requirements\n1. Only the input relationships should appear in the output, in the correct order.\n2. If the same name appears multiple times in the input, print it that many times in its correct position.\n3. Print exactly N lines.\n4. The program contains one logic bug: the bug is that it sorts from weakest to strongest instead of strongest to weakest. Find and fix it.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint rankOf(const std::string& rel) {\n    // Higher rank = stronger coupling\n    if (rel == \"Composition\")  return 4;\n    if (rel == \"Aggregation\")  return 3;\n    if (rel == \"Association\")  return 2;\n    if (rel == \"Dependency\")   return 1;\n    return 0;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<std::string> rels;\n    rels.reserve(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i) {\n        std::string r;\n        std::cin >> r;\n        rels.push_back(r);\n    }\n    // Sort: BUG — this sorts ascending (weakest first)\n    for (int i = 0; i < n - 1; ++i) {\n        for (int j = i + 1; j < n; ++j) {\n            if (rankOf(rels[static_cast<std::size_t>(i)]) > rankOf(rels[static_cast<std::size_t>(j)])) {\n                std::string tmp = rels[static_cast<std::size_t>(i)];\n                rels[static_cast<std::size_t>(i)] = rels[static_cast<std::size_t>(j)];\n                rels[static_cast<std::size_t>(j)] = tmp;\n            }\n        }\n    }\n    for (const auto& r : rels) {\n        std::cout << r << \"\\n\";\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint rankOf(const std::string& rel) {\n    if (rel == \"Composition\")  return 4;\n    if (rel == \"Aggregation\")  return 3;\n    if (rel == \"Association\")  return 2;\n    if (rel == \"Dependency\")   return 1;\n    return 0;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<std::string> rels;\n    rels.reserve(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i) {\n        std::string r;\n        std::cin >> r;\n        rels.push_back(r);\n    }\n    // Sort descending (strongest first): swap when left rank < right rank\n    for (int i = 0; i < n - 1; ++i) {\n        for (int j = i + 1; j < n; ++j) {\n            if (rankOf(rels[static_cast<std::size_t>(i)]) < rankOf(rels[static_cast<std::size_t>(j)])) {\n                std::string tmp = rels[static_cast<std::size_t>(i)];\n                rels[static_cast<std::size_t>(i)] = rels[static_cast<std::size_t>(j)];\n                rels[static_cast<std::size_t>(j)] = tmp;\n            }\n        }\n    }\n    for (const auto& r : rels) {\n        std::cout << r << \"\\n\";\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: all four in mixed order",
+        "is_sample": true,
+        "stdin": "4\nDependency\nComposition\nAssociation\nAggregation\n",
+        "expected_stdout": "Composition\nAggregation\nAssociation\nDependency"
+      },
+      {
+        "label": "Hidden: two items",
+        "is_sample": false,
+        "stdin": "2\nAssociation\nComposition\n",
+        "expected_stdout": "Composition\nAssociation"
+      },
+      {
+        "label": "Hidden: already sorted",
+        "is_sample": false,
+        "stdin": "3\nComposition\nAggregation\nDependency\n",
+        "expected_stdout": "Composition\nAggregation\nDependency"
+      }
+    ]
+  }
+]

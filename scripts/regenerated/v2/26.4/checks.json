@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nclass Label {\npublic:\n    static void show() { std::cout << \"generic\\n\"; }\n};\ntemplate <>\nclass Label<int> {\npublic:\n    static void show() { std::cout << \"integer\\n\"; }\n};\nint main() {\n    Label<double>::show();\n    Label<int>::show();\n    Label<char>::show();\n}\n```",
+    "options": null,
+    "answer": "generic\ninteger\ngeneric",
+    "explanation_md": "`Label<double>` and `Label<char>` use the primary template, which prints `generic`. `Label<int>` uses the explicit specialization, which prints `integer`. The specialization replaces the entire class for `int`, so only `int` gets the special behavior."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class template `Widget<T>` has a full specialization `Widget<double>`. A member function `info()` is defined in the primary template but NOT in the `Widget<double>` specialization. What happens when you call `info()` on a `Widget<double>` object?",
+    "options": {
+      "a": "It silently calls the primary template's `info()`.",
+      "b": "It calls the primary template's `info()` but with a compiler warning.",
+      "c": "Compile error — the specialization is an independent class with no `info()` member.",
+      "d": "It calls `info()` only if `Widget<double>` inherits from `Widget<T>`."
+    },
+    "answer": "c",
+    "explanation_md": "A class template specialization is a completely independent class. It does not inherit members from the primary template. If `info()` is not defined in `Widget<double>`, calling it is a compile error, regardless of whether the primary template has it."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to define `Storage<bool>::print()` outside the class body. This code does not compile. What is the bug?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nclass Storage { T d_; public: void print() const; };\ntemplate <typename T>\nvoid Storage<T>::print() const { std::cout << d_ << \"\\n\"; }\ntemplate <>\nclass Storage<bool> { bool d_; public: explicit Storage(bool v): d_{v}{} void print() const; };\ntemplate <>   // BUG\nvoid Storage<bool>::print() const { std::cout << (d_? \"true\":\"false\") << \"\\n\"; }\n```",
+    "options": {
+      "a": "The specialization's out-of-class member definition must not have `template <>` — `Storage<bool>` is a concrete class.",
+      "b": "`template <typename T>` is missing before the out-of-class primary template definition.",
+      "c": "The constructor of `Storage<bool>` should not use member initialization syntax.",
+      "d": "`Storage<T>::print()` must be defined inline inside the primary template."
+    },
+    "answer": "a",
+    "explanation_md": "Once a class is fully specialized with `template <>`, its member functions defined outside the class body are definitions of a concrete (non-template) class. They must not be prefixed with `template <>`. Removing that prefix fixes the compile error."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which statement correctly describes what `template <>` means when it appears before a class definition?",
+    "options": {
+      "a": "It declares a partial specialization, allowing some type parameters to remain generic.",
+      "b": "It declares a full (explicit) specialization — all template parameters are replaced by concrete types.",
+      "c": "It declares a new primary template that shadows the existing one.",
+      "d": "It marks the class as inline, allowing it to be defined in multiple translation units."
+    },
+    "answer": "b",
+    "explanation_md": "`template <>` with empty brackets before a class means every template parameter has been replaced by a concrete type — this is a full explicit specialization. Partial specialization keeps some parameters generic and requires non-empty brackets (covered in the next lesson)."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\ntemplate <typename T>\nstruct Count { int n{2}; };\ntemplate <>\nstruct Count<bool> { int n{0}; };\ntemplate <>\nstruct Count<char> { int n{1}; };\nint main() {\n    Count<int> a; Count<bool> b; Count<char> c;\n    std::cout << a.n << b.n << c.n << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "201",
+    "explanation_md": "`Count<int>` uses the primary template: `n = 2`. `Count<bool>` uses its specialization: `n = 0`. `Count<char>` uses its specialization: `n = 1`. The three values are printed without spaces: `201`."
+  }
+]

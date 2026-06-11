@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Logging Report via Dependency",
+    "prompt_md": "## Goal\nPrint a report using a `Logger` that is injected as a dependency (function parameter), not stored as a member.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), number of items.\n- Lines 2..N+1: one item name per line.\n\n## Output\nFor each item print: `Processing: <name>`  \nAfter all items: `Done: <N> items`\n\n## Requirements\n1. Define `struct Logger` with a `void log(const std::string& msg)` method that prints the message followed by a newline.\n2. Define `class Processor` with a `void processAll(const std::vector<std::string>& items, Logger& logger)` method.\n3. `Processor` must have NO Logger member variable — Logger is a dependency passed per call.\n4. Inside `processAll`, call `logger.log(\"Processing: \" + item)` for each item, then `logger.log(\"Done: \" + std::to_string(N) + \" items\")`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Logger {\n    void log(const std::string& msg) {\n        std::cout << msg << \"\\n\";\n    }\n};\n\nclass Processor {\n    // NOTE: no Logger member — Logger is a dependency, not stored\npublic:\n    void processAll(const std::vector<std::string>& items, Logger& logger) {\n        // TODO: for each item call logger.log(\"Processing: \" + item)\n        // TODO: then call logger.log(\"Done: <count> items\")\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<std::string> items(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> items[static_cast<std::size_t>(i)];\n    Logger lg;\n    Processor proc;\n    proc.processAll(items, lg);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Logger {\n    void log(const std::string& msg) {\n        std::cout << msg << \"\\n\";\n    }\n};\n\nclass Processor {\npublic:\n    void processAll(const std::vector<std::string>& items, Logger& logger) {\n        for (const auto& item : items)\n            logger.log(\"Processing: \" + item);\n        logger.log(\"Done: \" + std::to_string(items.size()) + \" items\");\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<std::string> items(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> items[static_cast<std::size_t>(i)];\n    Logger lg;\n    Processor proc;\n    proc.processAll(items, lg);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 items",
+        "is_sample": true,
+        "stdin": "3\nAlpha\nBeta\nGamma\n",
+        "expected_stdout": "Processing: Alpha\nProcessing: Beta\nProcessing: Gamma\nDone: 3 items"
+      },
+      {
+        "label": "Hidden: 1 item",
+        "is_sample": false,
+        "stdin": "1\nSingle\n",
+        "expected_stdout": "Processing: Single\nDone: 1 items"
+      },
+      {
+        "label": "Hidden: 5 items",
+        "is_sample": false,
+        "stdin": "5\nA\nB\nC\nD\nE\n",
+        "expected_stdout": "Processing: A\nProcessing: B\nProcessing: C\nProcessing: D\nProcessing: E\nDone: 5 items"
+      }
+    ]
+  },
+  {
+    "title": "Formatter Dependency Bug Fix",
+    "prompt_md": "## Goal\nA `Formatter` is used as a dependency inside `Report::print`, but the code has a bug: it passes the formatter by value, so changes to the formatter's internal counter are lost. Find and fix it.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), number of values to format.\n- Lines 2..N+1: one integer per line.\n\n## Output\nPrint each value formatted as `Item <index>: <value>` (index is 1-based).  \nThen print `Total formatted: <N>`.\n\n## Requirements\n1. The bug: `Report::print` takes `Formatter` by value, so `fmt.count` is incremented on a copy. After the function returns, the original formatter's count is 0.\n2. Fix: change the parameter to `Formatter&` so the count is tracked on the original.\n3. The `Total formatted:` line must print the correct count from the original formatter.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Formatter {\n    int count{0};\n    std::string format(int index, int value) {\n        ++count;\n        return \"Item \" + std::to_string(index) + \": \" + std::to_string(value);\n    }\n};\n\nclass Report {\n    std::vector<int> data;\npublic:\n    explicit Report(const std::vector<int>& d) : data{d} {}\n    void print(Formatter fmt) {  // BUG: should be Formatter&\n        for (int i = 0; i < static_cast<int>(data.size()); ++i)\n            std::cout << fmt.format(i + 1, data[static_cast<std::size_t>(i)]) << \"\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> vals(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> vals[static_cast<std::size_t>(i)];\n    Formatter fmt;\n    Report r{vals};\n    r.print(fmt);\n    std::cout << \"Total formatted: \" << fmt.count << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nstruct Formatter {\n    int count{0};\n    std::string format(int index, int value) {\n        ++count;\n        return \"Item \" + std::to_string(index) + \": \" + std::to_string(value);\n    }\n};\n\nclass Report {\n    std::vector<int> data;\npublic:\n    explicit Report(const std::vector<int>& d) : data{d} {}\n    void print(Formatter& fmt) {  // FIXED: pass by reference\n        for (int i = 0; i < static_cast<int>(data.size()); ++i)\n            std::cout << fmt.format(i + 1, data[static_cast<std::size_t>(i)]) << \"\\n\";\n    }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> vals(static_cast<std::size_t>(n));\n    for (int i = 0; i < n; ++i)\n        std::cin >> vals[static_cast<std::size_t>(i)];\n    Formatter fmt;\n    Report r{vals};\n    r.print(fmt);\n    std::cout << \"Total formatted: \" << fmt.count << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 values",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "Item 1: 10\nItem 2: 20\nItem 3: 30\nTotal formatted: 3"
+      },
+      {
+        "label": "Hidden: 1 value",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "Item 1: 42\nTotal formatted: 1"
+      },
+      {
+        "label": "Hidden: 5 values",
+        "is_sample": false,
+        "stdin": "5\n1\n2\n3\n4\n5\n",
+        "expected_stdout": "Item 1: 1\nItem 2: 2\nItem 3: 3\nItem 4: 4\nItem 5: 5\nTotal formatted: 5"
+      }
+    ]
+  }
+]

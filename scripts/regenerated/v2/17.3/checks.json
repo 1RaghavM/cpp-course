@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nvoid addTen(std::array<int, 3> arr) {\n    for (int& v : arr) { v += 10; }\n}\nint main() {\n    std::array<int, 3> a { 1, 2, 3 };\n    addTen(a);\n    std::cout << a[0] << ' ' << a[1] << ' ' << a[2] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1 2 3",
+    "explanation_md": "`addTen` receives a copy of the array. The modifications happen on the copy inside the function, so the caller's array `a` is never changed. Printing `a[0]`, `a[1]`, `a[2]` still gives the original values 1, 2, 3."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which function signature is best for a function that reads a large `std::array<int, 1000>` but does not modify it?",
+    "options": {
+      "a": "`void process(std::array<int, 1000> arr)` — pass by value for safety",
+      "b": "`void process(const std::array<int, 1000>& arr)` — pass by const reference",
+      "c": "`void process(std::array<int, 1000>& arr)` — pass by non-const reference",
+      "d": "`void process(std::array<int, 1000>* arr)` — must use a pointer for large arrays"
+    },
+    "answer": "b",
+    "explanation_md": "Passing by `const` reference avoids copying 1000 integers and still prevents the function from modifying the caller's data. Passing by value copies all 1000 elements needlessly. Non-const reference allows unintended modification. Pointers are not needed — references achieve the same goal more cleanly."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <array>\n#include <iostream>\nstd::array<int, 3> makeTriple(int x) {\n    return { x, x * 2, x * 3 };\n}\nint main() {\n    std::array<int, 3> r = makeTriple(4);\n    std::cout << r[0] << ' ' << r[1] << ' ' << r[2] << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "4 8 12",
+    "explanation_md": "`makeTriple(4)` returns `{4, 8, 12}` — x is 4, x*2 is 8, x*3 is 12. The returned array is stored in `r`, and the three elements are printed separated by spaces."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why does this code fail to compile?\n\n```cpp\nvoid print(const std::array<int, 3>& arr);\nstd::array<int, 4> data { 1, 2, 3, 4 };\nprint(data);\n```",
+    "options": {
+      "a": "You cannot pass a `std::array` by const reference",
+      "b": "`std::array<int, 4>` and `std::array<int, 3>` are different types — the sizes must match",
+      "c": "The function needs to be declared after `data` is initialized",
+      "d": "You must dereference the array before passing it to the function"
+    },
+    "answer": "b",
+    "explanation_md": "The size N is part of the `std::array` type. `std::array<int, 3>` and `std::array<int, 4>` are completely different types in the type system, just like `int` and `double`. A function expecting one cannot accept the other."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This function is supposed to multiply every element by 2 and change the caller's array, but it does not work correctly:\n\n```cpp\n#include <array>\nvoid doubleAll(std::array<int, 4> arr) {\n    for (int& v : arr) {\n        v *= 2;\n    }\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "The range-based for loop cannot use `int&` — it must use `int`",
+      "b": "The function receives the array by value, so it modifies a local copy and the caller sees no change",
+      "c": "Multiplying by 2 with `*=` is undefined behavior for `int`",
+      "d": "The array size must be passed as a separate parameter"
+    },
+    "answer": "b",
+    "explanation_md": "The parameter `std::array<int, 4> arr` is a copy of the caller's array. Modifying elements through `int& v` changes the copy, not the original. The fix is to change the parameter to `std::array<int, 4>& arr` so the function receives a reference to the caller's array."
+  }
+]

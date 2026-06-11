@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Clamp a Value In-Place",
+    "prompt_md": "## Goal\nWrite a function `clamp` that takes an `int` by lvalue reference and two `int` bounds, and modifies the referenced value so it falls within `[lo, hi]`.\n\n## Input\nLine 1: integer `value` to clamp.\nLine 2: integer `lo` (lower bound).\nLine 3: integer `hi` (upper bound, guaranteed lo <= hi).\n\n## Output\nPrint exactly one line: the clamped value.\n\n## Requirements\n1. The function signature must be `void clamp(int& value, int lo, int hi)`.\n2. If `value < lo`, set `value = lo`.\n3. If `value > hi`, set `value = hi`.\n4. If `value` is already in `[lo, hi]`, leave it unchanged.\n5. `main` reads the three integers, calls `clamp`, then prints `value`.\n6. Edge cases: value equal to lo, value equal to hi, value already inside range.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement clamp so it modifies value through the reference\nvoid clamp(int& value, int lo, int hi) {\n    // your code here\n}\n\nint main() {\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    clamp(value, lo, hi);\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid clamp(int& value, int lo, int hi) {\n    if (value < lo) {\n        value = lo;\n    } else if (value > hi) {\n        value = hi;\n    }\n}\n\nint main() {\n    int value, lo, hi;\n    std::cin >> value >> lo >> hi;\n    clamp(value, lo, hi);\n    std::cout << value << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: value above range",
+        "is_sample": true,
+        "stdin": "15\n1\n10\n",
+        "expected_stdout": "10"
+      },
+      {
+        "label": "Hidden: value below range",
+        "is_sample": false,
+        "stdin": "-5\n0\n100\n",
+        "expected_stdout": "0"
+      },
+      {
+        "label": "Hidden: value already in range",
+        "is_sample": false,
+        "stdin": "50\n10\n100\n",
+        "expected_stdout": "50"
+      }
+    ]
+  },
+  {
+    "title": "Swap Two Integers",
+    "prompt_md": "## Goal\nA program reads two integers and should print them in swapped order. The code contains one bug — find and fix it.\n\n## Input\nLine 1: integer `a`.\nLine 2: integer `b`.\n\n## Output\nPrint exactly two lines: the swapped values of `a` and `b` (i.e. original `b` on line 1, original `a` on line 2).\n\n## Requirements\n1. The `swapInts` function must swap its two parameters so the caller sees the change.\n2. After calling `swapInts(a, b)`, printing `a` then `b` should show the original `b` then the original `a`.\n3. The swap must happen inside the function — do not swap in `main` directly.\n4. Edge case: a equals b.",
+    "starter_code": "#include <iostream>\n\nvoid swapInts(int a, int b) {\n    int tmp = a;\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    swapInts(a, b);\n    std::cout << a << '\\n' << b << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid swapInts(int& a, int& b) {\n    int tmp = a;\n    a = b;\n    b = tmp;\n}\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n    swapInts(a, b);\n    std::cout << a << '\\n' << b << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic swap",
+        "is_sample": true,
+        "stdin": "3\n7\n",
+        "expected_stdout": "7\n3"
+      },
+      {
+        "label": "Hidden: negative and positive",
+        "is_sample": false,
+        "stdin": "-4\n9\n",
+        "expected_stdout": "9\n-4"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5\n5\n",
+        "expected_stdout": "5\n5"
+      }
+    ]
+  }
+]

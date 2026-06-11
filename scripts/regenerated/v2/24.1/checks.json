@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Which relationship justifies using inheritance over composition?",
+    "options": {
+      "a": "A `Car` has an `Engine`",
+      "b": "A `Dog` is an `Animal`",
+      "c": "A `Student` has a `GradeBook`",
+      "d": "A `Logger` writes to a `File`"
+    },
+    "answer": "b",
+    "explanation_md": "Inheritance models an is-a relationship. A `Dog` genuinely is a more specific `Animal`. The other options are has-a relationships — they should be expressed with composition (member variables), not inheritance."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <string>\nclass Vehicle {\npublic:\n    std::string type = \"vehicle\";\n};\nclass Car : public Vehicle {\npublic:\n    int doors = 4;\n};\nint main() {\n    Car c;\n    std::cout << c.type << \" \" << c.doors << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "vehicle 4",
+    "explanation_md": "`Car` inherits `type` from `Vehicle`, so `c.type` is `\"vehicle\"`. `c.doors` is `4`, defined directly in `Car`. The output is `vehicle 4` followed by a newline."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given this hierarchy:\n\n```cpp\nclass A { public: int x; };\nclass B : public A { public: int y; };\nclass C : public B { public: int z; };\n```\n\nWhich members does a `C` object contain?",
+    "options": {
+      "a": "Only `z`",
+      "b": "`y` and `z`",
+      "c": "`x`, `y`, and `z`",
+      "d": "Only the members that were explicitly declared in `C`"
+    },
+    "answer": "c",
+    "explanation_md": "Inheritance is transitive. `C` inherits from `B`, which inherits from `A`. A `C` object physically contains the `A` sub-object (with `x`), the `B` sub-object (with `y`), and its own `z`. All three members are accessible on a `C` object."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "A learner writes this code and gets a compile error:\n\n```cpp\n#include <iostream>\nclass Shape {\npublic:\n    std::string color;\n};\nclass Circle : public Shape {\npublic:\n    double radius;\n};\nint main() {\n    Shape s;\n    s.color = \"red\";\n    s.radius = 3.0; // line 13\n    std::cout << s.color << \"\\n\";\n}\n```\n\nWhat is the bug?",
+    "options": {
+      "a": "`Shape` is missing a constructor, so `color` cannot be assigned",
+      "b": "`s` is a `Shape` object, and `radius` is only a member of `Circle`, not `Shape`",
+      "c": "You must use `public:` on line 2 to access `color` from outside the class",
+      "d": "`double` is not a valid member type inside a class"
+    },
+    "answer": "b",
+    "explanation_md": "The base class `Shape` has no knowledge of `Circle`'s `radius` member. `s` is declared as `Shape`, so only `color` is accessible on it. To use `radius`, the variable must be declared as `Circle`."
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ninline const int kBase = 5;\ninline const int kScale = 3;\n\nint main() {\n    std::cout << kBase * kScale << \"\\n\";\n    std::cout << kBase + kScale << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15\n8",
+    "explanation_md": "`kBase * kScale` is `5 * 3 = 15`. `kBase + kScale` is `5 + 3 = 8`. The `inline const` keyword does not change how constants are used in arithmetic expressions."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You want to define `inline const double kGravity = 9.81;` in a header that is included by three `.cpp` files. How many distinct `kGravity` objects will exist in the final binary?",
+    "options": {
+      "a": "Three — one per translation unit that includes the header.",
+      "b": "Zero — `inline` variables are always optimised away by the compiler.",
+      "c": "One — the linker merges the identical `inline` definitions.",
+      "d": "It depends on the platform; behaviour is undefined."
+    },
+    "answer": "c",
+    "explanation_md": "`inline` variables are explicitly permitted to appear in multiple translation units. The one-definition rule still applies, but `inline` tells the linker that all copies are identical and should be merged into a single object. This is the whole point of `inline` variables in header files."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which pattern is the cleanest modern way (C++17 and later) to share a named constant `kMaxItems = 200` across several `.cpp` files?",
+    "options": {
+      "a": "Define `const int kMaxItems = 200;` in every `.cpp` file that needs it.",
+      "b": "Write `#define K_MAX_ITEMS 200` in the header.",
+      "c": "Write `inline const int kMaxItems = 200;` in the shared header.",
+      "d": "Write `extern const int kMaxItems;` in every `.cpp` file without any definition."
+    },
+    "answer": "c",
+    "explanation_md": "`inline const int kMaxItems = 200;` in a header lets every including file see the value and ensures the linker creates exactly one object. Option a requires manual updates in every file when the value changes. Option b uses the preprocessor and loses type information. Option d is a declaration without a definition — the program won't link."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The programmer wants to share a constant across two files. The header below causes a linker error when included by more than one `.cpp`. What is wrong?\n\n```cpp\n// limits.h\n#pragma once\nextern const int kSizeLimit = 256;\n```",
+    "options": {
+      "a": "`extern` is the wrong keyword here; use `static` instead.",
+      "b": "The `extern` keyword with an initialiser makes this a definition, not a declaration, so including it in two `.cpp` files creates two definitions.",
+      "c": "The constant needs the `inline` keyword before `extern` to share it.",
+      "d": "Constants cannot be `extern` in C++; they must be `constexpr`."
+    },
+    "answer": "b",
+    "explanation_md": "When `extern` is combined with an initialiser (`= 256`), the result is a full definition, not just a declaration. Including this definition in two translation units violates the one-definition rule. To fix it: either remove the initialiser from the header (leaving a pure `extern const int kSizeLimit;` declaration) and add `const int kSizeLimit = 256;` in exactly one `.cpp`, or replace the whole thing with `inline const int kSizeLimit = 256;` in the header."
+  }
+]

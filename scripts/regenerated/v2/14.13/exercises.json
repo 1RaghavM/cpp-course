@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Temporary Objects",
+    "prompt_md": "## Goal\nWrite a program that uses temporary `Color` objects to call a print function without declaring any named `Color` variables.\n\n## Input\nLine 1: three integers R G B (0 ≤ R, G, B ≤ 255).\n\n## Output\nPrint exactly two lines:\n- Line 1: `Default: (0, 0, 0)` — from a temporary Color with all zeros.\n- Line 2: `Custom: (R, G, B)` — from a temporary Color with the input values.\n\n## Requirements\n1. `Color` has private `int` members `m_r`, `m_g`, `m_b` initialized via a member initializer list.\n2. Write a free function `printColor(const Color& c)` that prints in the format `(R, G, B)`.\n3. In `main()`, call `printColor` twice using temporary `Color` objects — do not declare any named `Color` variable.\n4. Edge cases: R, G, or B equal to 0 must print as `0`.\n",
+    "starter_code": "#include <iostream>\n\nclass Color {\n    int m_r;\n    int m_g;\n    int m_b;\npublic:\n    Color(int r, int g, int b)\n        : m_r{ r }, m_g{ g }, m_b{ b }\n    {}\n\n    int r() const { return m_r; }\n    int g() const { return m_g; }\n    int b() const { return m_b; }\n};\n\nvoid printColor(const Color& c) {\n    std::cout << \"(\" << c.r() << \", \" << c.g() << \", \" << c.b() << \")\\n\";\n}\n\nint main() {\n    int r{}, g{}, b{};\n    std::cin >> r >> g >> b;\n\n    // TODO: print \"Default: \" followed by a temporary Color(0, 0, 0)\n    std::cout << \"Default: \";\n    // TODO: print \"Custom: \" followed by a temporary Color(r, g, b)\n    std::cout << \"Custom: \";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Color {\n    int m_r;\n    int m_g;\n    int m_b;\npublic:\n    Color(int r, int g, int b)\n        : m_r{ r }, m_g{ g }, m_b{ b }\n    {}\n\n    int r() const { return m_r; }\n    int g() const { return m_g; }\n    int b() const { return m_b; }\n};\n\nvoid printColor(const Color& c) {\n    std::cout << \"(\" << c.r() << \", \" << c.g() << \", \" << c.b() << \")\\n\";\n}\n\nint main() {\n    int r{}, g{}, b{};\n    std::cin >> r >> g >> b;\n    std::cout << \"Default: \";\n    printColor(Color{ 0, 0, 0 });\n    std::cout << \"Custom: \";\n    printColor(Color{ r, g, b });\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic color",
+        "is_sample": true,
+        "stdin": "255 128 0\n",
+        "expected_stdout": "Default: (0, 0, 0)\nCustom: (255, 128, 0)\n"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0\n",
+        "expected_stdout": "Default: (0, 0, 0)\nCustom: (0, 0, 0)\n"
+      },
+      {
+        "label": "Hidden: all max",
+        "is_sample": false,
+        "stdin": "255 255 255\n",
+        "expected_stdout": "Default: (0, 0, 0)\nCustom: (255, 255, 255)\n"
+      }
+    ]
+  },
+  {
+    "title": "Buggy Temporary Usage",
+    "prompt_md": "## Goal\nFind and fix the single logic bug in this program. It should print the doubled value of a temporary `Num` object.\n\n## Input\nLine 1: one integer N (1 ≤ N ≤ 1000).\n\n## Output\nPrint exactly one line: `Doubled: X` where X is N * 2.\n\n## Requirements\n1. The program compiles and runs but produces wrong output.\n2. The bug involves how the temporary is used.\n3. Do not add members or change output format.\n",
+    "starter_code": "#include <iostream>\n\nclass Num {\n    int m_val;\npublic:\n    Num(int v) : m_val{ v } {}\n    int get() const { return m_val; }\n};\n\nint doubled(const Num& n) {\n    return n.get() * 2 + 1;  // bug: off-by-one added\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cout << \"Doubled: \" << doubled(Num{ n }) << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Num {\n    int m_val;\npublic:\n    Num(int v) : m_val{ v } {}\n    int get() const { return m_val; }\n};\n\nint doubled(const Num& n) {\n    return n.get() * 2;\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cout << \"Doubled: \" << doubled(Num{ n }) << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic doubling",
+        "is_sample": true,
+        "stdin": "7\n",
+        "expected_stdout": "Doubled: 14\n"
+      },
+      {
+        "label": "Hidden: value of 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Doubled: 2\n"
+      },
+      {
+        "label": "Hidden: large value",
+        "is_sample": false,
+        "stdin": "500\n",
+        "expected_stdout": "Doubled: 1000\n"
+      }
+    ]
+  }
+]

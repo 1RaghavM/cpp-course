@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Game Grid Constants",
+    "prompt_md": "## Goal\nWrite a program that uses `constexpr` variables to define a game grid and prints its properties.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly four lines:\n```\nGrid width: 12\nGrid height: 8\nTotal cells: 96\nBorder cells: 36\n```\n\n## Requirements\n1. Declare `constexpr int grid_width = 12;` and `constexpr int grid_height = 8;`.\n2. Declare `constexpr int total_cells = grid_width * grid_height;`.\n3. Declare `constexpr int border_cells = 2 * grid_width + 2 * (grid_height - 2);` (top row + bottom row + left and right columns excluding corners).\n4. All four variables must be `constexpr`.\n5. Print each value with the exact label shown.",
+    "starter_code": "#include <iostream>\n\nint main() {\n    // TODO: declare constexpr int grid_width = 12;\n    // TODO: declare constexpr int grid_height = 8;\n    // TODO: declare constexpr int total_cells = grid_width * grid_height;\n    // TODO: declare constexpr int border_cells = 2 * grid_width + 2 * (grid_height - 2);\n\n    // TODO: print the four lines\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main() {\n    constexpr int grid_width = 12;\n    constexpr int grid_height = 8;\n    constexpr int total_cells = grid_width * grid_height;\n    constexpr int border_cells = 2 * grid_width + 2 * (grid_height - 2);\n\n    std::cout << \"Grid width: \" << grid_width << \"\\n\";\n    std::cout << \"Grid height: \" << grid_height << \"\\n\";\n    std::cout << \"Total cells: \" << total_cells << \"\\n\";\n    std::cout << \"Border cells: \" << border_cells << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Grid width: 12\nGrid height: 8\nTotal cells: 96\nBorder cells: 36"
+      },
+      {
+        "label": "Hidden: exact labels",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Grid width: 12\nGrid height: 8\nTotal cells: 96\nBorder cells: 36"
+      },
+      {
+        "label": "Hidden: no extra output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Grid width: 12\nGrid height: 8\nTotal cells: 96\nBorder cells: 36"
+      }
+    ]
+  },
+  {
+    "title": "Convert Temperature Constants",
+    "prompt_md": "## Goal\nComplete the function `celsiusToFahrenheit` that converts a Celsius temperature (given as a `constexpr` value) and returns the Fahrenheit equivalent as a `double`.\n\n## Input\nLine 1: one integer `c` (-100 ≤ c ≤ 200), a temperature in Celsius.\n\n## Output\nPrint exactly one line: `Fahrenheit: <value>` where `<value>` is the converted temperature with exactly one decimal place.\n\nExample: for input `0`, print `Fahrenheit: 32.0`. For input `100`, print `Fahrenheit: 212.0`.\n\n## Requirements\n1. Inside `celsiusToFahrenheit`, use `constexpr double scale = 9.0 / 5.0;` and `constexpr double offset = 32.0;`.\n2. Return `celsius * scale + offset`.\n3. In `main`, read the integer from stdin, call the function, and print the result with exactly one decimal place using `std::fixed` and `std::setprecision(1)`.\n4. Edge cases: `c = 0` prints `32.0`, `c = -40` prints `-40.0`.\n\n## Notes\n- Include `<iostream>` and `<iomanip>`.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: implement celsiusToFahrenheit(int celsius) -> double\n// Use constexpr double scale = 9.0 / 5.0; and constexpr double offset = 32.0; inside the function\ndouble celsiusToFahrenheit(int celsius) {\n    // TODO\n    return 0.0;\n}\n\nint main() {\n    int c;\n    std::cin >> c;\n    std::cout << \"Fahrenheit: \" << std::fixed << std::setprecision(1) << celsiusToFahrenheit(c) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\ndouble celsiusToFahrenheit(int celsius) {\n    constexpr double scale = 9.0 / 5.0;\n    constexpr double offset = 32.0;\n    return celsius * scale + offset;\n}\n\nint main() {\n    int c;\n    std::cin >> c;\n    std::cout << \"Fahrenheit: \" << std::fixed << std::setprecision(1) << celsiusToFahrenheit(c) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 0 Celsius",
+        "is_sample": true,
+        "stdin": "0\n",
+        "expected_stdout": "Fahrenheit: 32.0"
+      },
+      {
+        "label": "Hidden: 100 Celsius",
+        "is_sample": false,
+        "stdin": "100\n",
+        "expected_stdout": "Fahrenheit: 212.0"
+      },
+      {
+        "label": "Hidden: -40 Celsius",
+        "is_sample": false,
+        "stdin": "-40\n",
+        "expected_stdout": "Fahrenheit: -40.0"
+      }
+    ]
+  }
+]

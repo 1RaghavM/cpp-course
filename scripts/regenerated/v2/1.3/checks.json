@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    int x;\n    int y;\n    x = 7;\n    y = 3;\n    std::cout << x << \"\\n\";\n    std::cout << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7\n3",
+    "explanation_md": "`x` is assigned `7` and `y` is assigned `3`. The two `std::cout` statements print each variable's value followed by a newline. There is no trickery — the values are read straight from memory."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is wrong with this declaration?\n\n```cpp\nint 2count;\n```",
+    "options": {
+      "a": "`int` cannot hold names with digits.",
+      "b": "Variable names cannot start with a digit.",
+      "c": "The variable name `2count` is a C++ keyword.",
+      "d": "You need a semicolon before the name."
+    },
+    "answer": "b",
+    "explanation_md": "C++ variable names must begin with a letter or an underscore, never a digit. `2count` starts with `2`, so it is an invalid identifier and the compiler will report an error. The name `count2` would be valid."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is wrong with this program?\n\n```cpp\n#include <iostream>\n\nint main()\n{\n    std::cout << total << \"\\n\";\n    int total;\n    total = 100;\n    return 0;\n}\n```",
+    "options": {
+      "a": "`total` is used before it is declared.",
+      "b": "`int total` should be written as `total int`.",
+      "c": "You cannot print a variable before assigning it a value.",
+      "d": "The semicolon after `total = 100` is incorrect."
+    },
+    "answer": "a",
+    "explanation_md": "The compiler reads code top to bottom. When it reaches `std::cout << total`, the name `total` has not been declared yet, so the compiler reports an undeclared identifier error. Moving `int total;` to before the `std::cout` line fixes the problem."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "In C++, what does the term **object** mean in the context of variables?",
+    "options": {
+      "a": "An instance of a class defined with the `class` keyword.",
+      "b": "A region of memory that has a type.",
+      "c": "Any value that can be printed with `std::cout`.",
+      "d": "A variable that has been initialized to a non-zero value."
+    },
+    "answer": "b",
+    "explanation_md": "In C++, an object is formally defined as a region of memory that has a type. This includes simple `int` variables — you do not need a `class` to have an object. Every variable you declare is an object."
+  }
+]

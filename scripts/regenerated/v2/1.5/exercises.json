@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print the Sum of Two Integers",
+    "prompt_md": "## Goal\nRead two integers from standard input and print their sum on a single line.\n\n## Input\n- Line 1: two space-separated integers `a` and `b` (-1000 ≤ a, b ≤ 1000).\n\n## Output\n- Print exactly one line: `Sum: <result>` where `<result>` is `a + b`. No extra spaces or blank lines.\n\n## Requirements\n1. Use `std::cin` to read both integers.\n2. Use `std::cout` to print the result in the exact format shown (`Sum: ` with a capital S, a colon, and a space).\n3. End output with a newline character.\n4. Do not print anything else (no prompt, no extra labels).",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a;\n    int b;\n\n    // TODO: read a and b from std::cin\n\n    // TODO: print \"Sum: \" followed by a + b and a newline\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a;\n    int b;\n\n    std::cin >> a >> b;\n\n    std::cout << \"Sum: \" << a + b << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic positive numbers",
+        "is_sample": true,
+        "stdin": "10 32\n",
+        "expected_stdout": "Sum: 42\n"
+      },
+      {
+        "label": "Hidden: negative numbers",
+        "is_sample": false,
+        "stdin": "-5 3\n",
+        "expected_stdout": "Sum: -2\n"
+      },
+      {
+        "label": "Hidden: zeros",
+        "is_sample": false,
+        "stdin": "0 0\n",
+        "expected_stdout": "Sum: 0\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Output Order Bug",
+    "prompt_md": "## Goal\nThe program below is supposed to read two integers and print them in the order the user entered them, but it contains one logic bug. Find and fix it.\n\n## Input\n- Line 1: two space-separated integers `first` and `second`.\n\n## Output\n- Line 1: `First: <first>`\n- Line 2: `Second: <second>`\n\n## Requirements\n1. The values must be printed in the same order they were read.\n2. Each line must use the exact label shown (`First:` and `Second:` with capital F and S, a colon, and a space).\n3. There must be no extra blank lines.\n4. Find and fix the single logic bug in the program — do not rewrite it from scratch.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int first;\n    int second;\n\n    std::cin >> first >> second;\n\n    std::cout << \"First: \" << second << '\\n';\n    std::cout << \"Second: \" << first << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int first;\n    int second;\n\n    std::cin >> first >> second;\n\n    std::cout << \"First: \" << first << '\\n';\n    std::cout << \"Second: \" << second << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "10 20\n",
+        "expected_stdout": "First: 10\nSecond: 20\n"
+      },
+      {
+        "label": "Hidden: same value",
+        "is_sample": false,
+        "stdin": "5 5\n",
+        "expected_stdout": "First: 5\nSecond: 5\n"
+      },
+      {
+        "label": "Hidden: negative second",
+        "is_sample": false,
+        "stdin": "3 -7\n",
+        "expected_stdout": "First: 3\nSecond: -7\n"
+      }
+    ]
+  }
+]

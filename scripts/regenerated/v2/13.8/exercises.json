@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Initialize and print student records",
+    "prompt_md": "## Goal\nUse aggregate initialization to create `Student` structs and print each one.\n\n## Input\nNone (hardcoded values).\n\n## Output\nExact lines:\n```\nAlice 92\nBob 78\nCarla 85\n```\n(trailing newline after `Carla 85`)\n\n## Requirements\n1. Define a struct `Student` with members `std::string name` and `int score` (in that order).\n2. In `main`, create three `Student` variables using aggregate initialization (brace syntax, not assign-after-construct):\n   - `{ \"Alice\", 92 }`\n   - `{ \"Bob\", 78 }`\n   - `{ \"Carla\", 85 }`\n3. Print each student as `<name> <score>` followed by `'\\n'`.\n4. Do not define any helper function \u2014 print directly in `main`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO 1: Define struct Student with members std::string name and int score\n\nint main()\n{\n    // TODO 2: Create Student s1 using aggregate initialization { \"Alice\", 92 }\n    // TODO 3: Create Student s2 using aggregate initialization { \"Bob\", 78 }\n    // TODO 4: Create Student s3 using aggregate initialization { \"Carla\", 85 }\n    // TODO 5: Print each student: <name> <score>\\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Student\n{\n    std::string name;\n    int score;\n};\n\nint main()\n{\n    Student s1{ \"Alice\", 92 };\n    Student s2{ \"Bob\",   78 };\n    Student s3{ \"Carla\", 85 };\n\n    std::cout << s1.name << ' ' << s1.score << '\\n';\n    std::cout << s2.name << ' ' << s2.score << '\\n';\n    std::cout << s3.name << ' ' << s3.score << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "expected_stdout": "Alice 92\nBob 78\nCarla 85\n",
+        "is_sample": true,
+        "stdin": "",
+        "label": "Sample test 1"
+      },
+      {
+        "expected_stdout": "Alice 92\nBob 78\nCarla 85\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 2"
+      },
+      {
+        "expected_stdout": "Alice 92\nBob 78\nCarla 85\n",
+        "is_sample": false,
+        "stdin": "",
+        "label": "Hidden test 3"
+      }
+    ]
+  },
+  {
+    "title": "Complete makeRect",
+    "prompt_md": "## Goal\nComplete the function `makeRect` that takes width and height and returns an initialized `Rect` struct.\n\n## Input\nTwo integers on a single line (space-separated): width and height.\n\n## Output\nExact line:\n```\nwidth=<w> height=<h> area=<a>\n```\n(trailing newline)\n\n## Requirements\n1. A struct `Rect` with members `int width` and `int height` is already defined.\n2. Complete `Rect makeRect(int w, int h)` which returns a `Rect` using aggregate initialization.\n3. Do not use assign-after-construct inside `makeRect` \u2014 use a single brace initializer.\n4. `main` is already written: reads two integers, calls `makeRect`, then prints `width=<w> height=<h> area=<w*h>`.\n5. `area` is computed in `main` as `r.width * r.height`.\n\n## Notes\n- This exercise combines aggregate initialization (13.8) with returning a struct by value.",
+    "starter_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\n// TODO: Complete this function.\n// Return a Rect initialized with w and h using aggregate initialization.\nRect makeRect(int w, int h)\n{\n    return {}; // replace this\n}\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n    Rect r{ makeRect(w, h) };\n    std::cout << \"width=\" << r.width\n              << \" height=\" << r.height\n              << \" area=\" << r.width * r.height << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\nRect makeRect(int w, int h)\n{\n    return { w, h };\n}\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n    Rect r{ makeRect(w, h) };\n    std::cout << \"width=\" << r.width\n              << \" height=\" << r.height\n              << \" area=\" << r.width * r.height << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "5x3",
+        "stdin": "5 3\n",
+        "expected_stdout": "width=5 height=3 area=15\n",
+        "is_sample": true
+      },
+      {
+        "label": "10x4",
+        "stdin": "10 4\n",
+        "expected_stdout": "width=10 height=4 area=40\n",
+        "is_sample": false
+      },
+      {
+        "label": "1x1",
+        "stdin": "1 1\n",
+        "expected_stdout": "width=1 height=1 area=1\n",
+        "is_sample": false
+      }
+    ]
+  }
+]

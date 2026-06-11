@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "A user types `abc` when your program runs `std::cin >> x` where `x` is an `int`. What happens?",
+    "options": {
+      "a": "`x` is set to 0 and the stream continues working normally.",
+      "b": "The extraction fails, `x` is left unchanged, the string `abc` stays in the stream buffer, and the stream enters a fail state.",
+      "c": "The program crashes with a runtime error.",
+      "d": "The extraction reads `0` because `'a'` has ASCII value 0."
+    },
+    "answer": "b",
+    "explanation_md": "When `>>` can't convert the input to the target type, it sets the stream's fail flag, leaves the target variable unchanged, and keeps the unconsumed characters in the buffer. Future reads will fail instantly until you call `clear()` and `ignore()`. The program does not crash — it silently breaks unless you check for failure."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when the user inputs `5`?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x;\n    if (std::cin >> x)\n        std::cout << \"OK: \" << x << '\\n';\n    else\n        std::cout << \"Fail\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "OK: 5",
+    "explanation_md": "When the user inputs `5`, `std::cin >> x` successfully extracts the integer, sets `x = 5`, and returns a reference to `std::cin` that evaluates to `true`. The `if` branch executes and prints `OK: 5`. If the user had typed a non-integer, the `else` branch would print `Fail`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "After a failed extraction, you call `std::cin.clear()` but NOT `std::cin.ignore(...)`. What happens on the very next `std::cin >> y`?",
+    "options": {
+      "a": "It succeeds because `clear()` fixed everything.",
+      "b": "It fails again immediately because the bad input characters are still in the buffer.",
+      "c": "It blocks the program waiting for new keyboard input.",
+      "d": "It skips the bad characters automatically."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cin.clear()` resets the error flag but leaves the unconsumed characters in the buffer. The next `>>` will try to parse those same bad characters and fail immediately again. You must call `std::cin.ignore(...)` after `clear()` to discard the bad input before attempting another read."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A user inputs `0` for a program that expects a positive integer (> 0). `std::cin >> n` succeeds. Which statement is true?",
+    "options": {
+      "a": "The stream is in a fail state because 0 is not a positive integer.",
+      "b": "The extraction succeeded; `n == 0`. The program must check `n > 0` separately as a range validation.",
+      "c": "`n` is automatically set to 1 because 0 is out of range.",
+      "d": "You must call `std::cin.clear()` before reading the next value."
+    },
+    "answer": "b",
+    "explanation_md": "`std::cin` only fails when it cannot convert the input to the target type. `0` is a valid integer literal, so the extraction succeeds and `n == 0`. The stream is not in a fail state. Range validation (`n > 0`) is a separate check the programmer must write — the stream has no knowledge of valid ranges."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when input is `abc`? (Assume the program receives `abc\\n` on stdin.)\n\n```cpp\n#include <iostream>\n#include <limits>\n\nint main() {\n    int x = 42;\n    if (!(std::cin >> x)) {\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        std::cout << \"Bad\\n\";\n    } else {\n        std::cout << x << '\\n';\n    }\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "Bad",
+    "explanation_md": "The input `abc` cannot be parsed as an `int`, so `std::cin >> x` fails. `x` stays at `42` (unchanged). `!(std::cin >> x)` is `true`, so the `if` body runs: it clears the fail flag, discards the rest of the line, and prints `Bad`. The `else` branch is skipped."
+  }
+]

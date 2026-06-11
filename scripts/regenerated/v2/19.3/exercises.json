@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Destructor Order Observer",
+    "prompt_md": "## Goal\nWrite a program using a class `Token` that prints creation and destruction messages, demonstrating that objects are destroyed in reverse construction order.\n\n## Input\n- No input (the program takes no stdin).\n\n## Output\nExactly these 6 lines:\n```\ncreate 1\ncreate 2\ncreate 3\ndestroy 3\ndestroy 2\ndestroy 1\n```\n\n## Requirements\n1. Define a class `Token` with a single `int` member `id`.\n2. The constructor takes one `int` argument and prints `create <id>` followed by a newline.\n3. The destructor prints `destroy <id>` followed by a newline.\n4. In `main`, declare three `Token` objects with ids 1, 2, and 3 in that order — all in the same scope.\n5. No heap allocation is needed — use stack objects only.\n6. Do not call the destructor manually.",
+    "starter_code": "#include <iostream>\n\n// TODO: define class Token with constructor and destructor\n\nint main() {\n    // TODO: declare Token objects with ids 1, 2, 3 in the same scope\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Token {\npublic:\n    int id;\n    Token(int i) : id{i} {\n        std::cout << \"create \" << id << \"\\n\";\n    }\n    ~Token() {\n        std::cout << \"destroy \" << id << \"\\n\";\n    }\n};\n\nint main() {\n    Token t1{1};\n    Token t2{2};\n    Token t3{3};\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: fixed output",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "create 1\ncreate 2\ncreate 3\ndestroy 3\ndestroy 2\ndestroy 1\n"
+      },
+      {
+        "label": "Hidden: same fixed output",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "create 1\ncreate 2\ncreate 3\ndestroy 3\ndestroy 2\ndestroy 1\n"
+      },
+      {
+        "label": "Hidden: verify order",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "create 1\ncreate 2\ncreate 3\ndestroy 3\ndestroy 2\ndestroy 1\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Missing Destructor Causes Leak",
+    "prompt_md": "## Goal\nThe class `DynArray` below allocates a heap array in its constructor but is missing its destructor. The `load` function creates a `DynArray` object, reads N values into it, and returns the first element — but the heap array is leaked on every call. Fix the bug.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 10).\n- Lines 2..N+1: one integer per line.\n\n## Output\n- Print exactly one line: `First: <value of first element>`.\n\n## Requirements\n1. Add a destructor to `DynArray` that calls `delete[]` on `items`.\n2. Do not change `main` or the `load` function signature.\n3. The class `DynArray` must correctly free its heap array on destruction.\n4. The fix is purely adding the destructor — no other code should change.",
+    "starter_code": "#include <iostream>\n\nclass DynArray {\npublic:\n    int* items;\n    int  size;\n\n    DynArray(int n) : size{n} {\n        items = new int[n]{};\n    }\n    // Bug: no destructor — heap memory is never freed\n};\n\nint load() {\n    int n;\n    std::cin >> n;\n    DynArray arr{n};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr.items[i];\n    return arr.items[0];\n}\n\nint main() {\n    std::cout << \"First: \" << load() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass DynArray {\npublic:\n    int* items;\n    int  size;\n\n    DynArray(int n) : size{n} {\n        items = new int[n]{};\n    }\n\n    ~DynArray() {\n        delete[] items;\n    }\n};\n\nint load() {\n    int n;\n    std::cin >> n;\n    DynArray arr{n};\n    for (int i = 0; i < n; ++i)\n        std::cin >> arr.items[i];\n    return arr.items[0];\n}\n\nint main() {\n    std::cout << \"First: \" << load() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3 elements",
+        "is_sample": true,
+        "stdin": "3\n7\n2\n5\n",
+        "expected_stdout": "First: 7\n"
+      },
+      {
+        "label": "Hidden: N=1",
+        "is_sample": false,
+        "stdin": "1\n99\n",
+        "expected_stdout": "First: 99\n"
+      },
+      {
+        "label": "Hidden: first element is negative",
+        "is_sample": false,
+        "stdin": "4\n-3\n1\n2\n3\n",
+        "expected_stdout": "First: -3\n"
+      }
+    ]
+  }
+]

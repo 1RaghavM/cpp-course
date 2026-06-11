@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nclass Label {\n    std::string m_text;\npublic:\n    Label(std::string t) : m_text{ t } {}\n    void show() & {\n        std::cout << \"lval: \" << m_text << \"\\n\";\n    }\n    void show() && {\n        std::cout << \"rval: \" << m_text << \"\\n\";\n    }\n};\n\nint main() {\n    Label a{ \"hello\" };\n    a.show();\n    Label{ \"world\" }.show();\n}\n```",
+    "options": null,
+    "answer": "lval: hello\nrval: world",
+    "explanation_md": "`a` is a named variable — an lvalue — so `a.show()` calls the `&`-qualified overload, printing `lval: hello`. `Label{\"world\"}` creates a temporary — an rvalue — so `.show()` calls the `&&`-qualified overload, printing `rval: world`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A class has `int getData() const &` and `int getData() &&`. Which objects call which overload?",
+    "options": {
+      "a": "`const &` is called on non-const objects; `&&` is called on const objects.",
+      "b": "`const &` is called on lvalue objects (named variables, including const); `&&` is called on rvalue objects (temporaries).",
+      "c": "`&&` is called on lvalue objects; `const &` is called on rvalue objects.",
+      "d": "Both overloads are called for every object; the compiler picks the last one defined."
+    },
+    "answer": "b",
+    "explanation_md": "Ref qualifiers dispatch based on value category, not `const`-ness. `const &` is called when the object is an lvalue (a named, addressable object — const or not). `&&` is called when the object is an rvalue (a temporary). The `const` in `const &` qualifies `this` as const within that overload, so both const and non-const lvalues call the `const &` overload."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have a class with `const std::string& name() const &` returning a reference to a private member. Why might you add `std::string name() &&` alongside it?",
+    "options": {
+      "a": "To allow calling `name()` on non-const objects.",
+      "b": "To prevent returning a dangling reference when `name()` is called on a temporary.",
+      "c": "To make the function callable from a static context.",
+      "d": "To avoid copying the string when the object is an lvalue."
+    },
+    "answer": "b",
+    "explanation_md": "When called on a temporary (rvalue), the object will be destroyed at the end of the expression. Returning `const std::string&` would point into destroyed memory — a dangling reference. The `&&`-qualified overload returns by value instead: the string is copied (or moved) out safely before the temporary dies. This is the canonical reason to pair a `const &` reference-returning getter with a `&&` value-returning getter."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "The code below is intended to add ref-qualified overloads but fails to compile. What is wrong?\n\n```cpp\nclass Token {\n    int m_val;\npublic:\n    Token(int v) : m_val{ v } {}\n    int get() { return m_val; }     // no ref qualifier\n    int get() & { return m_val; }   // lvalue overload\n};\n```",
+    "options": {
+      "a": "`int get() &` is not valid syntax; the `&` must come before the return type.",
+      "b": "You cannot have both an unqualified `get()` and a `&`-qualified `get()` — once you use a ref qualifier on one overload, all overloads of that function must be ref-qualified.",
+      "c": "`int get() &` returns by value from an lvalue, which always causes a compile error.",
+      "d": "The unqualified `get()` and `get() &` have identical signatures and cause an ambiguity error."
+    },
+    "answer": "b",
+    "explanation_md": "C++ does not allow mixing an unqualified overload with a ref-qualified overload for the same function — once any overload has a ref qualifier, all overloads must have one. The fix is to remove the unqualified `int get()` and keep only `int get() &`, or to add a `&&`-qualified overload and remove the unqualified one. Providing both `int get()` and `int get() &` creates an inconsistent set that the compiler rejects."
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Traffic Light State Machine",
+    "prompt_md": "## Goal\nComplete a `TrafficLight` class with a nested `enum class State` and a `next()` function that advances through Red → Green → Yellow → Red.\n\n## Input\nLine 1: one integer `n` (1 ≤ n ≤ 10) — the number of times to call `next()`.\n\n## Output\nPrint `n + 1` lines. The first line is the initial state. Each subsequent line is the state after one call to `next()`.\nPrint the state name as: `Red`, `Green`, or `Yellow`.\n\n## Requirements\n1. `enum class State { Red, Green, Yellow }` must be a public nested type of `TrafficLight`.\n2. Initial state is `State::Red`.\n3. `next()` advances: `Red` → `Green` → `Yellow` → `Red` (cycling).\n4. `std::string stateName() const` returns the string name of the current state.\n5. Hidden tests include `n = 1` (one transition) and `n = 6` (two full cycles).",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass TrafficLight {\npublic:\n    enum class State { Red, Green, Yellow };\n\n    // TODO: implement next() — advance m_state through Red->Green->Yellow->Red\n    void next() {}\n\n    std::string stateName() const {\n        // TODO: return \"Red\", \"Green\", or \"Yellow\" based on m_state\n        return \"\";\n    }\n\nprivate:\n    State m_state{State::Red};\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    TrafficLight light;\n    std::cout << light.stateName() << '\\n';\n    for (int i = 0; i < n; ++i) {\n        light.next();\n        std::cout << light.stateName() << '\\n';\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass TrafficLight {\npublic:\n    enum class State { Red, Green, Yellow };\n\n    void next() {\n        if (m_state == State::Red)    m_state = State::Green;\n        else if (m_state == State::Green)  m_state = State::Yellow;\n        else                          m_state = State::Red;\n    }\n\n    std::string stateName() const {\n        if (m_state == State::Red)    return \"Red\";\n        if (m_state == State::Green)  return \"Green\";\n        return \"Yellow\";\n    }\n\nprivate:\n    State m_state{State::Red};\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n\n    TrafficLight light;\n    std::cout << light.stateName() << '\\n';\n    for (int i = 0; i < n; ++i) {\n        light.next();\n        std::cout << light.stateName() << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three transitions",
+        "is_sample": true,
+        "stdin": "3",
+        "expected_stdout": "Red\nGreen\nYellow\nRed"
+      },
+      {
+        "label": "Hidden: one transition",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Red\nGreen"
+      },
+      {
+        "label": "Hidden: two full cycles",
+        "is_sample": false,
+        "stdin": "6",
+        "expected_stdout": "Red\nGreen\nYellow\nRed\nGreen\nYellow\nRed"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Wrong State Transition in Nested Enum",
+    "prompt_md": "## Goal\nFix the one logic bug in `TrafficLight::next()`. The light should cycle Red → Green → Yellow → Red, but the current code cycles in the wrong order.\n\n## Input\nLine 1: one integer `n` (1 ≤ n ≤ 5) — number of calls to `next()`.\n\n## Output\nPrint `n + 1` lines: the initial state, then the state after each `next()` call.\nPrint the state as: `Red`, `Green`, or `Yellow`.\n\n## Requirements\n1. Initial state must remain `Red`.\n2. Correct cycle: `Red` → `Green` → `Yellow` → `Red`.\n3. Do not change `stateName()`, `main`, or the enum definition.\n4. Hidden tests include `n = 1` (single step, should go Red → Green) and `n = 4`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass TrafficLight {\npublic:\n    enum class State { Red, Green, Yellow };\n\n    void next() {\n        // bug: wrong order — Yellow should come after Green, not after Red\n        if (m_state == State::Red)    m_state = State::Yellow;\n        else if (m_state == State::Yellow) m_state = State::Green;\n        else                          m_state = State::Red;\n    }\n\n    std::string stateName() const {\n        if (m_state == State::Red)    return \"Red\";\n        if (m_state == State::Green)  return \"Green\";\n        return \"Yellow\";\n    }\n\nprivate:\n    State m_state{State::Red};\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    TrafficLight light;\n    std::cout << light.stateName() << '\\n';\n    for (int i = 0; i < n; ++i) {\n        light.next();\n        std::cout << light.stateName() << '\\n';\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass TrafficLight {\npublic:\n    enum class State { Red, Green, Yellow };\n\n    void next() {\n        if (m_state == State::Red)    m_state = State::Green;\n        else if (m_state == State::Green)  m_state = State::Yellow;\n        else                          m_state = State::Red;\n    }\n\n    std::string stateName() const {\n        if (m_state == State::Red)    return \"Red\";\n        if (m_state == State::Green)  return \"Green\";\n        return \"Yellow\";\n    }\n\nprivate:\n    State m_state{State::Red};\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    TrafficLight light;\n    std::cout << light.stateName() << '\\n';\n    for (int i = 0; i < n; ++i) {\n        light.next();\n        std::cout << light.stateName() << '\\n';\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three transitions",
+        "is_sample": true,
+        "stdin": "3",
+        "expected_stdout": "Red\nGreen\nYellow\nRed"
+      },
+      {
+        "label": "Hidden: one transition",
+        "is_sample": false,
+        "stdin": "1",
+        "expected_stdout": "Red\nGreen"
+      },
+      {
+        "label": "Hidden: four transitions",
+        "is_sample": false,
+        "stdin": "4",
+        "expected_stdout": "Red\nGreen\nYellow\nRed\nGreen"
+      }
+    ]
+  }
+]

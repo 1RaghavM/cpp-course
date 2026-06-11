@@ -1,0 +1,40 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n#include <iomanip>\nint main() {\n    std::cout << std::setw(4) << 7\n              << std::setw(4) << 8 << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "   7   8",
+    "explanation_md": "`std::setw(4)` applies to the immediately following output only, then resets. So both `7` and `8` are each right-aligned in a width-4 field, padded with spaces, producing `   7   8`."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main() {\n    int n = 16;\n    std::cout << std::hex << n << \"\\n\";\n    std::cout << n << \"\\n\";\n}\n```",
+    "options": null,
+    "answer": "10\n10",
+    "explanation_md": "`std::hex` is a sticky manipulator — it stays active for all subsequent integer output. Both lines print `16` in hexadecimal, which is `10`. To get `16` on the second line you would need to insert `std::dec` first."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You want to print `3.14` with exactly 2 decimal places. Which code achieves this?",
+    "options": {
+      "a": "`std::cout << std::setprecision(2) << 3.14159;`",
+      "b": "`std::cout << std::fixed << std::setprecision(2) << 3.14159;`",
+      "c": "`std::cout << std::scientific << std::setprecision(2) << 3.14159;`",
+      "d": "`std::cout << std::setw(4) << 3.14159;`"
+    },
+    "answer": "b",
+    "explanation_md": "Without `std::fixed`, `std::setprecision(2)` sets 2 *significant* digits, printing `3.1` — not `3.14`. With `std::fixed`, precision means digits *after the decimal point*, so `3.14` is correct. `std::scientific` would give `3.14e+00`. `std::setw` controls field width, not decimal places."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which header must you include to use `std::setw` and `std::setfill`?",
+    "options": {
+      "a": "`<iostream>`",
+      "b": "`<iomanip>`",
+      "c": "`<format>`",
+      "d": "`<stdio.h>`"
+    },
+    "answer": "b",
+    "explanation_md": "`std::setw`, `std::setfill`, `std::setprecision`, and `std::fixed` are all declared in `<iomanip>`. `<iostream>` provides the stream objects and basic manipulators like `std::endl` and `std::hex`, but not the parameterised ones."
+  }
+]

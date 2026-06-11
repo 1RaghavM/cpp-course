@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Unsigned Wrap-Around Printer",
+    "prompt_md": "## Goal\nWrite a program that reads two unsigned integers and prints their difference, demonstrating what happens when unsigned subtraction wraps around.\n\n## Input\n- Line 1: unsigned integer `a` (0 ≤ a ≤ 4294967295)\n- Line 2: unsigned integer `b` (0 ≤ b ≤ 4294967295)\n\n## Output\nPrint exactly one line: the unsigned result of `a - b` as a decimal integer (no label, no extra spaces).\n\n## Requirements\n1. Declare both variables as `unsigned int`.\n2. Compute the subtraction and store in a third `unsigned int` named `result`.\n3. Print `result` followed by a newline.\n4. When `a` is 0 and `b` is 1, the output must be 4294967295 (wraps around).\n5. When `a` equals `b`, the output must be 0.\n6. Do not add any clamping, checking, or correction — let the unsigned arithmetic speak for itself.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    unsigned int a {};\n    unsigned int b {};\n\n    std::cin >> a;\n    std::cin >> b;\n\n    // TODO: compute a - b and store it in an unsigned int named result\n    // TODO: print result followed by a newline\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    unsigned int a {};\n    unsigned int b {};\n\n    std::cin >> a;\n    std::cin >> b;\n\n    unsigned int result { a - b };\n    std::cout << result << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: wrap-around (0 - 1)",
+        "is_sample": true,
+        "stdin": "0\n1\n",
+        "expected_stdout": "4294967295\n"
+      },
+      {
+        "label": "Hidden: equal values (no wrap)",
+        "is_sample": false,
+        "stdin": "7\n7\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: a > b (normal subtraction)",
+        "is_sample": false,
+        "stdin": "10\n3\n",
+        "expected_stdout": "7\n"
+      }
+    ]
+  },
+  {
+    "title": "Points After Penalty",
+    "prompt_md": "## Goal\nFind and fix the bug in this program that computes a player's remaining points after a penalty is subtracted.\n\n## Input\n- Line 1: unsigned integer `score` (the player's current score, 0 ≤ score ≤ 1000)\n- Line 2: unsigned integer `penalty` (points to deduct, 0 ≤ penalty ≤ 1000)\n\n## Output\nPrint exactly one line: the remaining points as a signed decimal integer.\n\n## Requirements\n1. The program currently uses `unsigned int` for all variables.\n2. The bug is that when `penalty` exceeds `score`, the subtraction silently wraps around instead of producing a meaningful negative value.\n3. Fix the bug by changing the variable types so that the subtraction can produce a negative result without wrapping.\n4. When `penalty` is 10 and `score` is 3, the output must be `-7`.\n5. When `score` equals `penalty`, the output must be `0`.\n6. When `score` exceeds `penalty`, output the correct positive difference.\n\n## Notes\n- Change only the variable types, not the logic or the arithmetic expression.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    unsigned int score {};\n    unsigned int penalty {};\n\n    std::cin >> score;\n    std::cin >> penalty;\n\n    unsigned int remaining { score - penalty };\n    std::cout << remaining << \"\\n\";\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int score {};\n    int penalty {};\n\n    std::cin >> score;\n    std::cin >> penalty;\n\n    int remaining { score - penalty };\n    std::cout << remaining << \"\\n\";\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: penalty exceeds score",
+        "is_sample": true,
+        "stdin": "3\n10\n",
+        "expected_stdout": "-7\n"
+      },
+      {
+        "label": "Hidden: equal values",
+        "is_sample": false,
+        "stdin": "5\n5\n",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: score exceeds penalty",
+        "is_sample": false,
+        "stdin": "100\n30\n",
+        "expected_stdout": "70\n"
+      }
+    ]
+  }
+]

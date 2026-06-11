@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Overloaded Describe Function",
+    "prompt_md": "## Goal\nWrite two overloaded functions both named `describe` — one that takes an `int` and one that takes a `double` — each printing a one-line description of the value.\n\n## Input\nLine 1: an integer N.\nLine 2: a floating-point number D.\n\n## Output\nLine 1: `Integer: <N>`\nLine 2: `Double: <D>` (printed with the default `std::cout` precision for doubles).\n\n## Requirements\n1. Both functions must be named `describe` (overloaded).\n2. `describe(int)` prints `Integer: ` followed by the value.\n3. `describe(double)` prints `Double: ` followed by the value.\n4. `main` reads one `int` and one `double` from stdin, calls `describe` on each, and prints the two lines in order.\n5. No extra blank lines in the output.",
+    "starter_code": "#include <iostream>\n\n// TODO: implement this function to print \"Integer: \" then x\nvoid describe(int x) {\n    (void)x; // replace this line\n}\n\n// TODO: implement this function to print \"Double: \" then x\nvoid describe(double x) {\n    (void)x; // replace this line\n}\n\nint main() {\n    int n;\n    double d;\n    std::cin >> n >> d;\n    describe(n);\n    describe(d);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nvoid describe(int x) {\n    std::cout << \"Integer: \" << x << \"\\n\";\n}\n\nvoid describe(double x) {\n    std::cout << \"Double: \" << x << \"\\n\";\n}\n\nint main() {\n    int n;\n    double d;\n    std::cin >> n >> d;\n    describe(n);\n    describe(d);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: typical values",
+        "is_sample": true,
+        "stdin": "7\n3.14",
+        "expected_stdout": "Integer: 7\nDouble: 3.14"
+      },
+      {
+        "label": "Hidden: negative integer",
+        "is_sample": false,
+        "stdin": "-5\n0.5",
+        "expected_stdout": "Integer: -5\nDouble: 0.5"
+      },
+      {
+        "label": "Hidden: zero values",
+        "is_sample": false,
+        "stdin": "0\n0",
+        "expected_stdout": "Integer: 0\nDouble: 0"
+      }
+    ]
+  },
+  {
+    "title": "Overloaded Area Function — Fix the Bug",
+    "prompt_md": "## Goal\nThe program below has two overloaded `area` functions: one for a square (side length as `int`) and one for a rectangle (width and height as `double`). It contains one logic bug. Find and fix it.\n\n## Input\nLine 1: an integer S (the square's side).\nLine 2: two space-separated doubles W and H (rectangle width and height).\n\n## Output\nLine 1: `Square area: <S*S>`\nLine 2: `Rectangle area: <W*H>` (default double precision).\n\n## Requirements\n1. `area(int side)` must return `side * side`.\n2. `area(double w, double h)` must return `w * h`.\n3. Both results are printed in the order shown above.\n4. The bug is a logic error, not a compile error.",
+    "starter_code": "#include <iostream>\n\nint area(int side) {\n    return side + side;  // BUG: should be side * side\n}\n\ndouble area(double w, double h) {\n    return w * h;\n}\n\nint main() {\n    int s;\n    double w, h;\n    std::cin >> s >> w >> h;\n    std::cout << \"Square area: \" << area(s) << \"\\n\";\n    std::cout << \"Rectangle area: \" << area(w, h) << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint area(int side) {\n    return side * side;\n}\n\ndouble area(double w, double h) {\n    return w * h;\n}\n\nint main() {\n    int s;\n    double w, h;\n    std::cin >> s >> w >> h;\n    std::cout << \"Square area: \" << area(s) << \"\\n\";\n    std::cout << \"Rectangle area: \" << area(w, h) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: side=4, rect=3.0x2.0",
+        "is_sample": true,
+        "stdin": "4\n3.0 2.0",
+        "expected_stdout": "Square area: 16\nRectangle area: 6"
+      },
+      {
+        "label": "Hidden: side=1, rect=5.5x2.0",
+        "is_sample": false,
+        "stdin": "1\n5.5 2.0",
+        "expected_stdout": "Square area: 1\nRectangle area: 11"
+      },
+      {
+        "label": "Hidden: side=10, rect=4.0x4.0",
+        "is_sample": false,
+        "stdin": "10\n4.0 4.0",
+        "expected_stdout": "Square area: 100\nRectangle area: 16"
+      }
+    ]
+  }
+]

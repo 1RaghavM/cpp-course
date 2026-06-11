@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Restrict Inherited Operations with Access Control",
+    "prompt_md": "## Goal\nBuild a `ReadOnlyList` class that inherits from `MutableList` and hides the mutation functions, then answer queries on a fixed list.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 6), number of initial values.\n- Line 2: N space-separated integers.\n- Line 3: integer Q (1 ≤ Q ≤ 5), number of queries.\n- Lines 4..Q+3: one query per line:\n  - `size` — print the number of elements.\n  - `get <i>` — print element at index i (0-based).\n\n## Output\nFor each query, print the result on its own line.\n\n## Requirements\n1. `MutableList` stores up to 10 ints in a fixed array, with public `void add(int)`, `int get(int) const`, and `int size() const`.\n2. `ReadOnlyList` inherits publicly from `MutableList`.\n3. In `ReadOnlyList`, demote `add` to private using a `using` declaration.\n4. `main` builds the list by calling `add` via the base type (using a `MutableList&` reference) so demotion does not break initialization. After initialization, only `ReadOnlyList` operations are used for queries.\n\n## Notes\n- No `new`/`delete` needed; fixed array is fine.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass MutableList {\n    int data_[10]{};\n    int count_{0};\npublic:\n    void add(int v)          { data_[count_++] = v; }\n    int  get(int i) const    { return data_[i]; }\n    int  size()     const    { return count_; }\n};\n\nclass ReadOnlyList : public MutableList {\nprivate:\n    // TODO: use a 'using' declaration to demote MutableList::add to private\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    ReadOnlyList rol;\n    MutableList& base = rol;   // access via base reference to call add during setup\n    for (int i = 0; i < n; ++i) {\n        int v{};\n        std::cin >> v;\n        base.add(v);\n    }\n\n    int q{};\n    std::cin >> q;\n    for (int i = 0; i < q; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"size\") {\n            std::cout << rol.size() << \"\\n\";\n        } else if (op == \"get\") {\n            int idx{};\n            std::cin >> idx;\n            std::cout << rol.get(idx) << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass MutableList {\n    int data_[10]{};\n    int count_{0};\npublic:\n    void add(int v)          { data_[count_++] = v; }\n    int  get(int i) const    { return data_[i]; }\n    int  size()     const    { return count_; }\n};\n\nclass ReadOnlyList : public MutableList {\nprivate:\n    using MutableList::add;\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    ReadOnlyList rol;\n    MutableList& base = rol;\n    for (int i = 0; i < n; ++i) {\n        int v{};\n        std::cin >> v;\n        base.add(v);\n    }\n\n    int q{};\n    std::cin >> q;\n    for (int i = 0; i < q; ++i) {\n        std::string op;\n        std::cin >> op;\n        if (op == \"size\") {\n            std::cout << rol.size() << \"\\n\";\n        } else if (op == \"get\") {\n            int idx{};\n            std::cin >> idx;\n            std::cout << rol.get(idx) << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: size and get queries",
+        "is_sample": true,
+        "stdin": "4\n10 20 30 40\n3\nsize\nget 0\nget 3\n",
+        "expected_stdout": "4\n10\n40"
+      },
+      {
+        "label": "Hidden: single element",
+        "is_sample": false,
+        "stdin": "1\n77\n2\nsize\nget 0\n",
+        "expected_stdout": "1\n77"
+      },
+      {
+        "label": "Hidden: get middle element",
+        "is_sample": false,
+        "stdin": "5\n2 4 6 8 10\n2\nget 2\nsize\n",
+        "expected_stdout": "6\n5"
+      }
+    ]
+  },
+  {
+    "title": "Complete the Printer Hierarchy with using Declaration",
+    "prompt_md": "## Goal\nComplete the `using` declaration in `FancyPrinter` so that the inherited `print()` (no args) and `print(int)` overloads remain accessible alongside the new `print(double)` overload.\n\n## Input\n- Line 1: integer N (1 ≤ N ≤ 5), number of print calls.\n- Lines 2..N+1: one call description per line:\n  - `int <v>` — call `print(int)` with value v.\n  - `double <v>` — call `print(double)` with value v.\n\n## Output\nFor each call, print the output of the corresponding `print` function on its own line.\n\n## Requirements\n1. `BasePrinter` has two public overloads: `void print(int n)` and `void print(double d)`... wait — `BasePrinter` has `void print(int n)` only; `FancyPrinter` adds `void print(double dpi)`.\n2. `FancyPrinter` inherits from `BasePrinter` and adds `void print(double dpi)` that prints `dpi <value>`.\n3. Complete the single `using` declaration inside `FancyPrinter` to bring `BasePrinter::print` back into scope so `print(int)` still works.\n4. Do not change `BasePrinter` or `main`.\n\n## Notes\n- Without the `using` declaration, `fp.print(42)` would be a compile error because `print(double)` hides the inherited `print(int)`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass BasePrinter {\npublic:\n    void print(int n) { std::cout << \"int \" << n << \"\\n\"; }\n};\n\nclass FancyPrinter : public BasePrinter {\npublic:\n    // TODO: add a using declaration to bring BasePrinter::print back into scope\n    using BasePrinter::print;  // placeholder — replace with the correct declaration\n    void print(double dpi) { std::cout << \"dpi \" << dpi << \"\\n\"; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    FancyPrinter fp;\n    for (int i = 0; i < n; ++i) {\n        std::string kind;\n        std::cin >> kind;\n        if (kind == \"int\") {\n            int v{};\n            std::cin >> v;\n            fp.print(v);\n        } else if (kind == \"double\") {\n            double v{};\n            std::cin >> v;\n            fp.print(v);\n        }\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass BasePrinter {\npublic:\n    void print(int n) { std::cout << \"int \" << n << \"\\n\"; }\n};\n\nclass FancyPrinter : public BasePrinter {\npublic:\n    using BasePrinter::print;\n    void print(double dpi) { std::cout << \"dpi \" << dpi << \"\\n\"; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    FancyPrinter fp;\n    for (int i = 0; i < n; ++i) {\n        std::string kind;\n        std::cin >> kind;\n        if (kind == \"int\") {\n            int v{};\n            std::cin >> v;\n            fp.print(v);\n        } else if (kind == \"double\") {\n            double v{};\n            std::cin >> v;\n            fp.print(v);\n        }\n    }\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: int then double",
+        "is_sample": true,
+        "stdin": "3\nint 42\ndouble 300\nint 7\n",
+        "expected_stdout": "int 42\ndpi 300\nint 7"
+      },
+      {
+        "label": "Hidden: only int calls",
+        "is_sample": false,
+        "stdin": "2\nint 10\nint 99\n",
+        "expected_stdout": "int 10\nint 99"
+      },
+      {
+        "label": "Hidden: double then int",
+        "is_sample": false,
+        "stdin": "2\ndouble 72\nint 5\n",
+        "expected_stdout": "dpi 72\nint 5"
+      }
+    ]
+  }
+]

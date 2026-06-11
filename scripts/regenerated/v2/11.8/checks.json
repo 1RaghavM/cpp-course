@@ -1,0 +1,45 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T, typename U>\nauto multiply(T a, U b)\n{\n    return a * b;\n}\n\nint main()\n{\n    std::cout << multiply(4, 3) << '\\n';\n    std::cout << multiply(4, 0.5) << '\\n';\n    std::cout << multiply(3.0, 2) << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "12\n2\n6",
+    "explanation_md": "`multiply(4, 3)` gives `int * int = 12`. `multiply(4, 0.5)` gives `int * double = 2.0`, which prints as `2`. `multiply(3.0, 2)` gives `double * int = 6.0`, which prints as `6`. In all cases `auto` deduces the correct arithmetic result type."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A function template is declared as `template <typename T, typename U> auto combine(T a, U b)`. Which call is **invalid**?",
+    "options": {
+      "a": "`combine(1, 2.0)` — T=int, U=double",
+      "b": "`combine(1, 1)` — T=int, U=int",
+      "c": "`combine('a', 'b')` — T=char, U=char",
+      "d": "None of the above — all three calls are valid deductions for a two-parameter template."
+    },
+    "answer": "d",
+    "explanation_md": "All three calls are syntactically valid deductions. `T` and `U` are deduced independently: they can be different types or the same type. The validity of the template body (e.g., whether `a + b` compiles) depends on what `combine` does, not on the deduction itself."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This template is supposed to print `ratio: 2.5` but it prints `ratio: 2`. What is the bug?\n\n```cpp\n#include <iostream>\n\ntemplate <typename T>\nT divide(T a, T b)\n{\n    return a / b;\n}\n\nint main()\n{\n    std::cout << \"ratio: \" << divide(5, 2) << '\\n';\n    return 0;\n}\n```",
+    "options": {
+      "a": "Template functions cannot perform division.",
+      "b": "Both arguments are `int`, so `T=int` and `5/2` performs integer division, giving `2` instead of `2.5`.",
+      "c": "The function should return `double` but it returns `T` which is `int`.",
+      "d": "The `auto` return type was not used, causing truncation."
+    },
+    "answer": "b",
+    "explanation_md": "With a single `T`, both arguments must match. Passing `5` and `2` deduces `T=int`, so `5/2` is integer division (result: `2`). Fix it by using a two-parameter template `template <typename T, typename U> auto divide(T a, U b)` and calling `divide(5.0, 2)` or `divide(5, 2.0)`, or simply write `divide(5.0, 2.0)`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is `auto` a useful return type for a two-template-parameter function like `template <typename T, typename U> auto add(T a, U b)`?",
+    "options": {
+      "a": "It makes the function return a `void*` that can hold any type.",
+      "b": "It lets the compiler deduce the return type from the `return` expression, automatically giving the correct type for any `T+U` combination.",
+      "c": "It forces both `T` and `U` to be converted to `double` before the addition.",
+      "d": "It is required syntax — without `auto`, two-parameter templates do not compile."
+    },
+    "answer": "b",
+    "explanation_md": "When the return type is `auto`, the compiler infers it from the `return a + b` expression using the same rules it uses for `a + b` in any other context. For `int + double` that gives `double`; for `int + int` it gives `int`. You do not have to name the type yourself."
+  }
+]

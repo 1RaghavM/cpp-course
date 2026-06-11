@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    char c = 65;\n    std::cout << c << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "A",
+    "explanation_md": "`char` variables printed with `cout` display the character whose ASCII code matches the stored integer, not the raw number. ASCII code 65 is the character `'A'`. To see the number 65 you would need to cast `c` to an `int` first."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\n\nint main() {\n    int x{10};\n    int y{3};\n    std::cout << x << \" \" << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "10 3",
+    "explanation_md": "Both variables are initialised with their given values and printed with a space between them and a newline at the end. There is no arithmetic here; the values come out exactly as stored."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following best describes why C++ requires every variable to have a type?",
+    "options": {
+      "a": "So the programmer must write more code, making programs harder to misuse.",
+      "b": "So the compiler knows how much memory to reserve and how to interpret the stored bits.",
+      "c": "So that the runtime can change the type when a different value is assigned.",
+      "d": "Types are optional; they are only needed when using floating-point numbers."
+    },
+    "answer": "b",
+    "explanation_md": "The type tells the compiler exactly two things: how many bytes to allocate and what the bit pattern means (integer, floating-point, character, etc.). Option c describes dynamic typing (like Python), not C++. Option d is wrong — all variables in C++ require a type."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "A programmer writes `short s = 40000;`. What is the most likely result on a platform where `short` is 2 bytes?",
+    "options": {
+      "a": "The program prints 40000 because C++ promotes short to int automatically.",
+      "b": "The compiler refuses to compile the program.",
+      "c": "The value is stored as-is; the platform silently upgrades the short to fit.",
+      "d": "The value wraps around and s holds an unexpected (often negative) number."
+    },
+    "answer": "d",
+    "explanation_md": "A 2-byte signed `short` can only hold values from -32768 to 32767. Assigning 40000 causes integer overflow: the bit pattern wraps and the result is an unexpected value, typically negative. The compiler may warn but will not error. Brace initialisation (`short s{40000}`) would be a compile error instead."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which initialisation syntax will cause a compile error when the value does not fit the type?",
+    "options": {
+      "a": "`int x = 3.7;`",
+      "b": "`int x(3.7);`",
+      "c": "`int x{3.7};`",
+      "d": "None of the above — all three behave identically."
+    },
+    "answer": "c",
+    "explanation_md": "Brace initialisation (`{}`) disallows narrowing conversions and produces a compile error if the initialiser does not fit the target type. The other two syntaxes silently truncate the `double` to `3` without any diagnostic."
+  }
+]

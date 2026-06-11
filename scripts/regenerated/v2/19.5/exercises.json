@@ -1,0 +1,56 @@
+[
+  {
+    "title": "void* Round-Trip: Store and Retrieve via void Pointer",
+    "prompt_md": "## Goal\nWrite a program that reads an integer and a double, stores pointers to both values in `void*` variables, then retrieves the values through those void pointers and prints them.\n\n## Input\n- Line 1: one integer N.\n- Line 2: one floating-point number D (printed with 1 decimal place).\n\n## Output\n- Line 1: `Int: <N>`\n- Line 2: `Double: <D>` (printed with exactly 1 decimal place using `std::fixed` and `std::setprecision(1)`)\n\n## Requirements\n1. Declare `int iVal` and `double dVal` as local (stack) variables and read into them.\n2. Assign `void* vp1 = &iVal` and `void* vp2 = &dVal`.\n3. Retrieve `N` by casting `vp1` to `int*` and dereferencing.\n4. Retrieve `D` by casting `vp2` to `double*` and dereferencing.\n5. Print in the exact format shown.\n6. Include `<iomanip>` for `std::fixed` and `std::setprecision`.\n\n## Notes\n- No heap allocation is needed here — `void*` can point to stack variables too.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int iVal;\n    double dVal;\n    std::cin >> iVal >> dVal;\n\n    // TODO: assign void* vp1 pointing to iVal\n    // TODO: assign void* vp2 pointing to dVal\n    // TODO: retrieve and print Int: using vp1 cast to int*\n    // TODO: retrieve and print Double: using vp2 cast to double* with 1 decimal place\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    int iVal;\n    double dVal;\n    std::cin >> iVal >> dVal;\n\n    void* vp1 = &iVal;\n    void* vp2 = &dVal;\n\n    std::cout << \"Int: \" << *static_cast<int*>(vp1) << \"\\n\";\n    std::cout << \"Double: \" << std::fixed << std::setprecision(1)\n              << *static_cast<double*>(vp2) << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 5 and 3.7",
+        "is_sample": true,
+        "stdin": "5\n3.7\n",
+        "expected_stdout": "Int: 5\nDouble: 3.7\n"
+      },
+      {
+        "label": "Hidden: negative int",
+        "is_sample": false,
+        "stdin": "-10\n1.5\n",
+        "expected_stdout": "Int: -10\nDouble: 1.5\n"
+      },
+      {
+        "label": "Hidden: zero double",
+        "is_sample": false,
+        "stdin": "42\n0.0\n",
+        "expected_stdout": "Int: 42\nDouble: 0.0\n"
+      }
+    ]
+  },
+  {
+    "title": "Fix the Bug: Wrong Cast Type on void Pointer",
+    "prompt_md": "## Goal\nThe program below stores a `double` in a heap-allocated block, retrieves it through a `void*`, but casts to the wrong pointer type before printing. The output is wrong. Fix the single type bug.\n\n## Input\n- Line 1: one floating-point number D (printed with 2 decimal places).\n\n## Output\n- Print exactly one line: `Value: <D>` with exactly 2 decimal places.\n\n## Requirements\n1. The bug is that `vp` is cast to `int*` when it should be cast to `double*`.\n2. Fix only that one cast — do not change any other part of the program.\n3. Memory must still be freed correctly with `delete` after use.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double d;\n    std::cin >> d;\n\n    double* p = new double{d};\n    void* vp = p;\n\n    // Bug: wrong cast — int* instead of double*\n    std::cout << \"Value: \" << std::fixed << std::setprecision(2)\n              << *static_cast<int*>(vp) << \"\\n\";\n\n    delete p;\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nint main() {\n    double d;\n    std::cin >> d;\n\n    double* p = new double{d};\n    void* vp = p;\n\n    // Fixed: cast to double* instead of int*\n    std::cout << \"Value: \" << std::fixed << std::setprecision(2)\n              << *static_cast<double*>(vp) << \"\\n\";\n\n    delete p;\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 3.14",
+        "is_sample": true,
+        "stdin": "3.14\n",
+        "expected_stdout": "Value: 3.14\n"
+      },
+      {
+        "label": "Hidden: 0.50",
+        "is_sample": false,
+        "stdin": "0.5\n",
+        "expected_stdout": "Value: 0.50\n"
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-2.75\n",
+        "expected_stdout": "Value: -2.75\n"
+      }
+    ]
+  }
+]

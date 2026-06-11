@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when the input is `5`?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int n {};\n    std::cin >> n;\n    if (n > 0)\n        std::cout << \"positive\\n\";\n        std::cout << \"done\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "positive\ndone",
+    "explanation_md": "Without braces, only the first statement (`std::cout << \"positive\\n\"`) is controlled by the `if`. The second `std::cout << \"done\\n\"` is outside the if block and always executes, regardless of the condition. So both lines print when n = 5."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print when the input is `0`?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x {};\n    std::cin >> x;\n    if (x > 0)\n        std::cout << \"positive\\n\";\n    else if (x < 0)\n        std::cout << \"negative\\n\";\n    else\n        std::cout << \"zero\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "zero",
+    "explanation_md": "When `x` is 0, `x > 0` is false so the first branch is skipped. `x < 0` is also false so the `else if` branch is skipped. The final `else` is the catch-all and executes, printing \"zero\"."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "This program is supposed to print \"equal\" when `a` and `b` have the same value, but it always prints \"equal\" regardless. What is the bug?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a { 3 };\n    int b { 7 };\n    if (a = b)\n        std::cout << \"equal\\n\";\n    else\n        std::cout << \"not equal\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "The variables a and b should be declared as the same type.",
+      "b": "`a = b` is an assignment, not a comparison; it sets a to 7 (truthy) so the condition is always true.",
+      "c": "The else branch is missing a semicolon.",
+      "d": "You cannot use integer variables directly as if conditions."
+    },
+    "answer": "b",
+    "explanation_md": "`a = b` is the assignment operator, which sets `a` to 7 and evaluates to 7. Since 7 is non-zero, the condition is always truthy. The correct comparison operator is `==`: `if (a == b)`. This is one of the most common C++ bugs — many compilers emit a warning for assignment inside a condition."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "How many statements does an `if` without curly braces control?",
+    "options": {
+      "a": "All statements until the end of the function.",
+      "b": "All statements indented at the same level.",
+      "c": "Exactly the one immediately following statement.",
+      "d": "All statements on the same line."
+    },
+    "answer": "c",
+    "explanation_md": "In C++, without braces, an `if` statement controls exactly the single statement that immediately follows it. Indentation is purely visual and has no effect on which statements are controlled. To control multiple statements, you must wrap them in a `{}` block."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Given `int x { 8 };`, which condition correctly tests whether `x` is strictly between 5 and 10 (exclusive)?",
+    "options": {
+      "a": "`if (5 < x < 10)`",
+      "b": "`if (x > 5 && x < 10)`",
+      "c": "`if (x > 5 || x < 10)`",
+      "d": "`if (5 < x && < 10)`"
+    },
+    "answer": "b",
+    "explanation_md": "`x > 5 && x < 10` correctly tests both conditions simultaneously using the logical AND operator. Option a (`5 < x < 10`) compiles but is wrong: it first evaluates `5 < x` to 1 (true), then tests `1 < 10` which is always true. Option c uses OR, which accepts values outside the range. Option d is a syntax error."
+  }
+]

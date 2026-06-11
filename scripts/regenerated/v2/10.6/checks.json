@@ -1,0 +1,47 @@
+[
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int a { 9 };\n    int b { 4 };\n    std::cout << static_cast<double>(a) / b << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "2.25",
+    "explanation_md": "The cast converts `a` to `double` before the division. Arithmetic conversions then promote `b` to `double` as well, so floating-point division occurs, giving 2.25. Without the cast, integer division would give 2."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    double d { 7.9 };\n    int i { static_cast<int>(d) };\n    std::cout << i << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "7",
+    "explanation_md": "`static_cast<int>` from a floating-point value always truncates toward zero — it does not round. So 7.9 becomes 7, not 8."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which of the following is the primary advantage of `static_cast` over a C-style cast like `(int)x`?",
+    "options": {
+      "a": "static_cast runs faster at runtime",
+      "b": "static_cast is easier to search for in code and is rejected at compile time when the conversion is not meaningful",
+      "c": "static_cast performs rounding instead of truncation",
+      "d": "static_cast automatically promotes the result to double"
+    },
+    "answer": "b",
+    "explanation_md": "`static_cast` uses a unique keyword syntax that is easy to grep, and it refuses to compile when the conversion cannot be verified as safe at compile time. C-style casts look like function calls and can silently do unsafe things. Neither cast performs rounding."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print?\n\n```cpp\n#include <iostream>\nint main()\n{\n    int x { 5 };\n    int y { 3 };\n    double r { static_cast<double>(x / y) };\n    std::cout << r << '\\n';\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "1",
+    "explanation_md": "The division `x / y` is evaluated first in integer arithmetic, giving `1`. The cast then converts the integer `1` to the double `1.0`. To get 1.666..., the cast must wrap one of the operands before the division: `static_cast<double>(x) / y`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "When should you prefer `static_cast<int>(d)` over using list initialization `int i { d }` where `d` is a `double`?",
+    "options": {
+      "a": "When you want the compiler to report a narrowing error to catch accidental truncation",
+      "b": "When you deliberately want to truncate the value and want to communicate that intent clearly",
+      "c": "When you need the fractional part preserved in a separate variable",
+      "d": "When you want automatic rounding to the nearest integer"
+    },
+    "answer": "b",
+    "explanation_md": "List initialization `int i { d }` is intentionally stricter — it rejects narrowing conversions so that accidental truncation is caught. `static_cast` is for when you know you are truncating and want to silence the warning while signaling intent to the reader. It does not round."
+  }
+]

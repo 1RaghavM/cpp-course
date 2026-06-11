@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Trace Shadowed Output",
+    "prompt_md": "## Goal\nWrite a program that demonstrates variable shadowing: an outer `int score` and an inner `int score` in a nested block, each holding different values, with their values printed in the correct order.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly three lines:\n- Line 1: the value of the inner `score` (which must be `50`)\n- Line 2: the value of the outer `score` after the inner block ends (which must be `10`)\n- Line 3: the value of `::score` (the global variable named `score`, which must be `99`)\n\nExample:\n```\n50\n10\n99\n```\n\n## Requirements\n1. Declare a global `int score` initialized to `99`.\n2. In `main`, declare a local `int score` initialized to `10`.\n3. Inside a nested block, declare another `int score` initialized to `50` (this shadows the local `score`).\n4. Inside the nested block, print the inner `score` (50).\n5. After the nested block, print the outer local `score` (10).\n6. After the nested block, print the global `score` using `::score` (99).\n7. Do not modify any variable after its initialization.",
+    "starter_code": "#include <iostream>\n\n// TODO: declare a global int named score initialized to 99\n\nint main()\n{\n    // TODO: declare a local int named score initialized to 10\n\n    {\n        // TODO: declare an inner int named score initialized to 50\n        // TODO: print the inner score\n    }\n\n    // TODO: print the outer local score\n    // TODO: print the global score using ::score\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint score { 99 };\n\nint main()\n{\n    int score { 10 };\n\n    {\n        int score { 50 };\n        std::cout << score << '\\n';  // 50\n    }\n\n    std::cout << score << '\\n';     // 10\n    std::cout << ::score << '\\n';   // 99\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic shadowing trace",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "50\n10\n99"
+      },
+      {
+        "label": "Hidden: output order and values",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "50\n10\n99"
+      },
+      {
+        "label": "Hidden: global not modified",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "50\n10\n99"
+      }
+    ]
+  },
+  {
+    "title": "Find the Shadowing Bug",
+    "prompt_md": "## Goal\nThis program is supposed to accumulate a running total by adding three values (5, 10, and 15) to a variable named `total`, then print the result. It should print `30`. Find and fix the bug.\n\n## Input\nNone (no stdin).\n\n## Output\nPrint exactly one line:\n```\nTotal: 30\n```\n\n## Requirements\n1. The program must print `Total: 30`.\n2. There is exactly one logic bug — find it and fix it. Do not restructure the program.\n3. The fix must not add or remove any variable declarations; only remove the shadowing.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int total { 0 };\n\n    {\n        int total { 5 };  // add 5\n        total = total + 5;\n    }\n\n    {\n        int total { 10 }; // add 10\n        total = total + 10;\n    }\n\n    {\n        int total { 15 }; // add 15\n        total = total + 15;\n    }\n\n    std::cout << \"Total: \" << total << '\\n';\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int total { 0 };\n\n    {\n        total = total + 5;\n    }\n\n    {\n        total = total + 10;\n    }\n\n    {\n        total = total + 15;\n    }\n\n    std::cout << \"Total: \" << total << '\\n';\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: total is 30",
+        "is_sample": true,
+        "stdin": "",
+        "expected_stdout": "Total: 30"
+      },
+      {
+        "label": "Hidden: output exact format",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Total: 30"
+      },
+      {
+        "label": "Hidden: no shadowing in blocks",
+        "is_sample": false,
+        "stdin": "",
+        "expected_stdout": "Total: 30"
+      }
+    ]
+  }
+]

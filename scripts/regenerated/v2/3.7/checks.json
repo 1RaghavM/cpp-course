@@ -1,0 +1,52 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "You set a breakpoint on line 8 (`int y = square(x);`). The debugger pauses. You look at the variables panel. What is the value of `y` at this moment?\n\n```cpp\n#include <iostream>\n\nint square(int n) {\n    return n * n;\n}\n\nint main() {\n    int x = 4;\n    int y = square(x);  // breakpoint here (line 8)\n    std::cout << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": {
+      "a": "16, because the breakpoint shows the result after the line executes.",
+      "b": "4, because x is 4 and y inherits x's value.",
+      "c": "An uninitialized or garbage value, because line 8 has not executed yet.",
+      "d": "0, because local variables are zero-initialized."
+    },
+    "answer": "c",
+    "explanation_md": "A breakpoint pauses *before* the line executes. When the debugger stops on line 8, the assignment `y = square(x)` has not run yet, so `y` has whatever garbage value happened to be in that memory location. To see `y = 16`, you must step one line forward after the breakpoint fires."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "A developer uses `std::cerr` to simulate where they would place a breakpoint. What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint halve(int n) {\n    std::cerr << \"[bp] halve n=\" << n << \"\\n\";\n    return n / 2;\n}\n\nint main() {\n    int a = halve(12);\n    int b = halve(a);\n    std::cout << b << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "3",
+    "explanation_md": "`halve(12)` returns `12 / 2 = 6`, so `a = 6`. Then `halve(6)` returns `6 / 2 = 3`, so `b = 3`. The cerr lines go to stderr only. Stdout prints `3`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "You have three breakpoints set in your program. The debugger is paused at the first breakpoint. You press **Continue**. Where does the debugger pause next?",
+    "options": {
+      "a": "At the very next line after the current breakpoint.",
+      "b": "At the second breakpoint, running full-speed through everything in between.",
+      "c": "At the end of the program.",
+      "d": "The program restarts from the beginning."
+    },
+    "answer": "b",
+    "explanation_md": "Continue resumes normal execution — the program runs at full speed — until it hits the next breakpoint (or the end of the program). It does not step line by line. If there were no more breakpoints, the program would run to completion."
+  },
+  {
+    "kind": "predict_output",
+    "prompt_md": "What does this program print to **stdout**?\n\n```cpp\n#include <iostream>\n\nint add(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int x = add(3, 7);\n    std::cerr << \"[debug] x=\" << x << \"\\n\";\n    int y = add(x, 5);\n    std::cerr << \"[debug] y=\" << y << \"\\n\";\n    std::cout << y << \"\\n\";\n    return 0;\n}\n```",
+    "options": null,
+    "answer": "15",
+    "explanation_md": "`add(3, 7)` returns `10`, so `x = 10`. Then `add(10, 5)` returns `15`, so `y = 15`. The cerr messages go to stderr. Stdout only receives `15`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "What is the best way to use `std::cerr` trace messages and breakpoints together when debugging?",
+    "options": {
+      "a": "They should never be used together — pick one technique.",
+      "b": "Use cerr messages first to identify which function is misbehaving, then set a breakpoint inside that function for precise inspection.",
+      "c": "Set breakpoints on every line first, then add cerr messages to explain the breakpoint output.",
+      "d": "cerr messages replace breakpoints entirely; the debugger is only needed for crash reports."
+    },
+    "answer": "b",
+    "explanation_md": "The two techniques are complementary. cerr messages are quick to add and give you a broad view of which function is producing wrong values. Once you know the approximate location, a breakpoint inside that function lets you step through it precisely without recompiling. Starting with cerr to narrow the region, then switching to the debugger for fine-grained inspection, is faster than using either tool alone."
+  }
+]

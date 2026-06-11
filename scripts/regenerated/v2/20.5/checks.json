@@ -1,0 +1,50 @@
+[
+  {
+    "kind": "mcq",
+    "prompt_md": "Why is calling `va_arg(args, int)` when the actual argument is a `double` dangerous?",
+    "options": {
+      "a": "It throws a `std::bad_cast` exception at runtime",
+      "b": "It is undefined behavior — the bytes are reinterpreted as `int`, producing garbage with no diagnostic",
+      "c": "The compiler will warn about the type mismatch but still compile",
+      "d": "It silently converts the `double` to `int` using truncation, just like a cast"
+    },
+    "answer": "b",
+    "explanation_md": "Ellipsis functions bypass C++'s type system completely. `va_arg` reads raw bytes from the stack and reinterprets them as the requested type. If the stored type differs, the result is undefined behavior — not a checked conversion, not a warning, not a recoverable exception. This is the core reason to avoid ellipsis in modern code."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "An ellipsis function is called with `sumInts(3, 10, 20, 30)`. Which statement about checking the number of variadic arguments is correct?",
+    "options": {
+      "a": "The function can call a built-in function to ask how many arguments were passed",
+      "b": "The function has no way to determine the count unless the caller passes it explicitly (via a count parameter or sentinel)",
+      "c": "`va_list` stores the count internally and `va_count(args)` returns it",
+      "d": "The compiler inserts a null terminator after the last argument so the function can detect the end"
+    },
+    "answer": "b",
+    "explanation_md": "There is no built-in mechanism for an ellipsis function to query how many arguments were passed. The count must come from the caller — either as an explicit integer parameter (like `printf`'s format string) or as a special sentinel value. Reading past the actual arguments is undefined behavior."
+  },
+  {
+    "kind": "spot_bug",
+    "prompt_md": "What is the bug in this ellipsis function?\n\n```cpp\n#include <cstdarg>\nint sumInts(int count, ...) {\n    va_list args;\n    va_start(args, count);\n    int total = 0;\n    for (int i = 0; i < count; ++i)\n        total += va_arg(args, int);\n    return total;  // forgot something\n}\n```",
+    "options": {
+      "a": "`va_start` should be called after the loop, not before",
+      "b": "`va_end(args)` is missing before the `return` — this is undefined behavior on some platforms",
+      "c": "`va_arg` returns a pointer; it should be dereferenced: `*va_arg(args, int*)`",
+      "d": "The function should use `long` instead of `int` to avoid overflow in `va_arg`"
+    },
+    "answer": "b",
+    "explanation_md": "`va_start` acquires resources (on some ABIs this includes memory allocation). `va_end` must be called before the function returns to release those resources. Skipping `va_end` is undefined behavior. The call should appear just before `return total;`."
+  },
+  {
+    "kind": "mcq",
+    "prompt_md": "Which modern C++ feature is the preferred replacement for an ellipsis function that sums an arbitrary number of integers?",
+    "options": {
+      "a": "A function that accepts `int*` and a count, like `sumInts(int* arr, int n)`",
+      "b": "`std::initializer_list<int>` as the parameter, e.g. `sumInts(std::initializer_list<int> vals)`",
+      "c": "A recursive function that calls itself once per argument",
+      "d": "Multiple overloads — one for each possible number of arguments"
+    },
+    "answer": "b",
+    "explanation_md": "`std::initializer_list<int>` allows calling `sumInts({10, 20, 30})` with any number of `int` values while preserving full type safety at compile time. Overloads are only practical for a small fixed set of argument counts. The pointer+count approach works but is not idiomatic modern C++."
+  }
+]
