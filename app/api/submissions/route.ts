@@ -149,6 +149,7 @@ export async function POST(request: NextRequest) {
       compileOutput: data.compileOutput,
       exitCode: data.exitCode,
       wallTimeMs: data.wallTimeMs,
+      memoryKb: data.memoryKb,
     });
   }
 
@@ -167,6 +168,7 @@ export async function POST(request: NextRequest) {
 
   // Run each test case against Judge0
   const judgeResults: Array<{ stdout: string | null; status: JudgeStatus }> = [];
+  const perTestMetrics: Array<{ wallTimeMs: number; memoryKb: number | null }> = [];
   let totalWallTimeMs = 0;
   let lastCompileOutput: string | null = null;
   let lastStderr: string | null = null;
@@ -189,6 +191,7 @@ export async function POST(request: NextRequest) {
     lastStderr = d.stderr ?? lastStderr;
 
     judgeResults.push({ stdout: d.stdout, status: d.status });
+    perTestMetrics.push({ wallTimeMs: d.wallTimeMs, memoryKb: d.memoryKb });
 
     // If compile error, fill remaining with same status -- code won't compile
     // differently for different stdin
@@ -196,6 +199,7 @@ export async function POST(request: NextRequest) {
       compileErrorOccurred = true;
       for (let i = judgeResults.length; i < dbTestCases.length; i++) {
         judgeResults.push({ stdout: null, status: "compile_error" });
+        perTestMetrics.push({ wallTimeMs: 0, memoryKb: null });
       }
       break;
     }
@@ -210,6 +214,19 @@ export async function POST(request: NextRequest) {
 
   const verdict = evaluateTestCases(testCasesForEval, judgeResults);
 
+  // Merge per-test execution metrics onto the verdict results
+  const testResultsWithMetrics = verdict.testResults.map((tr, i) => ({
+    ...tr,
+    wallTimeMs: perTestMetrics[i]?.wallTimeMs ?? 0,
+    memoryKb: perTestMetrics[i]?.memoryKb ?? null,
+  }));
+
+  // Peak memory across all tests (null only if every test reported null)
+  const memoryValues = perTestMetrics
+    .map((m) => m.memoryKb)
+    .filter((v): v is number => typeof v === "number");
+  const peakMemoryKb = memoryValues.length > 0 ? Math.max(...memoryValues) : null;
+
   // Save submission
   await supabase.from("submissions").insert({
     user_id: userId,
@@ -223,7 +240,7 @@ export async function POST(request: NextRequest) {
     compile_output: lastCompileOutput,
     exit_code: null,
     wall_time_ms: totalWallTimeMs,
-    test_results: verdict.testResults as unknown as Json,
+    test_results: testResultsWithMetrics as unknown as Json,
   });
 
   await supabase
@@ -301,7 +318,8 @@ export async function POST(request: NextRequest) {
     compileOutput: lastCompileOutput,
     exitCode: null,
     wallTimeMs: totalWallTimeMs,
-    testResults: verdict.testResults,
+    peakMemoryKb,
+    testResults: testResultsWithMetrics,
     lessonCompleted,
   });
 }
