@@ -1,0 +1,140 @@
+{
+  "slug": "memory-oop",
+  "stage": "memory-oop",
+  "title": "Build a Single-Branch Bank in C++",
+  "language_standard": "c++20",
+  "compile_flags": [
+    "-std=c++20",
+    "-Wall",
+    "-Wextra"
+  ],
+  "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    // TODO: build your bank here. The reference solution supports the commands\n    // open / balance / deposit / withdraw / transfer / history / summary / quit.\n    std::string cmd;\n    while (std::cin >> cmd) {\n        if (cmd == \"quit\") break;\n    }\n    return 0;\n}\n",
+  "reference_solution": "#include <iostream>\n#include <optional>\n#include <string>\n\nconstexpr int MAX_ACCOUNTS{16};\nconstexpr int MAX_TXS{64};\n\nstruct Money { long long cents{0}; };\n\nstd::string format_money(const Money& m) {\n    long long abs_c{m.cents < 0 ? -m.cents : m.cents};\n    std::string sign{m.cents < 0 ? \"-\" : \"\"};\n    std::string p{abs_c % 100 < 10 ? \"0\" + std::to_string(abs_c % 100) : std::to_string(abs_c % 100)};\n    return sign + \"$\" + std::to_string(abs_c / 100) + \".\" + p;\n}\n\nenum class TxKind { Deposit, Withdrawal, TransferIn, TransferOut };\n\nconst char* tx_label(TxKind k) {\n    switch (k) {\n        case TxKind::Deposit:     return \"deposit\";\n        case TxKind::Withdrawal:  return \"withdrawal\";\n        case TxKind::TransferIn:  return \"transfer-in\";\n        case TxKind::TransferOut: return \"transfer-out\";\n    }\n    return \"?\";\n}\n\nstruct Transaction { TxKind kind{TxKind::Deposit}; Money amount{}; int other_id{0}; };\n\nclass Account {\npublic:\n    Account() = default;\n    Account(int id, const std::string& name) : m_id{id}, m_name{name} {}\n    int id() const { return m_id; }\n    const std::string& name() const { return m_name; }\n    Money balance() const { return m_balance; }\n    void deposit(Money amt, int other = 0, bool xfer = false) {\n        m_balance.cents += amt.cents;\n        record(xfer ? TxKind::TransferIn : TxKind::Deposit, amt, other);\n    }\n    bool withdraw(Money amt, int other = 0, bool xfer = false) {\n        if (amt.cents > m_balance.cents) return false;\n        m_balance.cents -= amt.cents;\n        record(xfer ? TxKind::TransferOut : TxKind::Withdrawal, amt, other);\n        return true;\n    }\n    int tx_count() const { return m_tx_count; }\n    const Transaction& tx(int i) const { return m_txs[i]; }\nprivate:\n    void record(TxKind k, Money amt, int other) {\n        if (m_tx_count < MAX_TXS) m_txs[m_tx_count++] = Transaction{k, amt, other};\n    }\n    int m_id{0};\n    std::string m_name{};\n    Money m_balance{};\n    Transaction m_txs[MAX_TXS]{};\n    int m_tx_count{0};\n};\n\nclass Bank {\npublic:\n    int open(const std::string& name) {\n        if (m_count >= MAX_ACCOUNTS) return -1;\n        int id{m_next_id++};\n        m_accounts[m_count++] = Account{id, name};\n        return id;\n    }\n    Account* find(int id) {\n        for (int i{0}; i < m_count; ++i)\n            if (m_accounts[i].id() == id) return &m_accounts[i];\n        return nullptr;\n    }\n    std::optional<Money> total_assets() const {\n        if (m_count == 0) return std::nullopt;\n        Money sum{};\n        for (int i{0}; i < m_count; ++i) sum.cents += m_accounts[i].balance().cents;\n        return sum;\n    }\n    int count() const { return m_count; }\nprivate:\n    Account m_accounts[MAX_ACCOUNTS]{};\n    int m_count{0};\n    int m_next_id{1};\n};\n\nstatic Account* require(Bank& bank, int id) {\n    Account* a{bank.find(id)};\n    if (!a) std::cout << \"Unknown account #\" << id << \"\\n\";\n    return a;\n}\n\nint main() {\n    Bank bank{};\n    std::string cmd;\n    while (std::cin >> cmd) {\n        if (cmd == \"open\") {\n            std::string name; std::cin >> name;\n            int id{bank.open(name)};\n            std::cout << \"Opened #\" << id << \" \" << name << \"\\n\";\n        } else if (cmd == \"balance\") {\n            int id; std::cin >> id;\n            if (Account* a{require(bank, id)})\n                std::cout << \"Account #\" << a->id() << \" \" << a->name() << \": \" << format_money(a->balance()) << \"\\n\";\n        } else if (cmd == \"deposit\") {\n            int id; long long c; std::cin >> id >> c;\n            Account* a{require(bank, id)};\n            if (!a) continue;\n            a->deposit(Money{c});\n            std::cout << \"Deposited \" << format_money(Money{c}) << \" to #\" << id\n                      << \" (balance \" << format_money(a->balance()) << \")\\n\";\n        } else if (cmd == \"withdraw\") {\n            int id; long long c; std::cin >> id >> c;\n            Account* a{require(bank, id)};\n            if (!a) continue;\n            if (!a->withdraw(Money{c}))\n                std::cout << \"Insufficient funds for #\" << id << \" (balance \" << format_money(a->balance()) << \")\\n\";\n            else\n                std::cout << \"Withdrew \" << format_money(Money{c}) << \" from #\" << id\n                          << \" (balance \" << format_money(a->balance()) << \")\\n\";\n        } else if (cmd == \"transfer\") {\n            int from, to; long long c; std::cin >> from >> to >> c;\n            Account* a{bank.find(from)}; Account* b{bank.find(to)};\n            if (!a || !b) { std::cout << \"Unknown account in transfer\\n\"; continue; }\n            if (!a->withdraw(Money{c}, to, true)) {\n                std::cout << \"Insufficient funds for #\" << from << \" (balance \" << format_money(a->balance()) << \")\\n\";\n                continue;\n            }\n            b->deposit(Money{c}, from, true);\n            std::cout << \"Transferred \" << format_money(Money{c}) << \" #\" << from << \" -> #\" << to << \"\\n\";\n        } else if (cmd == \"history\") {\n            int id; std::cin >> id;\n            Account* a{require(bank, id)};\n            if (!a) continue;\n            std::cout << \"History for #\" << a->id() << \" \" << a->name() << \":\\n\";\n            for (int i{0}; i < a->tx_count(); ++i) {\n                const Transaction& t{a->tx(i)};\n                std::cout << \"  \" << tx_label(t.kind) << \" \" << format_money(t.amount);\n                if (t.kind == TxKind::TransferIn || t.kind == TxKind::TransferOut)\n                    std::cout << \" (#\" << t.other_id << \")\";\n                std::cout << \"\\n\";\n            }\n        } else if (cmd == \"summary\") {\n            std::cout << \"Accounts: \" << bank.count() << \"\\n\";\n            std::optional<Money> total{bank.total_assets()};\n            std::cout << \"Total assets: \" << (total.has_value() ? format_money(*total) : std::string{\"(no accounts)\"}) << \"\\n\";\n        } else if (cmd == \"quit\") { break; }\n    }\n    return 0;\n}",
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Milestone 1: Money struct and opening accounts",
+      "spec_anchor": "milestone-1-money-struct-and-opening-accounts",
+      "tests": [
+        {
+          "name": "open two accounts, ids increment, zero starting balance",
+          "stdin": "open Alice\nopen Bob\nbalance 1\nbalance 2\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nAccount #1 Alice: $0.00\nAccount #2 Bob: $0.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "balance on unknown id reports error",
+          "stdin": "open Alice\nbalance 1\nbalance 99\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nAccount #1 Alice: $0.00\nUnknown account #99\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "format_money prints two pennies digits even when under ten cents",
+          "stdin": "open Alice\nopen Bob\nopen Carol\nbalance 3\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nOpened #3 Carol\nAccount #3 Carol: $0.00\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Milestone 2: Deposits, withdrawals, and insufficient funds",
+      "spec_anchor": "milestone-2-deposits-withdrawals-and-insufficient-funds",
+      "tests": [
+        {
+          "name": "deposit then withdraw updates the balance",
+          "stdin": "open Alice\ndeposit 1 12345\nwithdraw 1 5000\nbalance 1\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nDeposited $123.45 to #1 (balance $123.45)\nWithdrew $50.00 from #1 (balance $73.45)\nAccount #1 Alice: $73.45\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "withdraw exceeding balance is refused and balance is unchanged",
+          "stdin": "open Alice\ndeposit 1 1000\nwithdraw 1 5000\nbalance 1\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nDeposited $10.00 to #1 (balance $10.00)\nInsufficient funds for #1 (balance $10.00)\nAccount #1 Alice: $10.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "deposit on unknown id reports error and changes nothing",
+          "stdin": "open Alice\ndeposit 42 100\nbalance 1\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nUnknown account #42\nAccount #1 Alice: $0.00\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Milestone 3: Transfers between accounts",
+      "spec_anchor": "milestone-3-transfers-between-accounts",
+      "tests": [
+        {
+          "name": "successful transfer debits source and credits destination",
+          "stdin": "open Alice\nopen Bob\ndeposit 1 5000\ntransfer 1 2 2000\nbalance 1\nbalance 2\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nDeposited $50.00 to #1 (balance $50.00)\nTransferred $20.00 #1 -> #2\nAccount #1 Alice: $30.00\nAccount #2 Bob: $20.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "transfer larger than source balance is refused and neither side changes",
+          "stdin": "open Alice\nopen Bob\ndeposit 1 1000\ntransfer 1 2 999999\nbalance 1\nbalance 2\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nDeposited $10.00 to #1 (balance $10.00)\nInsufficient funds for #1 (balance $10.00)\nAccount #1 Alice: $10.00\nAccount #2 Bob: $0.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "transfer with an unknown destination is rejected",
+          "stdin": "open Alice\ndeposit 1 5000\ntransfer 1 9 10\nbalance 1\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nDeposited $50.00 to #1 (balance $50.00)\nUnknown account in transfer\nAccount #1 Alice: $50.00\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Milestone 4: Per-account transaction history",
+      "spec_anchor": "milestone-4-per-account-transaction-history",
+      "tests": [
+        {
+          "name": "history lists deposit, withdrawal, and transfer-out for the sender",
+          "stdin": "open Alice\nopen Bob\ndeposit 1 10000\nwithdraw 1 2500\ntransfer 1 2 1500\nhistory 1\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nDeposited $100.00 to #1 (balance $100.00)\nWithdrew $25.00 from #1 (balance $75.00)\nTransferred $15.00 #1 -> #2\nHistory for #1 Alice:\n  deposit $100.00\n  withdrawal $25.00\n  transfer-out $15.00 (#2)\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "history for the recipient shows the transfer-in",
+          "stdin": "open Alice\nopen Bob\ndeposit 1 5000\ntransfer 1 2 1500\nhistory 2\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nDeposited $50.00 to #1 (balance $50.00)\nTransferred $15.00 #1 -> #2\nHistory for #2 Bob:\n  transfer-in $15.00 (#1)\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "history on unknown id reports error",
+          "stdin": "history 7\nquit\n",
+          "expected_stdout": "Unknown account #7\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Milestone 5: Bank summary",
+      "spec_anchor": "milestone-5-bank-summary",
+      "tests": [
+        {
+          "name": "summary with no accounts reports zero and no assets",
+          "stdin": "summary\nquit\n",
+          "expected_stdout": "Accounts: 0\nTotal assets: (no accounts)\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "summary reports account count and total assets",
+          "stdin": "open Alice\nopen Bob\ndeposit 1 10000\ndeposit 2 25050\nsummary\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nOpened #2 Bob\nDeposited $100.00 to #1 (balance $100.00)\nDeposited $250.50 to #2 (balance $250.50)\nAccounts: 2\nTotal assets: $350.50\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "summary does not modify accounts",
+          "stdin": "open Alice\ndeposit 1 7777\nsummary\nbalance 1\nquit\n",
+          "expected_stdout": "Opened #1 Alice\nDeposited $77.77 to #1 (balance $77.77)\nAccounts: 1\nTotal assets: $77.77\nAccount #1 Alice: $77.77\n",
+          "timeout_ms": 2000
+        }
+      ]
+    }
+  ]
+}

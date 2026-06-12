@@ -1,0 +1,134 @@
+{
+  "slug": "stl-templates",
+  "stage": "stl-templates",
+  "title": "Polynomial Workshop",
+  "language_standard": "c++20",
+  "compile_flags": [
+    "-std=c++20",
+    "-Wall",
+    "-Wextra"
+  ],
+  "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\n// Polynomial Workshop \u2014 capstone starter.\n// Read commands from stdin, one per line, and print the result of each.\n// Commands you will implement across the milestones:\n//   POLY <n> <c0> <c1> ... <cn>   define a polynomial of degree n\n//   EVAL <id> <x>                  evaluate polynomial #id at x\n//   ADD <a> <b>                    store polynomial #a + #b\n//   MUL <a> <b>                    store polynomial #a * #b\n//   DERIV <a>                      store the derivative of polynomial #a\n//   LIST                           print all polynomials sorted by degree\n//   TABLE <id> <x0> <x1> <step>    print a value table over [x0, x1]\n\nint main() {\n    std::string line;\n    while (std::getline(std::cin, line)) {\n        // TODO: parse commands and produce output as described in the spec.\n    }\n    return 0;\n}\n",
+  "reference_solution": "#include <algorithm>\n#include <cmath>\n#include <initializer_list>\n#include <iostream>\n#include <sstream>\n#include <string>\n#include <vector>\n\nclass Polynomial {\npublic:\n    Polynomial() = default;\n    Polynomial(std::initializer_list<double> coeffs) : c_(coeffs) { trim(); }\n    explicit Polynomial(const std::vector<double>& coeffs) : c_(coeffs) { trim(); }\n\n    int degree() const { return c_.empty() ? 0 : static_cast<int>(c_.size()) - 1; }\n\n    double operator()(double x) const {\n        double result = 0.0;\n        for (auto it = c_.rbegin(); it != c_.rend(); ++it) result = result * x + *it;\n        return result;\n    }\n\n    Polynomial operator+(const Polynomial& other) const {\n        std::vector<double> out(std::max(c_.size(), other.c_.size()), 0.0);\n        for (std::size_t i = 0; i < c_.size(); ++i) out[i] += c_[i];\n        for (std::size_t i = 0; i < other.c_.size(); ++i) out[i] += other.c_[i];\n        return Polynomial(out);\n    }\n\n    Polynomial operator*(const Polynomial& other) const {\n        if (c_.empty() || other.c_.empty()) return Polynomial{};\n        std::vector<double> out(c_.size() + other.c_.size() - 1, 0.0);\n        for (std::size_t i = 0; i < c_.size(); ++i)\n            for (std::size_t j = 0; j < other.c_.size(); ++j)\n                out[i + j] += c_[i] * other.c_[j];\n        return Polynomial(out);\n    }\n\n    Polynomial derivative() const {\n        if (c_.size() <= 1) return Polynomial{0.0};\n        std::vector<double> out(c_.size() - 1);\n        for (std::size_t i = 1; i < c_.size(); ++i) out[i - 1] = c_[i] * static_cast<double>(i);\n        return Polynomial(out);\n    }\n\n    friend std::ostream& operator<<(std::ostream& os, const Polynomial& p) {\n        if (p.c_.empty()) return os << \"0\";\n        bool first = true;\n        for (int i = static_cast<int>(p.c_.size()) - 1; i >= 0; --i) {\n            double v = p.c_[i];\n            if (v == 0.0) continue;\n            double a = v < 0 ? -v : v;\n            if (first) { if (v < 0) os << \"-\"; }\n            else os << (v < 0 ? \" - \" : \" + \");\n            if (!(a == 1.0 && i != 0)) os << fmt(a);\n            if (i >= 1) os << \"x\";\n            if (i >= 2) os << \"^\" << i;\n            first = false;\n        }\n        if (first) os << \"0\";\n        return os;\n    }\n\nprivate:\n    static std::string fmt(double v) {\n        std::ostringstream os;\n        if (v == static_cast<long long>(v)) os << static_cast<long long>(v);\n        else os << v;\n        return os.str();\n    }\n    void trim() { while (c_.size() > 1 && c_.back() == 0.0) c_.pop_back(); }\n    std::vector<double> c_;\n};\n\nstatic std::string fmt_num(double v) {\n    std::ostringstream os;\n    double r = std::round(v * 1000.0) / 1000.0;\n    if (r == 0.0) r = 0.0;\n    if (r == static_cast<long long>(r)) os << static_cast<long long>(r);\n    else os << r;\n    return os.str();\n}\n\nint main() {\n    std::vector<Polynomial> store;\n    std::string line;\n    while (std::getline(std::cin, line)) {\n        if (line.empty()) continue;\n        std::istringstream iss(line);\n        std::string cmd;\n        iss >> cmd;\n        if (cmd == \"POLY\") {\n            int n; iss >> n;\n            std::vector<double> coeffs(n + 1);\n            for (int i = 0; i <= n; ++i) iss >> coeffs[i];\n            store.push_back(Polynomial(coeffs));\n            std::cout << \"#\" << store.size() - 1 << \": \" << store.back() << \"\\n\";\n        } else if (cmd == \"EVAL\") {\n            std::size_t id; double x; iss >> id >> x;\n            std::cout << fmt_num(store[id](x)) << \"\\n\";\n        } else if (cmd == \"ADD\" || cmd == \"MUL\") {\n            std::size_t a, b; iss >> a >> b;\n            store.push_back(cmd == \"ADD\" ? store[a] + store[b] : store[a] * store[b]);\n            std::cout << \"#\" << store.size() - 1 << \": \" << store.back() << \"\\n\";\n        } else if (cmd == \"DERIV\") {\n            std::size_t a; iss >> a;\n            store.push_back(store[a].derivative());\n            std::cout << \"#\" << store.size() - 1 << \": \" << store.back() << \"\\n\";\n        } else if (cmd == \"LIST\") {\n            std::vector<std::size_t> idx(store.size());\n            for (std::size_t i = 0; i < idx.size(); ++i) idx[i] = i;\n            std::sort(idx.begin(), idx.end(), [&](std::size_t a, std::size_t b) {\n                if (store[a].degree() != store[b].degree()) return store[a].degree() < store[b].degree();\n                return a < b;\n            });\n            int nonconst = static_cast<int>(std::count_if(store.begin(), store.end(),\n                [](const Polynomial& p) { return p.degree() > 0; }));\n            std::cout << \"count=\" << store.size() << \" nonconst=\" << nonconst << \"\\n\";\n            std::for_each(idx.begin(), idx.end(), [&](std::size_t i) {\n                std::cout << \"#\" << i << \" [deg \" << store[i].degree() << \"]: \" << store[i] << \"\\n\";\n            });\n        } else if (cmd == \"TABLE\") {\n            std::size_t id; double x0, x1, step; iss >> id >> x0 >> x1 >> step;\n            int n = static_cast<int>(std::round((x1 - x0) / step)) + 1;\n            if (n < 1) n = 1;\n            double* xs = new double[n];\n            double* ys = new double[n];\n            for (int i = 0; i < n; ++i) { xs[i] = x0 + step * i; ys[i] = store[id](xs[i]); }\n            for (int i = 0; i < n; ++i) std::cout << fmt_num(xs[i]) << \" -> \" << fmt_num(ys[i]) << \"\\n\";\n            delete[] xs;\n            delete[] ys;\n        }\n    }\n    return 0;\n}\n",
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Milestone 1: Define and print polynomials",
+      "spec_anchor": "milestone-1-define-and-print-polynomials",
+      "tests": [
+        {
+          "name": "linear polynomial prints in descending order",
+          "stdin": "POLY 1 3 1\n",
+          "expected_stdout": "#0: x + 3\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "cubic with zero coefficient and unit terms omits 1x",
+          "stdin": "POLY 3 0 -1 0 2\n",
+          "expected_stdout": "#0: 2x^3 - x\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "constants and trailing zeros render as a single value",
+          "stdin": "POLY 0 -7\nPOLY 3 0 0 0 0\n",
+          "expected_stdout": "#0: -7\n#1: 0\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Milestone 2: Evaluate with operator()",
+      "spec_anchor": "milestone-2-evaluate-with-operator",
+      "tests": [
+        {
+          "name": "evaluate x^2 + 1 at positive and negative integers",
+          "stdin": "POLY 2 1 0 1\nEVAL 0 2\nEVAL 0 -3\n",
+          "expected_stdout": "#0: x^2 + 1\n5\n10\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "evaluate 2x^3 + 3x^2 + 4x + 5 at three points",
+          "stdin": "POLY 3 5 4 3 2\nEVAL 0 0\nEVAL 0 1\nEVAL 0 -1\n",
+          "expected_stdout": "#0: 2x^3 + 3x^2 + 4x + 5\n5\n14\n2\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "evaluate 2x at a fractional point",
+          "stdin": "POLY 1 0 2\nEVAL 0 0.5\n",
+          "expected_stdout": "#0: 2x\n1\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Milestone 3: Combine with operator+ and operator*",
+      "spec_anchor": "milestone-3-combine-with-operator-and-operator",
+      "tests": [
+        {
+          "name": "(x - 1) and (x + 1) sum to 2x and multiply to x^2 - 1",
+          "stdin": "POLY 1 -1 1\nPOLY 1 1 1\nADD 0 1\nMUL 0 1\n",
+          "expected_stdout": "#0: x - 1\n#1: x + 1\n#2: 2x\n#3: x^2 - 1\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "multiply by a constant and add a constant",
+          "stdin": "POLY 2 1 0 1\nPOLY 0 3\nMUL 0 1\nADD 0 1\n",
+          "expected_stdout": "#0: x^2 + 1\n#1: 3\n#2: 3x^2 + 3\n#3: x^2 + 4\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "opposite polynomials sum to zero and collapse",
+          "stdin": "POLY 1 5 -5\nPOLY 1 -5 5\nADD 0 1\n",
+          "expected_stdout": "#0: -5x + 5\n#1: 5x - 5\n#2: 0\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Milestone 4: Derivatives and a sorted catalog",
+      "spec_anchor": "milestone-4-derivatives-and-a-sorted-catalog",
+      "tests": [
+        {
+          "name": "three derivatives of a cubic eventually reach a constant",
+          "stdin": "POLY 3 5 4 3 2\nDERIV 0\nDERIV 1\nDERIV 2\n",
+          "expected_stdout": "#0: 2x^3 + 3x^2 + 4x + 5\n#1: 6x^2 + 6x + 4\n#2: 12x + 6\n#3: 12\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "LIST sorts by ascending degree and counts non-constants",
+          "stdin": "POLY 0 7\nPOLY 2 0 0 1\nPOLY 1 1 -3\nLIST\n",
+          "expected_stdout": "#0: 7\n#1: x^2\n#2: -3x + 1\ncount=3 nonconst=2\n#0 [deg 0]: 7\n#2 [deg 1]: -3x + 1\n#1 [deg 2]: x^2\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Milestone 5: Value tables on dynamic memory",
+      "spec_anchor": "milestone-5-value-tables-on-dynamic-memory",
+      "tests": [
+        {
+          "name": "table of x^2 + 1 with integer step",
+          "stdin": "POLY 2 1 0 1\nTABLE 0 -2 2 1\n",
+          "expected_stdout": "#0: x^2 + 1\n-2 -> 5\n-1 -> 2\n0 -> 1\n1 -> 2\n2 -> 5\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "table of 2x with a fractional step",
+          "stdin": "POLY 1 0 2\nTABLE 0 0 1 0.25\n",
+          "expected_stdout": "#0: 2x\n0 -> 0\n0.25 -> 0.5\n0.5 -> 1\n0.75 -> 1.5\n1 -> 2\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "single-point table when x0 equals x1",
+          "stdin": "POLY 0 3\nTABLE 0 4 4 1\n",
+          "expected_stdout": "#0: 3\n4 -> 3\n",
+          "timeout_ms": 2000
+        }
+      ]
+    }
+  ]
+}
