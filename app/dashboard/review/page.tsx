@@ -40,7 +40,7 @@ export default async function ReviewPage({
       }));
 
     return (
-      <div className="mx-auto max-w-2xl p-6 space-y-4">
+      <div className="mx-auto w-full max-w-5xl p-6 space-y-4">
         <h1 className="text-2xl font-semibold">Practice</h1>
         <ReviewPageClient cards={practiceCards} />
       </div>
@@ -66,7 +66,7 @@ export default async function ReviewPage({
     const upcoming = nextDueDate(candidates);
 
     return (
-      <div className="mx-auto max-w-2xl p-6">
+      <div className="mx-auto w-full max-w-5xl p-6">
         <Card>
           <CardHeader>
             <CardTitle>All caught up</CardTitle>
@@ -93,7 +93,7 @@ export default async function ReviewPage({
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6 space-y-4">
+    <div className="mx-auto w-full max-w-5xl p-6 space-y-4">
       <h1 className="text-2xl font-semibold">Daily review</h1>
       <ReviewPageClient
         cards={cards.map((c) => ({ check: c.check, lessonNumber: c.lessonNumber }))}
