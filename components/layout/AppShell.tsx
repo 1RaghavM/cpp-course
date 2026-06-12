@@ -15,7 +15,8 @@ export function AppShell({ topBar, children }: AppShellProps) {
   const hideHeader =
     pathname.startsWith("/lessons/") ||
     pathname.startsWith("/playground") ||
-    pathname.startsWith("/exercises/");
+    pathname.startsWith("/exercises/") ||
+    pathname.startsWith("/capstones/");
 
   useEffect(() => {
     async function syncOnboarding() {

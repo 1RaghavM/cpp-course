@@ -53,7 +53,7 @@ const data = {
     },
     {
       title: "Capstones",
-      url: "/capstones",
+      url: "/dashboard/capstones",
       icon: <TrophyIcon />,
     },
   ],

@@ -76,57 +76,61 @@ export default async function CapstonesIndexPage() {
     .sort((a, b) => (stageOrder.get(a.stage) ?? 99) - (stageOrder.get(b.stage) ?? 99));
 
   return (
-    <div className="mx-auto max-w-5xl py-8 px-4 space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold text-foreground">Capstone Projects</h1>
-        <p className="text-sm text-foreground/70 max-w-2xl">
-          End-of-part C++ projects you can take any time. Each is a single-file program built across
-          5 milestones, using only the topics from that part of the curriculum.
-        </p>
-      </header>
+    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+      <div className="px-4 lg:px-6">
+        <header className="space-y-2">
+          <h1 className="text-2xl font-semibold text-foreground">Capstone Projects</h1>
+          <p className="text-sm text-foreground/70 max-w-2xl">
+            End-of-part C++ projects you can take any time. Each is a single-file program built
+            across 5 milestones, using only the topics from that part of the curriculum.
+          </p>
+        </header>
+      </div>
 
-      {catalog.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-sm text-foreground/70">
-            No capstones found. Run <code className="font-mono text-xs">npm run seed:capstones</code>{" "}
-            to load them.
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {catalog.map((c) => {
-            const stageTitle = STAGES.find((s) => s.id === c.stage)?.title ?? c.stage;
-            const done = c.milestone_total > 0 && c.passed_count === c.milestone_total;
-            const progressLabel = done
-              ? "Completed"
-              : `${c.passed_count} / ${c.milestone_total} milestones`;
-            return (
-              <Link
-                key={c.id}
-                href={`/capstones/${c.slug}`}
-                className="no-underline text-foreground"
-              >
-                <Card className="h-full transition-colors hover:bg-muted/40">
-                  <CardHeader className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary" noAnimate>
-                        {stageTitle}
-                      </Badge>
-                      <Badge variant={done ? "outline" : "default"} noAnimate>
-                        {progressLabel}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-lg">{c.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-sm text-foreground/70">
-                    {firstParagraph(c.description_md)}
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
-      )}
+      <div className="px-4 lg:px-6">
+        {catalog.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-sm text-foreground/70">
+              No capstones found. Run{" "}
+              <code className="font-mono text-xs">npm run seed:capstones</code> to load them.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {catalog.map((c) => {
+              const stageTitle = STAGES.find((s) => s.id === c.stage)?.title ?? c.stage;
+              const done = c.milestone_total > 0 && c.passed_count === c.milestone_total;
+              const progressLabel = done
+                ? "Completed"
+                : `${c.passed_count} / ${c.milestone_total} milestones`;
+              return (
+                <Link
+                  key={c.id}
+                  href={`/capstones/${c.slug}`}
+                  className="no-underline text-foreground"
+                >
+                  <Card className="h-full transition-colors hover:bg-muted/40">
+                    <CardHeader className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="secondary" noAnimate>
+                          {stageTitle}
+                        </Badge>
+                        <Badge variant={done ? "outline" : "default"} noAnimate>
+                          {progressLabel}
+                        </Badge>
+                      </div>
+                      <CardTitle className="text-lg">{c.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm text-foreground/70">
+                      {firstParagraph(c.description_md)}
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
