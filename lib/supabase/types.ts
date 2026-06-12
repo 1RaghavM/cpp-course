@@ -619,6 +619,110 @@ export interface Database {
         };
         Relationships: [];
       };
+      capstones: {
+        Row: {
+          id: string;
+          slug: string;
+          stage: string;
+          title: string;
+          description_md: string;
+          language_standard: string;
+          compile_flags: string[];
+          starter_code: string;
+          reference_solution: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          stage: string;
+          title: string;
+          description_md: string;
+          language_standard?: string;
+          compile_flags: string[];
+          starter_code: string;
+          reference_solution: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          stage?: string;
+          title?: string;
+          description_md?: string;
+          language_standard?: string;
+          compile_flags?: string[];
+          starter_code?: string;
+          reference_solution?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      capstone_milestones: {
+        Row: {
+          id: string;
+          capstone_id: string;
+          ordinal: number;
+          title: string;
+          spec_anchor: string;
+          tests: Json;
+        };
+        Insert: {
+          id?: string;
+          capstone_id: string;
+          ordinal: number;
+          title: string;
+          spec_anchor: string;
+          tests: Json;
+        };
+        Update: {
+          id?: string;
+          capstone_id?: string;
+          ordinal?: number;
+          title?: string;
+          spec_anchor?: string;
+          tests?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "capstone_milestones_capstone_id_fkey";
+            columns: ["capstone_id"];
+            referencedRelation: "capstones";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      capstone_attempts: {
+        Row: {
+          user_id: string;
+          milestone_id: string;
+          passed: boolean;
+          submission_id: string | null;
+          last_attempted_at: string;
+        };
+        Insert: {
+          user_id: string;
+          milestone_id: string;
+          passed: boolean;
+          submission_id?: string | null;
+          last_attempted_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          milestone_id?: string;
+          passed?: boolean;
+          submission_id?: string | null;
+          last_attempted_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "capstone_attempts_milestone_id_fkey";
+            columns: ["milestone_id"];
+            referencedRelation: "capstone_milestones";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -654,6 +758,9 @@ export type Note = Database["public"]["Tables"]["notes"]["Row"];
 export type PlaygroundState = Database["public"]["Tables"]["playground_state"]["Row"];
 export type UserApiKey = Database["public"]["Tables"]["user_api_keys"]["Row"];
 export type UserApiKeyEvent = Database["public"]["Tables"]["user_api_key_events"]["Row"];
+export type Capstone = Database["public"]["Tables"]["capstones"]["Row"];
+export type CapstoneMilestone = Database["public"]["Tables"]["capstone_milestones"]["Row"];
+export type CapstoneAttempt = Database["public"]["Tables"]["capstone_attempts"]["Row"];
 
 // ---------------------------------------------------------------------------
 // Typed Supabase client alias — properly typed with the Database schema.

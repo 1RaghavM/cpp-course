@@ -12,7 +12,8 @@ import {
   computeResumeTarget,
   computeResumeVariant,
 } from "@/lib/dashboard/resume"
-import type { LessonStatus, DashboardProgress } from "@/lib/dashboard/types"
+import type { LessonStatus, DashboardProgress, Stage } from "@/lib/dashboard/types"
+import type { CapstoneSlug } from "@/lib/capstones/types"
 
 export const dynamic = "force-dynamic"
 
@@ -128,6 +129,56 @@ export default async function Page() {
   const resumeTarget = computeResumeTarget(curriculum, resumeProgress, lastActiveLessonId)
   const resumeVariant = computeResumeVariant(curriculum, resumeProgress, resumeTarget)
 
+  // Capstone state per stage
+  const { data: capstoneRows } = await supabase
+    .from("capstones")
+    .select("id, slug, stage")
+
+  const capstoneIdByStage: Partial<Record<Stage, { capstoneId: string; slug: CapstoneSlug }>> = {}
+  const milestonesByCapstone: Record<string, string[]> = {}
+  const allMilestoneIds: string[] = []
+
+  if (capstoneRows?.length) {
+    for (const c of capstoneRows) {
+      capstoneIdByStage[c.stage as Stage] = {
+        capstoneId: c.id,
+        slug: c.slug as CapstoneSlug,
+      }
+    }
+    const { data: milestones } = await supabase
+      .from("capstone_milestones")
+      .select("id, capstone_id")
+      .in(
+        "capstone_id",
+        capstoneRows.map((c) => c.id),
+      )
+    for (const m of milestones ?? []) {
+      milestonesByCapstone[m.capstone_id] = milestonesByCapstone[m.capstone_id] ?? []
+      milestonesByCapstone[m.capstone_id]!.push(m.id)
+      allMilestoneIds.push(m.id)
+    }
+  }
+
+  const { data: attemptRows } = allMilestoneIds.length
+    ? await supabase
+        .from("capstone_attempts")
+        .select("milestone_id, passed")
+        .in("milestone_id", allMilestoneIds)
+    : { data: [] as { milestone_id: string; passed: boolean }[] }
+
+  const passedByMilestone = new Set(
+    (attemptRows ?? []).filter((r) => r.passed).map((r) => r.milestone_id),
+  )
+
+  const capstoneStateByStage: Partial<Record<Stage, { slug: CapstoneSlug; passedCount: number }>> =
+    {}
+  for (const stage of Object.keys(capstoneIdByStage) as Stage[]) {
+    const meta = capstoneIdByStage[stage]!
+    const milestoneIds = milestonesByCapstone[meta.capstoneId] ?? []
+    const passedCount = milestoneIds.filter((id) => passedByMilestone.has(id)).length
+    capstoneStateByStage[stage] = { slug: meta.slug, passedCount }
+  }
+
   const resumeModule = curriculum.find((m) => m.id === resumeTarget.moduleId)!
   const moduleName = resumeModule.title
   const sortedModuleLessons = [...resumeModule.lessons].sort((a, b) => a.order - b.order)
@@ -167,6 +218,7 @@ export default async function Page() {
           progressMap={progressMap}
           totalCompleted={totalCompleted}
           totalLessons={allLessons.length}
+          capstoneStateByStage={capstoneStateByStage}
         />
       </div>
       <div className="px-4 lg:px-6">

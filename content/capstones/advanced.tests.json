@@ -1,0 +1,146 @@
+{
+  "slug": "advanced",
+  "stage": "advanced",
+  "title": "Build a Geometry Studio in C++",
+  "language_standard": "c++20",
+  "compile_flags": [
+    "-std=c++20",
+    "-Wall",
+    "-Wextra"
+  ],
+  "starter_code": "// Geometry Studio - capstone starter.\n// Build up to a polymorphic shape system across 5 milestones.\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string line;\n    while (std::getline(std::cin, line)) {\n        if (line == \"quit\") break;\n        // TODO: parse and dispatch commands.\n    }\n    return 0;\n}\n",
+  "reference_solution": "// Geometry Studio - advanced capstone reference solution.\n#include <cmath>\n#include <iomanip>\n#include <iostream>\n#include <memory>\n#include <sstream>\n#include <stdexcept>\n#include <string>\n#include <vector>\n\nclass ShapeError : public std::runtime_error {\npublic:\n    explicit ShapeError(const std::string& m) : std::runtime_error(m) {}\n};\n\nclass Shape {\npublic:\n    virtual ~Shape() = default;\n    virtual std::string name() const = 0;\n    virtual double area() const = 0;\n    virtual double perimeter() const = 0;\n};\n\nclass Circle final : public Shape {\n    double r_;\npublic:\n    explicit Circle(double r) : r_(r) {\n        if (r_ <= 0) throw ShapeError(\"circle radius must be positive\");\n    }\n    std::string name() const override { return \"circle\"; }\n    double area() const override { return 3.14159265358979323846 * r_ * r_; }\n    double perimeter() const override { return 2 * 3.14159265358979323846 * r_; }\n};\n\nclass Rectangle final : public Shape {\n    double w_, h_;\npublic:\n    Rectangle(double w, double h) : w_(w), h_(h) {\n        if (w_ <= 0 || h_ <= 0) throw ShapeError(\"rectangle sides must be positive\");\n    }\n    std::string name() const override { return \"rectangle\"; }\n    double area() const override { return w_ * h_; }\n    double perimeter() const override { return 2 * (w_ + h_); }\n};\n\nclass Triangle final : public Shape {\n    double a_, b_, c_;\npublic:\n    Triangle(double a, double b, double c) : a_(a), b_(b), c_(c) {\n        if (a_ <= 0 || b_ <= 0 || c_ <= 0)\n            throw ShapeError(\"triangle sides must be positive\");\n        if (a_ + b_ <= c_ || a_ + c_ <= b_ || b_ + c_ <= a_)\n            throw ShapeError(\"triangle inequality violated\");\n    }\n    std::string name() const override { return \"triangle\"; }\n    double area() const override {\n        double s = (a_ + b_ + c_) / 2.0;\n        return std::sqrt(s * (s - a_) * (s - b_) * (s - c_));\n    }\n    double perimeter() const override { return a_ + b_ + c_; }\n};\n\ntemplate <typename T>\nclass Stats {\n    std::vector<T> xs_;\npublic:\n    void add(T v) { xs_.push_back(v); }\n    std::size_t count() const { return xs_.size(); }\n    T min() const {\n        T m = xs_.front();\n        for (const T& v : xs_) if (v < m) m = v;\n        return m;\n    }\n    T max() const {\n        T m = xs_.front();\n        for (const T& v : xs_) if (v > m) m = v;\n        return m;\n    }\n    T avg() const {\n        T s = T{};\n        for (const T& v : xs_) s = s + v;\n        return s / static_cast<T>(xs_.size());\n    }\n};\n\nstatic std::unique_ptr<Shape> parseShape(const std::string& line) {\n    std::istringstream iss(line);\n    std::string kind;\n    iss >> kind;\n    if (kind == \"circle\") {\n        double r;\n        if (!(iss >> r)) throw ShapeError(\"expected radius\");\n        return std::make_unique<Circle>(r);\n    }\n    if (kind == \"rectangle\") {\n        double w, h;\n        if (!(iss >> w >> h)) throw ShapeError(\"expected width and height\");\n        return std::make_unique<Rectangle>(w, h);\n    }\n    if (kind == \"triangle\") {\n        double a, b, c;\n        if (!(iss >> a >> b >> c)) throw ShapeError(\"expected three sides\");\n        return std::make_unique<Triangle>(a, b, c);\n    }\n    throw ShapeError(\"unknown shape: \" + kind);\n}\n\nint main() {\n    std::vector<std::unique_ptr<Shape>> shapes;\n    std::string line;\n    std::cout << std::fixed << std::setprecision(2);\n    while (std::getline(std::cin, line)) {\n        if (line.empty()) continue;\n        std::istringstream peek(line);\n        std::string cmd;\n        peek >> cmd;\n        try {\n            if (cmd == \"quit\") break;\n            if (cmd == \"list\") {\n                for (std::size_t i = 0; i < shapes.size(); ++i) {\n                    std::cout << i << \" \" << shapes[i]->name()\n                              << \" area=\" << shapes[i]->area()\n                              << \" perimeter=\" << shapes[i]->perimeter() << \"\\n\";\n                }\n            } else if (cmd == \"summary\") {\n                double total = 0;\n                for (const auto& s : shapes) total += s->area();\n                std::cout << \"count=\" << shapes.size() << \" total_area=\" << total << \"\\n\";\n            } else if (cmd == \"stats\") {\n                if (shapes.empty()) { std::cout << \"no shapes\\n\"; continue; }\n                Stats<double> a, p;\n                for (const auto& s : shapes) { a.add(s->area()); p.add(s->perimeter()); }\n                std::cout << \"area min=\" << a.min() << \" max=\" << a.max() << \" avg=\" << a.avg() << \"\\n\";\n                std::cout << \"perimeter min=\" << p.min() << \" max=\" << p.max() << \" avg=\" << p.avg() << \"\\n\";\n            } else {\n                auto shape = parseShape(line);\n                std::cout << \"added \" << shape->name() << \" area=\" << shape->area()\n                          << \" perimeter=\" << shape->perimeter() << \"\\n\";\n                shapes.push_back(std::move(shape));\n            }\n        } catch (const ShapeError& e) {\n            std::cout << \"ERROR: \" << e.what() << \"\\n\";\n        }\n    }\n    return 0;\n}\n",
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Milestone 1: shape hierarchy with virtual area and perimeter",
+      "spec_anchor": "milestone-1-shape-hierarchy-with-virtual-area-and-perimeter",
+      "tests": [
+        {
+          "name": "single circle prints area and perimeter",
+          "stdin": "circle 3\nquit\n",
+          "expected_stdout": "added circle area=28.27 perimeter=18.85\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "single rectangle prints area and perimeter",
+          "stdin": "rectangle 4 5\nquit\n",
+          "expected_stdout": "added rectangle area=20.00 perimeter=18.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "circle then rectangle reuses the virtual interface",
+          "stdin": "circle 1\nrectangle 2 3\nquit\n",
+          "expected_stdout": "added circle area=3.14 perimeter=6.28\nadded rectangle area=6.00 perimeter=10.00\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Milestone 2: triangle via inheritance",
+      "spec_anchor": "milestone-2-triangle-via-inheritance",
+      "tests": [
+        {
+          "name": "3-4-5 triangle uses Heron's formula",
+          "stdin": "triangle 3 4 5\nquit\n",
+          "expected_stdout": "added triangle area=6.00 perimeter=12.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "triangle interleaves with existing shapes",
+          "stdin": "circle 2\ntriangle 6 8 10\nrectangle 1 4\nquit\n",
+          "expected_stdout": "added circle area=12.57 perimeter=12.57\nadded triangle area=24.00 perimeter=24.00\nadded rectangle area=4.00 perimeter=10.00\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Milestone 3: store shapes polymorphically with smart pointers",
+      "spec_anchor": "milestone-3-store-shapes-polymorphically-with-smart-pointers",
+      "tests": [
+        {
+          "name": "list iterates the polymorphic vector",
+          "stdin": "circle 1\nrectangle 2 3\nlist\nquit\n",
+          "expected_stdout": "added circle area=3.14 perimeter=6.28\nadded rectangle area=6.00 perimeter=10.00\n0 circle area=3.14 perimeter=6.28\n1 rectangle area=6.00 perimeter=10.00\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "summary aggregates total area",
+          "stdin": "circle 1\nrectangle 2 3\nsummary\nquit\n",
+          "expected_stdout": "added circle area=3.14 perimeter=6.28\nadded rectangle area=6.00 perimeter=10.00\ncount=2 total_area=9.14\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "summary on empty collection prints count=0",
+          "stdin": "list\nsummary\nquit\n",
+          "expected_stdout": "count=0 total_area=0.00\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Milestone 4: a generic Stats class template",
+      "spec_anchor": "milestone-4-a-generic-stats-class-template",
+      "tests": [
+        {
+          "name": "stats reports min/max/avg of area and perimeter",
+          "stdin": "circle 1\nrectangle 2 3\nstats\nquit\n",
+          "expected_stdout": "added circle area=3.14 perimeter=6.28\nadded rectangle area=6.00 perimeter=10.00\narea min=3.14 max=6.00 avg=4.57\nperimeter min=6.28 max=10.00 avg=8.14\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "stats on an empty collection prints no shapes",
+          "stdin": "stats\nquit\n",
+          "expected_stdout": "no shapes\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "stats works across three different shape kinds",
+          "stdin": "circle 1\nrectangle 2 3\ntriangle 3 4 5\nstats\nquit\n",
+          "expected_stdout": "added circle area=3.14 perimeter=6.28\nadded rectangle area=6.00 perimeter=10.00\nadded triangle area=6.00 perimeter=12.00\narea min=3.14 max=6.00 avg=5.05\nperimeter min=6.28 max=12.00 avg=9.43\n",
+          "timeout_ms": 2000
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Milestone 5: validation with exceptions and std::istringstream",
+      "spec_anchor": "milestone-5-validation-with-exceptions-and-stdistringstream",
+      "tests": [
+        {
+          "name": "negative circle radius throws ShapeError",
+          "stdin": "circle -2\nquit\n",
+          "expected_stdout": "ERROR: circle radius must be positive\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "triangle inequality is enforced",
+          "stdin": "triangle 1 2 5\nquit\n",
+          "expected_stdout": "ERROR: triangle inequality violated\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "unknown shape name is reported",
+          "stdin": "pentagon 5\nquit\n",
+          "expected_stdout": "ERROR: unknown shape: pentagon\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "rectangle with zero side is rejected",
+          "stdin": "rectangle 0 4\nquit\n",
+          "expected_stdout": "ERROR: rectangle sides must be positive\n",
+          "timeout_ms": 2000
+        },
+        {
+          "name": "loop keeps running after an error",
+          "stdin": "circle -1\ncircle 1\nlist\nquit\n",
+          "expected_stdout": "ERROR: circle radius must be positive\nadded circle area=3.14 perimeter=6.28\n0 circle area=3.14 perimeter=6.28\n",
+          "timeout_ms": 2000
+        }
+      ]
+    }
+  ]
+}
