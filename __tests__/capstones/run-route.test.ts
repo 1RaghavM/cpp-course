@@ -32,9 +32,9 @@ vi.mock("@/lib/capstones/server", () => ({
   upsertAttempt: (...args: unknown[]) => upsertAttemptMock(...args),
 }));
 
-const runMilestoneTestsMock = vi.fn();
+const runMilestoneMock = vi.fn();
 vi.mock("@/lib/capstones/judge0", () => ({
-  runMilestoneTests: (...args: unknown[]) => runMilestoneTestsMock(...args),
+  runMilestone: (...args: unknown[]) => runMilestoneMock(...args),
 }));
 
 import { POST } from "@/app/api/capstones/[slug]/run/route";
@@ -52,7 +52,7 @@ describe("POST /api/capstones/[slug]/run", () => {
   beforeEach(() => {
     fetchInternalCapstoneMock.mockReset();
     upsertAttemptMock.mockReset();
-    runMilestoneTestsMock.mockReset();
+    runMilestoneMock.mockReset();
     rateLimitCount = 0;
   });
 
@@ -94,7 +94,7 @@ describe("POST /api/capstones/[slug]/run", () => {
     expect(res.status).toBe(404);
   });
 
-  it("passes milestone tests to runMilestoneTests and upserts on result", async () => {
+  it("submit mode: runs all tests, returns SubmissionResponse shape, persists attempt", async () => {
     fetchInternalCapstoneMock.mockResolvedValue({
       id: "c1",
       slug: "basics",
@@ -110,21 +110,76 @@ describe("POST /api/capstones/[slug]/run", () => {
         },
       ],
     });
-    runMilestoneTestsMock.mockResolvedValue({
-      overallStatus: "passed",
+    runMilestoneMock.mockResolvedValue({
+      status: "passed",
+      stdout: null,
+      stderr: null,
+      compileOutput: null,
+      exitCode: null,
+      wallTimeMs: 12,
+      memoryKb: null,
+      peakMemoryKb: 2048,
       testResults: [
         { label: "case1", passed: true, expected: "hi", actual: "hi", status: "accepted" },
       ],
+      passed: true,
     });
     const res = await POST(
-      makeReq("basics", { milestone_ordinal: 1, source_code: 'int main(){std::cout<<"hi";}' }),
+      makeReq("basics", {
+        milestone_ordinal: 1,
+        source_code: 'int main(){std::cout<<"hi";}',
+        mode: "submit",
+      }),
       { params: { slug: "basics" } },
     );
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json.overall_status).toBe("passed");
+    expect(json.status).toBe("passed");
     expect(json.passed).toBe(true);
+    expect(json.mode).toBe("submit");
+    expect(json.peakMemoryKb).toBe(2048);
     expect(upsertAttemptMock).toHaveBeenCalledWith(expect.anything(), "user-1", "m1", true, null);
+  });
+
+  it("run mode: does NOT persist an attempt", async () => {
+    fetchInternalCapstoneMock.mockResolvedValue({
+      id: "c1",
+      slug: "basics",
+      stage: "basics",
+      language_standard: "c++20",
+      milestones: [
+        {
+          id: "m1",
+          ordinal: 1,
+          title: "M1",
+          spec_anchor: "milestone-1",
+          tests: [{ name: "case1", stdin: "", expected_stdout: "hi", timeout_ms: 2000 }],
+        },
+      ],
+    });
+    runMilestoneMock.mockResolvedValue({
+      status: "accepted",
+      stdout: "hi",
+      stderr: null,
+      compileOutput: null,
+      exitCode: 0,
+      wallTimeMs: 5,
+      memoryKb: 1024,
+      passed: false,
+    });
+    const res = await POST(
+      makeReq("basics", {
+        milestone_ordinal: 1,
+        source_code: "int main(){}",
+        mode: "run",
+      }),
+      { params: { slug: "basics" } },
+    );
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.mode).toBe("run");
+    expect(json.stdout).toBe("hi");
+    expect(upsertAttemptMock).not.toHaveBeenCalled();
   });
 
   it("413s when source_code exceeds 50KB", async () => {

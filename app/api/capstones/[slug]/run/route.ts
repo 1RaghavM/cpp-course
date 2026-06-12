@@ -2,16 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { fetchInternalCapstone, upsertAttempt } from "@/lib/capstones/server";
-import { runMilestoneTests } from "@/lib/capstones/judge0";
+import { runMilestone, type CapstoneRunMode } from "@/lib/capstones/judge0";
 import { CAPSTONE_SLUGS, type CapstoneSlug } from "@/lib/capstones/types";
 
 export const dynamic = "force-dynamic";
 
 const MAX_SOURCE_SIZE = 50 * 1024;
+const VALID_MODES: CapstoneRunMode[] = ["run", "submit"];
 
 interface RequestBody {
   milestone_ordinal?: number;
   source_code?: string;
+  mode?: CapstoneRunMode;
 }
 
 export async function POST(
@@ -49,6 +51,10 @@ export async function POST(
     return NextResponse.json({ error: "source_code exceeds 50KB" }, { status: 413 });
   }
 
+  const mode: CapstoneRunMode = VALID_MODES.includes(body.mode as CapstoneRunMode)
+    ? (body.mode as CapstoneRunMode)
+    : "submit";
+
   // Per-user rate limit: 5 submissions / 60s (matches submissions route policy).
   const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
   const { count } = (await authClient
@@ -72,19 +78,22 @@ export async function POST(
     return NextResponse.json({ error: "Milestone not found" }, { status: 404 });
   }
 
-  const verdict = await runMilestoneTests({
+  const result = await runMilestone({
     sourceCode: body.source_code,
     languageStandard: capstone.language_standard,
     tests: milestone.tests,
+    mode,
   });
 
-  const passed = verdict.overallStatus === "passed";
-  await upsertAttempt(authClient, userId, milestone.id, passed, null);
+  // Only persist attempts on submit, mirroring how /api/submissions only
+  // counts "submit" toward grading (Run is for quick iteration).
+  if (mode === "submit") {
+    await upsertAttempt(authClient, userId, milestone.id, result.passed, null);
+  }
 
   return NextResponse.json({
-    overall_status: verdict.overallStatus,
-    test_results: verdict.testResults,
+    ...result,
     milestone_id: milestone.id,
-    passed,
+    mode,
   });
 }
