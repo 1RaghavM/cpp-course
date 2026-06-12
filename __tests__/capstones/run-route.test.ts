@@ -15,10 +15,12 @@ function makeQueryChainStub(result: unknown) {
   return proxy;
 }
 
+// Per-test override for the rate-limit count returned by the supabase chain.
+let rateLimitCount = 0;
 vi.mock("@/lib/supabase/server", () => ({
   createRouteClient: () => ({
     auth: { getUser: async () => ({ data: { user: { id: "user-1" } }, error: null }) },
-    from: vi.fn(() => makeQueryChainStub({ count: 0 })),
+    from: vi.fn(() => makeQueryChainStub({ count: rateLimitCount })),
   }),
   createServerClient: () => ({}),
 }));
@@ -50,6 +52,7 @@ describe("POST /api/capstones/[slug]/run", () => {
     fetchInternalCapstoneMock.mockReset();
     upsertAttemptMock.mockReset();
     runMilestoneTestsMock.mockReset();
+    rateLimitCount = 0;
   });
 
   it("404s for unknown slug", async () => {
@@ -122,5 +125,22 @@ describe("POST /api/capstones/[slug]/run", () => {
       true,
       null,
     );
+  });
+
+  it("413s when source_code exceeds 50KB", async () => {
+    const big = "x".repeat(50 * 1024 + 1);
+    const res = await POST(makeReq("basics", { milestone_ordinal: 1, source_code: big }), {
+      params: { slug: "basics" },
+    });
+    expect(res.status).toBe(413);
+  });
+
+  it("429s when the user has hit the 5-submission-per-minute rate limit", async () => {
+    rateLimitCount = 5;
+    const res = await POST(
+      makeReq("basics", { milestone_ordinal: 1, source_code: "int main(){}" }),
+      { params: { slug: "basics" } },
+    );
+    expect(res.status).toBe(429);
   });
 });
