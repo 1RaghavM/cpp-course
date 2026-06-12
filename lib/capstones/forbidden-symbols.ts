@@ -18,7 +18,7 @@ export const FORBIDDEN_BY_STAGE: Record<Stage, ForbiddenPattern[]> = {
     { label: "std::vector", pattern: /\bstd::vector\b/ },
     { label: "std::array", pattern: /\bstd::array\b/ },
     { label: "class declaration", pattern: /\bclass\s+[A-Za-z_]/ },
-    { label: "struct with methods", pattern: /\bstruct\s+[A-Za-z_][^;{]*\{[^}]*\([^)]*\)\s*\{/s },
+    { label: "struct with methods", pattern: /\bstruct\s+[A-Za-z_][^;{]*\{[^}]*\([^)]*\)\s*\{/ },
     { label: "new expression", pattern: /\bnew\s+[A-Za-z_]/ },
     { label: "delete expression", pattern: /\bdelete\s+[A-Za-z_\[]/ },
     { label: "pointer declaration", pattern: /[A-Za-z_][A-Za-z0-9_]*\s*\*\s*[A-Za-z_]/ },
