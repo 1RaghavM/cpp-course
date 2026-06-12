@@ -40,6 +40,7 @@ import {
 import { CheckCircle2, Circle, Clock, MemoryStick } from "lucide-react";
 
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
+import { ReportBugButton } from "@/components/lesson/ReportBugButton";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
 import { useTutorStore } from "@/lib/store/tutor-store";
@@ -642,6 +643,7 @@ function CapstoneNav({
       </span>
 
       <div className="h-4 w-px bg-border mx-1" />
+      <ReportBugButton />
       <Button
         variant="ghost"
         size="sm"

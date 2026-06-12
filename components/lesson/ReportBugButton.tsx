@@ -26,7 +26,8 @@ const CATEGORIES = [
 ] as const;
 
 interface ReportBugButtonProps {
-  lessonId: string;
+  /** Lesson id to attach to the report. Omit when reporting from a non-lesson surface (e.g. capstones). */
+  lessonId?: string;
 }
 
 export function ReportBugButton({ lessonId }: ReportBugButtonProps) {
@@ -48,7 +49,7 @@ export function ReportBugButton({ lessonId }: ReportBugButtonProps) {
         const res = await fetch("/api/bug-reports", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...data, lesson_id: lessonId }),
+          body: JSON.stringify(lessonId ? { ...data, lesson_id: lessonId } : data),
         });
 
         if (!res.ok) {
