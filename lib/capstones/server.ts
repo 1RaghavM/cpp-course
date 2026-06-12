@@ -15,7 +15,9 @@ export async function fetchPublicCapstone(
 ): Promise<PublicCapstone | null> {
   const internal = await fetchInternalCapstone(supabase, slug);
   if (!internal) return null;
-  const { reference_solution: _ref, ...rest } = internal;
+  // Strip reference_solution before returning to clients.
+  const { reference_solution, ...rest } = internal;
+  void reference_solution;
   return rest;
 }
 
