@@ -1,0 +1,201 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// The route uses Supabase to enforce rate limits via .from("submissions").select(...).eq(...).gte(...)
+// which awaits a `{ count }` result. Build a thenable proxy that supports the full chain.
+function makeQueryChainStub(result: unknown) {
+  const promise = Promise.resolve(result);
+  const proxy: Record<string, unknown> = {
+    select: () => proxy,
+    eq: () => proxy,
+    in: () => proxy,
+    gte: () => proxy,
+    then: promise.then.bind(promise),
+    catch: promise.catch.bind(promise),
+  };
+  return proxy;
+}
+
+// Per-test override for the rate-limit count returned by the supabase chain.
+let rateLimitCount = 0;
+vi.mock("@/lib/supabase/server", () => ({
+  createRouteClient: () => ({
+    auth: { getUser: async () => ({ data: { user: { id: "user-1" } }, error: null }) },
+    from: vi.fn(() => makeQueryChainStub({ count: rateLimitCount })),
+  }),
+  createServerClient: () => ({}),
+}));
+
+const fetchInternalCapstoneMock = vi.fn();
+const upsertAttemptMock = vi.fn();
+vi.mock("@/lib/capstones/server", () => ({
+  fetchInternalCapstone: (...args: unknown[]) => fetchInternalCapstoneMock(...args),
+  upsertAttempt: (...args: unknown[]) => upsertAttemptMock(...args),
+}));
+
+const runMilestoneMock = vi.fn();
+vi.mock("@/lib/capstones/judge0", () => ({
+  runMilestone: (...args: unknown[]) => runMilestoneMock(...args),
+}));
+
+import { POST } from "@/app/api/capstones/[slug]/run/route";
+import type { NextRequest } from "next/server";
+
+function makeReq(slug: string, body: unknown): NextRequest {
+  return new Request(`http://localhost/api/capstones/${slug}/run`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "content-type": "application/json" },
+  }) as unknown as NextRequest;
+}
+
+describe("POST /api/capstones/[slug]/run", () => {
+  beforeEach(() => {
+    fetchInternalCapstoneMock.mockReset();
+    upsertAttemptMock.mockReset();
+    runMilestoneMock.mockReset();
+    rateLimitCount = 0;
+  });
+
+  it("404s for unknown slug", async () => {
+    const res = await POST(makeReq("nope", { milestone_ordinal: 1, source_code: "int main(){}" }), {
+      params: { slug: "nope" },
+    });
+    expect(res.status).toBe(404);
+  });
+
+  it("400s when milestone_ordinal is missing or out of range", async () => {
+    const res1 = await POST(makeReq("basics", { source_code: "int main(){}" }), {
+      params: { slug: "basics" },
+    });
+    expect(res1.status).toBe(400);
+
+    const res2 = await POST(
+      makeReq("basics", { milestone_ordinal: 6, source_code: "int main(){}" }),
+      {
+        params: { slug: "basics" },
+      },
+    );
+    expect(res2.status).toBe(400);
+  });
+
+  it("400s when source_code is missing or empty", async () => {
+    const res = await POST(makeReq("basics", { milestone_ordinal: 1, source_code: "" }), {
+      params: { slug: "basics" },
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("404s when capstone is unknown to the DB", async () => {
+    fetchInternalCapstoneMock.mockResolvedValue(null);
+    const res = await POST(
+      makeReq("basics", { milestone_ordinal: 1, source_code: "int main(){}" }),
+      { params: { slug: "basics" } },
+    );
+    expect(res.status).toBe(404);
+  });
+
+  it("submit mode: runs all tests, returns SubmissionResponse shape, persists attempt", async () => {
+    fetchInternalCapstoneMock.mockResolvedValue({
+      id: "c1",
+      slug: "basics",
+      stage: "basics",
+      language_standard: "c++20",
+      milestones: [
+        {
+          id: "m1",
+          ordinal: 1,
+          title: "M1",
+          spec_anchor: "milestone-1",
+          tests: [{ name: "case1", stdin: "", expected_stdout: "hi", timeout_ms: 2000 }],
+        },
+      ],
+    });
+    runMilestoneMock.mockResolvedValue({
+      status: "passed",
+      stdout: null,
+      stderr: null,
+      compileOutput: null,
+      exitCode: null,
+      wallTimeMs: 12,
+      memoryKb: null,
+      peakMemoryKb: 2048,
+      testResults: [
+        { label: "case1", passed: true, expected: "hi", actual: "hi", status: "accepted" },
+      ],
+      passed: true,
+    });
+    const res = await POST(
+      makeReq("basics", {
+        milestone_ordinal: 1,
+        source_code: 'int main(){std::cout<<"hi";}',
+        mode: "submit",
+      }),
+      { params: { slug: "basics" } },
+    );
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.status).toBe("passed");
+    expect(json.passed).toBe(true);
+    expect(json.mode).toBe("submit");
+    expect(json.peakMemoryKb).toBe(2048);
+    expect(upsertAttemptMock).toHaveBeenCalledWith(expect.anything(), "user-1", "m1", true, null);
+  });
+
+  it("run mode: does NOT persist an attempt", async () => {
+    fetchInternalCapstoneMock.mockResolvedValue({
+      id: "c1",
+      slug: "basics",
+      stage: "basics",
+      language_standard: "c++20",
+      milestones: [
+        {
+          id: "m1",
+          ordinal: 1,
+          title: "M1",
+          spec_anchor: "milestone-1",
+          tests: [{ name: "case1", stdin: "", expected_stdout: "hi", timeout_ms: 2000 }],
+        },
+      ],
+    });
+    runMilestoneMock.mockResolvedValue({
+      status: "accepted",
+      stdout: "hi",
+      stderr: null,
+      compileOutput: null,
+      exitCode: 0,
+      wallTimeMs: 5,
+      memoryKb: 1024,
+      passed: false,
+    });
+    const res = await POST(
+      makeReq("basics", {
+        milestone_ordinal: 1,
+        source_code: "int main(){}",
+        mode: "run",
+      }),
+      { params: { slug: "basics" } },
+    );
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.mode).toBe("run");
+    expect(json.stdout).toBe("hi");
+    expect(upsertAttemptMock).not.toHaveBeenCalled();
+  });
+
+  it("413s when source_code exceeds 50KB", async () => {
+    const big = "x".repeat(50 * 1024 + 1);
+    const res = await POST(makeReq("basics", { milestone_ordinal: 1, source_code: big }), {
+      params: { slug: "basics" },
+    });
+    expect(res.status).toBe(413);
+  });
+
+  it("429s when the user has hit the 5-submission-per-minute rate limit", async () => {
+    rateLimitCount = 5;
+    const res = await POST(
+      makeReq("basics", { milestone_ordinal: 1, source_code: "int main(){}" }),
+      { params: { slug: "basics" } },
+    );
+    expect(res.status).toBe(429);
+  });
+});

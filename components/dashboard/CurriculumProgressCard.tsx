@@ -32,12 +32,14 @@ import {
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
 import { STAGES } from "@/lib/dashboard/curriculum"
 import type { Module, Stage } from "@/lib/dashboard/types"
+import type { CapstoneSlug } from "@/lib/capstones/types"
 
 interface CurriculumProgressCardProps {
   curriculum: Module[]
   progressMap: Record<string, string>
   totalCompleted: number
   totalLessons: number
+  capstoneStateByStage?: Partial<Record<Stage, { slug: CapstoneSlug; passedCount: number }>>
 }
 
 interface ModuleStats {
@@ -100,6 +102,7 @@ export function CurriculumProgressCard({
   progressMap,
   totalCompleted,
   totalLessons,
+  capstoneStateByStage,
 }: CurriculumProgressCardProps) {
   const stageStats = useMemo(
     () => computeStageStats(curriculum, progressMap),
@@ -152,6 +155,26 @@ export function CurriculumProgressCard({
                             ? "Active"
                             : "Locked"}
                       </Badge>
+                      {(() => {
+                        const cap = capstoneStateByStage?.[stage.id]
+                        if (!cap) return null
+                        if (cap.passedCount >= 5) {
+                          return (
+                            <Badge variant="outline" noAnimate>
+                              Capstone ✓
+                            </Badge>
+                          )
+                        }
+                        return (
+                          <Link href={`/capstones/${cap.slug}`} className="no-underline">
+                            <Badge variant="secondary" noAnimate>
+                              {cap.passedCount > 0
+                                ? `Capstone ${cap.passedCount}/5`
+                                : "Open capstone"}
+                            </Badge>
+                          </Link>
+                        )
+                      })()}
                     </div>
                   </div>
                 </AccordionTrigger>

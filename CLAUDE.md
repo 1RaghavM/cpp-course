@@ -13,7 +13,7 @@ Open to any user who signs up. One repo, one deploy.
 - **Next.js 14+ App Router** (TypeScript, strict mode) on Vercel — both frontend and API (Route Handlers under `app/api/`)
 - **Supabase** — Postgres + Auth (magic link, open signup) + RLS on every table (per-user isolation)
 - **Anthropic Claude** — Haiku 4.5 for lesson/exercise generation, Sonnet 4.6 for tutor conversations
-- **Judge0 + gVisor** on Fly.io — sandboxed C++ compilation and execution, the only piece outside Vercel
+- **Judge0** — sandboxed C++ compilation and execution. **Currently uses the RapidAPI shared host (`judge0-ce.p.rapidapi.com`)**; a self-hosted gVisor instance on Fly.io is staged in `infra/judge0/` but not deployed. The dockerfile + fly config there are NOT production-ready (gVisor runtime is commented out, workers run privileged) — re-harden before any `fly deploy`. Sandbox isolation, patch level, and rate limits on RapidAPI are out of our control; verified safe verdicts for fork bombs, network egress, FS writes, OOM, infinite loops, and process enumeration as of 2026-06-11.
 
 No separate backend service. No Redis, no queues. Next.js Route Handlers handle LLM calls and Judge0 proxying directly.
 
@@ -84,8 +84,10 @@ npx supabase gen types typescript --local > lib/supabase/types.ts  # regenerate 
 # Seed curriculum
 npx tsx scripts/seed_db.ts
 
-# Judge0 (on Fly.io VM)
-fly deploy --config infra/judge0/deploy.fly.toml
+# Judge0 — production currently runs against RapidAPI's shared judge0-ce host (set JUDGE0_URL + JUDGE0_AUTH_TOKEN).
+# The Fly.io self-host below is staged but NOT deployed; re-harden infra/judge0/docker-compose.yml
+# (uncomment gVisor runtime, drop privileged: true on workers) before running this.
+# fly deploy --config infra/judge0/deploy.fly.toml
 ```
 
 ## UI component library — shadcn/ui

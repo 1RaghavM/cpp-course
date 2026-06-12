@@ -26,6 +26,7 @@ import {
   NotebookPenIcon,
   TerminalSquareIcon,
   MapIcon,
+  TrophyIcon,
 } from "lucide-react"
 
 const data = {
@@ -49,6 +50,11 @@ const data = {
       title: "Exercises",
       url: "/dashboard/exercises",
       icon: <CodeIcon />,
+    },
+    {
+      title: "Capstones",
+      url: "/dashboard/capstones",
+      icon: <TrophyIcon />,
     },
   ],
   documents: [
