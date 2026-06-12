@@ -69,9 +69,12 @@ describe("POST /api/capstones/[slug]/run", () => {
     });
     expect(res1.status).toBe(400);
 
-    const res2 = await POST(makeReq("basics", { milestone_ordinal: 6, source_code: "int main(){}" }), {
-      params: { slug: "basics" },
-    });
+    const res2 = await POST(
+      makeReq("basics", { milestone_ordinal: 6, source_code: "int main(){}" }),
+      {
+        params: { slug: "basics" },
+      },
+    );
     expect(res2.status).toBe(400);
   });
 
@@ -109,23 +112,19 @@ describe("POST /api/capstones/[slug]/run", () => {
     });
     runMilestoneTestsMock.mockResolvedValue({
       overallStatus: "passed",
-      testResults: [{ label: "case1", passed: true, expected: "hi", actual: "hi", status: "accepted" }],
+      testResults: [
+        { label: "case1", passed: true, expected: "hi", actual: "hi", status: "accepted" },
+      ],
     });
     const res = await POST(
-      makeReq("basics", { milestone_ordinal: 1, source_code: "int main(){std::cout<<\"hi\";}" }),
+      makeReq("basics", { milestone_ordinal: 1, source_code: 'int main(){std::cout<<"hi";}' }),
       { params: { slug: "basics" } },
     );
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.overall_status).toBe("passed");
     expect(json.passed).toBe(true);
-    expect(upsertAttemptMock).toHaveBeenCalledWith(
-      expect.anything(),
-      "user-1",
-      "m1",
-      true,
-      null,
-    );
+    expect(upsertAttemptMock).toHaveBeenCalledWith(expect.anything(), "user-1", "m1", true, null);
   });
 
   it("413s when source_code exceeds 50KB", async () => {

@@ -1,10 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import {
-  findForbiddenUsages,
-  FORBIDDEN_BY_STAGE,
-} from "@/lib/capstones/forbidden-symbols";
+import { findForbiddenUsages, FORBIDDEN_BY_STAGE } from "@/lib/capstones/forbidden-symbols";
 import type { CapstoneTestsFile, CapstoneSlug } from "@/lib/capstones/types";
 
 const CAPSTONE_DIR = resolve(__dirname, "..", "..", "content", "capstones");
@@ -61,10 +58,9 @@ describe("capstone content integrity", () => {
       it("every milestone has a matching H2 heading in the markdown", () => {
         for (const m of file.milestones) {
           const numberedPattern = new RegExp(`^##\\s+Milestone\\s+${m.id}\\b`, "m");
-          expect(
-            numberedPattern.test(md),
-            `missing H2 "Milestone ${m.id}" in ${slug}.md`,
-          ).toBe(true);
+          expect(numberedPattern.test(md), `missing H2 "Milestone ${m.id}" in ${slug}.md`).toBe(
+            true,
+          );
         }
       });
 

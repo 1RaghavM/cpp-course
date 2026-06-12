@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  findForbiddenUsages,
-  FORBIDDEN_BY_STAGE,
-} from "@/lib/capstones/forbidden-symbols";
+import { findForbiddenUsages, FORBIDDEN_BY_STAGE } from "@/lib/capstones/forbidden-symbols";
 
 describe("FORBIDDEN_BY_STAGE", () => {
   it("declares forbidden symbols for every stage except advanced", () => {
@@ -56,10 +53,7 @@ describe("findForbiddenUsages — memory-oop", () => {
 
 describe("findForbiddenUsages — stl-templates", () => {
   it("flags std::unique_ptr in stl-templates", () => {
-    const hits = findForbiddenUsages(
-      "stl-templates",
-      "std::unique_ptr<int> p;",
-    );
+    const hits = findForbiddenUsages("stl-templates", "std::unique_ptr<int> p;");
     expect(hits.map((h) => h.label)).toContain("std::unique_ptr");
   });
 

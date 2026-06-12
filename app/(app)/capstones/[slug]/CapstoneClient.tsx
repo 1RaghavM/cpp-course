@@ -36,8 +36,7 @@ export function CapstoneClient({
   const [code, setCode] = useState<string>(() => {
     if (typeof window === "undefined") return capstone.starter_code;
     return (
-      localStorage.getItem(`${STORAGE_KEY_PREFIX}${capstone.slug}:code`) ??
-      capstone.starter_code
+      localStorage.getItem(`${STORAGE_KEY_PREFIX}${capstone.slug}:code`) ?? capstone.starter_code
     );
   });
   const [running, setRunning] = useState(false);

@@ -1,9 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireServerSession } from "@/lib/auth/require-auth";
-import {
-  fetchPublicCapstone,
-  fetchUserAttempts,
-} from "@/lib/capstones/server";
+import { fetchPublicCapstone, fetchUserAttempts } from "@/lib/capstones/server";
 import { CAPSTONE_SLUGS, type CapstoneSlug } from "@/lib/capstones/types";
 import { isCapstoneUnlocked } from "@/lib/capstones/unlock";
 import { CURRICULUM, STAGES } from "@/lib/dashboard/curriculum";

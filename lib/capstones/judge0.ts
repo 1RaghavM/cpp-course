@@ -12,11 +12,12 @@ export interface RunMilestoneInput {
  * Submit `sourceCode` once per test case through Judge0 (matching the exercise
  * route's per-case pattern), then evaluate per-test pass/fail.
  */
-export async function runMilestoneTests(
-  input: RunMilestoneInput,
-): Promise<VerdictResult> {
+export async function runMilestoneTests(input: RunMilestoneInput): Promise<VerdictResult> {
   const standard = (input.languageStandard as CppStandard) ?? "c++20";
-  const judge0Results: Array<{ stdout: string | null; status: import("@/lib/judge0/client").JudgeStatus }> = [];
+  const judge0Results: Array<{
+    stdout: string | null;
+    status: import("@/lib/judge0/client").JudgeStatus;
+  }> = [];
 
   for (const t of input.tests) {
     const result = await submitCode({
