@@ -28,7 +28,7 @@ CREATE TABLE capstone_attempts (
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   milestone_id UUID NOT NULL REFERENCES capstone_milestones(id) ON DELETE CASCADE,
   passed BOOLEAN NOT NULL,
-  submission_id UUID REFERENCES submissions(id),
+  submission_id UUID REFERENCES submissions(id) ON DELETE SET NULL,
   last_attempted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   PRIMARY KEY (user_id, milestone_id)
 );
@@ -62,3 +62,5 @@ CREATE POLICY "Users update own capstone_attempts"
   TO authenticated
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX idx_capstone_attempts_milestone_id ON capstone_attempts(milestone_id);
