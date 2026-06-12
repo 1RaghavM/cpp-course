@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import type { ConceptCheck } from "@/lib/supabase/types";
+import { normalizePredictedOutput } from "@/lib/content/grading";
 
 export interface ReviewCard {
   check: ConceptCheck;
@@ -30,7 +31,7 @@ interface Props {
 
 function gradeAnswer(check: ConceptCheck, userAnswer: string): boolean {
   if (check.kind === "predict_output") {
-    return userAnswer.trim() === check.answer.trim();
+    return normalizePredictedOutput(userAnswer) === normalizePredictedOutput(check.answer);
   }
   return userAnswer === check.answer;
 }

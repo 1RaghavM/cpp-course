@@ -14,6 +14,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { CheckCircle2, ChevronDown, XCircle } from "lucide-react";
+import { normalizePredictedOutput } from "@/lib/content/grading";
 
 const SummaryView = dynamic(
   () => import("@/components/lesson/SummaryView").then((m) => m.SummaryView),
@@ -37,14 +38,6 @@ const KIND_LABEL: Record<ConceptCheckClient["kind"], string> = {
   mcq: "Quick check",
 };
 
-function normalizeOutput(s: string): string {
-  return s
-    .split("\n")
-    .map((l) => l.trimEnd())
-    .join("\n")
-    .trim();
-}
-
 export function ConceptCheckCard({ check }: { check: ConceptCheckClient }) {
   const [selected, setSelected] = useState("");
   const [typed, setTyped] = useState("");
@@ -57,7 +50,7 @@ export function ConceptCheckCard({ check }: { check: ConceptCheckClient }) {
     const correct =
       check.options !== null
         ? selected === check.answer
-        : normalizeOutput(typed) === normalizeOutput(check.answer);
+        : normalizePredictedOutput(typed) === normalizePredictedOutput(check.answer);
     setResult(correct ? "correct" : "incorrect");
     fetch("/api/concept-checks", {
       method: "POST",
