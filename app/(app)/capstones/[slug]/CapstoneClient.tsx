@@ -192,7 +192,9 @@ export function CapstoneClient({ capstone, attempts: initialAttempts, stageTitle
     [currentMilestone.tests],
   );
 
-  const editorStorageKey = `capstone-${capstone.slug}-m${currentMilestone.ordinal}`;
+  // One editor per capstone — the user grows a single program across all 5
+  // milestones, so we use a single localStorage key for the whole capstone.
+  const editorStorageKey = `capstone-${capstone.slug}`;
   const busy = isRunning || isSubmitting;
 
   const handleSubmit = useCallback(
