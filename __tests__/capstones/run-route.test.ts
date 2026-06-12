@@ -38,13 +38,14 @@ vi.mock("@/lib/capstones/judge0", () => ({
 }));
 
 import { POST } from "@/app/api/capstones/[slug]/run/route";
+import type { NextRequest } from "next/server";
 
-function makeReq(slug: string, body: unknown): Request {
+function makeReq(slug: string, body: unknown): NextRequest {
   return new Request(`http://localhost/api/capstones/${slug}/run`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: { "content-type": "application/json" },
-  });
+  }) as unknown as NextRequest;
 }
 
 describe("POST /api/capstones/[slug]/run", () => {
