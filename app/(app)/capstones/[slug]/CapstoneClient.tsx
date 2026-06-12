@@ -3,16 +3,12 @@
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress, ProgressLabel } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PublicCapstone, CapstoneAttempt } from "@/lib/capstones/types";
 
 interface Props {
   capstone: PublicCapstone;
   attempts: CapstoneAttempt[];
-  unlocked: boolean;
-  stageProgress: { completed: number; total: number };
   stageTitle: string;
 }
 
@@ -28,8 +24,6 @@ const STORAGE_KEY_PREFIX = "capstone:";
 export function CapstoneClient({
   capstone,
   attempts: initialAttempts,
-  unlocked,
-  stageProgress,
   stageTitle,
 }: Props) {
   const [selectedOrdinal, setSelectedOrdinal] = useState<number>(1);
@@ -94,34 +88,10 @@ export function CapstoneClient({
     }
   }
 
-  if (!unlocked) {
-    const pct = stageProgress.total
-      ? Math.round((stageProgress.completed / stageProgress.total) * 100)
-      : 0;
-    return (
-      <div className="mx-auto max-w-2xl py-16">
-        <Card>
-          <CardHeader>
-            <CardTitle>Capstone locked</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-foreground/80">
-              Complete at least 80% of the {stageTitle} lessons to unlock this capstone.
-            </p>
-            <Progress value={pct}>
-              <ProgressLabel>
-                {stageProgress.completed} / {stageProgress.total} ({pct}%)
-              </ProgressLabel>
-            </Progress>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-6xl grid gap-4 py-6 lg:grid-cols-[220px_1fr_460px]">
       <aside className="space-y-2">
+        <p className="text-xs uppercase tracking-wide text-foreground/50">{stageTitle}</p>
         <h2 className="text-sm font-semibold">{capstone.title}</h2>
         <p className="text-xs text-foreground/60">
           {passedCount} / {capstone.milestones.length} milestones passed

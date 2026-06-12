@@ -48,12 +48,6 @@ export interface CapstoneAttempt {
   last_attempted_at: string;
 }
 
-export interface CapstoneStageState {
-  /** Stage progress: completed + skipped over total lessons in the stage. */
-  stage_progress_ratio: number;
-  unlocked: boolean;
-  passed_count: number; // 0..5
-}
 
 /** Author-side schema for content/capstones/<slug>.tests.json. */
 export interface CapstoneTestsFile {

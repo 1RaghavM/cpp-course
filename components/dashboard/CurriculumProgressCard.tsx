@@ -33,7 +33,6 @@ import { ChartContainer, type ChartConfig } from "@/components/ui/chart"
 import { STAGES } from "@/lib/dashboard/curriculum"
 import type { Module, Stage } from "@/lib/dashboard/types"
 import type { CapstoneSlug } from "@/lib/capstones/types"
-import { isCapstoneUnlocked } from "@/lib/capstones/unlock"
 
 interface CurriculumProgressCardProps {
   curriculum: Module[]
@@ -159,7 +158,6 @@ export function CurriculumProgressCard({
                       {(() => {
                         const cap = capstoneStateByStage?.[stage.id]
                         if (!cap) return null
-                        if (!isCapstoneUnlocked(stage.completed, stage.total)) return null
                         if (cap.passedCount >= 5) {
                           return (
                             <Badge variant="outline" noAnimate>
@@ -172,7 +170,7 @@ export function CurriculumProgressCard({
                             <Badge variant="secondary" noAnimate>
                               {cap.passedCount > 0
                                 ? `Capstone ${cap.passedCount}/5`
-                                : "Capstone available"}
+                                : "Open capstone"}
                             </Badge>
                           </Link>
                         )
