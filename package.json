@@ -11,7 +11,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed:capstones": "tsx scripts/seed_capstones.ts"
+    "seed:capstones": "npx tsx scripts/seed_capstones.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.80",
