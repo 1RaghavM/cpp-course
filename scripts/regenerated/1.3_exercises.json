@@ -1,43 +1,67 @@
 [
   {
-    "title": "Define variables and print a computed value",
-    "prompt_md": "## Goal\n\nWrite a program that defines three `int` variables and prints a value computed from them.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: the area of a rectangle with `length` 8 and `width` 5 (should be `40`).\n\n*Note:* The `std::cout` line is provided — just make sure `area` holds the right value.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Your code here\n\n    std::cout << area << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint main()\n{\n    int length = 8;\n    int width = 5;\n    int area = length * width;\n\n    std::cout << area << '\\n';\n\n    return 0;\n}\n",
+    "title": "Define variables and compute from them",
+    "prompt_md": "## Goal\n\nDefine the variables needed to compute two facts about a rectangle from its dimensions.\n\n## Input\n\nTwo integers on one line — the rectangle's length and width — separated by a space. (Reading is done for you.)\n\n## Output\n\nTwo lines: the rectangle's **area** on the first line and its **perimeter** on the second.\n\nArea is length times width. Perimeter is twice the sum of length and width.\n\n### Example\n\n**Input:** `8 5`  \n**Output:**\n```\n40\n26\n```\n\nThe `std::cout` lines print variables named `area` and `perimeter` — define them with the correct values.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int length = 0;\n    int width = 0;\n    std::cin >> length >> width;\n\n    // Define area and perimeter here.\n\n    std::cout << area << '\\n';\n    std::cout << perimeter << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int length = 0;\n    int width = 0;\n    std::cin >> length >> width;\n\n    int area = length * width;\n    int perimeter = 2 * (length + width);\n\n    std::cout << area << '\\n';\n    std::cout << perimeter << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Prints 40 (8 * 5)",
+        "label": "Sample: 8 x 5",
         "is_sample": true,
-        "stdin": "",
-        "expected_stdout": "40\n"
+        "stdin": "8 5",
+        "expected_stdout": "40\n26\n"
       },
       {
-        "label": "Exactly one line of output",
+        "label": "Hidden: 1 x 1",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": "40\n"
+        "stdin": "1 1",
+        "expected_stdout": "1\n4\n"
+      },
+      {
+        "label": "Hidden: 10 x 3",
+        "is_sample": false,
+        "stdin": "10 3",
+        "expected_stdout": "30\n26\n"
+      },
+      {
+        "label": "Hidden: 0 x 5",
+        "is_sample": false,
+        "stdin": "0 5",
+        "expected_stdout": "0\n10\n"
       }
     ]
   },
   {
-    "title": "Combine variables to encode a date as a single number",
-    "prompt_md": "## Goal\n\nWrite a program that stores the parts of a date in separate variables, combines them into a single integer, and prints that integer.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: `month * 100 + day`, where `month` is `3` and `day` is `14` (should be `314`).\n\n*Note:* The `std::cout` line is provided — just make sure `combined` holds the right value.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Your code here\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint main()\n{\n    int month = 3;\n    int day = 14;\n    int combined = month * 100 + day;\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
+    "title": "Combine variables into one number",
+    "prompt_md": "## Goal\n\nStore the parts of a date in separate variables and combine them into a single integer.\n\n## Input\n\nTwo integers on one line — a month and a day — separated by a space.\n\n## Output\n\nA single line: the date encoded as `month * 100 + day`.\n\n### Example\n\n**Input:** `3 14`  \n**Output:**\n```\n314\n```\n\nThe `std::cout` line prints a variable named `combined` — define it with the correct value.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int month = 0;\n    int day = 0;\n    std::cin >> month >> day;\n\n    // Define combined here.\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int month = 0;\n    int day = 0;\n    std::cin >> month >> day;\n\n    int combined = month * 100 + day;\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Prints 314 (3 * 100 + 14)",
+        "label": "Sample: March 14",
         "is_sample": true,
-        "stdin": "",
+        "stdin": "3 14",
         "expected_stdout": "314\n"
       },
       {
-        "label": "Exactly one line of output",
+        "label": "Hidden: December 25",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": "314\n"
+        "stdin": "12 25",
+        "expected_stdout": "1225\n"
+      },
+      {
+        "label": "Hidden: January 1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "101\n"
+      },
+      {
+        "label": "Hidden: October 9",
+        "is_sample": false,
+        "stdin": "10 9",
+        "expected_stdout": "1009\n"
       }
     ]
   }

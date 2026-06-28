@@ -1,43 +1,67 @@
 [
   {
-    "title": "Comment Your Code",
-    "prompt_md": "## Goal\n\nAdd comments to a working program so that another programmer can understand its purpose.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program returns `0` from `main`. Adding comments must not change the return value.\n\nAdd a **multi-line comment** (`/* ... */`) at the top of the file (before `int main()`) describing what the program does (at least two lines of text), and a **single-line comment** (`//`) above the `return` statement explaining what returning `0` means.",
-    "starter_code": "int main()\n{\n    return 0;\n}\n",
-    "solution_code": "/* This program demonstrates the use of comments.\n   It does nothing else — it simply returns 0. */\n\nint main()\n{\n    // Returning 0 tells the operating system the program finished successfully.\n    return 0;\n}\n",
+    "title": "Disable a line with a comment",
+    "prompt_md": "## Goal\n\nThe starter program is supposed to read two integers and print their **sum**, but a stray statement overwrites the result before it is printed. Disable that statement using a single-line comment (`//`) so the correct sum is printed.\n\nDo not rewrite the math — just comment out the offending line.\n\n## Input\n\nTwo integers on one line, separated by a space.\n\n## Output\n\nA single line: the sum of the two integers.\n\n### Example\n\n**Input:** `3 4`  \n**Output:**\n```\n7\n```",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int result = a + b;\n    result = a * b;   // this line is wrong — it must not run\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int result = a + b;\n    // result = a * b;   // this line is wrong — it must not run\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Program returns 0",
+        "label": "Sample: 3 and 4",
         "is_sample": true,
-        "stdin": "",
-        "expected_stdout": ""
+        "stdin": "3 4",
+        "expected_stdout": "7\n"
       },
       {
-        "label": "No output produced",
+        "label": "Hidden: 0 and 5",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": ""
+        "stdin": "0 5",
+        "expected_stdout": "5\n"
+      },
+      {
+        "label": "Hidden: 10 and 2",
+        "is_sample": false,
+        "stdin": "10 2",
+        "expected_stdout": "12\n"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-4 9",
+        "expected_stdout": "5\n"
       }
     ]
   },
   {
-    "title": "Commented-Out Code",
-    "prompt_md": "## Goal\n\nUse comments to change which print statement actually executes, without deleting any line.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program must print `42` on its own line.\n\nThe starter code has two print statements; currently it prints `0`. Comment out the line that prints `0` and uncomment the line that prints `42` — do not delete or add any lines, only add or remove `//` markers.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    std::cout << 0 << '\\n';\n    // std::cout << 42 << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint main()\n{\n    // std::cout << 0 << '\\n';\n    std::cout << 42 << '\\n';\n\n    return 0;\n}\n",
+    "title": "Switch behavior with comments",
+    "prompt_md": "## Goal\n\nThe program should read an integer and print its **square**. Right now an incorrect statement (which doubles the value) is active, while the correct statement sits commented out just below it. Use comments to disable the wrong line and enable the right one.\n\n## Input\n\nA single integer.\n\n## Output\n\nA single line: the square of the input.\n\n### Example\n\n**Input:** `3`  \n**Output:**\n```\n9\n```",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    int result = n + n;     // doubles n (wrong)\n    // int result = n * n;  // squares n (correct)\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    // int result = n + n;     // doubles n (wrong)\n    int result = n * n;  // squares n (correct)\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Prints 42",
+        "label": "Sample: 3",
         "is_sample": true,
-        "stdin": "",
-        "expected_stdout": "42\n"
+        "stdin": "3",
+        "expected_stdout": "9\n"
       },
       {
-        "label": "Exactly one line of output",
+        "label": "Hidden: 4",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": "42\n"
+        "stdin": "4",
+        "expected_stdout": "16\n"
+      },
+      {
+        "label": "Hidden: 10",
+        "is_sample": false,
+        "stdin": "10",
+        "expected_stdout": "100\n"
+      },
+      {
+        "label": "Hidden: 7",
+        "is_sample": false,
+        "stdin": "7",
+        "expected_stdout": "49\n"
       }
     ]
   }

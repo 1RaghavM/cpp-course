@@ -21,23 +21,35 @@
     ]
   },
   {
-    "title": "Use statements to compute and print a value",
-    "prompt_md": "## Goal\n\nWrite a program that uses declaration statements and expression statements to perform a simple computation, then prints the result.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: the result of adding `3` and `4` (should be `7`).\n\n*Note:* The `std::cout` line is provided for you — just make sure `result` holds the right value before it runs.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Your code here\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 3;\n    int b = 4;\n    int result = 0;\n\n    result = a + b;\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "title": "Compute results with statements",
+    "prompt_md": "## Goal\n\nUsing declaration and expression statements, compute two values from two integers that are read for you.\n\n## Input\n\nTwo integers `a` and `b` on one line, separated by a space. (The reading is already done in the starter code.)\n\n## Output\n\nTwo lines: the **sum** of `a` and `b` on the first line, and their **product** on the second line.\n\n### Example\n\n**Input:** `3 4`  \n**Output:**\n```\n7\n12\n```\n\nThe `std::cout` lines are provided and print variables named `sum` and `product` — define those variables so they hold the correct results.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    // Define sum and product here, using a and b.\n\n    std::cout << sum << '\\n';\n    std::cout << product << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int sum = a + b;\n    int product = a * b;\n\n    std::cout << sum << '\\n';\n    std::cout << product << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Prints 7 (3 + 4)",
+        "label": "Sample: 3 and 4",
         "is_sample": true,
-        "stdin": "",
-        "expected_stdout": "7\n"
+        "stdin": "3 4",
+        "expected_stdout": "7\n12\n"
       },
       {
-        "label": "Exactly one line of output",
+        "label": "Hidden: 0 and 5",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": "7\n"
+        "stdin": "0 5",
+        "expected_stdout": "5\n0\n"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-2 6",
+        "expected_stdout": "4\n-12\n"
+      },
+      {
+        "label": "Hidden: 10 and 10",
+        "is_sample": false,
+        "stdin": "10 10",
+        "expected_stdout": "20\n100\n"
       }
     ]
   }
