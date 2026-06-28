@@ -34,9 +34,9 @@
   },
   {
     "title": "Safe Element Lookup",
-    "prompt_md": "## Goal\nRead 6 integers into a `std::array` and a lookup index, then report the element at that index using the bounds-checked `.at()`. If the index is out of range, `.at()` throws -- catch the exception and report the error instead of crashing.\n\n## Input\n- Line 1: exactly 6 space-separated integers (the array elements).\n- Line 2: a single integer (the index to look up; may be invalid).\n\n## Output\n- Line 1: `Size: N` where N is the array's length (always printed).\n- Line 2: `Value: X` if the index is valid, or `Error: index out of range` if `.at()` throws.\n\n## Example\nInput `5 10 15 20 25 30` then `3` produces:\n```\nSize: 6\nValue: 20\n```",
-    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n#include <stdexcept>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    // Read the array and the index, then report the size and the lookup result.\n\n    return 0;\n}\n",
-    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n#include <stdexcept>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (std::size_t i{ 0 }; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    int index{};\n    std::cin >> index;\n\n    std::cout << \"Size: \" << arr.size() << '\\n';\n\n    try\n    {\n        int value{ arr.at(static_cast<std::size_t>(index)) };\n        std::cout << \"Value: \" << value << '\\n';\n    }\n    catch (const std::out_of_range&)\n    {\n        std::cout << \"Error: index out of range\" << '\\n';\n    }\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nRead 6 integers into a `std::array` and a lookup index, then safely report the element at that index. `operator[]` does **no** bounds checking, so validate the index yourself against the array's `.size()` before accessing it. If the index is out of range (negative, or too large), print a defined error message instead of reading out of bounds.\n\n## Input\n- Line 1: exactly 6 space-separated integers (the array elements).\n- Line 2: a single integer (the index to look up; may be negative or too large).\n\n## Output\n- Line 1: `Size: N` where N is the array's length (always printed).\n- Line 2: `Value: X` if the index is in range, or `Error: index out of range` otherwise.\n\n## Example\nInput `5 10 15 20 25 30` then `3` produces:\n```\nSize: 6\nValue: 20\n```",
+    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    // Read the array and the index, then report the size and the lookup result.\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (std::size_t i{ 0 }; i < arr.size(); ++i)\n        std::cin >> arr[i];\n\n    int index{};\n    std::cin >> index;\n\n    std::cout << \"Size: \" << arr.size() << '\\n';\n\n    if (index >= 0 && static_cast<std::size_t>(index) < arr.size())\n        std::cout << \"Value: \" << arr[static_cast<std::size_t>(index)] << '\\n';\n    else\n        std::cout << \"Error: index out of range\" << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
@@ -49,6 +49,12 @@
         "label": "Hidden -- out of range index 10",
         "is_sample": false,
         "stdin": "1 2 3 4 5 6\n10\n",
+        "expected_stdout": "Size: 6\nError: index out of range\n"
+      },
+      {
+        "label": "Hidden -- negative index",
+        "is_sample": false,
+        "stdin": "4 8 15 16 23 42\n-2\n",
         "expected_stdout": "Size: 6\nError: index out of range\n"
       },
       {

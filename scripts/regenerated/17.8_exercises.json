@@ -34,34 +34,34 @@
   },
   {
     "title": "Find the Maximum via Decayed Array",
-    "prompt_md": "## Goal\nDemonstrate array decay at a function boundary. In `main`, `sizeof` on the C-style array reports the whole array's byte size; inside a function that receives the decayed pointer, `sizeof` reports only a pointer's size. Write a function that returns `sizeof` of its pointer parameter, and another that finds the maximum element of a decayed array given its length.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10).\n- Line 2: `n` integers (each from -1000 to 1000).\n\n## Output\n```\narray sizeof: <S1>\npointer sizeof: <S2>\nmax: <maximum>\n```\nwhere `<S1>` is `sizeof` of the local array in `main`, `<S2>` is `sizeof` of the decayed pointer parameter, and `<maximum>` is the largest of the `n` values. On Judge0, S1 is 40 and S2 is 8.\n\nDo not use `std::array`, `std::vector`, or `<algorithm>`.",
-    "starter_code": "#include <iostream>\n#include <cstddef>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // Print the array sizeof, the decayed-pointer sizeof, and the maximum.\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <cstddef>\n\nstd::size_t pointerSizeof(const int* arr)\n{\n    return sizeof(arr);\n}\n\nint findMax(const int* arr, int length)\n{\n    int max{ arr[0] };\n    for (int i{ 1 }; i < length; ++i)\n    {\n        if (arr[i] > max)\n            max = arr[i];\n    }\n    return max;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"array sizeof: \" << sizeof(arr) << '\\n';\n    std::cout << \"pointer sizeof: \" << pointerSizeof(arr) << '\\n';\n    std::cout << \"max: \" << findMax(arr, n) << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nDemonstrate why a decayed array must carry its length. In `main`, the C-style array has **not** decayed, so you can compute its element count with `sizeof(arr) / sizeof(arr[0])`. The moment you pass the array to a function it decays to a plain pointer and that length is gone -- so you must pass the length you computed as a separate argument.\n\nFill the whole `int arr[10]` from input, derive the length in `main` with `sizeof`, and pass the decayed array plus that length to a `findMax(const int* arr, int length)` function. Initialize your running maximum from the first element (do not use `<limits>`).\n\n## Input\nA single line containing exactly 10 integers (each from -1000 to 1000).\n\n## Output\nOne line: `max: <maximum>` -- the largest of the 10 values.\n\nThe maximum must be produced by scanning `length` elements inside `findMax`, where `length` is the `sizeof`-derived count from `main`. Do not use `std::array`, `std::vector`, or `<algorithm>`.\n\n## Example\nInput `5 12 8 3 20 1 7 9 4 6` produces `max: 20`.",
+    "starter_code": "#include <cstddef>\n#include <iostream>\n\n// Write findMax here: it receives a decayed pointer and a separate length.\n\nint main()\n{\n    int arr[10]{};\n\n    // Derive the length from sizeof, read the values, then call findMax.\n\n    return 0;\n}\n",
+    "solution_code": "#include <cstddef>\n#include <iostream>\n\nint findMax(const int* arr, int length)\n{\n    int max{ arr[0] };\n    for (int i{ 1 }; i < length; ++i)\n    {\n        if (arr[i] > max)\n            max = arr[i];\n    }\n    return max;\n}\n\nint main()\n{\n    int arr[10]{};\n\n    // sizeof works here because arr has not decayed yet\n    const int length{ static_cast<int>(sizeof(arr) / sizeof(arr[0])) };\n\n    for (int i{ 0 }; i < length; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"max: \" << findMax(arr, length) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample -- basic max finding",
+        "label": "Sample -- max in the middle",
         "is_sample": true,
-        "stdin": "3\n5 12 8\n",
-        "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 12\n"
+        "stdin": "5 12 8 3 20 1 7 9 4 6\n",
+        "expected_stdout": "max: 20\n"
       },
       {
         "label": "Hidden -- all negative values",
         "is_sample": false,
-        "stdin": "4\n-10 -3 -20 -1\n",
-        "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: -1\n"
-      },
-      {
-        "label": "Hidden -- single element",
-        "is_sample": false,
-        "stdin": "1\n999\n",
-        "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 999\n"
+        "stdin": "-10 -3 -20 -1 -50 -2 -8 -4 -7 -6\n",
+        "expected_stdout": "max: -1\n"
       },
       {
         "label": "Hidden -- max is first element",
         "is_sample": false,
-        "stdin": "5\n50 10 20 5 49\n",
-        "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 50\n"
+        "stdin": "999 1 2 3 4 5 6 7 8 9\n",
+        "expected_stdout": "max: 999\n"
+      },
+      {
+        "label": "Hidden -- max is last element",
+        "is_sample": false,
+        "stdin": "10 20 30 5 15 25 35 45 55 65\n",
+        "expected_stdout": "max: 65\n"
       }
     ]
   }
