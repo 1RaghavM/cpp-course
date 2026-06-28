@@ -1,34 +1,34 @@
 [
   {
     "title": "Playlist with Composition and Initializer List",
-    "prompt_md": "## Goal\n\nBuild a `Playlist` that **composes** `Song` objects and accepts an initial set via `std::initializer_list`, with the ability to add more songs afterward.\n\n## Input\n\n- Line 1: integer `N` (0 <= N <= 10), the number of songs to add after construction.\n- Next `N` lines: a title (single word) and an integer duration in seconds.\n\n## Output\n\nThe playlist printed twice, separated by a blank line: first the initial three songs, then the playlist after the `N` additions. Each printing is:\n\n```\nPlaylist:\n  <title> (<duration>s)\n  ...\n```\n\n## Notes\n\n- `Song` stores a title and duration and can print itself as `  <title> (<duration>s)`.\n- `Playlist` owns its songs **by value** (`std::vector<Song>`), takes a `std::initializer_list<Song>` constructor, and supports adding a song.\n- Construct the initial playlist with `Song{\"Alpha\", 180}`, `Song{\"Beta\", 210}`, `Song{\"Gamma\", 95}`.",
-    "starter_code": "#include <initializer_list>\n#include <iostream>\n#include <string>\n#include <vector>\n\n// Define Song and Playlist here. Playlist must own its Songs by value,\n// take an std::initializer_list<Song> constructor, and have a print()\n// member that prints \"Playlist:\" followed by each song.\n\nint main()\n{\n    Playlist playlist{ Song{\"Alpha\", 180}, Song{\"Beta\", 210}, Song{\"Gamma\", 95} };\n    playlist.print();\n    std::cout << '\\n';\n\n    int n{};\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string title{};\n        int duration{};\n        std::cin >> title >> duration;\n        // Add this song to the playlist.\n    }\n    playlist.print();\n\n    return 0;\n}\n",
-    "solution_code": "#include <initializer_list>\n#include <iostream>\n#include <string>\n#include <vector>\n\nclass Song\n{\nprivate:\n    std::string m_title{};\n    int m_duration{};\npublic:\n    Song(const std::string& title, int duration)\n        : m_title{ title }, m_duration{ duration } {}\n    void print() const\n    {\n        std::cout << \"  \" << m_title << \" (\" << m_duration << \"s)\\n\";\n    }\n};\n\nclass Playlist\n{\nprivate:\n    std::vector<Song> m_songs{};\npublic:\n    Playlist(std::initializer_list<Song> songs) : m_songs{ songs } {}\n    void add(const Song& song) { m_songs.push_back(song); }\n    void print() const\n    {\n        std::cout << \"Playlist:\\n\";\n        for (const auto& song : m_songs)\n            song.print();\n    }\n};\n\nint main()\n{\n    Playlist playlist{ Song{\"Alpha\", 180}, Song{\"Beta\", 210}, Song{\"Gamma\", 95} };\n    playlist.print();\n    std::cout << '\\n';\n\n    int n{};\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string title{};\n        int duration{};\n        std::cin >> title >> duration;\n        playlist.add(Song{ title, duration });\n    }\n    playlist.print();\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nBuild a `Playlist` that **composes** `Song` objects and accepts an initial set via `std::initializer_list`, with the ability to add more songs afterward.\n\n## Input\n\n- Lines 1-3: three songs for the initial playlist, each a title (single word) and an integer duration in seconds.\n- Line 4: integer `N` (0 <= N <= 10), the number of songs to add after construction.\n- Next `N` lines: a title (single word) and an integer duration in seconds.\n\n## Output\n\nThe playlist printed twice, separated by a blank line: first the initial three songs, then the playlist after the `N` additions. Each printing is:\n\n```\nPlaylist:\n  <title> (<duration>s)\n  ...\n```\n\n## Notes\n\n- `Song` stores a title and duration and can print itself as `  <title> (<duration>s)`.\n- `Playlist` owns its songs **by value** (`std::vector<Song>`), takes a `std::initializer_list<Song>` constructor, and supports adding a song.\n- Read the three initial songs first, then construct the playlist with `Playlist{ Song{t1, d1}, Song{t2, d2}, Song{t3, d3} }` from those values. The initial contents come from input, so a hardcoded list of songs will not pass.",
+    "starter_code": "#include <initializer_list>\n#include <iostream>\n#include <string>\n#include <vector>\n\n// Define Song and Playlist here. Playlist must own its Songs by value,\n// take an std::initializer_list<Song> constructor, and have a print()\n// member that prints \"Playlist:\" followed by each song.\n\nint main()\n{\n    std::string t1{}, t2{}, t3{};\n    int d1{}, d2{}, d3{};\n    std::cin >> t1 >> d1 >> t2 >> d2 >> t3 >> d3;\n\n    Playlist playlist{ Song{t1, d1}, Song{t2, d2}, Song{t3, d3} };\n    playlist.print();\n    std::cout << '\\n';\n\n    int n{};\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string title{};\n        int duration{};\n        std::cin >> title >> duration;\n        // Add this song to the playlist.\n    }\n    playlist.print();\n\n    return 0;\n}\n",
+    "solution_code": "#include <initializer_list>\n#include <iostream>\n#include <string>\n#include <vector>\n\nclass Song\n{\nprivate:\n    std::string m_title{};\n    int m_duration{};\npublic:\n    Song(const std::string& title, int duration)\n        : m_title{ title }, m_duration{ duration } {}\n    void print() const\n    {\n        std::cout << \"  \" << m_title << \" (\" << m_duration << \"s)\\n\";\n    }\n};\n\nclass Playlist\n{\nprivate:\n    std::vector<Song> m_songs{};\npublic:\n    Playlist(std::initializer_list<Song> songs) : m_songs{ songs } {}\n    void add(const Song& song) { m_songs.push_back(song); }\n    void print() const\n    {\n        std::cout << \"Playlist:\\n\";\n        for (const auto& song : m_songs)\n            song.print();\n    }\n};\n\nint main()\n{\n    std::string t1{}, t2{}, t3{};\n    int d1{}, d2{}, d3{};\n    std::cin >> t1 >> d1 >> t2 >> d2 >> t3 >> d3;\n\n    Playlist playlist{ Song{t1, d1}, Song{t2, d2}, Song{t3, d3} };\n    playlist.print();\n    std::cout << '\\n';\n\n    int n{};\n    std::cin >> n;\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string title{};\n        int duration{};\n        std::cin >> title >> duration;\n        playlist.add(Song{ title, duration });\n    }\n    playlist.print();\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Sample -- add two songs to initial three",
         "is_sample": true,
-        "stdin": "2\nDelta 150\nEpsilon 300\n",
+        "stdin": "Alpha 180\nBeta 210\nGamma 95\n2\nDelta 150\nEpsilon 300\n",
         "expected_stdout": "Playlist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n\nPlaylist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n  Delta (150s)\n  Epsilon (300s)\n"
       },
       {
-        "label": "Hidden -- add no extra songs",
+        "label": "Hidden -- different initial songs, add none",
         "is_sample": false,
-        "stdin": "0\n",
-        "expected_stdout": "Playlist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n\nPlaylist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n"
+        "stdin": "Sun 100\nMoon 200\nStar 50\n0\n",
+        "expected_stdout": "Playlist:\n  Sun (100s)\n  Moon (200s)\n  Star (50s)\n\nPlaylist:\n  Sun (100s)\n  Moon (200s)\n  Star (50s)\n"
       },
       {
-        "label": "Hidden -- add one song",
+        "label": "Hidden -- different initial songs, add one",
         "is_sample": false,
-        "stdin": "1\nOmega 42\n",
-        "expected_stdout": "Playlist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n\nPlaylist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n  Omega (42s)\n"
+        "stdin": "Red 12\nGreen 34\nBlue 56\n1\nOmega 42\n",
+        "expected_stdout": "Playlist:\n  Red (12s)\n  Green (34s)\n  Blue (56s)\n\nPlaylist:\n  Red (12s)\n  Green (34s)\n  Blue (56s)\n  Omega (42s)\n"
       },
       {
-        "label": "Hidden -- add three songs",
+        "label": "Hidden -- different initial songs, add three",
         "is_sample": false,
-        "stdin": "3\nNova 60\nPulse 120\nEcho 240\n",
-        "expected_stdout": "Playlist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n\nPlaylist:\n  Alpha (180s)\n  Beta (210s)\n  Gamma (95s)\n  Nova (60s)\n  Pulse (120s)\n  Echo (240s)\n"
+        "stdin": "One 10\nTwo 20\nThree 30\n3\nNova 60\nPulse 120\nEcho 240\n",
+        "expected_stdout": "Playlist:\n  One (10s)\n  Two (20s)\n  Three (30s)\n\nPlaylist:\n  One (10s)\n  Two (20s)\n  Three (30s)\n  Nova (60s)\n  Pulse (120s)\n  Echo (240s)\n"
       }
     ]
   },

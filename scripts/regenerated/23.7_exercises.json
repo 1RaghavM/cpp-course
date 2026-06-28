@@ -1,67 +1,67 @@
 [
   {
     "title": "IntArray with initializer_list constructor",
-    "prompt_md": "## Goal\n\nGive a container the same brace-initialization syntax as a built-in array by adding a `std::initializer_list<int>` constructor to `IntArray`, so `IntArray{1, 2, 3}` works.\n\n## Input\n\n- Line 1: integer `n` (1 <= n <= 20).\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n\n## Output\n\nFour lines:\n\n- `size: <n>` then the `n` input values space-separated (an array built from the input).\n- `size: 3` then `10 20 30` (an array built from the brace list `{10, 20, 30}`).\n\n## Notes\n\n- `IntArray` owns a dynamic `int` array. It needs an `std::initializer_list<int>` constructor that copies the braced values, plus a destructor, a `size()`, and `operator[]`.\n- A second constructor, `IntArray(const int* data, int size)`, for building from the input buffer, and a `printArray` helper are already provided in the starter.",
-    "starter_code": "#include <initializer_list>\n#include <iostream>\n#include <vector>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    // Provided: build from a raw buffer (used for the input-derived array).\n    IntArray(const int* data, int size)\n        : m_size{ size }, m_data{ new int[static_cast<std::size_t>(size)] } {\n        for (int i{ 0 }; i < size; ++i)\n            m_data[i] = data[i];\n    }\n\n    // Add an std::initializer_list<int> constructor so `IntArray{1, 2, 3}`\n    // works, plus the destructor, size(), and operator[] this class needs.\n};\n\nvoid printArray(const IntArray& arr) {\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> input(static_cast<std::size_t>(n));\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> input[static_cast<std::size_t>(i)];\n\n    // Build one IntArray from the input buffer and one from the brace\n    // list {10, 20, 30}, printing each with printArray.\n\n    return 0;\n}\n",
-    "solution_code": "#include <initializer_list>\n#include <iostream>\n#include <vector>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    IntArray(const int* data, int size)\n        : m_size{ size }, m_data{ new int[static_cast<std::size_t>(size)] } {\n        for (int i{ 0 }; i < size; ++i)\n            m_data[i] = data[i];\n    }\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printArray(const IntArray& arr) {\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> input(static_cast<std::size_t>(n));\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> input[static_cast<std::size_t>(i)];\n    IntArray dynamic{ input.data(), n };\n    printArray(dynamic);\n    IntArray literal{ 10, 20, 30 };\n    printArray(literal);\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nGive a container the same brace-initialization syntax as a built-in array by adding a `std::initializer_list<int>` constructor to `IntArray`, so `IntArray{a, b, c}` works.\n\n## Input\n\n- Line 1: integer `n` (1 <= n <= 20).\n- Line 2: `n` space-separated integers (-10000 <= each <= 10000).\n- Line 3: three space-separated integers `a b c` (-10000 <= each <= 10000).\n\n## Output\n\nFour lines:\n\n- `size: <n>` then the `n` input values space-separated (an array built from the input buffer).\n- `size: 3` then `a b c` (an array brace-initialized as `IntArray{a, b, c}`).\n\n## Notes\n\n- `IntArray` owns a dynamic `int` array. It needs an `std::initializer_list<int>` constructor that copies the braced values, plus a destructor, a `size()`, and `operator[]`.\n- A second constructor, `IntArray(const int* data, int size)`, for building from the input buffer, and a `printArray` helper are already provided in the starter.\n- The braced array's contents come from input, so you must actually build it with `IntArray{a, b, c}` and let the constructor copy the values; printing fixed numbers will not pass.",
+    "starter_code": "#include <initializer_list>\n#include <iostream>\n#include <vector>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    // Provided: build from a raw buffer (used for the input-derived array).\n    IntArray(const int* data, int size)\n        : m_size{ size }, m_data{ new int[static_cast<std::size_t>(size)] } {\n        for (int i{ 0 }; i < size; ++i)\n            m_data[i] = data[i];\n    }\n\n    // Add an std::initializer_list<int> constructor so `IntArray{a, b, c}`\n    // works, plus the destructor, size(), and operator[] this class needs.\n};\n\nvoid printArray(const IntArray& arr) {\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> input(static_cast<std::size_t>(n));\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> input[static_cast<std::size_t>(i)];\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n\n    // Build one IntArray from the input buffer and one brace-initialized\n    // as IntArray{a, b, c}, printing each with printArray.\n\n    return 0;\n}\n",
+    "solution_code": "#include <initializer_list>\n#include <iostream>\n#include <vector>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    IntArray(const int* data, int size)\n        : m_size{ size }, m_data{ new int[static_cast<std::size_t>(size)] } {\n        for (int i{ 0 }; i < size; ++i)\n            m_data[i] = data[i];\n    }\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printArray(const IntArray& arr) {\n    std::cout << \"size: \" << arr.size() << '\\n';\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n    std::cout << '\\n';\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<int> input(static_cast<std::size_t>(n));\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> input[static_cast<std::size_t>(i)];\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n    IntArray dynamic{ input.data(), n };\n    printArray(dynamic);\n    IntArray literal{ a, b, c };\n    printArray(literal);\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample: four positive values",
+        "label": "Sample: four positive values, brace list 7 8 9",
         "is_sample": true,
-        "stdin": "4\n1 2 3 4",
-        "expected_stdout": "size: 4\n1 2 3 4\nsize: 3\n10 20 30\n"
+        "stdin": "4\n1 2 3 4\n7 8 9",
+        "expected_stdout": "size: 4\n1 2 3 4\nsize: 3\n7 8 9\n"
       },
       {
-        "label": "Hidden: single element",
+        "label": "Hidden: single element, brace list mixed signs",
         "is_sample": false,
-        "stdin": "1\n-99",
-        "expected_stdout": "size: 1\n-99\nsize: 3\n10 20 30\n"
+        "stdin": "1\n-99\n5 -5 0",
+        "expected_stdout": "size: 1\n-99\nsize: 3\n5 -5 0\n"
       },
       {
-        "label": "Hidden: five elements with mixed signs",
+        "label": "Hidden: five elements, negative brace list",
         "is_sample": false,
-        "stdin": "5\n100 -50 0 25 -1",
-        "expected_stdout": "size: 5\n100 -50 0 25 -1\nsize: 3\n10 20 30\n"
+        "stdin": "5\n100 -50 0 25 -1\n-3 -7 11",
+        "expected_stdout": "size: 5\n100 -50 0 25 -1\nsize: 3\n-3 -7 11\n"
       },
       {
-        "label": "Hidden: repeated values",
+        "label": "Hidden: repeated values, brace list 10 20 30",
         "is_sample": false,
-        "stdin": "6\n4 4 4 4 4 4",
+        "stdin": "6\n4 4 4 4 4 4\n10 20 30",
         "expected_stdout": "size: 6\n4 4 4 4 4 4\nsize: 3\n10 20 30\n"
       }
     ]
   },
   {
     "title": "IntArray list assignment and sum",
-    "prompt_md": "## Goal\n\nAdd `operator=(std::initializer_list<int>)` to `IntArray` so an existing array can be reassigned from a braced list, e.g. `arr = {1, 2, 3}`. Then use the reassigned array to compute a sum.\n\n## Input\n\nA single integer `x` (-10000 <= x <= 10000).\n\n## Output\n\n```\nbefore: 1 2 3\nafter: <x> <x*2> <x*3> <x*4>\nsum: <s>\n```\n\nwhere `<s>` is the sum of the four values after reassignment.\n\n## Notes\n\n- The `initializer_list` constructor, destructor, `size()`, and `operator[]` are provided in the starter.\n- Your `operator=` must release the old storage, allocate storage matching the new list, copy the elements, update the size, and return `*this`.\n- Start `arr` as `{1, 2, 3}`, reassign it to `{x, x*2, x*3, x*4}`, then report the sum.",
-    "starter_code": "#include <initializer_list>\n#include <iostream>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n\n    // Add operator= taking std::initializer_list<int> so an existing\n    // IntArray can be reassigned from a braced list.\n\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printElements(const IntArray& arr) {\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n}\n\nint main() {\n    IntArray arr{ 1, 2, 3 };\n    std::cout << \"before: \";\n    printElements(arr);\n    std::cout << '\\n';\n\n    int x{};\n    std::cin >> x;\n\n    // Reassign arr to {x, x*2, x*3, x*4}, print it prefixed with \"after: \",\n    // then print \"sum: <sum of its elements>\".\n\n    return 0;\n}\n",
-    "solution_code": "#include <initializer_list>\n#include <iostream>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    IntArray& operator=(std::initializer_list<int> list) {\n        delete[] m_data;\n        m_size = static_cast<int>(list.size());\n        m_data = new int[list.size()];\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n        return *this;\n    }\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printElements(const IntArray& arr) {\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n}\n\nint main() {\n    IntArray arr{ 1, 2, 3 };\n    std::cout << \"before: \";\n    printElements(arr);\n    std::cout << '\\n';\n    int x{};\n    std::cin >> x;\n    arr = { x, x * 2, x * 3, x * 4 };\n    std::cout << \"after: \";\n    printElements(arr);\n    std::cout << '\\n';\n    int sum{ 0 };\n    for (int i{ 0 }; i < arr.size(); ++i)\n        sum += arr[i];\n    std::cout << \"sum: \" << sum << '\\n';\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nAdd `operator=(std::initializer_list<int>)` to `IntArray` so an existing array can be reassigned from a braced list, e.g. `arr = {4, 5, 6, 7}`. The class already has an `std::initializer_list<int>` constructor.\n\n## Input\n\n- Line 1: three space-separated integers `a b c` (-10000 <= each <= 10000).\n- Line 2: four space-separated integers `w x y z` (-10000 <= each <= 10000).\n\n## Output\n\n```\nbefore: <a> <b> <c>\nafter: <w> <x> <y> <z>\nsum: <s>\n```\n\nwhere `<s>` is the sum of the four values after reassignment.\n\n## Notes\n\n- The `initializer_list` constructor, destructor, `size()`, and `operator[]` are provided in the starter.\n- Construct `arr` as `IntArray{a, b, c}` from the first line, then reassign it with `arr = {w, x, y, z}` from the second line. The size grows from 3 to 4, so your `operator=` must release the old storage, allocate storage matching the new list, copy the elements, update the size, and return `*this`.\n- Compute the sum by reading the reassigned array's elements back through `operator[]`.",
+    "starter_code": "#include <initializer_list>\n#include <iostream>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n\n    // Add operator= taking std::initializer_list<int> so an existing\n    // IntArray can be reassigned from a braced list.\n\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printElements(const IntArray& arr) {\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n}\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n    IntArray arr{ a, b, c };\n    std::cout << \"before: \";\n    printElements(arr);\n    std::cout << '\\n';\n\n    int w{}, x{}, y{}, z{};\n    std::cin >> w >> x >> y >> z;\n\n    // Reassign arr to {w, x, y, z}, print it prefixed with \"after: \",\n    // then print \"sum: <sum of its elements>\".\n\n    return 0;\n}\n",
+    "solution_code": "#include <initializer_list>\n#include <iostream>\n\nclass IntArray {\n    int m_size{};\n    int* m_data{};\npublic:\n    IntArray(std::initializer_list<int> list)\n        : m_size{ static_cast<int>(list.size()) }\n        , m_data{ new int[list.size()] } {\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n    }\n    IntArray& operator=(std::initializer_list<int> list) {\n        delete[] m_data;\n        m_size = static_cast<int>(list.size());\n        m_data = new int[list.size()];\n        int i{ 0 };\n        for (int v : list)\n            m_data[i++] = v;\n        return *this;\n    }\n    ~IntArray() { delete[] m_data; }\n    int size() const { return m_size; }\n    int operator[](int index) const { return m_data[index]; }\n};\n\nvoid printElements(const IntArray& arr) {\n    for (int i{ 0 }; i < arr.size(); ++i) {\n        if (i > 0) std::cout << ' ';\n        std::cout << arr[i];\n    }\n}\n\nint main() {\n    int a{}, b{}, c{};\n    std::cin >> a >> b >> c;\n    IntArray arr{ a, b, c };\n    std::cout << \"before: \";\n    printElements(arr);\n    std::cout << '\\n';\n    int w{}, x{}, y{}, z{};\n    std::cin >> w >> x >> y >> z;\n    arr = { w, x, y, z };\n    std::cout << \"after: \";\n    printElements(arr);\n    std::cout << '\\n';\n    int sum{ 0 };\n    for (int i{ 0 }; i < arr.size(); ++i)\n        sum += arr[i];\n    std::cout << \"sum: \" << sum << '\\n';\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample: x is 10",
+        "label": "Sample: grows from 3 to 4 values",
         "is_sample": true,
-        "stdin": "10",
-        "expected_stdout": "before: 1 2 3\nafter: 10 20 30 40\nsum: 100\n"
+        "stdin": "10 20 30\n4 5 6 7",
+        "expected_stdout": "before: 10 20 30\nafter: 4 5 6 7\nsum: 22\n"
       },
       {
-        "label": "Hidden: x is negative",
+        "label": "Hidden: negative values in both lists",
         "is_sample": false,
-        "stdin": "-3",
-        "expected_stdout": "before: 1 2 3\nafter: -3 -6 -9 -12\nsum: -30\n"
+        "stdin": "-3 -6 -9\n1 -2 3 -4",
+        "expected_stdout": "before: -3 -6 -9\nafter: 1 -2 3 -4\nsum: -2\n"
       },
       {
-        "label": "Hidden: x is zero",
+        "label": "Hidden: all zeros",
         "is_sample": false,
-        "stdin": "0",
-        "expected_stdout": "before: 1 2 3\nafter: 0 0 0 0\nsum: 0\n"
+        "stdin": "0 0 0\n0 0 0 0",
+        "expected_stdout": "before: 0 0 0\nafter: 0 0 0 0\nsum: 0\n"
       },
       {
-        "label": "Hidden: x is seven",
+        "label": "Hidden: unrelated before and after values",
         "is_sample": false,
-        "stdin": "7",
-        "expected_stdout": "before: 1 2 3\nafter: 7 14 21 28\nsum: 70\n"
+        "stdin": "7 14 21\n2 4 8 16",
+        "expected_stdout": "before: 7 14 21\nafter: 2 4 8 16\nsum: 30\n"
       }
     ]
   }
