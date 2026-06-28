@@ -2,8 +2,8 @@
   {
     "title": "Unit Converter",
     "difficulty": "practice",
-    "prompt_md": "## Unit Converter\n\nWrite a program that reads a total number of **inches** (a positive integer) from stdin and prints how many **feet** and **remaining inches** that equals.\n\nThere are 12 inches in a foot. Use integer division (`/`) to get feet and the remainder operator (`%`) to get leftover inches.\n\nPrint two lines in exactly this format:\n\n```\nFeet: <value>\nRemaining inches: <value>\n```\n\n### Example\n\n**Input:**\n```\n37\n```\n\n**Output:**\n```\nFeet: 3\nRemaining inches: 1\n```\n\nRequirements:\n- Use `std::cin` to read the input\n- Use `std::cout` with `'\\n'` to end each line\n- No extra spaces or blank lines in output\n",
-    "starter_code": "#include <iostream>\n\nint main() {\n    int inches{};\n\n    // TODO: read inches from stdin using std::cin\n\n    // TODO: compute feet using integer division (inches / 12)\n    // TODO: compute remaining inches using the remainder operator (inches % 12)\n\n    // TODO: print \"Feet: <feet>\" followed by a newline\n    // TODO: print \"Remaining inches: <remaining>\" followed by a newline\n\n    return 0;\n}\n",
+    "prompt_md": "## Unit Converter\n\nWrite a program that reads a total number of **inches** (a positive integer) from stdin and prints how many **feet** and **remaining inches** that equals.\n\nThere are 12 inches in a foot.\n\n## Input\n\nA single positive integer: total inches.\n\n## Output\n\nTwo lines in exactly this format (no extra spaces or blank lines):\n\n```\nFeet: <value>\nRemaining inches: <value>\n```\n\n### Example\n\n**Input:** `37`  \n**Output:**\n```\nFeet: 3\nRemaining inches: 1\n```\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int inches{};\n    // Your code here\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main() {\n    int inches{};\n    std::cin >> inches;\n\n    int feet{ inches / 12 };\n    int remaining{ inches % 12 };\n\n    std::cout << \"Feet: \" << feet << '\\n';\n    std::cout << \"Remaining inches: \" << remaining << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
@@ -35,8 +35,8 @@
   {
     "title": "Greeting Card",
     "difficulty": "practice",
-    "prompt_md": "## Greeting Card\n\nWrite a program that reads two values from stdin:\n1. A person's **name** (a single word, no spaces)\n2. Their **age** (a positive integer)\n\nThen print a greeting in exactly this format:\n\n```\nHello, <name>! You are <age> years old.\nNext year you will be <age+1>.\n```\n\n### Example\n\n**Input:**\n```\nAlice 30\n```\n\n**Output:**\n```\nHello, Alice! You are 30 years old.\nNext year you will be 31.\n```\n\nRequirements:\n- Use `std::cin` to read both values (they are on the same line separated by a space)\n- Use `std::cout` and `'\\n'` for output\n- No extra blank lines\n",
-    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name{};\n    int age{};\n\n    // TODO: read name and age from stdin using std::cin\n    //       (they are space-separated on one line)\n\n    // TODO: print the first line: \"Hello, <name>! You are <age> years old.\"\n    // TODO: print the second line: \"Next year you will be <age+1>.\"\n\n    return 0;\n}\n",
+    "prompt_md": "## Greeting Card\n\nWrite a program that reads a person's name (single word) and age (integer) from stdin, then prints a two-line greeting.\n\n## Input\n\nA single word (name) and an integer (age) on the same line, separated by a space.\n\n## Output\n\nTwo lines in exactly this format (no extra blank lines):\n\n```\nHello, <name>! You are <age> years old.\nNext year you will be <age+1>.\n```\n\n### Example\n\n**Input:** `Alice 30`  \n**Output:**\n```\nHello, Alice! You are 30 years old.\nNext year you will be 31.\n```\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name{};\n    int age{};\n    // Your code here\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string name{};\n    int age{};\n\n    std::cin >> name >> age;\n\n    std::cout << \"Hello, \" << name << \"! You are \" << age << \" years old.\" << '\\n';\n    std::cout << \"Next year you will be \" << age + 1 << '.' << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {

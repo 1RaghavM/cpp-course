@@ -1,8 +1,8 @@
 [
   {
     "title": "Define variables and print a computed value",
-    "prompt_md": "## Goal\n\nWrite a program that defines three `int` variables and prints a value computed from them.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: the area of a rectangle.\n\n## Requirements\n\n1. Define an `int` variable named `length` and initialize it to `8`.\n2. Define an `int` variable named `width` and initialize it to `5`.\n3. Define an `int` variable named `area` and initialize it to `length * width`.\n4. The `std::cout` line is provided — it prints `area` for you.\n5. Return `0` from `main`.\n\nThe output should be `40` (since 8 × 5 = 40).\n\n*Note:* You will learn about `std::cout` in detail in the next lesson. For now, the output line is provided — just make sure `area` holds the right value.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: Define an int variable 'length' initialized to 8\n\n    // TODO: Define an int variable 'width' initialized to 5\n\n    // TODO: Define an int variable 'area' initialized to length * width\n\n    std::cout << area << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWrite a program that defines three `int` variables and prints a value computed from them.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: the area of a rectangle with `length` 8 and `width` 5 (should be `40`).\n\n*Note:* The `std::cout` line is provided — just make sure `area` holds the right value.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Your code here\n\n    std::cout << area << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int length = 8;\n    int width = 5;\n    int area = length * width;\n\n    std::cout << area << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -22,8 +22,8 @@
   },
   {
     "title": "Combine variables to encode a date as a single number",
-    "prompt_md": "## Goal\n\nWrite a program that stores the parts of a date in separate variables, combines them into a single integer, and prints that integer.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: the encoded date value.\n\n## Requirements\n\n1. Define an `int` variable named `month` and initialize it to `3`.\n2. Define an `int` variable named `day` and initialize it to `14`.\n3. Define an `int` variable named `combined` and initialize it to `month * 100 + day`. This encodes the date March 14 as the number `314`.\n4. The `std::cout` line is provided — it prints `combined` for you.\n5. Return `0` from `main`.\n\nThe output should be `314` (since 3 × 100 + 14 = 314).\n\n*Hint:* Remember from *Statements and the structure of a program* that each statement executes in order, top to bottom.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: Define an int variable 'month' initialized to 3\n\n    // TODO: Define an int variable 'day' initialized to 14\n\n    // TODO: Define an int variable 'combined' initialized to month * 100 + day\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWrite a program that stores the parts of a date in separate variables, combines them into a single integer, and prints that integer.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nPrint a single integer on its own line: `month * 100 + day`, where `month` is `3` and `day` is `14` (should be `314`).\n\n*Note:* The `std::cout` line is provided — just make sure `combined` holds the right value.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Your code here\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int month = 3;\n    int day = 14;\n    int combined = month * 100 + day;\n\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [

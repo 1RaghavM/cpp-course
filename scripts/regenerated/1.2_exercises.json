@@ -1,8 +1,8 @@
 [
   {
     "title": "Comment Your Code",
-    "prompt_md": "## Goal\n\nAdd comments to a working program so that another programmer can understand its purpose.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program returns `0` from `main`. Adding comments must not change the return value.\n\n## Requirements\n\n1. Add a **single-line comment** (`//`) above the `return` statement explaining what returning `0` means.\n2. Add a **multi-line comment** (`/* ... */`) at the very top of the program (before `int main()`) that contains at least two lines of text describing what the program does.\n3. The program must still compile and return `0`.",
-    "starter_code": "// TODO: Add a multi-line comment (/* ... */) above main\n//       describing what this program does (at least 2 lines).\n\nint main()\n{\n    // TODO: Add a single-line comment above the return statement\n    //       explaining what returning 0 means.\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nAdd comments to a working program so that another programmer can understand its purpose.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program returns `0` from `main`. Adding comments must not change the return value.\n\nAdd a **multi-line comment** (`/* ... */`) at the top of the file (before `int main()`) describing what the program does (at least two lines of text), and a **single-line comment** (`//`) above the `return` statement explaining what returning `0` means.",
+    "starter_code": "int main()\n{\n    return 0;\n}\n",
     "solution_code": "/* This program demonstrates the use of comments.\n   It does nothing else — it simply returns 0. */\n\nint main()\n{\n    // Returning 0 tells the operating system the program finished successfully.\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -22,7 +22,7 @@
   },
   {
     "title": "Commented-Out Code",
-    "prompt_md": "## Goal\n\nUse comments to change which print statement actually executes, without deleting any line.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program must print `42` on its own line.\n\n## Requirements\n\n1. The starter code has two print statements. Currently the program prints `0`.\n2. **Comment out** the `std::cout << 0` line using a single-line comment (`//`) so the compiler skips it.\n3. **Uncomment** the line `// std::cout << 42` so it becomes active code.\n4. Do **not** delete or add any lines — only add or remove comment markers.\n\n*Note:* You will learn about `std::cout` in detail in the next lesson. For now, just add and remove the `//` markers as instructed.",
+    "prompt_md": "## Goal\n\nUse comments to change which print statement actually executes, without deleting any line.\n\n## Input\n\nThis program takes no input.\n\n## Output\n\nThe program must print `42` on its own line.\n\nThe starter code has two print statements; currently it prints `0`. Comment out the line that prints `0` and uncomment the line that prints `42` — do not delete or add any lines, only add or remove `//` markers.",
     "starter_code": "#include <iostream>\n\nint main()\n{\n    std::cout << 0 << '\\n';\n    // std::cout << 42 << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    // std::cout << 0 << '\\n';\n    std::cout << 42 << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
