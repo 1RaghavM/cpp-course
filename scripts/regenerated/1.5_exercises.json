@@ -3,7 +3,7 @@
     "title": "Unit Converter",
     "difficulty": "practice",
     "prompt_md": "## Unit Converter\n\nWrite a program that reads a length given as **feet** and **inches**, and prints the total length in inches.\n\nThere are 12 inches in a foot.\n\n## Input\n\nTwo integers on one line separated by a space: the number of feet, then the number of extra inches.\n\n## Output\n\nOne line in exactly this format (no extra spaces or blank lines):\n\n```\nTotal inches: <value>\n```\n\n### Example\n\n**Input:** `3 1`  \n**Output:**\n```\nTotal inches: 37\n```\n",
-    "starter_code": "#include <iostream>\n\nint main() {\n    int feet{};\n    int inches{};\n    // Your code here\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int feet{};\n    int inches{};\n\n    // TODO: use std::cin and >> to read feet, then inches, from the input\n    // TODO: compute the total inches from feet and inches (12 inches per foot) and store it in an int\n    // TODO: use std::cout and << to print \"Total inches: \" followed by the total and a newline\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main() {\n    int feet{};\n    int inches{};\n    std::cin >> feet >> inches;\n\n    int total_inches{ feet * 12 + inches };\n\n    std::cout << \"Total inches: \" << total_inches << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
@@ -36,7 +36,7 @@
     "title": "Greeting Card",
     "difficulty": "practice",
     "prompt_md": "## Greeting Card\n\nWrite a program that reads a person's age (an integer) from stdin, then prints a two-line greeting.\n\n## Input\n\nA single integer: the age.\n\n## Output\n\nTwo lines in exactly this format (no extra blank lines):\n\n```\nYou are <age> years old.\nNext year you will be <age+1>.\n```\n\n### Example\n\n**Input:** `30`  \n**Output:**\n```\nYou are 30 years old.\nNext year you will be 31.\n```\n",
-    "starter_code": "#include <iostream>\n\nint main() {\n    int age{};\n    // Your code here\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint main() {\n    int age{};\n\n    // TODO: use std::cin and >> to read the age from the input\n    // TODO: use std::cout to print the first line in the form: You are <age> years old.\n    // TODO: use std::cout to print the second line in the form: Next year you will be <one more than age>.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main() {\n    int age{};\n    std::cin >> age;\n\n    std::cout << \"You are \" << age << \" years old.\" << '\\n';\n    std::cout << \"Next year you will be \" << age + 1 << '.' << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {

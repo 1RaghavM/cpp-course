@@ -2,7 +2,7 @@
   {
     "title": "Accumulate a running total",
     "prompt_md": "## Goal\n\nTotal four integers using a single accumulator variable that you update as you go.\n\nValue-initialize the total to `0`, then reassign it to fold in each number (rather than writing one big expression). This is the assignment-and-reassignment pattern from the lesson.\n\n## Input\n\nFour integers on one line, separated by spaces. (Reading is done for you.)\n\n## Output\n\nA single line: the sum of all four integers.\n\n### Example\n\n**Input:** `1 2 3 4`  \n**Output:**\n```\n10\n```\n\nThe `std::cout` line prints a variable named `total` — declare and update it so it holds the correct sum.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    int c = 0;\n    int d = 0;\n    std::cin >> a >> b >> c >> d;\n\n    // Build the running total here.\n\n    std::cout << total << '\\n';\n\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    int c = 0;\n    int d = 0;\n    std::cin >> a >> b >> c >> d;\n\n    // TODO: declare an int named total, value-initialized to 0\n    // TODO: reassign total to fold in each of a, b, c, d one at a time — one addition statement per value\n\n    std::cout << total << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    int c = 0;\n    int d = 0;\n    std::cin >> a >> b >> c >> d;\n\n    int total{ 0 };\n    total = total + a;\n    total = total + b;\n    total = total + c;\n    total = total + d;\n\n    std::cout << total << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -35,7 +35,7 @@
   {
     "title": "Swap two variables",
     "prompt_md": "## Goal\n\nRead two integers and swap their values, then print them in swapped order.\n\n## Input\n\nTwo integers `x` and `y` on one line, separated by a space.\n\n## Output\n\nA single line containing the two values **after** swapping — the original `y`, a space, then the original `x`.\n\n### Example\n\n**Input:** `50 30`  \n**Output:**\n```\n30 50\n```\n\nAfter your code runs, `x` must hold the original value of `y` and `y` must hold the original value of `x`. The `std::cout` line that prints `x` and `y` is provided.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // Swap the values of x and y here.\n\n    std::cout << x << ' ' << y << '\\n';\n\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    // TODO: declare a temporary int and copy x into it so x's original value is not lost\n    // TODO: assign y's value into x\n    // TODO: assign the saved temporary value into y\n\n    std::cout << x << ' ' << y << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int x{};\n    int y{};\n    std::cin >> x >> y;\n\n    int temp{ x };\n    x = y;\n    y = temp;\n\n    std::cout << x << ' ' << y << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [

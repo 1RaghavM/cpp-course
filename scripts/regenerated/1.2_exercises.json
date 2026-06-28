@@ -2,7 +2,7 @@
   {
     "title": "Disable a line with a comment",
     "prompt_md": "## Goal\n\nThe starter program is supposed to read two integers and print their **sum**, but a stray statement overwrites the result before it is printed. Disable that statement using a single-line comment (`//`) so the correct sum is printed.\n\nDo not rewrite the math — just comment out the offending line.\n\n## Input\n\nTwo integers on one line, separated by a space.\n\n## Output\n\nA single line: the sum of the two integers.\n\n### Example\n\n**Input:** `3 4`  \n**Output:**\n```\n7\n```",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int result = a + b;\n    result = a * b;   // this line is wrong — it must not run\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int result = a + b;\n    // TODO: the next line overwrites the correct sum — disable it with a single-line comment so it never runs\n    result = a * b;   // this line is wrong — it must not run\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int a = 0;\n    int b = 0;\n    std::cin >> a >> b;\n\n    int result = a + b;\n    // result = a * b;   // this line is wrong — it must not run\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -35,7 +35,7 @@
   {
     "title": "Switch behavior with comments",
     "prompt_md": "## Goal\n\nThe program should read an integer and print its **square**. Right now an incorrect statement (which doubles the value) is active, while the correct statement sits commented out just below it. Use comments to disable the wrong line and enable the right one.\n\n## Input\n\nA single integer.\n\n## Output\n\nA single line: the square of the input.\n\n### Example\n\n**Input:** `3`  \n**Output:**\n```\n9\n```",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    int result = n + n;     // doubles n (wrong)\n    // int result = n * n;  // squares n (correct)\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    // TODO: the active line below doubles n (wrong) — disable it with a comment, then un-comment the correct line beneath it that squares n\n    int result = n + n;     // doubles n (wrong)\n    // int result = n * n;  // squares n (correct)\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    // int result = n + n;     // doubles n (wrong)\n    int result = n * n;  // squares n (correct)\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
