@@ -1,55 +1,55 @@
 [
   {
     "title": "Trace the reference count",
-    "prompt_md": "## Goal\n\nWrite a program that creates a `std::shared_ptr<int>`, copies it a given number of times into a `std::vector`, then removes elements one by one, printing the reference count at each step.\n\n## Input\n\n- A single integer `n` (1 <= n <= 20): the number of copies to place in the vector.\n\n## Output\n\n- First, print the use count after creating the original `shared_ptr` (before any copies): `1`\n- Then print the use count after all `n` copies have been pushed into the vector (this will be `n + 1`).\n- Then, for each element removed from the back of the vector (n removals), print the use count of the original pointer after that removal.\n- Each value on its own line.\n\n## Requirements\n\n- Create the `shared_ptr` with `std::make_shared<int>(0)`.\n- Store copies in a `std::vector<std::shared_ptr<int>>`.\n- Use `push_back` to add copies and `pop_back` to remove them.\n- Print `use_count()` of the **original** `shared_ptr` at each required point.\n- Do not use `new` or `delete`.",
-    "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Create a shared_ptr<int> with make_shared\n    // Print its initial use_count\n\n    // TODO: Push n copies into a vector\n    // Print the use_count after all copies\n\n    // TODO: Pop elements one by one, printing use_count after each pop\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    auto ptr{ std::make_shared<int>(0) };\n    std::cout << ptr.use_count() << '\\n';\n\n    std::vector<std::shared_ptr<int>> vec{};\n    for (int i{ 0 }; i < n; ++i)\n        vec.push_back(ptr);\n\n    std::cout << ptr.use_count() << '\\n';\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        vec.pop_back();\n        std::cout << ptr.use_count() << '\\n';\n    }\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nA `std::shared_ptr` tracks how many owners share its object via a reference\ncount. Maintain a set of owners that grows and shrinks under a stream of\ncommands, and report the reference count after each command.\n\nStart with one original `shared_ptr` (created with `std::make_shared`). Keep any\nextra owners in a container. Then process `q` commands:\n\n- `share` -- add one more owner (a copy of the shared pointer).\n- `release` -- drop one of the extra owners, if any exist. The original owner is\n  never dropped.\n\n## Input\n\n- Line 1: an integer `q` (1 <= q <= 50), the number of commands.\n- Next `q` lines: each is `share` or `release`.\n\n## Output\n\n- After each command, a line with the current `use_count()` of the original\n  `shared_ptr`.\n\n## Notes\n\nA `release` when there are no extra owners leaves the count unchanged. No raw\n`new`/`delete`.",
+    "starter_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\nint main()\n{\n    int q{};\n    std::cin >> q;\n\n    // Create one shared_ptr, then process q share/release commands,\n    // printing the original's use_count() after each.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\nint main()\n{\n    int q{};\n    std::cin >> q;\n\n    auto original{ std::make_shared<int>(0) };\n    std::vector<std::shared_ptr<int>> extra;\n\n    for (int i{ 0 }; i < q; ++i)\n    {\n        std::string cmd{};\n        std::cin >> cmd;\n\n        if (cmd == \"share\")\n            extra.push_back(original);\n        else if (cmd == \"release\" && !extra.empty())\n            extra.pop_back();\n\n        std::cout << original.use_count() << '\\n';\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Three copies",
+        "label": "Mixed commands",
         "is_sample": true,
-        "stdin": "3",
-        "expected_stdout": "1\n4\n3\n2\n1\n"
+        "stdin": "5\nshare\nshare\nrelease\nshare\nrelease\n",
+        "expected_stdout": "2\n3\n2\n3\n2\n"
       },
       {
-        "label": "Single copy",
+        "label": "Release when empty",
         "is_sample": false,
-        "stdin": "1",
-        "expected_stdout": "1\n2\n1\n"
+        "stdin": "3\nrelease\nrelease\nshare\n",
+        "expected_stdout": "1\n1\n2\n"
       },
       {
-        "label": "Five copies",
+        "label": "Growing then shrinking",
         "is_sample": false,
-        "stdin": "5",
-        "expected_stdout": "1\n6\n5\n4\n3\n2\n1\n"
+        "stdin": "6\nshare\nshare\nshare\nrelease\nrelease\nrelease\n",
+        "expected_stdout": "2\n3\n4\n3\n2\n1\n"
       }
     ]
   },
   {
     "title": "Shared vs unique ownership report",
-    "prompt_md": "## Goal\n\nWrite a program that manages a dynamically allocated integer through both `std::unique_ptr` and `std::shared_ptr`, and reports their ownership characteristics.\n\n## Input\n\n- A single integer `value` (-100000 <= value <= 100000).\n\n## Output\n\nPrint exactly 5 lines:\n\n1. `unique: <value>` -- the value held by a `unique_ptr`.\n2. `shared: <value> count:<N>` -- the value and use count of a `shared_ptr` right after creation.\n3. `after copy: count:<N>` -- the use count after copying the `shared_ptr` to a second `shared_ptr`.\n4. `after reset: count:<N>` -- the use count of the original after the copy is reset.\n5. `equal: true` or `equal: false` -- whether both pointers (before the copy was reset) pointed to the same value.\n\n## Requirements\n\n- Create the `unique_ptr` with `std::make_unique<int>(value)` and the `shared_ptr` with `std::make_shared<int>(value)`.\n- For line 5, compare the **dereferenced values** of the original shared_ptr and the copy **before** resetting the copy. Store this comparison result in a `bool` before the reset.\n- Use `.use_count()` for the count.\n- Do not use `new` or `delete`.",
-    "starter_code": "#include <iostream>\n#include <memory>\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    // TODO: Create a unique_ptr<int> and print its value\n\n    // TODO: Create a shared_ptr<int> and print its value and use_count\n\n    // TODO: Copy the shared_ptr, print the new use_count\n\n    // TODO: Check if both shared_ptrs hold equal values (store result)\n\n    // TODO: Reset the copy, print use_count, then print the equality result\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <memory>\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    auto uptr{ std::make_unique<int>(value) };\n    std::cout << \"unique: \" << *uptr << '\\n';\n\n    auto sptr1{ std::make_shared<int>(value) };\n    std::cout << \"shared: \" << *sptr1 << \" count:\" << sptr1.use_count() << '\\n';\n\n    auto sptr2{ sptr1 };\n    std::cout << \"after copy: count:\" << sptr1.use_count() << '\\n';\n\n    bool equal{ *sptr1 == *sptr2 };\n\n    sptr2.reset();\n    std::cout << \"after reset: count:\" << sptr1.use_count() << '\\n';\n\n    std::cout << \"equal: \" << (equal ? \"true\" : \"false\") << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nA resource often starts with a single exclusive owner and later becomes shared\namong several readers. Model that transition: begin with a `std::unique_ptr`,\nhand its object over to a `std::shared_ptr`, distribute reader copies, compute a\nresult from the shared value, then let the readers go.\n\n## Input\n\n- Line 1: two space-separated integers `value` and `r`\n  (-100000 <= value <= 100000; 0 <= r <= 100): the resource's value and the\n  number of reader copies to create.\n\n## Output\n\nFive lines:\n\n1. `exclusive: <value>` -- the value while held by the `unique_ptr`.\n2. `published count: 1` -- the `use_count()` right after transferring ownership\n   into a `shared_ptr`.\n3. `readers count: <c>` -- the `use_count()` after creating `r` reader copies.\n4. `total: <t>` -- the sum of the value read through every reader copy\n   (i.e. `value * r`).\n5. `after readers count: 1` -- the `use_count()` after all reader copies are gone.\n\n## Notes\n\nA `unique_ptr` cannot be copied, so ownership must be *moved* into the\n`shared_ptr`. Use `std::make_unique` / `std::make_shared`; no raw `new`/`delete`.",
+    "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int value{};\n    int r{};\n    std::cin >> value >> r;\n\n    // Start with a unique_ptr, move its object into a shared_ptr, make r reader\n    // copies, compute the total across readers, then release the readers.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int value{};\n    int r{};\n    std::cin >> value >> r;\n\n    auto owner{ std::make_unique<int>(value) };\n    std::cout << \"exclusive: \" << *owner << '\\n';\n\n    std::shared_ptr<int> shared{ std::move(owner) };\n    std::cout << \"published count: \" << shared.use_count() << '\\n';\n\n    std::vector<std::shared_ptr<int>> readers;\n    for (int i{ 0 }; i < r; ++i)\n        readers.push_back(shared);\n    std::cout << \"readers count: \" << shared.use_count() << '\\n';\n\n    int total{ 0 };\n    for (const auto& reader : readers)\n        total += *reader;\n    std::cout << \"total: \" << total << '\\n';\n\n    readers.clear();\n    std::cout << \"after readers count: \" << shared.use_count() << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Positive value",
+        "label": "Three readers",
         "is_sample": true,
-        "stdin": "42",
-        "expected_stdout": "unique: 42\nshared: 42 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+        "stdin": "5 3\n",
+        "expected_stdout": "exclusive: 5\npublished count: 1\nreaders count: 4\ntotal: 15\nafter readers count: 1\n"
       },
       {
-        "label": "Zero value",
+        "label": "No readers",
         "is_sample": false,
-        "stdin": "0",
-        "expected_stdout": "unique: 0\nshared: 0 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+        "stdin": "10 0\n",
+        "expected_stdout": "exclusive: 10\npublished count: 1\nreaders count: 1\ntotal: 0\nafter readers count: 1\n"
       },
       {
         "label": "Negative value",
         "is_sample": false,
-        "stdin": "-9999",
-        "expected_stdout": "unique: -9999\nshared: -9999 count:1\nafter copy: count:2\nafter reset: count:1\nequal: true\n"
+        "stdin": "-4 5\n",
+        "expected_stdout": "exclusive: -4\npublished count: 1\nreaders count: 6\ntotal: -20\nafter readers count: 1\n"
       }
     ]
   }

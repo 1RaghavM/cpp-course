@@ -1,55 +1,55 @@
 [
   {
     "title": "Classify l-value and r-value",
-    "prompt_md": "## Goal\n\nWrite a program that uses function overloading to determine whether a given expression is passed as an l-value or an r-value, then prints the classification.\n\n## Input\n\n- A single integer `n` (-10000 <= n <= 10000).\n\n## Output\n\n- Three lines of output, one for each of these calls in order:\n  1. Passing the variable `n` directly.\n  2. Passing the literal `42`.\n  3. Passing the expression `n + 1`.\n\nEach line must be exactly one of:\n- `l-value: <value>`\n- `r-value: <value>`\n\nwhere `<value>` is the integer value received by the function.\n\n## Requirements\n\n- Define two overloads of a function `classify`: one taking `int&` and one taking `int&&`.\n- The `int&` overload prints `l-value: ` followed by the value.\n- The `int&&` overload prints `r-value: ` followed by the value.\n- Call `classify` three times in `main` in the order described above.\n- Do not use `std::move`.",
-    "starter_code": "#include <iostream>\n\n// TODO: Define void classify(int& x) that prints \"l-value: \" and the value\n// TODO: Define void classify(int&& x) that prints \"r-value: \" and the value\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Call classify with n, then 42, then n + 1\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nvoid classify(int& x)\n{\n    std::cout << \"l-value: \" << x << '\\n';\n}\n\nvoid classify(int&& x)\n{\n    std::cout << \"r-value: \" << x << '\\n';\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    classify(n);\n    classify(42);\n    classify(n + 1);\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nOverload resolution routes an l-value argument to an `int&` parameter and an\nr-value (temporary) argument to an `int&&` parameter. Use that to give the two\nkinds of argument **different behavior**.\n\nWrite two overloads of a function `handle`:\n\n- `handle(int&)` -- the l-value path -- returns its argument **plus 1**.\n- `handle(int&&)` -- the r-value path -- returns its argument **times 2**.\n\n## Input\n\n- A single line with two space-separated integers `a` and `b`\n  (-10000 <= each <= 10000).\n\n## Output\n\nFour lines, the return value of `handle` for each of these calls, in order:\n\n1. `handle(a)`\n2. `handle(a + b)`\n3. `handle(100)`\n4. `handle(b)`\n\n## Notes\n\nDo not use `std::move`. The output must come from the two overloads actually\nbeing selected -- you cannot hard-code which line gets which formula.",
+    "starter_code": "#include <iostream>\n\n// Write the two overloads of handle here.\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << handle(a) << '\\n';\n    std::cout << handle(a + b) << '\\n';\n    std::cout << handle(100) << '\\n';\n    std::cout << handle(b) << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint handle(int& x)\n{\n    return x + 1;\n}\n\nint handle(int&& x)\n{\n    return x * 2;\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    std::cout << handle(a) << '\\n';\n    std::cout << handle(a + b) << '\\n';\n    std::cout << handle(100) << '\\n';\n    std::cout << handle(b) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Input 5: variable, literal, expression",
+        "label": "Positive a and b",
         "is_sample": true,
-        "stdin": "5",
-        "expected_stdout": "l-value: 5\nr-value: 42\nr-value: 6\n"
+        "stdin": "3 5\n",
+        "expected_stdout": "4\n16\n200\n6\n"
       },
       {
-        "label": "Input 0: zero edge case",
+        "label": "Zero and negative",
         "is_sample": false,
-        "stdin": "0",
-        "expected_stdout": "l-value: 0\nr-value: 42\nr-value: 1\n"
+        "stdin": "0 -4\n",
+        "expected_stdout": "1\n-8\n200\n-3\n"
       },
       {
-        "label": "Negative input",
+        "label": "Both negative",
         "is_sample": false,
-        "stdin": "-7",
-        "expected_stdout": "l-value: -7\nr-value: 42\nr-value: -6\n"
+        "stdin": "-7 -2\n",
+        "expected_stdout": "-6\n-18\n200\n-1\n"
       }
     ]
   },
   {
     "title": "R-value reference lifetime extension",
-    "prompt_md": "## Goal\n\nWrite a program that demonstrates r-value reference lifetime extension by binding the result of a computation to an `int&&` and then using that reference in further calculations.\n\n## Input\n\n- A single line with two space-separated integers `a` and `b` (-10000 <= each <= 10000).\n\n## Output\n\nExactly three lines:\n1. `sum: <value>` where `<value>` is `a + b`, read through the r-value reference.\n2. `doubled: <value>` where `<value>` is the sum multiplied by 2, computed using the r-value reference.\n3. `offset: <value>` where `<value>` is the sum plus 100, computed using the r-value reference.\n\n## Requirements\n\n- Compute `a + b` and bind the result to an r-value reference: `int&& ref = a + b;`\n- Use `ref` (not `a` or `b`) for all three printed calculations.\n- Do not use `std::move`.\n- Do not use any classes or structs.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // TODO: Bind the result of a + b to an r-value reference\n\n    // TODO: Print sum, doubled, and offset using the r-value reference\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int&& ref{a + b};\n\n    std::cout << \"sum: \" << ref << '\\n';\n    std::cout << \"doubled: \" << ref * 2 << '\\n';\n    std::cout << \"offset: \" << ref + 100 << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nBinding a temporary to an r-value reference (`int&&`) extends the temporary's\nlifetime to that of the reference, and -- because the reference is non-const --\nlets you keep modifying that value in place.\n\nBind the result of `a + b` to an `int&&` reference, then mutate the referenced\nvalue through the reference (never touching `a` or `b` again) and report it at\neach step.\n\n## Input\n\n- A single line with two space-separated integers `a` and `b`\n  (-10000 <= each <= 10000).\n\n## Output\n\nThree lines:\n\n1. the value of the bound reference (i.e. `a + b`).\n2. the value after multiplying it by 3 **in place** (through the reference).\n3. the value after subtracting 5 from it **in place** (through the reference).\n\n## Notes\n\nDo not use `std::move`. Do not recompute from `a` and `b` -- each step must read\nand update the same referenced object.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    // Bind a + b to an r-value reference, then modify it in place.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    int&& ref{ a + b };\n    std::cout << ref << '\\n';\n\n    ref *= 3;\n    std::cout << ref << '\\n';\n\n    ref -= 5;\n    std::cout << ref << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Positive values 3 and 7",
+        "label": "Positive values",
         "is_sample": true,
-        "stdin": "3 7",
-        "expected_stdout": "sum: 10\ndoubled: 20\noffset: 110\n"
+        "stdin": "3 7\n",
+        "expected_stdout": "10\n30\n25\n"
       },
       {
-        "label": "Negative values cancel out",
+        "label": "Sum is zero",
         "is_sample": false,
-        "stdin": "-5 5",
-        "expected_stdout": "sum: 0\ndoubled: 0\noffset: 100\n"
+        "stdin": "-5 5\n",
+        "expected_stdout": "0\n0\n-5\n"
       },
       {
-        "label": "Both negative",
+        "label": "Negative sum",
         "is_sample": false,
-        "stdin": "-100 -200",
-        "expected_stdout": "sum: -300\ndoubled: -600\noffset: -200\n"
+        "stdin": "-10 -10\n",
+        "expected_stdout": "-20\n-60\n-65\n"
       }
     ]
   }
