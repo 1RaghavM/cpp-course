@@ -1,8 +1,8 @@
 [
   {
     "title": "Iterator Traversal Printer",
-    "prompt_md": "## Goal\nRead integers into a `std::vector`, then use an explicit iterator loop to print each element and compute the sum.\n\n## Input\n- Line 1: a single integer `N` (1 <= N <= 20), the number of elements.\n- Line 2: exactly `N` space-separated integers.\n\n## Output\n- Line 1: `Elements:` followed by a space, then all elements separated by spaces, with a trailing newline (no trailing space).\n- Line 2: `Sum: S` where S is the sum of all elements.\n\n## Requirements\n1. Declare a `std::vector<int>` and read `N` values into it using `push_back`.\n2. Use an explicit iterator loop (`auto it = vec.begin(); it != vec.end(); ++it`) to traverse the vector.\n3. Inside the loop, dereference the iterator with `*it` to access each element.\n4. Print elements separated by single spaces with no trailing space. Hint: print a space before every element except the first.\n5. Accumulate the sum using `*it` during the same loop.\n6. Include `<vector>` and `<iostream>`.",
-    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> vec{};\n\n    // TODO: Read n integers into vec using push_back\n\n    int sum{ 0 };\n\n    // TODO: Use an iterator loop (begin/end) to:\n    //   - Print all elements on one line separated by spaces (no trailing space)\n    //   - Accumulate the sum\n\n    std::cout << '\\n';\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nRead integers into a `std::vector<int>`, then traverse the vector with an iterator-based loop (`begin()`/`end()`) to print every element and compute their sum. Do not use index-based access (`vec[i]`) to walk the vector.\n\n## Input\n- Line 1: a single integer `N` (1 <= N <= 20), the number of elements.\n- Line 2: exactly `N` space-separated integers (may be negative).\n\n## Output\n- Line 1: `Elements:` followed by each element, with a single space before every element (so the line reads `Elements: a b c ...` with no trailing space).\n- Line 2: `Sum: S` where `S` is the sum of all elements.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Read n integers into a std::vector<int>, then use an iterator loop\n    // to print the elements and report their sum (see the output format).\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<int> vec{};\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        vec.push_back(val);\n    }\n\n    int sum{ 0 };\n    std::cout << \"Elements:\";\n    for (auto it{ vec.begin() }; it != vec.end(); ++it)\n    {\n        std::cout << ' ' << *it;\n        sum += *it;\n    }\n    std::cout << '\\n';\n    std::cout << \"Sum: \" << sum << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -23,14 +23,20 @@
         "is_sample": false,
         "stdin": "4\n-3 7 -1 5\n",
         "expected_stdout": "Elements: -3 7 -1 5\nSum: 8\n"
+      },
+      {
+        "label": "Hidden -- includes zeros, sums to zero",
+        "is_sample": false,
+        "stdin": "3\n-6 0 6\n",
+        "expected_stdout": "Elements: -6 0 6\nSum: 0\n"
       }
     ]
   },
   {
     "title": "Iterator-Based Maximum Finder",
-    "prompt_md": "## Goal\nRead integers into a `std::array`, then use iterators to find and report the maximum value and its position.\n\n## Input\n- A single line containing exactly 6 space-separated integers.\n\n## Output\n- Line 1: `Max: M` where M is the largest element in the array.\n- Line 2: `Position: P` where P is the zero-based index of the first occurrence of the maximum.\n\n## Requirements\n1. Declare a `std::array<int, 6>` and read all 6 values from stdin.\n2. Initialize a `max` variable by dereferencing `arr.begin()`.\n3. Initialize a `position` variable to `0`.\n4. Use an explicit iterator loop starting from `arr.begin()` to traverse the array.\n5. Inside the loop, compare `*it` against `max`. If it is strictly greater, update `max` and compute the position as the distance from `arr.begin()` to `it` (subtract iterators: `it - arr.begin()`).\n6. Do not use any standard library algorithm. Do not use index-based access to find the maximum.\n7. Include `<array>`, `<iostream>`, and `<cstddef>`.",
-    "starter_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n        std::cin >> *it;\n\n    int max{ *arr.begin() };\n    std::size_t position{ 0 };\n\n    // TODO: Use an iterator loop to find the maximum value and its position\n    //   - Compare *it > max to find a new maximum\n    //   - Compute position as: static_cast<std::size_t>(it - arr.begin())\n\n    std::cout << \"Max: \" << max << '\\n';\n    std::cout << \"Position: \" << position << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <array>\n#include <cstddef>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n        std::cin >> *it;\n\n    int max{ *arr.begin() };\n    std::size_t position{ 0 };\n\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n    {\n        if (*it > max)\n        {\n            max = *it;\n            position = static_cast<std::size_t>(it - arr.begin());\n        }\n    }\n\n    std::cout << \"Max: \" << max << '\\n';\n    std::cout << \"Position: \" << position << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nRead 6 integers into a `std::array<int, 6>`, then use iterators to find the maximum value and the zero-based index of its **first** occurrence. Do not use index-based access or any standard library algorithm to find the maximum -- walk the array with iterators.\n\n## Input\n- A single line containing exactly 6 space-separated integers (may be negative).\n\n## Output\n- Line 1: `Max: M` where `M` is the largest element.\n- Line 2: `Position: P` where `P` is the zero-based index of the first occurrence of `M`.\n\n## Hint\nThe distance between two iterators can be obtained by subtracting them: `it - arr.begin()`.",
+    "starter_code": "#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n\n    // Read 6 integers into arr, then use iterators to find the maximum\n    // value and the index of its first occurrence.\n\n    return 0;\n}\n",
+    "solution_code": "#include <array>\n#include <iostream>\n\nint main()\n{\n    std::array<int, 6> arr{};\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n        std::cin >> *it;\n\n    auto maxIt{ arr.begin() };\n    for (auto it{ arr.begin() }; it != arr.end(); ++it)\n    {\n        if (*it > *maxIt)\n            maxIt = it;\n    }\n\n    std::cout << \"Max: \" << *maxIt << '\\n';\n    std::cout << \"Position: \" << (maxIt - arr.begin()) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
@@ -50,6 +56,12 @@
         "is_sample": false,
         "stdin": "5 8 8 2 8 1\n",
         "expected_stdout": "Max: 8\nPosition: 1\n"
+      },
+      {
+        "label": "Hidden -- all negative values",
+        "is_sample": false,
+        "stdin": "-5 -1 -9 -1 -3 -2\n",
+        "expected_stdout": "Max: -1\nPosition: 1\n"
       }
     ]
   }
