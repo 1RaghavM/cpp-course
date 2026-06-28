@@ -1,35 +1,41 @@
 [
   {
     "title": "Identify valid overloads",
-    "prompt_md": "## Goal\n\nWrite a program that reads the name of a C++ operator and prints whether it can be overloaded.\n\n## Input\n\n- A single line containing one of these operator tokens: `+`, `-`, `*`, `::`, `sizeof`, `==`, `?:`\n\n## Output\n\n- If the operator **can** be overloaded, print: `<op> can be overloaded`\n- If the operator **cannot** be overloaded, print: `<op> cannot be overloaded`\n\nwhere `<op>` is the exact input token.\n\n## Requirements\n\n- The set of non-overloadable operators for this exercise is: `::`, `sizeof`, `?:`\n- All other tokens in the input set are considered overloadable.\n- Use `std::string` to read the input token.\n- Print exactly one line, ending with `'\\n'`.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string op{};\n    std::cin >> op;\n\n    // TODO: Check if op is one of the non-overloadable operators\n    // and print the appropriate message\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string op{};\n    std::cin >> op;\n\n    if (op == \"::\" || op == \"sizeof\" || op == \"?:\")\n        std::cout << op << \" cannot be overloaded\" << '\\n';\n    else\n        std::cout << op << \" can be overloaded\" << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nLesson 21.1 teaches that operators are just functions and that you can overload one whenever at least one operand is a user-defined type. Put that into practice: build a `Cents` class and give it overloaded `+` and `-` operators implemented as **friend functions**.\n\n## Input\n\n- One line with two integers `a` and `b`, each a number of cents (-100000 <= each <= 100000).\n\n## Output\n\n- Line 1: the number of cents in `Cents{a} + Cents{b}`.\n- Line 2: the number of cents in `Cents{a} - Cents{b}`.\n\nThe two operators must be friend functions (not members), each taking both operands by `const` reference and returning a new `Cents` by value.",
+    "starter_code": "#include <iostream>\n\nclass Cents\n{\n    int m_cents{};\n\npublic:\n    Cents(int cents) : m_cents{ cents } {}\n    int getCents() const { return m_cents; }\n};\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    Cents first{ a };\n    Cents second{ b };\n\n    std::cout << (first + second).getCents() << '\\n';\n    std::cout << (first - second).getCents() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Cents\n{\n    int m_cents{};\n\npublic:\n    Cents(int cents) : m_cents{ cents } {}\n    int getCents() const { return m_cents; }\n\n    friend Cents operator+(const Cents& a, const Cents& b);\n    friend Cents operator-(const Cents& a, const Cents& b);\n};\n\nCents operator+(const Cents& a, const Cents& b)\n{\n    return Cents{ a.m_cents + b.m_cents };\n}\n\nCents operator-(const Cents& a, const Cents& b)\n{\n    return Cents{ a.m_cents - b.m_cents };\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    std::cin >> a >> b;\n\n    Cents first{ a };\n    Cents second{ b };\n\n    std::cout << (first + second).getCents() << '\\n';\n    std::cout << (first - second).getCents() << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Overloadable operator +",
+        "label": "Basic sum and difference",
         "is_sample": true,
-        "stdin": "+",
-        "expected_stdout": "+ can be overloaded\n"
+        "stdin": "5 9",
+        "expected_stdout": "14\n-4\n"
       },
       {
-        "label": "Non-overloadable scope resolution",
+        "label": "Larger values",
         "is_sample": false,
-        "stdin": "::",
-        "expected_stdout": ":: cannot be overloaded\n"
+        "stdin": "100 25",
+        "expected_stdout": "125\n75\n"
       },
       {
-        "label": "Non-overloadable ternary",
+        "label": "Negative operands",
         "is_sample": false,
-        "stdin": "?:",
-        "expected_stdout": "?: cannot be overloaded\n"
+        "stdin": "-8 -2",
+        "expected_stdout": "-10\n-6\n"
+      },
+      {
+        "label": "Difference goes negative",
+        "is_sample": false,
+        "stdin": "3 50",
+        "expected_stdout": "53\n-47\n"
       }
     ]
   },
   {
     "title": "Point addition via friend operator+",
-    "prompt_md": "## Goal\n\nImplement a `Point` class that represents a 2D point with integer coordinates, and overload `operator+` as a friend function so two `Point` objects can be added together.\n\n## Input\n\n- Line 1: two space-separated integers `x1` and `y1` (-10000 <= each <= 10000).\n- Line 2: two space-separated integers `x2` and `y2` (-10000 <= each <= 10000).\n\n## Output\n\n- A single line in the format `(<x>, <y>)` where `<x>` and `<y>` are the coordinates of the sum of the two points.\n\n## Requirements\n\n- Define a class `Point` with private members `int m_x{}` and `int m_y{}`.\n- Provide a constructor `Point(int x, int y)` that initializes both members.\n- Provide public getters `getX()` and `getY()` (both `const`).\n- Overload `operator+` as a **friend function** (not a member function) that returns a new `Point` whose coordinates are the component-wise sum.\n- In `main`, read two points, add them, and print the result in the required format.",
-    "starter_code": "#include <iostream>\n\nclass Point\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Point(int x, int y) : m_x{x}, m_y{y} {}\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n\n    // TODO: Declare operator+ as a friend function\n};\n\n// TODO: Define operator+ for Point\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    Point p1{x1, y1};\n    Point p2{x2, y2};\n\n    // TODO: Add p1 and p2 using operator+, print result as (x, y)\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nImplement a `Point` class for 2D integer points and overload `operator+` as a **friend function** so two points can be added with `p1 + p2`.\n\n## Input\n\n- Line 1: two space-separated integers `x1` and `y1` (-10000 <= each <= 10000).\n- Line 2: two space-separated integers `x2` and `y2` (-10000 <= each <= 10000).\n\n## Output\n\n- A single line `(<x>, <y>)` giving the component-wise sum of the two points.\n\nThe `operator+` must be a friend (not a member), take both operands by `const` reference, and return a new `Point` by value.",
+    "starter_code": "#include <iostream>\n\nclass Point\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Point(int x, int y) : m_x{x}, m_y{y} {}\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n};\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    Point p1{x1, y1};\n    Point p2{x2, y2};\n\n    Point sum{p1 + p2};\n    std::cout << '(' << sum.getX() << \", \" << sum.getY() << ')' << '\\n';\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nclass Point\n{\n    int m_x{};\n    int m_y{};\n\npublic:\n    Point(int x, int y) : m_x{x}, m_y{y} {}\n\n    int getX() const { return m_x; }\n    int getY() const { return m_y; }\n\n    friend Point operator+(const Point& a, const Point& b);\n};\n\nPoint operator+(const Point& a, const Point& b)\n{\n    return Point{a.m_x + b.m_x, a.m_y + b.m_y};\n}\n\nint main()\n{\n    int x1{}, y1{}, x2{}, y2{};\n    std::cin >> x1 >> y1 >> x2 >> y2;\n\n    Point p1{x1, y1};\n    Point p2{x2, y2};\n\n    Point sum{p1 + p2};\n    std::cout << '(' << sum.getX() << \", \" << sum.getY() << ')' << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
