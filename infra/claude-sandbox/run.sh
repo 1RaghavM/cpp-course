@@ -3,8 +3,11 @@ set -euo pipefail
 
 # Run Claude Code in a sandbox: non-root, repo mounted, C++ toolchain available.
 # Only this repo is mounted — the rest of your laptop is invisible to the agent.
+# `claude` inside the container always runs --dangerously-skip-permissions (baked
+# into the image), so you never have to pass that flag yourself.
 #
-#   ./run.sh          # interactive session — you drive it (tell it to follow TASK.md)
+#   ./run.sh          # interactive claude session
+#   ./run.sh shell    # bash into the container, then run `claude` yourself
 #   ./run.sh auto     # headless — runs TASK.md to completion unattended
 #
 # Auth: uses ANTHROPIC_API_KEY (from your shell, or pulled from the repo .env).
@@ -25,13 +28,12 @@ esac
 args=(--rm -v "$REPO:/work")
 [ -n "${ANTHROPIC_API_KEY:-}" ] && args+=(-e "ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY")
 
-if [ "${1:-}" = "auto" ]; then
-  exec docker run -i "${args[@]}" "$IMAGE" \
-    claude --dangerously-skip-permissions -p "Follow infra/claude-sandbox/TASK.md to completion."
-else
-  exec docker run -it "${args[@]}" "$IMAGE" \
-    claude --dangerously-skip-permissions
-fi
+case "${1:-}" in
+  shell) exec docker run -it "${args[@]}" "$IMAGE" bash ;;
+  auto)  exec docker run -i  "${args[@]}" "$IMAGE" \
+           claude -p "Follow infra/claude-sandbox/TASK.md to completion." ;;
+  *)     exec docker run -it "${args[@]}" "$IMAGE" claude ;;
+esac
 
 # ponytail: whole repo is mounted (incl. .env secrets) so the agent has git +
 # CLAUDE.md context. To narrow exposure, mount only scripts/regenerated and
