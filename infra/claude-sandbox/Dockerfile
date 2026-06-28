@@ -13,6 +13,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
 
+# Make --dangerously-skip-permissions the default for `claude` in the sandbox.
+# Real binary is /usr/local/bin/claude; this wrapper shadows it via an earlier
+# PATH entry, so plain `claude` (interactive or scripted) always skips prompts.
+RUN printf '#!/usr/bin/env bash\nexec /usr/local/bin/claude --dangerously-skip-permissions "$@"\n' \
+      > /usr/local/sbin/claude \
+    && chmod +x /usr/local/sbin/claude
+ENV PATH="/usr/local/sbin:${PATH}"
+
 USER node
 WORKDIR /work
 CMD ["bash"]
