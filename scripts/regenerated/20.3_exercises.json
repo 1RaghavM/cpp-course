@@ -3,7 +3,7 @@
     "title": "Sum of Digits",
     "difficulty": "practice",
     "prompt_md": "## Goal\n\nCompute the sum of the decimal digits of a non-negative integer **using recursion** -- no loops anywhere in your digit logic. Decide for yourself what stops the recursion and how each call shrinks the problem.\n\n## Input\n\n- A single non-negative integer `n` (0 <= n <= 1000000000).\n\n## Output\n\n- The sum of the digits of `n`, on one line.",
-    "starter_code": "#include <iostream>\n\nint sumDigits(int n)\n{\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cout << sumDigits(n) << '\\n';\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nint sumDigits(int n)\n{\n    // TODO: Implement this recursively (no loops).\n    // - Base case: when is `n` small enough that the digit sum is just `n`?\n    // - Recursive case: peel off the LAST digit and add it to the digit sum of\n    //   what remains. Which operator extracts the last digit, and which drops it?\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cout << sumDigits(n) << '\\n';\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint sumDigits(int n)\n{\n    if (n < 10)\n        return n;\n    return (n % 10) + sumDigits(n / 10);\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n    std::cout << sumDigits(n) << '\\n';\n    return 0;\n}\n",
     "test_cases": [
       {
@@ -42,7 +42,7 @@
     "title": "Recursive Power",
     "difficulty": "practice",
     "prompt_md": "## Goal\n\nCompute `base` raised to the power `exp` **using recursion** -- no loops. You choose how to break the problem down; just make sure every path reaches a stopping point and the exponent moves toward it on each call.\n\n## Input\n\n- Two integers on one line: `base` (-10 <= base <= 10) and `exp` (0 <= exp <= 30).\n\n## Output\n\n- The value of `base` raised to `exp`, on one line. (The result fits in a 64-bit integer.)",
-    "starter_code": "#include <iostream>\n\nlong long power(int base, int exp)\n{\n    return 0;\n}\n\nint main()\n{\n    int base{};\n    int exp{};\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << '\\n';\n    return 0;\n}\n",
+    "starter_code": "#include <iostream>\n\nlong long power(int base, int exp)\n{\n    // TODO: Implement this recursively (no loops).\n    // - Base case: which exponent makes the result 1 regardless of base?\n    // - Recursive case: express base^exp using `base` and a power with a SMALLER\n    //   exponent that moves toward the base case.\n    return 0;\n}\n\nint main()\n{\n    int base{};\n    int exp{};\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << '\\n';\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nlong long power(int base, int exp)\n{\n    if (exp == 0)\n        return 1;\n    return base * power(base, exp - 1);\n}\n\nint main()\n{\n    int base{};\n    int exp{};\n    std::cin >> base >> exp;\n    std::cout << power(base, exp) << '\\n';\n    return 0;\n}\n",
     "test_cases": [
       {
