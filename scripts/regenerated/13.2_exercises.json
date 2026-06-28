@@ -1,61 +1,61 @@
 [
   {
     "title": "Traffic Light State Machine",
-    "prompt_md": "## Goal\nModel a traffic light using an unscoped enumeration and report both the current light and the next light in the cycle.\n\nThe cycle runs: red -> green -> yellow -> red.\n\n## Input\n- A single integer: `0` = red, `1` = yellow, `2` = green.\n\n## Output\nTwo lines:\n- Line 1: the name of the current light (`red`, `yellow`, or `green`)\n- Line 2: the name of the next light in the cycle\n\n## Constraints\n- Represent the lights with an unscoped `enum` whose enumerators correspond to the input codes.\n- The input is always 0, 1, or 2.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nenum Light\n{\n    red,    // 0\n    yellow, // 1\n    green   // 2\n};\n\nstd::string lightName(Light l)\n{\n    switch (l)\n    {\n        case red:    return \"red\";\n        case yellow: return \"yellow\";\n        case green:  return \"green\";\n        default:     return \"unknown\";\n    }\n}\n\nLight nextLight(Light l)\n{\n    switch (l)\n    {\n        case red:    return green;\n        case green:  return yellow;\n        case yellow: return red;\n        default:     return l;\n    }\n}\n\nint main()\n{\n    int code{};\n    std::cin >> code;\n\n    Light current{ static_cast<Light>(code) };\n    std::cout << lightName(current) << '\\n';\n    std::cout << lightName(nextLight(current)) << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nModel a traffic light using an unscoped enumeration and report both the current light and the next light in the cycle.\n\nThe cycle runs: red -> green -> yellow -> red.\n\n## Input\n- A single word naming the current light: `red`, `yellow`, or `green`.\n\n## Output\nTwo lines:\n- Line 1: the name of the current light (`red`, `yellow`, or `green`)\n- Line 2: the name of the next light in the cycle\n\n## Constraints\n- Represent the lights with an unscoped `enum`.\n- Map the input word to an enumerator and compute the next light by working with the enumerators themselves (e.g. a `switch`).\n- The input is always one of `red`, `yellow`, or `green`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nenum Light\n{\n    red,    // 0\n    yellow, // 1\n    green   // 2\n};\n\nLight parseLight(const std::string& name)\n{\n    if (name == \"red\")\n        return red;\n    if (name == \"yellow\")\n        return yellow;\n    return green;\n}\n\nstd::string lightName(Light l)\n{\n    switch (l)\n    {\n        case red:    return \"red\";\n        case yellow: return \"yellow\";\n        case green:  return \"green\";\n        default:     return \"unknown\";\n    }\n}\n\nLight nextLight(Light l)\n{\n    switch (l)\n    {\n        case red:    return green;\n        case green:  return yellow;\n        case yellow: return red;\n        default:     return l;\n    }\n}\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Light current{ parseLight(name) };\n    std::cout << lightName(current) << '\\n';\n    std::cout << lightName(nextLight(current)) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Sample -- red goes to green",
         "is_sample": true,
-        "stdin": "0\n",
+        "stdin": "red\n",
         "expected_stdout": "red\ngreen\n"
       },
       {
         "label": "Hidden -- green goes to yellow",
         "is_sample": false,
-        "stdin": "2\n",
+        "stdin": "green\n",
         "expected_stdout": "green\nyellow\n"
       },
       {
         "label": "Hidden -- yellow goes to red",
         "is_sample": false,
-        "stdin": "1\n",
+        "stdin": "yellow\n",
         "expected_stdout": "yellow\nred\n"
       }
     ]
   },
   {
-    "title": "Day of Week Offset Calculator",
-    "prompt_md": "## Goal\nRepresent the days of the week with an unscoped enumeration, then compute which day falls a given number of days after a starting day. Use the fact that enumerators implicitly convert to `int` to do the arithmetic.\n\n## Input\n- Line 1: an integer for the starting day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)\n- Line 2: a non-negative integer offset (0 to 1000), the number of days to advance\n\n## Output\nTwo lines:\n- Line 1: the name of the starting day (e.g. `Sunday`, `Monday`)\n- Line 2: the name of the day reached after advancing by the offset (the week wraps around)\n\n## Constraints\n- Use an unscoped `enum` for the days. Input day codes are always 0-6.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int startDay{};\n    int offset{};\n    std::cin >> startDay >> offset;\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nenum Day\n{\n    Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday\n};\n\nstd::string dayName(Day d)\n{\n    switch (d)\n    {\n        case Sunday:    return \"Sunday\";\n        case Monday:    return \"Monday\";\n        case Tuesday:   return \"Tuesday\";\n        case Wednesday: return \"Wednesday\";\n        case Thursday:  return \"Thursday\";\n        case Friday:    return \"Friday\";\n        case Saturday:  return \"Saturday\";\n        default:        return \"Unknown\";\n    }\n}\n\nint main()\n{\n    int startDay{};\n    int offset{};\n    std::cin >> startDay >> offset;\n\n    Day start{ static_cast<Day>(startDay) };\n    Day future{ static_cast<Day>((start + offset) % 7) };\n\n    std::cout << dayName(start) << '\\n';\n    std::cout << dayName(future) << '\\n';\n\n    return 0;\n}\n",
+    "title": "Days Until Target Weekday",
+    "prompt_md": "## Goal\nRepresent the days of the week with an unscoped enumeration, then compute how many days you must advance forward from a starting day to reach a target day (wrapping around the end of the week). Use the fact that enumerators implicitly convert to `int` to do the arithmetic.\n\n## Input\n- Line 1: the starting day name (`Sunday`, `Monday`, ..., `Saturday`)\n- Line 2: the target day name (same set of names)\n\n## Output\nOne line: a single integer in the range 0-6 -- the number of days you advance forward from the start day to reach the target day. If both days are the same, the answer is `0`.\n\n## Constraints\n- Use an unscoped `enum` for the days, ordered Sunday (first) through Saturday.\n- Map each input word to an enumerator, then rely on the enumerators' implicit conversion to `int` for the subtraction. Do not cast an integer back into the enum type.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string startName{};\n    std::string targetName{};\n    std::cin >> startName >> targetName;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nenum Day\n{\n    Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday\n};\n\nDay parseDay(const std::string& name)\n{\n    if (name == \"Sunday\")    return Sunday;\n    if (name == \"Monday\")    return Monday;\n    if (name == \"Tuesday\")   return Tuesday;\n    if (name == \"Wednesday\") return Wednesday;\n    if (name == \"Thursday\")  return Thursday;\n    if (name == \"Friday\")    return Friday;\n    return Saturday;\n}\n\nint main()\n{\n    std::string startName{};\n    std::string targetName{};\n    std::cin >> startName >> targetName;\n\n    Day start{ parseDay(startName) };\n    Day target{ parseDay(targetName) };\n\n    int diff{ ((target - start) % 7 + 7) % 7 };\n\n    std::cout << diff << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample -- Monday plus 3 is Thursday",
+        "label": "Sample -- Monday to Thursday is 3 days",
         "is_sample": true,
-        "stdin": "1\n3\n",
-        "expected_stdout": "Monday\nThursday\n"
+        "stdin": "Monday\nThursday\n",
+        "expected_stdout": "3\n"
       },
       {
-        "label": "Hidden -- Saturday plus 1 wraps to Sunday",
+        "label": "Hidden -- Saturday to Sunday wraps to 1 day",
         "is_sample": false,
-        "stdin": "6\n1\n",
-        "expected_stdout": "Saturday\nSunday\n"
+        "stdin": "Saturday\nSunday\n",
+        "expected_stdout": "1\n"
       },
       {
-        "label": "Hidden -- Wednesday plus 1000 days",
+        "label": "Hidden -- same day is 0 days",
         "is_sample": false,
-        "stdin": "3\n1000\n",
-        "expected_stdout": "Wednesday\nTuesday\n"
+        "stdin": "Wednesday\nWednesday\n",
+        "expected_stdout": "0\n"
       },
       {
-        "label": "Hidden -- Friday plus 0 stays Friday",
+        "label": "Hidden -- Sunday to Saturday is 6 days",
         "is_sample": false,
-        "stdin": "5\n0\n",
-        "expected_stdout": "Friday\nFriday\n"
+        "stdin": "Sunday\nSaturday\n",
+        "expected_stdout": "6\n"
       }
     ]
   }

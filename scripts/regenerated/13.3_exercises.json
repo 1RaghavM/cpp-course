@@ -13,16 +13,64 @@
         "expected_stdout": "Quarter 1\n"
       },
       {
+        "label": "Hidden -- February is quarter 1",
+        "is_sample": false,
+        "stdin": "1\n",
+        "expected_stdout": "Quarter 1\n"
+      },
+      {
+        "label": "Hidden -- March is quarter 1",
+        "is_sample": false,
+        "stdin": "2\n",
+        "expected_stdout": "Quarter 1\n"
+      },
+      {
         "label": "Hidden -- April is quarter 2",
         "is_sample": false,
         "stdin": "3\n",
         "expected_stdout": "Quarter 2\n"
       },
       {
+        "label": "Hidden -- May is quarter 2",
+        "is_sample": false,
+        "stdin": "4\n",
+        "expected_stdout": "Quarter 2\n"
+      },
+      {
+        "label": "Hidden -- June is quarter 2",
+        "is_sample": false,
+        "stdin": "5\n",
+        "expected_stdout": "Quarter 2\n"
+      },
+      {
+        "label": "Hidden -- July is quarter 3",
+        "is_sample": false,
+        "stdin": "6\n",
+        "expected_stdout": "Quarter 3\n"
+      },
+      {
+        "label": "Hidden -- August is quarter 3",
+        "is_sample": false,
+        "stdin": "7\n",
+        "expected_stdout": "Quarter 3\n"
+      },
+      {
         "label": "Hidden -- September is quarter 3",
         "is_sample": false,
         "stdin": "8\n",
         "expected_stdout": "Quarter 3\n"
+      },
+      {
+        "label": "Hidden -- October is quarter 4",
+        "is_sample": false,
+        "stdin": "9\n",
+        "expected_stdout": "Quarter 4\n"
+      },
+      {
+        "label": "Hidden -- November is quarter 4",
+        "is_sample": false,
+        "stdin": "10\n",
+        "expected_stdout": "Quarter 4\n"
       },
       {
         "label": "Hidden -- December is quarter 4",
