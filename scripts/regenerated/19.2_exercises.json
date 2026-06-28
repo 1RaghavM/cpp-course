@@ -1,8 +1,8 @@
 [
   {
     "title": "Dynamic Array Reversal",
-    "prompt_md": "## Goal\n\nDynamically allocate an array of integers, read values into it, reverse the array in place, and print the result.\n\n## Input\n\n- Line 1: a single integer `n` (1 <= n <= 100), the number of elements.\n- Line 2: `n` space-separated integers.\n\n## Output\n\n- A single line containing the reversed elements, each separated by a space, with a trailing space after the last element.\n\n## Requirements\n\n- Allocate the array using `new int[n]{}`.\n- Reverse the array in place by swapping elements from the outside in (use `std::swap` from `<utility>`).\n- Print the reversed array.\n- Free the memory using `delete[]` before the program ends.\n- Do not use `std::vector`, `std::array`, or any standard library algorithm for reversing.",
-    "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int* arr{ new int[n]{} };\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Reverse the array in place\n    // Use two indices (front and back) moving toward each other\n    // Swap arr[front] with arr[back] using std::swap\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << arr[i] << ' ';\n\n    delete[] arr;\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nThe number of values is not known until the program runs, so you must size the storage at runtime. Allocate a dynamic array, read the values into it, reverse their order **in place**, and print them.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the count of elements.\n- Line 2: `n` space-separated integers.\n\n## Output\n\n- One line: the elements in reversed order, each followed by a single space (including a trailing space after the last element).\n\n## Constraints\n\n- Use a runtime-sized dynamic array (`new[]` / `delete[]`); free it before exiting. Reverse the existing array in place rather than building a new one. No `std::vector`, `std::array`, or library reverse/sort.",
+    "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Allocate a dynamic array of n ints, read them in, reverse it in place,\n    // print the result, then free the array.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int* arr{ new int[n]{} };\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    for (int front{ 0 }, back{ n - 1 }; front < back; ++front, --back)\n        std::swap(arr[front], arr[back]);\n\n    for (int i{ 0 }; i < n; ++i)\n        std::cout << arr[i] << ' ';\n\n    delete[] arr;\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -23,13 +23,19 @@
         "is_sample": false,
         "stdin": "6\n-3 7 0 15 -8 2",
         "expected_stdout": "2 -8 15 0 7 -3 "
+      },
+      {
+        "label": "Longer array",
+        "is_sample": false,
+        "stdin": "9\n1 2 3 4 5 6 7 8 9",
+        "expected_stdout": "9 8 7 6 5 4 3 2 1 "
       }
     ]
   },
   {
     "title": "Merge Two Dynamic Arrays",
-    "prompt_md": "## Goal\n\nRead two dynamically allocated arrays of sorted integers, merge them into a third dynamically allocated array in sorted order, and print the result.\n\n## Input\n\n- Line 1: an integer `a` (1 <= a <= 50), the size of the first array.\n- Line 2: `a` space-separated integers in non-decreasing order.\n- Line 3: an integer `b` (1 <= b <= 50), the size of the second array.\n- Line 4: `b` space-separated integers in non-decreasing order.\n\n## Output\n\n- A single line containing `a + b` integers in non-decreasing order, each separated by a space, with a trailing space after the last element.\n\n## Requirements\n\n- Allocate all three arrays using `new int[size]{}`.\n- Use two index variables to walk through both input arrays simultaneously, always picking the smaller current element for the merged array.\n- After one input array is exhausted, copy the remaining elements from the other.\n- Print the merged array, then free all three arrays with `delete[]`.\n- Do not use `std::vector`, `std::array`, or any standard library algorithm for merging or sorting.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    std::cin >> a;\n    int* arr1{ new int[a]{} };\n    for (int i{ 0 }; i < a; ++i)\n        std::cin >> arr1[i];\n\n    int b{};\n    std::cin >> b;\n    int* arr2{ new int[b]{} };\n    for (int i{ 0 }; i < b; ++i)\n        std::cin >> arr2[i];\n\n    int* merged{ new int[a + b]{} };\n\n    // TODO: Merge arr1 and arr2 into merged in sorted order\n    // Use index i for arr1, j for arr2, k for merged\n    // Compare arr1[i] and arr2[j], copy the smaller one to merged[k]\n    // After the loop, copy any remaining elements from whichever array isn't exhausted\n\n    for (int k{ 0 }; k < a + b; ++k)\n        std::cout << merged[k] << ' ';\n\n    delete[] arr1;\n    delete[] arr2;\n    delete[] merged;\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nYou are given two already-sorted sequences whose sizes are only known at runtime. Combine them into a single sorted sequence held in a third dynamic array, then print it. The combined array must end up in non-decreasing order without ever calling a sort routine.\n\n## Input\n\n- Line 1: an integer `a` (1 <= a <= 50), the size of the first array.\n- Line 2: `a` space-separated integers in non-decreasing order.\n- Line 3: an integer `b` (1 <= b <= 50), the size of the second array.\n- Line 4: `b` space-separated integers in non-decreasing order.\n\n## Output\n\n- One line: all `a + b` integers in non-decreasing order, each followed by a single space (including a trailing space after the last element).\n\n## Constraints\n\n- All three arrays are runtime-sized via `new[]`; free each with `delete[]`. Produce the merged order by comparing front elements of the two inputs, not by concatenating and sorting. No `std::vector`, `std::array`, or library merge/sort.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Read two sorted dynamic arrays, merge them into a third dynamic array\n    // in sorted order, print it, then free all three arrays.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    std::cin >> a;\n    int* arr1{ new int[a]{} };\n    for (int i{ 0 }; i < a; ++i)\n        std::cin >> arr1[i];\n\n    int b{};\n    std::cin >> b;\n    int* arr2{ new int[b]{} };\n    for (int i{ 0 }; i < b; ++i)\n        std::cin >> arr2[i];\n\n    int* merged{ new int[a + b]{} };\n\n    int i{ 0 };\n    int j{ 0 };\n    int k{ 0 };\n\n    while (i < a && j < b)\n    {\n        if (arr1[i] <= arr2[j])\n            merged[k++] = arr1[i++];\n        else\n            merged[k++] = arr2[j++];\n    }\n\n    while (i < a)\n        merged[k++] = arr1[i++];\n\n    while (j < b)\n        merged[k++] = arr2[j++];\n\n    for (int m{ 0 }; m < a + b; ++m)\n        std::cout << merged[m] << ' ';\n\n    delete[] arr1;\n    delete[] arr2;\n    delete[] merged;\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -50,6 +56,12 @@
         "is_sample": false,
         "stdin": "4\n1 3 3 7\n3\n2 3 5",
         "expected_stdout": "1 2 3 3 3 5 7 "
+      },
+      {
+        "label": "All of one array precedes the other",
+        "is_sample": false,
+        "stdin": "2\n-5 -1\n3\n0 4 100",
+        "expected_stdout": "-5 -1 0 4 100 "
       }
     ]
   }
