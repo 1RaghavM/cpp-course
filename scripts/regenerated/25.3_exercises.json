@@ -34,34 +34,34 @@
   },
   {
     "title": "Covariant return types with final",
-    "prompt_md": "## What to build\n\nA *covariant return type* lets a derived override of a virtual function return a pointer to its own type instead of the base type. Build a `clone()` family that uses this.\n\nCreate a base class `Shape` with `virtual Shape* clone() const` (returns a copy of itself) and `virtual std::string describe() const` (returns `\"Shape\"`). Derive `Circle` (stores a `double` radius) and `Square` (stores a `double` side). Each derived class overrides `clone()` with a *covariant* return type -- `Circle*` and `Square*` respectively -- and overrides `describe()` to return `\"Circle r=<radius>\"` / `\"Square s=<side>\"` with the value formatted to exactly one decimal place. Mark `Circle::clone()` as `final` so no further class may override it.\n\nRead one shape, create it through a base `Shape*`, print its `describe()`, then print the `describe()` of a clone produced by `clone()` -- the two lines must match.\n\n## Input\n\n- Line 1: `circle` or `square`.\n- Line 2: a number -- the radius (circle) or side length (square).\n\n## Output\n\nTwo identical lines: the original's `describe()` then the clone's `describe()`.\n```\nCircle r=3.5\nCircle r=3.5\n```",
-    "starter_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\n// Define Shape, Circle, and Square with clone() and describe() here.\n\nint main()\n{\n    std::string type{};\n    double value{};\n    std::cin >> type >> value;\n\n    // Create the shape, print its describe(), clone it, and print the clone's describe().\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual Shape* clone() const { return new Shape{ *this }; }\n    virtual std::string describe() const { return \"Shape\"; }\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius)\n        : m_radius{ radius }\n    {\n    }\n\n    Circle* clone() const override final { return new Circle{ *this }; }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Circle r=\" << std::fixed << std::setprecision(1) << m_radius;\n        return oss.str();\n    }\n};\n\nclass Square : public Shape\n{\n    double m_side{};\n\npublic:\n    Square(double side)\n        : m_side{ side }\n    {\n    }\n\n    Square* clone() const override { return new Square{ *this }; }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Square s=\" << std::fixed << std::setprecision(1) << m_side;\n        return oss.str();\n    }\n};\n\nint main()\n{\n    std::string type{};\n    double value{};\n    std::cin >> type >> value;\n\n    Shape* original{ nullptr };\n    if (type == \"circle\")\n        original = new Circle{ value };\n    else\n        original = new Square{ value };\n\n    std::cout << original->describe() << '\\n';\n\n    Shape* copy{ original->clone() };\n    std::cout << copy->describe() << '\\n';\n\n    delete copy;\n    delete original;\n\n    return 0;\n}\n",
+    "prompt_md": "## What to build\n\nA *covariant return type* lets a derived override of a virtual function return a pointer to its own type instead of the base type. Build a `clone()` family that uses this, and then **prove the clone is a genuinely independent object** -- not just an alias of the original.\n\nCreate a base class `Shape` with `virtual Shape* clone() const` (returns a copy of itself), `virtual std::string describe() const` (returns `\"Shape\"`), and `virtual void scale(double factor)` (does nothing in the base). Derive `Circle` (stores a `double` radius) and `Square` (stores a `double` side). Each derived class:\n- overrides `clone()` with a *covariant* return type -- `Circle*` and `Square*` respectively,\n- overrides `describe()` to return `\"Circle r=<radius>\"` / `\"Square s=<side>\"` with the value formatted to exactly one decimal place,\n- overrides `scale(factor)` to multiply its stored dimension by `factor`.\n\nMark `Circle::clone()` as `final` so no further class may override it.\n\nRead one shape and a scale factor, create the shape through a base `Shape*`, and `clone()` it. Then **mutate the original** by calling `scale(factor)` on it, and print the clone first, then the original. If `clone()` produced a real independent copy, the clone keeps the *pre-scale* dimension while the original shows the scaled one -- the two lines differ. A program that merely re-printed the same object (no real clone) would show the scaled value on both lines.\n\n## Input\n\n- Line 1: `circle` or `square`.\n- Line 2: a number -- the radius (circle) or side length (square).\n- Line 3: a number -- the scale factor applied to the original after cloning.\n\n## Output\n\nTwo lines: the clone's `describe()` (unchanged), then the original's `describe()` (scaled).\n```\nclone: Circle r=3.5\noriginal: Circle r=7.0\n```",
+    "starter_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\n// Define Shape, Circle, and Square with clone(), describe(), and scale() here.\n\nint main()\n{\n    std::string type{};\n    double value{};\n    double factor{};\n    std::cin >> type >> value >> factor;\n\n    // Create the shape, clone it, scale the ORIGINAL by factor, then print the\n    // clone's describe() and the original's describe().\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual Shape* clone() const { return new Shape{ *this }; }\n    virtual std::string describe() const { return \"Shape\"; }\n    virtual void scale(double) {}\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius)\n        : m_radius{ radius }\n    {\n    }\n\n    Circle* clone() const override final { return new Circle{ *this }; }\n\n    void scale(double factor) override { m_radius *= factor; }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Circle r=\" << std::fixed << std::setprecision(1) << m_radius;\n        return oss.str();\n    }\n};\n\nclass Square : public Shape\n{\n    double m_side{};\n\npublic:\n    Square(double side)\n        : m_side{ side }\n    {\n    }\n\n    Square* clone() const override { return new Square{ *this }; }\n\n    void scale(double factor) override { m_side *= factor; }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Square s=\" << std::fixed << std::setprecision(1) << m_side;\n        return oss.str();\n    }\n};\n\nint main()\n{\n    std::string type{};\n    double value{};\n    double factor{};\n    std::cin >> type >> value >> factor;\n\n    Shape* original{ nullptr };\n    if (type == \"circle\")\n        original = new Circle{ value };\n    else\n        original = new Square{ value };\n\n    Shape* copy{ original->clone() };\n\n    original->scale(factor);\n\n    std::cout << \"clone: \" << copy->describe() << '\\n';\n    std::cout << \"original: \" << original->describe() << '\\n';\n\n    delete copy;\n    delete original;\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Clone a circle",
+        "label": "Clone a circle then double the original",
         "is_sample": true,
-        "stdin": "circle 3.5",
-        "expected_stdout": "Circle r=3.5\nCircle r=3.5\n"
+        "stdin": "circle 3.5 2",
+        "expected_stdout": "clone: Circle r=3.5\noriginal: Circle r=7.0\n"
       },
       {
-        "label": "Clone a square",
+        "label": "Clone a square then triple the original",
         "is_sample": false,
-        "stdin": "square 4",
-        "expected_stdout": "Square s=4.0\nSquare s=4.0\n"
+        "stdin": "square 4 3",
+        "expected_stdout": "clone: Square s=4.0\noriginal: Square s=12.0\n"
       },
       {
-        "label": "Clone a circle with integer radius",
+        "label": "Clone a circle then halve the original",
         "is_sample": false,
-        "stdin": "circle 10",
-        "expected_stdout": "Circle r=10.0\nCircle r=10.0\n"
+        "stdin": "circle 10 0.5",
+        "expected_stdout": "clone: Circle r=10.0\noriginal: Circle r=5.0\n"
       },
       {
-        "label": "Clone a fractional square",
+        "label": "Clone a fractional square then double the original",
         "is_sample": false,
-        "stdin": "square 2.5",
-        "expected_stdout": "Square s=2.5\nSquare s=2.5\n"
+        "stdin": "square 2.5 2",
+        "expected_stdout": "clone: Square s=2.5\noriginal: Square s=5.0\n"
       }
     ]
   }

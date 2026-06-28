@@ -34,34 +34,34 @@
   },
   {
     "title": "Constructor responsibility in virtual inheritance",
-    "prompt_md": "## Goal\n\nWhen a class has a virtual base, only the **most-derived class's** initialization of that base takes effect -- the values that intermediate classes try to pass to the virtual base are ignored. Demonstrate this.\n\nBuild a virtual-inheritance diamond: `B` and `C` each virtually inherit from `A`, and `D` inherits from both. `A` stores an `int id`. `B`'s constructor tries to initialize `A` with `bId` and also keeps its own `int tag`; `C`'s constructor tries to initialize `A` with `cId` and keeps its own tag. `D`, the most-derived class, initializes `A` directly with `dId`. Show that the shared `A::id` ends up equal to `dId` (D wins), while each intermediate's own tag is preserved.\n\n## Input\n\n- Line 1: five integers `bId cId dId bTag cTag`.\n\n## Output\n\n```\nA id: <dId>\nB tag: <bTag>\nC tag: <cTag>\n```\nEven though `B` was built with `bId` and `C` with `cId` as the base id, the shared `A::id` reflects `dId`.\n\nExample input `1 2 99 10 20`:\n```\nA id: 99\nB tag: 10\nC tag: 20\n```",
-    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_id{};\n    A(int id) : m_id{id} {}\n};\n\n// Build a virtual-inheritance diamond. B and C each try to initialize A and\n// keep their own tag; D is the most-derived class and initializes A directly.\n\nint main()\n{\n    int bId{}, cId{}, dId{}, bTag{}, cTag{};\n    std::cin >> bId >> cId >> dId >> bTag >> cTag;\n\n    // Build one D and report the shared A id plus each intermediate's tag.\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_id{};\n    A(int id) : m_id{id} {}\n};\n\nclass B : virtual public A\n{\npublic:\n    int m_tag{};\n    B(int aId, int tag) : A{aId}, m_tag{tag} {}\n};\n\nclass C : virtual public A\n{\npublic:\n    int m_tag{};\n    C(int aId, int tag) : A{aId}, m_tag{tag} {}\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int bId, int cId, int dId, int bTag, int cTag)\n        : A{dId}, B{bId, bTag}, C{cId, cTag} {}\n    void show() const\n    {\n        std::cout << \"A id: \" << m_id << '\\n';\n        std::cout << \"B tag: \" << B::m_tag << '\\n';\n        std::cout << \"C tag: \" << C::m_tag << '\\n';\n    }\n};\n\nint main()\n{\n    int bId{}, cId{}, dId{}, bTag{}, cTag{};\n    std::cin >> bId >> cId >> dId >> bTag >> cTag;\n\n    D d{bId, cId, dId, bTag, cTag};\n    d.show();\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWhen a class has a virtual base, only the **most-derived class's** initialization of that base takes effect -- the values that intermediate classes try to pass to the virtual base are *ignored*. You will make this observable: each intermediate class records what it actually *sees* in the shared base at the moment it is constructed.\n\nBuild a virtual-inheritance diamond: `B` and `C` each virtually inherit from `A`, and `D` inherits from both. `A` stores an `int id`. `B`'s constructor lists `A{bId}` in its initializer list (its *attempt* to set the base) and also takes a `tag`; in that same initializer list it computes `observed = id + tag`, capturing the base id it can see. `C` does the same with `cId` and its own tag. `D`, the most-derived class, initializes `A` directly with `dId`.\n\nBecause the single virtual base `A` is constructed **once, by `D`, before `B` and `C` run**, both `B` and `C` see `id == dId` -- *not* the `bId`/`cId` they passed. So each `observed` is `dId + tag`, proving the intermediate base-initializations were ignored. (A naive non-virtual diamond would give two separate `A`s, and `B`/`C` would instead see `bId`/`cId`, producing different numbers.)\n\n## Input\n\n- Line 1: five integers `bId cId dId bTag cTag`.\n\n## Output\n\n```\nA id: <dId>\nB observed: <dId + bTag>\nC observed: <dId + cTag>\n```\n\nExample input `1 2 99 10 20`:\n```\nA id: 99\nB observed: 109\nC observed: 119\n```\nNote `B observed` is `99 + 10`, using `dId` (99), **not** `bId` (1) -- B's own `A{1}` was ignored.",
+    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_id{};\n    A(int id) : m_id{id} {}\n};\n\n// Build a virtual-inheritance diamond. B and C each virtually inherit from A,\n// list A{bId}/A{cId} in their initializer lists, and record observed = id + tag\n// (the base id they actually see). D is the most-derived class and initializes\n// A directly with dId.\n\nint main()\n{\n    int bId{}, cId{}, dId{}, bTag{}, cTag{};\n    std::cin >> bId >> cId >> dId >> bTag >> cTag;\n\n    // Build one D and report the shared A id plus what B and C observed.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_id{};\n    A(int id) : m_id{id} {}\n};\n\nclass B : virtual public A\n{\npublic:\n    int m_observed{};\n    // When a B is built as part of a D, the shared virtual A has ALREADY been\n    // constructed by D (with dId), so m_id here is dId, not aId. The A{aId}\n    // below is ignored in that case.\n    B(int aId, int tag) : A{aId}, m_observed{m_id + tag} {}\n};\n\nclass C : virtual public A\n{\npublic:\n    int m_observed{};\n    C(int aId, int tag) : A{aId}, m_observed{m_id + tag} {}\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int bId, int cId, int dId, int bTag, int cTag)\n        : A{dId}, B{bId, bTag}, C{cId, cTag} {}\n    void show() const\n    {\n        std::cout << \"A id: \" << m_id << '\\n';\n        std::cout << \"B observed: \" << B::m_observed << '\\n';\n        std::cout << \"C observed: \" << C::m_observed << '\\n';\n    }\n};\n\nint main()\n{\n    int bId{}, cId{}, dId{}, bTag{}, cTag{};\n    std::cin >> bId >> cId >> dId >> bTag >> cTag;\n\n    D d{bId, cId, dId, bTag, cTag};\n    d.show();\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "D wins over B and C",
+        "label": "D wins; B and C observe dId not bId/cId",
         "is_sample": true,
         "stdin": "1 2 99 10 20\n",
-        "expected_stdout": "A id: 99\nB tag: 10\nC tag: 20\n"
+        "expected_stdout": "A id: 99\nB observed: 109\nC observed: 119\n"
       },
       {
         "label": "Distinct values",
         "is_sample": false,
         "stdin": "5 6 7 8 9\n",
-        "expected_stdout": "A id: 7\nB tag: 8\nC tag: 9\n"
+        "expected_stdout": "A id: 7\nB observed: 15\nC observed: 16\n"
       },
       {
         "label": "All zero",
         "is_sample": false,
         "stdin": "0 0 0 0 0\n",
-        "expected_stdout": "A id: 0\nB tag: 0\nC tag: 0\n"
+        "expected_stdout": "A id: 0\nB observed: 0\nC observed: 0\n"
       },
       {
         "label": "Negatives",
         "is_sample": false,
         "stdin": "-1 -2 -3 -4 -5\n",
-        "expected_stdout": "A id: -3\nB tag: -4\nC tag: -5\n"
+        "expected_stdout": "A id: -3\nB observed: -7\nC observed: -8\n"
       }
     ]
   }

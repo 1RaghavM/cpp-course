@@ -34,34 +34,34 @@
   },
   {
     "title": "Counting derived types in a polymorphic collection",
-    "prompt_md": "## Goal\n\nYou maintain a collection of animals stored polymorphically as `Animal*`. Two concrete kinds exist: `Dog` and `Cat`. Each kind has a behavior that belongs only to that type -- a `Dog` can `bark()` and a `Cat` can `meow()`. Given a target type to search for, walk the collection and, using a runtime-checked downcast, invoke the type-specific behavior on exactly the objects of that type, counting how many you find.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 20) -- the number of animals.\n- Next `N` lines: either `dog <name>` or `cat <name>` (`<name>` is a single word).\n- Final line: the search type, either `dog` or `cat`.\n\n## Output\n\nFor each animal whose actual type matches the search type, in collection order, print:\n- a `Dog` named `<name>`: `Dog: <name> says Woof` (this is what `Dog::bark()` returns)\n- a `Cat` named `<name>`: `Cat: <name> says Meow` (this is what `Cat::meow()` returns)\n\nThen print `Found: <count>`, the number of matches. If none match, print only `Found: 0`.",
-    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\n// Define Animal (the polymorphic base), Dog, and Cat here.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Read n animals into a polymorphic collection, then read the search\n    // type and report the matching animals and how many there were.\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Animal {\n    std::string m_name;\npublic:\n    Animal(const std::string& name) : m_name{name} {}\n    virtual ~Animal() = default;\n    const std::string& getName() const { return m_name; }\n};\n\nclass Dog : public Animal {\npublic:\n    Dog(const std::string& name) : Animal{name} {}\n    std::string bark() const { return \"Dog: \" + getName() + \" says Woof\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    Cat(const std::string& name) : Animal{name} {}\n    std::string meow() const { return \"Cat: \" + getName() + \" says Meow\"; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Animal*> animals{};\n    for (int i{0}; i < n; ++i) {\n        std::string type{}, name{};\n        std::cin >> type >> name;\n        if (type == \"dog\") animals.push_back(new Dog{name});\n        else animals.push_back(new Cat{name});\n    }\n    std::string search{};\n    std::cin >> search;\n    int count{0};\n    for (auto* animal : animals) {\n        if (search == \"dog\") {\n            Dog* dp{dynamic_cast<Dog*>(animal)};\n            if (dp) { std::cout << dp->bark() << '\\n'; ++count; }\n        } else {\n            Cat* cp{dynamic_cast<Cat*>(animal)};\n            if (cp) { std::cout << cp->meow() << '\\n'; ++count; }\n        }\n    }\n    std::cout << \"Found: \" << count << '\\n';\n    for (auto* animal : animals) delete animal;\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nYou maintain a collection of animals stored polymorphically as `Animal*`. Three concrete kinds exist: `Dog`, `Cat`, and `Puppy` -- and **a `Puppy` is a kind of `Dog`** (`Puppy` publicly derives from `Dog`). A `Dog` can `bark()` and a `Cat` can `meow()`; a `Puppy`, being a `Dog`, also barks. Given a target *category* to search for, walk the collection and, using a runtime-checked downcast, invoke the category's behavior on exactly the objects that really belong to it, counting how many you find.\n\nThe catch: the input word that created an object is **not** its category. Searching for `dog` must match every object that is a `Dog` at runtime -- including every `Puppy`, since a puppy is-a dog. The literal token `puppy` is not the word `dog`, so a plain string comparison against the input word gives the wrong answer; only a `dynamic_cast<Dog*>` correctly recognizes a puppy as a dog.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 20) -- the number of animals.\n- Next `N` lines: one of `dog <name>`, `cat <name>`, or `puppy <name>` (`<name>` is a single word).\n- Final line: the search category, either `dog` or `cat`.\n\n## Output\n\nFor each animal that belongs to the search category at runtime, in collection order, print:\n- a `Dog` or `Puppy` named `<name>`: `Dog: <name> says Woof` (this is what `Dog::bark()` returns; a puppy inherits it)\n- a `Cat` named `<name>`: `Cat: <name> says Meow` (this is what `Cat::meow()` returns)\n\nThen print `Found: <count>`, the number of matches. If none match, print only `Found: 0`.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\n// Define Animal (the polymorphic base), Dog, Cat, and Puppy (a kind of Dog).\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Read n animals into a polymorphic collection, then read the search\n    // category and report the matching animals and how many there were.\n    // Remember: a puppy must count as a dog.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Animal {\n    std::string m_name;\npublic:\n    Animal(const std::string& name) : m_name{name} {}\n    virtual ~Animal() = default;\n    const std::string& getName() const { return m_name; }\n};\n\nclass Dog : public Animal {\npublic:\n    Dog(const std::string& name) : Animal{name} {}\n    std::string bark() const { return \"Dog: \" + getName() + \" says Woof\"; }\n};\n\nclass Cat : public Animal {\npublic:\n    Cat(const std::string& name) : Animal{name} {}\n    std::string meow() const { return \"Cat: \" + getName() + \" says Meow\"; }\n};\n\nclass Puppy : public Dog {\npublic:\n    Puppy(const std::string& name) : Dog{name} {}\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::vector<Animal*> animals{};\n    for (int i{0}; i < n; ++i) {\n        std::string type{}, name{};\n        std::cin >> type >> name;\n        if (type == \"dog\") animals.push_back(new Dog{name});\n        else if (type == \"puppy\") animals.push_back(new Puppy{name});\n        else animals.push_back(new Cat{name});\n    }\n    std::string search{};\n    std::cin >> search;\n    int count{0};\n    for (auto* animal : animals) {\n        if (search == \"dog\") {\n            Dog* dp{dynamic_cast<Dog*>(animal)};\n            if (dp) { std::cout << dp->bark() << '\\n'; ++count; }\n        } else {\n            Cat* cp{dynamic_cast<Cat*>(animal)};\n            if (cp) { std::cout << cp->meow() << '\\n'; ++count; }\n        }\n    }\n    std::cout << \"Found: \" << count << '\\n';\n    for (auto* animal : animals) delete animal;\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Find dogs in mixed collection",
+        "label": "Find dogs -- puppies count as dogs",
         "is_sample": true,
-        "stdin": "4\ndog Rex\ncat Whiskers\ndog Buddy\ncat Luna\ndog\n",
-        "expected_stdout": "Dog: Rex says Woof\nDog: Buddy says Woof\nFound: 2\n"
+        "stdin": "5\ndog Rex\ncat Whiskers\npuppy Buddy\ndog Max\ncat Luna\ndog\n",
+        "expected_stdout": "Dog: Rex says Woof\nDog: Buddy says Woof\nDog: Max says Woof\nFound: 3\n"
       },
       {
-        "label": "Find cats when none exist",
+        "label": "Find cats when only dogs and puppies exist",
         "is_sample": false,
-        "stdin": "2\ndog Max\ndog Rocky\ncat\n",
+        "stdin": "3\npuppy Spot\ndog Zeus\npuppy Rex\ncat\n",
         "expected_stdout": "Found: 0\n"
       },
       {
-        "label": "Find cats in all-cat collection",
+        "label": "Find dogs in an all-puppy collection",
         "is_sample": false,
-        "stdin": "3\ncat Milo\ncat Nala\ncat Simba\ncat\n",
-        "expected_stdout": "Cat: Milo says Meow\nCat: Nala says Meow\nCat: Simba says Meow\nFound: 3\n"
+        "stdin": "3\npuppy Coco\npuppy Bella\npuppy Toby\ndog\n",
+        "expected_stdout": "Dog: Coco says Woof\nDog: Bella says Woof\nDog: Toby says Woof\nFound: 3\n"
       },
       {
-        "label": "Find cats in mixed collection",
+        "label": "Find cats in a mix of cats, dogs, and puppies",
         "is_sample": false,
-        "stdin": "5\ncat Mittens\ndog Bruno\ncat Oreo\ndog Zeus\ncat Tom\ncat\n",
-        "expected_stdout": "Cat: Mittens says Meow\nCat: Oreo says Meow\nCat: Tom says Meow\nFound: 3\n"
+        "stdin": "5\ncat Mittens\npuppy Bruno\ncat Oreo\ndog Zeus\npuppy Tom\ncat\n",
+        "expected_stdout": "Cat: Mittens says Meow\nCat: Oreo says Meow\nFound: 2\n"
       }
     ]
   }
