@@ -1,55 +1,73 @@
 [
   {
     "title": "Apply an Operation",
-    "prompt_md": "## Goal\n\nWrite a function `applyOperation` that takes two integers and a function pointer, and returns the result of calling the pointed-to function with those integers. Use it to apply either addition or subtraction based on a user-selected operator.\n\n## Input\n\n- Line 1: two space-separated integers `a` and `b` (-10000 <= a, b <= 10000).\n- Line 2: a single character, either `+` or `-`.\n\n## Output\n\n- A single line containing the result of applying the chosen operation to `a` and `b`.\n\n## Requirements\n\n- Define two functions: `int add(int x, int y)` that returns `x + y`, and `int subtract(int x, int y)` that returns `x - y`.\n- Define `int applyOperation(int x, int y, int(*op)(int, int))` that calls `op` with `x` and `y` and returns the result.\n- In `main`, read the inputs, select the correct function pointer based on the operator, and call `applyOperation`.\n- Do not use `if`/`else` to compute the result directly -- the computation must go through the function pointer.",
-    "starter_code": "#include <iostream>\n\n// TODO: Define add and subtract functions\n\n// TODO: Define applyOperation that takes two ints and a function pointer\n\nint main()\n{\n    int a{};\n    int b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    // TODO: Select the right function pointer based on op\n    // TODO: Call applyOperation and print the result\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint add(int x, int y)\n{\n    return x + y;\n}\n\nint subtract(int x, int y)\n{\n    return x - y;\n}\n\nint applyOperation(int x, int y, int(*op)(int, int))\n{\n    return op(x, y);\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    int(*fn)(int, int){ &add };\n    if (op == '-')\n        fn = &subtract;\n\n    std::cout << applyOperation(a, b, fn) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nBuild a tiny calculator that performs one of four arithmetic operations chosen at runtime. The catch: the calculation must be dispatched through a **function pointer** (the callback pattern), not through an `if`/`switch` that does the arithmetic inline.\n\nWrite one small function per operation, plus a single higher-order function that takes two integers and a function pointer and returns the result of calling that pointer. Pick the right pointer based on the operator the user typed, then route the work through the higher-order function.\n\n## Input\n\n- Line 1: two space-separated integers `a` and `b` (-10000 <= a, b <= 10000).\n- Line 2: a single operator character: `+`, `-`, `*`, or `/` (integer division; `b` is never 0 for `/`).\n\n## Output\n\n- A single line: the result of applying the chosen operation to `a` and `b`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int a{};\n    int b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint add(int x, int y) { return x + y; }\nint subtract(int x, int y) { return x - y; }\nint multiply(int x, int y) { return x * y; }\nint divide(int x, int y) { return x / y; }\n\nint applyOperation(int x, int y, int (*op)(int, int))\n{\n    return op(x, y);\n}\n\nint main()\n{\n    int a{};\n    int b{};\n    char op{};\n    std::cin >> a >> b >> op;\n\n    int (*fn)(int, int){ &add };\n    if (op == '-')\n        fn = &subtract;\n    else if (op == '*')\n        fn = &multiply;\n    else if (op == '/')\n        fn = &divide;\n\n    std::cout << applyOperation(a, b, fn) << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Addition of positive numbers",
+        "label": "Multiplication",
         "is_sample": true,
-        "stdin": "10 3\n+",
-        "expected_stdout": "13\n"
+        "stdin": "6 7\n*",
+        "expected_stdout": "42\n"
       },
       {
-        "label": "Subtraction with negative result",
+        "label": "Subtraction",
         "is_sample": false,
-        "stdin": "5 20\n-",
-        "expected_stdout": "-15\n"
+        "stdin": "100 25\n-",
+        "expected_stdout": "75\n"
       },
       {
-        "label": "Addition with negative numbers",
+        "label": "Integer division",
+        "is_sample": false,
+        "stdin": "17 5\n/",
+        "expected_stdout": "3\n"
+      },
+      {
+        "label": "Addition of negatives",
         "is_sample": false,
         "stdin": "-8 -12\n+",
         "expected_stdout": "-20\n"
+      },
+      {
+        "label": "Division to zero",
+        "is_sample": false,
+        "stdin": "4 9\n/",
+        "expected_stdout": "0\n"
       }
     ]
   },
   {
     "title": "Transform and Sum an Array",
-    "prompt_md": "## Goal\n\nWrite a function `transformAndSum` that takes an array, its size, and a function pointer to a transformation function. It applies the transformation to each element and returns the sum of the transformed values. Use it to compute both the sum of squared values and the sum of absolute values of an input array.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100), the number of elements.\n- Line 2: `n` space-separated integers (-1000 <= each <= 1000).\n\n## Output\n\n- Line 1: the sum after applying `square` to each element (where `square(x)` returns `x * x`).\n- Line 2: the sum after applying `absolute` to each element (where `absolute(x)` returns the absolute value of `x`).\n\n## Requirements\n\n- Define `int square(int x)` that returns `x * x`.\n- Define `int absolute(int x)` that returns `x` if `x >= 0`, otherwise `-x`. Do not use `std::abs`.\n- Define `int transformAndSum(const int arr[], int size, int(*transform)(int))` that applies `transform` to each element and returns the total.\n- Use a type alias: `using TransformFn = int(*)(int);` and use `TransformFn` as the parameter type in `transformAndSum`.\n- Call `transformAndSum` twice from `main` -- once with `square` and once with `absolute`.",
-    "starter_code": "#include <iostream>\n\nusing TransformFn = int(*)(int);\n\n// TODO: Define square and absolute functions\n\n// TODO: Define transformAndSum using TransformFn\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[100]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Call transformAndSum with square, print result\n    // TODO: Call transformAndSum with absolute, print result\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nusing TransformFn = int(*)(int);\n\nint square(int x)\n{\n    return x * x;\n}\n\nint absolute(int x)\n{\n    return (x >= 0) ? x : -x;\n}\n\nint transformAndSum(const int arr[], int size, TransformFn transform)\n{\n    int total{ 0 };\n    for (int i{ 0 }; i < size; ++i)\n        total += transform(arr[i]);\n    return total;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[100]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << transformAndSum(arr, n, square) << '\\n';\n    std::cout << transformAndSum(arr, n, absolute) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nWrite a single higher-order function `transformAndSum` that walks an array, applies a caller-supplied transformation to every element, and returns the sum of the transformed values. The transformation is passed in as a **function pointer**, so the same loop can produce different results depending on which function the caller hands it.\n\nUse a type alias for the pointer type so the signature stays readable, then call `transformAndSum` twice on the same input: once with a function that squares its argument, and once with a function that returns the magnitude (absolute value, computed yourself -- no `std::abs`).\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 100).\n- Line 2: `n` space-separated integers (-1000 <= each <= 1000).\n\n## Output\n\n- Line 1: the sum of the squares of the elements.\n- Line 2: the sum of the absolute values of the elements.",
+    "starter_code": "#include <iostream>\n\nusing TransformFn = int (*)(int);\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[100]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nusing TransformFn = int (*)(int);\n\nint square(int x) { return x * x; }\nint absolute(int x) { return (x >= 0) ? x : -x; }\n\nint transformAndSum(const int arr[], int size, TransformFn transform)\n{\n    int total{ 0 };\n    for (int i{ 0 }; i < size; ++i)\n        total += transform(arr[i]);\n    return total;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[100]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << transformAndSum(arr, n, square) << '\\n';\n    std::cout << transformAndSum(arr, n, absolute) << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Mixed positive and negative values",
+        "label": "Mixed values",
         "is_sample": true,
         "stdin": "4\n3 -2 5 -1",
         "expected_stdout": "39\n11\n"
       },
       {
-        "label": "All negative values",
+        "label": "All negative",
         "is_sample": false,
         "stdin": "3\n-4 -6 -2",
         "expected_stdout": "56\n12\n"
       },
       {
-        "label": "Single element zero",
+        "label": "Single zero",
         "is_sample": false,
         "stdin": "1\n0",
         "expected_stdout": "0\n0\n"
+      },
+      {
+        "label": "Larger spread",
+        "is_sample": false,
+        "stdin": "5\n10 -10 1 -1 0",
+        "expected_stdout": "202\n22\n"
       }
     ]
   }

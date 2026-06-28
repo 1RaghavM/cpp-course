@@ -1,55 +1,67 @@
 [
   {
-    "title": "Stack frame reporter",
-    "prompt_md": "## Goal\nWrite a program that demonstrates stack frame behavior by reading an integer and passing it through a chain of two functions, printing a message at each level.\n\n## Input\nA single integer `n` on stdin.\n\n## Output\nExactly three lines:\n```\nmain received <n>\nlevel1 received <n>\nlevel2 received <n>\n```\nwhere `<n>` is the input value.\n\n## Requirements\n- Write two functions `level1(int v)` and `level2(int v)`, each printing its line and then calling the next.\n- `main` prints its line, then calls `level1`.\n- Use `std::cout` for all output. Each line ends with `'\\n'`.",
-    "starter_code": "#include <iostream>\n\nvoid level2(int v) {\n    // TODO: print \"level2 received <v>\"\n}\n\nvoid level1(int v) {\n    // TODO: print \"level1 received <v>\", then call level2\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    // TODO: print \"main received <n>\", then call level1\n    return 0;\n}",
-    "solution_code": "#include <iostream>\n\nvoid level2(int v) {\n    std::cout << \"level2 received \" << v << '\\n';\n}\n\nvoid level1(int v) {\n    std::cout << \"level1 received \" << v << '\\n';\n    level2(v);\n}\n\nint main() {\n    int n{};\n    std::cin >> n;\n    std::cout << \"main received \" << n << '\\n';\n    level1(n);\n    return 0;\n}",
+    "title": "Heap Sequence That Outlives Its Maker",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nA stack array dies the instant the function that created it returns, so it can never be handed back to the caller. The heap has no such restriction. Use that fact here.\n\nWrite a function that allocates an array of `n` integers **on the heap**, fills slot `i` with the value `(i + 1)^2`, and returns a pointer to it. `main` reads `n`, calls your function, prints the values, and must `delete[]` the array before exiting (no leaks).\n\n## Input\n\n- A single integer `n` (1 <= n <= 100).\n\n## Output\n\n- One line: the `n` squares, space-separated.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint* buildSquares(int n)\n{\n    int* arr{ new int[n] };\n    for (int i{ 0 }; i < n; ++i)\n        arr[i] = (i + 1) * (i + 1);\n    return arr;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int* squares{ buildSquares(n) };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        if (i > 0)\n            std::cout << ' ';\n        std::cout << squares[i];\n    }\n    std::cout << '\\n';\n\n    delete[] squares;\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Sample: input 7",
+        "label": "Five squares",
         "is_sample": true,
-        "stdin": "7",
-        "expected_stdout": "main received 7\nlevel1 received 7\nlevel2 received 7\n"
+        "stdin": "5",
+        "expected_stdout": "1 4 9 16 25\n"
       },
       {
-        "label": "Hidden: input 0",
+        "label": "Single element",
         "is_sample": false,
-        "stdin": "0",
-        "expected_stdout": "main received 0\nlevel1 received 0\nlevel2 received 0\n"
+        "stdin": "1",
+        "expected_stdout": "1\n"
       },
       {
-        "label": "Hidden: negative input",
+        "label": "Three squares",
         "is_sample": false,
-        "stdin": "-42",
-        "expected_stdout": "main received -42\nlevel1 received -42\nlevel2 received -42\n"
+        "stdin": "3",
+        "expected_stdout": "1 4 9\n"
+      },
+      {
+        "label": "Ten squares",
+        "is_sample": false,
+        "stdin": "10",
+        "expected_stdout": "1 4 9 16 25 36 49 64 81 100\n"
       }
     ]
   },
   {
-    "title": "Heap array statistics",
-    "prompt_md": "## Goal\nRead `n` integers into a heap-allocated array, compute the sum and the count of positive values, print the results, and properly free the memory.\n\n## Input\n- Line 1: a positive integer `n` (1 <= n <= 100).\n- Line 2: `n` space-separated integers.\n\n## Output\nExactly two lines:\n```\nsum: <S>\npositives: <P>\n```\nwhere `<S>` is the sum of all elements and `<P>` is the count of elements strictly greater than zero.\n\n## Requirements\n- Allocate the array on the heap with `new int[n]`.\n- Free the array with `delete[]` before `main` returns.\n- Use `std::cout` for output. Each line ends with `'\\n'`.",
-    "starter_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    // TODO: allocate array of n ints on the heap\n\n    // TODO: read n integers into the array\n\n    // TODO: compute sum and count of positive values\n\n    // TODO: print results\n\n    // TODO: free the heap memory\n\n    return 0;\n}",
-    "solution_code": "#include <iostream>\n\nint main() {\n    int n{};\n    std::cin >> n;\n\n    int* arr{new int[n]};\n\n    for (int i{0}; i < n; ++i) {\n        std::cin >> arr[i];\n    }\n\n    int sum{0};\n    int positives{0};\n    for (int i{0}; i < n; ++i) {\n        sum += arr[i];\n        if (arr[i] > 0) {\n            ++positives;\n        }\n    }\n\n    std::cout << \"sum: \" << sum << '\\n';\n    std::cout << \"positives: \" << positives << '\\n';\n\n    delete[] arr;\n\n    return 0;\n}",
+    "title": "Heap Array Statistics",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nRead `n` integers into a **heap-allocated** array, compute a few statistics over them, print the results, and free the memory. The point is to exercise the full manual lifecycle: allocate with `new[]`, use, then `delete[]`.\n\n## Input\n\n- Line 1: a positive integer `n` (1 <= n <= 100).\n- Line 2: `n` space-separated integers.\n\n## Output\n\nExactly three lines:\n```\nsum: <S>\nmin: <m>\nmax: <M>\n```\nwhere `<S>` is the total, `<m>` the smallest value, and `<M>` the largest.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int* arr{ new int[n] };\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    int sum{ 0 };\n    int min{ arr[0] };\n    int max{ arr[0] };\n    for (int i{ 0 }; i < n; ++i)\n    {\n        sum += arr[i];\n        if (arr[i] < min)\n            min = arr[i];\n        if (arr[i] > max)\n            max = arr[i];\n    }\n\n    std::cout << \"sum: \" << sum << '\\n';\n    std::cout << \"min: \" << min << '\\n';\n    std::cout << \"max: \" << max << '\\n';\n\n    delete[] arr;\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Sample: mixed values",
+        "label": "Mixed values",
         "is_sample": true,
         "stdin": "5\n3 -1 4 0 2",
-        "expected_stdout": "sum: 8\npositives: 3\n"
+        "expected_stdout": "sum: 8\nmin: -1\nmax: 4\n"
       },
       {
-        "label": "Hidden: single element",
+        "label": "Single element",
         "is_sample": false,
         "stdin": "1\n-5",
-        "expected_stdout": "sum: -5\npositives: 0\n"
+        "expected_stdout": "sum: -5\nmin: -5\nmax: -5\n"
       },
       {
-        "label": "Hidden: all positive",
+        "label": "All positive",
         "is_sample": false,
         "stdin": "4\n10 20 30 40",
-        "expected_stdout": "sum: 100\npositives: 4\n"
+        "expected_stdout": "sum: 100\nmin: 10\nmax: 40\n"
+      },
+      {
+        "label": "Descending negatives",
+        "is_sample": false,
+        "stdin": "3\n-2 -9 -4",
+        "expected_stdout": "sum: -15\nmin: -9\nmax: -2\n"
       }
     ]
   }

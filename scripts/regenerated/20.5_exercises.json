@@ -1,19 +1,19 @@
 [
   {
     "title": "Variadic Integer Sum",
-    "prompt_md": "## Goal\n\nImplement a C-style variadic function `sumInts` that takes a count followed by that many `int` arguments and returns their sum.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 5), the number of values to sum.\n- Line 2: `n` space-separated integers (each between -1000 and 1000).\n\n## Output\n\n- A single line containing the sum of the `n` integers.\n\n## Requirements\n\n- Write a function with the signature `int sumInts(int count, ...)`.\n- Use `va_list`, `va_start`, `va_arg`, and `va_end` from `<cstdarg>` to retrieve each argument.\n- Call `sumInts` from `main`, passing the individual values read from input as separate arguments (use an array to store them, then pass based on `n`).\n- Since you cannot forward an array through ellipsis directly, use an `if`/`else if` chain to call `sumInts` with the correct number of arguments (n ranges from 1 to 5).",
-    "starter_code": "#include <cstdarg>\n#include <iostream>\n\nint sumInts(int count, ...)\n{\n    // TODO: Use va_list, va_start, va_arg, va_end\n    // to sum 'count' int arguments and return the result\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    // TODO: Call sumInts with the correct number of arguments\n    // based on n (use if/else if for n == 1 through n == 5)\n    // Print the result followed by '\\n'\n\n    return 0;\n}\n",
-    "solution_code": "#include <cstdarg>\n#include <iostream>\n\nint sumInts(int count, ...)\n{\n    va_list args;\n    va_start(args, count);\n    int total{ 0 };\n    for (int i{ 0 }; i < count; ++i)\n        total += va_arg(args, int);\n    va_end(args);\n    return total;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int result{};\n    if (n == 1)\n        result = sumInts(1, v[0]);\n    else if (n == 2)\n        result = sumInts(2, v[0], v[1]);\n    else if (n == 3)\n        result = sumInts(3, v[0], v[1], v[2]);\n    else if (n == 4)\n        result = sumInts(4, v[0], v[1], v[2], v[3]);\n    else\n        result = sumInts(5, v[0], v[1], v[2], v[3], v[4]);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nImplement a C-style variadic function\n\n```cpp\nint sumInts(int count, ...)\n```\n\nthat returns the sum of the `count` `int` values passed after `count`. This is the lesson's core skill: pulling arguments out of the `...` pack with the `<cstdarg>` tools. The `main` below already reads the input and forwards the values to `sumInts` for each supported count -- you only need to write the function body.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 5), how many values follow.\n- Line 2: `n` space-separated integers (each between -1000 and 1000).\n\n## Output\n\n- The sum of the `n` values, on one line.",
+    "starter_code": "#include <cstdarg>\n#include <iostream>\n\nint sumInts(int count, ...)\n{\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int result{};\n    if (n == 1)      result = sumInts(1, v[0]);\n    else if (n == 2) result = sumInts(2, v[0], v[1]);\n    else if (n == 3) result = sumInts(3, v[0], v[1], v[2]);\n    else if (n == 4) result = sumInts(4, v[0], v[1], v[2], v[3]);\n    else             result = sumInts(5, v[0], v[1], v[2], v[3], v[4]);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <cstdarg>\n#include <iostream>\n\nint sumInts(int count, ...)\n{\n    va_list args;\n    va_start(args, count);\n    int total{ 0 };\n    for (int i{ 0 }; i < count; ++i)\n        total += va_arg(args, int);\n    va_end(args);\n    return total;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int result{};\n    if (n == 1)      result = sumInts(1, v[0]);\n    else if (n == 2) result = sumInts(2, v[0], v[1]);\n    else if (n == 3) result = sumInts(3, v[0], v[1], v[2]);\n    else if (n == 4) result = sumInts(4, v[0], v[1], v[2], v[3]);\n    else             result = sumInts(5, v[0], v[1], v[2], v[3], v[4]);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Three positive numbers",
+        "label": "Three positives",
         "is_sample": true,
         "stdin": "3\n10 20 30",
         "expected_stdout": "60\n"
       },
       {
-        "label": "Single negative number",
+        "label": "Single negative",
         "is_sample": false,
         "stdin": "1\n-42",
         "expected_stdout": "-42\n"
@@ -23,24 +23,30 @@
         "is_sample": false,
         "stdin": "5\n100 -50 25 -75 0",
         "expected_stdout": "0\n"
+      },
+      {
+        "label": "Two values",
+        "is_sample": false,
+        "stdin": "2\n-7 13",
+        "expected_stdout": "6\n"
       }
     ]
   },
   {
     "title": "Variadic Minimum Finder",
-    "prompt_md": "## Goal\n\nWrite a C-style variadic function `findMin` that accepts a count and that many `int` arguments, then returns the smallest value.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 5), the number of values.\n- Line 2: `n` space-separated integers (each between -10000 and 10000).\n\n## Output\n\n- A single line containing the minimum of the `n` integers.\n\n## Requirements\n\n- Write a function with the signature `int findMin(int count, ...)`.\n- Use `va_list`, `va_start`, `va_arg`, and `va_end` from `<cstdarg>`.\n- Initialize your running minimum to the first `va_arg` value, then compare with the rest.\n- In `main`, use an `if`/`else if` chain (n == 1 through n == 5) to call `findMin` with the correct number of arguments.",
-    "starter_code": "#include <cstdarg>\n#include <iostream>\n\nint findMin(int count, ...)\n{\n    // TODO: Use va_list to find and return the minimum\n    // of 'count' int arguments\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    // TODO: Call findMin with the correct number of arguments\n    // based on n (use if/else if for n == 1 through n == 5)\n    // Print the result followed by '\\n'\n\n    return 0;\n}\n",
-    "solution_code": "#include <cstdarg>\n#include <iostream>\n\nint findMin(int count, ...)\n{\n    va_list args;\n    va_start(args, count);\n    int min{ va_arg(args, int) };\n    for (int i{ 1 }; i < count; ++i)\n    {\n        int val{ va_arg(args, int) };\n        if (val < min)\n            min = val;\n    }\n    va_end(args);\n    return min;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int result{};\n    if (n == 1)\n        result = findMin(1, v[0]);\n    else if (n == 2)\n        result = findMin(2, v[0], v[1]);\n    else if (n == 3)\n        result = findMin(3, v[0], v[1], v[2]);\n    else if (n == 4)\n        result = findMin(4, v[0], v[1], v[2], v[3]);\n    else\n        result = findMin(5, v[0], v[1], v[2], v[3], v[4]);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nImplement a C-style variadic function\n\n```cpp\nint findMin(int count, ...)\n```\n\nthat returns the smallest of the `count` `int` values passed after `count`, using the `<cstdarg>` tools to read the argument pack. The `main` below already reads input and forwards the values for each supported count -- write only the function body.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 5).\n- Line 2: `n` space-separated integers (each between -10000 and 10000).\n\n## Output\n\n- The minimum of the `n` values, on one line.",
+    "starter_code": "#include <cstdarg>\n#include <iostream>\n\nint findMin(int count, ...)\n{\n    return 0;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int result{};\n    if (n == 1)      result = findMin(1, v[0]);\n    else if (n == 2) result = findMin(2, v[0], v[1]);\n    else if (n == 3) result = findMin(3, v[0], v[1], v[2]);\n    else if (n == 4) result = findMin(4, v[0], v[1], v[2], v[3]);\n    else             result = findMin(5, v[0], v[1], v[2], v[3], v[4]);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <cstdarg>\n#include <iostream>\n\nint findMin(int count, ...)\n{\n    va_list args;\n    va_start(args, count);\n    int min{ va_arg(args, int) };\n    for (int i{ 1 }; i < count; ++i)\n    {\n        int val{ va_arg(args, int) };\n        if (val < min)\n            min = val;\n    }\n    va_end(args);\n    return min;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int v[5]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> v[i];\n\n    int result{};\n    if (n == 1)      result = findMin(1, v[0]);\n    else if (n == 2) result = findMin(2, v[0], v[1]);\n    else if (n == 3) result = findMin(3, v[0], v[1], v[2]);\n    else if (n == 4) result = findMin(4, v[0], v[1], v[2], v[3]);\n    else             result = findMin(5, v[0], v[1], v[2], v[3], v[4]);\n\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Basic example with clear minimum",
+        "label": "Clear minimum",
         "is_sample": true,
         "stdin": "4\n7 2 9 4",
         "expected_stdout": "2\n"
       },
       {
-        "label": "All negative values",
+        "label": "All negative",
         "is_sample": false,
         "stdin": "3\n-3 -8 -1",
         "expected_stdout": "-8\n"
@@ -50,6 +56,12 @@
         "is_sample": false,
         "stdin": "1\n500",
         "expected_stdout": "500\n"
+      },
+      {
+        "label": "Minimum is last",
+        "is_sample": false,
+        "stdin": "5\n9 8 7 6 -2",
+        "expected_stdout": "-2\n"
       }
     ]
   }

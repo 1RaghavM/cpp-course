@@ -1,19 +1,19 @@
 [
   {
-    "title": "Apply Offset and Scale",
-    "prompt_md": "## Goal\nWrite a function `applyTransform` that returns a lambda which captures an `offset` (by value) and a `scale` (by value), then applies the transformation `x * scale + offset` to its integer argument.\n\n## Input\nThree integers on separate lines:\n- `offset`\n- `scale`\n- `x` (the value to transform)\n\n## Output\nA single integer: the result of `x * scale + offset`.\n\n## Requirements\n- Define `applyTransform` so it takes two `int` parameters (`offset`, `scale`) and returns a lambda.\n- The returned lambda takes one `int` parameter and returns `int`.\n- Capture both variables **by value**.\n- Read input and call the lambda inside `main`.",
-    "starter_code": "#include <iostream>\n\n// TODO: define applyTransform that returns a lambda\n\nint main() {\n    int offset{};\n    int scale{};\n    int x{};\n    std::cin >> offset >> scale >> x;\n\n    auto fn{ applyTransform(offset, scale) };\n    std::cout << fn(x) << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nauto applyTransform(int offset, int scale) {\n    return [offset, scale](int x) {\n        return x * scale + offset;\n    };\n}\n\nint main() {\n    int offset{};\n    int scale{};\n    int x{};\n    std::cin >> offset >> scale >> x;\n\n    auto fn{ applyTransform(offset, scale) };\n    std::cout << fn(x) << '\\n';\n\n    return 0;\n}\n",
+    "title": "Make a Transformer",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nWrite a function `applyTransform(int offset, int scale)` that **returns a lambda**. The returned lambda takes one integer `x` and computes `x * scale + offset`, using `offset` and `scale` **captured by value** so the closure keeps working after `applyTransform` returns.\n\n`main` reads the three numbers; you decide how to build and call the transformer.\n\n## Input\n\nThree integers, one per line: `offset`, then `scale`, then `x`.\n\n## Output\n\n- A single integer: `x * scale + offset`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int offset{};\n    int scale{};\n    int x{};\n    std::cin >> offset >> scale >> x;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nauto applyTransform(int offset, int scale)\n{\n    return [offset, scale](int x)\n    {\n        return x * scale + offset;\n    };\n}\n\nint main()\n{\n    int offset{};\n    int scale{};\n    int x{};\n    std::cin >> offset >> scale >> x;\n\n    auto fn{ applyTransform(offset, scale) };\n    std::cout << fn(x) << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Sample: offset=10, scale=3, x=5",
+        "label": "offset 10 scale 3 x 5",
         "is_sample": true,
         "stdin": "10\n3\n5\n",
         "expected_stdout": "25\n"
       },
       {
-        "label": "Zero offset and scale=1 (identity-ish)",
+        "label": "Identity-ish",
         "is_sample": false,
         "stdin": "0\n1\n42\n",
         "expected_stdout": "42\n"
@@ -23,33 +23,45 @@
         "is_sample": false,
         "stdin": "-5\n-2\n7\n",
         "expected_stdout": "-19\n"
+      },
+      {
+        "label": "Zero scale",
+        "is_sample": false,
+        "stdin": "100\n0\n9\n",
+        "expected_stdout": "100\n"
       }
     ]
   },
   {
     "title": "Counting Filter",
-    "prompt_md": "## Goal\nRead a list of integers and a threshold value. Use a **mutable lambda** that captures a counter by value to count how many elements exceed the threshold while printing each qualifying element.\n\n## Input\n- Line 1: two integers `n` (number of elements, 1 <= n <= 100) and `threshold`.\n- Line 2: `n` space-separated integers.\n\n## Output\n- One line per element that is strictly greater than `threshold`, containing that element.\n- A final line: `Count: C` where `C` is the total number of qualifying elements.\n\n## Requirements\n- Store the elements in a `std::vector<int>`.\n- Create a lambda that captures `threshold` **by value** and a `count` variable **by value**, marked `mutable`.\n- The lambda takes a single `int`, prints it on its own line if it exceeds the threshold, and increments `count`.\n- Use a range-based `for` loop to call the lambda on every element.\n- After the loop, you need the final count. Since mutable value captures do not propagate back, also capture a `totalCount` variable **by reference** that the lambda updates, and print it after the loop.",
-    "starter_code": "#include <iostream>\n#include <vector>\n\nint main() {\n    int n{};\n    int threshold{};\n    std::cin >> n >> threshold;\n\n    std::vector<int> nums(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> nums[i];\n\n    int totalCount{ 0 };\n\n    // TODO: create a mutable lambda that captures threshold by value\n    // and totalCount by reference. For each int that exceeds threshold,\n    // print it and increment totalCount.\n\n    for (int val : nums)\n        filter(val);\n\n    std::cout << \"Count: \" << totalCount << '\\n';\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <vector>\n\nint main() {\n    int n{};\n    int threshold{};\n    std::cin >> n >> threshold;\n\n    std::vector<int> nums(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> nums[i];\n\n    int totalCount{ 0 };\n\n    auto filter{ [threshold, &totalCount](int val) {\n        if (val > threshold) {\n            std::cout << val << '\\n';\n            ++totalCount;\n        }\n    } };\n\n    for (int val : nums)\n        filter(val);\n\n    std::cout << \"Count: \" << totalCount << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
+    "prompt_md": "## Goal\n\nRead a list of integers and a threshold. Print every element that is strictly greater than the threshold, one per line, and then print how many qualified.\n\nDo the work with a single lambda that you call on each element. The lambda must **capture the threshold by value** and a running counter **by reference**, so that after the loop the counter holds the final tally. (A by-value mutable counter would not survive the loop -- that is exactly why a by-reference capture is needed here.)\n\n## Input\n\n- Line 1: two integers `n` (1 <= n <= 100) and `threshold`.\n- Line 2: `n` space-separated integers.\n\n## Output\n\n- One line per element strictly greater than `threshold` (in input order), each just the value.\n- A final line: `Count: <C>` where `C` is the number of qualifying elements.",
+    "starter_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    int threshold{};\n    std::cin >> n >> threshold;\n\n    std::vector<int> nums(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> nums[i];\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <vector>\n\nint main()\n{\n    int n{};\n    int threshold{};\n    std::cin >> n >> threshold;\n\n    std::vector<int> nums(n);\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> nums[i];\n\n    int count{ 0 };\n    auto filter{ [threshold, &count](int val)\n    {\n        if (val > threshold)\n        {\n            std::cout << val << '\\n';\n            ++count;\n        }\n    } };\n\n    for (int val : nums)\n        filter(val);\n\n    std::cout << \"Count: \" << count << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Sample: threshold=5",
+        "label": "Threshold 5",
         "is_sample": true,
         "stdin": "5 5\n3 7 5 10 1\n",
         "expected_stdout": "7\n10\nCount: 2\n"
       },
       {
-        "label": "All elements exceed threshold",
+        "label": "All qualify",
         "is_sample": false,
         "stdin": "4 0\n5 3 8 1\n",
         "expected_stdout": "5\n3\n8\n1\nCount: 4\n"
       },
       {
-        "label": "No elements exceed threshold",
+        "label": "None qualify",
         "is_sample": false,
         "stdin": "3 100\n10 50 99\n",
         "expected_stdout": "Count: 0\n"
+      },
+      {
+        "label": "Negatives with negative threshold",
+        "is_sample": false,
+        "stdin": "4 -5\n-10 -3 -5 0\n",
+        "expected_stdout": "-3\n0\nCount: 2\n"
       }
     ]
   }
