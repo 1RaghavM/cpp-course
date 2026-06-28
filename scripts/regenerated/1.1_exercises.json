@@ -1,22 +1,34 @@
 [
   {
     "title": "Write a minimal valid C++ program",
-    "prompt_md": "## Goal\n\nWrite the smallest valid C++ program that compiles and runs successfully.\n\n## Input\n\nNone — this program takes no input.\n\n## Output\n\nNone — this program produces no visible output. The exit code is what matters.\n\nDo **not** use `#include`, `cout`, `cin`, or any library features — they have not been taught yet.",
-    "starter_code": "int main()\n{\n    // Your code here\n}\n",
-    "solution_code": "int main()\n{\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWrite a small but complete C++ program. Execution begins at the top of `main` and runs one statement at a time, top to bottom, so the order of your statements matters.\n\nRead a single integer from the input, add `2` to it, and print the result. You will need a declaration statement (to create a variable), an expression statement (to compute the result), and an output statement (to print it).\n\n## Input\n\nA single integer `n`.\n\n## Output\n\nOne line: the value of `n + 2`.\n\n### Example\n\n**Input:** `5`  \n**Output:**\n```\n7\n```",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    // Your code here\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int n = 0;\n    std::cin >> n;\n\n    int result = n + 2;\n    std::cout << result << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Program exits with code 0",
+        "label": "Sample: 5",
         "is_sample": true,
-        "stdin": "",
-        "expected_stdout": ""
+        "stdin": "5",
+        "expected_stdout": "7\n"
       },
       {
-        "label": "No output produced",
+        "label": "Hidden: 0",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": ""
+        "stdin": "0",
+        "expected_stdout": "2\n"
+      },
+      {
+        "label": "Hidden: negative",
+        "is_sample": false,
+        "stdin": "-3",
+        "expected_stdout": "-1\n"
+      },
+      {
+        "label": "Hidden: large value",
+        "is_sample": false,
+        "stdin": "100",
+        "expected_stdout": "102\n"
       }
     ]
   },

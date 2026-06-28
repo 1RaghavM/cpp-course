@@ -29,32 +29,32 @@
   {
     "title": "Coin Counter",
     "difficulty": "practice",
-    "prompt_md": "## Coin Counter\n\nWrite a program that reads a total amount in cents (a positive integer) and breaks it down into quarters (25c), dimes (10c), nickels (5c), and pennies (1c), using as few coins as possible.\n\nUse descriptive `snake_case` variable names \u2014 not single letters.\n\n## Input\n\nA single positive integer: total cents.\n\n## Output\n\nFour lines in exactly this format (no extra spaces or blank lines):\n\n```\nQuarters: <value>\nDimes: <value>\nNickels: <value>\nPennies: <value>\n```\n\n### Example\n\n**Input:** `87`  \n**Output:**\n```\nQuarters: 3\nDimes: 1\nNickels: 0\nPennies: 2\n```\n",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    int total_cents{};\n    // Your code here\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nint main()\n{\n    int total_cents{};\n    std::cin >> total_cents;\n\n    int quarters{ total_cents / 25 };\n    int remaining_cents{ total_cents % 25 };\n\n    int dimes{ remaining_cents / 10 };\n    remaining_cents = remaining_cents % 10;\n\n    int nickels{ remaining_cents / 5 };\n    int pennies{ remaining_cents % 5 };\n\n    std::cout << \"Quarters: \" << quarters << '\\n';\n    std::cout << \"Dimes: \" << dimes << '\\n';\n    std::cout << \"Nickels: \" << nickels << '\\n';\n    std::cout << \"Pennies: \" << pennies << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Coin Counter\n\nWrite a program that reads how many quarters, dimes, nickels, and pennies you have, and prints the total value in cents.\n\nA quarter is worth 25c, a dime 10c, a nickel 5c, and a penny 1c.\n\nUse descriptive `snake_case` variable names \u2014 not single letters.\n\n## Input\n\nFour integers on one line separated by spaces: the number of quarters, dimes, nickels, and pennies (in that order).\n\n## Output\n\nOne line in exactly this format (no extra spaces or blank lines):\n\n```\nTotal cents: <value>\n```\n\n### Example\n\n**Input:** `3 1 0 2`  \n**Output:**\n```\nTotal cents: 87\n```\n",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int quarters{};\n    int dimes{};\n    int nickels{};\n    int pennies{};\n    // Your code here\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nint main()\n{\n    int quarters{};\n    int dimes{};\n    int nickels{};\n    int pennies{};\n    std::cin >> quarters >> dimes >> nickels >> pennies;\n\n    int total_cents{ quarters * 25 + dimes * 10 + nickels * 5 + pennies };\n\n    std::cout << \"Total cents: \" << total_cents << '\\n';\n\n    return 0;\n}\n",
     "test_cases": [
       {
-        "label": "Sample: 87 cents",
-        "stdin": "87",
-        "expected_stdout": "Quarters: 3\nDimes: 1\nNickels: 0\nPennies: 2\n",
+        "label": "Sample: 3 quarters, 1 dime, 0 nickels, 2 pennies",
+        "stdin": "3 1 0 2",
+        "expected_stdout": "Total cents: 87\n",
         "is_sample": true
       },
       {
-        "label": "Hidden: 1 cent",
-        "stdin": "1",
-        "expected_stdout": "Quarters: 0\nDimes: 0\nNickels: 0\nPennies: 1\n",
+        "label": "Hidden: single penny",
+        "stdin": "0 0 0 1",
+        "expected_stdout": "Total cents: 1\n",
         "is_sample": false
       },
       {
-        "label": "Hidden: exact dollar",
-        "stdin": "100",
-        "expected_stdout": "Quarters: 4\nDimes: 0\nNickels: 0\nPennies: 0\n",
+        "label": "Hidden: four quarters",
+        "stdin": "4 0 0 0",
+        "expected_stdout": "Total cents: 100\n",
         "is_sample": false
       },
       {
-        "label": "Hidden: 41 cents",
-        "stdin": "41",
-        "expected_stdout": "Quarters: 1\nDimes: 1\nNickels: 1\nPennies: 1\n",
+        "label": "Hidden: one of each",
+        "stdin": "1 1 1 1",
+        "expected_stdout": "Total cents: 41\n",
         "is_sample": false
       }
     ]
