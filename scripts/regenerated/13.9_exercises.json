@@ -1,25 +1,25 @@
 [
   {
-    "title": "Print Struct with Default Members",
-    "prompt_md": "## Goal\nDefine a `Settings` struct with default member initializers, then create objects that use those defaults and print their values.\n\n## Input\n- Line 1: an integer N (1 <= N <= 5), the number of settings objects to create.\n- For each of the next N lines: either the word `default` (create an object using all defaults) or two values separated by a space: a string (no spaces) and an integer (the volume level, 0-100).\n\n## Output\nFor each settings object, print one line in this format:\n```\n<label>: volume=<volume>\n```\n\n## Requirements\n1. Define a struct `Settings` at namespace scope with exactly two members in this order:\n   - `std::string label` with default member initializer `\"General\"`\n   - `int volume` with default member initializer `50`\n2. When the input line is `default`, create a `Settings` object using empty braces `{}` so all defaults apply.\n3. When the input line contains a string and an integer, create a `Settings` object using aggregate initialization with those values (overriding both defaults).\n4. Print each object's members using dot notation in the format shown above.\n5. Use `std::cout` for output.",
-    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Settings with:\n//   std::string label  (default: \"General\")\n//   int volume         (default: 50)\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        // TODO: If token is \"default\", create Settings with empty braces.\n        //       Otherwise, token is the label; read the volume and create\n        //       Settings with aggregate initialization.\n        // Print: <label>: volume=<volume>\n    }\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Settings\n{\n    std::string label{ \"General\" };\n    int volume{ 50 };\n};\n\nint main()\n{\n    int n;\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        if (token == \"default\")\n        {\n            Settings s{};\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n        else\n        {\n            int vol;\n            std::cin >> vol;\n            Settings s{ token, vol };\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
+    "title": "Settings with Default Members",
+    "prompt_md": "## Goal\nDefine a `Settings` struct whose members have default member initializers, then create objects that either fall back to those defaults or override them.\n\nThe struct has two members: `label` (default `\"General\"`) and `volume` (default `50`).\n\n## Input\n- Line 1: an integer `N` (1 <= N <= 5), the number of settings objects.\n- Next `N` lines: each is either the word `default` (use all defaults) or a label word followed by an integer volume (override both).\n\n## Output\nFor each object, one line:\n```\n<label>: volume=<volume>\n```\n\n## Constraints\n- Give both members default member initializers in the struct definition. A `default` line must produce a `Settings` built with empty braces so the defaults apply; do not re-type the default values yourself.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Settings\n{\n    std::string label{ \"General\" };\n    int volume{ 50 };\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i = 0; i < n; ++i)\n    {\n        std::string token;\n        std::cin >> token;\n\n        if (token == \"default\")\n        {\n            Settings s{};\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n        else\n        {\n            int vol{};\n            std::cin >> vol;\n            Settings s{ token, vol };\n            std::cout << s.label << \": volume=\" << s.volume << '\\n';\n        }\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample — mix of default and custom",
+        "label": "Sample -- mix of default and custom",
         "stdin": "3\ndefault\nMusic 80\ndefault\n",
         "expected_stdout": "General: volume=50\nMusic: volume=80\nGeneral: volume=50\n",
         "is_sample": true
       },
       {
-        "label": "Hidden — all defaults",
+        "label": "Hidden -- all defaults",
         "stdin": "2\ndefault\ndefault\n",
         "expected_stdout": "General: volume=50\nGeneral: volume=50\n",
         "is_sample": false
       },
       {
-        "label": "Hidden — all custom with boundary values",
+        "label": "Hidden -- all custom with boundary values",
         "stdin": "2\nAlarm 0\nMedia 100\n",
         "expected_stdout": "Alarm: volume=0\nMedia: volume=100\n",
         "is_sample": false
@@ -28,25 +28,25 @@
   },
   {
     "title": "Partial Override with Default Member Initializers",
-    "prompt_md": "## Goal\nDefine a `Character` struct where some members have defaults, then create characters that partially override those defaults using designated initializers.\n\n## Input\n- Line 1: a string (no spaces) representing the character name.\n- Line 2: an integer representing the character's health (1-1000).\n\nThe character's `attack` and `defense` stats should always use their default values.\n\n## Output\nPrint exactly one line in this format:\n```\n<name>: hp=<health> atk=<attack> def=<defense>\n```\n\nThen print a second line showing what a completely default character looks like (created with `{}`):\n```\nDefault: hp=<health> atk=<attack> def=<defense>\n```\nwhere `Default` is the default name.\n\n## Requirements\n1. Define a struct `Character` at namespace scope with these four members in order:\n   - `std::string name` with default `\"Default\"`\n   - `int health` with default `100`\n   - `int attack` with default `15`\n   - `int defense` with default `10`\n2. Create the first `Character` using designated initializers: `.name` set from input, `.health` set from input. Do not specify `.attack` or `.defense` so they keep their defaults.\n3. Create the second `Character` using empty braces `{}` so all four defaults apply.\n4. Print both characters, each on its own line, in the format above.\n5. Use `std::cout` for output.",
-    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Character with:\n//   std::string name  (default: \"Default\")\n//   int health        (default: 100)\n//   int attack        (default: 15)\n//   int defense       (default: 10)\n\nint main()\n{\n    std::string inputName;\n    int inputHealth;\n    std::cin >> inputName >> inputHealth;\n\n    // TODO: Create a Character using designated initializers for name and health only.\n    //       .attack and .defense should retain their defaults.\n\n    // TODO: Create a default Character using empty braces.\n\n    // TODO: Print both characters in the format:\n    // <name>: hp=<health> atk=<attack> def=<defense>\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Character\n{\n    std::string name{ \"Default\" };\n    int health{ 100 };\n    int attack{ 15 };\n    int defense{ 10 };\n};\n\nint main()\n{\n    std::string inputName;\n    int inputHealth;\n    std::cin >> inputName >> inputHealth;\n\n    Character hero{ .name = inputName, .health = inputHealth };\n    Character blank{};\n\n    std::cout << hero.name << \": hp=\" << hero.health\n              << \" atk=\" << hero.attack\n              << \" def=\" << hero.defense << '\\n';\n\n    std::cout << blank.name << \": hp=\" << blank.health\n              << \" atk=\" << blank.attack\n              << \" def=\" << blank.defense << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nDefine a `Character` struct where several stats have sensible defaults, then create characters that override only some of those stats using designated initializers.\n\nThe struct has four members with defaults: `name` = `\"Default\"`, `health` = `100`, `attack` = `15`, `defense` = `10`.\n\n## Input\n- Line 1: a single-word character name.\n- Line 2: an integer health value (1-1000).\n\n## Output\nTwo lines:\n- The custom character (name and health from input, but `attack` and `defense` keep their defaults):\n  ```\n  <name>: hp=<health> atk=<attack> def=<defense>\n  ```\n- A fully default character (created with empty braces):\n  ```\n  Default: hp=100 atk=15 def=10\n  ```\n\n## Constraints\n- Provide a default member initializer for every member.\n- Build the custom character with designated initializers setting only `name` and `health`; `attack` and `defense` must come from the defaults, not values you write again.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string inputName;\n    int inputHealth{};\n    std::cin >> inputName >> inputHealth;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Character\n{\n    std::string name{ \"Default\" };\n    int health{ 100 };\n    int attack{ 15 };\n    int defense{ 10 };\n};\n\nint main()\n{\n    std::string inputName;\n    int inputHealth{};\n    std::cin >> inputName >> inputHealth;\n\n    Character hero{ .name = inputName, .health = inputHealth };\n    Character blank{};\n\n    std::cout << hero.name << \": hp=\" << hero.health\n              << \" atk=\" << hero.attack\n              << \" def=\" << hero.defense << '\\n';\n\n    std::cout << blank.name << \": hp=\" << blank.health\n              << \" atk=\" << blank.attack\n              << \" def=\" << blank.defense << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample — hero with custom name and health",
+        "label": "Sample -- hero with custom name and health",
         "stdin": "Archer\n250\n",
         "expected_stdout": "Archer: hp=250 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
         "is_sample": true
       },
       {
-        "label": "Hidden — minimum health",
+        "label": "Hidden -- minimum health",
         "stdin": "Skeleton\n1\n",
         "expected_stdout": "Skeleton: hp=1 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
         "is_sample": false
       },
       {
-        "label": "Hidden — high health value",
+        "label": "Hidden -- high health value",
         "stdin": "Dragon\n1000\n",
         "expected_stdout": "Dragon: hp=1000 atk=15 def=10\nDefault: hp=100 atk=15 def=10\n",
         "is_sample": false

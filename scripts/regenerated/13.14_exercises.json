@@ -1,9 +1,9 @@
 [
   {
     "title": "Pair Deduction Printer",
-    "prompt_md": "## Goal\nUse CTAD to create `std::pair` objects without specifying template arguments, then print their contents.\n\n## Input\n- Line 1: an integer and a double, space-separated\n- Line 2: two integers, space-separated\n\n## Output\n- Line 1: `<first> <second>` from the first pair (int and double)\n- Line 2: `<first> <second>` from the second pair (both ints)\n- Line 3: `<first> <second>` from a third pair created by combining the first element of pair1 and the first element of pair2\n\n## Requirements\n1. Read the input values into local variables first.\n2. Create `pair1` using CTAD from an `int` and a `double` -- do **not** write `std::pair<int, double>`.\n3. Create `pair2` using CTAD from two `int` values -- do **not** write `std::pair<int, int>`.\n4. Create `pair3` using CTAD from `pair1.first` and `pair2.first` -- do **not** specify template arguments.\n5. Print each pair's `.first` and `.second` separated by a space, one pair per line.\n6. Use `#include <iostream>` and `#include <utility>`.\n7. Do not use `auto` for the pair declarations -- use `std::pair` with CTAD.",
-    "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int a{};\n    double b{};\n    int c{};\n    int d{};\n\n    std::cin >> a >> b >> c >> d;\n\n    // TODO: Create pair1 from a and b using CTAD (no explicit template args)\n    // TODO: Create pair2 from c and d using CTAD (no explicit template args)\n    // TODO: Create pair3 from pair1.first and pair2.first using CTAD\n\n    // TODO: Print each pair's first and second on separate lines\n    //       Format per line: <first> <second>\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int a{};\n    double b{};\n    int c{};\n    int d{};\n\n    std::cin >> a >> b >> c >> d;\n\n    std::pair pair1{ a, b };\n    std::pair pair2{ c, d };\n    std::pair pair3{ pair1.first, pair2.first };\n\n    std::cout << pair1.first << ' ' << pair1.second << '\\n';\n    std::cout << pair2.first << ' ' << pair2.second << '\\n';\n    std::cout << pair3.first << ' ' << pair3.second << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nUse class template argument deduction (CTAD) to create `std::pair` objects without spelling out their template arguments, then print them.\n\n## Input\n- Line 1: an integer and a double, space-separated\n- Line 2: two integers, space-separated\n\n## Output\nThree lines, each `<first> <second>`:\n- the first pair (int, double)\n- the second pair (int, int)\n- a third pair built from the first element of pair 1 and the first element of pair 2\n\n## Constraints\n- Create all three pairs with CTAD -- write `std::pair{ ... }` with no explicit `<...>` template arguments, and do not use `auto` for the pair declarations.",
+    "starter_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int a{};\n    double b{};\n    int c{}, d{};\n    std::cin >> a >> b >> c >> d;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <utility>\n\nint main()\n{\n    int a{};\n    double b{};\n    int c{}, d{};\n    std::cin >> a >> b >> c >> d;\n\n    std::pair pair1{ a, b };\n    std::pair pair2{ c, d };\n    std::pair pair3{ pair1.first, pair2.first };\n\n    std::cout << pair1.first << ' ' << pair1.second << '\\n';\n    std::cout << pair2.first << ' ' << pair2.second << '\\n';\n    std::cout << pair3.first << ' ' << pair3.second << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
@@ -28,28 +28,28 @@
   },
   {
     "title": "Labeled Value with Deduction Guide",
-    "prompt_md": "## Goal\nWrite a struct template `Labeled` that pairs a label string with a value of any type. Add a deduction guide so that constructing from a C-string literal and a value deduces the label as `std::string`.\n\n## Input\n- Line 1: a single word (the label) and an integer, space-separated\n- Line 2: a single word (the label) and a double, space-separated\n\n## Output\n- Line 1: `[<label>] <value>` for the integer-valued `Labeled`\n- Line 2: `[<label>] <value>` for the double-valued `Labeled`\n\n## Requirements\n1. Define a struct template `Labeled` with template parameter `T` and two members: `std::string label` and `T value`, in that order.\n2. Provide a **deduction guide** so that `Labeled{\"text\", 42}` deduces `T = int` with `label` as `std::string` (not `const char*`). The deduction guide signature should accept `const char*` for the label and `T` for the value.\n3. In `main`, read both input lines into local `std::string` and numeric variables.\n4. Create each `Labeled` object using CTAD -- do **not** write explicit template arguments.\n5. Print each object in the format `[<label>] <value>`, one per line.\n6. Use `#include <iostream>` and `#include <string>`. Do not use `std::pair`.\n7. The struct must not have a user-declared constructor -- rely on aggregate initialization and the deduction guide.",
-    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a struct template Labeled<T> with members:\n//       std::string label\n//       T value\n\n// TODO: Write a deduction guide so that Labeled(const char*, T) -> Labeled<T>\n\nint main()\n{\n    std::string label1;\n    int intVal{};\n    std::string label2;\n    double dblVal{};\n\n    std::cin >> label1 >> intVal >> label2 >> dblVal;\n\n    // TODO: Create a Labeled object from label1 and intVal using CTAD\n    // TODO: Create a Labeled object from label2 and dblVal using CTAD\n\n    // TODO: Print each in the format: [<label>] <value>\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\ntemplate <typename T>\nstruct Labeled\n{\n    std::string label;\n    T value;\n};\n\ntemplate <typename T>\nLabeled(const char*, T) -> Labeled<T>;\n\nint main()\n{\n    std::string label1;\n    int intVal{};\n    std::string label2;\n    double dblVal{};\n\n    std::cin >> label1 >> intVal >> label2 >> dblVal;\n\n    Labeled item1{ label1, intVal };\n    Labeled item2{ label2, dblVal };\n\n    std::cout << '[' << item1.label << \"] \" << item1.value << '\\n';\n    std::cout << '[' << item2.label << \"] \" << item2.value << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nWrite a struct template `Labeled` that pairs a label with a value of any type, and add a deduction guide so that constructing it from a string literal stores the label as a `std::string` (not a `const char*`, which could not be printed safely later). Then rely on CTAD plus your guide to build and print labeled values.\n\n## Input\n- Line 1: an integer (the value to label `count`)\n- Line 2: a double (the value to label `price`)\n\n## Output\nTwo lines:\n```\n[count] <integer>\n[price] <double>\n```\n\n## Constraints\n- `Labeled<T>` has members `std::string label` and `T value`, and no user-declared constructor (rely on aggregate initialization).\n- Provide a deduction guide mapping `(const char*, T)` to `Labeled<T>`.\n- Construct each object from a string-literal label and the input value using CTAD -- no explicit template arguments. Do not use `std::pair`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int intVal{};\n    double dblVal{};\n    std::cin >> intVal >> dblVal;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\ntemplate <typename T>\nstruct Labeled\n{\n    std::string label;\n    T value;\n};\n\ntemplate <typename T>\nLabeled(const char*, T) -> Labeled<T>;\n\nint main()\n{\n    int intVal{};\n    double dblVal{};\n    std::cin >> intVal >> dblVal;\n\n    Labeled item1{ \"count\", intVal };\n    Labeled item2{ \"price\", dblVal };\n\n    std::cout << '[' << item1.label << \"] \" << item1.value << '\\n';\n    std::cout << '[' << item2.label << \"] \" << item2.value << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample -- basic labels",
+        "label": "Sample -- basic values",
         "is_sample": true,
-        "stdin": "count 42\nprice 9.99\n",
+        "stdin": "42 9.99\n",
         "expected_stdout": "[count] 42\n[price] 9.99\n"
       },
       {
         "label": "Hidden -- negative values",
         "is_sample": false,
-        "stdin": "debt -500\nrate -0.05\n",
-        "expected_stdout": "[debt] -500\n[rate] -0.05\n"
+        "stdin": "-500 -0.05\n",
+        "expected_stdout": "[count] -500\n[price] -0.05\n"
       },
       {
         "label": "Hidden -- zero values",
         "is_sample": false,
-        "stdin": "empty 0\nzero 0.0\n",
-        "expected_stdout": "[empty] 0\n[zero] 0\n"
+        "stdin": "0 0.0\n",
+        "expected_stdout": "[count] 0\n[price] 0\n"
       }
     ]
   }

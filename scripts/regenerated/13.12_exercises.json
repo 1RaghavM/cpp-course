@@ -1,35 +1,41 @@
 [
   {
     "title": "Employee Lookup via Pointer",
-    "prompt_md": "## Goal\nGiven a list of employees, find one by ID using a function that returns a pointer, then print its details using the arrow operator.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of employees\n- Next `n` lines: each contains a name (single word, no spaces) and an integer ID, separated by a space\n- Final line: an integer `queryId`, the ID to search for\n\n## Output\n- If an employee with the given ID exists, print exactly:\n```\nFound: <name> (ID: <id>)\n```\n- If no employee matches, print exactly:\n```\nNot found\n```\n\n## Requirements\n1. Define a struct named `Employee` at namespace scope with fields `std::string name` and `int id`, in that order.\n2. Write a function with signature `Employee* findById(Employee employees[], int size, int targetId)` that loops through the array and returns a pointer to the first employee whose `id` matches `targetId`. Return `nullptr` if none matches.\n3. In `main`, store employees in a plain array `Employee employees[10]`.\n4. After calling `findById`, check whether the returned pointer is `nullptr`. If it is not null, use the **arrow operator** (`->`) to access the employee's `name` and `id` for printing. Do not dereference with `(*ptr).member`.\n5. Use `std::cout` for all output.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\n// TODO: Write function: Employee* findById(Employee employees[], int size, int targetId)\n//       Return a pointer to the matching employee, or nullptr if not found.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Employee employees[10];\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cin >> employees[i].name >> employees[i].id;\n    }\n\n    int queryId{};\n    std::cin >> queryId;\n\n    // TODO: Call findById and store the result in a pointer\n    // TODO: If the pointer is not nullptr, print: Found: <name> (ID: <id>)\n    //       using the arrow operator (->)\n    // TODO: Otherwise, print: Not found\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\nEmployee* findById(Employee employees[], int size, int targetId)\n{\n    for (int i{ 0 }; i < size; ++i)\n    {\n        if (employees[i].id == targetId)\n            return &employees[i];\n    }\n    return nullptr;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Employee employees[10];\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::cin >> employees[i].name >> employees[i].id;\n    }\n\n    int queryId{};\n    std::cin >> queryId;\n\n    Employee* result{ findById(employees, n, queryId) };\n    if (result != nullptr)\n        std::cout << \"Found: \" << result->name << \" (ID: \" << result->id << \")\\n\";\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nSearch a list of employees for one with a given ID. Track the match with a pointer to a struct (`nullptr` when there is no match), and print the result through a function that accesses members with the arrow operator.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of employees\n- Line 2: an integer `queryId`, the ID to search for\n- Next `n` lines: each contains a name (single word) and an integer ID, space-separated\n\n## Output\n- If an employee with `queryId` exists:\n  ```\n  Found: <name> (ID: <id>)\n  ```\n- Otherwise:\n  ```\n  Not found\n  ```\n\n## Constraints\n- Define a `struct Employee` with `std::string name` and `int id`.\n- Keep track of the matching employee using an `Employee*` (start it at `nullptr`).\n- Print the found employee through a function that receives a pointer and uses the arrow operator (`->`); do not use `(*ptr).member`.\n- All IDs in the input are distinct. Do not use arrays.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    int queryId{};\n    std::cin >> n >> queryId;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Employee\n{\n    std::string name;\n    int id;\n};\n\nvoid printEmployee(const Employee* e)\n{\n    std::cout << \"Found: \" << e->name << \" (ID: \" << e->id << \")\\n\";\n}\n\nint main()\n{\n    int n{};\n    int queryId{};\n    std::cin >> n >> queryId;\n\n    Employee found{};\n    Employee* match{ nullptr };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string name;\n        int id{};\n        std::cin >> name >> id;\n        if (id == queryId)\n        {\n            found = Employee{ name, id };\n            match = &found;\n        }\n    }\n\n    if (match != nullptr)\n        printEmployee(match);\n    else\n        std::cout << \"Not found\\n\";\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Sample -- find existing employee",
         "is_sample": true,
-        "stdin": "3\nAlice 101\nBob 202\nCarla 303\n202\n",
+        "stdin": "3\n202\nAlice 101\nBob 202\nCarla 303\n",
         "expected_stdout": "Found: Bob (ID: 202)\n"
       },
       {
         "label": "Hidden -- ID not found",
         "is_sample": false,
-        "stdin": "2\nDave 10\nEve 20\n99\n",
+        "stdin": "2\n99\nDave 10\nEve 20\n",
         "expected_stdout": "Not found\n"
       },
       {
         "label": "Hidden -- single employee matches",
         "is_sample": false,
-        "stdin": "1\nZara 500\n500\n",
+        "stdin": "1\n500\nZara 500\n",
         "expected_stdout": "Found: Zara (ID: 500)\n"
+      },
+      {
+        "label": "Hidden -- match is the last employee",
+        "is_sample": false,
+        "stdin": "4\n7\nA 1\nB 3\nC 5\nD 7\n",
+        "expected_stdout": "Found: D (ID: 7)\n"
       }
     ]
   },
   {
     "title": "Modify Structs Through Pointers and Read Through References",
-    "prompt_md": "## Goal\nRead a rectangle's dimensions, use a pointer to double its size via the arrow operator, then use a reference to print the updated dimensions.\n\n## Input\n- Line 1: two integers `width` and `height` separated by a space (1 <= width, height <= 1000)\n\n## Output\nPrint exactly two lines:\n```\nBefore: <width> x <height> (area: <area>)\nAfter: <width> x <height> (area: <area>)\n```\nThe \"After\" line shows the rectangle after both `width` and `height` have been doubled.\n\n## Requirements\n1. Define a struct named `Rect` at namespace scope with fields `int width` and `int height`, in that order.\n2. Write a function `void doubleSize(Rect* r)` that takes a pointer to a `Rect` and doubles both its `width` and `height` using the **arrow operator** (`->`).\n3. Write a function `void printRect(const Rect& r)` that takes a **const reference** to a `Rect` and prints one line in the format `<width> x <height> (area: <area>)` using the **dot operator** (`.`). The area is `width * height`.\n4. In `main`, create a `Rect` from the input values. Print the \"Before\" line by calling `printRect`, then call `doubleSize` with the address of the rect, then print the \"After\" line by calling `printRect` again.\n5. The \"Before:\" and \"After:\" prefixes must be printed in `main`, not inside `printRect`. Call `printRect` to produce the rest of each line.\n6. Use `std::cout` for all output. Print each prefix without a newline, then call `printRect` which prints the remainder of the line including the newline.",
-    "starter_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\n// TODO: Write function: void doubleSize(Rect* r)\n//       Double both width and height using the arrow operator (->).\n\n// TODO: Write function: void printRect(const Rect& r)\n//       Print: <width> x <height> (area: <area>)\n//       Access fields using the dot operator (.) since r is a reference.\n//       End the line with '\\n'.\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    Rect rect{ w, h };\n\n    // TODO: Print \"Before: \" then call printRect\n    // TODO: Call doubleSize with the address of rect\n    // TODO: Print \"After: \" then call printRect\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nDouble a rectangle's dimensions through a pointer (using the arrow operator), then print it through a const reference (using the dot operator).\n\n## Input\n- Line 1: two integers `width` and `height` (1 <= each <= 1000)\n\n## Output\nTwo lines:\n```\nBefore: <width> x <height> (area: <area>)\nAfter: <width> x <height> (area: <area>)\n```\nThe \"After\" line shows the rectangle once both dimensions have been doubled.\n\n## Constraints\n- Define a `struct Rect` with `int width` and `int height`.\n- Write a function that takes a `Rect*` and doubles both dimensions via the arrow operator (`->`).\n- Write a function that takes a `const Rect&` and prints `<width> x <height> (area: <area>)` (ending the line) via the dot operator. The `Before: `/`After: ` prefixes are printed by the caller, not inside the printing function.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nstruct Rect\n{\n    int width;\n    int height;\n};\n\nvoid doubleSize(Rect* r)\n{\n    r->width *= 2;\n    r->height *= 2;\n}\n\nvoid printRect(const Rect& r)\n{\n    std::cout << r.width << \" x \" << r.height\n              << \" (area: \" << r.width * r.height << \")\\n\";\n}\n\nint main()\n{\n    int w{}, h{};\n    std::cin >> w >> h;\n\n    Rect rect{ w, h };\n\n    std::cout << \"Before: \";\n    printRect(rect);\n\n    doubleSize(&rect);\n\n    std::cout << \"After: \";\n    printRect(rect);\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [

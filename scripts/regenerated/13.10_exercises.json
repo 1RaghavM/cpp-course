@@ -1,25 +1,25 @@
 [
   {
-    "title": "Print a Scaled Rectangle",
-    "prompt_md": "## Goal\nWrite a function that takes a `Rectangle` struct by const reference, scales it by an integer factor, and returns a new `Rectangle` by value. Then print the result.\n\n## Input\n- Line 1: two integers `width` and `height` of the original rectangle (1 <= width, height <= 1000)\n- Line 2: one integer `factor` to scale by (1 <= factor <= 100)\n\n## Output\nPrint exactly one line in this format:\n```\n<scaled_width> x <scaled_height>\n```\nwhere `scaled_width` is `width * factor` and `scaled_height` is `height * factor`. Note the spaces around `x`.\n\n## Requirements\n1. Define a struct named `Rectangle` with two `int` members: `width` and `height`, in that order, at namespace scope.\n2. Write a function `Rectangle scale(const Rectangle& rect, int factor)` that returns a new `Rectangle` whose members are the original members multiplied by `factor`. The parameter must be `const Rectangle&` (pass by const reference).\n3. In `main`, read input, create a `Rectangle` using aggregate initialization, call `scale`, and print the result using dot notation.\n4. Do not modify the original rectangle. The function must return by value.",
-    "starter_code": "#include <iostream>\n\n// TODO: Define struct Rectangle with int width and int height\n\n// TODO: Write Rectangle scale(const Rectangle& rect, int factor)\n//       Return a new Rectangle with each dimension multiplied by factor.\n\nint main()\n{\n    int w, h, factor;\n    std::cin >> w >> h >> factor;\n\n    // TODO: Create a Rectangle from w and h using aggregate initialization\n    // TODO: Call scale() and store the result\n    // TODO: Print: <scaled_width> x <scaled_height>\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nstruct Rectangle\n{\n    int width;\n    int height;\n};\n\nRectangle scale(const Rectangle& rect, int factor)\n{\n    return Rectangle{ rect.width * factor, rect.height * factor };\n}\n\nint main()\n{\n    int w, h, factor;\n    std::cin >> w >> h >> factor;\n\n    Rectangle original{ w, h };\n    Rectangle scaled = scale(original, factor);\n\n    std::cout << scaled.width << \" x \" << scaled.height << '\\n';\n\n    return 0;\n}\n",
+    "title": "Scale a Rectangle",
+    "prompt_md": "## Goal\nWrite a function that scales a `Rectangle` by an integer factor, taking the rectangle by `const` reference and returning a brand-new `Rectangle` by value (leaving the original untouched).\n\n## Input\n- Line 1: two integers `width` and `height` (1 <= each <= 1000)\n- Line 2: one integer `factor` (1 <= factor <= 100)\n\n## Output\nOne line:\n```\n<scaled_width> x <scaled_height>\n```\nwhere each dimension is the original multiplied by `factor` (note the spaces around `x`).\n\n## Constraints\n- Define a `struct Rectangle` with `int` width and height.\n- The scaling function must take its `Rectangle` parameter by `const` reference and return a new `Rectangle` by value; it must not modify the original.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int w{}, h{}, factor{};\n    std::cin >> w >> h >> factor;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Rectangle\n{\n    int width;\n    int height;\n};\n\nRectangle scale(const Rectangle& rect, int factor)\n{\n    return Rectangle{ rect.width * factor, rect.height * factor };\n}\n\nint main()\n{\n    int w{}, h{}, factor{};\n    std::cin >> w >> h >> factor;\n\n    Rectangle original{ w, h };\n    Rectangle scaled{ scale(original, factor) };\n\n    std::cout << scaled.width << \" x \" << scaled.height << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample — basic scaling",
+        "label": "Sample -- basic scaling",
         "stdin": "3 4\n2\n",
         "expected_stdout": "6 x 8\n",
         "is_sample": true
       },
       {
-        "label": "Hidden — scale factor of 1",
+        "label": "Hidden -- scale factor of 1",
         "stdin": "10 20\n1\n",
         "expected_stdout": "10 x 20\n",
         "is_sample": false
       },
       {
-        "label": "Hidden — large values",
+        "label": "Hidden -- large values",
         "stdin": "1000 500\n100\n",
         "expected_stdout": "100000 x 50000\n",
         "is_sample": false
@@ -28,25 +28,25 @@
   },
   {
     "title": "Student Grade Report via Struct Functions",
-    "prompt_md": "## Goal\nBuild a small grade-report system using a `Student` struct. Read student data, compute an average using a function that takes the struct by const reference, and update the student's letter grade using a function that takes the struct by non-const reference.\n\n## Input\n- Line 1: a single-word student name (no spaces)\n- Line 2: three integer scores separated by spaces (0 <= each score <= 100)\n\n## Output\nPrint exactly two lines:\n```\n<name>: avg <average>\n<name>: grade <letter>\n```\n- `<average>` is the integer average of the three scores (use integer division, truncating toward zero).\n- `<letter>` is determined by the average: `'A'` if average >= 90, `'B'` if >= 80, `'C'` if >= 70, `'D'` if >= 60, `'F'` otherwise.\n\n## Requirements\n1. Define a struct `Student` at namespace scope with three members in order: `std::string name`, `int totalScore` (sum of the three scores), `char grade` (default initialized to `'F'`).\n2. Write `int computeAverage(const Student& s)` — returns `s.totalScore / 3`. The parameter must be `const Student&`.\n3. Write `void assignGrade(Student& s)` — computes the average by calling `computeAverage(s)`, then sets `s.grade` based on the thresholds above. The parameter must be non-const `Student&` because it modifies `grade`.\n4. In `main`, read input, create a `Student` with aggregate initialization (set `totalScore` to the sum of the three scores, leave `grade` at its default), call `assignGrade`, then print the two output lines.\n5. Do not use any global variables.",
-    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define struct Student with:\n//       std::string name, int totalScore, char grade (default 'F')\n\n// TODO: int computeAverage(const Student& s)\n//       Return s.totalScore / 3\n\n// TODO: void assignGrade(Student& s)\n//       Compute average via computeAverage, then set s.grade:\n//       'A' >= 90, 'B' >= 80, 'C' >= 70, 'D' >= 60, else 'F'\n\nint main()\n{\n    std::string name;\n    int s1, s2, s3;\n    std::cin >> name >> s1 >> s2 >> s3;\n\n    // TODO: Create Student with aggregate init (name, sum of scores, default grade)\n    // TODO: Call assignGrade\n    // TODO: Print: <name>: avg <average>\n    // TODO: Print: <name>: grade <letter>\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Student\n{\n    std::string name;\n    int totalScore;\n    char grade{ 'F' };\n};\n\nint computeAverage(const Student& s)\n{\n    return s.totalScore / 3;\n}\n\nvoid assignGrade(Student& s)\n{\n    int avg = computeAverage(s);\n    if (avg >= 90)\n        s.grade = 'A';\n    else if (avg >= 80)\n        s.grade = 'B';\n    else if (avg >= 70)\n        s.grade = 'C';\n    else if (avg >= 60)\n        s.grade = 'D';\n    else\n        s.grade = 'F';\n}\n\nint main()\n{\n    std::string name;\n    int s1, s2, s3;\n    std::cin >> name >> s1 >> s2 >> s3;\n\n    Student student{ name, s1 + s2 + s3 };\n    assignGrade(student);\n\n    std::cout << student.name << \": avg \" << computeAverage(student) << '\\n';\n    std::cout << student.name << \": grade \" << student.grade << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nBuild a small grade system using a `Student` struct, one function that reads the struct (by `const` reference) and one that modifies it (by non-`const` reference).\n\nThe `Student` struct stores a name, a total score (the sum of three tests), and a letter grade (default `'F'`).\n\n## Input\n- Line 1: a single-word student name\n- Line 2: three integer scores (0-100), space-separated\n\n## Output\nTwo lines:\n```\n<name>: avg <average>\n<name>: grade <letter>\n```\n`<average>` is the total divided by 3 (integer division). `<letter>` is `A` (avg >= 90), `B` (>= 80), `C` (>= 70), `D` (>= 60), else `F`.\n\n## Constraints\n- Write a function taking the `Student` by `const&` that returns its average.\n- Write a function taking the `Student` by non-`const&` that sets the `grade` member based on the average.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string name;\n    int s1{}, s2{}, s3{};\n    std::cin >> name >> s1 >> s2 >> s3;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Student\n{\n    std::string name;\n    int totalScore;\n    char grade{ 'F' };\n};\n\nint computeAverage(const Student& s)\n{\n    return s.totalScore / 3;\n}\n\nvoid assignGrade(Student& s)\n{\n    int avg{ computeAverage(s) };\n    if (avg >= 90)\n        s.grade = 'A';\n    else if (avg >= 80)\n        s.grade = 'B';\n    else if (avg >= 70)\n        s.grade = 'C';\n    else if (avg >= 60)\n        s.grade = 'D';\n    else\n        s.grade = 'F';\n}\n\nint main()\n{\n    std::string name;\n    int s1{}, s2{}, s3{};\n    std::cin >> name >> s1 >> s2 >> s3;\n\n    Student student{ name, s1 + s2 + s3 };\n    assignGrade(student);\n\n    std::cout << student.name << \": avg \" << computeAverage(student) << '\\n';\n    std::cout << student.name << \": grade \" << student.grade << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Sample — B grade student",
+        "label": "Sample -- B grade student",
         "stdin": "Alice\n85 90 80\n",
         "expected_stdout": "Alice: avg 85\nAlice: grade B\n",
         "is_sample": true
       },
       {
-        "label": "Hidden — failing student",
+        "label": "Hidden -- failing student",
         "stdin": "Bob\n40 50 30\n",
         "expected_stdout": "Bob: avg 40\nBob: grade F\n",
         "is_sample": false
       },
       {
-        "label": "Hidden — exact boundary at 90",
+        "label": "Hidden -- exact boundary at 90",
         "stdin": "Zara\n90 90 90\n",
         "expected_stdout": "Zara: avg 90\nZara: grade A\n",
         "is_sample": false
