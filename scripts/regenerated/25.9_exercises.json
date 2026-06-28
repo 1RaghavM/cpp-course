@@ -1,55 +1,67 @@
 [
   {
     "title": "Spot the slice",
-    "prompt_md": "## Goal\n\nDemonstrate object slicing by showing the difference between calling a virtual function through a by-value copy versus through a reference.\n\n## Input\n\n- Line 1: a string `name` (1-50 characters, no spaces).\n\n## Output\n\nExactly four lines:\n1. `Direct: <name> is a Cat`\n2. `Ref: <name> is a Cat`\n3. `Sliced: <name> is an Animal`\n4. `Legs after slice: 0`\n\n## Requirements\n\n- Define a class `Animal` with a `std::string m_name` member, a constructor taking `const std::string&`, a public `const std::string& getName() const` accessor, and a public `virtual std::string describe() const` that returns `getName() + \" is an Animal\"`.\n- Define a class `Cat` that publicly inherits from `Animal`. It has an additional `int m_legs{4}` member. Its constructor takes `const std::string&` and forwards it to `Animal`. Override `describe()` (use `override`) to return `getName() + \" is a Cat\"`. Add a public `int getLegs() const` that returns `m_legs`.\n- In `main`, read the name and create a `Cat` object.\n- Print `Direct: ` followed by calling `describe()` directly on the `Cat`.\n- Create a `const Animal&` reference to the `Cat` and print `Ref: ` followed by calling `describe()` through the reference.\n- Create an `Animal` variable (by value) initialized from the `Cat`. Print `Sliced: ` followed by calling `describe()` on this sliced copy.\n- Print `Legs after slice: 0` (since the sliced `Animal` has no `m_legs` member, the derived data is gone -- print the literal `0`).",
-    "starter_code": "#include <iostream>\n#include <string>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    // TODO: Declare virtual describe() const returning std::string\n    //       Return getName() + \" is an Animal\"\n    virtual std::string describe() const\n    {\n        return \"\";\n    }\n};\n\nclass Cat : public Animal\n{\n    int m_legs{4};\n\npublic:\n    Cat(const std::string& name)\n        : Animal{name}\n    {\n    }\n\n    // TODO: Override describe() to return getName() + \" is a Cat\"\n    std::string describe() const override\n    {\n        return \"\";\n    }\n\n    int getLegs() const { return m_legs; }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Cat cat{name};\n\n    // TODO: Print \"Direct: \" + cat.describe()\n\n    // TODO: Create const Animal& ref to cat, print \"Ref: \" + ref.describe()\n\n    // TODO: Create Animal by value from cat (this slices!), print \"Sliced: \" + sliced.describe()\n\n    // TODO: Print \"Legs after slice: 0\"\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nclass Animal\n{\n    std::string m_name;\n\npublic:\n    Animal(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    const std::string& getName() const { return m_name; }\n\n    virtual std::string describe() const\n    {\n        return getName() + \" is an Animal\";\n    }\n};\n\nclass Cat : public Animal\n{\n    int m_legs{4};\n\npublic:\n    Cat(const std::string& name)\n        : Animal{name}\n    {\n    }\n\n    std::string describe() const override\n    {\n        return getName() + \" is a Cat\";\n    }\n\n    int getLegs() const { return m_legs; }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    Cat cat{name};\n\n    std::cout << \"Direct: \" << cat.describe() << '\\n';\n\n    const Animal& ref{cat};\n    std::cout << \"Ref: \" << ref.describe() << '\\n';\n\n    Animal sliced{cat};\n    std::cout << \"Sliced: \" << sliced.describe() << '\\n';\n\n    std::cout << \"Legs after slice: 0\" << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\n**Object slicing**: copying a derived object into a base *by value* throws away the derived data and the derived virtual behavior, leaving a plain base object. The same derived object reached through a base *reference* keeps everything. Demonstrate both from one derived object.\n\nBuild a base class `Monster` holding an `int` hit-point value with a virtual `threat()` that returns it. Build a derived class `Boss` that adds an extra `int` rage value and overrides `threat()` to return hp + rage. Given one `Boss`, report its `threat()` three ways: called directly on the `Boss`, called through a `Monster&` bound to it, and called on a `Monster` copied from it by value (the slice).\n\n## Input\n\n- Line 1: two integers `hp rage`.\n\n## Output\n\n```\nDirect: <hp+rage>\nRef: <hp+rage>\nSliced: <hp>\n```\nThe direct and reference calls dispatch to `Boss::threat`; the by-value copy slices off the rage and dispatches to `Monster::threat`.\n\nExample input `100 50`:\n```\nDirect: 150\nRef: 150\nSliced: 100\n```",
+    "starter_code": "#include <iostream>\n\n// Build a Monster base with a virtual threat() and a Boss derived class that\n// adds extra state and a stronger threat(). Then report threat() three ways\n// from one Boss: directly, through a Monster&, and through a by-value copy.\n\nint main()\n{\n    int hp{}, rage{};\n    std::cin >> hp >> rage;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Monster\n{\n    int m_hp{};\npublic:\n    Monster(int hp) : m_hp{hp} {}\n    virtual int threat() const { return m_hp; }\n    virtual ~Monster() = default;\n};\n\nclass Boss : public Monster\n{\n    int m_rage{};\npublic:\n    Boss(int hp, int rage) : Monster{hp}, m_rage{rage} {}\n    int threat() const override { return Monster::threat() + m_rage; }\n};\n\nint main()\n{\n    int hp{}, rage{};\n    std::cin >> hp >> rage;\n\n    Boss boss{hp, rage};\n    std::cout << \"Direct: \" << boss.threat() << '\\n';\n\n    const Monster& ref{boss};\n    std::cout << \"Ref: \" << ref.threat() << '\\n';\n\n    Monster sliced{boss};\n    std::cout << \"Sliced: \" << sliced.threat() << '\\n';\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Cat named Whiskers",
+        "label": "Strong boss",
         "is_sample": true,
-        "stdin": "Whiskers",
-        "expected_stdout": "Direct: Whiskers is a Cat\nRef: Whiskers is a Cat\nSliced: Whiskers is an Animal\nLegs after slice: 0\n"
+        "stdin": "100 50\n",
+        "expected_stdout": "Direct: 150\nRef: 150\nSliced: 100\n"
       },
       {
-        "label": "Cat named Luna",
+        "label": "All zero",
         "is_sample": false,
-        "stdin": "Luna",
-        "expected_stdout": "Direct: Luna is a Cat\nRef: Luna is a Cat\nSliced: Luna is an Animal\nLegs after slice: 0\n"
+        "stdin": "0 0\n",
+        "expected_stdout": "Direct: 0\nRef: 0\nSliced: 0\n"
       },
       {
-        "label": "Cat named Milo",
+        "label": "Rage dominates",
         "is_sample": false,
-        "stdin": "Milo",
-        "expected_stdout": "Direct: Milo is a Cat\nRef: Milo is a Cat\nSliced: Milo is an Animal\nLegs after slice: 0\n"
+        "stdin": "30 70\n",
+        "expected_stdout": "Direct: 100\nRef: 100\nSliced: 30\n"
+      },
+      {
+        "label": "Tiny rage",
+        "is_sample": false,
+        "stdin": "200 5\n",
+        "expected_stdout": "Direct: 205\nRef: 205\nSliced: 200\n"
       }
     ]
   },
   {
     "title": "Fix the slicing bug",
-    "prompt_md": "## Goal\n\nYou are given a program that stores shapes in a `std::vector` and prints their areas. The original code uses `std::vector<Shape>`, which causes object slicing -- every derived shape is sliced to a plain `Shape` with area `0`. Fix the code to use `std::vector<Shape*>` so virtual dispatch works correctly.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 10) -- the number of shapes.\n- Next `N` lines: either `circle <radius>` or `rect <width> <height>`, where all values are positive integers (1 <= value <= 100).\n\n## Output\n\nFor each shape, print one line:\n- `Circle: <area>` for circles\n- `Rect: <area>` for rectangles\n\nwhere `<area>` is the area as a **truncated integer** (`static_cast<int>(area)`).\n\nUse `pi = 3.14159265` for circle area.\n\n## Requirements\n\n- A base class `Shape` with `virtual std::string label() const` returning `\"Shape\"` and `virtual double area() const` returning `0.0`.\n- A `Circle` class (derived from `Shape`) with `int m_radius`. Override `label()` to return `\"Circle\"` and `area()` to return `pi * m_radius * m_radius`. Both use `override`.\n- A `Rectangle` class (derived from `Shape`) with `int m_width` and `int m_height`. Override `label()` to return `\"Rect\"` and `area()` to return `static_cast<double>(m_width) * m_height`. Both use `override`.\n- Store shapes in a `std::vector<Shape*>` (allocate with `new`).\n- Loop over the vector printing `<label>: <truncated_area>` for each shape.\n- Delete all dynamically allocated shapes before the program ends.\n- Do NOT use `std::vector<Shape>` -- that causes slicing and is the bug you are fixing.",
-    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nconstexpr double pi{3.14159265};\n\nclass Shape\n{\npublic:\n    virtual std::string label() const { return \"Shape\"; }\n    virtual double area() const { return 0.0; }\n};\n\nclass Circle : public Shape\n{\n    int m_radius{};\n\npublic:\n    Circle(int radius)\n        : m_radius{radius}\n    {\n    }\n\n    // TODO: Override label() to return \"Circle\"\n    // TODO: Override area() to return pi * m_radius * m_radius\n};\n\nclass Rectangle : public Shape\n{\n    int m_width{};\n    int m_height{};\n\npublic:\n    Rectangle(int width, int height)\n        : m_width{width}, m_height{height}\n    {\n    }\n\n    // TODO: Override label() to return \"Rect\"\n    // TODO: Override area() to return width * height as double\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // BUG: std::vector<Shape> causes slicing!\n    // TODO: Change to std::vector<Shape*> and allocate with new\n    std::vector<Shape*> shapes{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"circle\")\n        {\n            int r{};\n            std::cin >> r;\n            // TODO: Allocate a Circle and push_back\n        }\n        else\n        {\n            int w{}, h{};\n            std::cin >> w >> h;\n            // TODO: Allocate a Rectangle and push_back\n        }\n    }\n\n    // TODO: Loop over shapes, print \"<label>: <truncated_area>\" for each\n\n    // TODO: Delete all shapes\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nconstexpr double pi{3.14159265};\n\nclass Shape\n{\npublic:\n    virtual std::string label() const { return \"Shape\"; }\n    virtual double area() const { return 0.0; }\n};\n\nclass Circle : public Shape\n{\n    int m_radius{};\n\npublic:\n    Circle(int radius)\n        : m_radius{radius}\n    {\n    }\n\n    std::string label() const override { return \"Circle\"; }\n    double area() const override { return pi * m_radius * m_radius; }\n};\n\nclass Rectangle : public Shape\n{\n    int m_width{};\n    int m_height{};\n\npublic:\n    Rectangle(int width, int height)\n        : m_width{width}, m_height{height}\n    {\n    }\n\n    std::string label() const override { return \"Rect\"; }\n    double area() const override { return static_cast<double>(m_width) * m_height; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Shape*> shapes{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        if (type == \"circle\")\n        {\n            int r{};\n            std::cin >> r;\n            shapes.push_back(new Circle{r});\n        }\n        else\n        {\n            int w{}, h{};\n            std::cin >> w >> h;\n            shapes.push_back(new Rectangle{w, h});\n        }\n    }\n\n    for (const auto* s : shapes)\n    {\n        std::cout << s->label() << \": \" << static_cast<int>(s->area()) << '\\n';\n    }\n\n    for (auto* s : shapes)\n    {\n        delete s;\n    }\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nStoring polymorphic objects in a `std::vector<Base>` slices every derived element down to a plain base. Demonstrate the bug and its fix side by side: load the **same** input into a by-value container and into a pointer-based container, and show that the by-value totals are wrong while the pointer-based totals are correct.\n\nBuild a base class `Employee` whose `pay()` is virtual and returns a base salary. Build a derived class `Manager` that adds a bonus on top (its `pay()` returns base + bonus). Read the employees once, place copies into a `std::vector<Employee>` (which slices managers) and into a `std::vector<std::unique_ptr<Employee>>` (which preserves them), then report each container's total pay.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 50).\n- Next `N` lines, each one of:\n  - `worker <base>` -- a plain employee earning `base`\n  - `manager <base> <bonus>` -- earns `base + bonus`\n\n  All values are integers.\n\n## Output\n\n```\nSliced total: <sum of pay() from the by-value vector>\nPolymorphic total: <sum of pay() from the pointer vector>\n```\nThe sliced total drops every manager's bonus; the polymorphic total keeps it.\n\nExample input:\n```\n3\nworker 100\nmanager 200 50\nworker 300\n```\nOutput:\n```\nSliced total: 600\nPolymorphic total: 650\n```",
+    "starter_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\n// Build an Employee base whose pay() is virtual, and a Manager that adds a\n// bonus on top. Read the same employees into a by-value container and a\n// pointer-based container, and compare the two totals.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\nclass Employee\n{\n    int m_base{};\npublic:\n    Employee(int base) : m_base{base} {}\n    virtual int pay() const { return m_base; }\n    virtual ~Employee() = default;\n};\n\nclass Manager : public Employee\n{\n    int m_bonus{};\npublic:\n    Manager(int base, int bonus) : Employee{base}, m_bonus{bonus} {}\n    int pay() const override { return Employee::pay() + m_bonus; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Employee> sliced{};\n    std::vector<std::unique_ptr<Employee>> poly{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        if (type == \"manager\")\n        {\n            int base{}, bonus{};\n            std::cin >> base >> bonus;\n            Manager m{base, bonus};\n            sliced.push_back(m);\n            poly.push_back(std::make_unique<Manager>(base, bonus));\n        }\n        else\n        {\n            int base{};\n            std::cin >> base;\n            Employee e{base};\n            sliced.push_back(e);\n            poly.push_back(std::make_unique<Employee>(base));\n        }\n    }\n\n    int slicedTotal{0};\n    for (const auto& e : sliced)\n        slicedTotal += e.pay();\n\n    int polyTotal{0};\n    for (const auto& e : poly)\n        polyTotal += e->pay();\n\n    std::cout << \"Sliced total: \" << slicedTotal << '\\n';\n    std::cout << \"Polymorphic total: \" << polyTotal << '\\n';\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Mixed shapes",
+        "label": "One manager among workers",
         "is_sample": true,
-        "stdin": "3\ncircle 5\nrect 4 6\ncircle 1\n",
-        "expected_stdout": "Circle: 78\nRect: 24\nCircle: 3\n"
+        "stdin": "3\nworker 100\nmanager 200 50\nworker 300\n",
+        "expected_stdout": "Sliced total: 600\nPolymorphic total: 650\n"
       },
       {
-        "label": "All rectangles",
+        "label": "Single manager",
         "is_sample": false,
-        "stdin": "2\nrect 10 10\nrect 3 7\n",
-        "expected_stdout": "Rect: 100\nRect: 21\n"
+        "stdin": "1\nmanager 500 100\n",
+        "expected_stdout": "Sliced total: 500\nPolymorphic total: 600\n"
       },
       {
-        "label": "Single large circle",
+        "label": "Only workers, no difference",
         "is_sample": false,
-        "stdin": "1\ncircle 100\n",
-        "expected_stdout": "Circle: 31415\n"
+        "stdin": "2\nworker 10\nworker 20\n",
+        "expected_stdout": "Sliced total: 30\nPolymorphic total: 30\n"
+      },
+      {
+        "label": "Mostly managers",
+        "is_sample": false,
+        "stdin": "4\nmanager 100 1\nmanager 100 2\nmanager 100 3\nworker 50\n",
+        "expected_stdout": "Sliced total: 350\nPolymorphic total: 356\n"
       }
     ]
   }

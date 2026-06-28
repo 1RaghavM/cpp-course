@@ -1,55 +1,67 @@
 [
   {
     "title": "Shape area via abstract base class",
-    "prompt_md": "## Goal\n\nBuild a `Shape` abstract base class with a pure virtual `area()` function, then implement two concrete derived classes (`Circle` and `Rectangle`) that override it. Demonstrate polymorphism by calling `area()` through base-class pointers.\n\n## Input\n\n- Line 1: a string, either `circle` or `rectangle`.\n- Line 2: if `circle`, a single double `r` (the radius). If `rectangle`, two doubles `w` and `h` (width and height), space-separated.\n\n## Output\n\nA single line: `Area: ` followed by the computed area with exactly 2 decimal places.\n\nFor input `circle` / `5.0`:\n```\nArea: 78.54\n```\n\nFor input `rectangle` / `3.0 4.0`:\n```\nArea: 12.00\n```\n\n## Requirements\n\n- Define a class `Shape` with a public pure virtual function `double area() const = 0` and a public `virtual ~Shape() = default`.\n- Define a class `Circle` that publicly inherits from `Shape`. It stores a `double m_radius` and overrides `area()` using `override`. Compute area as `3.14159265 * r * r`.\n- Define a class `Rectangle` that publicly inherits from `Shape`. It stores `double m_width` and `double m_height` and overrides `area()` using `override`. Compute area as `w * h`.\n- In `main`, read the shape type and its parameters. Create the appropriate derived object with `new`, store it in a `Shape*`, print the area formatted to 2 decimal places using `std::fixed` and `std::setprecision(2)`, then `delete` the object.\n- You must call `area()` through the `Shape*` pointer, not directly on the derived type.",
-    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    // TODO: Declare area() as a pure virtual function\n    // TODO: Declare a virtual destructor\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius) : m_radius{radius} {}\n\n    // TODO: Override area() to return 3.14159265 * m_radius * m_radius\n};\n\nclass Rectangle : public Shape\n{\n    double m_width{};\n    double m_height{};\n\npublic:\n    Rectangle(double width, double height) : m_width{width}, m_height{height} {}\n\n    // TODO: Override area() to return m_width * m_height\n};\n\nint main()\n{\n    std::string type{};\n    std::cin >> type;\n\n    Shape* shape{nullptr};\n\n    // TODO: Read parameters based on type, create the right derived object\n    // Print \"Area: \" followed by shape->area() with 2 decimal places\n    // Delete the object\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual double area() const = 0;\n    virtual ~Shape() = default;\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\npublic:\n    Circle(double radius) : m_radius{radius} {}\n    double area() const override { return 3.14159265 * m_radius * m_radius; }\n};\n\nclass Rectangle : public Shape\n{\n    double m_width{};\n    double m_height{};\npublic:\n    Rectangle(double w, double h) : m_width{w}, m_height{h} {}\n    double area() const override { return m_width * m_height; }\n};\n\nint main()\n{\n    std::string type{};\n    std::cin >> type;\n\n    Shape* shape{nullptr};\n\n    if (type == \"circle\")\n    {\n        double r{};\n        std::cin >> r;\n        shape = new Circle{r};\n    }\n    else\n    {\n        double w{}, h{};\n        std::cin >> w >> h;\n        shape = new Rectangle{w, h};\n    }\n\n    std::cout << \"Area: \" << std::fixed << std::setprecision(2) << shape->area() << '\\n';\n    delete shape;\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nMany kinds of shapes can report an area, but a generic \"shape\" has no area of its own -- there is no sensible default. Model this with an **abstract base class** `Shape` that declares `area()` as a pure virtual function (and has a virtual destructor), plus concrete shapes `Circle` and `Rectangle` that each know how to compute their own area. Your program reads a list of shapes and reports each area and the running total, computing every value polymorphically through `Shape`.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 20), the number of shapes.\n- Next `N` lines, each one of:\n  - `circle <r>` -- a circle of radius `r`\n  - `rectangle <w> <h>` -- a rectangle of width `w` and height `h`\n\n  All numeric values are doubles.\n\n## Output\n\nFor each shape in order, one line `Area: <area>` with exactly 2 decimal places. After all shapes, one final line `Total: <sum>` with 2 decimals.\n\nUse `pi = 3.14159265` for circle area.\n\nExample input:\n```\n2\ncircle 5\nrectangle 3 4\n```\nOutput:\n```\nArea: 78.54\nArea: 12.00\nTotal: 90.54\n```",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <memory>\n#include <string>\n#include <vector>\n\n// Define an abstract Shape base class and the concrete Circle / Rectangle\n// shapes that know how to compute their own area.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Read n shapes, compute and print each area, then the total.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <memory>\n#include <string>\n#include <vector>\n\nclass Shape\n{\npublic:\n    virtual double area() const = 0;\n    virtual ~Shape() = default;\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\npublic:\n    Circle(double radius) : m_radius{radius} {}\n    double area() const override { return 3.14159265 * m_radius * m_radius; }\n};\n\nclass Rectangle : public Shape\n{\n    double m_width{};\n    double m_height{};\npublic:\n    Rectangle(double w, double h) : m_width{w}, m_height{h} {}\n    double area() const override { return m_width * m_height; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<std::unique_ptr<Shape>> shapes{};\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        if (type == \"circle\")\n        {\n            double r{};\n            std::cin >> r;\n            shapes.push_back(std::make_unique<Circle>(r));\n        }\n        else\n        {\n            double w{}, h{};\n            std::cin >> w >> h;\n            shapes.push_back(std::make_unique<Rectangle>(w, h));\n        }\n    }\n\n    std::cout << std::fixed << std::setprecision(2);\n    double total{0.0};\n    for (const auto& s : shapes)\n    {\n        double a{s->area()};\n        total += a;\n        std::cout << \"Area: \" << a << '\\n';\n    }\n    std::cout << \"Total: \" << total << '\\n';\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Circle with radius 5",
+        "label": "Circle and rectangle",
         "is_sample": true,
-        "stdin": "circle\n5.0",
-        "expected_stdout": "Area: 78.54\n"
+        "stdin": "2\ncircle 5\nrectangle 3 4\n",
+        "expected_stdout": "Area: 78.54\nArea: 12.00\nTotal: 90.54\n"
       },
       {
-        "label": "Rectangle 3 by 4",
+        "label": "Mixed three shapes",
         "is_sample": false,
-        "stdin": "rectangle\n3.0 4.0",
-        "expected_stdout": "Area: 12.00\n"
+        "stdin": "3\nrectangle 2 2.5\ncircle 1\ncircle 2\n",
+        "expected_stdout": "Area: 5.00\nArea: 3.14\nArea: 12.57\nTotal: 20.71\n"
       },
       {
-        "label": "Circle with radius 1",
+        "label": "Single rectangle",
         "is_sample": false,
-        "stdin": "circle\n1.0",
-        "expected_stdout": "Area: 3.14\n"
+        "stdin": "1\nrectangle 10 10\n",
+        "expected_stdout": "Area: 100.00\nTotal: 100.00\n"
+      },
+      {
+        "label": "Four shapes with zero",
+        "is_sample": false,
+        "stdin": "4\ncircle 0\nrectangle 1 1\ncircle 3\nrectangle 5 5\n",
+        "expected_stdout": "Area: 0.00\nArea: 1.00\nArea: 28.27\nArea: 25.00\nTotal: 54.27\n"
       }
     ]
   },
   {
     "title": "Interface class for printable objects",
-    "prompt_md": "## Goal\n\nDefine an **interface class** `IPrintable` with a single pure virtual function, then implement it in two unrelated classes. Demonstrate that both can be used polymorphically through the interface.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 5), the number of objects.\n- Next `N` lines: each line starts with a word (`book` or `invoice`), followed by parameters:\n  - `book <title>` -- a single-word title (no spaces).\n  - `invoice <amount>` -- a double representing the total.\n\n## Output\n\nFor each object, print the result of calling `print()` through an `IPrintable*`:\n- A `Book` prints: `Book: <title>`\n- An `Invoice` prints: `Invoice: $<amount>` with exactly 2 decimal places.\n\nFor input:\n```\n3\nbook Algorithms\ninvoice 49.99\nbook Compilers\n```\nOutput:\n```\nBook: Algorithms\nInvoice: $49.99\nBook: Compilers\n```\n\n## Requirements\n\n- Define a class `IPrintable` with a public pure virtual function `std::string getDescription() const = 0` and a public `virtual ~IPrintable() = default`. It must have no member variables and no other functions -- this is an interface class.\n- Define a class `Book` that publicly inherits from `IPrintable`. It stores a `std::string m_title` and overrides `getDescription()` with `override` to return `\"Book: <title>\"`.\n- Define a class `Invoice` that publicly inherits from `IPrintable`. It stores a `double m_amount` and overrides `getDescription()` with `override` to return `\"Invoice: $<amount>\"` with 2 decimal places.\n- In `main`, read `N` objects. For each, create the appropriate derived object with `new`, store it in an `IPrintable*`, print `getDescription()`, and `delete` it.",
-    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <sstream>\n#include <string>\n\nclass IPrintable\n{\npublic:\n    // TODO: Declare getDescription() as a pure virtual function\n    // TODO: Declare a virtual destructor\n};\n\nclass Book : public IPrintable\n{\n    std::string m_title{};\n\npublic:\n    Book(const std::string& title) : m_title{title} {}\n\n    // TODO: Override getDescription() to return \"Book: <title>\"\n};\n\nclass Invoice : public IPrintable\n{\n    double m_amount{};\n\npublic:\n    Invoice(double amount) : m_amount{amount} {}\n\n    // TODO: Override getDescription() to return \"Invoice: $<amount>\"\n    // with 2 decimal places\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        IPrintable* obj{nullptr};\n\n        // TODO: Read parameters, create the right object, print, and delete\n    }\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <sstream>\n#include <string>\n\nclass IPrintable\n{\npublic:\n    virtual std::string getDescription() const = 0;\n    virtual ~IPrintable() = default;\n};\n\nclass Book : public IPrintable\n{\n    std::string m_title{};\npublic:\n    Book(const std::string& title) : m_title{title} {}\n    std::string getDescription() const override { return \"Book: \" + m_title; }\n};\n\nclass Invoice : public IPrintable\n{\n    double m_amount{};\npublic:\n    Invoice(double amount) : m_amount{amount} {}\n    std::string getDescription() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Invoice: $\" << std::fixed << std::setprecision(2) << m_amount;\n        return oss.str();\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        IPrintable* obj{nullptr};\n        if (type == \"book\")\n        {\n            std::string title{};\n            std::cin >> title;\n            obj = new Book{title};\n        }\n        else\n        {\n            double amount{};\n            std::cin >> amount;\n            obj = new Invoice{amount};\n        }\n        std::cout << obj->getDescription() << '\\n';\n        delete obj;\n    }\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nDefine an **interface class** `BillingItem` -- a class with no data members, only a pure virtual `double cost() const` and a virtual destructor. It specifies the contract \"anything billable can report its cost.\" Implement several concrete billable items that fulfill the contract, then total a cart polymorphically through `BillingItem`.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 50), the number of line items.\n- Next `N` lines, each one of:\n  - `flat <price>` -- a one-time charge of `price`\n  - `hourly <rate> <hours>` -- costs `rate * hours`\n  - `subscription <monthly> <months>` -- costs `monthly * months`\n\n  All numeric values are doubles.\n\n## Output\n\nFor each item in order: `Item <i>: $<cost>` (1-indexed `i`, 2 decimals). Then a final line `Total: $<sum>` (2 decimals).\n\nExample input:\n```\n3\nflat 9.99\nhourly 20 1.5\nsubscription 5 12\n```\nOutput:\n```\nItem 1: $9.99\nItem 2: $30.00\nItem 3: $60.00\nTotal: $99.99\n```",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n#include <memory>\n#include <string>\n#include <vector>\n\n// Define the interface class BillingItem (no data, only a pure virtual\n// cost() and a virtual destructor) and the concrete billable items.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Read n line items, print each item's cost, then the total.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n#include <memory>\n#include <string>\n#include <vector>\n\nclass BillingItem\n{\npublic:\n    virtual double cost() const = 0;\n    virtual ~BillingItem() = default;\n};\n\nclass Flat : public BillingItem\n{\n    double m_price{};\npublic:\n    Flat(double price) : m_price{price} {}\n    double cost() const override { return m_price; }\n};\n\nclass Hourly : public BillingItem\n{\n    double m_rate{};\n    double m_hours{};\npublic:\n    Hourly(double rate, double hours) : m_rate{rate}, m_hours{hours} {}\n    double cost() const override { return m_rate * m_hours; }\n};\n\nclass Subscription : public BillingItem\n{\n    double m_monthly{};\n    double m_months{};\npublic:\n    Subscription(double monthly, double months) : m_monthly{monthly}, m_months{months} {}\n    double cost() const override { return m_monthly * m_months; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<std::unique_ptr<BillingItem>> items{};\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        if (type == \"flat\")\n        {\n            double p{};\n            std::cin >> p;\n            items.push_back(std::make_unique<Flat>(p));\n        }\n        else if (type == \"hourly\")\n        {\n            double r{}, h{};\n            std::cin >> r >> h;\n            items.push_back(std::make_unique<Hourly>(r, h));\n        }\n        else\n        {\n            double m{}, mo{};\n            std::cin >> m >> mo;\n            items.push_back(std::make_unique<Subscription>(m, mo));\n        }\n    }\n\n    std::cout << std::fixed << std::setprecision(2);\n    double total{0.0};\n    for (int i{0}; i < n; ++i)\n    {\n        double c{items[i]->cost()};\n        total += c;\n        std::cout << \"Item \" << (i + 1) << \": $\" << c << '\\n';\n    }\n    std::cout << \"Total: $\" << total << '\\n';\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Mixed books and invoices",
+        "label": "One of each type",
         "is_sample": true,
-        "stdin": "3\nbook Algorithms\ninvoice 49.99\nbook Compilers\n",
-        "expected_stdout": "Book: Algorithms\nInvoice: $49.99\nBook: Compilers\n"
+        "stdin": "3\nflat 9.99\nhourly 20 1.5\nsubscription 5 12\n",
+        "expected_stdout": "Item 1: $9.99\nItem 2: $30.00\nItem 3: $60.00\nTotal: $99.99\n"
       },
       {
-        "label": "Single invoice",
+        "label": "Single flat charge",
         "is_sample": false,
-        "stdin": "1\ninvoice 100.00\n",
-        "expected_stdout": "Invoice: $100.00\n"
+        "stdin": "1\nflat 100\n",
+        "expected_stdout": "Item 1: $100.00\nTotal: $100.00\n"
       },
       {
-        "label": "Multiple books",
+        "label": "Hourly and subscription",
         "is_sample": false,
-        "stdin": "2\nbook CPP\nbook Patterns\n",
-        "expected_stdout": "Book: CPP\nBook: Patterns\n"
+        "stdin": "2\nhourly 15.5 2\nsubscription 9.99 3\n",
+        "expected_stdout": "Item 1: $31.00\nItem 2: $29.97\nTotal: $60.97\n"
+      },
+      {
+        "label": "Four mixed items",
+        "is_sample": false,
+        "stdin": "4\nflat 1.5\nhourly 10 0.25\nsubscription 2.5 4\nflat 0.01\n",
+        "expected_stdout": "Item 1: $1.50\nItem 2: $2.50\nItem 3: $10.00\nItem 4: $0.01\nTotal: $14.01\n"
       }
     ]
   }

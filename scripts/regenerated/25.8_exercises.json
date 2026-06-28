@@ -1,55 +1,67 @@
 [
   {
     "title": "Solving the diamond with virtual inheritance",
-    "prompt_md": "## Goal\n\nConvert a diamond hierarchy from regular inheritance to virtual inheritance so that the most-derived class contains only one copy of the shared base.\n\n## Input\n\n- Line 1: a single integer `value` (-10000 <= value <= 10000).\n\n## Output\n\n- Line 1: `value: <value>` -- printed by accessing `m_value` directly (no disambiguation needed).\n- Line 2: `B greet: hello <value>`\n- Line 3: `C greet: hello <value>`\n\n## Requirements\n\n- Define a class `A` with a public `int m_value{}` member and a constructor that takes an `int` and sets `m_value`.\n- Define a class `B` that **virtually** inherits from `A` (`class B : virtual public A`). It has a constructor taking an `int` that forwards to `A`. It has a public method `void greet() const` that prints `B greet: hello ` followed by `m_value` and a newline.\n- Define a class `C` that **virtually** inherits from `A` (`class C : virtual public A`). It has a constructor taking an `int` that forwards to `A`. It has a public method `void greet() const` that prints `C greet: hello ` followed by `m_value` and a newline.\n- Define a class `D` that publicly inherits from both `B` and `C`. Its constructor takes a single `int` and initializes `A`, `B`, and `C` with that value. The most-derived class `D` must directly initialize `A` in its member initializer list.\n- In `main`, read the integer, construct a `D`, print `value: ` followed by `d.m_value` and a newline, then call `d.greet()` for `B` and `d.greet()` for `C` (use `d.B::greet()` and `d.C::greet()`).",
-    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n\n    // TODO: Constructor that takes an int and sets m_value\n    A(int value)\n        : m_value{ value }\n    {\n    }\n};\n\n// TODO: Define class B that virtually inherits from A\n// Constructor takes int and forwards to A\n// Public method greet() prints \"B greet: hello <m_value>\\n\"\n\n// TODO: Define class C that virtually inherits from A\n// Constructor takes int and forwards to A\n// Public method greet() prints \"C greet: hello <m_value>\\n\"\n\n// TODO: Define class D inheriting from both B and C\n// Constructor takes a single int and initializes A, B, and C\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    // TODO: Create a D, print d.m_value, then call B::greet() and C::greet()\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n\n    A(int value)\n        : m_value{ value }\n    {\n    }\n};\n\nclass B : virtual public A\n{\npublic:\n    B(int value)\n        : A{ value }\n    {\n    }\n\n    void greet() const\n    {\n        std::cout << \"B greet: hello \" << m_value << '\\n';\n    }\n};\n\nclass C : virtual public A\n{\npublic:\n    C(int value)\n        : A{ value }\n    {\n    }\n\n    void greet() const\n    {\n        std::cout << \"C greet: hello \" << m_value << '\\n';\n    }\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int value)\n        : A{ value }\n        , B{ value }\n        , C{ value }\n    {\n    }\n};\n\nint main()\n{\n    int value{};\n    std::cin >> value;\n\n    D d{ value };\n    std::cout << \"value: \" << d.m_value << '\\n';\n    d.B::greet();\n    d.C::greet();\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nThe diamond problem: `B` and `C` both inherit from `A`, and `D` inherits from both. With normal inheritance `D` would contain two separate `A` subobjects, so state stored in `A` would be duplicated. Use **virtual inheritance** so that `D` holds exactly one shared `A`, then prove the sharing: a change made through the `B` path is visible through the `C` path because they touch the same counter.\n\nBuild classes `A`, `B`, `C`, `D`. `A` holds an `int` counter initialized by the most-derived class. `B` provides `addViaB(int)` and `C` provides `addViaC(int)`, each adding its argument to the shared counter. `D` is the most-derived class and must initialize the single shared `A` directly. Expose the current counter via a `getCount()` accessor on `D`.\n\n## Input\n\n- Line 1: three integers `start b c`.\n\n## Output\n\nStarting the counter at `start`, apply `addViaB(b)`, then `addViaC(c)`, on one `D` object, printing the counter after each step:\n```\nvia B: <counter after addViaB>\nvia C: <counter after addViaC>\nshared: <final counter>\n```\nIf `A` were duplicated, the `B` and `C` additions would land on different counters; with a virtual base they accumulate on one.\n\nExample input `10 5 7`:\n```\nvia B: 15\nvia C: 22\nshared: 22\n```",
+    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n    A(int value) : m_value{value} {}\n};\n\n// Define B and C so they share a single A (virtual inheritance), each able to\n// add to the shared counter, and D as the most-derived class.\n\nint main()\n{\n    int start{}, b{}, c{};\n    std::cin >> start >> b >> c;\n\n    // Build one D, add via B then via C, and report the shared counter.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n    A(int value) : m_value{value} {}\n};\n\nclass B : virtual public A\n{\npublic:\n    B(int value) : A{value} {}\n    void addViaB(int n) { m_value += n; }\n};\n\nclass C : virtual public A\n{\npublic:\n    C(int value) : A{value} {}\n    void addViaC(int n) { m_value += n; }\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int start) : A{start}, B{start}, C{start} {}\n    int getCount() const { return m_value; }\n};\n\nint main()\n{\n    int start{}, b{}, c{};\n    std::cin >> start >> b >> c;\n\n    D d{start};\n    d.addViaB(b);\n    std::cout << \"via B: \" << d.getCount() << '\\n';\n    d.addViaC(c);\n    std::cout << \"via C: \" << d.getCount() << '\\n';\n    std::cout << \"shared: \" << d.getCount() << '\\n';\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Positive value",
+        "label": "Positive values",
         "is_sample": true,
-        "stdin": "42",
-        "expected_stdout": "value: 42\nB greet: hello 42\nC greet: hello 42\n"
+        "stdin": "10 5 7\n",
+        "expected_stdout": "via B: 15\nvia C: 22\nshared: 22\n"
       },
       {
-        "label": "Negative value",
+        "label": "All zero",
         "is_sample": false,
-        "stdin": "-7",
-        "expected_stdout": "value: -7\nB greet: hello -7\nC greet: hello -7\n"
+        "stdin": "0 0 0\n",
+        "expected_stdout": "via B: 0\nvia C: 0\nshared: 0\n"
       },
       {
-        "label": "Zero value",
+        "label": "Negative start",
         "is_sample": false,
-        "stdin": "0",
-        "expected_stdout": "value: 0\nB greet: hello 0\nC greet: hello 0\n"
+        "stdin": "-5 10 3\n",
+        "expected_stdout": "via B: 5\nvia C: 8\nshared: 8\n"
+      },
+      {
+        "label": "Back to zero",
+        "is_sample": false,
+        "stdin": "100 -30 -70\n",
+        "expected_stdout": "via B: 70\nvia C: 0\nshared: 0\n"
       }
     ]
   },
   {
     "title": "Constructor responsibility in virtual inheritance",
-    "prompt_md": "## Goal\n\nBuild a deeper diamond hierarchy and demonstrate that the most-derived class controls how the virtual base is initialized, even when intermediate classes specify different values.\n\n## Input\n\n- Line 1: three integers `bVal`, `cVal`, and `dVal` (-10000 <= each <= 10000).\n\n## Output\n\n- Line 1: `A::m_value: <dVal>` -- proving that `D`'s initialization of `A` wins.\n- Line 2: `B::m_bonus: <bVal>`\n- Line 3: `C::m_bonus: <cVal>`\n- Line 4: `total: <dVal + bVal + cVal>`\n\n## Requirements\n\n- Define a class `A` with a public `int m_value{}` member and a constructor taking an `int`.\n- Define a class `B` that **virtually** inherits from `A`. `B` has its own public `int m_bonus{}` member. Its constructor takes two ints `(aVal, bonus)`: it forwards `aVal` to `A` and sets `m_bonus` to `bonus`.\n- Define a class `C` that **virtually** inherits from `A`. `C` has its own public `int m_bonus{}` member. Its constructor takes two ints `(aVal, bonus)`: it forwards `aVal` to `A` and sets `m_bonus` to `bonus`.\n- Define a class `D` that publicly inherits from both `B` and `C`. Its constructor takes three ints `(bVal, cVal, dVal)`. It must directly initialize `A` with `dVal`, initialize `B` with `(0, bVal)`, and initialize `C` with `(0, cVal)`. Note that `B`'s and `C`'s `aVal` arguments are ignored for the virtual base -- `D` controls `A`.\n- `D` has a public method `void show() const` that prints the four output lines described above.\n- In `main`, read three integers, construct a `D`, and call `show()`.",
-    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n\n    A(int value)\n        : m_value{ value }\n    {\n    }\n};\n\n// TODO: Define class B : virtual public A\n// Has int m_bonus{}\n// Constructor takes (int aVal, int bonus)\n// Forwards aVal to A, sets m_bonus to bonus\n\n// TODO: Define class C : virtual public A\n// Has int m_bonus{}\n// Constructor takes (int aVal, int bonus)\n// Forwards aVal to A, sets m_bonus to bonus\n\n// TODO: Define class D : public B, public C\n// Constructor takes (int bVal, int cVal, int dVal)\n// Initializes A with dVal, B with (0, bVal), C with (0, cVal)\n// Public method show() prints the required output\n\nint main()\n{\n    int bVal{};\n    int cVal{};\n    int dVal{};\n    std::cin >> bVal >> cVal >> dVal;\n\n    // TODO: Create a D and call show()\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n\n    A(int value)\n        : m_value{ value }\n    {\n    }\n};\n\nclass B : virtual public A\n{\npublic:\n    int m_bonus{};\n\n    B(int aVal, int bonus)\n        : A{ aVal }\n        , m_bonus{ bonus }\n    {\n    }\n};\n\nclass C : virtual public A\n{\npublic:\n    int m_bonus{};\n\n    C(int aVal, int bonus)\n        : A{ aVal }\n        , m_bonus{ bonus }\n    {\n    }\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int bVal, int cVal, int dVal)\n        : A{ dVal }\n        , B{ 0, bVal }\n        , C{ 0, cVal }\n    {\n    }\n\n    void show() const\n    {\n        std::cout << \"A::m_value: \" << m_value << '\\n';\n        std::cout << \"B::m_bonus: \" << B::m_bonus << '\\n';\n        std::cout << \"C::m_bonus: \" << C::m_bonus << '\\n';\n        std::cout << \"total: \" << m_value + B::m_bonus + C::m_bonus << '\\n';\n    }\n};\n\nint main()\n{\n    int bVal{};\n    int cVal{};\n    int dVal{};\n    std::cin >> bVal >> cVal >> dVal;\n\n    D d{ bVal, cVal, dVal };\n    d.show();\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWhen a class has a virtual base, only the **most-derived class's** initialization of that base takes effect -- the values that intermediate classes try to pass to the virtual base are ignored. Demonstrate this.\n\nBuild a virtual-inheritance diamond: `B` and `C` each virtually inherit from `A`, and `D` inherits from both. `A` stores an `int id`. `B`'s constructor tries to initialize `A` with `bId` and also keeps its own `int tag`; `C`'s constructor tries to initialize `A` with `cId` and keeps its own tag. `D`, the most-derived class, initializes `A` directly with `dId`. Show that the shared `A::id` ends up equal to `dId` (D wins), while each intermediate's own tag is preserved.\n\n## Input\n\n- Line 1: five integers `bId cId dId bTag cTag`.\n\n## Output\n\n```\nA id: <dId>\nB tag: <bTag>\nC tag: <cTag>\n```\nEven though `B` was built with `bId` and `C` with `cId` as the base id, the shared `A::id` reflects `dId`.\n\nExample input `1 2 99 10 20`:\n```\nA id: 99\nB tag: 10\nC tag: 20\n```",
+    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_id{};\n    A(int id) : m_id{id} {}\n};\n\n// Build a virtual-inheritance diamond. B and C each try to initialize A and\n// keep their own tag; D is the most-derived class and initializes A directly.\n\nint main()\n{\n    int bId{}, cId{}, dId{}, bTag{}, cTag{};\n    std::cin >> bId >> cId >> dId >> bTag >> cTag;\n\n    // Build one D and report the shared A id plus each intermediate's tag.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_id{};\n    A(int id) : m_id{id} {}\n};\n\nclass B : virtual public A\n{\npublic:\n    int m_tag{};\n    B(int aId, int tag) : A{aId}, m_tag{tag} {}\n};\n\nclass C : virtual public A\n{\npublic:\n    int m_tag{};\n    C(int aId, int tag) : A{aId}, m_tag{tag} {}\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int bId, int cId, int dId, int bTag, int cTag)\n        : A{dId}, B{bId, bTag}, C{cId, cTag} {}\n    void show() const\n    {\n        std::cout << \"A id: \" << m_id << '\\n';\n        std::cout << \"B tag: \" << B::m_tag << '\\n';\n        std::cout << \"C tag: \" << C::m_tag << '\\n';\n    }\n};\n\nint main()\n{\n    int bId{}, cId{}, dId{}, bTag{}, cTag{};\n    std::cin >> bId >> cId >> dId >> bTag >> cTag;\n\n    D d{bId, cId, dId, bTag, cTag};\n    d.show();\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "All positive",
+        "label": "D wins over B and C",
         "is_sample": true,
-        "stdin": "10 20 100",
-        "expected_stdout": "A::m_value: 100\nB::m_bonus: 10\nC::m_bonus: 20\ntotal: 130\n"
+        "stdin": "1 2 99 10 20\n",
+        "expected_stdout": "A id: 99\nB tag: 10\nC tag: 20\n"
       },
       {
-        "label": "Mixed signs",
+        "label": "Distinct values",
         "is_sample": false,
-        "stdin": "-5 15 0",
-        "expected_stdout": "A::m_value: 0\nB::m_bonus: -5\nC::m_bonus: 15\ntotal: 10\n"
+        "stdin": "5 6 7 8 9\n",
+        "expected_stdout": "A id: 7\nB tag: 8\nC tag: 9\n"
       },
       {
         "label": "All zero",
         "is_sample": false,
-        "stdin": "0 0 0",
-        "expected_stdout": "A::m_value: 0\nB::m_bonus: 0\nC::m_bonus: 0\ntotal: 0\n"
+        "stdin": "0 0 0 0 0\n",
+        "expected_stdout": "A id: 0\nB tag: 0\nC tag: 0\n"
+      },
+      {
+        "label": "Negatives",
+        "is_sample": false,
+        "stdin": "-1 -2 -3 -4 -5\n",
+        "expected_stdout": "A id: -3\nB tag: -4\nC tag: -5\n"
       }
     ]
   }

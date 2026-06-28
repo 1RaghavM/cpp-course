@@ -1,55 +1,67 @@
 [
   {
     "title": "Override specifier catches mismatches",
-    "prompt_md": "## Goal\n\nUse the `override` specifier to correctly override a base class virtual function. Create a class hierarchy where `Animal` provides a virtual `speak()` method and `Cat` overrides it.\n\n## Input\n\n- A single line containing an integer `n` (1 <= n <= 3), the number of cats to create.\n\n## Output\n\nFor each cat, print one line:\n```\nCat says: Meow\n```\n\nFollowed by a final line:\n```\nAnimal says: ...\n```\n\nFor input `2`:\n```\nCat says: Meow\nCat says: Meow\nAnimal says: ...\n```\n\n## Requirements\n\n- Define a class `Animal` with a public virtual function `std::string speak() const` that returns `\"Animal says: ...\"`.\n- Define a class `Cat` that publicly inherits from `Animal` and overrides `speak()` using the `override` specifier. It returns `\"Cat says: Meow\"`.\n- In `main`, read `n`. Create `n` `Cat` objects stored via `Animal*` pointers (in a fixed-size array of 3 `Animal*` initialized to `nullptr`). Call `speak()` through each pointer and print the result.\n- After printing all cats, create one plain `Animal` on the stack, call `speak()`, and print its result.\n- Delete all dynamically allocated cats before the program ends.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nclass Animal\n{\npublic:\n    // TODO: Declare a virtual speak() const that returns \"Animal says: ...\"\n    virtual std::string speak() const\n    {\n        return \"\";\n    }\n};\n\nclass Cat : public Animal\n{\npublic:\n    // TODO: Override speak() using the override specifier\n    // Return \"Cat says: Meow\"\n    std::string speak() const\n    {\n        return \"\";\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Animal* animals[3]{nullptr, nullptr, nullptr};\n\n    // TODO: Create n Cat objects via new, store in animals array\n    // Print speak() for each, then create a plain Animal and print its speak()\n    // Delete all dynamically allocated objects\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nclass Animal\n{\npublic:\n    virtual std::string speak() const\n    {\n        return \"Animal says: ...\";\n    }\n};\n\nclass Cat : public Animal\n{\npublic:\n    std::string speak() const override\n    {\n        return \"Cat says: Meow\";\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Animal* animals[3]{nullptr, nullptr, nullptr};\n\n    for (int i{0}; i < n; ++i)\n    {\n        animals[i] = new Cat{};\n    }\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::cout << animals[i]->speak() << '\\n';\n    }\n\n    Animal base{};\n    std::cout << base.speak() << '\\n';\n\n    for (int i{0}; i < n; ++i)\n    {\n        delete animals[i];\n    }\n\n    return 0;\n}\n",
+    "prompt_md": "## What to build\n\nThe `override` specifier makes the compiler verify that a derived function truly overrides a base virtual function (matching name, parameters, and const-qualification). Build a base class `Animal` with a `virtual std::string describe() const` returning `\"Animal: ...\"`, and derived classes `Cat` (`\"Cat: Meow\"`), `Dog` (`\"Dog: Woof\"`), and `Cow` (`\"Cow: Moo\"`), each overriding `describe()` with the `override` specifier.\n\nRead the animals into a collection of base `Animal*` pointers and print each one's `describe()` via the base pointer. Any unrecognized type word is created as a plain `Animal`.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 20).\n- Next `N` lines: an animal type word (`cat`, `dog`, `cow`, or anything else).\n\n## Output\n\n`N` lines, each the `describe()` result for the corresponding animal in input order.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\n// Define your virtual Animal hierarchy (use the override specifier) here.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n\n        // Create the matching animal as an Animal* and store it.\n    }\n\n    // Print each animal's describe() via the base pointer.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Animal\n{\npublic:\n    virtual std::string describe() const { return \"Animal: ...\"; }\n};\n\nclass Cat : public Animal\n{\npublic:\n    std::string describe() const override { return \"Cat: Meow\"; }\n};\n\nclass Dog : public Animal\n{\npublic:\n    std::string describe() const override { return \"Dog: Woof\"; }\n};\n\nclass Cow : public Animal\n{\npublic:\n    std::string describe() const override { return \"Cow: Moo\"; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Animal*> animals{};\n    for (int i{ 0 }; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        if (type == \"cat\")\n            animals.push_back(new Cat{});\n        else if (type == \"dog\")\n            animals.push_back(new Dog{});\n        else if (type == \"cow\")\n            animals.push_back(new Cow{});\n        else\n            animals.push_back(new Animal{});\n    }\n\n    for (const Animal* a : animals)\n        std::cout << a->describe() << '\\n';\n\n    for (Animal* a : animals)\n        delete a;\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Two cats then one base",
+        "label": "Three known plus an unknown",
         "is_sample": true,
-        "stdin": "2",
-        "expected_stdout": "Cat says: Meow\nCat says: Meow\nAnimal says: ...\n"
+        "stdin": "4\ncat\ndog\ncow\nfox\n",
+        "expected_stdout": "Cat: Meow\nDog: Woof\nCow: Moo\nAnimal: ...\n"
       },
       {
-        "label": "One cat then one base",
+        "label": "Single cow",
         "is_sample": false,
-        "stdin": "1",
-        "expected_stdout": "Cat says: Meow\nAnimal says: ...\n"
+        "stdin": "1\ncow\n",
+        "expected_stdout": "Cow: Moo\n"
       },
       {
-        "label": "Three cats then one base",
+        "label": "Repeated types",
         "is_sample": false,
-        "stdin": "3",
-        "expected_stdout": "Cat says: Meow\nCat says: Meow\nCat says: Meow\nAnimal says: ...\n"
+        "stdin": "3\ndog\ndog\ncat\n",
+        "expected_stdout": "Dog: Woof\nDog: Woof\nCat: Meow\n"
+      },
+      {
+        "label": "Unknown then known",
+        "is_sample": false,
+        "stdin": "2\nzebra\ncat\n",
+        "expected_stdout": "Animal: ...\nCat: Meow\n"
       }
     ]
   },
   {
     "title": "Covariant return types with final",
-    "prompt_md": "## Goal\n\nBuild a `Shape` hierarchy that uses covariant return types and the `final` specifier. A base `clone()` function returns `Shape*`, while each derived override returns its own pointer type. The `Circle` class marks `clone()` as `final` so no further derived class can override it.\n\n## Input\n\n- Line 1: a string, either `circle` or `square`.\n- Line 2: a double `value` representing the radius (for circle) or side length (for square).\n\n## Output\n\nTwo lines. The first describes the original object and the second describes the cloned object. Both lines must be identical, proving the clone matches the original.\n\nFor input `circle` / `3.5`:\n```\nCircle r=3.5\nCircle r=3.5\n```\n\nFor input `square` / `4`:\n```\nSquare s=4.0\nSquare s=4.0\n```\n\n## Requirements\n\n- Define a class `Shape` with a public virtual function `Shape* clone() const` that returns `new Shape{*this}` and a public virtual function `std::string describe() const` that returns `\"Shape\"`.\n- Define a class `Circle` that publicly inherits from `Shape`. It stores a `double m_radius`. Override `clone()` with a covariant return type (`Circle*`) and mark it `override final`. Override `describe()` with `override` to return `\"Circle r=<radius>\"`. Use a fixed precision of one decimal place for the radius (use `std::ostringstream` with `std::fixed` and `std::setprecision(1)`, or any approach that produces one decimal digit).\n- Define a class `Square` that publicly inherits from `Shape`. It stores a `double m_side`. Override `clone()` with covariant return type (`Square*`) and `override`. Override `describe()` with `override` to return `\"Square s=<side>\"` with one decimal place.\n- In `main`, read the shape type and value. Create the appropriate derived object via `new`. Call `describe()` through a `Shape*` and print it. Then call `clone()`, print `describe()` on the clone, and `delete` both objects.",
-    "starter_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual Shape* clone() const { return new Shape{*this}; }\n    virtual std::string describe() const { return \"Shape\"; }\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius) : m_radius{radius} {}\n\n    // TODO: Override clone() with covariant return type (Circle*)\n    //       Mark it override final\n\n    // TODO: Override describe() with override\n    //       Return \"Circle r=<radius>\" with 1 decimal place\n};\n\nclass Square : public Shape\n{\n    double m_side{};\n\npublic:\n    Square(double side) : m_side{side} {}\n\n    // TODO: Override clone() with covariant return type (Square*)\n    //       Mark it override\n\n    // TODO: Override describe() with override\n    //       Return \"Square s=<side>\" with 1 decimal place\n};\n\nint main()\n{\n    std::string type{};\n    double value{};\n    std::cin >> type >> value;\n\n    Shape* original{nullptr};\n\n    // TODO: Create the right derived object based on type\n    // Print original->describe(), clone it, print clone->describe()\n    // Delete both\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual Shape* clone() const { return new Shape{*this}; }\n    virtual std::string describe() const { return \"Shape\"; }\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius) : m_radius{radius} {}\n\n    Circle* clone() const override final\n    {\n        return new Circle{*this};\n    }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Circle r=\" << std::fixed << std::setprecision(1) << m_radius;\n        return oss.str();\n    }\n};\n\nclass Square : public Shape\n{\n    double m_side{};\n\npublic:\n    Square(double side) : m_side{side} {}\n\n    Square* clone() const override\n    {\n        return new Square{*this};\n    }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Square s=\" << std::fixed << std::setprecision(1) << m_side;\n        return oss.str();\n    }\n};\n\nint main()\n{\n    std::string type{};\n    double value{};\n    std::cin >> type >> value;\n\n    Shape* original{nullptr};\n\n    if (type == \"circle\")\n        original = new Circle{value};\n    else\n        original = new Square{value};\n\n    std::cout << original->describe() << '\\n';\n\n    Shape* cloned{original->clone()};\n    std::cout << cloned->describe() << '\\n';\n\n    delete cloned;\n    delete original;\n\n    return 0;\n}\n",
+    "prompt_md": "## What to build\n\nA *covariant return type* lets a derived override of a virtual function return a pointer to its own type instead of the base type. Build a `clone()` family that uses this.\n\nCreate a base class `Shape` with `virtual Shape* clone() const` (returns a copy of itself) and `virtual std::string describe() const` (returns `\"Shape\"`). Derive `Circle` (stores a `double` radius) and `Square` (stores a `double` side). Each derived class overrides `clone()` with a *covariant* return type -- `Circle*` and `Square*` respectively -- and overrides `describe()` to return `\"Circle r=<radius>\"` / `\"Square s=<side>\"` with the value formatted to exactly one decimal place. Mark `Circle::clone()` as `final` so no further class may override it.\n\nRead one shape, create it through a base `Shape*`, print its `describe()`, then print the `describe()` of a clone produced by `clone()` -- the two lines must match.\n\n## Input\n\n- Line 1: `circle` or `square`.\n- Line 2: a number -- the radius (circle) or side length (square).\n\n## Output\n\nTwo identical lines: the original's `describe()` then the clone's `describe()`.\n```\nCircle r=3.5\nCircle r=3.5\n```",
+    "starter_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\n// Define Shape, Circle, and Square with clone() and describe() here.\n\nint main()\n{\n    std::string type{};\n    double value{};\n    std::cin >> type >> value;\n\n    // Create the shape, print its describe(), clone it, and print the clone's describe().\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <sstream>\n#include <iomanip>\n#include <string>\n\nclass Shape\n{\npublic:\n    virtual Shape* clone() const { return new Shape{ *this }; }\n    virtual std::string describe() const { return \"Shape\"; }\n};\n\nclass Circle : public Shape\n{\n    double m_radius{};\n\npublic:\n    Circle(double radius)\n        : m_radius{ radius }\n    {\n    }\n\n    Circle* clone() const override final { return new Circle{ *this }; }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Circle r=\" << std::fixed << std::setprecision(1) << m_radius;\n        return oss.str();\n    }\n};\n\nclass Square : public Shape\n{\n    double m_side{};\n\npublic:\n    Square(double side)\n        : m_side{ side }\n    {\n    }\n\n    Square* clone() const override { return new Square{ *this }; }\n\n    std::string describe() const override\n    {\n        std::ostringstream oss{};\n        oss << \"Square s=\" << std::fixed << std::setprecision(1) << m_side;\n        return oss.str();\n    }\n};\n\nint main()\n{\n    std::string type{};\n    double value{};\n    std::cin >> type >> value;\n\n    Shape* original{ nullptr };\n    if (type == \"circle\")\n        original = new Circle{ value };\n    else\n        original = new Square{ value };\n\n    std::cout << original->describe() << '\\n';\n\n    Shape* copy{ original->clone() };\n    std::cout << copy->describe() << '\\n';\n\n    delete copy;\n    delete original;\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Clone a circle",
         "is_sample": true,
-        "stdin": "circle\n3.5",
+        "stdin": "circle 3.5",
         "expected_stdout": "Circle r=3.5\nCircle r=3.5\n"
       },
       {
         "label": "Clone a square",
         "is_sample": false,
-        "stdin": "square\n4",
+        "stdin": "square 4",
         "expected_stdout": "Square s=4.0\nSquare s=4.0\n"
       },
       {
         "label": "Clone a circle with integer radius",
         "is_sample": false,
-        "stdin": "circle\n10",
+        "stdin": "circle 10",
         "expected_stdout": "Circle r=10.0\nCircle r=10.0\n"
+      },
+      {
+        "label": "Clone a fractional square",
+        "is_sample": false,
+        "stdin": "square 2.5",
+        "expected_stdout": "Square s=2.5\nSquare s=2.5\n"
       }
     ]
   }

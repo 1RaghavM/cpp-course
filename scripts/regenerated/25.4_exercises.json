@@ -1,55 +1,61 @@
 [
   {
     "title": "Virtual destructor ensures proper cleanup",
-    "prompt_md": "## Goal\n\nDemonstrate that a virtual destructor causes both the derived and base destructors to run when deleting through a base pointer. Print from each destructor to prove the correct destruction order.\n\n## Input\n\n- A single line containing an integer `n` (1 <= n <= 3), the number of `Derived` objects to create and destroy.\n\n## Output\n\nFor each object, two lines are printed when it is deleted (derived destructor first, then base):\n```\nDestroying Derived\nDestroying Base\n```\n\nAfter all deletions, print a final line:\n```\nDone\n```\n\nFor input `2`:\n```\nDestroying Derived\nDestroying Base\nDestroying Derived\nDestroying Base\nDone\n```\n\n## Requirements\n\n- Define a class `Base` with a **virtual** destructor that prints `Destroying Base` followed by a newline.\n- Define a class `Derived` that publicly inherits from `Base`. Its destructor uses `override` and prints `Destroying Derived` followed by a newline.\n- In `main`, read `n`. Use a loop to create `n` `Derived` objects via `new`, each stored in a `Base*` pointer. Immediately after creating each object, `delete` it through the base pointer (create one, delete one, then loop).\n- After the loop, print `Done`.",
-    "starter_code": "#include <iostream>\n\nclass Base\n{\npublic:\n    // TODO: Declare a virtual destructor that prints \"Destroying Base\"\n    ~Base()\n    {\n    }\n};\n\nclass Derived : public Base\n{\npublic:\n    // TODO: Override the destructor and print \"Destroying Derived\"\n    ~Derived()\n    {\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // TODO: Loop n times. Each iteration:\n    //   1. Create a Derived object with new, store in a Base* pointer\n    //   2. Delete it through the base pointer\n    // After the loop, print \"Done\"\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nclass Base\n{\npublic:\n    virtual ~Base()\n    {\n        std::cout << \"Destroying Base\" << '\\n';\n    }\n};\n\nclass Derived : public Base\n{\npublic:\n    ~Derived() override\n    {\n        std::cout << \"Destroying Derived\" << '\\n';\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        Base* ptr{new Derived{}};\n        delete ptr;\n    }\n\n    std::cout << \"Done\" << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWhen you delete a derived object through a base-class pointer, the derived destructor only runs if the base destructor is virtual. Build a two-class hierarchy that proves this: deleting a derived object through a `Base*` must run BOTH destructors, in the correct order.\n\n## Classes\n\n- `Entity` is the base class. Its destructor prints `~Entity`.\n- `Player` publicly derives from `Entity`, is built from the player's name, and its destructor prints `~Player(<name>)` where `<name>` is that name.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 5).\n- Next `N` lines: each a single-word name.\n\n## Output\n\nFor each name in order: create a `Player` with that name on the heap, hold it through an `Entity*`, and delete it through that base pointer. Each deletion produces two lines, derived destructor first, then base:\n```\n~Player(<name>)\n~Entity\n```\n\nFor input `2` / `Alice` / `Bob`:\n```\n~Player(Alice)\n~Entity\n~Player(Bob)\n~Entity\n```",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Entity\n{\npublic:\n    virtual ~Entity()\n    {\n        std::cout << \"~Entity\" << '\\n';\n    }\n};\n\nclass Player : public Entity\n{\n    std::string m_name{};\n\npublic:\n    explicit Player(const std::string& name)\n        : m_name{name}\n    {\n    }\n\n    ~Player() override\n    {\n        std::cout << \"~Player(\" << m_name << \")\" << '\\n';\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string name{};\n        std::cin >> name;\n        Entity* e{new Player{name}};\n        delete e;\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Two objects destroyed properly",
+        "label": "Two players",
         "is_sample": true,
-        "stdin": "2",
-        "expected_stdout": "Destroying Derived\nDestroying Base\nDestroying Derived\nDestroying Base\nDone\n"
+        "stdin": "2\nAlice\nBob\n",
+        "expected_stdout": "~Player(Alice)\n~Entity\n~Player(Bob)\n~Entity\n"
       },
       {
-        "label": "Single object",
+        "label": "Single player",
         "is_sample": false,
-        "stdin": "1",
-        "expected_stdout": "Destroying Derived\nDestroying Base\nDone\n"
+        "stdin": "1\nZara\n",
+        "expected_stdout": "~Player(Zara)\n~Entity\n"
       },
       {
-        "label": "Three objects",
+        "label": "Three players",
         "is_sample": false,
-        "stdin": "3",
-        "expected_stdout": "Destroying Derived\nDestroying Base\nDestroying Derived\nDestroying Base\nDestroying Derived\nDestroying Base\nDone\n"
+        "stdin": "3\nNed\nOla\nPim\n",
+        "expected_stdout": "~Player(Ned)\n~Entity\n~Player(Ola)\n~Entity\n~Player(Pim)\n~Entity\n"
       }
     ]
   },
   {
     "title": "Resource-owning hierarchy with virtual destructor",
-    "prompt_md": "## Goal\n\nBuild a two-level class hierarchy where the derived class owns a dynamically allocated resource. Use a virtual destructor so that deleting through a base pointer correctly cleans up the resource. Print lifecycle messages from constructors and destructors to prove the correct order.\n\n## Input\n\n- Line 1: a string `label` (1-20 characters, no spaces) naming the resource.\n- Line 2: an integer `size` (1 <= size <= 100) representing a resource size.\n\n## Output\n\nThe program creates a `Resource` (derived) via a `Base*`, uses it, then deletes it. The exact output for input `Buffer` / `64`:\n```\nBase created\nResource acquired: Buffer size 64\nUsing: Buffer size 64\nResource released: Buffer size 64\nBase destroyed\n```\n\n## Requirements\n\n- Define a class `Base` with a virtual destructor. The constructor prints `Base created` and the destructor prints `Base destroyed` (each followed by a newline).\n- Define a class `Resource` that publicly inherits from `Base`. It stores a `std::string m_label` and an `int m_size`. Its constructor takes `const std::string&` and `int`, calls the `Base` constructor, stores the values, and prints `Resource acquired: <label> size <size>`. Its destructor uses `override` and prints `Resource released: <label> size <size>`.\n- `Resource` has a public `void use() const` method that prints `Using: <label> size <size>`.\n- In `main`, read the label and size. Create a `Resource` via `new` and store the result in a `Base*` pointer. Cast the pointer back to `Resource*` using `static_cast` to call `use()`. Then `delete` the base pointer.\n- Do **not** use `dynamic_cast` (that topic has not been covered yet).",
-    "starter_code": "#include <iostream>\n#include <string>\n\nclass Base\n{\npublic:\n    // TODO: Constructor prints \"Base created\"\n    // TODO: Virtual destructor prints \"Base destroyed\"\n    Base()\n    {\n    }\n\n    ~Base()\n    {\n    }\n};\n\nclass Resource : public Base\n{\n    std::string m_label{};\n    int m_size{};\n\npublic:\n    // TODO: Constructor takes const std::string& and int\n    // Prints \"Resource acquired: <label> size <size>\"\n    Resource(const std::string& label, int size)\n        : m_label{label}\n        , m_size{size}\n    {\n    }\n\n    // TODO: Override destructor to print \"Resource released: <label> size <size>\"\n    ~Resource()\n    {\n    }\n\n    // TODO: use() prints \"Using: <label> size <size>\"\n    void use() const\n    {\n    }\n};\n\nint main()\n{\n    std::string label{};\n    int size{};\n    std::cin >> label >> size;\n\n    // TODO: Create a Resource via new, store in Base*\n    // Use static_cast to call use()\n    // Delete through the base pointer\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n\nclass Base\n{\npublic:\n    Base()\n    {\n        std::cout << \"Base created\" << '\\n';\n    }\n\n    virtual ~Base()\n    {\n        std::cout << \"Base destroyed\" << '\\n';\n    }\n};\n\nclass Resource : public Base\n{\n    std::string m_label{};\n    int m_size{};\n\npublic:\n    Resource(const std::string& label, int size)\n        : m_label{label}\n        , m_size{size}\n    {\n        std::cout << \"Resource acquired: \" << m_label << \" size \" << m_size << '\\n';\n    }\n\n    ~Resource() override\n    {\n        std::cout << \"Resource released: \" << m_label << \" size \" << m_size << '\\n';\n    }\n\n    void use() const\n    {\n        std::cout << \"Using: \" << m_label << \" size \" << m_size << '\\n';\n    }\n};\n\nint main()\n{\n    std::string label{};\n    int size{};\n    std::cin >> label >> size;\n\n    Base* ptr{new Resource{label, size}};\n    static_cast<Resource*>(ptr)->use();\n    delete ptr;\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWithout a virtual destructor, deleting a derived object through a base pointer skips the derived destructor and leaks whatever it owns. Build a small shape hierarchy whose objects all destroy cleanly when deleted through base pointers.\n\n## Classes\n\n- `Shape` is the base class; its destructor prints `~Shape`.\n- `Circle` derives from `Shape`, is built from an integer radius `r`, and its destructor prints `~Circle r=<r>`.\n- `Square` derives from `Shape`, is built from an integer side `s`, and its destructor prints `~Square s=<s>`.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 6).\n- Next `N` lines: either `circle <r>` or `square <s>`.\n\n## Output\n\nAllocate every shape on the heap, holding each through a `Shape*`. After reading all of them, delete them in the order they were created. Each deletion prints the derived destructor line followed by `~Shape`.\n\nFor input `2` / `circle 5` / `square 3`:\n```\n~Circle r=5\n~Shape\n~Square s=3\n~Shape\n```",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Shape\n{\npublic:\n    virtual ~Shape()\n    {\n        std::cout << \"~Shape\" << '\\n';\n    }\n};\n\nclass Circle : public Shape\n{\n    int m_r{};\n\npublic:\n    explicit Circle(int r)\n        : m_r{r}\n    {\n    }\n\n    ~Circle() override\n    {\n        std::cout << \"~Circle r=\" << m_r << '\\n';\n    }\n};\n\nclass Square : public Shape\n{\n    int m_s{};\n\npublic:\n    explicit Square(int s)\n        : m_s{s}\n    {\n    }\n\n    ~Square() override\n    {\n        std::cout << \"~Square s=\" << m_s << '\\n';\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Shape*> shapes{};\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        int value{};\n        std::cin >> type >> value;\n        if (type == \"circle\")\n            shapes.push_back(new Circle{value});\n        else\n            shapes.push_back(new Square{value});\n    }\n\n    for (auto* s : shapes)\n        delete s;\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Buffer resource size 64",
+        "label": "Circle then square",
         "is_sample": true,
-        "stdin": "Buffer\n64",
-        "expected_stdout": "Base created\nResource acquired: Buffer size 64\nUsing: Buffer size 64\nResource released: Buffer size 64\nBase destroyed\n"
+        "stdin": "2\ncircle 5\nsquare 3\n",
+        "expected_stdout": "~Circle r=5\n~Shape\n~Square s=3\n~Shape\n"
       },
       {
-        "label": "Cache resource size 256",
+        "label": "Single square",
         "is_sample": false,
-        "stdin": "Cache\n256",
-        "expected_stdout": "Base created\nResource acquired: Cache size 256\nUsing: Cache size 256\nResource released: Cache size 256\nBase destroyed\n"
+        "stdin": "1\nsquare 10\n",
+        "expected_stdout": "~Square s=10\n~Shape\n"
       },
       {
-        "label": "Pool resource size 1",
+        "label": "Mixed three",
         "is_sample": false,
-        "stdin": "Pool\n1",
-        "expected_stdout": "Base created\nResource acquired: Pool size 1\nUsing: Pool size 1\nResource released: Pool size 1\nBase destroyed\n"
+        "stdin": "3\ncircle 1\ncircle 2\nsquare 7\n",
+        "expected_stdout": "~Circle r=1\n~Shape\n~Circle r=2\n~Shape\n~Square s=7\n~Shape\n"
+      },
+      {
+        "label": "Mixed four",
+        "is_sample": false,
+        "stdin": "4\nsquare 4\ncircle 9\nsquare 8\ncircle 6\n",
+        "expected_stdout": "~Square s=4\n~Shape\n~Circle r=9\n~Shape\n~Square s=8\n~Shape\n~Circle r=6\n~Shape\n"
       }
     ]
   }

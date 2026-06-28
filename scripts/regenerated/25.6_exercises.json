@@ -1,55 +1,61 @@
 [
   {
     "title": "Measuring the vptr overhead",
-    "prompt_md": "## Goal\n\nDemonstrate that adding virtual functions to a class increases its `sizeof` because of the hidden vptr. Build several structs with and without virtual functions and report their sizes relative to a baseline.\n\n## Input\n\nNo input. The program ignores `stdin`.\n\n## Output\n\nExactly four lines:\n\n```\nPlain: 4\nOneVirtual: 16\nTwoVirtuals: 16\nDerived: 16\n```\n\nEach line prints the name of the struct followed by its `sizeof`.\n\n## Requirements\n\n- Define a struct `Plain` with a single `int m_value{}` member and **no** virtual functions.\n- Define a struct `OneVirtual` with a single `int m_value{}` member and **one** virtual function `virtual void f() {}`.\n- Define a struct `TwoVirtuals` with a single `int m_value{}` member and **two** virtual functions `virtual void f() {}` and `virtual void g() {}`. This demonstrates that adding more virtual functions does not increase object size -- only one vptr is stored regardless of the number of virtual functions.\n- Define a struct `Derived` that publicly inherits from `OneVirtual` and overrides `f()` with `void f() override {}`. It adds no new data members. This demonstrates that the derived class still has only one vptr (inherited from the base).\n- In `main`, print the four lines shown above using `sizeof` on each struct.\n- The program takes no input.",
-    "starter_code": "#include <iostream>\n\nstruct Plain\n{\n    int m_value{};\n};\n\nstruct OneVirtual\n{\n    int m_value{};\n    // TODO: Add one virtual function f()\n};\n\nstruct TwoVirtuals\n{\n    int m_value{};\n    // TODO: Add two virtual functions f() and g()\n};\n\n// TODO: Define Derived that inherits from OneVirtual\n//       and overrides f(). Add no new data members.\nstruct Derived : public OneVirtual\n{\n};\n\nint main()\n{\n    // TODO: Print sizeof each struct, one per line:\n    // Plain: <size>\n    // OneVirtual: <size>\n    // TwoVirtuals: <size>\n    // Derived: <size>\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n\nstruct Plain\n{\n    int m_value{};\n};\n\nstruct OneVirtual\n{\n    int m_value{};\n    virtual void f() {}\n};\n\nstruct TwoVirtuals\n{\n    int m_value{};\n    virtual void f() {}\n    virtual void g() {}\n};\n\nstruct Derived : public OneVirtual\n{\n    void f() override {}\n};\n\nint main()\n{\n    std::cout << \"Plain: \" << sizeof(Plain) << '\\n';\n    std::cout << \"OneVirtual: \" << sizeof(OneVirtual) << '\\n';\n    std::cout << \"TwoVirtuals: \" << sizeof(TwoVirtuals) << '\\n';\n    std::cout << \"Derived: \" << sizeof(Derived) << '\\n';\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nAdding a virtual function to a class makes every object of that class carry a hidden `vptr`, growing its `sizeof` by one pointer (8 bytes on a 64-bit build). Build two otherwise-identical structs -- one plain, one with a virtual function -- and use their sizes to total up the memory of a mixed collection.\n\n## Structs\n\n- `Plain` holds a single `int` and has no virtual functions.\n- `Polymorphic` holds a single `int` and has one virtual function.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 10).\n- Next `N` lines: either `plain` or `poly`.\n\n## Output\n\nFor each line print `<type>: <sizeof of that struct>`. After all lines, print `Total bytes: <sum of those sizes>`.\n\nFor input `3` / `plain` / `poly` / `poly`:\n```\nplain: 4\npoly: 16\npoly: 16\nTotal bytes: 36\n```",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nstruct Plain\n{\n    int m_value{};\n};\n\nstruct Polymorphic\n{\n    int m_value{};\n    virtual void f() {}\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::size_t total{0};\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        std::size_t size{type == \"plain\" ? sizeof(Plain) : sizeof(Polymorphic)};\n        std::cout << type << \": \" << size << '\\n';\n        total += size;\n    }\n\n    std::cout << \"Total bytes: \" << total << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "All four sizes printed",
+        "label": "Plain and two poly",
         "is_sample": true,
-        "stdin": "",
-        "expected_stdout": "Plain: 4\nOneVirtual: 16\nTwoVirtuals: 16\nDerived: 16\n"
+        "stdin": "3\nplain\npoly\npoly\n",
+        "expected_stdout": "plain: 4\npoly: 16\npoly: 16\nTotal bytes: 36\n"
       },
       {
-        "label": "No input required",
+        "label": "Single plain",
         "is_sample": false,
-        "stdin": "ignored",
-        "expected_stdout": "Plain: 4\nOneVirtual: 16\nTwoVirtuals: 16\nDerived: 16\n"
+        "stdin": "1\nplain\n",
+        "expected_stdout": "plain: 4\nTotal bytes: 4\n"
       },
       {
-        "label": "Consistent output on repeated run",
+        "label": "Two poly",
         "is_sample": false,
-        "stdin": "",
-        "expected_stdout": "Plain: 4\nOneVirtual: 16\nTwoVirtuals: 16\nDerived: 16\n"
+        "stdin": "2\npoly\npoly\n",
+        "expected_stdout": "poly: 16\npoly: 16\nTotal bytes: 32\n"
+      },
+      {
+        "label": "Mixed four",
+        "is_sample": false,
+        "stdin": "4\nplain\nplain\npoly\nplain\n",
+        "expected_stdout": "plain: 4\nplain: 4\npoly: 16\nplain: 4\nTotal bytes: 28\n"
       }
     ]
   },
   {
     "title": "Vtable dispatch in action",
-    "prompt_md": "## Goal\n\nBuild a class hierarchy that demonstrates virtual dispatch through base pointers. Create a `Base` class and two derived classes. Store objects through `Base*` pointers and show that the correct override is called at runtime -- the observable effect of the vtable.\n\n## Input\n\n- Line 1: an integer `N` (1 <= N <= 10), the number of objects to create.\n- Next `N` lines: each line is either `base`, `alpha`, or `beta`.\n\n## Output\n\nFor each object, print two values on one line separated by a space: the result of calling `identify()` through a `Base*`, and the `sizeof` the pointed-to object (obtained by dereferencing the pointer and using `sizeof`).\n\nFor input:\n```\n3\nbase\nalpha\nbeta\n```\n\nOutput:\n```\nBase 8\nAlpha 8\nBeta 16\n```\n\n## Requirements\n\n- Define a class `Base` with no data members and a `virtual std::string identify() const` that returns `\"Base\"`. Because `Base` has a virtual function, its only content is the hidden vptr.\n- Define a class `Alpha` that publicly inherits from `Base` and overrides `identify()` to return `\"Alpha\"`. It adds no new data members, so its size equals `Base`.\n- Define a class `Beta` that publicly inherits from `Base`, adds a `double m_value{}` data member, and overrides `identify()` to return `\"Beta\"`. The extra `double` increases its size beyond `Base`.\n- In `main`, read `N` and then read each type string. For each type, dynamically allocate the correct derived object (or `Base` for `\"base\"`) and store it in a `Base*`.\n- For each pointer, print `identify()` followed by a space and then `sizeof` the dereferenced object. Note: `sizeof(*ptr)` uses the static type (`Base`), so you must use `sizeof(Base)`, `sizeof(Alpha)`, or `sizeof(Beta)` based on the type string you read. This mirrors what you would see if you inspected each object's actual memory footprint.\n- Delete all allocated objects before the program ends.\n- Use `virtual` destructors where appropriate.",
-    "starter_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Base\n{\npublic:\n    virtual ~Base() = default;\n\n    virtual std::string identify() const\n    {\n        return \"Base\";\n    }\n};\n\nclass Alpha : public Base\n{\npublic:\n    // TODO: Override identify() to return \"Alpha\"\n};\n\nclass Beta : public Base\n{\n    double m_value{};\n\npublic:\n    // TODO: Override identify() to return \"Beta\"\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Base*> objects{};\n    std::vector<std::string> types{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        types.push_back(type);\n\n        // TODO: Allocate the correct object based on type\n        //       and push it into the objects vector\n    }\n\n    for (int i{0}; i < n; ++i)\n    {\n        // TODO: Print identify() and the sizeof for the actual type\n        // Use the stored type string to select the correct sizeof\n    }\n\n    // TODO: Delete all objects\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n#include <vector>\n\nclass Base\n{\npublic:\n    virtual ~Base() = default;\n    virtual std::string identify() const { return \"Base\"; }\n};\n\nclass Alpha : public Base\n{\npublic:\n    std::string identify() const override { return \"Alpha\"; }\n};\n\nclass Beta : public Base\n{\n    double m_value{};\npublic:\n    std::string identify() const override { return \"Beta\"; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::vector<Base*> objects{};\n    std::vector<std::string> types{};\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        types.push_back(type);\n\n        if (type == \"alpha\")       objects.push_back(new Alpha{});\n        else if (type == \"beta\")   objects.push_back(new Beta{});\n        else                        objects.push_back(new Base{});\n    }\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::size_t size{ sizeof(Base) };\n        if (types[i] == \"alpha\")      size = sizeof(Alpha);\n        else if (types[i] == \"beta\")  size = sizeof(Beta);\n\n        std::cout << objects[i]->identify() << ' ' << size << '\\n';\n    }\n\n    for (auto* obj : objects)\n        delete obj;\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nThe `vptr` is installed step by step as an object is constructed: while a base constructor runs, the object is still 'a base', so a virtual call made from the base constructor dispatches to the *base* version -- never to a derived override. Once construction finishes, the same virtual call dispatches normally. Build a hierarchy that exposes both moments.\n\n## Classes\n\n- `Pipeline` is the base. `stage()` is virtual and returns `base`. The `Pipeline` constructor calls `stage()` and prints `Construct stage: <stage()>` followed by a newline.\n- `FastPipeline` derives from `Pipeline` and overrides `stage()` to return `fast`.\n- `SlowPipeline` derives from `Pipeline` and overrides `stage()` to return `slow`.\n\n## Input\n\n- Line 1: integer `N` (1 <= N <= 6).\n- Next `N` lines: either `fast` or `slow`.\n\n## Output\n\nFor each line, construct the matching object on the heap (its construction prints the `Construct stage:` line), then call `stage()` through a `Pipeline&` (or `Pipeline*`) and print `Runtime stage: <stage()>`, then delete it. The constructor always reports `base` (the override is not yet active during base construction); the runtime call reports the derived stage.\n\nFor input `2` / `fast` / `slow`:\n```\nConstruct stage: base\nRuntime stage: fast\nConstruct stage: base\nRuntime stage: slow\n```",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Pipeline\n{\npublic:\n    Pipeline()\n    {\n        std::cout << \"Construct stage: \" << stage() << '\\n';\n    }\n\n    virtual ~Pipeline() = default;\n\n    virtual std::string_view stage() const { return \"base\"; }\n};\n\nclass FastPipeline : public Pipeline\n{\npublic:\n    std::string_view stage() const override { return \"fast\"; }\n};\n\nclass SlowPipeline : public Pipeline\n{\npublic:\n    std::string_view stage() const override { return \"slow\"; }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    for (int i{0}; i < n; ++i)\n    {\n        std::string type{};\n        std::cin >> type;\n        Pipeline* p{};\n        if (type == \"fast\")\n            p = new FastPipeline{};\n        else\n            p = new SlowPipeline{};\n\n        std::cout << \"Runtime stage: \" << p->stage() << '\\n';\n        delete p;\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "All three types",
+        "label": "Fast then slow",
         "is_sample": true,
-        "stdin": "3\nbase\nalpha\nbeta\n",
-        "expected_stdout": "Base 8\nAlpha 8\nBeta 16\n"
+        "stdin": "2\nfast\nslow\n",
+        "expected_stdout": "Construct stage: base\nRuntime stage: fast\nConstruct stage: base\nRuntime stage: slow\n"
       },
       {
-        "label": "Only beta objects",
+        "label": "Single slow",
         "is_sample": false,
-        "stdin": "2\nbeta\nbeta\n",
-        "expected_stdout": "Beta 16\nBeta 16\n"
+        "stdin": "1\nslow\n",
+        "expected_stdout": "Construct stage: base\nRuntime stage: slow\n"
       },
       {
-        "label": "Single base object",
+        "label": "Two fast then slow",
         "is_sample": false,
-        "stdin": "1\nbase\n",
-        "expected_stdout": "Base 8\n"
+        "stdin": "3\nfast\nfast\nslow\n",
+        "expected_stdout": "Construct stage: base\nRuntime stage: fast\nConstruct stage: base\nRuntime stage: fast\nConstruct stage: base\nRuntime stage: slow\n"
       }
     ]
   }
