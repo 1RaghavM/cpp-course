@@ -1,8 +1,8 @@
 [
   {
     "title": "Sum a Decayed Array",
-    "prompt_md": "## Goal\nWrite a function that receives a decayed C-style array and its length, computes the sum of its elements, and returns the result.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of elements\n- Line 2: `n` integers separated by spaces (each between -1000 and 1000)\n\n## Output\nPrint exactly one line:\n```\nsum: <total>\n```\nwhere `<total>` is the sum of all `n` elements.\n\n## Requirements\n1. Declare a C-style array of size 10 in `main` and read `n` elements into it.\n2. Write a function `int arraySum(const int* arr, int length)` that computes and returns the sum using a `for` loop. The pointer parameter reflects the fact that the array decays when passed.\n3. Call `arraySum` from `main`, passing the array and `n`, and print the result.\n4. Do not use `std::array`, `std::vector`, or any container. The point is to practice the decay-and-length pattern.",
-    "starter_code": "#include <iostream>\n\n// TODO: Write int arraySum(const int* arr, int length)\n//       Loop from 0 to length, sum the elements, return the sum.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Call arraySum and print \"sum: <result>\"\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nA C-style array decays to a pointer when passed to a function, losing its length -- so the length must travel as a separate argument. Write a function that sums a decayed `int` array given a pointer and a length, and call it from `main`.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10).\n- Line 2: `n` integers (each from -1000 to 1000).\n\n## Output\nOne line: `sum: <total>`.\n\nDo not use `std::array`, `std::vector`, or any container.\n\n## Example\nInput `4` then `10 20 30 40` produces `sum: 100`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // Pass the decayed array and its length to your sum function and print the result.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint arraySum(const int* arr, int length)\n{\n    int total{ 0 };\n    for (int i{ 0 }; i < length; ++i)\n        total += arr[i];\n    return total;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"sum: \" << arraySum(arr, n) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -23,13 +23,19 @@
         "is_sample": false,
         "stdin": "5\n100 -50 25 -75 0\n",
         "expected_stdout": "sum: 0\n"
+      },
+      {
+        "label": "Hidden -- ten values",
+        "is_sample": false,
+        "stdin": "10\n1 2 3 4 5 6 7 8 9 10\n",
+        "expected_stdout": "sum: 55\n"
       }
     ]
   },
   {
     "title": "Find the Maximum via Decayed Array",
-    "prompt_md": "## Goal\nWrite two functions that operate on a decayed C-style array: one that finds the maximum element and one that reports whether `sizeof` on the parameter reflects the true array size.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10), the number of elements\n- Line 2: `n` integers separated by spaces (each between -1000 and 1000)\n\n## Output\nPrint exactly three lines:\n```\narray sizeof: <S1>\npointer sizeof: <S2>\nmax: <maximum>\n```\n- `<S1>` is `sizeof(arr)` applied to the C-style array **in main** (before decay).\n- `<S2>` is `sizeof` applied to the pointer parameter **inside the function** (after decay).\n- `<maximum>` is the largest element in the first `n` entries.\n\n## Requirements\n1. Declare a C-style `int` array of size 10 in `main` and read `n` elements into it.\n2. Write a function `std::size_t pointerSizeof(const int* arr)` that returns `sizeof(arr)` -- demonstrating that the decayed pointer loses the array's true size.\n3. Write a function `int findMax(const int* arr, int length)` that returns the maximum element. Initialize your running max to `arr[0]` and loop from index 1.\n4. In `main`, print `sizeof(arr)` (the local array, before decay), then call `pointerSizeof` and print its result, then call `findMax` and print the max.\n5. Do not use `std::array`, `std::vector`, `<algorithm>`, or any container.",
-    "starter_code": "#include <iostream>\n#include <cstddef>\n\n// TODO: Write std::size_t pointerSizeof(const int* arr)\n//       Return sizeof(arr) to show the decayed size.\n\n// TODO: Write int findMax(const int* arr, int length)\n//       Return the maximum element in the first 'length' entries.\n//       Initialize max to arr[0], loop from index 1.\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // TODO: Print \"array sizeof: \" followed by sizeof(arr)\n    // TODO: Print \"pointer sizeof: \" followed by pointerSizeof(arr)\n    // TODO: Print \"max: \" followed by findMax(arr, n)\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nDemonstrate array decay at a function boundary. In `main`, `sizeof` on the C-style array reports the whole array's byte size; inside a function that receives the decayed pointer, `sizeof` reports only a pointer's size. Write a function that returns `sizeof` of its pointer parameter, and another that finds the maximum element of a decayed array given its length.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 10).\n- Line 2: `n` integers (each from -1000 to 1000).\n\n## Output\n```\narray sizeof: <S1>\npointer sizeof: <S2>\nmax: <maximum>\n```\nwhere `<S1>` is `sizeof` of the local array in `main`, `<S2>` is `sizeof` of the decayed pointer parameter, and `<maximum>` is the largest of the `n` values. On Judge0, S1 is 40 and S2 is 8.\n\nDo not use `std::array`, `std::vector`, or `<algorithm>`.",
+    "starter_code": "#include <iostream>\n#include <cstddef>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    // Print the array sizeof, the decayed-pointer sizeof, and the maximum.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n#include <cstddef>\n\nstd::size_t pointerSizeof(const int* arr)\n{\n    return sizeof(arr);\n}\n\nint findMax(const int* arr, int length)\n{\n    int max{ arr[0] };\n    for (int i{ 1 }; i < length; ++i)\n    {\n        if (arr[i] > max)\n            max = arr[i];\n    }\n    return max;\n}\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    int arr[10]{};\n    for (int i{ 0 }; i < n; ++i)\n        std::cin >> arr[i];\n\n    std::cout << \"array sizeof: \" << sizeof(arr) << '\\n';\n    std::cout << \"pointer sizeof: \" << pointerSizeof(arr) << '\\n';\n    std::cout << \"max: \" << findMax(arr, n) << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -50,6 +56,12 @@
         "is_sample": false,
         "stdin": "1\n999\n",
         "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 999\n"
+      },
+      {
+        "label": "Hidden -- max is first element",
+        "is_sample": false,
+        "stdin": "5\n50 10 20 5 49\n",
+        "expected_stdout": "array sizeof: 40\npointer sizeof: 8\nmax: 50\n"
       }
     ]
   }

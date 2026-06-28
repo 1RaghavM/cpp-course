@@ -1,8 +1,8 @@
 [
   {
     "title": "Reverse a C-style String",
-    "prompt_md": "## Goal\nRead a word into a C-style string, report its length, then print the characters in reverse order as a new C-style string.\n\n## Input\n- A single line containing one word (no spaces, at most 40 characters).\n\n## Output\n- Line 1: the length of the input string (as reported by `std::strlen`)\n- Line 2: the string with its characters in reverse order\n\n## Requirements\n1. Declare a `char` array of size 50 to hold the input. Use `std::cin.getline()` to read the line.\n2. Use `std::strlen` (from `<cstring>`) to compute the length.\n3. Declare a second `char` array of size 50. Fill it with the characters of the input in reverse order, then manually place a null terminator at the correct position.\n4. Print the reversed array using `std::cout <<`.\n5. Do not use `std::string`, `std::reverse`, or any `<algorithm>` function.\n\n## Example\nInput: `hello` produces length `5` and reversed string `olleh`.",
-    "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 50 };\n    char input[maxLen];\n    std::cin.getline(input, maxLen);\n\n    // TODO: Use std::strlen to get the length and print it\n\n    // TODO: Declare a char array 'reversed' of size maxLen\n    // TODO: Copy characters from input into reversed in reverse order\n    // TODO: Place a null terminator at the end of the reversed string\n\n    // TODO: Print the reversed C-style string\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nRead a word into a C-style string (a null-terminated `char` array), report its length, then build a new C-style string holding the characters in reverse order. You are responsible for placing the null terminator correctly on the reversed string.\n\n## Input\nA single line containing one word (no spaces, at most 40 characters).\n\n## Output\n- Line 1: the length (as `std::strlen` would report -- the null terminator is not counted).\n- Line 2: the reversed string.\n\nDo not use `std::string`, `std::reverse`, or any `<algorithm>` function.\n\n## Example\nInput `hello` produces:\n```\n5\nolleh\n```",
+    "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    char input[50];\n    std::cin.getline(input, 50);\n\n    // Print the length, then build and print the reversed string.\n\n    return 0;\n}\n",
     "solution_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 50 };\n    char input[maxLen];\n    std::cin.getline(input, maxLen);\n\n    std::size_t len{ std::strlen(input) };\n\n    char reversed[maxLen];\n    for (std::size_t i{ 0 }; i < len; ++i)\n        reversed[i] = input[len - 1 - i];\n    reversed[len] = '\\0';\n\n    std::cout << len << '\\n';\n    std::cout << reversed << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -23,13 +23,19 @@
         "is_sample": false,
         "stdin": "a\n",
         "expected_stdout": "1\na\n"
+      },
+      {
+        "label": "Hidden -- longer word",
+        "is_sample": false,
+        "stdin": "abcdef\n",
+        "expected_stdout": "6\nfedcba\n"
       }
     ]
   },
   {
     "title": "Compare and Concatenate C-style Strings",
-    "prompt_md": "## Goal\nRead two words into C-style strings, determine their lexicographic order using `std::strcmp`, then concatenate them and print the result along with its length.\n\n## Input\n- Line 1: a single word (no spaces, at most 30 characters)\n- Line 2: a single word (no spaces, at most 30 characters)\n\n## Output\n- Line 1: one of three words describing the order of the first string relative to the second:\n  - `before` if the first string comes before the second lexicographically\n  - `after` if the first string comes after the second\n  - `equal` if both strings are identical\n- Line 2: the length of the concatenated string (first + second, no separator)\n- Line 3: the concatenated string itself\n\n## Requirements\n1. Declare two `char` arrays of size 64 for the inputs. Use `std::cin.getline()` to read each.\n2. Use `std::strcmp` to compare the two strings.\n3. Declare a third `char` array large enough to hold both strings concatenated. Use `std::strcpy` to copy the first string into it, then `std::strcat` to append the second.\n4. Use `std::strlen` to get the length of the concatenated result.\n5. Do not use `std::string` or any `<algorithm>` function.\n\n## Example\nInputs `apple` and `banana` produces `before`, length `11`, and concatenation `applebanana`.",
-    "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 64 };\n    char str1[maxLen];\n    char str2[maxLen];\n\n    std::cin.getline(str1, maxLen);\n    std::cin.getline(str2, maxLen);\n\n    // TODO: Use std::strcmp to compare str1 and str2\n    // TODO: Print \"before\", \"after\", or \"equal\" based on the result\n\n    // TODO: Declare a char array 'combined' large enough for both strings\n    // TODO: Use std::strcpy to copy str1 into combined\n    // TODO: Use std::strcat to append str2 onto combined\n\n    // TODO: Print the length of combined using std::strlen\n    // TODO: Print the combined string\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nRead two words into C-style strings, determine their lexicographic order with `std::strcmp`, then concatenate them (first followed by second, no separator) and report the result's length and the joined string. Build the concatenation yourself with the `<cstring>` copy/append functions.\n\n## Input\n- Line 1: a word (no spaces, at most 30 characters).\n- Line 2: a word (no spaces, at most 30 characters).\n\n## Output\n- Line 1: `before`, `after`, or `equal` -- the order of the first string relative to the second.\n- Line 2: the length of the concatenated string.\n- Line 3: the concatenated string.\n\nDo not use `std::string` or any `<algorithm>` function.\n\n## Example\nInputs `apple` and `banana` produce:\n```\nbefore\n11\napplebanana\n```",
+    "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    char str1[64];\n    char str2[64];\n\n    std::cin.getline(str1, 64);\n    std::cin.getline(str2, 64);\n\n    // Compare the two strings, then concatenate and report length and result.\n\n    return 0;\n}\n",
     "solution_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const int maxLen{ 64 };\n    char str1[maxLen];\n    char str2[maxLen];\n\n    std::cin.getline(str1, maxLen);\n    std::cin.getline(str2, maxLen);\n\n    int cmp{ std::strcmp(str1, str2) };\n\n    if (cmp < 0)\n        std::cout << \"before\\n\";\n    else if (cmp > 0)\n        std::cout << \"after\\n\";\n    else\n        std::cout << \"equal\\n\";\n\n    char combined[maxLen * 2];\n    std::strcpy(combined, str1);\n    std::strcat(combined, str2);\n\n    std::cout << std::strlen(combined) << '\\n';\n    std::cout << combined << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -50,6 +56,12 @@
         "is_sample": false,
         "stdin": "zoo\nalpha\n",
         "expected_stdout": "after\n8\nzooalpha\n"
+      },
+      {
+        "label": "Hidden -- shared prefix orders by length",
+        "is_sample": false,
+        "stdin": "car\ncart\n",
+        "expected_stdout": "before\n7\ncarcart\n"
       }
     ]
   }

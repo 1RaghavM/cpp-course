@@ -1,8 +1,8 @@
 [
   {
     "title": "Day Name Lookup",
-    "prompt_md": "## Goal\nBuild a lookup table of day names using an array of `const char*` pointers to string literals, then print the name corresponding to a given day number.\n\n## Input\n- A single integer `n` (0-6), where 0 = Sunday, 1 = Monday, ..., 6 = Saturday.\n\n## Output\n- If `n` is in range 0-6, print the corresponding day name on one line.\n- If `n` is out of range, print `invalid` on one line.\n\n## Requirements\n1. Declare a C-style array of `const char*` containing the seven day names: `\"Sunday\"`, `\"Monday\"`, `\"Tuesday\"`, `\"Wednesday\"`, `\"Thursday\"`, `\"Friday\"`, `\"Saturday\"` — in that order.\n2. Read `n` from `std::cin`.\n3. Check whether `n` is in the valid range (0 through 6 inclusive) before indexing into the array.\n4. Use `std::cout` to print the result followed by a newline.\n5. Do not use `std::string`, `std::string_view`, `std::array`, or `std::vector`.",
-    "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: Declare a C-style array of const char* with the 7 day names\n    //       (Sunday through Saturday)\n\n    int n{};\n    std::cin >> n;\n\n    // TODO: If n is in range 0-6, print the day name\n    //       Otherwise print \"invalid\"\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nBuild a lookup table of day names as an array of `const char*` pointing at string literals, then print the name for a given day number. Use the array for the lookup -- not a `switch` or `if/else` chain over each day.\n\nDay numbering: `0 = Sunday`, `1 = Monday`, ..., `6 = Saturday`.\n\n## Input\nA single integer.\n\n## Output\n- If the number is 0..6, print the matching day name.\n- Otherwise print `invalid`.\n\nDo not use `std::string`, `std::string_view`, `std::array`, or `std::vector`.\n\n## Example\nInput `3` produces `Wednesday`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Look up and print the day name, or invalid if out of range.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nint main()\n{\n    const char* days[]{ \"Sunday\", \"Monday\", \"Tuesday\",\n        \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\" };\n\n    int n{};\n    std::cin >> n;\n\n    if (n >= 0 && n <= 6)\n        std::cout << days[n] << '\\n';\n    else\n        std::cout << \"invalid\" << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -19,17 +19,29 @@
         "expected_stdout": "Saturday\n"
       },
       {
+        "label": "Hidden -- boundary Sunday",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Sunday\n"
+      },
+      {
         "label": "Hidden -- out of range",
         "is_sample": false,
         "stdin": "9\n",
+        "expected_stdout": "invalid\n"
+      },
+      {
+        "label": "Hidden -- negative is invalid",
+        "is_sample": false,
+        "stdin": "-2\n",
         "expected_stdout": "invalid\n"
       }
     ]
   },
   {
     "title": "Longest String Literal in Array",
-    "prompt_md": "## Goal\nGiven a list of words entered by the user, store them in a fixed-size `const char*` array by pointing each element at one of several predefined string literals. Then find and print the longest string along with its length.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 5), the number of color queries.\n- Next `n` lines: each line contains a single integer `c` (0-4) representing a color index.\n\nThe color table maps indices to these string literals:\n- 0 = `\"red\"`, 1 = `\"orange\"`, 2 = `\"yellow\"`, 3 = `\"green\"`, 4 = `\"blue\"`\n\n## Output\n- Line 1: the longest color name among the queried colors\n- Line 2: its length (number of characters, not counting the null terminator)\n\nIf two queried colors have the same length, print the one that appeared first in the input.\n\n## Requirements\n1. Declare a `const char*` array of 5 elements containing the color string literals in the order listed above.\n2. Use `std::strlen` (from `<cstring>`) to measure each queried string's length.\n3. Track the longest string seen so far using a `const char*` variable and a `std::size_t` for the max length.\n4. Do not use `std::string`, `std::string_view`, `std::array`, or `std::vector`.\n5. You may assume all input indices are valid (0-4).",
-    "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const char* colors[]{ \"red\", \"orange\", \"yellow\", \"green\", \"blue\" };\n\n    int n{};\n    std::cin >> n;\n\n    // TODO: Declare a const char* variable to track the longest color (initialize to empty string \"\")\n    // TODO: Declare a std::size_t variable for the max length found so far (initialize to 0)\n\n    // TODO: Loop n times:\n    //       - Read a color index c\n    //       - Use std::strlen to get the length of colors[c]\n    //       - If it is strictly longer than the current max, update both tracking variables\n\n    // TODO: Print the longest color name on one line\n    // TODO: Print its length on the next line\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\nUsing a `const char*` array of color literals as a lookup table, process a sequence of color queries and report the longest color name seen, with its length (measured by `std::strlen`). On a tie, keep the one that appeared first.\n\nColor table: `0 = red`, `1 = orange`, `2 = yellow`, `3 = green`, `4 = blue`.\n\n## Input\n- Line 1: an integer `n` (1 <= n <= 5).\n- Next `n` lines: each a color index (0-4).\n\n## Output\n- Line 1: the longest queried color name.\n- Line 2: its length.\n\nDo not use `std::string`, `std::string_view`, `std::array`, or `std::vector`. All indices are valid.\n\n## Example\nInput `3` then `0`, `1`, `4` produces:\n```\norange\n6\n```",
+    "starter_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const char* colors[]{ \"red\", \"orange\", \"yellow\", \"green\", \"blue\" };\n\n    int n{};\n    std::cin >> n;\n\n    // Read n color indices and report the longest queried color name and its length.\n\n    return 0;\n}\n",
     "solution_code": "#include <cstring>\n#include <iostream>\n\nint main()\n{\n    const char* colors[]{ \"red\", \"orange\", \"yellow\", \"green\", \"blue\" };\n\n    int n{};\n    std::cin >> n;\n\n    const char* longest{ \"\" };\n    std::size_t maxLen{ 0 };\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int c{};\n        std::cin >> c;\n\n        std::size_t len{ std::strlen(colors[c]) };\n        if (len > maxLen)\n        {\n            maxLen = len;\n            longest = colors[c];\n        }\n    }\n\n    std::cout << longest << '\\n';\n    std::cout << maxLen << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
@@ -50,6 +62,12 @@
         "is_sample": false,
         "stdin": "2\n1\n2\n",
         "expected_stdout": "orange\n6\n"
+      },
+      {
+        "label": "Hidden -- all short names",
+        "is_sample": false,
+        "stdin": "2\n0\n3\n",
+        "expected_stdout": "green\n5\n"
       }
     ]
   }
