@@ -27,29 +27,29 @@
     ]
   },
   {
-    "title": "Shared vs unique ownership report",
-    "prompt_md": "## Goal\n\nA resource often starts with a single exclusive owner and later becomes shared\namong several readers. Model that transition: begin with a `std::unique_ptr`,\nhand its object over to a `std::shared_ptr`, distribute reader copies, compute a\nresult from the shared value, then let the readers go.\n\n## Input\n\n- Line 1: two space-separated integers `value` and `r`\n  (-100000 <= value <= 100000; 0 <= r <= 100): the resource's value and the\n  number of reader copies to create.\n\n## Output\n\nFive lines:\n\n1. `exclusive: <value>` -- the value while held by the `unique_ptr`.\n2. `published count: 1` -- the `use_count()` right after transferring ownership\n   into a `shared_ptr`.\n3. `readers count: <c>` -- the `use_count()` after creating `r` reader copies.\n4. `total: <t>` -- the sum of the value read through every reader copy\n   (i.e. `value * r`).\n5. `after readers count: 1` -- the `use_count()` after all reader copies are gone.\n\n## Notes\n\nA `unique_ptr` cannot be copied, so ownership must be *moved* into the\n`shared_ptr`. Use `std::make_unique` / `std::make_shared`; no raw `new`/`delete`.",
-    "starter_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int value{};\n    int r{};\n    std::cin >> value >> r;\n\n    // Start with a unique_ptr, move its object into a shared_ptr, make r reader\n    // copies, compute the total across readers, then release the readers.\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main()\n{\n    int value{};\n    int r{};\n    std::cin >> value >> r;\n\n    auto owner{ std::make_unique<int>(value) };\n    std::cout << \"exclusive: \" << *owner << '\\n';\n\n    std::shared_ptr<int> shared{ std::move(owner) };\n    std::cout << \"published count: \" << shared.use_count() << '\\n';\n\n    std::vector<std::shared_ptr<int>> readers;\n    for (int i{ 0 }; i < r; ++i)\n        readers.push_back(shared);\n    std::cout << \"readers count: \" << shared.use_count() << '\\n';\n\n    int total{ 0 };\n    for (const auto& reader : readers)\n        total += *reader;\n    std::cout << \"total: \" << total << '\\n';\n\n    readers.clear();\n    std::cout << \"after readers count: \" << shared.use_count() << '\\n';\n\n    return 0;\n}\n",
+    "title": "Shared ownership ledger",
+    "prompt_md": "## Goal\n\nA resource often starts under a single exclusive owner (a `std::unique_ptr`) and\nis later **published** to many shared readers. Model two such resources, hand each\n`unique_ptr`'s object to a `std::shared_ptr`, then run a stream of commands that\ndistribute and drop reader copies between them. Because the two control blocks\nhave **independent** reference counts that move under the command stream, the\nprinted `use_count`s can only be reproduced by actually holding, copying, and\ndestroying `shared_ptr`s -- a closed-form formula over the inputs cannot.\n\n## Input\n\n- Line 1: integers `va`, `vb`, and `q` (-100000 <= va, vb <= 100000;\n  1 <= q <= 50): the two resource values and the number of commands.\n- Next `q` lines, each one of:\n  - `holdA` -- add a reader copy of resource A.\n  - `holdB` -- add a reader copy of resource B.\n  - `drop` -- drop the most recently added reader copy (if any).\n  - `report` -- print the current owner counts of A and B.\n  - `read` -- print the sum of the values seen through all current reader copies.\n\n## Output\n\n- For each `report`: `A=<a> B=<b>` where `<a>`/`<b>` are the `use_count()` of the\n  original A / B `shared_ptr`.\n- For each `read`: `sum=<s>` where `<s>` is the sum of `*reader` over every reader\n  copy currently held (A's value for each A-copy, B's value for each B-copy).\n- `holdA`, `holdB`, and `drop` produce no output.\n\n## Notes\n\nA `unique_ptr` cannot be copied, so each resource's ownership must be **moved**\ninto its `shared_ptr` (`std::shared_ptr<int> s{ std::move(u) };`). Keep reader\ncopies in a container; use `std::make_unique` / `std::make_shared`; no raw\n`new`/`delete`, and no `weak_ptr`.",
+    "starter_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\n\nint main()\n{\n    int va{};\n    int vb{};\n    int q{};\n    std::cin >> va >> vb >> q;\n\n    // Start each resource in a unique_ptr, then move it into a shared_ptr.\n    // Keep reader copies in a container and process q commands:\n    //   holdA / holdB -> push a copy of A / B\n    //   drop          -> pop the last reader\n    //   report        -> print \"A=<A.use_count()> B=<B.use_count()>\"\n    //   read          -> print \"sum=<sum of *reader over all readers>\"\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <memory>\n#include <string>\n#include <vector>\nint main(){\n    int va{}, vb{}, q{};\n    std::cin >> va >> vb >> q;\n    auto ua = std::make_unique<int>(va);\n    std::shared_ptr<int> A{ std::move(ua) };\n    auto ub = std::make_unique<int>(vb);\n    std::shared_ptr<int> B{ std::move(ub) };\n    std::vector<std::shared_ptr<int>> holders;\n    for(int i=0;i<q;++i){\n        std::string cmd; std::cin >> cmd;\n        if(cmd==\"holdA\") holders.push_back(A);\n        else if(cmd==\"holdB\") holders.push_back(B);\n        else if(cmd==\"drop\"){ if(!holders.empty()) holders.pop_back(); }\n        else if(cmd==\"report\") std::cout << \"A=\" << A.use_count() << \" B=\" << B.use_count() << '\\n';\n        else if(cmd==\"read\"){ int sum=0; for(const auto& p:holders) sum+=*p; std::cout << \"sum=\" << sum << '\\n'; }\n    }\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Three readers",
+        "label": "Interleaved holds",
         "is_sample": true,
-        "stdin": "5 3\n",
-        "expected_stdout": "exclusive: 5\npublished count: 1\nreaders count: 4\ntotal: 15\nafter readers count: 1\n"
+        "stdin": "10 20 7\nholdA\nholdB\nreport\nholdA\nreport\nread\ndrop\n",
+        "expected_stdout": "A=2 B=2\nA=3 B=2\nsum=40\n"
       },
       {
-        "label": "No readers",
+        "label": "Only B grows",
         "is_sample": false,
-        "stdin": "10 0\n",
-        "expected_stdout": "exclusive: 10\npublished count: 1\nreaders count: 1\ntotal: 0\nafter readers count: 1\n"
+        "stdin": "5 8 5\nreport\nholdB\nholdB\nreport\nread\n",
+        "expected_stdout": "A=1 B=1\nA=1 B=3\nsum=16\n"
       },
       {
-        "label": "Negative value",
+        "label": "Drop then read",
         "is_sample": false,
-        "stdin": "-4 5\n",
-        "expected_stdout": "exclusive: -4\npublished count: 1\nreaders count: 6\ntotal: -20\nafter readers count: 1\n"
+        "stdin": "7 3 6\nholdA\nholdA\ndrop\nreport\nholdB\nread\n",
+        "expected_stdout": "A=2 B=1\nsum=10\n"
       }
     ]
   }
