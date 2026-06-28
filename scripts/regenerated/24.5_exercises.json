@@ -1,54 +1,54 @@
 [
   {
     "title": "Protected member access",
-    "prompt_md": "## Goal\n\nCreate a base class `Sensor` with a protected data member and a derived class `LabeledSensor` that reads the protected member directly to produce formatted output.\n\n## Input\n\n- Line 1: a string `label` (1-50 characters, no spaces).\n- Line 2: an integer `reading` (-1000 <= reading <= 1000).\n\n## Output\n\nExactly two lines:\n1. `Sensor reading: <reading>`\n2. `<label>: <reading> [<status>]`\n\nwhere `<status>` is `OK` if `reading >= 0`, or `WARN` if `reading < 0`.\n\n## Requirements\n\n- Define a class `Sensor` with a `protected` member `int m_reading` and a `public` constructor taking an `int`.\n- `Sensor` has a `public` member function `void printReading() const` that prints `Sensor reading: <m_reading>`.\n- Define a class `LabeledSensor` that inherits **publicly** from `Sensor`.\n- `LabeledSensor` has a `private` member `std::string m_label` and a constructor taking `const std::string&` and `int`.\n- `LabeledSensor` has a `public` member function `void printLabeled() const` that accesses `m_reading` directly (not through a getter) and prints `<label>: <reading> [<status>]`.\n- In `main`, read the label and reading, create a `LabeledSensor`, call `printReading()` then `printLabeled()`.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nclass Sensor\n{\nprotected:\n    int m_reading{};\n\npublic:\n    Sensor(int reading)\n        : m_reading{ reading }\n    {\n    }\n\n    void printReading() const\n    {\n        // TODO: Print \"Sensor reading: <m_reading>\"\n    }\n};\n\nclass LabeledSensor : public Sensor\n{\n    std::string m_label{};\n\npublic:\n    LabeledSensor(const std::string& label, int reading)\n        : Sensor{ reading }, m_label{ label }\n    {\n    }\n\n    void printLabeled() const\n    {\n        // TODO: Access m_reading directly (it's protected)\n        // Print \"<label>: <reading> [OK]\" or \"<label>: <reading> [WARN]\"\n    }\n};\n\nint main()\n{\n    std::string label{};\n    std::cin >> label;\n\n    int reading{};\n    std::cin >> reading;\n\n    // TODO: Create a LabeledSensor, call printReading then printLabeled\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWrite a base class `Sensor` that stores its reading in a `protected` member, and a class `LabeledSensor` that publicly inherits from it. Because the member is `protected`, the derived class may read it **directly** (no getter) to produce a labeled, status-annotated report.\n\n## Input\n\n- Line 1: a string `label` (no spaces).\n- Line 2: an integer `reading` (-1000 to 1000).\n\n## Output\n\nExactly two lines:\n\n```\nSensor reading: <reading>\n<label>: <reading> [<status>]\n```\n\nwhere `<status>` is `OK` when `reading >= 0` and `WARN` when `reading < 0`.\n\n## Constraints\n\n- `Sensor` keeps `reading` as a `protected` member and offers a function that prints the first line.\n- `LabeledSensor` adds the label and computes the status by accessing the inherited `protected` reading directly. Outside code must not be able to read that member.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    std::string label{};\n    std::cin >> label;\n\n    int reading{};\n    std::cin >> reading;\n\n    // Define Sensor (with a protected reading) and LabeledSensor,\n    // build a LabeledSensor, and print the two lines.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n#include <string>\n\nclass Sensor\n{\nprotected:\n    int m_reading{};\n\npublic:\n    Sensor(int reading)\n        : m_reading{ reading }\n    {\n    }\n\n    void printReading() const\n    {\n        std::cout << \"Sensor reading: \" << m_reading << '\\n';\n    }\n};\n\nclass LabeledSensor : public Sensor\n{\n    std::string m_label{};\n\npublic:\n    LabeledSensor(const std::string& label, int reading)\n        : Sensor{ reading }, m_label{ label }\n    {\n    }\n\n    void printLabeled() const\n    {\n        std::cout << m_label << \": \" << m_reading\n                  << \" [\" << (m_reading >= 0 ? \"OK\" : \"WARN\") << \"]\\n\";\n    }\n};\n\nint main()\n{\n    std::string label{};\n    std::cin >> label;\n\n    int reading{};\n    std::cin >> reading;\n\n    LabeledSensor ls{ label, reading };\n    ls.printReading();\n    ls.printLabeled();\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Positive reading",
         "is_sample": true,
-        "stdin": "Thermometer\n42",
+        "stdin": "Thermometer\n42\n",
         "expected_stdout": "Sensor reading: 42\nThermometer: 42 [OK]\n"
       },
       {
         "label": "Negative reading triggers WARN",
         "is_sample": false,
-        "stdin": "Pressure\n-7",
+        "stdin": "Pressure\n-7\n",
         "expected_stdout": "Sensor reading: -7\nPressure: -7 [WARN]\n"
       },
       {
         "label": "Zero reading is OK",
         "is_sample": false,
-        "stdin": "Voltage\n0",
+        "stdin": "Voltage\n0\n",
         "expected_stdout": "Sensor reading: 0\nVoltage: 0 [OK]\n"
       }
     ]
   },
   {
     "title": "Private inheritance hides the base interface",
-    "prompt_md": "## Goal\n\nDemonstrate how private inheritance restricts access. A `Stack` class privately inherits from a `Container` that tracks a count, then re-exposes only the operations it wants through its own public interface.\n\n## Input\n\n- Line 1: an integer `n` (1 <= n <= 10), the number of push operations.\n- Line 2: `n` space-separated integers (0 <= each <= 1000).\n\n## Output\n\n- Line 1: `Size: <n>`\n- Remaining lines: one integer per line, popped in LIFO order (last pushed is first printed).\n\n## Requirements\n\n- Define a class `Container` with a `protected` member `int m_count{}` and two `public` member functions: `int size() const` (returns `m_count`) and `bool empty() const` (returns whether count is 0).\n- Define a class `Stack` that inherits **privately** from `Container`.\n- `Stack` has a `private` fixed-size array `int m_data[10]{}` for storage.\n- `Stack` has three `public` member functions:\n  - `void push(int value)`: stores value at index `m_count` and increments `m_count` (accessed directly because it is `protected`).\n  - `int pop()`: decrements `m_count` and returns the value at that index.\n  - `int size() const`: calls `Container::size()` and returns the result. This re-exposes size through the `Stack` interface, since private inheritance made it inaccessible from outside.\n- `Stack` does **not** re-expose `empty()` -- it stays hidden.\n- In `main`, read input, push all values, print `Size: <n>`, then pop and print each value on its own line.",
-    "starter_code": "#include <iostream>\n\nclass Container\n{\nprotected:\n    int m_count{};\n\npublic:\n    int size() const { return m_count; }\n    bool empty() const { return m_count == 0; }\n};\n\nclass Stack : private Container\n{\n    int m_data[10]{};\n\npublic:\n    void push(int value)\n    {\n        // TODO: Store value at m_data[m_count], increment m_count\n    }\n\n    int pop()\n    {\n        // TODO: Decrement m_count, return m_data[m_count]\n        return 0;\n    }\n\n    int size() const\n    {\n        // TODO: Delegate to Container::size()\n        return 0;\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Stack s{};\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        s.push(val);\n    }\n\n    // TODO: Print \"Size: <n>\" then pop and print each value\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nUse **private inheritance** to reuse a base class's implementation without exposing its interface. A `Stack` privately inherits from a `Container` that tracks a count, then re-exposes only the operation it chooses through its own public interface.\n\n## Input\n\n- Line 1: an integer `n` (1 to 10), the number of values to push.\n- Line 2: `n` space-separated integers (0 to 1000).\n\n## Output\n\n```\nSize: <n>\n```\nfollowed by the values popped in LIFO order, one per line (last pushed is printed first).\n\n## Constraints\n\n- `Container` has a `protected` count and public `size()` / `empty()` functions.\n- `Stack` inherits from `Container` **privately**, so `size()` and `empty()` are not visible to outside code through a `Stack`. The `Stack` stores its elements, supports `push`/`pop`, and **re-exposes only `size()`** (via a `using` declaration or a forwarding function) -- it must keep `empty()` hidden. Use the inherited protected count to track how many elements are stored.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    // Define Container and a Stack that privately inherits from it.\n    // Push the n values, print \"Size: <n>\", then pop and print each\n    // value on its own line.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nclass Container\n{\nprotected:\n    int m_count{};\n\npublic:\n    int size() const { return m_count; }\n    bool empty() const { return m_count == 0; }\n};\n\nclass Stack : private Container\n{\n    int m_data[10]{};\n\npublic:\n    void push(int value)\n    {\n        m_data[m_count] = value;\n        ++m_count;\n    }\n\n    int pop()\n    {\n        --m_count;\n        return m_data[m_count];\n    }\n\n    int size() const\n    {\n        return Container::size();\n    }\n};\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    Stack s{};\n\n    for (int i{ 0 }; i < n; ++i)\n    {\n        int val{};\n        std::cin >> val;\n        s.push(val);\n    }\n\n    std::cout << \"Size: \" << s.size() << '\\n';\n\n    int count{ s.size() };\n    for (int i{ 0 }; i < count; ++i)\n    {\n        std::cout << s.pop() << '\\n';\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Three values LIFO",
         "is_sample": true,
-        "stdin": "3\n10 20 30",
+        "stdin": "3\n10 20 30\n",
         "expected_stdout": "Size: 3\n30\n20\n10\n"
       },
       {
         "label": "Single value",
         "is_sample": false,
-        "stdin": "1\n42",
+        "stdin": "1\n42\n",
         "expected_stdout": "Size: 1\n42\n"
       },
       {
         "label": "Five values LIFO",
         "is_sample": false,
-        "stdin": "5\n1 2 3 4 5",
+        "stdin": "5\n1 2 3 4 5\n",
         "expected_stdout": "Size: 5\n5\n4\n3\n2\n1\n"
       }
     ]

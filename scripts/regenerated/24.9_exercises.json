@@ -1,54 +1,54 @@
 [
   {
     "title": "Multi-base disambiguation",
-    "prompt_md": "## Goal\n\nCreate a class `FlyingFish` that inherits from both `Bird` and `Fish`, then call methods from each base class using explicit disambiguation.\n\n## Input\n\n- Line 1: two integers `wingSpan` and `depth` (1 <= each <= 1000), representing the bird's wingspan and the fish's max depth.\n\n## Output\n\n- Line 1: `wings: <wingSpan>`\n- Line 2: `depth: <depth>`\n- Line 3: `name: FlyingFish`\n\n## Requirements\n\n- Define a class `Bird` with a protected `int m_wingSpan{}` member, a constructor taking an `int` that sets it, a public `void showWings() const` that prints `wings: <m_wingSpan>` followed by a newline, and a public `std::string name() const` that returns `\"Bird\"`.\n- Define a class `Fish` with a protected `int m_depth{}` member, a constructor taking an `int` that sets it, a public `void showDepth() const` that prints `depth: <m_depth>` followed by a newline, and a public `std::string name() const` that returns `\"Fish\"`.\n- Define a class `FlyingFish` that publicly inherits from both `Bird` and `Fish`. Its constructor takes `int wingSpan` and `int depth` and passes them to the respective base constructors.\n- `FlyingFish` has its own `std::string name() const` that returns `\"FlyingFish\"`.\n- In `main`, create a `FlyingFish`, call `showWings()`, `showDepth()`, and print `name: ` followed by the result of calling the `FlyingFish` version of `name()`.",
-    "starter_code": "#include <iostream>\n#include <string>\n\nclass Bird\n{\nprotected:\n    int m_wingSpan{};\n\npublic:\n    Bird(int wingSpan)\n        : m_wingSpan{ wingSpan }\n    {\n    }\n\n    void showWings() const { std::cout << \"wings: \" << m_wingSpan << '\\n'; }\n\n    // TODO: name() returns \"Bird\"\n};\n\nclass Fish\n{\nprotected:\n    int m_depth{};\n\npublic:\n    Fish(int depth)\n        : m_depth{ depth }\n    {\n    }\n\n    void showDepth() const { std::cout << \"depth: \" << m_depth << '\\n'; }\n\n    // TODO: name() returns \"Fish\"\n};\n\n// TODO: Define FlyingFish inheriting from both Bird and Fish\n// Constructor takes (int wingSpan, int depth)\n// Has its own name() returning \"FlyingFish\"\n\nint main()\n{\n    int wingSpan{};\n    int depth{};\n    std::cin >> wingSpan >> depth;\n\n    // TODO: Create a FlyingFish and call showWings(), showDepth(),\n    // then print \"name: \" followed by its name()\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nWrite a class `FlyingFish` that publicly inherits from **two** base classes, `Bird` and `Fish`. Both bases provide their own `name()` function, so `FlyingFish` must define its own `name()` to resolve the clash, while still reusing the distinct behavior each base offers.\n\n## Input\n\nOne line: two integers `wingSpan depth` (1 to 1000 each).\n\n## Output\n\nExactly three lines:\n\n```\nwings: <wingSpan>\ndepth: <depth>\nname: FlyingFish\n```\n\n## Constraints\n\n- `Bird` holds a wingspan (constructor takes it), prints `wings: <wingSpan>` via `showWings()`, and has a `name()` returning `\"Bird\"`.\n- `Fish` holds a max depth (constructor takes it), prints `depth: <depth>` via `showDepth()`, and has a `name()` returning `\"Fish\"`.\n- `FlyingFish` constructs both bases with their respective values and defines its own `name()` returning `\"FlyingFish\"`. `main` calls `showWings()`, `showDepth()`, then prints `name: ` followed by the `FlyingFish` `name()`.",
+    "starter_code": "#include <iostream>\n#include <string>\n\nint main()\n{\n    int wingSpan{};\n    int depth{};\n    std::cin >> wingSpan >> depth;\n\n    // Define Bird, Fish, and a FlyingFish that inherits from both.\n    // Build a FlyingFish and produce the three lines.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n#include <string>\n\nclass Bird\n{\nprotected:\n    int m_wingSpan{};\n\npublic:\n    Bird(int wingSpan)\n        : m_wingSpan{ wingSpan }\n    {\n    }\n\n    void showWings() const { std::cout << \"wings: \" << m_wingSpan << '\\n'; }\n\n    std::string name() const { return \"Bird\"; }\n};\n\nclass Fish\n{\nprotected:\n    int m_depth{};\n\npublic:\n    Fish(int depth)\n        : m_depth{ depth }\n    {\n    }\n\n    void showDepth() const { std::cout << \"depth: \" << m_depth << '\\n'; }\n\n    std::string name() const { return \"Fish\"; }\n};\n\nclass FlyingFish : public Bird, public Fish\n{\npublic:\n    FlyingFish(int wingSpan, int depth)\n        : Bird{ wingSpan }\n        , Fish{ depth }\n    {\n    }\n\n    std::string name() const { return \"FlyingFish\"; }\n};\n\nint main()\n{\n    int wingSpan{};\n    int depth{};\n    std::cin >> wingSpan >> depth;\n\n    FlyingFish ff{ wingSpan, depth };\n    ff.showWings();\n    ff.showDepth();\n    std::cout << \"name: \" << ff.name() << '\\n';\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Basic wingspan and depth",
         "is_sample": true,
-        "stdin": "30 200",
+        "stdin": "30 200\n",
         "expected_stdout": "wings: 30\ndepth: 200\nname: FlyingFish\n"
       },
       {
         "label": "Minimum values",
         "is_sample": false,
-        "stdin": "1 1",
+        "stdin": "1 1\n",
         "expected_stdout": "wings: 1\ndepth: 1\nname: FlyingFish\n"
       },
       {
         "label": "Large values",
         "is_sample": false,
-        "stdin": "999 500",
+        "stdin": "999 500\n",
         "expected_stdout": "wings: 999\ndepth: 500\nname: FlyingFish\n"
       }
     ]
   },
   {
     "title": "Diamond ambiguity resolver",
-    "prompt_md": "## Goal\n\nExperience the diamond problem firsthand: class `A` holds a value, `B` and `C` each inherit from `A`, and `D` inherits from both `B` and `C`. Resolve the resulting ambiguity by using `Base::` qualification to access each copy of `A`'s data independently.\n\n## Input\n\n- Line 1: two integers `bVal` and `cVal` (-10000 <= each <= 10000), values to store in the `A` subobject that came through `B` and the `A` subobject that came through `C`, respectively.\n\n## Output\n\n- Line 1: `B::value: <bVal>`\n- Line 2: `C::value: <cVal>`\n- Line 3: `sum: <bVal + cVal>`\n\n## Requirements\n\n- Define a class `A` with a public `int m_value{}` member and a constructor taking an `int` that sets it.\n- Define a class `B` that publicly inherits from `A`. Its constructor takes an `int` and forwards it to `A`.\n- Define a class `C` that publicly inherits from `A`. Its constructor takes an `int` and forwards it to `A`.\n- Define a class `D` that publicly inherits from both `B` and `C`. Its constructor takes two ints (`bVal`, `cVal`) and passes them to `B` and `C` respectively.\n- In `D`, write a public method `void show() const` that:\n  - Prints `B::value: ` followed by `B::m_value` and a newline.\n  - Prints `C::value: ` followed by `C::m_value` and a newline.\n  - Prints `sum: ` followed by `B::m_value + C::m_value` and a newline.\n- In `main`, read the two values, construct a `D`, and call `show()`.",
-    "starter_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n\n    A(int value)\n        : m_value{ value }\n    {\n    }\n};\n\n// TODO: Define class B inheriting from A\n// Constructor takes int and forwards to A\n\n// TODO: Define class C inheriting from A\n// Constructor takes int and forwards to A\n\n// TODO: Define class D inheriting from both B and C\n// Constructor takes (int bVal, int cVal)\n// Public method show() prints B::value, C::value, and their sum\n\nint main()\n{\n    int bVal{};\n    int cVal{};\n    std::cin >> bVal >> cVal;\n\n    // TODO: Create a D object and call show()\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nRecreate the diamond problem and resolve it. Class `A` holds a value; `B` and `C` each inherit from `A`; `D` inherits from both `B` and `C`. A `D` therefore contains **two separate copies** of `A`'s data. Reach each copy unambiguously with `B::` and `C::` qualification, and combine them.\n\n## Input\n\nOne line: two integers `bVal cVal` (-10000 to 10000 each). `bVal` initializes the `A` reached through `B`; `cVal` initializes the `A` reached through `C`.\n\n## Output\n\nExactly three lines:\n\n```\nB::value: <bVal>\nC::value: <cVal>\nsum: <bVal + cVal>\n```\n\n## Constraints\n\n- `A` has a value member and a constructor taking it.\n- `B` and `C` each inherit from `A` and forward an int to `A`'s constructor.\n- `D` inherits from both `B` and `C`, initializes each side with the matching value, and provides a `show()` member that prints the two copies and their sum. Because a plain reference to the inherited value is ambiguous, `show()` must qualify each access with `B::` or `C::`.",
+    "starter_code": "#include <iostream>\n\nint main()\n{\n    int bVal{};\n    int cVal{};\n    std::cin >> bVal >> cVal;\n\n    // Define A, B (from A), C (from A), and D (from B and C). D::show()\n    // must disambiguate the two A copies with B:: and C:: and print them\n    // plus their sum.\n\n    return 0;\n}\n",
     "solution_code": "#include <iostream>\n\nclass A\n{\npublic:\n    int m_value{};\n\n    A(int value)\n        : m_value{ value }\n    {\n    }\n};\n\nclass B : public A\n{\npublic:\n    B(int value)\n        : A{ value }\n    {\n    }\n};\n\nclass C : public A\n{\npublic:\n    C(int value)\n        : A{ value }\n    {\n    }\n};\n\nclass D : public B, public C\n{\npublic:\n    D(int bVal, int cVal)\n        : B{ bVal }\n        , C{ cVal }\n    {\n    }\n\n    void show() const\n    {\n        std::cout << \"B::value: \" << B::m_value << '\\n';\n        std::cout << \"C::value: \" << C::m_value << '\\n';\n        std::cout << \"sum: \" << B::m_value + C::m_value << '\\n';\n    }\n};\n\nint main()\n{\n    int bVal{};\n    int cVal{};\n    std::cin >> bVal >> cVal;\n\n    D d{ bVal, cVal };\n    d.show();\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Positive values",
         "is_sample": true,
-        "stdin": "10 20",
+        "stdin": "10 20\n",
         "expected_stdout": "B::value: 10\nC::value: 20\nsum: 30\n"
       },
       {
         "label": "Negative and positive",
         "is_sample": false,
-        "stdin": "-5 15",
+        "stdin": "-5 15\n",
         "expected_stdout": "B::value: -5\nC::value: 15\nsum: 10\n"
       },
       {
         "label": "Both zero",
         "is_sample": false,
-        "stdin": "0 0",
+        "stdin": "0 0\n",
         "expected_stdout": "B::value: 0\nC::value: 0\nsum: 0\n"
       }
     ]

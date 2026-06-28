@@ -1,54 +1,54 @@
 [
   {
-    "title": "Observe construction and destruction order",
-    "prompt_md": "## Goal\n\nCreate a `Base` and `Derived` class hierarchy that prints messages during construction and destruction, demonstrating that C++ constructs the base portion first and destroys it last.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters) representing the name of the derived object.\n\n## Output\n\n- Line 1: `Base(<name>) constructed`\n- Line 2: `Derived(<name>) constructed`\n- Line 3: `Derived(<name>) destroyed`\n- Line 4: `Base(<name>) destroyed`\n\n## Requirements\n\n- Define a class `Base` with a protected `std::string` member `m_name`.\n- `Base` has a default constructor that prints `Base(<m_name>) constructed` followed by a newline. Initialize `m_name` to `\"unnamed\"` by default.\n- `Base` has a destructor that prints `Base(<m_name>) destroyed` followed by a newline.\n- Define a class `Derived` that publicly inherits from `Base`.\n- `Derived` has a constructor that takes `std::string_view name` and assigns it to the inherited `m_name`. The constructor then prints `Derived(<m_name>) constructed` followed by a newline.\n- `Derived` has a destructor that prints `Derived(<m_name>) destroyed` followed by a newline.\n- In `main`, read the name from input, create a `Derived` object in its own scope block, and let it be destroyed when the block ends.",
-    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Base\n{\nprotected:\n    std::string m_name{ \"unnamed\" };\n\npublic:\n    Base()\n    {\n        // TODO: Print \"Base(<m_name>) constructed\"\n    }\n\n    ~Base()\n    {\n        // TODO: Print \"Base(<m_name>) destroyed\"\n    }\n};\n\nclass Derived : public Base\n{\npublic:\n    Derived(std::string_view name)\n    {\n        // TODO: Assign name to m_name\n        // TODO: Print \"Derived(<m_name>) constructed\"\n    }\n\n    ~Derived()\n    {\n        // TODO: Print \"Derived(<m_name>) destroyed\"\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    // TODO: Create a Derived object in a scope block\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Base\n{\nprotected:\n    std::string m_name{ \"unnamed\" };\n\npublic:\n    Base()\n    {\n        std::cout << \"Base(\" << m_name << \") constructed\\n\";\n    }\n\n    ~Base()\n    {\n        std::cout << \"Base(\" << m_name << \") destroyed\\n\";\n    }\n};\n\nclass Derived : public Base\n{\npublic:\n    Derived(std::string_view name)\n    {\n        m_name = name;\n        std::cout << \"Derived(\" << m_name << \") constructed\\n\";\n    }\n\n    ~Derived()\n    {\n        std::cout << \"Derived(\" << m_name << \") destroyed\\n\";\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    {\n        Derived d{ name };\n    }\n\n    return 0;\n}\n",
+    "title": "Construction and destruction order with two objects",
+    "prompt_md": "## Goal\n\nWrite a `Base` class and a `Derived` class (publicly inheriting from `Base`) whose constructors and destructors print trace messages. Then create **two** `Derived` objects in the same scope so the trace reveals two rules at once: the base portion is built before the derived portion, and objects are destroyed in the reverse of the order they were created.\n\n## Input\n\nOne line with two strings (no spaces): `firstName secondName`.\n\n## Output\n\nWith the two `Derived` objects named `first` and `second` (created in that order, in one scope), the program must print:\n\n```\nBase constructed\nDerived(<firstName>) constructed\nBase constructed\nDerived(<secondName>) constructed\nDerived(<secondName>) destroyed\nBase destroyed\nDerived(<firstName>) destroyed\nBase destroyed\n```\n\n## Constraints\n\n- `Base` prints `Base constructed` when constructed and `Base destroyed` when destroyed.\n- `Derived` stores the name it was given and prints `Derived(<name>) constructed` / `Derived(<name>) destroyed`.\n- Do not hard-code the message order: it must fall out of constructing `first` then `second` in a single scope and letting them be destroyed automatically.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main()\n{\n    std::string firstName{};\n    std::string secondName{};\n    std::cin >> firstName >> secondName;\n\n    // Define Base and Derived (with constructor/destructor trace output),\n    // then create two Derived objects named first and second in one scope.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Base\n{\npublic:\n    Base() { std::cout << \"Base constructed\\n\"; }\n    ~Base() { std::cout << \"Base destroyed\\n\"; }\n};\n\nclass Derived : public Base\n{\n    std::string m_name;\n\npublic:\n    Derived(std::string_view name)\n        : m_name{ name }\n    {\n        std::cout << \"Derived(\" << m_name << \") constructed\\n\";\n    }\n\n    ~Derived()\n    {\n        std::cout << \"Derived(\" << m_name << \") destroyed\\n\";\n    }\n};\n\nint main()\n{\n    std::string firstName{};\n    std::string secondName{};\n    std::cin >> firstName >> secondName;\n\n    {\n        Derived first{ firstName };\n        Derived second{ secondName };\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
-        "label": "Basic object lifecycle",
+        "label": "Two widgets",
         "is_sample": true,
-        "stdin": "Widget",
-        "expected_stdout": "Base(unnamed) constructed\nDerived(Widget) constructed\nDerived(Widget) destroyed\nBase(Widget) destroyed\n"
+        "stdin": "Alpha Beta\n",
+        "expected_stdout": "Base constructed\nDerived(Alpha) constructed\nBase constructed\nDerived(Beta) constructed\nDerived(Beta) destroyed\nBase destroyed\nDerived(Alpha) destroyed\nBase destroyed\n"
       },
       {
-        "label": "Short name",
+        "label": "Single-character names",
         "is_sample": false,
-        "stdin": "X",
-        "expected_stdout": "Base(unnamed) constructed\nDerived(X) constructed\nDerived(X) destroyed\nBase(X) destroyed\n"
+        "stdin": "X Y\n",
+        "expected_stdout": "Base constructed\nDerived(X) constructed\nBase constructed\nDerived(Y) constructed\nDerived(Y) destroyed\nBase destroyed\nDerived(X) destroyed\nBase destroyed\n"
       },
       {
-        "label": "Longer name",
+        "label": "Longer names",
         "is_sample": false,
-        "stdin": "GameEngine",
-        "expected_stdout": "Base(unnamed) constructed\nDerived(GameEngine) constructed\nDerived(GameEngine) destroyed\nBase(GameEngine) destroyed\n"
+        "stdin": "Engine Gearbox\n",
+        "expected_stdout": "Base constructed\nDerived(Engine) constructed\nBase constructed\nDerived(Gearbox) constructed\nDerived(Gearbox) destroyed\nBase destroyed\nDerived(Engine) destroyed\nBase destroyed\n"
       }
     ]
   },
   {
     "title": "Multi-level construction order",
-    "prompt_md": "## Goal\n\nExtend the construction-order concept to a three-level hierarchy: `Animal` -> `Pet` -> `Dog`. Each level prints a message during construction and destruction, letting you verify that construction proceeds from the most-base class downward and destruction proceeds from the most-derived class upward.\n\n## Input\n\n- Line 1: a string `name` (no spaces, 1-50 characters) for the dog's name.\n- Line 2: a string `breed` (no spaces, 1-50 characters) for the dog's breed.\n\n## Output\n\n- Line 1: `Animal constructed`\n- Line 2: `Pet(name) constructed`\n- Line 3: `Dog(name, breed) constructed`\n- Line 4: `Dog(name, breed) destroyed`\n- Line 5: `Pet(name) destroyed`\n- Line 6: `Animal destroyed`\n\nwhere `name` and `breed` are the values read from input.\n\n## Requirements\n\n- Define a class `Animal` with a default constructor that prints `Animal constructed` and a destructor that prints `Animal destroyed`.\n- Define a class `Pet` that publicly inherits from `Animal`. `Pet` has a protected `std::string m_name` member. Its constructor takes `std::string_view name`, assigns it to `m_name`, and prints `Pet(<m_name>) constructed`. Its destructor prints `Pet(<m_name>) destroyed`.\n- Define a class `Dog` that publicly inherits from `Pet`. `Dog` has a private `std::string m_breed` member. Its constructor takes `std::string_view name` and `std::string_view breed`, assigns `breed` to `m_breed`, and prints `Dog(<m_name>, <m_breed>) constructed`. Its destructor prints `Dog(<m_name>, <m_breed>) destroyed`.\n- In `main`, read input, create a `Dog` inside a scope block, and let it be destroyed.",
-    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Animal\n{\npublic:\n    Animal()\n    {\n        // TODO: Print \"Animal constructed\"\n    }\n\n    ~Animal()\n    {\n        // TODO: Print \"Animal destroyed\"\n    }\n};\n\nclass Pet : public Animal\n{\nprotected:\n    std::string m_name;\n\npublic:\n    Pet(std::string_view name)\n    {\n        // TODO: Assign name to m_name\n        // TODO: Print \"Pet(<m_name>) constructed\"\n    }\n\n    ~Pet()\n    {\n        // TODO: Print \"Pet(<m_name>) destroyed\"\n    }\n};\n\nclass Dog : public Pet\n{\n    std::string m_breed;\n\npublic:\n    Dog(std::string_view name, std::string_view breed)\n        : Pet{ name }\n    {\n        // TODO: Assign breed to m_breed\n        // TODO: Print \"Dog(<m_name>, <m_breed>) constructed\"\n    }\n\n    ~Dog()\n    {\n        // TODO: Print \"Dog(<m_name>, <m_breed>) destroyed\"\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    std::string breed{};\n    std::cin >> breed;\n\n    // TODO: Create a Dog in a scope block\n\n    return 0;\n}\n",
-    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Animal\n{\npublic:\n    Animal()\n    {\n        std::cout << \"Animal constructed\\n\";\n    }\n\n    ~Animal()\n    {\n        std::cout << \"Animal destroyed\\n\";\n    }\n};\n\nclass Pet : public Animal\n{\nprotected:\n    std::string m_name;\n\npublic:\n    Pet(std::string_view name)\n    {\n        m_name = name;\n        std::cout << \"Pet(\" << m_name << \") constructed\\n\";\n    }\n\n    ~Pet()\n    {\n        std::cout << \"Pet(\" << m_name << \") destroyed\\n\";\n    }\n};\n\nclass Dog : public Pet\n{\n    std::string m_breed;\n\npublic:\n    Dog(std::string_view name, std::string_view breed)\n        : Pet{ name }\n    {\n        m_breed = breed;\n        std::cout << \"Dog(\" << m_name << \", \" << m_breed << \") constructed\\n\";\n    }\n\n    ~Dog()\n    {\n        std::cout << \"Dog(\" << m_name << \", \" << m_breed << \") destroyed\\n\";\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    std::string breed{};\n    std::cin >> breed;\n\n    {\n        Dog d{ name, breed };\n    }\n\n    return 0;\n}\n",
+    "prompt_md": "## Goal\n\nExtend the construction-order idea to a three-level hierarchy `Animal` -> `Pet` -> `Dog`. Each level prints a message in its constructor and destructor so you can verify that construction runs from the most-base class downward, and destruction runs from the most-derived class upward.\n\n## Input\n\n- Line 1: a string `name` (no spaces).\n- Line 2: a string `breed` (no spaces).\n\n## Output\n\nWith one `Dog` created in a scope and then destroyed:\n\n```\nAnimal constructed\nPet(<name>) constructed\nDog(<name>, <breed>) constructed\nDog(<name>, <breed>) destroyed\nPet(<name>) destroyed\nAnimal destroyed\n```\n\n## Constraints\n\n- `Animal` prints `Animal constructed` / `Animal destroyed`.\n- `Pet` (inherits from `Animal`) stores the name and prints `Pet(<name>) constructed` / `Pet(<name>) destroyed`.\n- `Dog` (inherits from `Pet`) stores the breed and prints `Dog(<name>, <breed>) constructed` / `Dog(<name>, <breed>) destroyed`.\n- The output order must result from the language's construction/destruction rules, not from manually arranging print statements.",
+    "starter_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    std::string breed{};\n    std::cin >> breed;\n\n    // Define Animal -> Pet -> Dog with constructor/destructor traces,\n    // then create a Dog in its own scope.\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n#include <string_view>\n\nclass Animal\n{\npublic:\n    Animal() { std::cout << \"Animal constructed\\n\"; }\n    ~Animal() { std::cout << \"Animal destroyed\\n\"; }\n};\n\nclass Pet : public Animal\n{\nprotected:\n    std::string m_name;\n\npublic:\n    Pet(std::string_view name)\n        : m_name{ name }\n    {\n        std::cout << \"Pet(\" << m_name << \") constructed\\n\";\n    }\n\n    ~Pet()\n    {\n        std::cout << \"Pet(\" << m_name << \") destroyed\\n\";\n    }\n};\n\nclass Dog : public Pet\n{\n    std::string m_breed;\n\npublic:\n    Dog(std::string_view name, std::string_view breed)\n        : Pet{ name }, m_breed{ breed }\n    {\n        std::cout << \"Dog(\" << m_name << \", \" << m_breed << \") constructed\\n\";\n    }\n\n    ~Dog()\n    {\n        std::cout << \"Dog(\" << m_name << \", \" << m_breed << \") destroyed\\n\";\n    }\n};\n\nint main()\n{\n    std::string name{};\n    std::cin >> name;\n\n    std::string breed{};\n    std::cin >> breed;\n\n    {\n        Dog d{ name, breed };\n    }\n\n    return 0;\n}\n",
     "difficulty": "practice",
     "test_cases": [
       {
         "label": "Typical dog",
         "is_sample": true,
-        "stdin": "Rex\nShepherd",
+        "stdin": "Rex\nShepherd\n",
         "expected_stdout": "Animal constructed\nPet(Rex) constructed\nDog(Rex, Shepherd) constructed\nDog(Rex, Shepherd) destroyed\nPet(Rex) destroyed\nAnimal destroyed\n"
       },
       {
         "label": "Short names",
         "is_sample": false,
-        "stdin": "Bo\nPug",
+        "stdin": "Bo\nPug\n",
         "expected_stdout": "Animal constructed\nPet(Bo) constructed\nDog(Bo, Pug) constructed\nDog(Bo, Pug) destroyed\nPet(Bo) destroyed\nAnimal destroyed\n"
       },
       {
         "label": "Longer names",
         "is_sample": false,
-        "stdin": "Maximilian\nGoldenRetriever",
+        "stdin": "Maximilian\nGoldenRetriever\n",
         "expected_stdout": "Animal constructed\nPet(Maximilian) constructed\nDog(Maximilian, GoldenRetriever) constructed\nDog(Maximilian, GoldenRetriever) destroyed\nPet(Maximilian) destroyed\nAnimal destroyed\n"
       }
     ]
