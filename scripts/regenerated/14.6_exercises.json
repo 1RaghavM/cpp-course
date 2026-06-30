@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Clamped Volume Knob",
+    "prompt_md": "## Goal\nDefine a `Volume` class that keeps a volume level inside the valid range [0, 100]. Outside code can read the level with a getter and change it with a setter, but the setter must never let the stored level leave that range.\n\n## Input\nTwo integers on separate lines: the first value to set, then the second.\n\n## Output\nTwo lines: the stored level after each `setLevel` call, each clamped to [0, 100].\n\n## Feature\nThis exercises access functions (getters and setters): a `const` getter that returns the level, and a setter that validates its argument before storing it.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a class named Volume that represents a clamped volume level.\n//  - Give it a private int data member that holds the current level (start it at 0).\n//  - Add a const getter named getLevel() that reports the current level.\n//  - Add a setter named setLevel(int) that enforces the valid range [0, 100]:\n//    any value below 0 should be held at 0, any value above 100 held at 100.\n// Do not change main(): it constructs a Volume and drives it from stdin.\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    Volume vol;\n    vol.setLevel(a);\n    std::cout << vol.getLevel() << '\\n';\n    vol.setLevel(b);\n    std::cout << vol.getLevel() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Volume {\nprivate:\n    int m_level{ 0 };\n\npublic:\n    int getLevel() const { return m_level; }\n\n    void setLevel(int v) {\n        if (v < 0)   v = 0;\n        if (v > 100) v = 100;\n        m_level = v;\n    }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    Volume vol;\n    vol.setLevel(a);\n    std::cout << vol.getLevel() << '\\n';\n    vol.setLevel(b);\n    std::cout << vol.getLevel() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: normal values",
+        "is_sample": true,
+        "stdin": "50\n80",
+        "expected_stdout": "50\n80\n"
+      },
+      {
+        "label": "Hidden: boundary clamp",
+        "is_sample": false,
+        "stdin": "-10\n150",
+        "expected_stdout": "0\n100\n"
+      },
+      {
+        "label": "Hidden: exact boundary values",
+        "is_sample": false,
+        "stdin": "0\n100",
+        "expected_stdout": "0\n100\n"
+      }
+    ]
+  },
+  {
+    "title": "Forward-Only Odometer",
+    "prompt_md": "## Goal\nDefine an `Odometer` class that records how many miles a vehicle has driven. Mileage can only increase, so the mutator that adds miles must ignore any non-positive amount.\n\n## Input\nTwo integers on separate lines: the first mileage amount to add, then the second.\n\n## Output\nTwo lines of the form `Miles: <value>`, printed after each add.\n\n## Feature\nThis exercises a getter plus a validating mutator (setter): the mutator enforces a rule — only positive amounts change the stored mileage — that a bare public data member could not enforce.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a class named Odometer that tracks total miles driven.\n//  - Give it a private int data member for the mileage, starting at 0.\n//  - Add a const getter named getMiles() that reports the current mileage.\n//  - Add a mutator named addMiles(int) that increases the mileage. Because an\n//    odometer can only move forward, it must reject any value that is not\n//    positive (zero or negative inputs leave the mileage unchanged).\n// Do not change main(): it constructs an Odometer and drives it from stdin.\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    Odometer odo;\n    odo.addMiles(a);\n    std::cout << \"Miles: \" << odo.getMiles() << '\\n';\n    odo.addMiles(b);\n    std::cout << \"Miles: \" << odo.getMiles() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Odometer {\nprivate:\n    int m_miles{ 0 };\n\npublic:\n    int getMiles() const { return m_miles; }\n\n    void addMiles(int m) {\n        if (m > 0)\n            m_miles += m;\n    }\n};\n\nint main() {\n    int a, b;\n    std::cin >> a >> b;\n\n    Odometer odo;\n    odo.addMiles(a);\n    std::cout << \"Miles: \" << odo.getMiles() << '\\n';\n    odo.addMiles(b);\n    std::cout << \"Miles: \" << odo.getMiles() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two positive increments",
+        "is_sample": true,
+        "stdin": "100\n50",
+        "expected_stdout": "Miles: 100\nMiles: 150\n"
+      },
+      {
+        "label": "Hidden: zero increment ignored",
+        "is_sample": false,
+        "stdin": "200\n0",
+        "expected_stdout": "Miles: 200\nMiles: 200\n"
+      },
+      {
+        "label": "Hidden: negative increment ignored",
+        "is_sample": false,
+        "stdin": "-5\n40",
+        "expected_stdout": "Miles: 0\nMiles: 40\n"
+      }
+    ]
+  }
+]

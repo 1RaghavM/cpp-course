@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Print Temporary Objects",
+    "prompt_md": "## Goal\nPrint two colors by passing temporary `Color` objects straight into a print function — without ever declaring a named `Color` variable.\n\n## Input\nOne line: three integers `R G B` (0 ≤ R, G, B ≤ 255).\n\n## Output\nTwo lines:\n```\nDefault: (0, 0, 0)\nCustom: (R, G, B)\n```\n\n## Task\nIn `main`, call the provided `printColor` twice using temporary `Color` objects constructed at the call site (lesson 14.13): once with all components 0, once with the input values. The `Color` class and `printColor` are provided — do not introduce a named `Color` variable.\n",
+    "starter_code": "#include <iostream>\n\nclass Color {\n    int m_r;\n    int m_g;\n    int m_b;\npublic:\n    Color(int r, int g, int b)\n        : m_r{ r }, m_g{ g }, m_b{ b }\n    {}\n\n    int r() const { return m_r; }\n    int g() const { return m_g; }\n    int b() const { return m_b; }\n};\n\nvoid printColor(const Color& c) {\n    std::cout << \"(\" << c.r() << \", \" << c.g() << \", \" << c.b() << \")\\n\";\n}\n\nint main() {\n    int r{}, g{}, b{};\n    std::cin >> r >> g >> b;\n\n    std::cout << \"Default: \";\n    // TODO: Call printColor with a temporary Color whose components are all 0\n    // (lesson 14.13) -- construct it inline at the call site, do not declare a\n    // named Color variable.\n\n    std::cout << \"Custom: \";\n    // TODO: Call printColor with a temporary Color built from r, g, and b.\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Color {\n    int m_r;\n    int m_g;\n    int m_b;\npublic:\n    Color(int r, int g, int b)\n        : m_r{ r }, m_g{ g }, m_b{ b }\n    {}\n\n    int r() const { return m_r; }\n    int g() const { return m_g; }\n    int b() const { return m_b; }\n};\n\nvoid printColor(const Color& c) {\n    std::cout << \"(\" << c.r() << \", \" << c.g() << \", \" << c.b() << \")\\n\";\n}\n\nint main() {\n    int r{}, g{}, b{};\n    std::cin >> r >> g >> b;\n\n    std::cout << \"Default: \";\n    printColor(Color{ 0, 0, 0 });\n    std::cout << \"Custom: \";\n    printColor(Color{ r, g, b });\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic color",
+        "is_sample": true,
+        "stdin": "255 128 0\n",
+        "expected_stdout": "Default: (0, 0, 0)\nCustom: (255, 128, 0)\n"
+      },
+      {
+        "label": "Hidden: all zeros",
+        "is_sample": false,
+        "stdin": "0 0 0\n",
+        "expected_stdout": "Default: (0, 0, 0)\nCustom: (0, 0, 0)\n"
+      },
+      {
+        "label": "Hidden: all max",
+        "is_sample": false,
+        "stdin": "255 255 255\n",
+        "expected_stdout": "Default: (0, 0, 0)\nCustom: (255, 255, 255)\n"
+      }
+    ]
+  },
+  {
+    "title": "Temporary Temperature Conversions",
+    "prompt_md": "## Goal\nUse temporary `Temperature` objects two ways: pass one to a function, and call a member function directly on another — neither object gets a name.\n\n## Input\nOne line: two integers `c1` and `c2` (degrees Celsius).\n\n## Output\nTwo lines:\n```\n<c1>C = <f1>F\nQuick: <f2>F\n```\nwhere each Fahrenheit value is `c * 9 / 5 + 32` using integer arithmetic.\n\n## Task\nIn `main` (lesson 14.13): first call the provided `report()` with a temporary `Temperature` constructed from `c1`. Then print `Quick: ` followed by the Fahrenheit value of a second temporary `Temperature` built from `c2`, by calling `toFahrenheit()` directly on the temporary object, and finish the line with `F`. Do not declare any named `Temperature` variable. The class and `report()` are provided.\n",
+    "starter_code": "#include <iostream>\n\nclass Temperature {\n    const int m_celsius;\npublic:\n    Temperature(int celsius)\n        : m_celsius{ celsius }\n    {}\n\n    int celsius() const { return m_celsius; }\n    int toFahrenheit() const { return m_celsius * 9 / 5 + 32; }\n};\n\nvoid report(const Temperature& t) {\n    std::cout << t.celsius() << \"C = \" << t.toFahrenheit() << \"F\\n\";\n}\n\nint main() {\n    int c1{}, c2{};\n    std::cin >> c1 >> c2;\n\n    // TODO: Call report() with a temporary Temperature built from c1\n    // (lesson 14.13) -- construct it inline, do not name it.\n\n    // TODO: Print \"Quick: \" then the Fahrenheit value of a temporary\n    // Temperature built from c2, by calling toFahrenheit() directly on the\n    // temporary object (no named variable), followed by \"F\" and a newline.\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Temperature {\n    const int m_celsius;\npublic:\n    Temperature(int celsius)\n        : m_celsius{ celsius }\n    {}\n\n    int celsius() const { return m_celsius; }\n    int toFahrenheit() const { return m_celsius * 9 / 5 + 32; }\n};\n\nvoid report(const Temperature& t) {\n    std::cout << t.celsius() << \"C = \" << t.toFahrenheit() << \"F\\n\";\n}\n\nint main() {\n    int c1{}, c2{};\n    std::cin >> c1 >> c2;\n\n    report(Temperature{ c1 });\n    std::cout << \"Quick: \" << Temperature{ c2 }.toFahrenheit() << \"F\\n\";\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: freezing and boiling",
+        "is_sample": true,
+        "stdin": "0 100\n",
+        "expected_stdout": "0C = 32F\nQuick: 212F\n"
+      },
+      {
+        "label": "Hidden: body temp and minus forty",
+        "is_sample": false,
+        "stdin": "37 -40\n",
+        "expected_stdout": "37C = 98F\nQuick: -40F\n"
+      },
+      {
+        "label": "Hidden: room and warm",
+        "is_sample": false,
+        "stdin": "25 50\n",
+        "expected_stdout": "25C = 77F\nQuick: 122F\n"
+      }
+    ]
+  }
+]

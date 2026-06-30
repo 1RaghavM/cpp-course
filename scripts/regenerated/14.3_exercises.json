@@ -1,0 +1,56 @@
+[
+  {
+    "title": "BankAccount Member Functions",
+    "prompt_md": "## Goal\nNow the behavior moves *inside* the class. Give a `BankAccount` class member functions that operate on its own data, and process a stream of deposit and withdrawal operations.\n\n## Input\n- Line 1: a floating-point number, the starting balance.\n- Line 2: an integer N (1 ≤ N ≤ 100), the number of operations.\n- Next N lines: `D <amount>` for a deposit or `W <amount>` for a withdrawal (`<amount>` is a non-negative double).\n\n## Output\n- After each operation, the new balance on its own line, to 2 decimal places.\n- After the last operation: `Final: <balance>`, also to 2 decimal places.\n\nThere are no overdraft checks in this exercise; a withdrawal may drive the balance negative.\n\n## What to build\nAdd member functions `deposit(double)` and `withdraw(double)` to the `BankAccount` class. Inside a member function you refer to the data member `balance` directly, with no object prefix. The driver sets the starting balance and calls your member functions with the dot operator.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass BankAccount {\npublic:\n    double balance;\n\n    // TODO: Add a member function `void deposit(double amount)` that increases\n    //       this account's balance by amount. Inside the function you can use\n    //       `balance` directly.\n\n    // TODO: Add a member function `void withdraw(double amount)` that decreases\n    //       this account's balance by amount. (No overdraft checking here.)\n};\n\nint main() {\n    double initial;\n    std::cin >> initial;\n    BankAccount acct;\n    acct.balance = initial;\n\n    int n;\n    std::cin >> n;\n    std::cout << std::fixed << std::setprecision(2);\n    for (int i = 0; i < n; ++i) {\n        char op;\n        double amount;\n        std::cin >> op >> amount;\n        if (op == 'D') {\n            acct.deposit(amount);\n        } else {\n            acct.withdraw(amount);\n        }\n        std::cout << acct.balance << \"\\n\";\n    }\n    std::cout << \"Final: \" << acct.balance << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass BankAccount {\npublic:\n    double balance;\n\n    void deposit(double amount) {\n        balance += amount;\n    }\n\n    void withdraw(double amount) {\n        balance -= amount;\n    }\n};\n\nint main() {\n    double initial;\n    std::cin >> initial;\n    BankAccount acct;\n    acct.balance = initial;\n\n    int n;\n    std::cin >> n;\n    std::cout << std::fixed << std::setprecision(2);\n    for (int i = 0; i < n; ++i) {\n        char op;\n        double amount;\n        std::cin >> op >> amount;\n        if (op == 'D') {\n            acct.deposit(amount);\n        } else {\n            acct.withdraw(amount);\n        }\n        std::cout << acct.balance << \"\\n\";\n    }\n    std::cout << \"Final: \" << acct.balance << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: deposit then withdraw",
+        "is_sample": true,
+        "stdin": "100.00\n2\nD 50.00\nW 30.00\n",
+        "expected_stdout": "150.00\n120.00\nFinal: 120.00\n"
+      },
+      {
+        "label": "Hidden: single deposit",
+        "is_sample": false,
+        "stdin": "0.00\n1\nD 200.00\n",
+        "expected_stdout": "200.00\nFinal: 200.00\n"
+      },
+      {
+        "label": "Hidden: multiple operations",
+        "is_sample": false,
+        "stdin": "500.00\n3\nW 100.00\nD 75.50\nW 200.00\n",
+        "expected_stdout": "400.00\n475.50\n275.50\nFinal: 275.50\n"
+      }
+    ]
+  },
+  {
+    "title": "Fraction Class: reduce() and print()",
+    "prompt_md": "## Goal\nGive a `Fraction` class member functions that work on its own data. Read fractions and print each one reduced to lowest terms.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 100), the number of fractions.\n- Next N lines: two positive integers `numerator denominator` per line.\n\n## Output\n- For each fraction, one line `numerator/denominator` in lowest terms (for example, `6 8` prints `3/4`).\n\n## What to build\nGive the `Fraction` class two member functions: `reduce()`, which divides the numerator and denominator by their greatest common divisor, and `print()`, which writes them as `numerator/denominator` followed by a newline. Computing the GCD (for example, with the remainder operator in a loop) is part of the work. The driver reads each fraction, calls `reduce()`, then `print()`.",
+    "starter_code": "#include <iostream>\n\nclass Fraction {\npublic:\n    int numerator;\n    int denominator;\n\n    // TODO: Add a member function `void reduce()` that divides the numerator\n    //       and denominator by their greatest common divisor, leaving the\n    //       fraction in lowest terms. You will need to compute the GCD; a loop\n    //       using the remainder operator (%) works well.\n\n    // TODO: Add a member function `void print()` that prints the fraction in\n    //       the form `numerator/denominator` followed by a newline.\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int num, den;\n        std::cin >> num >> den;\n        Fraction f;\n        f.numerator = num;\n        f.denominator = den;\n        f.reduce();\n        f.print();\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Fraction {\npublic:\n    int numerator;\n    int denominator;\n\n    void reduce() {\n        int a = numerator;\n        int b = denominator;\n        while (b != 0) {\n            int t = a % b;\n            a = b;\n            b = t;\n        }\n        int g = a;\n        if (g != 0) {\n            numerator /= g;\n            denominator /= g;\n        }\n    }\n\n    void print() {\n        std::cout << numerator << \"/\" << denominator << \"\\n\";\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int num, den;\n        std::cin >> num >> den;\n        Fraction f;\n        f.numerator = num;\n        f.denominator = den;\n        f.reduce();\n        f.print();\n    }\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: three fractions",
+        "is_sample": true,
+        "stdin": "3\n6 8\n5 10\n7 3\n",
+        "expected_stdout": "3/4\n1/2\n7/3\n"
+      },
+      {
+        "label": "Hidden: reduces to one",
+        "is_sample": false,
+        "stdin": "1\n100 100\n",
+        "expected_stdout": "1/1\n"
+      },
+      {
+        "label": "Hidden: improper fraction",
+        "is_sample": false,
+        "stdin": "2\n9 12\n4 2\n",
+        "expected_stdout": "3/4\n2/1\n"
+      }
+    ]
+  }
+]

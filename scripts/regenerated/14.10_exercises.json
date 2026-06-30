@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle with Initializer List",
+    "prompt_md": "## Goal\nGive `Rectangle` a constructor that sets its width and height. Because both members are `const`, you have to set them with a member initializer list (lesson 14.10) — assignment inside the constructor body will not compile.\n\n## Input\nOne line: two integers `W` and `H` separated by a space (1 ≤ W, H ≤ 1000).\n\n## Output\nOne line: `Area: X`, where `X` is `W * H`.\n\n## Task\nWrite the constructor `Rectangle(int width, int height)` so it initializes the two `const` members from its parameters. The `area()` accessor and the driver in `main` are already provided.\n",
+    "starter_code": "#include <iostream>\n\nclass Rectangle {\n    const int m_width;   // const: must be set in the initializer list\n    const int m_height;\npublic:\n    // TODO: Write a constructor Rectangle(int width, int height).\n    // Because m_width and m_height are const, you MUST set them with a\n    // member initializer list (lesson 14.10) -- assignment in the body will\n    // not compile. Write the constructor here.\n\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rectangle {\n    const int m_width;\n    const int m_height;\npublic:\n    Rectangle(int width, int height)\n        : m_width{ width }, m_height{ height }\n    {}\n\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w{}, h{};\n    std::cin >> w >> h;\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic case",
+        "is_sample": true,
+        "stdin": "4 5\n",
+        "expected_stdout": "Area: 20\n"
+      },
+      {
+        "label": "Hidden: square",
+        "is_sample": false,
+        "stdin": "7 7\n",
+        "expected_stdout": "Area: 49\n"
+      },
+      {
+        "label": "Hidden: large values",
+        "is_sample": false,
+        "stdin": "100 1000\n",
+        "expected_stdout": "Area: 100000\n"
+      }
+    ]
+  },
+  {
+    "title": "Incrementer with a Reference Member",
+    "prompt_md": "## Goal\nA reference data member lets a class operate directly on a variable that lives outside the class. Build an `Incrementer` that repeatedly adds a fixed amount to an external integer.\n\n## Input\nOne line: three integers `initial`, `amount`, and `count`.\n\n## Output\nOne line: `Total: X`, where `X` is `initial + amount * count`.\n\n## Task\n`Incrementer` has a reference member `m_target` (bound to an external `int`) and a `const int` member `m_amount`. Write its constructor using a member initializer list (lesson 14.10): a reference member and a `const` member can only be initialized there, never assigned in the body. The provided `apply()` adds `m_amount` to the referenced variable; `main` constructs an `Incrementer` over a local `total` and calls `apply()` `count` times.\n",
+    "starter_code": "#include <iostream>\n\nclass Incrementer {\n    int& m_target;        // reference member: must be bound in the initializer list\n    const int m_amount;   // const member: must be set in the initializer list\npublic:\n    // TODO: Write a constructor Incrementer(int& target, int amount).\n    // A reference member and a const member can only be set with a member\n    // initializer list (lesson 14.10) -- they cannot be assigned in the body.\n    // Bind m_target to target, and set m_amount from amount.\n\n    // apply() adds m_amount to whatever m_target refers to.\n    void apply() const { m_target += m_amount; }\n};\n\nint main() {\n    int initial{}, amount{}, count{};\n    std::cin >> initial >> amount >> count;\n\n    int total{ initial };\n    Incrementer inc{ total, amount };\n    for (int i{ 0 }; i < count; ++i)\n        inc.apply();\n\n    std::cout << \"Total: \" << total << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Incrementer {\n    int& m_target;\n    const int m_amount;\npublic:\n    Incrementer(int& target, int amount)\n        : m_target{ target }, m_amount{ amount }\n    {}\n\n    void apply() const { m_target += m_amount; }\n};\n\nint main() {\n    int initial{}, amount{}, count{};\n    std::cin >> initial >> amount >> count;\n\n    int total{ initial };\n    Incrementer inc{ total, amount };\n    for (int i{ 0 }; i < count; ++i)\n        inc.apply();\n\n    std::cout << \"Total: \" << total << \"\\n\";\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: add five three times",
+        "is_sample": true,
+        "stdin": "0 5 3\n",
+        "expected_stdout": "Total: 15\n"
+      },
+      {
+        "label": "Hidden: zero amount",
+        "is_sample": false,
+        "stdin": "10 0 4\n",
+        "expected_stdout": "Total: 10\n"
+      },
+      {
+        "label": "Hidden: negative amount",
+        "is_sample": false,
+        "stdin": "100 -7 2\n",
+        "expected_stdout": "Total: 86\n"
+      }
+    ]
+  }
+]

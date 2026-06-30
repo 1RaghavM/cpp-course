@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Const Query Functions",
+    "prompt_md": "## Goal\nMark read-only member functions `const` so they can be called on `const` objects and `const` references. Complete a `Rectangle` whose query functions are const-correct.\n\n## Input\n- Line 1: two doubles `width height`.\n\n## Output\n- Line 1: `Area: <width * height>` to 2 decimal places.\n- Line 2: `Square: yes` if width equals height, otherwise `Square: no`.\n\n## What to build\nAdd two const member functions to `Rectangle`: `double area() const` and `bool isSquare() const`. They must be `const` because the provided `printInfo(const Rectangle&)` receives the object by const reference and may only call const member functions on it.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width;\n    double height;\n\n    // TODO: Add a const member function `double area() const` that returns the\n    //       rectangle's area.\n\n    // TODO: Add a const member function `bool isSquare() const` that reports\n    //       whether the width and height are equal.\n    //\n    // Both must be const: printInfo() below takes the object by const reference,\n    // so only const member functions may be called on it.\n};\n\nvoid printInfo(const Rectangle& r) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n    std::cout << \"Square: \" << (r.isSquare() ? \"yes\" : \"no\") << \"\\n\";\n}\n\nint main() {\n    double w, h;\n    std::cin >> w >> h;\n    Rectangle r;\n    r.width = w;\n    r.height = h;\n    printInfo(r);\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Rectangle {\npublic:\n    double width;\n    double height;\n\n    double area() const {\n        return width * height;\n    }\n\n    bool isSquare() const {\n        return width == height;\n    }\n};\n\nvoid printInfo(const Rectangle& r) {\n    std::cout << std::fixed << std::setprecision(2);\n    std::cout << \"Area: \" << r.area() << \"\\n\";\n    std::cout << \"Square: \" << (r.isSquare() ? \"yes\" : \"no\") << \"\\n\";\n}\n\nint main() {\n    double w, h;\n    std::cin >> w >> h;\n    Rectangle r;\n    r.width = w;\n    r.height = h;\n    printInfo(r);\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: square",
+        "is_sample": true,
+        "stdin": "3.0 3.0\n",
+        "expected_stdout": "Area: 9.00\nSquare: yes\n"
+      },
+      {
+        "label": "Hidden: non-square",
+        "is_sample": false,
+        "stdin": "4.0 2.0\n",
+        "expected_stdout": "Area: 8.00\nSquare: no\n"
+      },
+      {
+        "label": "Hidden: large rectangle",
+        "is_sample": false,
+        "stdin": "10.0 5.0\n",
+        "expected_stdout": "Area: 50.00\nSquare: no\n"
+      }
+    ]
+  },
+  {
+    "title": "Box Volume and Surface Area (const member functions)",
+    "prompt_md": "## Goal\nPractice const member functions on a type with several read-only queries. Report the volume and surface area of a stream of boxes.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 100), the number of boxes.\n- Next N lines: three integers `width height depth` per line.\n\n## Output\n- For each box, one line: `Volume: <v>, Surface: <s>`, where v is width*height*depth and s is the total area of all six faces.\n\n## What to build\nAdd const member functions `int volume() const` and `int surfaceArea() const` to the `Box` class. Both must be const because the provided `report(const Box&)` takes each box by const reference.",
+    "starter_code": "#include <iostream>\n\nclass Box {\npublic:\n    int width;\n    int height;\n    int depth;\n\n    // TODO: Add a const member function `int volume() const` returning the\n    //       box's volume.\n\n    // TODO: Add a const member function `int surfaceArea() const` returning the\n    //       total area of all six faces.\n    //\n    // Both must be const: report() takes the Box by const reference, so only\n    // const member functions can be called on it.\n};\n\nvoid report(const Box& b) {\n    std::cout << \"Volume: \" << b.volume()\n              << \", Surface: \" << b.surfaceArea() << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int w, h, d;\n        std::cin >> w >> h >> d;\n        Box b;\n        b.width = w;\n        b.height = h;\n        b.depth = d;\n        report(b);\n    }\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Box {\npublic:\n    int width;\n    int height;\n    int depth;\n\n    int volume() const {\n        return width * height * depth;\n    }\n\n    int surfaceArea() const {\n        return 2 * (width * height + height * depth + width * depth);\n    }\n};\n\nvoid report(const Box& b) {\n    std::cout << \"Volume: \" << b.volume()\n              << \", Surface: \" << b.surfaceArea() << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int w, h, d;\n        std::cin >> w >> h >> d;\n        Box b;\n        b.width = w;\n        b.height = h;\n        b.depth = d;\n        report(b);\n    }\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: two boxes",
+        "is_sample": true,
+        "stdin": "2\n2 3 4\n1 1 1\n",
+        "expected_stdout": "Volume: 24, Surface: 52\nVolume: 1, Surface: 6\n"
+      },
+      {
+        "label": "Hidden: cube",
+        "is_sample": false,
+        "stdin": "1\n5 5 5\n",
+        "expected_stdout": "Volume: 125, Surface: 150\n"
+      },
+      {
+        "label": "Hidden: three boxes",
+        "is_sample": false,
+        "stdin": "3\n1 2 3\n4 1 2\n2 2 2\n",
+        "expected_stdout": "Volume: 6, Surface: 22\nVolume: 8, Surface: 28\nVolume: 8, Surface: 24\n"
+      }
+    ]
+  }
+]

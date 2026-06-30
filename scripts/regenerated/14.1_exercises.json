@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangles the Procedural Way: Struct + Free Function",
+    "prompt_md": "## Goal\nC++ before classes: bundle related data in a `struct`, and put the behavior in a separate *free function* that operates on that struct. Model rectangles this way and report each area plus a running total.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 100), the number of rectangles.\n- Next N lines: two integers `width height` per line.\n\n## Output\n- For each rectangle, one line: `Area: <area>`.\n- After the last rectangle, one line: `Total: <sum of all areas>`.\n\n## What to build\nDefine a `Rectangle` struct and a free function `int area(Rectangle r)`; the driver in `main()` reads the input and calls them. This separation of data (the struct) from behavior (the free function) is the procedural style that object-oriented programming will later improve on.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a struct named Rectangle that bundles two int data members:\n//       width and height. (This is the \"data\" half of the procedural style.)\n\n// TODO: Define a free function `int area(Rectangle r)` that returns the\n//       rectangle's area. (This is the \"behavior\" half: a separate function\n//       that operates on the struct it is handed.)\n\nint main() {\n    int n;\n    std::cin >> n;\n    int total = 0;\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n        Rectangle r;\n        r.width = w;\n        r.height = h;\n        int a = area(r);\n        total += a;\n        std::cout << \"Area: \" << a << \"\\n\";\n    }\n    std::cout << \"Total: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Rectangle {\n    int width;\n    int height;\n};\n\nint area(Rectangle r) {\n    return r.width * r.height;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int total = 0;\n    for (int i = 0; i < n; ++i) {\n        int w, h;\n        std::cin >> w >> h;\n        Rectangle r;\n        r.width = w;\n        r.height = h;\n        int a = area(r);\n        total += a;\n        std::cout << \"Area: \" << a << \"\\n\";\n    }\n    std::cout << \"Total: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: three rectangles",
+        "is_sample": true,
+        "stdin": "3\n2 6\n4 5\n3 3\n",
+        "expected_stdout": "Area: 12\nArea: 20\nArea: 9\nTotal: 41\n"
+      },
+      {
+        "label": "Hidden: single rectangle",
+        "is_sample": false,
+        "stdin": "1\n10 10\n",
+        "expected_stdout": "Area: 100\nTotal: 100\n"
+      },
+      {
+        "label": "Hidden: two rectangles",
+        "is_sample": false,
+        "stdin": "2\n7 1\n5 5\n",
+        "expected_stdout": "Area: 7\nArea: 25\nTotal: 32\n"
+      }
+    ]
+  },
+  {
+    "title": "Path Length with a Struct and a Free Function",
+    "prompt_md": "## Goal\nKeep practicing the data-plus-free-function style. Given a path that visits several points, report the Manhattan distance of each step and the total length of the path.\n\n## Input\n- Line 1: an integer N (2 ≤ N ≤ 100), the number of points.\n- Next N lines: two integers `x y` per line, in visiting order.\n\n## Output\n- For each step from one point to the next, one line: `Step: <distance>` (N−1 lines total).\n- After the last step, one line: `Total: <sum of step distances>`.\n\nThe Manhattan distance between (x1, y1) and (x2, y2) is |x1 − x2| + |y1 − y2|.\n\n## What to build\nDefine a `Point` struct and a free function `int manhattan(Point a, Point b)`. The driver reads points one at a time (it never stores them all at once) and calls your function on each consecutive pair.",
+    "starter_code": "#include <iostream>\n#include <cstdlib>   // std::abs\n\n// TODO: Define a struct named Point with two int data members: x and y.\n\n// TODO: Define a free function `int manhattan(Point a, Point b)` that returns\n//       the Manhattan distance between two points. Think about how to combine\n//       the differences of the x's and the y's; std::abs may help.\n\nint main() {\n    int n;\n    std::cin >> n;\n    Point prev;\n    std::cin >> prev.x >> prev.y;\n    int total = 0;\n    for (int i = 1; i < n; ++i) {\n        Point cur;\n        std::cin >> cur.x >> cur.y;\n        int d = manhattan(prev, cur);\n        total += d;\n        std::cout << \"Step: \" << d << \"\\n\";\n        prev = cur;\n    }\n    std::cout << \"Total: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <cstdlib>\n\nstruct Point {\n    int x;\n    int y;\n};\n\nint manhattan(Point a, Point b) {\n    return std::abs(a.x - b.x) + std::abs(a.y - b.y);\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    Point prev;\n    std::cin >> prev.x >> prev.y;\n    int total = 0;\n    for (int i = 1; i < n; ++i) {\n        Point cur;\n        std::cin >> cur.x >> cur.y;\n        int d = manhattan(prev, cur);\n        total += d;\n        std::cout << \"Step: \" << d << \"\\n\";\n        prev = cur;\n    }\n    std::cout << \"Total: \" << total << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: three points",
+        "is_sample": true,
+        "stdin": "3\n0 0\n3 4\n3 0\n",
+        "expected_stdout": "Step: 7\nStep: 4\nTotal: 11\n"
+      },
+      {
+        "label": "Hidden: two identical points",
+        "is_sample": false,
+        "stdin": "2\n1 1\n1 1\n",
+        "expected_stdout": "Step: 0\nTotal: 0\n"
+      },
+      {
+        "label": "Hidden: square loop",
+        "is_sample": false,
+        "stdin": "4\n0 0\n0 5\n5 5\n5 0\n",
+        "expected_stdout": "Step: 5\nStep: 5\nStep: 5\nTotal: 15\n"
+      }
+    ]
+  }
+]

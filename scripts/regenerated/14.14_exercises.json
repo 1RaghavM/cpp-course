@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Watch the Copy Constructor Fire",
+    "prompt_md": "## Goal\nDefine a class whose copy constructor announces itself, so you can see exactly when a copy happens when an object is passed by value.\n\n## The feature (lesson 14.14)\nWrite a copy constructor for `Message`. The copy constructor takes a `const Message&` source, copies its `m_id`, and prints a line each time it runs so copies become observable. Passing a `Message` by value to `deliver` is what triggers it.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Next `N` lines: one integer id per line\n\n## Output\nFor each id, in order: first the line printed by your copy constructor when the object is copied into `deliver`, then the line `deliver` prints. The copy-constructor line must be exactly `copy <id>` and `deliver`'s line is `deliver <id>`.",
+    "starter_code": "#include <iostream>\n\nclass Message {\n    int m_id;\npublic:\n    Message(int id) : m_id{id} {}\n\n    // TODO (lesson 14.14): write the copy constructor for Message.\n    // It must take a const Message& source and copy m_id from it. So that\n    // copies are observable, have it print  copy <id>  (the copied id),\n    // followed by a newline, every time it runs.\n\n    int id() const { return m_id; }\n};\n\nvoid deliver(Message m) {   // m is taken BY VALUE, so a copy is made on each call\n    std::cout << \"deliver \" << m.id() << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int id;\n        std::cin >> id;\n        Message m{id};\n        deliver(m);\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Message {\n    int m_id;\npublic:\n    Message(int id) : m_id{id} {}\n\n    Message(const Message& src) : m_id{src.m_id} {\n        std::cout << \"copy \" << m_id << \"\\n\";\n    }\n\n    int id() const { return m_id; }\n};\n\nvoid deliver(Message m) {\n    std::cout << \"deliver \" << m.id() << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int id;\n        std::cin >> id;\n        Message m{id};\n        deliver(m);\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two messages",
+        "is_sample": true,
+        "stdin": "2\n5\n9\n",
+        "expected_stdout": "copy 5\ndeliver 5\ncopy 9\ndeliver 9\n"
+      },
+      {
+        "label": "Hidden: single message",
+        "is_sample": false,
+        "stdin": "1\n42\n",
+        "expected_stdout": "copy 42\ndeliver 42\n"
+      },
+      {
+        "label": "Hidden: four messages",
+        "is_sample": false,
+        "stdin": "4\n7\n0\n13\n100\n",
+        "expected_stdout": "copy 7\ndeliver 7\ncopy 0\ndeliver 0\ncopy 13\ndeliver 13\ncopy 100\ndeliver 100\n"
+      }
+    ]
+  },
+  {
+    "title": "By Value vs By Reference",
+    "prompt_md": "## Goal\nUse a self-announcing copy constructor to prove that passing by value copies an object while passing by `const` reference does not.\n\n## The feature (lesson 14.14)\nWrite the copy constructor for `Widget`. It copies `m_id` from its `const Widget&` source and prints a line so each copy is visible. The provided `byValue` function takes its parameter by value (a copy happens); `byRef` takes a `const Widget&` (no copy happens).\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Next `N` lines: one integer id per line\n\n## Output\nFor each id, in order: `byRef` runs first and prints `byRef <id>` with no copy. Then `byValue` is called: your copy constructor prints `copied <id>`, after which `byValue` prints `byValue <id>`.",
+    "starter_code": "#include <iostream>\n\nclass Widget {\n    int m_id;\npublic:\n    Widget(int id) : m_id{id} {}\n\n    // TODO (lesson 14.14): write the copy constructor for Widget.\n    // Take a const Widget& source, copy m_id, and print  copied <id>  followed\n    // by a newline each time it runs, so copies are observable.\n\n    int id() const { return m_id; }\n};\n\nvoid byValue(Widget w) { std::cout << \"byValue \" << w.id() << \"\\n\"; }\nvoid byRef(const Widget& w) { std::cout << \"byRef \" << w.id() << \"\\n\"; }\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int id;\n        std::cin >> id;\n        Widget w{id};\n        byRef(w);    // passes by reference — no copy\n        byValue(w);  // passes by value — a copy is made\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Widget {\n    int m_id;\npublic:\n    Widget(int id) : m_id{id} {}\n\n    Widget(const Widget& src) : m_id{src.m_id} {\n        std::cout << \"copied \" << m_id << \"\\n\";\n    }\n\n    int id() const { return m_id; }\n};\n\nvoid byValue(Widget w) { std::cout << \"byValue \" << w.id() << \"\\n\"; }\nvoid byRef(const Widget& w) { std::cout << \"byRef \" << w.id() << \"\\n\"; }\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int id;\n        std::cin >> id;\n        Widget w{id};\n        byRef(w);\n        byValue(w);\n    }\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: two widgets",
+        "is_sample": true,
+        "stdin": "2\n7\n3\n",
+        "expected_stdout": "byRef 7\ncopied 7\nbyValue 7\nbyRef 3\ncopied 3\nbyValue 3\n"
+      },
+      {
+        "label": "Hidden: single widget",
+        "is_sample": false,
+        "stdin": "1\n1\n",
+        "expected_stdout": "byRef 1\ncopied 1\nbyValue 1\n"
+      },
+      {
+        "label": "Hidden: three widgets",
+        "is_sample": false,
+        "stdin": "3\n50\n0\n99\n",
+        "expected_stdout": "byRef 50\ncopied 50\nbyValue 50\nbyRef 0\ncopied 0\nbyValue 0\nbyRef 99\ncopied 99\nbyValue 99\n"
+      }
+    ]
+  }
+]

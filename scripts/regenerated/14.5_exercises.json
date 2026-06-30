@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Temperature Class with Private Storage",
+    "prompt_md": "## Goal\nEncapsulate state: store the data in a `private` member and expose `public` member functions to set and read it. (Constructors come later, so a public *setter* is how outside code populates the private member.)\n\n## Input\n- Line 1: a floating-point number, a temperature in Celsius.\n\n## Output\n- Line 1: `Celsius: <value>` to 1 decimal place.\n- Line 2: `Fahrenheit: <value>` to 1 decimal place, using F = C * 9 / 5 + 32.\n\n## What to build\nKeep the temperature in a `private` data member `m_celsius`. Provide public member functions to set it (`setCelsius`) and to read it back in Celsius (`getCelsius`) and Fahrenheit (`getFahrenheit`). Direct access to `m_celsius` from `main()` must not compile.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\nprivate:\n    double m_celsius{ 0.0 };   // private: only this class's member functions may touch it\n\npublic:\n    // TODO: Add a public member function `void setCelsius(double c)` that stores\n    //       the given value into the private m_celsius. (No constructors yet:\n    //       a public setter is how outside code populates a private member.)\n\n    // TODO: Add a public const member function `double getCelsius() const` that\n    //       returns the stored Celsius value.\n\n    // TODO: Add a public const member function `double getFahrenheit() const`\n    //       that returns the temperature converted to Fahrenheit.\n};\n\nint main() {\n    double input;\n    std::cin >> input;\n\n    Temperature t;\n    t.setCelsius(input);\n\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Temperature {\nprivate:\n    double m_celsius{ 0.0 };\n\npublic:\n    void setCelsius(double c)    { m_celsius = c; }\n    double getCelsius() const    { return m_celsius; }\n    double getFahrenheit() const { return m_celsius * 9.0 / 5.0 + 32.0; }\n};\n\nint main() {\n    double input;\n    std::cin >> input;\n\n    Temperature t;\n    t.setCelsius(input);\n\n    std::cout << std::fixed << std::setprecision(1);\n    std::cout << \"Celsius: \" << t.getCelsius() << '\\n';\n    std::cout << \"Fahrenheit: \" << t.getFahrenheit() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 0 Celsius",
+        "is_sample": true,
+        "stdin": "0",
+        "expected_stdout": "Celsius: 0.0\nFahrenheit: 32.0\n"
+      },
+      {
+        "label": "Hidden: 100 Celsius",
+        "is_sample": false,
+        "stdin": "100",
+        "expected_stdout": "Celsius: 100.0\nFahrenheit: 212.0\n"
+      },
+      {
+        "label": "Hidden: negative value",
+        "is_sample": false,
+        "stdin": "-40",
+        "expected_stdout": "Celsius: -40.0\nFahrenheit: -40.0\n"
+      }
+    ]
+  },
+  {
+    "title": "Account: Protect an Invariant with private Data",
+    "prompt_md": "## Goal\nUse `private` data with `public` member functions to protect an invariant: an account balance that may never go negative. Process a stream of deposits and withdrawals.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 100), the number of operations.\n- Next N lines: `D <amount>` for a deposit or `W <amount>` for a withdrawal (`<amount>` is a non-negative integer).\n\n## Output\n- After each operation, one line: `Balance: <current balance>`.\n- After the last operation: `Final: <balance>`.\n\nThe account starts at 0. A withdrawal larger than the current balance is rejected and leaves the balance unchanged.\n\n## What to build\nGive the `Account` class a `private` member `m_balance` and public member functions `deposit`, `withdraw` (which enforces the no-negative rule), and `getBalance() const`. Because `m_balance` is private, the withdrawal rule lives in one place and outside code cannot bypass it.",
+    "starter_code": "#include <iostream>\n\nclass Account {\nprivate:\n    int m_balance{ 0 };   // private: changeable only through the member functions below\n\npublic:\n    // TODO: Add a public member function `void deposit(int amount)` that adds\n    //       amount to the private balance.\n\n    // TODO: Add a public member function `void withdraw(int amount)` that\n    //       subtracts amount ONLY when the account has enough funds, so the\n    //       balance never goes negative. Otherwise leave the balance unchanged.\n\n    // TODO: Add a public const member function `int getBalance() const` that\n    //       returns the current balance.\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Account a;\n    for (int i = 0; i < n; ++i) {\n        char op;\n        int amount;\n        std::cin >> op >> amount;\n        if (op == 'D') {\n            a.deposit(amount);\n        } else {\n            a.withdraw(amount);\n        }\n        std::cout << \"Balance: \" << a.getBalance() << \"\\n\";\n    }\n    std::cout << \"Final: \" << a.getBalance() << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Account {\nprivate:\n    int m_balance{ 0 };\n\npublic:\n    void deposit(int amount) {\n        m_balance += amount;\n    }\n\n    void withdraw(int amount) {\n        if (amount <= m_balance) {\n            m_balance -= amount;\n        }\n    }\n\n    int getBalance() const {\n        return m_balance;\n    }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    Account a;\n    for (int i = 0; i < n; ++i) {\n        char op;\n        int amount;\n        std::cin >> op >> amount;\n        if (op == 'D') {\n            a.deposit(amount);\n        } else {\n            a.withdraw(amount);\n        }\n        std::cout << \"Balance: \" << a.getBalance() << \"\\n\";\n    }\n    std::cout << \"Final: \" << a.getBalance() << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: rejected overdraft",
+        "is_sample": true,
+        "stdin": "3\nD 100\nW 30\nW 200\n",
+        "expected_stdout": "Balance: 100\nBalance: 70\nBalance: 70\nFinal: 70\n"
+      },
+      {
+        "label": "Hidden: single deposit",
+        "is_sample": false,
+        "stdin": "1\nD 50\n",
+        "expected_stdout": "Balance: 50\nFinal: 50\n"
+      },
+      {
+        "label": "Hidden: withdraw to zero then reject",
+        "is_sample": false,
+        "stdin": "4\nD 20\nW 20\nW 5\nD 10\n",
+        "expected_stdout": "Balance: 20\nBalance: 0\nBalance: 0\nBalance: 10\nFinal: 10\n"
+      }
+    ]
+  }
+]

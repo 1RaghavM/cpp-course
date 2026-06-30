@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Convenience Constructor for a Clock",
+    "prompt_md": "## Goal\nGive `Clock` two constructors: a full one taking hours, minutes, and seconds, and a convenience one taking only hours. The hour-only constructor should reuse the full one through delegation instead of repeating the member setup.\n\n## Input\nTwo lines:\n- Line 1: three integers `H M S` (0 ≤ H ≤ 23, 0 ≤ M, S ≤ 59).\n- Line 2: one integer `H2` (0 ≤ H2 ≤ 23).\n\n## Output\nTwo lines in `H:MM:SS` form (hours unpadded; minutes and seconds zero-padded to two digits):\n```\nH:MM:SS\nH2:00:00\n```\n\n## Task\nWrite the primary constructor `Clock(int h, int m, int s)`, then a delegating constructor `Clock(int h)` that delegates to the primary one with minutes and seconds set to 0 (lesson 14.12). The delegation must be the only entry in the delegating constructor's initializer list. `print()` and the driver in `main` are provided.\n",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\nclass Clock {\n    int m_hours;\n    int m_minutes;\n    int m_seconds;\npublic:\n    // TODO (1): Write the primary constructor Clock(int h, int m, int s)\n    // that initializes all three members with a member initializer list.\n\n    // TODO (2): Write a delegating constructor Clock(int h) that delegates to\n    // the three-argument constructor (lesson 14.12), supplying 0 for both\n    // minutes and seconds. The delegation must be the only item in its\n    // initializer list.\n\n    void print() const {\n        std::cout << m_hours << \":\"\n                  << std::setw(2) << std::setfill('0') << m_minutes << \":\"\n                  << std::setw(2) << std::setfill('0') << m_seconds << \"\\n\";\n    }\n};\n\nint main() {\n    int h{}, m{}, s{}, h2{};\n    std::cin >> h >> m >> s >> h2;\n    Clock c1{ h, m, s };\n    Clock c2{ h2 };\n    c1.print();\n    c2.print();\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Clock {\n    int m_hours;\n    int m_minutes;\n    int m_seconds;\npublic:\n    Clock(int h, int m, int s)\n        : m_hours{ h }, m_minutes{ m }, m_seconds{ s }\n    {}\n\n    Clock(int h)\n        : Clock{ h, 0, 0 }\n    {}\n\n    void print() const {\n        std::cout << m_hours << \":\"\n                  << std::setw(2) << std::setfill('0') << m_minutes << \":\"\n                  << std::setw(2) << std::setfill('0') << m_seconds << \"\\n\";\n    }\n};\n\nint main() {\n    int h{}, m{}, s{}, h2{};\n    std::cin >> h >> m >> s >> h2;\n    Clock c1{ h, m, s };\n    Clock c2{ h2 };\n    c1.print();\n    c2.print();\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic time",
+        "is_sample": true,
+        "stdin": "9 5 30\n14\n",
+        "expected_stdout": "9:05:30\n14:00:00\n"
+      },
+      {
+        "label": "Hidden: zero hours",
+        "is_sample": false,
+        "stdin": "0 0 0\n0\n",
+        "expected_stdout": "0:00:00\n0:00:00\n"
+      },
+      {
+        "label": "Hidden: max values",
+        "is_sample": false,
+        "stdin": "23 59 59\n23\n",
+        "expected_stdout": "23:59:59\n23:00:00\n"
+      }
+    ]
+  },
+  {
+    "title": "Velocity With a Default Direction",
+    "prompt_md": "## Goal\nA `Velocity` has a speed and a direction. Provide a full constructor plus a convenience constructor that takes only a speed and defaults the direction to `\"north\"` — implemented by delegating to the full constructor.\n\n## Input\nTwo lines:\n- Line 1: an integer speed and a direction word (e.g. `50 east`).\n- Line 2: an integer speed for a velocity that should use the default direction.\n\n## Output\nTwo lines:\n```\nSpeed: <s1> Direction: <d1>\nSpeed: <s2> Direction: north\n```\n\n## Task\nWrite the primary constructor `Velocity(int speed, std::string dir)`, then a delegating constructor `Velocity(int speed)` that delegates to it with the direction `\"north\"` (lesson 14.12). The second output line must read `north` because the delegated default supplies it — do not hard-code the direction in `main`. The accessors and the driver in `main` are provided.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Velocity {\n    int m_speed;\n    std::string m_dir;\npublic:\n    // TODO (1): Write the primary constructor Velocity(int speed, std::string dir)\n    // using a member initializer list.\n\n    // TODO (2): Write a delegating constructor Velocity(int speed) that delegates\n    // to the two-argument constructor (lesson 14.12), defaulting the direction\n    // to \"north\".\n\n    int speed() const { return m_speed; }\n    const std::string& dir() const { return m_dir; }\n};\n\nint main() {\n    int s1{};\n    std::string d1{};\n    int s2{};\n    std::cin >> s1 >> d1 >> s2;\n\n    Velocity full{ s1, d1 };\n    Velocity defaulted{ s2 };\n\n    std::cout << \"Speed: \" << full.speed() << \" Direction: \" << full.dir() << \"\\n\";\n    std::cout << \"Speed: \" << defaulted.speed() << \" Direction: \" << defaulted.dir() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Velocity {\n    int m_speed;\n    std::string m_dir;\npublic:\n    Velocity(int speed, std::string dir)\n        : m_speed{ speed }, m_dir{ dir }\n    {}\n\n    Velocity(int speed)\n        : Velocity{ speed, \"north\" }\n    {}\n\n    int speed() const { return m_speed; }\n    const std::string& dir() const { return m_dir; }\n};\n\nint main() {\n    int s1{};\n    std::string d1{};\n    int s2{};\n    std::cin >> s1 >> d1 >> s2;\n\n    Velocity full{ s1, d1 };\n    Velocity defaulted{ s2 };\n\n    std::cout << \"Speed: \" << full.speed() << \" Direction: \" << full.dir() << \"\\n\";\n    std::cout << \"Speed: \" << defaulted.speed() << \" Direction: \" << defaulted.dir() << \"\\n\";\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: east then default",
+        "is_sample": true,
+        "stdin": "50 east\n20\n",
+        "expected_stdout": "Speed: 50 Direction: east\nSpeed: 20 Direction: north\n"
+      },
+      {
+        "label": "Hidden: south then default",
+        "is_sample": false,
+        "stdin": "100 south\n5\n",
+        "expected_stdout": "Speed: 100 Direction: south\nSpeed: 5 Direction: north\n"
+      },
+      {
+        "label": "Hidden: west then default",
+        "is_sample": false,
+        "stdin": "7 west\n999\n",
+        "expected_stdout": "Speed: 7 Direction: west\nSpeed: 999 Direction: north\n"
+      }
+    ]
+  }
+]

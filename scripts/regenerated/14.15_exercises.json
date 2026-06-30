@@ -1,0 +1,56 @@
+[
+  {
+    "title": "The Factory Return Is Free",
+    "prompt_md": "## Goal\nShow that returning a freshly built object from a factory function costs zero copies in C++17, while copying from a named variable does cost one.\n\n## The feature (lesson 14.15)\nWrite a copy constructor for `Coord` that prints a line whenever it runs, so copies are observable. The provided `make` returns a prvalue (`return Coord{v};`), which C++17 guarantees is elided — no copy. In `main`, `Coord a = make(v);` therefore prints nothing, but `Coord b = a;` copies from a named lvalue and runs your copy constructor.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Next `N` lines: one integer per line\n\n## Output\nFor each value, exactly two lines: `copy <value>` (printed by the one real copy, `b = a`) followed by `value <value>`. The factory return produces no copy line.",
+    "starter_code": "#include <iostream>\n\nclass Coord {\n    int m_v;\npublic:\n    Coord(int v) : m_v{v} {}\n\n    // TODO (lesson 14.15): write the copy constructor for Coord.\n    // Take a const Coord& source, copy m_v, and print  copy <value>  followed\n    // by a newline each time it runs.\n\n    int v() const { return m_v; }\n};\n\nCoord make(int v) {\n    return Coord{v};   // prvalue return: C++17 guarantees this copy is elided\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        Coord a = make(v);   // built directly in a — no copy\n        Coord b = a;         // copy from a named lvalue — one copy\n        std::cout << \"value \" << b.v() << \"\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Coord {\n    int m_v;\npublic:\n    Coord(int v) : m_v{v} {}\n\n    Coord(const Coord& src) : m_v{src.m_v} {\n        std::cout << \"copy \" << m_v << \"\\n\";\n    }\n\n    int v() const { return m_v; }\n};\n\nCoord make(int v) {\n    return Coord{v};\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        Coord a = make(v);\n        Coord b = a;\n        std::cout << \"value \" << b.v() << \"\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two values",
+        "is_sample": true,
+        "stdin": "2\n3\n8\n",
+        "expected_stdout": "copy 3\nvalue 3\ncopy 8\nvalue 8\n"
+      },
+      {
+        "label": "Hidden: single value",
+        "is_sample": false,
+        "stdin": "1\n0\n",
+        "expected_stdout": "copy 0\nvalue 0\n"
+      },
+      {
+        "label": "Hidden: four values",
+        "is_sample": false,
+        "stdin": "4\n10\n20\n30\n40\n",
+        "expected_stdout": "copy 10\nvalue 10\ncopy 20\nvalue 20\ncopy 30\nvalue 30\ncopy 40\nvalue 40\n"
+      }
+    ]
+  },
+  {
+    "title": "Prvalue Argument vs Lvalue Argument",
+    "prompt_md": "## Goal\nDemonstrate that passing a temporary (prvalue) by value is elided in C++17, while passing a named variable by value is copied.\n\n## The feature (lesson 14.15)\nWrite the copy constructor for `Coord` so it prints a line when it runs. The provided `inspect` takes its parameter by value. Calling `inspect(Coord{v})` passes a prvalue, which C++17 constructs directly into the parameter — no copy. Calling `inspect(local)` passes a named lvalue, which is copied.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Next `N` lines: one integer per line\n\n## Output\nFor each value, in order: `inspect <value>` (from the prvalue call, no copy), then `copy <value>` (the copy of the named variable), then `inspect <value>` again (from the lvalue call).",
+    "starter_code": "#include <iostream>\n\nclass Coord {\n    int m_v;\npublic:\n    Coord(int v) : m_v{v} {}\n\n    // TODO (lesson 14.15): write the copy constructor for Coord.\n    // Take a const Coord& source, copy m_v, and print  copy <value>  followed\n    // by a newline each time it runs.\n\n    int v() const { return m_v; }\n};\n\nvoid inspect(Coord c) {\n    std::cout << \"inspect \" << c.v() << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        inspect(Coord{v});   // prvalue argument: constructed in place, no copy\n        Coord local{v};\n        inspect(local);      // lvalue argument: one copy\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Coord {\n    int m_v;\npublic:\n    Coord(int v) : m_v{v} {}\n\n    Coord(const Coord& src) : m_v{src.m_v} {\n        std::cout << \"copy \" << m_v << \"\\n\";\n    }\n\n    int v() const { return m_v; }\n};\n\nvoid inspect(Coord c) {\n    std::cout << \"inspect \" << c.v() << \"\\n\";\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int v;\n        std::cin >> v;\n        inspect(Coord{v});\n        Coord local{v};\n        inspect(local);\n    }\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: two values",
+        "is_sample": true,
+        "stdin": "2\n4\n1\n",
+        "expected_stdout": "inspect 4\ncopy 4\ninspect 4\ninspect 1\ncopy 1\ninspect 1\n"
+      },
+      {
+        "label": "Hidden: single value",
+        "is_sample": false,
+        "stdin": "1\n9\n",
+        "expected_stdout": "inspect 9\ncopy 9\ninspect 9\n"
+      },
+      {
+        "label": "Hidden: three values",
+        "is_sample": false,
+        "stdin": "3\n0\n7\n55\n",
+        "expected_stdout": "inspect 0\ncopy 0\ninspect 0\ninspect 7\ncopy 7\ninspect 7\ninspect 55\ncopy 55\ninspect 55\n"
+      }
+    ]
+  }
+]
