@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   const res = NextResponse.redirect(authorize);
   res.cookies.set("gh_oauth_state", state, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production", // http://localhost dev can't store secure cookies
     sameSite: "lax",
     maxAge: 600,
     path: "/",
