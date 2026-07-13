@@ -42,6 +42,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ApiKeyCard } from "./ApiKeyCard";
+import { GithubSyncCard } from "./GithubSyncCard";
 
 interface ProfilePageProps {
   email: string;
@@ -58,6 +59,11 @@ interface ProfilePageProps {
     hasKey: boolean;
     preview: string;
     isValid: boolean;
+  };
+  githubStatus: {
+    connected: boolean;
+    login: string;
+    repoFullName: string;
   };
 }
 
@@ -95,6 +101,7 @@ export function ProfilePage({
   background,
   motivation,
   apiKeyStatus,
+  githubStatus,
 }: ProfilePageProps) {
   const router = useRouter();
   const reducedMotion = useReducedMotion();
@@ -320,6 +327,15 @@ export function ProfilePage({
             hasKey={apiKeyStatus.hasKey}
             preview={apiKeyStatus.preview}
             isValid={apiKeyStatus.isValid}
+          />
+        </motion.div>
+
+        {/* Section: GitHub sync */}
+        <motion.div variants={itemVariants}>
+          <GithubSyncCard
+            connected={githubStatus.connected}
+            login={githubStatus.login}
+            repoFullName={githubStatus.repoFullName}
           />
         </motion.div>
 

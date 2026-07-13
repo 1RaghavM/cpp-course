@@ -15,6 +15,7 @@ import {
   logLessonCompleted,
   logExecutionTimeout,
 } from "@/lib/statsig/server-events";
+import { syncSubmission } from "@/lib/github/sync";
 
 export const dynamic = "force-dynamic";
 
@@ -275,6 +276,11 @@ export async function POST(request: NextRequest) {
         { onConflict: "user_id,lesson_id" },
       );
     }
+  }
+
+  // ---- GitHub sync (best-effort; helper swallows all errors) ---------------
+  if (verdict.overallStatus === "passed") {
+    await syncSubmission({ userId, exerciseId: exercise_id, sourceCode: source_code });
   }
 
   // ---- Statsig events (fire-and-forget) ------------------------------------

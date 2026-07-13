@@ -619,6 +619,36 @@ export interface Database {
         };
         Relationships: [];
       };
+      github_connections: {
+        Row: {
+          user_id: string;
+          github_login: string;
+          repo_full_name: string;
+          encrypted_token: string;
+          iv: string;
+          auth_tag: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          github_login: string;
+          repo_full_name: string;
+          encrypted_token: string;
+          iv: string;
+          auth_tag: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          github_login?: string;
+          repo_full_name?: string;
+          encrypted_token?: string;
+          iv?: string;
+          auth_tag?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       capstones: {
         Row: {
           id: string;
@@ -758,6 +788,7 @@ export type Note = Database["public"]["Tables"]["notes"]["Row"];
 export type PlaygroundState = Database["public"]["Tables"]["playground_state"]["Row"];
 export type UserApiKey = Database["public"]["Tables"]["user_api_keys"]["Row"];
 export type UserApiKeyEvent = Database["public"]["Tables"]["user_api_key_events"]["Row"];
+export type GithubConnection = Database["public"]["Tables"]["github_connections"]["Row"];
 export type Capstone = Database["public"]["Tables"]["capstones"]["Row"];
 export type CapstoneMilestone = Database["public"]["Tables"]["capstone_milestones"]["Row"];
 export type CapstoneAttempt = Database["public"]["Tables"]["capstone_attempts"]["Row"];

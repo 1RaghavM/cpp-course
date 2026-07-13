@@ -1,0 +1,56 @@
+[
+  {
+    "title": "An Explicit Percent Type",
+    "prompt_md": "## Goal\nBuild a small wrapper type around an integer percentage, using an `explicit` converting constructor so a bare integer is never silently treated as a `Percent`.\n\n## The feature (lesson 14.16)\nGive `Percent` an `explicit` single-argument constructor taking the percentage as an `int`, a `value()` accessor, and an `of(int total)` member that returns `value * total / 100` (integer arithmetic). Marking the constructor `explicit` means callers must write `Percent{p}` rather than relying on an implicit `int`-to-`Percent` conversion.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Next `N` lines: two integers per line — the percentage `p` and a `total`\n\n## Output\nFor each line, print `<p>% of <total> = <result>` where `result` is `p * total / 100` using integer division.",
+    "starter_code": "#include <iostream>\n\nclass Percent {\n    int m_value;\npublic:\n    // TODO (lesson 14.16): give Percent an explicit constructor taking an int\n    // percentage and storing it in m_value.\n\n    // TODO: add a const accessor value() returning the stored percentage.\n\n    // TODO: add a const member of(int total) returning value * total / 100.\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int p, total;\n        std::cin >> p >> total;\n        Percent pct{p};\n        std::cout << pct.value() << \"% of \" << total << \" = \" << pct.of(total) << \"\\n\";\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Percent {\n    int m_value;\npublic:\n    explicit Percent(int value) : m_value{value} {}\n    int value() const { return m_value; }\n    int of(int total) const { return m_value * total / 100; }\n};\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int p, total;\n        std::cin >> p >> total;\n        Percent pct{p};\n        std::cout << pct.value() << \"% of \" << total << \" = \" << pct.of(total) << \"\\n\";\n    }\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two queries",
+        "is_sample": true,
+        "stdin": "2\n50 200\n10 35\n",
+        "expected_stdout": "50% of 200 = 100\n10% of 35 = 3\n"
+      },
+      {
+        "label": "Hidden: single query",
+        "is_sample": false,
+        "stdin": "1\n100 87\n",
+        "expected_stdout": "100% of 87 = 87\n"
+      },
+      {
+        "label": "Hidden: four queries",
+        "is_sample": false,
+        "stdin": "4\n25 80\n0 100\n75 8\n200 5\n",
+        "expected_stdout": "25% of 80 = 20\n0% of 100 = 0\n75% of 8 = 6\n200% of 5 = 10\n"
+      }
+    ]
+  },
+  {
+    "title": "Disambiguate With explicit",
+    "prompt_md": "## Goal\nUse `explicit` to control overload resolution: a function is overloaded for two wrapper types that are both built from an `int`, and you must make a call with a bare `int` resolve to a specific one.\n\n## The feature (lesson 14.16)\n`Celsius` and `Fahrenheit` each store one `int` and each have a single-argument `int` constructor. The provided `report` is overloaded for both. The call `report(x)` in `main` passes a plain `int`. If BOTH constructors allow implicit conversion the call is ambiguous and will not compile; if exactly one is left as an implicit converting constructor, that overload is chosen. Mark the right constructor `explicit` so `report(x)` unambiguously selects the `Celsius` overload.\n\n## Input\n- Line 1: integer `N` (1 ≤ N ≤ 10)\n- Next `N` lines: one integer per line\n\n## Output\nFor each value, print `Celsius <value>` — produced because the `int` implicitly converts to `Celsius` while the `Fahrenheit` constructor is `explicit`.",
+    "starter_code": "#include <iostream>\n\nstruct Celsius {\n    int degrees;\n    // TODO (lesson 14.16): leave exactly ONE of these two constructors as an\n    // implicit converting constructor and mark the OTHER explicit, so that\n    // report(x) below (called with a plain int) resolves to the Celsius overload.\n    Celsius(int d) : degrees{d} {}\n};\n\nstruct Fahrenheit {\n    int degrees;\n    Fahrenheit(int d) : degrees{d} {}\n};\n\nvoid report(Celsius c) { std::cout << \"Celsius \" << c.degrees << \"\\n\"; }\nvoid report(Fahrenheit f) { std::cout << \"Fahrenheit \" << f.degrees << \"\\n\"; }\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        std::cin >> x;\n        report(x);\n    }\n}\n",
+    "solution_code": "#include <iostream>\n\nstruct Celsius {\n    int degrees;\n    Celsius(int d) : degrees{d} {}\n};\n\nstruct Fahrenheit {\n    int degrees;\n    explicit Fahrenheit(int d) : degrees{d} {}\n};\n\nvoid report(Celsius c) { std::cout << \"Celsius \" << c.degrees << \"\\n\"; }\nvoid report(Fahrenheit f) { std::cout << \"Fahrenheit \" << f.degrees << \"\\n\"; }\n\nint main() {\n    int n;\n    std::cin >> n;\n    for (int i = 0; i < n; ++i) {\n        int x;\n        std::cin >> x;\n        report(x);\n    }\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: three values",
+        "is_sample": true,
+        "stdin": "3\n10\n20\n30\n",
+        "expected_stdout": "Celsius 10\nCelsius 20\nCelsius 30\n"
+      },
+      {
+        "label": "Hidden: single value",
+        "is_sample": false,
+        "stdin": "1\n0\n",
+        "expected_stdout": "Celsius 0\n"
+      },
+      {
+        "label": "Hidden: negatives and large",
+        "is_sample": false,
+        "stdin": "4\n-40\n100\n-1\n273\n",
+        "expected_stdout": "Celsius -40\nCelsius 100\nCelsius -1\nCelsius 273\n"
+      }
+    ]
+  }
+]

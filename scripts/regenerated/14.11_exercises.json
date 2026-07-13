@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Default-Argument Score",
+    "prompt_md": "## Goal\nGive `Score` one constructor that works whether or not the caller supplies a value. With no argument, the score defaults to 100; with an argument, it uses that value.\n\n## Input\nOne line: one integer `N` (0 ≤ N ≤ 1000).\n\n## Output\nTwo lines:\n```\nDefault: 100\nProvided: N\n```\n\n## Task\nWrite a single `Score` constructor that takes one `int` parameter with a default argument (lesson 14.11), so that `Score{}` starts at 100 and `Score{ N }` starts at `N`. The `getValue()` accessor and the driver in `main` are provided.\n",
+    "starter_code": "#include <iostream>\n\nclass Score {\n    int m_value;\npublic:\n    // TODO: Write a single constructor taking one int parameter that has a\n    // default argument (lesson 14.11) so the starting score is 100 when no\n    // value is given. Both Score{} and Score{ n } must compile.\n\n    int getValue() const { return m_value; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    Score s1{};\n    Score s2{ n };\n    std::cout << \"Default: \" << s1.getValue() << \"\\n\";\n    std::cout << \"Provided: \" << s2.getValue() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Score {\n    int m_value;\npublic:\n    Score(int value = 100)\n        : m_value{ value }\n    {}\n\n    int getValue() const { return m_value; }\n};\n\nint main() {\n    int n{};\n    std::cin >> n;\n    Score s1{};\n    Score s2{ n };\n    std::cout << \"Default: \" << s1.getValue() << \"\\n\";\n    std::cout << \"Provided: \" << s2.getValue() << \"\\n\";\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: basic value",
+        "is_sample": true,
+        "stdin": "42\n",
+        "expected_stdout": "Default: 100\nProvided: 42\n"
+      },
+      {
+        "label": "Hidden: zero provided",
+        "is_sample": false,
+        "stdin": "0\n",
+        "expected_stdout": "Default: 100\nProvided: 0\n"
+      },
+      {
+        "label": "Hidden: matches default value",
+        "is_sample": false,
+        "stdin": "100\n",
+        "expected_stdout": "Default: 100\nProvided: 100\n"
+      }
+    ]
+  },
+  {
+    "title": "Account With an Empty State",
+    "prompt_md": "## Goal\nModel a bank `Account` that can be created two ways: with no arguments (an empty account) or with an owner name and a starting balance.\n\n## Input\nOne line: a name (a single word) and an integer balance, separated by a space.\n\n## Output\nTwo lines:\n```\nEmpty account: none, 0\nCustom account: <name>, <balance>\n```\n\n## Task\nWrite two constructors for `Account` (lesson 14.11): a default constructor (no parameters) that sets the owner to `\"none\"` and the balance to `0`, and a second constructor that takes an owner name and a balance. Remember that once you write the second constructor the compiler stops supplying a default one, so the no-argument constructor must be written by hand. The accessors and the driver in `main` are provided.\n",
+    "starter_code": "#include <iostream>\n#include <string>\n\nclass Account {\n    std::string m_owner;\n    int m_balance;\npublic:\n    // TODO: This class needs TWO constructors (lesson 14.11):\n    //   1. A default constructor (no parameters) representing an empty\n    //      account: owner \"none\", balance 0.\n    //   2. A constructor taking an owner name and a balance.\n    // Once you write any constructor the compiler no longer supplies a\n    // default one, so you must write the no-argument constructor yourself.\n\n    const std::string& owner() const { return m_owner; }\n    int balance() const { return m_balance; }\n};\n\nint main() {\n    std::string name{};\n    int balance{};\n    std::cin >> name >> balance;\n\n    Account empty{};\n    Account custom{ name, balance };\n\n    std::cout << \"Empty account: \" << empty.owner() << \", \" << empty.balance() << \"\\n\";\n    std::cout << \"Custom account: \" << custom.owner() << \", \" << custom.balance() << \"\\n\";\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Account {\n    std::string m_owner;\n    int m_balance;\npublic:\n    Account()\n        : m_owner{ \"none\" }, m_balance{ 0 }\n    {}\n\n    Account(std::string owner, int balance)\n        : m_owner{ owner }, m_balance{ balance }\n    {}\n\n    const std::string& owner() const { return m_owner; }\n    int balance() const { return m_balance; }\n};\n\nint main() {\n    std::string name{};\n    int balance{};\n    std::cin >> name >> balance;\n\n    Account empty{};\n    Account custom{ name, balance };\n\n    std::cout << \"Empty account: \" << empty.owner() << \", \" << empty.balance() << \"\\n\";\n    std::cout << \"Custom account: \" << custom.owner() << \", \" << custom.balance() << \"\\n\";\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: typical account",
+        "is_sample": true,
+        "stdin": "Alice 500\n",
+        "expected_stdout": "Empty account: none, 0\nCustom account: Alice, 500\n"
+      },
+      {
+        "label": "Hidden: zero balance",
+        "is_sample": false,
+        "stdin": "Bob 0\n",
+        "expected_stdout": "Empty account: none, 0\nCustom account: Bob, 0\n"
+      },
+      {
+        "label": "Hidden: large balance",
+        "is_sample": false,
+        "stdin": "Zoe 1000000\n",
+        "expected_stdout": "Empty account: none, 0\nCustom account: Zoe, 1000000\n"
+      }
+    ]
+  }
+]

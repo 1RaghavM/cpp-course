@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Shopping Cart with a class and Aggregate Initialization",
+    "prompt_md": "## Goal\nIntroduce the `class` keyword. Define a class with public data members and let the driver create objects with aggregate initialization. Compute a shopping cart's line-item subtotals and grand total.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 100), the number of line items.\n- Next N lines: two integers `price quantity` per line.\n\n## Output\n- For each line item, one line: `Subtotal: <price * quantity>`.\n- After the last item, one line: `Total: <sum of all subtotals>`.\n\n## What to build\nDefine a class `Item` with two public data members (`int price` and `int quantity`) and a free function `int subtotal(const Item& it)`. The driver creates each item with aggregate initialization (`Item it{ price, quantity };`), which only compiles if your members are public and declared in that order. Member functions arrive in the next lesson, so keep the behavior in the free function for now.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a class named Item with TWO public data members:\n//       int price and int quantity. Use the `class` keyword with a\n//       `public:` access label so the driver can aggregate-initialize and\n//       read the members.\n\n// TODO: Define a free function `int subtotal(const Item& it)` that returns\n//       the cost of one line item.\n\nint main() {\n    int n;\n    std::cin >> n;\n    int grandTotal = 0;\n    for (int i = 0; i < n; ++i) {\n        int p, q;\n        std::cin >> p >> q;\n        Item it{ p, q };   // aggregate initialization: needs public members, in order\n        int s = subtotal(it);\n        grandTotal += s;\n        std::cout << \"Subtotal: \" << s << \"\\n\";\n    }\n    std::cout << \"Total: \" << grandTotal << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Item {\npublic:\n    int price;\n    int quantity;\n};\n\nint subtotal(const Item& it) {\n    return it.price * it.quantity;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int grandTotal = 0;\n    for (int i = 0; i < n; ++i) {\n        int p, q;\n        std::cin >> p >> q;\n        Item it{ p, q };\n        int s = subtotal(it);\n        grandTotal += s;\n        std::cout << \"Subtotal: \" << s << \"\\n\";\n    }\n    std::cout << \"Total: \" << grandTotal << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: two items",
+        "is_sample": true,
+        "stdin": "2\n3 4\n5 2\n",
+        "expected_stdout": "Subtotal: 12\nSubtotal: 10\nTotal: 22\n"
+      },
+      {
+        "label": "Hidden: single item",
+        "is_sample": false,
+        "stdin": "1\n100 1\n",
+        "expected_stdout": "Subtotal: 100\nTotal: 100\n"
+      },
+      {
+        "label": "Hidden: three items",
+        "is_sample": false,
+        "stdin": "3\n2 5\n1 1\n10 3\n",
+        "expected_stdout": "Subtotal: 10\nSubtotal: 1\nSubtotal: 30\nTotal: 41\n"
+      }
+    ]
+  },
+  {
+    "title": "Durations: a class, Aggregate Init, and a Free Function",
+    "prompt_md": "## Goal\nUse a `class` with public data members and aggregate initialization to model durations. Report each duration in minutes, then the grand total formatted as hours and minutes.\n\n## Input\n- Line 1: an integer N (1 ≤ N ≤ 100), the number of durations.\n- Next N lines: two integers `hours minutes` per line.\n\n## Output\n- For each duration, one line: `Minutes: <total minutes of that duration>`.\n- After the last one, a final line: `Total: H:MM`, where H is the combined hours and MM is the leftover minutes, zero-padded to two digits.\n\n## What to build\nDefine a class `Time` with public data members `int hours` and `int minutes`, and a free function `int toMinutes(const Time& t)`. The driver aggregate-initializes each `Time` and handles the `H:MM` formatting.",
+    "starter_code": "#include <iostream>\n#include <iomanip>\n\n// TODO: Define a class named Time with two public data members:\n//       int hours and int minutes.\n\n// TODO: Define a free function `int toMinutes(const Time& t)` that converts a\n//       Time into a total number of minutes.\n\nint main() {\n    int n;\n    std::cin >> n;\n    int total = 0;\n    for (int i = 0; i < n; ++i) {\n        int h, m;\n        std::cin >> h >> m;\n        Time t{ h, m };   // aggregate initialization\n        int mins = toMinutes(t);\n        total += mins;\n        std::cout << \"Minutes: \" << mins << \"\\n\";\n    }\n    std::cout << \"Total: \" << total / 60 << \":\"\n              << std::setfill('0') << std::setw(2) << total % 60 << \"\\n\";\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <iomanip>\n\nclass Time {\npublic:\n    int hours;\n    int minutes;\n};\n\nint toMinutes(const Time& t) {\n    return t.hours * 60 + t.minutes;\n}\n\nint main() {\n    int n;\n    std::cin >> n;\n    int total = 0;\n    for (int i = 0; i < n; ++i) {\n        int h, m;\n        std::cin >> h >> m;\n        Time t{ h, m };\n        int mins = toMinutes(t);\n        total += mins;\n        std::cout << \"Minutes: \" << mins << \"\\n\";\n    }\n    std::cout << \"Total: \" << total / 60 << \":\"\n              << std::setfill('0') << std::setw(2) << total % 60 << \"\\n\";\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: two durations",
+        "is_sample": true,
+        "stdin": "2\n1 30\n0 45\n",
+        "expected_stdout": "Minutes: 90\nMinutes: 45\nTotal: 2:15\n"
+      },
+      {
+        "label": "Hidden: pad single-digit minutes",
+        "is_sample": false,
+        "stdin": "1\n0 5\n",
+        "expected_stdout": "Minutes: 5\nTotal: 0:05\n"
+      },
+      {
+        "label": "Hidden: exact hours",
+        "is_sample": false,
+        "stdin": "3\n2 0\n1 20\n0 40\n",
+        "expected_stdout": "Minutes: 120\nMinutes: 80\nMinutes: 40\nTotal: 4:00\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Reference into the Box",
+    "prompt_md": "## Goal\nDefine a `Box` class that stores one private integer and hands callers a *reference* to it, so they can read and modify the member directly through the returned reference.\n\n## Input\nThree integers on one line: a starting value, an amount to add, and an amount to subtract.\n\n## Output\nOne line: the final stored value (start + add - subtract).\n\n## Feature\nThis exercises a member function that returns a non-`const` reference to a data member. The driver writes to the member by assigning through the returned reference (`box.value() = ...`) and modifies it in place (`+=`, `-=`); your accessor only works if it returns a true reference that aliases the member rather than a copy.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a class named Box that wraps a single private int (start it at 0).\n//  - Add a const getter named getValue() that returns the current value by value.\n//  - Add a member function named value() that returns a reference to the private\n//    int itself, so callers can BOTH read it and assign to it. Think about what\n//    return type lets `box.value() = 10;` actually change the stored member.\n// Do not change main(): it drives the Box entirely through value() and getValue().\n\nint main() {\n    int init, a, b;\n    std::cin >> init >> a >> b;\n\n    Box box;\n    box.value() = init;   // write through the returned reference\n    box.value() += a;     // modify through the returned reference\n    box.value() -= b;\n\n    std::cout << box.getValue() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Box {\nprivate:\n    int m_value{ 0 };\n\npublic:\n    int getValue() const { return m_value; }\n    int& value() { return m_value; }\n};\n\nint main() {\n    int init, a, b;\n    std::cin >> init >> a >> b;\n\n    Box box;\n    box.value() = init;   // write through the returned reference\n    box.value() += a;     // modify through the returned reference\n    box.value() -= b;\n\n    std::cout << box.getValue() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: add then subtract",
+        "is_sample": true,
+        "stdin": "10 5 3",
+        "expected_stdout": "12\n"
+      },
+      {
+        "label": "Hidden: all zero",
+        "is_sample": false,
+        "stdin": "0 0 0",
+        "expected_stdout": "0\n"
+      },
+      {
+        "label": "Hidden: result goes negative",
+        "is_sample": false,
+        "stdin": "100 50 200",
+        "expected_stdout": "-50\n"
+      }
+    ]
+  },
+  {
+    "title": "Editable Label Text",
+    "prompt_md": "## Goal\nDefine a `Label` class that holds a private `std::string`. Expose it two ways: a `const`-reference getter for read-only access, and a non-`const`-reference accessor that lets callers modify the string in place.\n\n## Input\nTwo words separated by a space: a base string and a suffix to append.\n\n## Output\nOne line: the base string with the suffix appended directly onto it.\n\n## Feature\nThis exercises member functions that return references to a data member in both flavors. The read path returns `const std::string&` (no copy, read-only); the write path returns `std::string&`, and the driver only produces the right answer if that reference genuinely aliases the stored member.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a class named Label that stores a private std::string (default empty).\n//  - Add a const getter named getText() that returns a const reference to the\n//    string, so callers can read it cheaply without copying but cannot modify it.\n//  - Add a member function named text() that returns a non-const reference to the\n//    string, so callers can assign to it and append to it in place.\n// Do not change main(): it builds the label through text() and reads it back\n// through getText().\n\nint main() {\n    std::string base, suffix;\n    std::cin >> base >> suffix;\n\n    Label label;\n    label.text() = base;      // write through the returned reference\n    label.text() += suffix;   // append through the returned reference\n\n    std::cout << label.getText() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Label {\nprivate:\n    std::string m_text{};\n\npublic:\n    const std::string& getText() const { return m_text; }\n    std::string& text() { return m_text; }\n};\n\nint main() {\n    std::string base, suffix;\n    std::cin >> base >> suffix;\n\n    Label label;\n    label.text() = base;      // write through the returned reference\n    label.text() += suffix;   // append through the returned reference\n\n    std::cout << label.getText() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: foo + bar",
+        "is_sample": true,
+        "stdin": "foo bar",
+        "expected_stdout": "foobar\n"
+      },
+      {
+        "label": "Hidden: hello + world",
+        "is_sample": false,
+        "stdin": "hello world",
+        "expected_stdout": "helloworld\n"
+      },
+      {
+        "label": "Hidden: single chars",
+        "is_sample": false,
+        "stdin": "a b",
+        "expected_stdout": "ab\n"
+      }
+    ]
+  }
+]

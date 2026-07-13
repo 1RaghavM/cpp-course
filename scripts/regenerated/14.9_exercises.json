@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Rectangle Area via Constructor",
+    "prompt_md": "## Goal\nDefine a `Rectangle` class whose constructor takes a width and a height and stores them, plus an `area()` member function. Using a constructor means a `Rectangle` is always fully initialized the instant it is created — there is no window where it exists but its dimensions are unset.\n\n## Input\nTwo positive integers on one line: width and height.\n\n## Output\nOne line: `Area: <value>`, the width times the height.\n\n## Feature\nThis exercises constructors: a constructor with parameters that initializes the object's data members at creation time.",
+    "starter_code": "#include <iostream>\n\n// TODO: Define a class named Rectangle.\n//  - Store width and height as private int data members.\n//  - Write a constructor Rectangle(int width, int height) that puts both members\n//    into a valid state at the moment the object is created.\n//  - Add a const member function area() that returns the width times the height.\n// Do not change main(): it constructs a Rectangle from stdin and prints its area.\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << '\\n';\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n\nclass Rectangle {\nprivate:\n    int m_width;\n    int m_height;\n\npublic:\n    Rectangle(int width, int height) {\n        m_width  = width;\n        m_height = height;\n    }\n\n    int area() const { return m_width * m_height; }\n};\n\nint main() {\n    int w, h;\n    std::cin >> w >> h;\n\n    Rectangle r{ w, h };\n    std::cout << \"Area: \" << r.area() << '\\n';\n\n    return 0;\n}\n",
+    "difficulty": "practice",
+    "test_cases": [
+      {
+        "label": "Sample: 4 x 3",
+        "is_sample": true,
+        "stdin": "4 3",
+        "expected_stdout": "Area: 12\n"
+      },
+      {
+        "label": "Hidden: 1 x 1",
+        "is_sample": false,
+        "stdin": "1 1",
+        "expected_stdout": "Area: 1\n"
+      },
+      {
+        "label": "Hidden: 10 x 25",
+        "is_sample": false,
+        "stdin": "10 25",
+        "expected_stdout": "Area: 250\n"
+      }
+    ]
+  },
+  {
+    "title": "Label with Overloaded Constructors",
+    "prompt_md": "## Goal\nDefine a `Label` class that can be created two ways: with no arguments (giving it the default text `untitled`) or with a string argument (giving it that text). This is constructor overloading — two constructors that differ in their parameter lists.\n\n## Input\nFirst line: an integer mode. If it is `0`, the program constructs a default `Label`. Otherwise, a second line contains a single word used to construct the `Label`.\n\n## Output\nOne line: the label's text.\n\n## Feature\nThis exercises overloaded constructors: a default (no-argument) constructor and a one-argument constructor coexisting in the same class, selected by how the object is created.",
+    "starter_code": "#include <iostream>\n#include <string>\n\n// TODO: Define a class named Label that stores a private std::string.\n// Give it TWO constructors (constructor overloading):\n//  - A constructor that takes no arguments and sets the text to \"untitled\".\n//  - A constructor that takes a const std::string& and sets the text to it.\n// Also add a const getter getText() that returns the stored text by const\n// reference. Do not change main(): it picks which constructor to use based on\n// the input mode.\n\nint main() {\n    int mode;\n    std::cin >> mode;\n\n    if (mode == 0) {\n        Label lbl{};\n        std::cout << lbl.getText() << '\\n';\n    } else {\n        std::string text;\n        std::cin >> text;\n        Label lbl{ text };\n        std::cout << lbl.getText() << '\\n';\n    }\n\n    return 0;\n}\n",
+    "solution_code": "#include <iostream>\n#include <string>\n\nclass Label {\nprivate:\n    std::string m_text;\n\npublic:\n    Label() {\n        m_text = \"untitled\";\n    }\n\n    Label(const std::string& text) {\n        m_text = text;\n    }\n\n    const std::string& getText() const { return m_text; }\n};\n\nint main() {\n    int mode;\n    std::cin >> mode;\n\n    if (mode == 0) {\n        Label lbl{};\n        std::cout << lbl.getText() << '\\n';\n    } else {\n        std::string text;\n        std::cin >> text;\n        Label lbl{ text };\n        std::cout << lbl.getText() << '\\n';\n    }\n\n    return 0;\n}\n",
+    "difficulty": "challenge",
+    "test_cases": [
+      {
+        "label": "Sample: default constructor",
+        "is_sample": true,
+        "stdin": "0",
+        "expected_stdout": "untitled\n"
+      },
+      {
+        "label": "Hidden: one-argument constructor",
+        "is_sample": false,
+        "stdin": "1\nhello",
+        "expected_stdout": "hello\n"
+      },
+      {
+        "label": "Hidden: one-argument with another word",
+        "is_sample": false,
+        "stdin": "1\ncpproad",
+        "expected_stdout": "cpproad\n"
+      }
+    ]
+  }
+]
