@@ -7,19 +7,24 @@ export const dynamic = "force-dynamic";
 export default async function ProfileRoute() {
   const { supabase, user } = await requireServerSession();
 
-  const [statsResult, onboardingResult, progressResult, apiKeyResult] = await Promise.all([
-    supabase.from("user_stats").select("display_name, streak_days, weekly_goal").single(),
-    supabase.from("onboarding").select("background, motivation").single(),
-    supabase
-      .from("progress")
-      .select("state, completed_at")
-      .or("state.eq.completed,state.eq.skipped"),
-    supabase
-      .from("user_api_keys")
-      .select("key_preview, is_valid")
-      .eq("provider", "google")
-      .single(),
-  ]);
+  const [statsResult, onboardingResult, progressResult, apiKeyResult, githubResult] =
+    await Promise.all([
+      supabase.from("user_stats").select("display_name, streak_days, weekly_goal").single(),
+      supabase.from("onboarding").select("background, motivation").single(),
+      supabase
+        .from("progress")
+        .select("state, completed_at")
+        .or("state.eq.completed,state.eq.skipped"),
+      supabase
+        .from("user_api_keys")
+        .select("key_preview, is_valid")
+        .eq("provider", "google")
+        .single(),
+      supabase
+        .from("github_connections")
+        .select("github_login, repo_full_name")
+        .single(),
+    ]);
 
   const stats = statsResult.data as {
     display_name: string | null;
@@ -53,6 +58,11 @@ export default async function ProfileRoute() {
       }
     : { hasKey: false, preview: "", isValid: false };
 
+  const github = githubResult.data as { github_login: string; repo_full_name: string } | null;
+  const githubStatus = github
+    ? { connected: true, login: github.github_login, repoFullName: github.repo_full_name }
+    : { connected: false, login: "", repoFullName: "" };
+
   const email = user.email ?? "";
   const userInitial = (email[0] ?? "?").toUpperCase();
 
@@ -69,6 +79,7 @@ export default async function ProfileRoute() {
       background={onboarding?.background ?? null}
       motivation={onboarding?.motivation ?? null}
       apiKeyStatus={apiKeyStatus}
+      githubStatus={githubStatus}
     />
   );
 }
