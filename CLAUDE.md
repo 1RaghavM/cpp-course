@@ -90,6 +90,21 @@ npx tsx scripts/seed_db.ts
 # fly deploy --config infra/judge0/deploy.fly.toml
 ```
 
+### GitHub Sync setup (one-time, operator only)
+
+Mirrors each user's passed submissions to their own public `cpproad-submissions` repo
+(commits land on their contribution graph). Inert until an OAuth App is registered:
+
+1. Create a GitHub OAuth App at https://github.com/settings/developers
+   - Homepage URL: your site URL
+   - Authorization callback URL: `<your-site>/api/github/callback`
+2. Set `GITHUB_OAUTH_CLIENT_ID` and `GITHUB_OAUTH_CLIENT_SECRET` in the environment.
+3. Token encryption reuses the existing `API_KEY_ENCRYPTION_SECRET` (no new secret).
+
+Scope requested is `public_repo` (create + write public repos only). Users connect at
+`/dashboard/profile`; passed submits then commit to their repo via the GitHub Contents API.
+The `github_connections` table (migration `016`) stores one encrypted token per user.
+
 ## UI component library — shadcn/ui
 
 All UI primitives come from [shadcn/ui](https://ui.shadcn.com) (`@shadcn` registry). Components live in `components/ui/` and are installed via `npx shadcn@latest add <name>`. Never hand-roll a primitive that shadcn already provides.
