@@ -18,6 +18,12 @@ function encodePath(path: string): string {
   return path.split("/").map(encodeURIComponent).join("/");
 }
 
+/** Throw with the status AND GitHub's response body, so logs show the real reason. */
+async function ghError(res: Response, label: string): Promise<never> {
+  const body = await res.text().catch(() => "");
+  throw new Error(`${label}: ${res.status} ${body.slice(0, 300)}`);
+}
+
 /** Exchange an OAuth `code` for a (non-expiring) user access token. */
 export async function exchangeCodeForToken(code: string): Promise<string> {
   const res = await fetch("https://github.com/login/oauth/access_token", {
@@ -39,7 +45,7 @@ export async function exchangeCodeForToken(code: string): Promise<string> {
 /** Return the authenticated user's GitHub login. */
 export async function getGithubLogin(token: string): Promise<string> {
   const res = await ghFetch(token, "/user");
-  if (!res.ok) throw new Error(`GitHub /user failed: ${res.status}`);
+  if (!res.ok) await ghError(res, "GitHub /user failed");
   const data = (await res.json()) as { login: string };
   return data.login;
 }
@@ -48,7 +54,7 @@ export async function getGithubLogin(token: string): Promise<string> {
 export async function ensureRepo(token: string, login: string, repo: string): Promise<string> {
   const check = await ghFetch(token, `/repos/${login}/${repo}`);
   if (check.ok) return `${login}/${repo}`;
-  if (check.status !== 404) throw new Error(`GitHub repo check failed: ${check.status}`);
+  if (check.status !== 404) await ghError(check, "GitHub repo check failed");
 
   const create = await ghFetch(token, "/user/repos", {
     method: "POST",
@@ -59,7 +65,7 @@ export async function ensureRepo(token: string, login: string, repo: string): Pr
       description: "My cpproad C++ solutions",
     }),
   });
-  if (!create.ok) throw new Error(`GitHub repo create failed: ${create.status}`);
+  if (!create.ok) await ghError(create, "GitHub repo create failed");
   return `${login}/${repo}`;
 }
 
@@ -78,5 +84,5 @@ export async function putFile(
       content: Buffer.from(content, "utf8").toString("base64"),
     }),
   });
-  if (!res.ok) throw new Error(`GitHub putFile failed: ${res.status}`);
+  if (!res.ok) await ghError(res, "GitHub putFile failed");
 }
