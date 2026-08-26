@@ -82,7 +82,16 @@ export function ReportBugButton({ lessonId }: ReportBugButtonProps) {
           <div>
             <h3 className="text-sm font-semibold text-foreground">Report a Bug</h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Found something broken? Let us know.
+              Found something broken? Let us know, or{" "}
+              <a
+                href="https://github.com/1RaghavM/cpp-course/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary"
+              >
+                open a GitHub issue
+              </a>
+              .
             </p>
           </div>
 
