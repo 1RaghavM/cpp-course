@@ -9,16 +9,17 @@ import type {
 } from "@/lib/capstones/types";
 import type { Stage } from "@/lib/dashboard/types";
 
+/**
+ * Alias kept for call-site stability. The app-layer "strip reference_solution"
+ * step is gone: that column is no longer selected anywhere, and is REVOKEd from
+ * the authenticated/anon roles in the database, so it cannot leak via the
+ * anon-key client either.
+ */
 export async function fetchPublicCapstone(
   supabase: AppSupabaseClient,
   slug: CapstoneSlug,
 ): Promise<PublicCapstone | null> {
-  const internal = await fetchInternalCapstone(supabase, slug);
-  if (!internal) return null;
-  // Strip reference_solution before returning to clients.
-  const { reference_solution, ...rest } = internal;
-  void reference_solution;
-  return rest;
+  return fetchInternalCapstone(supabase, slug);
 }
 
 export async function fetchInternalCapstone(
@@ -28,7 +29,7 @@ export async function fetchInternalCapstone(
   const { data: capstone, error } = await supabase
     .from("capstones")
     .select(
-      "id, slug, stage, title, description_md, language_standard, compile_flags, starter_code, reference_solution",
+      "id, slug, stage, title, description_md, language_standard, compile_flags, starter_code",
     )
     .eq("slug", slug)
     .maybeSingle();
@@ -51,7 +52,6 @@ export async function fetchInternalCapstone(
     language_standard: capstone.language_standard,
     compile_flags: capstone.compile_flags,
     starter_code: capstone.starter_code,
-    reference_solution: capstone.reference_solution,
     milestones: (milestones ?? []).map(
       (m): CapstoneMilestone => ({
         id: m.id,

@@ -60,10 +60,11 @@ lib/
   ai/                    # tutor model, system prompt, context, pricing (Gemini, BYOAK)
   judge0/                # client + verdict (test-case diffing)
   auth/require-auth.ts   # middleware: require authenticated session
-  content/lesson-generation.ts  # generate-or-cache orchestration
+  content/lesson-generation.ts  # cache read — no generation on the request path
 infra/
   judge0/                # docker-compose.yml (gVisor, no-network, non-root)
-  supabase/migrations/   # SQL migrations
+supabase/
+  migrations/            # SQL migrations — the ONLY migration directory; `supabase db push` reads this
 scripts/
   seed_db.ts             # loads curriculum_seed.json into Postgres
 ```

@@ -73,12 +73,10 @@ CREATE INDEX idx_capstone_attempts_milestone_id ON capstone_attempts(milestone_i
 -- protected it, and that's bypassable from the browser with the anon key.
 -- Column-level privilege closes this at the database layer.
 --
--- CAUTION — this changes a contract lib/capstones/server.ts relies on:
--- fetchInternalCapstone() explicitly selects reference_solution and is
--- called from app/api/capstones/[slug]/run/route.ts using the user's
--- session-scoped client (createRouteClient(), NOT the service-role client).
--- After this REVOKE, that call must be switched to a service-role client
--- (createServiceClient()) or it will stop returning reference_solution and
--- capstone grading will break. This migration only changes the database;
--- the route.ts change must ship in the same deploy.
+-- Paired app change (already shipped): lib/capstones/server.ts no longer
+-- selects this column at all. Nothing on the read path ever consumed it —
+-- grading runs milestone tests, not the reference solution — so the column is
+-- write-only from the app's perspective, populated by scripts/seed_capstones.ts
+-- via the service role (which bypasses both RLS and column privileges).
+-- No route needs escalating to a service-role client as a result of this.
 REVOKE SELECT (reference_solution) ON capstones FROM authenticated, anon;

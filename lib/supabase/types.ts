@@ -1,6 +1,6 @@
 /**
  * TypeScript types for the cpproad database schema.
- * Manually written to match infra/supabase/migrations/001_schema.sql exactly.
+ * Manually written to match supabase/migrations/20260527000001_schema.sql exactly.
  *
  * Regenerate with: npx supabase gen types typescript --local > lib/supabase/types.ts
  */
