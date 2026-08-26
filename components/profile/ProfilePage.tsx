@@ -171,7 +171,11 @@ export function ProfilePage({
   async function handleDeleteAccount() {
     setDeleting(true);
     try {
-      const res = await fetch("/api/account", { method: "DELETE" });
+      const res = await fetch("/api/account", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: true }),
+      });
       if (!res.ok) throw new Error();
       const supabase = createBrowserClient();
       await supabase.auth.signOut();

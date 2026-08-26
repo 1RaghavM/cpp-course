@@ -1,8 +1,7 @@
 # Capstone Author Agent — {{STAGE_TITLE}}
 
 You are writing a single end-of-part C++ capstone project for the cpproad
-learning platform. Read `docs/superpowers/specs/2026-06-11-capstone-projects-design.md`
-for full context; this prompt is the spec re-stated as your contract.
+learning platform. This prompt is your complete contract — everything below is binding.
 
 ## Scope (frozen — do not negotiate)
 

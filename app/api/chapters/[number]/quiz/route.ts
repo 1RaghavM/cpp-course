@@ -26,7 +26,10 @@ export async function GET(_request: NextRequest, { params }: { params: { number:
     .select("id, number")
     .in("number", [chapterNumber, ...priorNumbers]);
 
-  if (chErr) return NextResponse.json({ error: chErr.message }, { status: 500 });
+  if (chErr) {
+    console.error("Failed to fetch chapters:", chErr);
+    return NextResponse.json({ error: "Failed to load quiz" }, { status: 500 });
+  }
 
   const currentChapter = chapters?.find((c) => c.number === chapterNumber);
   if (!currentChapter) return NextResponse.json({ error: "Chapter not found" }, { status: 404 });
@@ -40,7 +43,10 @@ export async function GET(_request: NextRequest, { params }: { params: { number:
     .select("*, lessons!inner(chapter_id)")
     .eq("lessons.chapter_id", currentChapter.id);
 
-  if (ccErr) return NextResponse.json({ error: ccErr.message }, { status: 500 });
+  if (ccErr) {
+    console.error("Failed to fetch concept checks:", ccErr);
+    return NextResponse.json({ error: "Failed to load quiz" }, { status: 500 });
+  }
 
   let priorChecksRaw: unknown[] = [];
   if (priorChapterIds.length > 0) {
@@ -48,7 +54,10 @@ export async function GET(_request: NextRequest, { params }: { params: { number:
       .from("concept_checks")
       .select("*, lessons!inner(chapter_id)")
       .in("lessons.chapter_id", priorChapterIds);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      console.error("Failed to fetch prior-chapter concept checks:", error);
+      return NextResponse.json({ error: "Failed to load quiz" }, { status: 500 });
+    }
     priorChecksRaw = data ?? [];
   }
 

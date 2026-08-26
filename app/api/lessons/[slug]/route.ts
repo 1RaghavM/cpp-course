@@ -55,8 +55,14 @@ export async function GET(_request: NextRequest, { params }: { params: { slug: s
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to load lesson";
 
-    // Distinguish between "lesson not found" and internal errors
-    const status = message.includes("not found") ? 404 : 500;
-    return NextResponse.json({ error: message }, { status });
+    // Distinguish between "lesson not found" and internal errors. The raw
+    // message is logged, never returned — it carries Postgres table/column
+    // detail on the 500 path.
+    if (message.includes("not found")) {
+      return NextResponse.json({ error: "Lesson not found" }, { status: 404 });
+    }
+
+    console.error(`Failed to load lesson "${slug}":`, err);
+    return NextResponse.json({ error: "Failed to load lesson" }, { status: 500 });
   }
 }

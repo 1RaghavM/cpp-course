@@ -3,75 +3,93 @@
 </p>
 
 <p align="center">
-  Learn C++ by working through the <a href="https://www.learncpp.com/">learncpp.com</a> curriculum
-  with an AI tutor, auto-graded exercises, and a sandboxed compiler — free, open, and open source.
+  Learn C++ through the <a href="https://www.learncpp.com/">learncpp.com</a> curriculum —
+  345 lessons, auto-graded exercises, a sandboxed compiler, and an AI tutor that runs on your own API key.
 </p>
 
 ---
 
-## What is cpproad?
+## What it is
 
-cpproad is a consumer-facing C++ learning platform. It takes the full learncpp.com
-curriculum — **34 chapters, 345 lessons** — and turns it into an interactive course:
-read a lesson, write code against it in-browser, run it in a sandbox, get stuck, ask
-an AI tutor for a hint instead of the answer, and come back tomorrow for spaced-repetition
-review of what you learned.
+cpproad turns the learncpp.com curriculum (34 chapters, 345 lessons) into an interactive
+course: read the lesson, write code in the browser, run it against real test cases, ask the
+tutor for a hint when you're stuck, and get the concept back tomorrow in review.
 
-It's free to sign up and use. There's no paid tier, no gated content — the goal is a
-good, honest way to learn C++ from first principles, not a funnel.
+Free, open signup, no paid tier, no gated content.
 
-## How it teaches
+## Stack
 
-- **Lessons** — each lesson gets an LLM-generated summary the first time anyone visits
-  it, cached permanently so nobody pays that cost twice. Chapters and lessons follow the
-  learncpp ordering; content is paraphrased into cpproad's own voice, not scraped verbatim.
-- **Exercises** — every lesson pairs with coding exercises, graded by running your
-  submission against real test cases in a sandboxed [Judge0](https://judge0.com/) instance.
-- **AI tutor** — when you're stuck, the tutor is scoped to a 4-tier hint policy (nudge →
-  concept hint → structural hint → worked example) so it teaches instead of just handing
-  you the answer.
-- **Daily review** — a spaced-repetition scheduler resurfaces concept checks you've
-  already seen, so retention doesn't depend on you remembering to go back and reread.
-- **GitHub sync** *(optional)* — connect your GitHub account and passed submissions get
-  committed to your own public `cpproad-submissions` repo, so your practice shows up on
-  your contribution graph.
+| Layer | What runs it |
+|---|---|
+| App + API | Next.js App Router, TypeScript strict mode, Vercel |
+| Data + auth | Supabase Postgres, magic-link auth, RLS on every table |
+| Code execution | Judge0 on the RapidAPI shared host |
+| Tutor | Gemini 2.5 Flash, streaming, user-supplied key |
 
-## Why it's built this way
+## Content is data, not a runtime LLM call
 
-The one architectural rule that matters most: **a lesson, once generated, never calls
-the LLM again.** Summaries, exercises, and concept checks are generated once and cached
-in Postgres; every revisit — by any user — is a cache hit. This is what keeps the
-platform's operating cost sane at open-signup scale, and it's a hard invariant across
-the codebase, not just an optimization.
+Lesson summaries, exercises, and concept checks are authored offline and stored as plain
+files under `scripts/regenerated/v2/<lesson>/` — `summary.md` and `exercises.json`. They're
+validated by `scripts/validate_v2.ts` and pushed into Postgres by `scripts/push_v2.ts`.
 
-Code execution is fully sandboxed and isolated per submission — nothing you run touches
-another user's session, the host filesystem, or the network.
+Serving a lesson is a database read. Nothing in the request path calls a model, so content
+is diffable in git, reviewable in a PR, and costs nothing per pageview. Content is
+paraphrased into cpproad's own voice, not scraped verbatim.
+
+## Tutor
+
+Bring your own Gemini key. It's AES-256-GCM encrypted before it reaches the database and
+decrypted per request — cpproad never proxies a shared key, so tutor usage bills to the
+person using it. Without a key, `/api/chat` returns 403 rather than falling back to
+anything.
+
+Hints escalate across four tiers: nudge → concept → structure → worked example. The tier
+comes from conversation state, so the tutor can't open with the answer.
+
+## Exercises and grading
+
+Submissions compile and run in a sandboxed Judge0 instance, then get diffed against
+per-exercise test cases. Fork bombs, network egress, filesystem writes, OOM, infinite loops,
+and process enumeration were verified to fail closed as of 2026-06-11.
+
+Production runs against RapidAPI's shared host, which means patch level, isolation, and rate
+limits are outside our control. A self-hosted gVisor setup is staged in `infra/judge0/` and
+is **not** production-ready — the gVisor runtime is commented out and workers run
+privileged. Re-harden before deploying it.
+
+## Review scheduling
+
+Every concept check a user answers writes both an attempt row and its scheduler state
+(`interval_index`, `next_due`) in one RPC. `GET /api/review/due` returns up to 20 due cards
+and nothing else touches the scheduler — all writes funnel through `applyAttempt` in
+`lib/content/review.ts` so the two tables can't drift apart.
+
+## GitHub sync (optional)
+
+Connect a GitHub account and passed submissions get committed to your own public
+`cpproad-submissions` repo via the Contents API, so practice shows up on your contribution
+graph. Scope requested is `public_repo`; the token is encrypted at rest. Inert until an
+operator registers an OAuth app.
 
 ## Contributing
 
-cpproad is open to contributors, especially people who want to **teach**: improve a
-lesson explanation, write better exercises, fix a wrong test case, or flag a spot where
-the curriculum doesn't teach a concept well.
+Contributions are open, especially from people who want to **teach**: sharpen a lesson
+explanation, write a better exercise, fix a wrong test case, or flag where the curriculum
+glosses over a concept.
 
-**Every contribution starts with an issue.** No unsolicited pull requests — open an
-issue first (bug, content problem, or feature proposal), let it get discussed and
-triaged, and then submit a PR that references it. This keeps duplicate work down and
-means nobody spends time on a PR for something that was already rejected or is already
-in progress.
+**Every contribution starts with an issue.** No unsolicited pull requests — open an issue,
+let it get triaged, then submit a PR referencing it. This keeps duplicate work down and
+means nobody burns a weekend on something already rejected or already in flight.
 
-- **Found a bug?** Open an issue with steps to reproduce.
-- **Found a wrong or unclear lesson / exercise?** Open an issue tagged `content`,
-  naming the chapter and lesson number. Lesson and exercise content lives under
-  `scripts/regenerated/v2/<lesson>/` as reviewable `summary.md` / `exercises.json`
-  files — not hidden behind a live LLM call — so it can be read, diffed, and corrected
-  like any other file. Content changes are validated by `scripts/validate_v2.ts`
-  before they can be merged.
-- **Want to propose a new feature?** Open an issue describing the problem it solves
-  first. Feature PRs without a prior issue will be asked to open one.
+- **Bug** — open an issue with steps to reproduce.
+- **Wrong or unclear content** — open an issue tagged `content` naming the chapter and
+  lesson number. The source files are under `scripts/regenerated/v2/`; fix them like any
+  other file and `scripts/validate_v2.ts` will gate the merge.
+- **Feature** — describe the problem before the solution. Feature PRs without a prior issue
+  get asked to open one.
 
-No installation or deployment walkthrough lives in this README on purpose — this
-document is about what the project teaches and how it's organized, not about running
-your own copy.
+This README documents what the project teaches and how it's put together, not how to run
+your own copy. Open an issue if you need a local setup guide.
 
 ## License
 

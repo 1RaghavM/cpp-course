@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/auth/require-auth";
 import { fetchInternalCapstone, upsertAttempt } from "@/lib/capstones/server";
 import { runMilestone, type CapstoneRunMode } from "@/lib/capstones/judge0";
 import { CAPSTONE_SLUGS, type CapstoneSlug } from "@/lib/capstones/types";
+import { reserveExecution } from "@/lib/rate/execution-reservation";
 
 export const dynamic = "force-dynamic";
 
@@ -56,13 +57,12 @@ export async function POST(
     : "submit";
 
   // Per-user rate limit: 5 submissions / 60s (matches submissions route policy).
-  const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
-  const { count } = (await authClient
-    .from("submissions")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .gte("created_at", oneMinuteAgo)) as { count: number | null };
-  if ((count ?? 0) >= 5) {
+  // Reserved BEFORE Judge0 runs — this route never writes to `submissions`
+  // (it writes `capstone_attempts` via upsertAttempt below), so counting
+  // that table was dead code that never fired. See
+  // lib/rate/execution-reservation.ts.
+  const reservation = await reserveExecution(authClient, userId, 5);
+  if (!reservation.allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Max 5 submissions per minute." },
       { status: 429 },

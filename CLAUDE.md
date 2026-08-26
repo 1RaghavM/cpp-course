@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-**cpproad** — a consumer-facing C++ learning platform built around the learncpp.com curriculum (345 lessons, 34 chapters). LLM-generated lesson summaries and exercises are cached in Postgres on first visit; revisits never call the LLM. An AI tutor (streaming, 4-tier hint policy) helps when stuck. Code runs in a sandboxed Judge0 instance.
+**cpproad** — a consumer-facing C++ learning platform built around the learncpp.com curriculum (345 lessons, 34 chapters). Lesson summaries and exercises are authored offline, committed under `scripts/regenerated/v2/`, and pushed into Postgres; serving a lesson is a pure DB read and never calls a model. An AI tutor (streaming, 4-tier hint policy) helps when stuck, billed to the user's own key. Code runs in a sandboxed Judge0 instance.
 
 Open to any user who signs up. One repo, one deploy.
 
@@ -12,25 +12,25 @@ Open to any user who signs up. One repo, one deploy.
 
 - **Next.js 14+ App Router** (TypeScript, strict mode) on Vercel — both frontend and API (Route Handlers under `app/api/`)
 - **Supabase** — Postgres + Auth (magic link, open signup) + RLS on every table (per-user isolation)
-- **Anthropic Claude** — Haiku 4.5 for lesson/exercise generation, Sonnet 4.6 for tutor conversations
+- **Google Gemini 2.5 Flash** — tutor conversations only, streamed via the AI SDK using the user's own API key (BYOAK, encrypted at rest). There is no server-owned model key and no live content-generation path; `ANTHROPIC_API_KEY` is no longer used.
 - **Judge0** — sandboxed C++ compilation and execution. **Currently uses the RapidAPI shared host (`judge0-ce.p.rapidapi.com`)**; a self-hosted gVisor instance on Fly.io is staged in `infra/judge0/` but not deployed. The dockerfile + fly config there are NOT production-ready (gVisor runtime is commented out, workers run privileged) — re-harden before any `fly deploy`. Sandbox isolation, patch level, and rate limits on RapidAPI are out of our control; verified safe verdicts for fork bombs, network egress, FS writes, OOM, infinite loops, and process enumeration as of 2026-06-11.
 
-No separate backend service. No Redis, no queues. Next.js Route Handlers handle LLM calls and Judge0 proxying directly.
+No separate backend service. No Redis, no queues. Next.js Route Handlers handle tutor streaming and Judge0 proxying directly.
 
-### The caching pattern (load-bearing decision)
+### Content is data, not a runtime model call (load-bearing decision)
 
-The entire cost model depends on this: a lesson with non-NULL `summary_md` never triggers an LLM call. Exercises that exist in the DB never regenerate. Tutor conversation history loads from Postgres without LLM calls until the user types something new. Anthropic prompt caching (`cache_control: {type: 'ephemeral'}`) is applied on every call's system prompt + lesson context block.
+The entire cost model depends on this: **nothing in the request path calls a model to produce content.** Lesson summaries, exercises, and concept checks are authored offline, validated by `scripts/validate_v2.ts`, and pushed to Postgres by `scripts/push_v2.ts`. `getOrGenerateLesson` in `lib/content/lesson-generation.ts` is a pure cache read — a lesson with `summary_md IS NULL` renders "coming soon" rather than generating anything. Tutor conversation history loads from Postgres without model calls until the user types something new.
 
-If caching breaks, costs blow up. Guard this invariant in every code path that touches `lib/anthropic/` or `lib/content/`.
+Guard this in every code path that touches `lib/content/`. Reintroducing a live generation call on the read path would put an unbounded, operator-paid cost behind an open-signup endpoint.
 
 Phase B adds `concept_check_reviews` — per-user-per-check scheduler state (`interval_index`, `next_due`). It is derived from `concept_check_attempts` and written atomically alongside each attempt via the `record_check_attempt` RPC. All writes funnel through `applyAttempt` in `lib/content/review.ts`; both Route Handlers (`/api/concept-checks`, `/api/review/attempt`) and any future surface MUST go through that single helper so the two tables can never diverge.
 
 ### Key data flow
 
-1. **Lesson visit (cache miss):** Page → `GET /api/lessons/[slug]` → `summary_md IS NULL` → call Haiku → write to DB → return
-2. **Lesson visit (cache hit):** Page → `GET /api/lessons/[slug]` → return cached content directly
+1. **Lesson visit (content present):** Page → `GET /api/lessons/[slug]` → return cached content directly
+2. **Lesson visit (not yet authored):** Page → `GET /api/lessons/[slug]` → `summary_md IS NULL` → return lesson with null summary, UI shows "coming soon". No model call.
 3. **Code run/submit:** Page → `POST /api/submissions` → Judge0 VM → results back (synchronous, no queue)
-4. **Tutor:** Page → `POST /api/tutor` (SSE) → load conversation history from DB → compute hint tier → stream from Sonnet → persist messages
+4. **Tutor:** Page → `POST /api/chat` (streamed) → load conversation history from DB → compute hint tier → stream from Gemini using the user's key → persist messages
 5. **Daily review:** Page → `GET /api/review/due` → returns up to 20 due cards from `concept_check_reviews` + nextDueDate when empty. Each answer → `POST /api/review/attempt` → `applyAttempt` (no LLM).
 
 ## Planned file structure
@@ -56,7 +56,8 @@ components/
   roadmap/RoadmapTree    # chapter/lesson tree with completion state (uses Card, Progress, Badge, Tooltip)
 lib/
   supabase/              # server.ts + client.ts
-  anthropic/             # client, prompts, cache helpers, cost logging
+  anthropic/             # prompt/cache helpers used by offline scripts/ only — no runtime API client
+  ai/                    # tutor model, system prompt, context, pricing (Gemini, BYOAK)
   judge0/                # client + verdict (test-case diffing)
   auth/require-auth.ts   # middleware: require authenticated session
   content/lesson-generation.ts  # generate-or-cache orchestration
@@ -164,7 +165,7 @@ Run these with `/project:<name>` to enforce project invariants:
 | `/project:cache-guard` | Before modifying code that touches LLM calls, lesson loading, or conversation retrieval |
 | `/project:scope-check` | Before building any new feature — decision filter + exclusion list |
 | `/project:security-verify` | After changes to Judge0 infra, auth middleware, or RLS policies |
-| `/project:llm-integration` | When adding or modifying any Anthropic API call — model selection, cost tracking, content quality |
+| `/project:llm-integration` | When adding or modifying any model call — model selection, cost tracking, content quality |
 | `/project:new-route` | When creating or modifying API route handlers — auth pattern, error responses, API contracts |
 
 ## Testing strategy

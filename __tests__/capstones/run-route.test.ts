@@ -1,28 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// The route uses Supabase to enforce rate limits via .from("submissions").select(...).eq(...).gte(...)
-// which awaits a `{ count }` result. Build a thenable proxy that supports the full chain.
-function makeQueryChainStub(result: unknown) {
-  const promise = Promise.resolve(result);
-  const proxy: Record<string, unknown> = {
-    select: () => proxy,
-    eq: () => proxy,
-    in: () => proxy,
-    gte: () => proxy,
-    then: promise.then.bind(promise),
-    catch: promise.catch.bind(promise),
-  };
-  return proxy;
-}
-
-// Per-test override for the rate-limit count returned by the supabase chain.
-let rateLimitCount = 0;
 vi.mock("@/lib/supabase/server", () => ({
   createRouteClient: () => ({
     auth: { getUser: async () => ({ data: { user: { id: "user-1" } }, error: null }) },
-    from: vi.fn(() => makeQueryChainStub({ count: rateLimitCount })),
   }),
   createServerClient: () => ({}),
+}));
+
+// The route's rate limit now goes through the shared reservation ledger
+// (lib/rate/execution-reservation.ts) instead of counting `submissions`
+// rows directly — see run-route.test.ts history for the dead-code bug this
+// replaced. Mock it directly rather than the Supabase chain it wraps.
+let reservationAllowed = true;
+const reserveExecutionMock = vi.fn();
+vi.mock("@/lib/rate/execution-reservation", () => ({
+  reserveExecution: (...args: unknown[]) => reserveExecutionMock(...args),
 }));
 
 const fetchInternalCapstoneMock = vi.fn();
@@ -53,7 +45,9 @@ describe("POST /api/capstones/[slug]/run", () => {
     fetchInternalCapstoneMock.mockReset();
     upsertAttemptMock.mockReset();
     runMilestoneMock.mockReset();
-    rateLimitCount = 0;
+    reserveExecutionMock.mockReset();
+    reservationAllowed = true;
+    reserveExecutionMock.mockImplementation(async () => ({ allowed: reservationAllowed }));
   });
 
   it("404s for unknown slug", async () => {
@@ -191,11 +185,64 @@ describe("POST /api/capstones/[slug]/run", () => {
   });
 
   it("429s when the user has hit the 5-submission-per-minute rate limit", async () => {
-    rateLimitCount = 5;
+    reservationAllowed = false;
     const res = await POST(
       makeReq("basics", { milestone_ordinal: 1, source_code: "int main(){}" }),
       { params: { slug: "basics" } },
     );
     expect(res.status).toBe(429);
+  });
+
+  it("reserves a rate-limit slot BEFORE calling Judge0, not after", async () => {
+    fetchInternalCapstoneMock.mockResolvedValue({
+      id: "c1",
+      slug: "basics",
+      stage: "basics",
+      language_standard: "c++20",
+      milestones: [
+        {
+          id: "m1",
+          ordinal: 1,
+          title: "M1",
+          spec_anchor: "milestone-1",
+          tests: [{ name: "case1", stdin: "", expected_stdout: "hi", timeout_ms: 2000 }],
+        },
+      ],
+    });
+    const callOrder: string[] = [];
+    reserveExecutionMock.mockImplementation(async () => {
+      callOrder.push("reserve");
+      return { allowed: true };
+    });
+    runMilestoneMock.mockImplementation(async () => {
+      callOrder.push("judge0");
+      return {
+        status: "passed",
+        stdout: null,
+        stderr: null,
+        compileOutput: null,
+        exitCode: null,
+        wallTimeMs: 12,
+        memoryKb: null,
+        testResults: [
+          { label: "case1", passed: true, expected: "hi", actual: "hi", status: "accepted" },
+        ],
+        passed: true,
+      };
+    });
+
+    await POST(
+      makeReq("basics", {
+        milestone_ordinal: 1,
+        source_code: 'int main(){std::cout<<"hi";}',
+        mode: "submit",
+      }),
+      { params: { slug: "basics" } },
+    );
+
+    // The reservation must be recorded before the expensive Judge0 call
+    // runs, so a second concurrent request sees it in its window.
+    expect(callOrder).toEqual(["reserve", "judge0"]);
+    expect(reserveExecutionMock).toHaveBeenCalledWith(expect.anything(), "user-1", 5);
   });
 });

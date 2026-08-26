@@ -16,6 +16,7 @@ import {
   logExecutionTimeout,
 } from "@/lib/statsig/server-events";
 import { syncSubmission } from "@/lib/github/sync";
+import { reserveExecution } from "@/lib/rate/execution-reservation";
 
 export const dynamic = "force-dynamic";
 
@@ -43,14 +44,12 @@ export async function POST(request: NextRequest) {
   const supabase = authClient;
 
   // ---- Per-user rate limit (5 submissions per 60s) --------------------------
-  const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
-  const { count: recentSubmissionCount } = await supabase
-    .from("submissions")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .gte("created_at", oneMinuteAgo);
-
-  if ((recentSubmissionCount ?? 0) >= 5) {
+  // Reserved BEFORE the Judge0 call (not counted from the `submissions`
+  // table, which is only written after Judge0 returns) so concurrent
+  // requests can't all read a stale count and all pass. See
+  // lib/rate/execution-reservation.ts.
+  const reservation = await reserveExecution(supabase, userId, 5);
+  if (!reservation.allowed) {
     return NextResponse.json(
       { error: "Rate limit exceeded. Max 5 submissions per minute." },
       { status: 429 },

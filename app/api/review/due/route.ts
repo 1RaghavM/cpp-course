@@ -33,7 +33,10 @@ export async function GET(request: NextRequest) {
       .order("last_answered_at", { ascending: true })
       .limit(5);
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      console.error("Failed to load practice queue:", error);
+      return NextResponse.json({ error: "Failed to load review queue" }, { status: 500 });
+    }
 
     const cards = (data ?? [])
       .filter(

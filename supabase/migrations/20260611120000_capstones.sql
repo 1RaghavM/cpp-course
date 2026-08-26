@@ -64,3 +64,21 @@ CREATE POLICY "Users update own capstone_attempts"
   WITH CHECK (auth.uid() = user_id);
 
 CREATE INDEX idx_capstone_attempts_milestone_id ON capstone_attempts(milestone_id);
+
+-- SECURITY: RLS is row-level, not column-level. The "Authenticated read
+-- capstones" policy above (USING (true)) lets any logged-in user SELECT
+-- reference_solution directly via the anon-key client — the comment on that
+-- column ("private, never returned by API") was not actually enforced; only
+-- app-layer stripping in lib/capstones/server.ts#fetchPublicCapstone()
+-- protected it, and that's bypassable from the browser with the anon key.
+-- Column-level privilege closes this at the database layer.
+--
+-- CAUTION — this changes a contract lib/capstones/server.ts relies on:
+-- fetchInternalCapstone() explicitly selects reference_solution and is
+-- called from app/api/capstones/[slug]/run/route.ts using the user's
+-- session-scoped client (createRouteClient(), NOT the service-role client).
+-- After this REVOKE, that call must be switched to a service-role client
+-- (createServiceClient()) or it will stop returning reference_solution and
+-- capstone grading will break. This migration only changes the database;
+-- the route.ts change must ship in the same deploy.
+REVOKE SELECT (reference_solution) ON capstones FROM authenticated, anon;
