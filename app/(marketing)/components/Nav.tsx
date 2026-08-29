@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 function MenuIcon() {
   return (
@@ -117,38 +118,41 @@ export function Nav({
             <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={192} height={48} priority style={{ height: "48px", width: "auto" }} />
           </Link>
 
-          {!hideActions && (
-            <>
-              <div className="nav-actions">
-                {isSignedIn ? (
-                  <Link href="/dashboard" className="hp-btn hp-btn-primary">
-                    Dashboard
-                  </Link>
-                ) : (
-                  <>
-                    <Link href="/login" className="hp-btn hp-btn-secondary">
-                      Sign in
+          <div className="nav-end">
+            <ThemeToggle />
+            {!hideActions && (
+              <>
+                <div className="nav-actions">
+                  {isSignedIn ? (
+                    <Link href="/dashboard" className="hp-btn hp-btn-primary">
+                      Dashboard
                     </Link>
-                    <Link href="/onboarding" className="hp-btn hp-btn-primary">
-                      Start learning
-                    </Link>
-                  </>
-                )}
-              </div>
+                  ) : (
+                    <>
+                      <Link href="/login" className="hp-btn hp-btn-secondary">
+                        Sign in
+                      </Link>
+                      <Link href="/onboarding" className="hp-btn hp-btn-primary">
+                        Start learning
+                      </Link>
+                    </>
+                  )}
+                </div>
 
-              {!isSignedIn && (
-                <button
-                  ref={triggerRef}
-                  className="nav-mobile-trigger"
-                  onClick={() => setMenuOpen(true)}
-                  aria-expanded={menuOpen}
-                  aria-label="Open menu"
-                >
-                  <MenuIcon />
-                </button>
-              )}
-            </>
-          )}
+                {!isSignedIn && (
+                  <button
+                    ref={triggerRef}
+                    className="nav-mobile-trigger"
+                    onClick={() => setMenuOpen(true)}
+                    aria-expanded={menuOpen}
+                    aria-label="Open menu"
+                  >
+                    <MenuIcon />
+                  </button>
+                )}
+              </>
+            )}
+          </div>
         </nav>
       </header>
 

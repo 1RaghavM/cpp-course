@@ -6,9 +6,10 @@ import { FormEvent, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { authCallbackUrl } from "@/lib/auth/constants";
 import { AuthAlert } from "@/components/auth/AuthAlert";
-import { AuthDivider } from "@/components/auth/AuthDivider";
 import { AuthField } from "@/components/auth/AuthField";
-import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+// import { AuthDivider } from "@/components/auth/AuthDivider";
+// import { AuthLegalNotice } from "@/components/auth/AuthLegalNotice";
+// import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient } from "@/lib/supabase/client";
 
@@ -161,6 +162,7 @@ export function RegisterForm() {
         </motion.p>
       </form>
 
+      {/* Google OAuth + legal notice parked until signup is restored.
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -176,6 +178,15 @@ export function RegisterForm() {
       >
         <GoogleAuthButton label="Sign up with Google" />
       </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55, duration: 0.3, ease: "easeOut" }}
+      >
+        <AuthLegalNotice />
+      </motion.div>
+      */}
     </div>
   );
 }

@@ -23,6 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
 
 const MonacoEditor = dynamic(() => import("@/components/editor/MonacoEditor"), { ssr: false });
@@ -254,6 +255,7 @@ export default function PlaygroundClient({ savedState }: Props) {
           </Link>
           <span className="text-sm font-semibold text-foreground">Playground</span>
           <div className="flex-1" />
+          <ThemeToggle />
           <select
             value={languageStd}
             onChange={(e) => setLanguageStd(e.target.value as CppStandard)}
@@ -362,6 +364,7 @@ export default function PlaygroundClient({ savedState }: Props) {
           <TutorIcon />
           Tutor
         </Button>
+        <ThemeToggle />
       </div>
 
       {/* Main content */}

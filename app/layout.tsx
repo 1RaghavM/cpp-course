@@ -4,7 +4,8 @@ import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
 import "@/app/globals.css";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ThemeProvider } from "@/components/theme-provider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "cpproad",
@@ -13,16 +14,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`dark ${GeistSans.variable} ${GeistMono.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <body className="grain min-h-screen bg-background font-sans text-foreground antialiased">
-        <NavigationProgress />
-        {children}
-        <Analytics />
-        <SpeedInsights />
+        <ThemeProvider>
+          <NavigationProgress />
+          {children}
+          <Analytics />
+          <SpeedInsights />
+        </ThemeProvider>
       </body>
     </html>
   );

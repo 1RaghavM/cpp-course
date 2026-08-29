@@ -26,7 +26,7 @@ export default async function HomePage() {
         <FAQ />
         <FinalCTA isSignedIn={isSignedIn} />
       </main>
-      <Footer />
+      <Footer isSignedIn={isSignedIn} />
     </>
   );
 }

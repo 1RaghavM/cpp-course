@@ -12,11 +12,15 @@ import type { AppSupabaseClient } from "@/lib/supabase/types";
  * arrives while this one is in flight sees it in its window.
  *
  * Backed by the `playground_runs` table (see
- * infra/supabase/migrations/012_playground_runs.sql). The table predates
+ * supabase/migrations/20260602000008_playground_runs.sql). The table predates
  * this shared use and its name is now narrower than what it tracks — it's a
- * generic per-user execution reservation log, not just playground runs. Not
- * renaming the table itself since a second table would require a migration
- * another agent owns; renaming the concept here in code instead.
+ * generic per-user execution reservation log, not just playground runs.
+ *
+ * ponytail: count-then-insert, not a true atomic reservation. The race window
+ * shrinks from "the whole Judge0 round-trip" (seconds) to "two adjacent
+ * queries" (microseconds), which turns unbounded fan-out into at most a couple
+ * of extra runs. If that ever matters, move the check into a single
+ * INSERT..SELECT guarded by the count, or an advisory-lock RPC.
  */
 
 const WINDOW_MS = 60_000;

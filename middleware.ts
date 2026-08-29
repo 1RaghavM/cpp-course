@@ -1,7 +1,7 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { isAuthRoute } from "@/lib/auth/constants";
+import { isAuthRoute, isPublicContentRoute } from "@/lib/auth/constants";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
@@ -17,12 +17,23 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
+  // Legal pages parked until Google OAuth branding is restored.
+  if (pathname === "/privacy" || pathname === "/terms") {
+    const dest = req.nextUrl.clone();
+    dest.pathname = "/";
+    return NextResponse.redirect(dest);
+  }
+
   if (pathname === "/") {
     if (user) {
       const dashboardUrl = req.nextUrl.clone();
       dashboardUrl.pathname = "/dashboard";
       return NextResponse.redirect(dashboardUrl);
     }
+    return res;
+  }
+
+  if (isPublicContentRoute(pathname)) {
     return res;
   }
 

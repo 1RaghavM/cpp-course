@@ -24,7 +24,12 @@ export interface CapstoneMilestone {
   tests: MilestoneTest[];
 }
 
-/** Public capstone shape — reference_solution stripped before returning to clients. */
+/**
+ * Capstone shape as served. `reference_solution` is deliberately absent: no
+ * runtime path reads it (grading uses milestone tests, not the solution), and
+ * the column is REVOKEd from the `authenticated`/`anon` roles at the database
+ * layer, so selecting it here would fail. Only the offline seed script writes it.
+ */
 export interface PublicCapstone {
   id: string;
   slug: CapstoneSlug;
@@ -37,10 +42,11 @@ export interface PublicCapstone {
   milestones: CapstoneMilestone[];
 }
 
-/** Internal capstone shape — includes the reference solution. Server-side only. */
-export interface InternalCapstone extends PublicCapstone {
-  reference_solution: string;
-}
+/**
+ * Kept as an alias so callers don't churn. There is no longer an internal/public
+ * split — the one field that differed is no longer selected by either path.
+ */
+export type InternalCapstone = PublicCapstone;
 
 export interface CapstoneAttempt {
   milestone_id: string;

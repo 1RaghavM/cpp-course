@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useTutorStore } from "@/lib/store/tutor-store";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ChapterQuiz } from "@/components/lesson/ChapterQuiz";
 import { CheckCircle2, Circle, Clock, Loader2, MemoryStick } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -408,7 +409,7 @@ export default function LessonClient({
                         <h2 className="text-lg font-semibold text-foreground">Challenge</h2>
                         <DifficultyBadge difficulty={activeExercise.difficulty} />
                       </div>
-                      <div className="prose prose-base prose-invert max-w-none mb-6">
+                      <div className="prose prose-base dark:prose-invert max-w-none mb-6">
                         <SummaryView markdown={activeExercise.promptMd} />
                       </div>
                       {activeExercise.sampleTestCases.length > 0 && (
@@ -439,7 +440,7 @@ export default function LessonClient({
 
                   {/* Lesson summary */}
                   {lesson.summaryMd ? (
-                    <div className="prose prose-base prose-invert max-w-none">
+                    <div className="prose prose-base dark:prose-invert max-w-none">
                       <SummaryView markdown={lesson.summaryMd} />
                     </div>
                   ) : (
@@ -458,7 +459,7 @@ export default function LessonClient({
                         <DifficultyBadge difficulty={activeExercise.difficulty} />
                       </div>
 
-                      <div className="prose prose-base prose-invert max-w-none mb-6">
+                      <div className="prose prose-base dark:prose-invert max-w-none mb-6">
                         <SummaryView markdown={activeExercise.promptMd} />
                       </div>
 
@@ -684,7 +685,7 @@ function MobileLayout({
       <WarmupBlock checks={warmupChecks} />
 
       {lesson.summaryMd && (
-        <section className="prose prose-base prose-invert max-w-none">
+        <section className="prose prose-base dark:prose-invert max-w-none">
           <SummaryView markdown={lesson.summaryMd} />
         </section>
       )}
@@ -900,6 +901,7 @@ function LessonNav({
           </Button>
         </>
       )}
+      <ThemeToggle />
     </div>
   );
 }

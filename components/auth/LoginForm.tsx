@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { AuthAlert } from "@/components/auth/AuthAlert";
-import { AuthDivider } from "@/components/auth/AuthDivider";
+// import { AuthDivider } from "@/components/auth/AuthDivider";
 import { AuthField } from "@/components/auth/AuthField";
-import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+// import { AuthLegalNotice } from "@/components/auth/AuthLegalNotice";
+// import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient } from "@/lib/supabase/client";
 
@@ -106,6 +107,7 @@ export function LoginForm() {
         ) : null}
       </form>
 
+      {/* Google OAuth + legal notice parked until signup is restored.
       <motion.div {...fadeSlideUp(5)}>
         <AuthDivider />
       </motion.div>
@@ -113,6 +115,11 @@ export function LoginForm() {
       <motion.div {...fadeSlideUp(6)}>
         <GoogleAuthButton label="Sign in with Google" />
       </motion.div>
+
+      <motion.div {...fadeSlideUp(7)}>
+        <AuthLegalNotice />
+      </motion.div>
+      */}
     </div>
   );
 }

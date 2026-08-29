@@ -1,15 +1,18 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
-import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
+import { SyntaxHighlighter } from "@/lib/syntax-highlight";
+import { useSyntaxStyle } from "@/lib/use-syntax-style";
 
 interface Props {
   content: string;
 }
 
 export default function MarkdownMessage({ content }: Props) {
+  const syntaxStyle = useSyntaxStyle();
+
   return (
-    <div className="prose prose-sm prose-invert max-w-none text-foreground">
+    <div className="prose prose-sm dark:prose-invert max-w-none text-foreground">
       <ReactMarkdown
         components={{
           code({ className, children, ...props }) {
@@ -18,7 +21,7 @@ export default function MarkdownMessage({ content }: Props) {
             if (match) {
               return (
                 <SyntaxHighlighter
-                  style={oneDark}
+                  style={syntaxStyle}
                   language={match[1]}
                   PreTag="div"
                   customStyle={{

@@ -74,67 +74,68 @@
 }
 
 :root {
-  /* shadcn light defaults */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  color-scheme: light;
 
-  /* design.md raw values */
-  --bg-base: #0a0a0a;
-  --bg-surface: #0f1115;
-  --bg-elevated: #161b22;
-  --bg-hover: #1c2128;
-  --surface-2: #161b22;
-  --border-strong: #30363d;
-  --fg: #ededed;
-  --fg-muted: #8b949e;
-  --fg-subtle: #6e7681;
-  --accent-hover: #58a6ff;
+  /* shadcn light */
+  --background: oklch(0.985 0.002 250);
+  --foreground: oklch(0.2 0.015 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.015 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.015 250);
+  --primary: oklch(0.205 0.015 250);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0.006 250);
+  --secondary-foreground: oklch(0.205 0.015 250);
+  --muted: oklch(0.96 0.006 250);
+  --muted-foreground: oklch(0.48 0.015 250);
+  --accent: oklch(0.96 0.006 250);
+  --accent-foreground: oklch(0.205 0.015 250);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.9 0.01 250);
+  --input: oklch(0.9 0.01 250);
+  --ring: oklch(0.62 0.12 250);
+  --chart-1: oklch(0.62 0.14 250);
+  --chart-2: oklch(0.55 0.02 250);
+  --chart-3: oklch(0.45 0.02 250);
+  --chart-4: oklch(0.37 0.02 250);
+  --chart-5: oklch(0.27 0.02 250);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.975 0.004 250);
+  --sidebar-foreground: oklch(0.2 0.015 250);
+  --sidebar-primary: oklch(0.55 0.16 250);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.95 0.008 250);
+  --sidebar-accent-foreground: oklch(0.205 0.015 250);
+  --sidebar-border: oklch(0.9 0.01 250);
+  --sidebar-ring: oklch(0.62 0.12 250);
+
+  --bg-base: #f6f8fa;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-hover: #eef1f4;
+  --surface-2: #f3f5f7;
+  --border-strong: #d0d7de;
+  --fg: #1f2328;
+  --fg-muted: #636c76;
+  --fg-subtle: #8b949e;
+  --accent-hover: #0969da;
   --accent-fg: #ffffff;
-  --grid-line: rgba(255, 255, 255, 0.035);
-  --border-subtle: #30363d;
-  --text-primary: #ededed;
-  --text-secondary: #8b949e;
-  --text-muted: #6e7681;
-  --glass-fill: rgba(255, 255, 255, 0.04);
-  --glass-fill-hi: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --grid-line: rgba(15, 23, 42, 0.07);
+  --border-subtle: #d8dee4;
+  --text-primary: #1f2328;
+  --text-secondary: #636c76;
+  --text-muted: #8b949e;
+  --glass-fill: rgba(15, 23, 42, 0.03);
+  --glass-fill-hi: rgba(15, 23, 42, 0.05);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
   --glass-blur: 16px;
-  --node-locked: #1a2029;
+  --node-locked: #eaeef2;
   --node-active: #2b8fe6;
   --node-complete: #00599c;
-  --glow-blue: rgba(43, 143, 230, 0.45);
-  --glow-cyan: rgba(56, 189, 248, 0.3);
+  --glow-blue: rgba(43, 143, 230, 0.16);
+  --glow-cyan: rgba(14, 165, 233, 0.12);
   --radius-card: 18px;
   --radius-node: 50%;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -145,8 +146,9 @@
   --heatmap-zero: rgb(221, 221, 221);
 }
 
-/* design.md dark theme — mapped to shadcn variables */
 .dark {
+  color-scheme: dark;
+
   --background: #0a0a0a;
   --foreground: #ededed;
   --card: #0f1115;
@@ -179,6 +181,30 @@
   --sidebar-border: #23262d;
   --sidebar-ring: #2f81f7;
   --heatmap-zero: rgb(51, 51, 51);
+
+  --bg-base: #0a0a0a;
+  --bg-surface: #0f1115;
+  --bg-elevated: #161b22;
+  --bg-hover: #1c2128;
+  --surface-2: #161b22;
+  --border-strong: #30363d;
+  --fg: #ededed;
+  --fg-muted: #8b949e;
+  --fg-subtle: #6e7681;
+  --accent-hover: #58a6ff;
+  --accent-fg: #ffffff;
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --border-subtle: #30363d;
+  --text-primary: #ededed;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --glass-fill: rgba(255, 255, 255, 0.04);
+  --glass-fill-hi: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --node-locked: #1a2029;
+  --glow-blue: rgba(43, 143, 230, 0.45);
+  --glow-cyan: rgba(56, 189, 248, 0.3);
 }
 
 body {
@@ -191,13 +217,13 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #23262d #0a0a0a;
+  scrollbar-color: var(--border) var(--background);
 }
 
 *::-webkit-scrollbar { width: 6px; height: 6px; }
-*::-webkit-scrollbar-track { background: #0a0a0a; }
-*::-webkit-scrollbar-thumb { background-color: #23262d; border-radius: 999px; }
-*::-webkit-scrollbar-thumb:hover { background-color: #1c2128; }
+*::-webkit-scrollbar-track { background: var(--background); }
+*::-webkit-scrollbar-thumb { background-color: var(--border); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background-color: var(--bg-hover); }
 
 /* grain overlay */
 .grain::before {
@@ -206,7 +232,7 @@ body {
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.04;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
@@ -298,4 +324,98 @@ body {
 }
 .react-flow__attribution a {
   color: var(--muted-foreground) !important;
+}
+
+html:not(.dark) .grain::before {
+  opacity: 0.045;
+}
+
+html:not(.dark) img[alt="cpproad"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Animated sun ↔ crescent moon theme toggle */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 180ms var(--ease), color 180ms var(--ease);
+}
+
+.theme-toggle:hover {
+  background: var(--bg-hover);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+  transform-origin: center;
+  transition:
+    transform 480ms var(--ease),
+    opacity 280ms var(--ease);
+}
+
+.theme-toggle-sun {
+  fill: currentColor;
+}
+
+.theme-toggle-sun line {
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.theme-toggle-moon {
+  fill: currentColor;
+}
+
+html.dark .theme-toggle {
+  color: #f5c542;
+}
+
+html.dark .theme-toggle-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+html.dark .theme-toggle-moon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+}
+
+html:not(.dark) .theme-toggle {
+  color: #1f2937;
+}
+
+html:not(.dark) .theme-toggle-sun {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
+
+html:not(.dark) .theme-toggle-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle svg {
+    transition: none;
+  }
 }
