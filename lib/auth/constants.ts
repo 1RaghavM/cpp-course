@@ -1,7 +1,8 @@
 export const AUTH_ROUTES = ["/login", "/register", "/forgot-password"] as const;
 
 /** Unauthenticated visitors can read these without being sent to login. */
-export const PUBLIC_CONTENT_ROUTES = ["/privacy", "/terms"] as const;
+export const PUBLIC_CONTENT_ROUTES = [] as const;
+// ["/privacy", "/terms"] disabled until Google OAuth signup is restored.
 
 /** Post-recovery password set; requires an active session. */
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
