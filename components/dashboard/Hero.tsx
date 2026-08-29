@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
+import { SyntaxHighlighter } from "@/lib/syntax-highlight";
+import { useSyntaxStyle } from "@/lib/use-syntax-style";
 import { ArrowRightIcon } from "lucide-react";
 import {
   Card,
@@ -39,16 +40,16 @@ const variantConfig: Record<
   "next-chapter": { label: "CHAPTER COMPLETE", buttonText: "Start Next Chapter", showTitle: true },
 };
 
-const highlighterTheme: Record<string, React.CSSProperties> = {
-  ...oneDark,
-  'pre[class*="language-"]': {
-    ...oneDark['pre[class*="language-"]'],
-    background: "transparent",
-    padding: "0",
-  },
-};
-
 export function Hero({ lesson, module, variant, snippet }: HeroProps) {
+  const syntaxStyle = useSyntaxStyle();
+  const highlighterTheme: Record<string, React.CSSProperties> = {
+    ...syntaxStyle,
+    'pre[class*="language-"]': {
+      ...syntaxStyle['pre[class*="language-"]'],
+      background: "transparent",
+      padding: "0",
+    },
+  };
   const config = variantConfig[variant];
   const codePreview = variant === "resume" && snippet ? snippet : STOCK_SNIPPET;
 

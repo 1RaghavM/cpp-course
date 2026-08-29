@@ -41,6 +41,7 @@ import { CheckCircle2, Circle, Clock, MemoryStick } from "lucide-react";
 
 import { EditorToolbar } from "@/components/lesson/EditorToolbar";
 import { ReportBugButton } from "@/components/lesson/ReportBugButton";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { MonacoEditorHandle } from "@/components/editor/MonacoEditor";
 import type { CppStandard } from "@/lib/judge0/client";
 import { useTutorStore } from "@/lib/store/tutor-store";
@@ -342,7 +343,7 @@ export function CapstoneClient({ capstone, attempts: initialAttempts, stageTitle
                         ordinal={currentMilestone.ordinal}
                       />
                     </div>
-                    <div className="prose prose-base prose-invert max-w-none mb-6">
+                    <div className="prose prose-base dark:prose-invert max-w-none mb-6">
                       <SummaryView markdown={milestoneMd || "_Milestone description unavailable._"} />
                     </div>
                     {sampleTestCases.length > 0 && (
@@ -368,7 +369,7 @@ export function CapstoneClient({ capstone, attempts: initialAttempts, stageTitle
                       </Badge>
                       <h2 className="text-lg font-semibold text-foreground">{capstone.title}</h2>
                     </div>
-                    <div className="prose prose-base prose-invert max-w-none">
+                    <div className="prose prose-base dark:prose-invert max-w-none">
                       <SummaryView markdown={projectIntroMd} />
                     </div>
                   </div>
@@ -655,9 +656,10 @@ function CapstoneNav({
         }
         title={tutorOpen ? "Hide tutor" : "Show tutor"}
       >
-        <TutorIcon />
-        Tutor
-      </Button>
+          <TutorIcon />
+          Tutor
+        </Button>
+      <ThemeToggle />
     </div>
   );
 }

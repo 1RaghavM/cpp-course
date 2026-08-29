@@ -1,8 +1,9 @@
 "use client";
 
+import { useSyntaxStyle } from "@/lib/use-syntax-style";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { SyntaxHighlighter, oneDark } from "@/lib/syntax-highlight";
+import { SyntaxHighlighter } from "@/lib/syntax-highlight";
 import type { Components } from "react-markdown";
 import {
   Table,
@@ -17,21 +18,21 @@ interface SummaryViewProps {
   markdown: string;
 }
 
-const customOneDark = {
-  ...oneDark,
-  'pre[class*="language-"]': {
-    ...oneDark['pre[class*="language-"]'],
-    background: "#0f1115",
-    borderRadius: "0.5rem",
-    border: "1px solid #23262d",
-  },
-  'code[class*="language-"]': {
-    ...oneDark['code[class*="language-"]'],
-    background: "transparent",
-  },
-};
-
 export function SummaryView({ markdown }: SummaryViewProps) {
+  const syntaxStyle = useSyntaxStyle();
+  const highlighterTheme = {
+    ...syntaxStyle,
+    'pre[class*="language-"]': {
+      ...syntaxStyle['pre[class*="language-"]'],
+      background: "transparent",
+      borderRadius: "0.5rem",
+      border: "1px solid var(--border)",
+    },
+    'code[class*="language-"]': {
+      ...syntaxStyle['code[class*="language-"]'],
+      background: "transparent",
+    },
+  };
   const components: Components = {
     code({ className, children, ...rest }) {
       const match = /language-(\w+)/.exec(className || "");
@@ -40,7 +41,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
       if (match) {
         return (
           <SyntaxHighlighter
-            style={customOneDark}
+            style={highlighterTheme}
             language={match[1]}
             PreTag="div"
             customStyle={{
@@ -109,7 +110,7 @@ export function SummaryView({ markdown }: SummaryViewProps) {
   };
 
   return (
-    <div className="prose prose-invert prose-base max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-brand-bright prose-a:no-underline hover:prose-a:underline prose-li:text-muted-foreground prose-code:before:content-none prose-code:after:content-none">
+    <div className="prose dark:prose-invert prose-base max-w-none prose-pre:bg-transparent prose-pre:p-0 prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-a:text-brand-bright prose-a:no-underline hover:prose-a:underline prose-li:text-muted-foreground prose-code:before:content-none prose-code:after:content-none">
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {markdown}
       </ReactMarkdown>

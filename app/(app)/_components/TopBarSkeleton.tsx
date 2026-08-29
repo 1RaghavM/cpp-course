@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
  * Static skeleton that mirrors the TopBar layout while navigation data loads.
@@ -32,6 +33,7 @@ export function TopBarSkeleton({
           <Skeleton className="h-6 w-10 rounded-md" />
           {/* Notes link placeholder */}
           <Skeleton className="h-6 w-10 rounded-md" />
+          <ThemeToggle />
           {/* User avatar — rendered immediately since we have the initial */}
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-xs font-semibold text-muted-foreground">
             {userInitial}

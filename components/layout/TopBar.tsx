@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase/client";
 import { trackDashboardEvent } from "@/lib/dashboard/analytics";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface TopBarProps {
   streakDays: number;
@@ -85,6 +86,8 @@ export function TopBar({ streakDays, resumeLessonSlug, userEmail, userInitial }:
           >
             Notes
           </Link>
+
+          <ThemeToggle />
 
           <div className="relative" ref={menuRef}>
             <button

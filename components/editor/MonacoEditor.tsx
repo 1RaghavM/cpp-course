@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
+import { useIsLightTheme } from "@/lib/use-syntax-style";
 
 export interface MonacoEditorProps {
   defaultValue: string;
@@ -49,7 +50,10 @@ function MonacoEditor({
   handleRef,
 }: MonacoEditorProps) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const monacoRef = useRef<Parameters<OnMount>[1] | null>(null);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isLight = useIsLightTheme();
+  const monacoTheme = isLight ? "cpproad-light" : "cpproad-dark";
 
   const initialValue = loadFromStorage(exerciseId) ?? defaultValue;
 
@@ -85,6 +89,7 @@ function MonacoEditor({
 
   const handleMount: OnMount = useCallback((monacoEditor, monaco) => {
     editorRef.current = monacoEditor;
+    monacoRef.current = monaco;
 
     monaco.editor.defineTheme("cpproad-dark", {
       base: "vs-dark",
@@ -143,8 +148,69 @@ function MonacoEditor({
       },
     });
 
-    monaco.editor.setTheme("cpproad-dark");
-  }, []);
+    monaco.editor.defineTheme("cpproad-light", {
+      base: "vs",
+      inherit: false,
+      rules: [
+        { token: "", foreground: "1f2328" },
+        { token: "comment", foreground: "656d76", fontStyle: "italic" },
+        { token: "keyword", foreground: "cf222e" },
+        { token: "keyword.control", foreground: "cf222e" },
+        { token: "keyword.operator", foreground: "cf222e" },
+        { token: "storage.type", foreground: "cf222e" },
+        { token: "type", foreground: "cf222e" },
+        { token: "string", foreground: "0a3069" },
+        { token: "string.escape", foreground: "0550ae" },
+        { token: "number", foreground: "0550ae" },
+        { token: "constant", foreground: "0550ae" },
+        { token: "entity.name.function", foreground: "8250df" },
+        { token: "support.function", foreground: "8250df" },
+        { token: "identifier", foreground: "1f2328" },
+        { token: "variable", foreground: "953800" },
+        { token: "tag", foreground: "116329" },
+        { token: "attribute.name", foreground: "0550ae" },
+        { token: "delimiter", foreground: "1f2328" },
+        { token: "delimiter.bracket", foreground: "1f2328" },
+        { token: "operator", foreground: "cf222e" },
+        { token: "namespace", foreground: "953800" },
+        { token: "annotation", foreground: "8250df" },
+        { token: "predefined", foreground: "0550ae" },
+        { token: "invalid", foreground: "b62324" },
+      ],
+      colors: {
+        "editor.background": "#ffffff",
+        "editor.foreground": "#1f2328",
+        "editor.lineHighlightBackground": "#f3f5f7",
+        "editor.selectionBackground": "#0969da33",
+        "editor.inactiveSelectionBackground": "#0969da22",
+        "editorLineNumber.foreground": "#8b949e",
+        "editorLineNumber.activeForeground": "#636c76",
+        "editorCursor.foreground": "#0969da",
+        "editor.selectionHighlightBackground": "#0969da22",
+        "editorIndentGuide.background": "#d8dee4",
+        "editorIndentGuide.activeBackground": "#d0d7de",
+        "editorBracketMatch.background": "#0969da22",
+        "editorBracketMatch.border": "#0969da",
+        "editorWidget.background": "#ffffff",
+        "editorWidget.border": "#d0d7de",
+        "editorSuggestWidget.background": "#ffffff",
+        "editorSuggestWidget.border": "#d0d7de",
+        "editorSuggestWidget.selectedBackground": "#eef1f4",
+        "input.background": "#ffffff",
+        "input.border": "#d0d7de",
+        "input.foreground": "#1f2328",
+        "scrollbarSlider.background": "#d0d7de80",
+        "scrollbarSlider.hoverBackground": "#afb8c080",
+        "scrollbarSlider.activeBackground": "#636c7640",
+      },
+    });
+
+    monaco.editor.setTheme(monacoTheme);
+  }, [monacoTheme]);
+
+  useEffect(() => {
+    monacoRef.current?.editor.setTheme(monacoTheme);
+  }, [monacoTheme]);
 
   return (
     <Editor
@@ -153,7 +219,7 @@ function MonacoEditor({
       defaultValue={initialValue}
       onMount={handleMount}
       onChange={handleChange}
-      theme="vs-dark"
+      theme={monacoTheme}
       options={{
         fontSize: 14,
         minimap: { enabled: false },

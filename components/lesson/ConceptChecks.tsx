@@ -78,7 +78,7 @@ export function ConceptCheckCard({ check }: { check: ConceptCheckClient }) {
         {result === "incorrect" && <XCircle className="ml-auto h-4 w-4 text-red-500" />}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="prose prose-sm prose-invert max-w-none">
+        <div className="prose prose-sm dark:prose-invert max-w-none">
           <SummaryView markdown={check.promptMd} />
         </div>
 
@@ -119,7 +119,7 @@ export function ConceptCheckCard({ check }: { check: ConceptCheckClient }) {
                 </code>
               </p>
             )}
-            <div className="prose prose-sm prose-invert max-w-none">
+            <div className="prose prose-sm dark:prose-invert max-w-none">
               <SummaryView markdown={check.explanationMd} />
             </div>
           </div>

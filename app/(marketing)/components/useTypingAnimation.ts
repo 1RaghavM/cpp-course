@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 
 const INITIAL_CODE = `#include <iostream>
 #include <vector>
@@ -64,6 +65,10 @@ function injectCursor(html: string, charOffset: number): string {
 export function useTypingAnimation() {
   const [html, setHtml] = useState("");
   const [isFading, setIsFading] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const themeName = resolvedTheme === "light" ? "github-light" : "github-dark";
+  const themeRef = useRef(themeName);
+  themeRef.current = themeName;
 
   useEffect(() => {
     const reducedMotion = window.matchMedia(
@@ -82,7 +87,7 @@ export function useTypingAnimation() {
     import("shiki").then(async (shiki) => {
       if (disposed) return;
       const hl = await shiki.createHighlighter({
-        themes: ["github-dark"],
+        themes: ["github-dark", "github-light"],
         langs: ["cpp"],
       });
       if (disposed) {
@@ -95,14 +100,14 @@ export function useTypingAnimation() {
         if (!code) return CURSOR_HTML;
         const raw = hl.codeToHtml(code, {
           lang: "cpp",
-          theme: "github-dark",
+          theme: themeRef.current,
         });
         return injectCursor(raw, cursorAt);
       }
 
       if (reducedMotion) {
         setHtml(
-          hl.codeToHtml(INITIAL_CODE, { lang: "cpp", theme: "github-dark" }),
+          hl.codeToHtml(INITIAL_CODE, { lang: "cpp", theme: themeRef.current }),
         );
         return;
       }
@@ -214,7 +219,7 @@ export function useTypingAnimation() {
       if (timer) clearTimeout(timer);
       highlighter?.dispose?.();
     };
-  }, []);
+  }, [themeName]);
 
   return { html, isFading };
 }

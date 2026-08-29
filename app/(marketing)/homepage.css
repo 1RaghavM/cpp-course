@@ -1,37 +1,37 @@
 /* Design tokens scoped to the marketing homepage */
 [data-page="homepage"] {
   /* Surfaces */
-  --color-bg: #0a0a0a;
-  --color-surface: #0f1115;
-  --color-surface-2: #161b22;
-  --color-elevated: #1c2128;
+  --color-bg: #f6f8fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f3f5f7;
+  --color-elevated: #ffffff;
 
   /* Borders */
-  --color-border: #23262d;
-  --color-border-strong: #30363d;
+  --color-border: #d8dee4;
+  --color-border-strong: #d0d7de;
 
   /* Foreground */
-  --color-fg: #ededed;
-  --color-fg-muted: #8b949e;
-  --color-fg-subtle: #6e7681;
+  --color-fg: #1f2328;
+  --color-fg-muted: #636c76;
+  --color-fg-subtle: #8b949e;
 
   /* Accent */
-  --color-accent: #2f81f7;
-  --color-link: #58a6ff;
+  --color-accent: #0969da;
+  --color-link: #0969da;
   --color-accent-fg: #ffffff;
 
   /* Glow */
-  --color-glow: rgba(47, 129, 247, 0.18);
+  --color-glow: rgba(9, 105, 218, 0.12);
 
   /* Syntax highlighting */
-  --code-bg: #0f1115;
-  --code-plain: #e6edf3;
-  --code-comment: #8b949e;
-  --code-keyword: #ff7b72;
-  --code-string: #a5d6ff;
-  --code-func: #d2a8ff;
-  --code-number: #79c0ff;
-  --code-variable: #ffa657;
+  --code-bg: #f6f8fa;
+  --code-plain: #1f2328;
+  --code-comment: #656d76;
+  --code-keyword: #cf222e;
+  --code-string: #0a3069;
+  --code-func: #8250df;
+  --code-number: #0550ae;
+  --code-variable: #953800;
 
   /* Typography */
   --hp-font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -58,6 +58,30 @@
   color: var(--color-fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.dark [data-page="homepage"] {
+  --color-bg: #0a0a0a;
+  --color-surface: #0f1115;
+  --color-surface-2: #161b22;
+  --color-elevated: #1c2128;
+  --color-border: #23262d;
+  --color-border-strong: #30363d;
+  --color-fg: #ededed;
+  --color-fg-muted: #8b949e;
+  --color-fg-subtle: #6e7681;
+  --color-accent: #2f81f7;
+  --color-link: #58a6ff;
+  --color-accent-fg: #ffffff;
+  --color-glow: rgba(47, 129, 247, 0.18);
+  --code-bg: #0f1115;
+  --code-plain: #e6edf3;
+  --code-comment: #8b949e;
+  --code-keyword: #ff7b72;
+  --code-string: #a5d6ff;
+  --code-func: #d2a8ff;
+  --code-number: #79c0ff;
+  --code-variable: #ffa657;
 }
 
 @media (max-width: 640px) {
@@ -193,14 +217,14 @@
 }
 
 .hp-btn-primary {
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #ffffff;
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+  border: 1px solid var(--color-fg);
 }
 
 .hp-btn-primary:hover {
-  background-color: rgba(255, 255, 255, 0.92);
-  border-color: rgba(255, 255, 255, 0.92);
+  background-color: color-mix(in oklch, var(--color-fg) 88%, var(--color-bg));
+  border-color: color-mix(in oklch, var(--color-fg) 88%, var(--color-bg));
 }
 
 .hp-btn-secondary {
@@ -240,7 +264,7 @@
 }
 
 .nav-header[data-scrolled] {
-  background-color: rgba(10, 10, 10, 0.8);
+  background-color: color-mix(in oklch, var(--color-bg) 82%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom-color: var(--color-border);
@@ -254,6 +278,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--container-pad);
+}
+
+.nav-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .nav-wordmark {
@@ -344,7 +374,8 @@
   overflow-x: auto;
 }
 
-.code-card-body pre {
+.code-card-body pre,
+.code-card-body .shiki {
   margin: 0;
   background: transparent !important;
   font-family: var(--hp-font-mono);
@@ -795,9 +826,9 @@
   font-weight: 600;
   padding: 3px 10px;
   border-radius: var(--radius-sm);
-  background: #fff;
-  color: #000;
-  border: 1px solid #fff;
+  background: var(--color-fg);
+  color: var(--color-bg);
+  border: 1px solid var(--color-fg);
 }
 
 .bento-editor-body {
@@ -1220,9 +1251,9 @@
   width: 100%;
   height: 40px;
   border-radius: var(--radius-md);
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #ffffff;
+  background-color: var(--color-fg);
+  color: var(--color-bg);
+  border: 1px solid var(--color-fg);
   font-family: var(--hp-font-sans);
   font-size: var(--text-sm);
   font-weight: 500;
@@ -1233,7 +1264,7 @@
 }
 
 .auth-submit:hover {
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: color-mix(in oklch, var(--color-fg) 88%, var(--color-bg));
 }
 
 .auth-submit:active {
