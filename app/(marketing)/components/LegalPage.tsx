@@ -15,7 +15,7 @@ export async function LegalPage({ title, children }: { title: string; children: 
       <main className="legal-page">
         <article className="hp-container legal-doc">
           <h1>{title}</h1>
-          <p className="legal-updated">Effective August 29, 2026</p>
+          <p className="legal-updated">Effective August 30, 2026</p>
           {children}
         </article>
       </main>

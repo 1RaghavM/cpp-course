@@ -17,13 +17,6 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  // Legal pages parked until Google OAuth branding is restored.
-  if (pathname === "/privacy" || pathname === "/terms") {
-    const dest = req.nextUrl.clone();
-    dest.pathname = "/";
-    return NextResponse.redirect(dest);
-  }
-
   if (pathname === "/") {
     if (user) {
       const dashboardUrl = req.nextUrl.clone();

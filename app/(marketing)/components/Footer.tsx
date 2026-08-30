@@ -18,14 +18,12 @@ export function Footer({ isSignedIn = false }: { isSignedIn?: boolean } = {}) {
         >
           <Image src="/fulllogo-Photoroom.png" alt="cpproad" width={128} height={32} style={{ height: "32px", width: "auto" }} />
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {/* Privacy / Terms hidden until Google OAuth signup is restored.
             <Link href="/privacy" style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}>
               Privacy
             </Link>
             <Link href="/terms" style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}>
               Terms
             </Link>
-            */}
             {isSignedIn ? (
               <Link href="/dashboard" style={{ color: "var(--color-fg-subtle)", textDecoration: "none" }}>
                 Dashboard
