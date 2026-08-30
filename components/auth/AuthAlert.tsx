@@ -1,6 +1,3 @@
-"use client";
-
-import { motion, AnimatePresence } from "framer-motion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CircleAlert, CircleCheck, Info } from "lucide-react";
 
@@ -37,23 +34,15 @@ export function AuthAlert({
   const config = VARIANT_CONFIG[variant];
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={variant}
-        initial={{ opacity: 0, y: -8, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -8, scale: 0.95 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
+    <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-200 motion-safe:ease-out">
+      <Alert
+        variant={config.variant}
+        className={config.className}
+        role={variant === "error" ? "alert" : "status"}
       >
-        <Alert
-          variant={config.variant}
-          className={config.className}
-          role={variant === "error" ? "alert" : "status"}
-        >
-          {config.icon}
-          <AlertDescription>{children}</AlertDescription>
-        </Alert>
-      </motion.div>
-    </AnimatePresence>
+        {config.icon}
+        <AlertDescription>{children}</AlertDescription>
+      </Alert>
+    </div>
   );
 }

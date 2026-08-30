@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { motion } from "framer-motion";
 import { AuthAlert } from "@/components/auth/AuthAlert";
 import { AuthField } from "@/components/auth/AuthField";
 import { Button } from "@/components/ui/button";
@@ -48,49 +47,29 @@ export function UpdatePasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.3, ease: "easeOut" }}
-      >
-        <AuthField
-          id="new-password"
-          label="New password"
-          type="password"
-          value={password}
-          onChange={setPassword}
-          autoComplete="new-password"
-          minLength={6}
-        />
-      </motion.div>
+      <AuthField
+        id="new-password"
+        label="New password"
+        type="password"
+        value={password}
+        onChange={setPassword}
+        autoComplete="new-password"
+        minLength={6}
+      />
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
-      >
-        <AuthField
-          id="confirm-new-password"
-          label="Confirm new password"
-          type="password"
-          value={confirmPassword}
-          onChange={setConfirmPassword}
-          autoComplete="new-password"
-          minLength={6}
-        />
-      </motion.div>
+      <AuthField
+        id="confirm-new-password"
+        label="Confirm new password"
+        type="password"
+        value={confirmPassword}
+        onChange={setConfirmPassword}
+        autoComplete="new-password"
+        minLength={6}
+      />
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25, duration: 0.3, ease: "easeOut" }}
-        whileTap={{ scale: 0.97, transition: { type: "spring", stiffness: 400, damping: 17 } }}
-        whileHover={{ scale: 1.01, transition: { type: "spring", stiffness: 400, damping: 17 } }}
-      >
-        <Button type="submit" disabled={status === "loading"}>
-          {status === "loading" ? "Saving…" : "Save password"}
-        </Button>
-      </motion.div>
+      <Button type="submit" disabled={status === "loading"}>
+        {status === "loading" ? "Saving…" : "Save password"}
+      </Button>
 
       {status === "error" ? <AuthAlert variant="error">{message}</AuthAlert> : null}
     </form>

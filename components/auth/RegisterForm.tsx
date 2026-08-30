@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { authCallbackUrl } from "@/lib/auth/constants";
 import { AuthAlert } from "@/components/auth/AuthAlert";
 import { AuthField } from "@/components/auth/AuthField";
@@ -65,127 +64,63 @@ export function RegisterForm() {
 
   if (status === "success") {
     return (
-      <AnimatePresence>
-        <motion.div
-          className="grid gap-4"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        >
-          <AuthAlert variant="success">{message}</AuthAlert>
-          <Button variant="outline" render={<Link href="/login" />}>
-            Go to sign in
-          </Button>
-        </motion.div>
-      </AnimatePresence>
+      <div className="grid gap-4">
+        <AuthAlert variant="success">{message}</AuthAlert>
+        <Button variant="outline" render={<Link href="/login" />}>
+          Go to sign in
+        </Button>
+      </div>
     );
   }
 
   return (
     <div className="grid gap-4">
       <form onSubmit={handleSubmit} className="grid gap-4">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.3, ease: "easeOut" }}
-        >
-          <AuthField
-            id="register-email"
-            label="Email"
-            type="email"
-            value={email}
-            onChange={setEmail}
-            placeholder="you@example.com"
-            autoComplete="email"
-            autoFocus
-          />
-        </motion.div>
+        <AuthField
+          id="register-email"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder="you@example.com"
+          autoComplete="email"
+          autoFocus
+        />
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
-        >
-          <AuthField
-            id="register-password"
-            label="Password"
-            type="password"
-            value={password}
-            onChange={setPassword}
-            placeholder="At least 6 characters"
-            autoComplete="new-password"
-            minLength={6}
-          />
-        </motion.div>
+        <AuthField
+          id="register-password"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+          placeholder="At least 6 characters"
+          autoComplete="new-password"
+          minLength={6}
+        />
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.3, ease: "easeOut" }}
-        >
-          <AuthField
-            id="register-confirm"
-            label="Confirm password"
-            type="password"
-            value={confirmPassword}
-            onChange={setConfirmPassword}
-            placeholder="Repeat password"
-            autoComplete="new-password"
-            minLength={6}
-          />
-        </motion.div>
+        <AuthField
+          id="register-confirm"
+          label="Confirm password"
+          type="password"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+          placeholder="Repeat password"
+          autoComplete="new-password"
+          minLength={6}
+        />
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.3, ease: "easeOut" }}
-          whileTap={{ scale: 0.97, transition: { type: "spring", stiffness: 400, damping: 17 } }}
-          whileHover={{ scale: 1.01, transition: { type: "spring", stiffness: 400, damping: 17 } }}
-        >
-          <Button type="submit" disabled={status === "loading"} className="w-full">
-            {status === "loading" ? "Creating account…" : "Create account"}
-          </Button>
-        </motion.div>
+        <Button type="submit" disabled={status === "loading"} className="w-full">
+          {status === "loading" ? "Creating account…" : "Create account"}
+        </Button>
 
         {status === "error" ? <AuthAlert variant="error">{message}</AuthAlert> : null}
-
-        <motion.p
-          className="text-sm text-muted-foreground text-center"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.3, ease: "easeOut" }}
-        >
-          Already have an account?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Sign in
-          </Link>
-        </motion.p>
       </form>
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45, duration: 0.3, ease: "easeOut" }}
-      >
-        <AuthLegalNotice />
-      </motion.div>
+      <AuthLegalNotice />
 
       {/* Google OAuth parked.
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45, duration: 0.3, ease: "easeOut" }}
-      >
-        <AuthDivider />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.3, ease: "easeOut" }}
-      >
-        <GoogleAuthButton label="Sign up with Google" />
-      </motion.div>
+      <AuthDivider />
+      <GoogleAuthButton label="Sign up with Google" />
       */}
     </div>
   );

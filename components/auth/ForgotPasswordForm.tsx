@@ -2,20 +2,11 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { authCallbackUrl } from "@/lib/auth/constants";
 import { AuthAlert } from "@/components/auth/AuthAlert";
 import { AuthField } from "@/components/auth/AuthField";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient } from "@/lib/supabase/client";
-
-const fadeSlideUp = (index: number) => ({
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 * (index + 1), duration: 0.3, ease: "easeOut" as const },
-});
-
-const buttonSpring = { type: "spring" as const, stiffness: 400, damping: 17 };
 
 export function ForgotPasswordForm() {
   const supabase = createBrowserClient();
@@ -46,61 +37,39 @@ export function ForgotPasswordForm() {
 
   if (status === "success") {
     return (
-      <AnimatePresence>
-        <motion.div
-          className="grid gap-4"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        >
-          <AuthAlert variant="success">{message}</AuthAlert>
-          <Button variant="outline" render={<Link href="/login" />}>
-            Back to sign in
-          </Button>
-        </motion.div>
-      </AnimatePresence>
+      <div className="grid gap-4">
+        <AuthAlert variant="success">{message}</AuthAlert>
+        <Button variant="outline" render={<Link href="/login" />}>
+          Back to sign in
+        </Button>
+      </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
-      <motion.div {...fadeSlideUp(0)}>
-        <AuthField
-          id="forgot-email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          placeholder="you@example.com"
-          autoComplete="email"
-          autoFocus
-        />
-      </motion.div>
+      <AuthField
+        id="forgot-email"
+        label="Email"
+        type="email"
+        value={email}
+        onChange={setEmail}
+        placeholder="you@example.com"
+        autoComplete="email"
+        autoFocus
+      />
 
-      <motion.div
-        {...fadeSlideUp(1)}
-        whileTap={{ scale: 0.97 }}
-        whileHover={{ scale: 1.01 }}
-        transition={{ ...fadeSlideUp(1).transition, ...buttonSpring }}
-      >
-        <Button type="submit" className="w-full" disabled={status === "loading"}>
-          {status === "loading" ? "Sending…" : "Send reset link"}
-        </Button>
-      </motion.div>
+      <Button type="submit" className="w-full" disabled={status === "loading"}>
+        {status === "loading" ? "Sending…" : "Send reset link"}
+      </Button>
 
-      {status === "error" ? (
-        <motion.div {...fadeSlideUp(2)}>
-          <AuthAlert variant="error">{message}</AuthAlert>
-        </motion.div>
-      ) : null}
+      {status === "error" ? <AuthAlert variant="error">{message}</AuthAlert> : null}
 
-      <motion.div {...fadeSlideUp(2)}>
-        <p className="text-center text-xs text-muted-foreground">
-          <Link href="/login" className="text-primary hover:underline">
-            Back to sign in
-          </Link>
-        </p>
-      </motion.div>
+      <p className="text-center text-xs text-muted-foreground">
+        <Link href="/login" className="text-primary hover:underline">
+          Back to sign in
+        </Link>
+      </p>
     </form>
   );
 }
