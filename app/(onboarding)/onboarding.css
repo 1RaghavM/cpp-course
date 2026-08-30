@@ -53,6 +53,27 @@
   position: relative;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .ob-step {
+    animation: ob-fade-in 500ms ease-out both;
+  }
+
+  .ob-quiz-pane {
+    animation: ob-fade-in 300ms ease-out both;
+  }
+}
+
+@keyframes ob-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .ob-heading {
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
@@ -99,6 +120,11 @@
 .ob-option-card:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+.ob-option-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .ob-option-label {
@@ -180,6 +206,11 @@
   outline-offset: 2px;
 }
 
+.ob-back:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 @media (max-width: 640px) {
   .ob-back {
     position: static;
@@ -237,6 +268,11 @@
   color: var(--color-fg-muted);
 }
 
+.ob-skip-link:disabled {
+  cursor: wait;
+  text-decoration: none;
+}
+
 .ob-quiz-counter {
   font-size: var(--text-sm);
   color: var(--color-fg-subtle);
@@ -274,5 +310,10 @@
   .ob-primary-btn,
   .ob-back {
     transition: none;
+  }
+
+  .ob-step,
+  .ob-quiz-pane {
+    animation: none;
   }
 }

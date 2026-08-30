@@ -1,7 +1,8 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { syncOnboardingFromStorage } from "@/lib/onboarding/sync";
 
 interface AppShellProps {
   /** Pre-rendered TopBar element (wrapped in Suspense by the layout) */
@@ -11,7 +12,6 @@ interface AppShellProps {
 
 export function AppShell({ topBar, children }: AppShellProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const hideHeader =
     pathname.startsWith("/lessons/") ||
     pathname.startsWith("/playground") ||
@@ -19,51 +19,14 @@ export function AppShell({ topBar, children }: AppShellProps) {
     pathname.startsWith("/capstones/");
 
   useEffect(() => {
-    async function syncOnboarding() {
-      let raw: string | null = null;
-      try {
-        raw = localStorage.getItem("cpproad_onboarding");
-      } catch {
-        return;
-      }
-      if (!raw) return;
+    const ac = new AbortController();
 
-      let parsed: Record<string, unknown>;
-      try {
-        parsed = JSON.parse(raw);
-      } catch {
-        return;
-      }
+    void (async () => {
+      await syncOnboardingFromStorage(ac.signal);
+    })();
 
-      if (!parsed.background || !parsed.motivation || !parsed.startModule) return;
-
-      try {
-        const res = await fetch("/api/onboarding", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            background: parsed.background,
-            motivation: parsed.motivation,
-            startModule: parsed.startModule,
-            fastTrack: parsed.fastTrack ?? false,
-            placementTaken: parsed.placementTaken ?? false,
-            placementScore: parsed.placementScore ?? null,
-            weeklyGoal: parsed.weeklyGoal ?? null,
-            displayName: parsed.displayName ?? null,
-          }),
-        });
-
-        if (res.ok) {
-          localStorage.removeItem("cpproad_onboarding");
-          router.push("/onboarding?step=payoff");
-        }
-      } catch {
-        // Network error — will retry on next app load
-      }
-    }
-
-    syncOnboarding();
-  }, [router]);
+    return () => ac.abort();
+  }, []);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">

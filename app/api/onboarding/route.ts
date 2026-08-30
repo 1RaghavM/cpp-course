@@ -1,33 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteClient } from "@/lib/supabase/server";
 import { requireAuth } from "@/lib/auth/require-auth";
-import type { OnboardingPayload } from "@/lib/onboarding/types";
+import { isOnboardingPayload } from "@/lib/onboarding/validate";
 
 export const dynamic = "force-dynamic";
-
-const VALID_BACKGROUNDS = ["new", "other_lang", "some_cpp"] as const;
-const VALID_MOTIVATIONS = [
-  "interviews",
-  "school",
-  "gamedev",
-  "systems",
-  "competitive",
-  "curious",
-] as const;
-
-function isValidPayload(body: unknown): body is OnboardingPayload {
-  if (typeof body !== "object" || body === null) return false;
-  const b = body as Record<string, unknown>;
-  if (!VALID_BACKGROUNDS.includes(b.background as (typeof VALID_BACKGROUNDS)[number])) return false;
-  if (!VALID_MOTIVATIONS.includes(b.motivation as (typeof VALID_MOTIVATIONS)[number])) return false;
-  if (typeof b.startModule !== "string" || b.startModule.length === 0) return false;
-  if (typeof b.fastTrack !== "boolean") return false;
-  if (typeof b.placementTaken !== "boolean") return false;
-  if (b.placementScore !== null && typeof b.placementScore !== "number") return false;
-  if (b.weeklyGoal !== null && typeof b.weeklyGoal !== "number") return false;
-  if (b.displayName !== null && typeof b.displayName !== "string") return false;
-  return true;
-}
 
 export async function POST(request: NextRequest) {
   const supabase = createRouteClient();
@@ -42,7 +18,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!isValidPayload(body)) {
+  if (!isOnboardingPayload(body)) {
     return NextResponse.json({ error: "Invalid onboarding payload" }, { status: 400 });
   }
 
@@ -65,16 +41,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to save onboarding data" }, { status: 500 });
   }
 
-  await supabase.from("user_stats").upsert(
-    {
-      user_id: userId,
-      weekly_goal: body.weeklyGoal,
-      display_name: body.displayName ?? null,
-      streak_days: 0,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id" },
-  );
+  const statsRow: {
+    user_id: string;
+    weekly_goal: number | null;
+    updated_at: string;
+    display_name?: string;
+  } = {
+    user_id: userId,
+    weekly_goal: body.weeklyGoal,
+    updated_at: new Date().toISOString(),
+  };
+  if (body.displayName) {
+    statsRow.display_name = body.displayName;
+  }
+
+  await supabase.from("user_stats").upsert(statsRow, { onConflict: "user_id" });
 
   return NextResponse.json({ ok: true, startModule: body.startModule });
 }
@@ -89,13 +70,19 @@ export async function GET() {
     .from("onboarding")
     .select("*")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
+    console.error("Failed to load onboarding data:", error);
+    return NextResponse.json({ error: "Failed to load onboarding data" }, { status: 500 });
+  }
+
+  if (!data) {
     return NextResponse.json({ error: "No onboarding data found" }, { status: 404 });
   }
 
   const fullName = (authResult.user.user_metadata?.full_name as string | undefined) ?? null;
+  const firstName = fullName?.trim().split(/\s+/)[0] || null;
 
   return NextResponse.json({
     background: data.background,
@@ -105,6 +92,6 @@ export async function GET() {
     placementTaken: data.placement_taken,
     placementScore: data.placement_score,
     weeklyGoal: data.weekly_goal,
-    firstName: fullName,
+    firstName,
   });
 }

@@ -60,6 +60,9 @@ export function onboardingReducer(state: OnboardingState, action: Action): Onboa
     case "SET_WEEKLY_GOAL":
       return { ...state, weeklyGoal: action.value };
 
+    case "HYDRATE":
+      return action.state;
+
     case "GO_BACK": {
       const prev = BACK_MAP[state.step];
       if (!prev) return state;

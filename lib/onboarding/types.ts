@@ -54,6 +54,7 @@ export type Action =
   | { type: "COMPLETE_PLACEMENT"; score: number }
   | { type: "SET_WEEKLY_GOAL"; value: number | null }
   | { type: "SET_DISPLAY_NAME"; value: string }
+  | { type: "HYDRATE"; state: OnboardingState }
   | { type: "GO_BACK" };
 
 export interface OnboardingPayload {

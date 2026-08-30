@@ -1,4 +1,5 @@
 import type { OnboardingState, OnboardingPayload } from "./types";
+import { isOnboardingPayload, parseOnboardingState } from "./validate";
 
 const STORAGE_KEY = "cpproad_onboarding";
 
@@ -14,9 +15,7 @@ export function loadOnboardingState(): OnboardingState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as OnboardingState;
-    if (!parsed.step) return null;
-    return parsed;
+    return parseOnboardingState(JSON.parse(raw));
   } catch {
     return null;
   }
@@ -31,32 +30,27 @@ export function clearOnboardingState(): void {
 }
 
 export function hasOnboardingData(): boolean {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
-    const parsed = JSON.parse(raw);
-    return parsed?.background != null && parsed?.motivation != null;
-  } catch {
-    return false;
-  }
+  return getOnboardingPayload() != null;
 }
 
 export function getOnboardingPayload(): OnboardingPayload | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const s = JSON.parse(raw) as OnboardingState;
-    if (!s.background || !s.motivation || !s.startModule) return null;
-    return {
-      background: s.background,
-      motivation: s.motivation,
-      startModule: s.startModule,
-      fastTrack: s.fastTrack,
-      placementTaken: s.placementTaken,
-      placementScore: s.placementScore,
-      weeklyGoal: s.weeklyGoal,
-      displayName: s.displayName ?? null,
+    const parsed = JSON.parse(raw) as unknown;
+    const state = parseOnboardingState(parsed);
+    if (!state) return null;
+    const payload = {
+      background: state.background,
+      motivation: state.motivation,
+      startModule: state.startModule,
+      fastTrack: state.fastTrack,
+      placementTaken: state.placementTaken,
+      placementScore: state.placementScore,
+      weeklyGoal: state.weeklyGoal,
+      displayName: state.displayName ?? null,
     };
+    return isOnboardingPayload(payload) ? payload : null;
   } catch {
     return null;
   }

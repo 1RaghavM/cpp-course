@@ -10,6 +10,7 @@ import { AuthLegalNotice } from "@/components/auth/AuthLegalNotice";
 // import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { Button } from "@/components/ui/button";
 import { createBrowserClient } from "@/lib/supabase/client";
+import { syncOnboardingFromStorage } from "@/lib/onboarding/sync";
 
 export function LoginForm() {
   const supabase = createBrowserClient();
@@ -36,7 +37,8 @@ export function LoginForm() {
       return;
     }
 
-    router.push("/dashboard");
+    const result = await syncOnboardingFromStorage();
+    router.push(result.status === "applied" ? "/onboarding?step=payoff" : "/dashboard");
     router.refresh();
   }
 

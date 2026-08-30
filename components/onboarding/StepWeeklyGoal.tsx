@@ -1,12 +1,12 @@
 "use client";
 
 import type { Action } from "@/lib/onboarding/types";
-import { motion } from "framer-motion";
 import { OptionCard } from "./OptionCard";
 
 type Props = {
   dispatch: React.Dispatch<Action>;
   onBack: () => void;
+  busy?: boolean;
 };
 
 const OPTIONS: { label: string; value: number | null }[] = [
@@ -16,60 +16,40 @@ const OPTIONS: { label: string; value: number | null }[] = [
   { label: "No goal for now", value: null },
 ];
 
-export function StepWeeklyGoal({ dispatch, onBack }: Props) {
+export function StepWeeklyGoal({ dispatch, onBack, busy }: Props) {
   return (
     <div className="ob-step">
-      <motion.button
+      <button
         type="button"
         className="ob-back"
         onClick={onBack}
         aria-label="Go back"
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.05, duration: 0.25 }}
+        disabled={busy}
       >
         &larr;
-      </motion.button>
-      <motion.h1
-        className="ob-heading"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.35 }}
-      >
-        Want a weekly target?
-      </motion.h1>
-      <motion.p
-        className="ob-subtext"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.35 }}
-      >
+      </button>
+      <h1 className="ob-heading">Want a weekly target?</h1>
+      <p className="ob-subtext">
         Optional. It&rsquo;s a nudge, not a streak you&rsquo;ll lose sleep over.
-      </motion.p>
-      <motion.div
-        className="ob-options-stack"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.35 }}
-      >
+      </p>
+      <div className="ob-options-stack">
         {OPTIONS.map((opt) => (
           <OptionCard
             key={String(opt.value)}
             label={opt.label}
+            disabled={busy}
             onSelect={() => dispatch({ type: "SET_WEEKLY_GOAL", value: opt.value })}
           />
         ))}
-      </motion.div>
-      <motion.button
+      </div>
+      <button
         type="button"
         className="ob-skip-link"
+        disabled={busy}
         onClick={() => dispatch({ type: "SET_WEEKLY_GOAL", value: null })}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.35 }}
       >
-        Skip
-      </motion.button>
+        {busy ? "Continuing…" : "Skip"}
+      </button>
     </div>
   );
 }

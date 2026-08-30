@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import type { Action } from "@/lib/onboarding/types";
 import { PLACEMENT_QUESTIONS, scoreAnswers } from "@/lib/onboarding/placement-questions";
 import { MODULE_TITLES } from "@/lib/onboarding/constants";
@@ -19,6 +18,7 @@ export function PlacementQuiz({ dispatch, onBack }: Props) {
   const [answers, setAnswers] = useState<number[]>([]);
   const [result, setResult] = useState<{ score: number; module: string } | null>(null);
   const [tracked, setTracked] = useState(false);
+  const answeringRef = useRef(false);
 
   useEffect(() => {
     if (!tracked) {
@@ -30,11 +30,15 @@ export function PlacementQuiz({ dispatch, onBack }: Props) {
   const question = PLACEMENT_QUESTIONS[questionIndex];
 
   function handleAnswer(optionIndex: number) {
+    if (answeringRef.current || result) return;
+    answeringRef.current = true;
+
     const newAnswers = [...answers, optionIndex];
     setAnswers(newAnswers);
 
     if (questionIndex < PLACEMENT_QUESTIONS.length - 1) {
       setQuestionIndex(questionIndex + 1);
+      answeringRef.current = false;
     } else {
       const score = scoreAnswers(newAnswers);
       const startModule = placeFromScore(score);
@@ -43,29 +47,41 @@ export function PlacementQuiz({ dispatch, onBack }: Props) {
     }
   }
 
+  function handleBack() {
+    if (result) {
+      setResult(null);
+      setQuestionIndex(PLACEMENT_QUESTIONS.length - 1);
+      setAnswers((prev) => prev.slice(0, -1));
+      answeringRef.current = false;
+      return;
+    }
+    if (questionIndex > 0) {
+      setQuestionIndex(questionIndex - 1);
+      setAnswers((prev) => prev.slice(0, -1));
+      answeringRef.current = false;
+      return;
+    }
+    onBack();
+  }
+
   if (result) {
     const title = MODULE_TITLES[result.module] ?? result.module;
     return (
       <div className="ob-step">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
+        <button type="button" className="ob-back" onClick={handleBack} aria-label="Go back">
+          &larr;
+        </button>
+        <h1 className="ob-heading">
+          Got it &mdash; starting you at <strong>{title}</strong>.
+        </h1>
+        <p className="ob-subtext">Too easy or too hard? Jump anywhere from the path on the left.</p>
+        <button
+          type="button"
+          className="ob-primary-btn"
+          onClick={() => dispatch({ type: "COMPLETE_PLACEMENT", score: result.score })}
         >
-          <h1 className="ob-heading">
-            Got it &mdash; starting you at <strong>{title}</strong>.
-          </h1>
-          <p className="ob-subtext">Too easy or too hard? Jump anywhere from the path on the left.</p>
-          <motion.button
-            type="button"
-            className="ob-primary-btn"
-            onClick={() => dispatch({ type: "COMPLETE_PLACEMENT", score: result.score })}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            Continue
-          </motion.button>
-        </motion.div>
+          Continue
+        </button>
       </div>
     );
   }
@@ -74,47 +90,31 @@ export function PlacementQuiz({ dispatch, onBack }: Props) {
 
   return (
     <div className="ob-step">
-      <motion.button
-        type="button"
-        className="ob-back"
-        onClick={onBack}
-        aria-label="Go back"
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.05, duration: 0.25 }}
-      >
+      <button type="button" className="ob-back" onClick={handleBack} aria-label="Go back">
         &larr;
-      </motion.button>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={questionIndex}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.25 }}
-        >
-          <p className="ob-quiz-counter">
-            {questionIndex + 1} / {PLACEMENT_QUESTIONS.length}
+      </button>
+      <div key={questionIndex} className="ob-quiz-pane">
+        <p className="ob-quiz-counter">
+          {questionIndex + 1} / {PLACEMENT_QUESTIONS.length}
+        </p>
+        {questionIndex === 0 && (
+          <p className="ob-subtext" style={{ marginBottom: 24 }}>
+            Five quick ones. No score, no pressure &mdash; just so we don&rsquo;t start you
+            somewhere boring.
           </p>
-          {questionIndex === 0 && (
-            <p className="ob-subtext" style={{ marginBottom: 24 }}>
-              Five quick ones. No score, no pressure &mdash; just so we don&rsquo;t start you somewhere
-              boring.
-            </p>
-          )}
-          {question.code ? (
-            <pre className="ob-quiz-code">
-              <code>{question.code}</code>
-            </pre>
-          ) : null}
-          <p className="ob-quiz-question">{question.question}</p>
-          <div className="ob-options-stack">
-            {question.options.map((opt, i) => (
-              <OptionCard key={i} label={opt} onSelect={() => handleAnswer(i)} />
-            ))}
-          </div>
-        </motion.div>
-      </AnimatePresence>
+        )}
+        {question.code ? (
+          <pre className="ob-quiz-code">
+            <code>{question.code}</code>
+          </pre>
+        ) : null}
+        <p className="ob-quiz-question">{question.question}</p>
+        <div className="ob-options-stack">
+          {question.options.map((opt, i) => (
+            <OptionCard key={i} label={opt} onSelect={() => handleAnswer(i)} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -220,10 +220,30 @@ body {
   scrollbar-color: var(--border) var(--background);
 }
 
-*::-webkit-scrollbar { width: 6px; height: 6px; }
-*::-webkit-scrollbar-track { background: var(--background); }
-*::-webkit-scrollbar-thumb { background-color: var(--border); border-radius: 999px; }
-*::-webkit-scrollbar-thumb:hover { background-color: var(--bg-hover); }
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--background);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--bg-hover);
+}
+
+/* Keep the IDE canvas on the same surface as the surrounding panel.
+   Token colors still come from the Monaco light/dark C++ themes. */
+.cpproad-monaco,
+.cpproad-monaco .monaco-editor,
+.cpproad-monaco .monaco-editor-background,
+.cpproad-monaco .margin,
+.cpproad-monaco .monaco-editor .inputarea.ime-input {
+  background-color: var(--bg-surface) !important;
+}
 
 /* grain overlay */
 .grain::before {
@@ -240,46 +260,98 @@ body {
 
 /* dashboard entrance animation */
 @keyframes kpi-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.kpi-animate { animation: kpi-enter 300ms ease-out both; }
-.kpi-animate:nth-child(1) { animation-delay: 0ms; }
-.kpi-animate:nth-child(2) { animation-delay: 60ms; }
-.kpi-animate:nth-child(3) { animation-delay: 120ms; }
+.kpi-animate {
+  animation: kpi-enter 300ms ease-out both;
+}
+.kpi-animate:nth-child(1) {
+  animation-delay: 0ms;
+}
+.kpi-animate:nth-child(2) {
+  animation-delay: 60ms;
+}
+.kpi-animate:nth-child(3) {
+  animation-delay: 120ms;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .kpi-animate { animation: none !important; }
+  .kpi-animate {
+    animation: none !important;
+  }
 }
 
 /* existing animations */
 @keyframes orb-drift {
-  0%, 100% { transform: translate(0, 0); opacity: 0.6; }
-  50% { transform: translate(30px, -20px); opacity: 1; }
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(30px, -20px);
+    opacity: 1;
+  }
 }
 @keyframes node-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.6; }
-  50% { transform: scale(1.08); opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
 }
 @keyframes flame-flicker {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.1) translateY(-1px); opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.1) translateY(-1px);
+    opacity: 1;
+  }
 }
 @keyframes road-fill {
-  from { stroke-dashoffset: var(--track-length); }
-  to { stroke-dashoffset: var(--track-offset); }
+  from {
+    stroke-dashoffset: var(--track-length);
+  }
+  to {
+    stroke-dashoffset: var(--track-offset);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .orb-animate { animation: none !important; }
-  .node-pulse { animation: none !important; }
-  .flame-flicker { animation: none !important; }
-  .road-fill-animate { animation: none !important; }
+  .orb-animate {
+    animation: none !important;
+  }
+  .node-pulse {
+    animation: none !important;
+  }
+  .flame-flicker {
+    animation: none !important;
+  }
+  .road-fill-animate {
+    animation: none !important;
+  }
 }
 
 /* Module drawer slide + fade */
 .module-drawer-popup[data-slot="drawer-popup"] {
-  transition: transform 300ms var(--ease), opacity 250ms var(--ease), box-shadow 300ms var(--ease);
+  transition:
+    transform 300ms var(--ease),
+    opacity 250ms var(--ease),
+    box-shadow 300ms var(--ease);
 }
 .module-drawer-popup[data-slot="drawer-popup"][data-starting-style] {
   opacity: 0;
@@ -291,12 +363,24 @@ body {
 
 /* Module drawer content stagger */
 @keyframes module-item-enter {
-  from { opacity: 0; transform: translateX(12px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes module-item-enter-left {
-  from { opacity: 0; transform: translateX(-12px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 .module-drawer-content {
   animation: module-item-enter 300ms var(--ease) both;
@@ -306,8 +390,12 @@ body {
   animation-name: module-item-enter-left;
 }
 @media (prefers-reduced-motion: reduce) {
-  .module-drawer-content { animation: none !important; }
-  .module-drawer-popup[data-slot="drawer-popup"] { transition: none !important; }
+  .module-drawer-content {
+    animation: none !important;
+  }
+  .module-drawer-popup[data-slot="drawer-popup"] {
+    transition: none !important;
+  }
 }
 
 /* React Flow theme integration */
@@ -349,7 +437,9 @@ html:not(.dark) img[alt="cpproad"] {
   color: var(--foreground);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background-color 180ms var(--ease), color 180ms var(--ease);
+  transition:
+    background-color 180ms var(--ease),
+    color 180ms var(--ease);
 }
 
 .theme-toggle:hover {

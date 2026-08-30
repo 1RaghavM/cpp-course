@@ -4,6 +4,7 @@ import { PageTransition } from "@/components/dashboard/PageTransition";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AsyncSidebar } from "@/app/dashboard/_components/AsyncSidebar";
 import { SidebarSkeleton } from "@/app/dashboard/_components/SidebarSkeleton";
+import { OnboardingSync } from "@/components/onboarding/OnboardingSync";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         } as React.CSSProperties
       }
     >
+      <OnboardingSync />
       <Suspense fallback={<SidebarSkeleton />}>
         <AsyncSidebar />
       </Suspense>
