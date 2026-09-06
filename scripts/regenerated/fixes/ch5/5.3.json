@@ -10,26 +10,26 @@
     {
       "index": 0,
       "title": "Display One Integer in Four Bases",
-      "prompt_md": "## Goal\nRead one non-negative integer from stdin and print it in decimal, binary, octal, and hexadecimal (uppercase), each on its own labeled line.\n\n## Input\n- Line 1: one non-negative integer N (0 <= N <= 65535).\n\n## Output\nPrint exactly four lines in this order:\n```\nDEC: <decimal value>\nBIN: <binary value with 0b prefix>\nOCT: <octal value with 0 prefix>\nHEX: <uppercase hex value with 0X prefix>\n```\n- No extra spaces, no extra blank lines.\n- The `0b` prefix must be lowercase; the `0X` prefix must be uppercase.\n- No zero-padding on any field.\n\n## Requirements\n1. Use `std::println` with format specifiers `{:b}`, `{:o}`, `{:X}` to produce the non-decimal representations.\n2. Use `{:#b}` for the binary prefix (produces `0b`), `{:#o}` for the octal prefix (produces `0`), and `{:#X}` for the hex prefix (produces `0X`).\n3. The value 0 must print as `0b0`, `0`, and `0X0` for binary, octal, and hex respectively -- std::format handles this automatically.\n4. No hand-written conversion loops are allowed; rely entirely on format specifiers.\n5. Read the integer using `std::cin`.\n\n## Notes\n- Include `<print>` and `<iostream>`.\n- Compile with `-std=c++23` (or `-std=c++20` if your standard library ships `<print>`).",
-      "starter_code": "#include <print>\n#include <iostream>\n\nint main()\n{\n    int n{};\n    // TODO: read n from stdin using std::cin\n\n    // TODO: print n in decimal  with label \"DEC: \"\n    // TODO: print n in binary   with label \"BIN: \" (include 0b prefix)\n    // TODO: print n in octal    with label \"OCT: \" (include 0  prefix)\n    // TODO: print n in hex (UC) with label \"HEX: \" (include 0X prefix)\n\n    return 0;\n}\n",
-      "solution_code": "#include <format>\n#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::cout << std::format(\"DEC: {:d}\",  n) << '\\n';\n    std::cout << std::format(\"BIN: {:#b}\", n) << '\\n';\n    std::cout << std::format(\"OCT: {:#o}\", n) << '\\n';\n    std::cout << std::format(\"HEX: {:#X}\", n) << '\\n';\n\n    return 0;\n}\n",
+      "prompt_md": "## Goal\nRead one non-negative integer from stdin and print it in decimal, octal, and hexadecimal (uppercase), each on its own labeled line.\n\n## Input\n- Line 1: one non-negative integer N (0 <= N <= 65535).\n\n## Output\nPrint exactly three lines in this order:\n```\nDEC: <decimal value>\nOCT: <octal value with 0 prefix>\nHEX: <uppercase hex value with 0X prefix>\n```\n- No extra spaces, no extra blank lines.\n- The `0` octal prefix and `0X` hex prefix must always appear (use `std::showbase`).\n- Hex digits must be uppercase (use `std::uppercase`).\n\n## Requirements\n1. Use `std::oct`, `std::hex`, `std::uppercase`, and `std::showbase` stream manipulators from `<iostream>` to produce the non-decimal representations.\n2. The value 0 must print as `0` for octal and `0X0` for hex.\n3. Read the integer using `std::cin`.\n4. Reset to decimal output with `std::dec` after printing the octal line.\n\n## Notes\n- Include `<iostream>` only.\n- Stream manipulators are sticky — once set, they remain until explicitly changed.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    // TODO: read n from stdin using std::cin\n\n    // TODO: print n in decimal  with label \"DEC: \"\n    // TODO: print n in octal    with label \"OCT: \" (include 0  prefix using std::showbase)\n    // TODO: print n in hex (UC) with label \"HEX: \" (include 0X prefix using std::showbase + std::uppercase)\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    int n{};\n    std::cin >> n;\n\n    std::cout << \"DEC: \" << n << '\\n';\n    std::cout << std::showbase << std::oct << \"OCT: \" << n << '\\n';\n    std::cout << std::uppercase << std::hex << \"HEX: \" << n << '\\n';\n\n    return 0;\n}\n",
       "test_cases": [
         {
           "label": "Sample -- 255",
           "stdin": "255\n",
-          "expected_stdout": "DEC: 255\nBIN: 0b11111111\nOCT: 0377\nHEX: 0XFF\n",
+          "expected_stdout": "DEC: 255\nOCT: 0377\nHEX: 0XFF\n",
           "is_sample": true
         },
         {
           "label": "Hidden -- 0 (edge case zero)",
           "stdin": "0\n",
-          "expected_stdout": "DEC: 0\nBIN: 0b0\nOCT: 0\nHEX: 0X0\n",
+          "expected_stdout": "DEC: 0\nOCT: 0\nHEX: 0X0\n",
           "is_sample": false
         },
         {
           "label": "Hidden -- 4096",
           "stdin": "4096\n",
-          "expected_stdout": "DEC: 4096\nBIN: 0b1000000000000\nOCT: 010000\nHEX: 0X1000\n",
+          "expected_stdout": "DEC: 4096\nOCT: 010000\nHEX: 0X1000\n",
           "is_sample": false
         }
       ]
@@ -37,26 +37,26 @@
     {
       "index": 1,
       "title": "Named Color Constants: Decode an RGB Hex Code",
-      "prompt_md": "## Goal\nThree `constexpr` color channel constants are defined using hexadecimal literals. Read a 24-bit RGB value from stdin and print each channel (red, green, blue) extracted with a bitmask, displayed in both decimal and binary.\n\n## Input\n- Line 1: one non-negative integer N (0 <= N <= 16777215, i.e. fits in 24 bits), given in **decimal**.\n\n## Output\nPrint exactly three lines:\n```\nR: <decimal> (0b<binary>)\nG: <decimal> (0b<binary>)\nB: <decimal> (0b<binary>)\n```\n- `<decimal>` is the channel value in base 10 (0-255).\n- `<binary>` is the channel value in base 2, **no** leading zeros, **no** `0b` prefix inside the parentheses (the `0b` is already printed as literal text).\n- Example for channel value 255: `R: 255 (0b11111111)`\n- No extra spaces beyond those shown.\n\n## Requirements\n1. Define these three `constexpr unsigned` masks **using hexadecimal literals** exactly as shown:\n   - `constexpr unsigned RED_MASK   = 0xFF'00'00;`\n   - `constexpr unsigned GREEN_MASK = 0x00'FF'00;`\n   - `constexpr unsigned BLUE_MASK  = 0x00'00'FF;`\n2. Extract the red channel with `(color & RED_MASK) >> 16`, green with `(color & GREEN_MASK) >> 8`, blue with `(color & BLUE_MASK)`.\n3. Use `{:d}` and `{:b}` format specifiers (from `<print>`) for the decimal and binary parts; do **not** use `{:#b}` -- the `0b` prefix is hard-coded in the format string.\n4. Read the integer using `std::cin`.\n5. Input value 0 must produce three lines of `0` and `0b0`.\n6. Input value 16777215 (`0xFFFFFF`) must produce `255` and `11111111` for all three channels.\n\n### Background: Bitwise AND (`&`) and Right-Shift (`>>`)\n\nThis exercise uses two operators that are formally covered later in the curriculum but are essential for working with hex color values:\n\n- **Bitwise AND** (`&`): compares each bit of two integers. The result has a `1` bit only where *both* inputs have a `1`. So `color & 0xFF'00'00` keeps only the bits in the red channel position and zeroes everything else.\n- **Right-shift** (`>>`): shifts all bits to the right by the specified number of positions. `>> 16` moves the red channel bits from positions 16-23 down to positions 0-7, giving a value in the range 0-255.\n\nYou will learn these operators in depth in a later chapter; for now, use them exactly as shown in requirement 2.\n\n## Notes\n- Include `<print>` and `<iostream>`.\n- Digit separators (`'`) in the mask literals are required by requirement 1 and must appear exactly as shown.",
-      "starter_code": "#include <print>\n#include <iostream>\n\nint main()\n{\n    // TODO: define constexpr unsigned RED_MASK, GREEN_MASK, BLUE_MASK\n    //       using hexadecimal literals with digit separators as specified\n\n    unsigned color{};\n    // TODO: read color from stdin using std::cin\n\n    // TODO: extract red, green, blue channels using the masks and bit-shifts\n\n    // TODO: print each channel as:\n    //   \"R: <decimal> (0b<binary>)\"\n    //   \"G: <decimal> (0b<binary>)\"\n    //   \"B: <decimal> (0b<binary>)\"\n    //   using {:d} and {:b} format specifiers\n\n    return 0;\n}\n",
-      "solution_code": "#include <format>\n#include <iostream>\n\nint main()\n{\n    constexpr unsigned RED_MASK   = 0xFF'00'00;\n    constexpr unsigned GREEN_MASK = 0x00'FF'00;\n    constexpr unsigned BLUE_MASK  = 0x00'00'FF;\n\n    unsigned color{};\n    std::cin >> color;\n\n    unsigned r = (color & RED_MASK)   >> 16;\n    unsigned g = (color & GREEN_MASK) >> 8;\n    unsigned b = (color & BLUE_MASK);\n\n    std::cout << std::format(\"R: {:d} (0b{:b})\", r, r) << '\\n';\n    std::cout << std::format(\"G: {:d} (0b{:b})\", g, g) << '\\n';\n    std::cout << std::format(\"B: {:d} (0b{:b})\", b, b) << '\\n';\n\n    return 0;\n}\n",
+      "prompt_md": "## Goal\nThree `constexpr` color channel constants are defined using hexadecimal literals. Read a 24-bit RGB value from stdin and print each channel (red, green, blue) extracted with a bitmask, displayed in both decimal and hexadecimal.\n\n## Input\n- Line 1: one non-negative integer N (0 <= N <= 16777215, i.e. fits in 24 bits), given in **decimal**.\n\n## Output\nPrint exactly three lines:\n```\nR: <decimal> (0x<hex>)\nG: <decimal> (0x<hex>)\nB: <decimal> (0x<hex>)\n```\n- `<decimal>` is the channel value in base 10 (0-255).\n- `<hex>` is the channel value in lowercase hexadecimal, no leading zeros.\n- Example for channel value 255: `R: 255 (0xff)`\n- No extra spaces beyond those shown.\n\n## Requirements\n1. Define these three `constexpr unsigned` masks **using hexadecimal literals** exactly as shown:\n   - `constexpr unsigned RED_MASK   = 0xFF'00'00;`\n   - `constexpr unsigned GREEN_MASK = 0x00'FF'00;`\n   - `constexpr unsigned BLUE_MASK  = 0x00'00'FF;`\n2. Extract the red channel with `(color & RED_MASK) >> 16`, green with `(color & GREEN_MASK) >> 8`, blue with `(color & BLUE_MASK)`.\n3. Use `std::hex` and `std::showbase` stream manipulators for the hex output.\n4. Read the integer using `std::cin`.\n5. Input value 0 must produce `0 (0)` for all three channels (note: `std::showbase` does not add `0x` prefix for value 0). Actually, print the `0x` prefix manually in the format string for consistency.\n\n### Background: Bitwise AND (`&`) and Right-Shift (`>>`)\n\nThis exercise uses two operators that are formally covered later in the curriculum but are essential for working with hex color values:\n\n- **Bitwise AND** (`&`): compares each bit of two integers. The result has a `1` bit only where *both* inputs have a `1`. So `color & 0xFF'00'00` keeps only the bits in the red channel position and zeroes everything else.\n- **Right-shift** (`>>`): shifts all bits to the right by the specified number of positions. `>> 16` moves the red channel bits from positions 16-23 down to positions 0-7, giving a value in the range 0-255.\n\nYou will learn these operators in depth in a later chapter; for now, use them exactly as shown in requirement 2.\n\n## Notes\n- Include `<iostream>` only.\n- Digit separators (`'`) in the mask literals are required by requirement 1 and must appear exactly as shown.",
+      "starter_code": "#include <iostream>\n\nint main()\n{\n    // TODO: define constexpr unsigned RED_MASK, GREEN_MASK, BLUE_MASK\n    //       using hexadecimal literals with digit separators as specified\n\n    unsigned color{};\n    // TODO: read color from stdin using std::cin\n\n    // TODO: extract red, green, blue channels using the masks and bit-shifts\n\n    // TODO: print each channel as:\n    //   \"R: <decimal> (0x<hex>)\"\n    //   \"G: <decimal> (0x<hex>)\"\n    //   \"B: <decimal> (0x<hex>)\"\n    //   using std::hex stream manipulator\n\n    return 0;\n}\n",
+      "solution_code": "#include <iostream>\n\nint main()\n{\n    constexpr unsigned RED_MASK   = 0xFF'00'00;\n    constexpr unsigned GREEN_MASK = 0x00'FF'00;\n    constexpr unsigned BLUE_MASK  = 0x00'00'FF;\n\n    unsigned color{};\n    std::cin >> color;\n\n    unsigned r = (color & RED_MASK)   >> 16;\n    unsigned g = (color & GREEN_MASK) >> 8;\n    unsigned b = (color & BLUE_MASK);\n\n    std::cout << \"R: \" << std::dec << r << \" (0x\" << std::hex << r << \")\\n\";\n    std::cout << \"G: \" << std::dec << g << \" (0x\" << std::hex << g << \")\\n\";\n    std::cout << \"B: \" << std::dec << b << \" (0x\" << std::hex << b << \")\\n\";\n\n    return 0;\n}\n",
       "test_cases": [
         {
-          "label": "Sample -- 0xFFA500 orange (16744192)",
+          "label": "Sample -- 0xFFA500 orange (16753920)",
           "stdin": "16753920\n",
-          "expected_stdout": "R: 255 (0b11111111)\nG: 165 (0b10100101)\nB: 0 (0b0)\n",
+          "expected_stdout": "R: 255 (0xff)\nG: 165 (0xa5)\nB: 0 (0x0)\n",
           "is_sample": true
         },
         {
           "label": "Hidden -- 0 (all channels zero)",
           "stdin": "0\n",
-          "expected_stdout": "R: 0 (0b0)\nG: 0 (0b0)\nB: 0 (0b0)\n",
+          "expected_stdout": "R: 0 (0x0)\nG: 0 (0x0)\nB: 0 (0x0)\n",
           "is_sample": false
         },
         {
           "label": "Hidden -- 16777215 (0xFFFFFF white)",
           "stdin": "16777215\n",
-          "expected_stdout": "R: 255 (0b11111111)\nG: 255 (0b11111111)\nB: 255 (0b11111111)\n",
+          "expected_stdout": "R: 255 (0xff)\nG: 255 (0xff)\nB: 255 (0xff)\n",
           "is_sample": false
         }
       ]
