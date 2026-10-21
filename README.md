@@ -88,8 +88,47 @@ means nobody burns a weekend on something already rejected or already in flight.
 - **Feature** — describe the problem before the solution. Feature PRs without a prior issue
   get asked to open one.
 
-This README documents what the project teaches and how it's put together, not how to run
-your own copy. Open an issue if you need a local setup guide.
+## Local setup
+
+Requires Node.js and the Supabase CLI (via `npx`).
+
+```bash
+npm install
+cp .env.example .env.local   # fill in the values below
+git config core.hooksPath .githooks   # blocks committing .env files
+npx supabase db push         # apply database migrations
+npm run dev
+```
+
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase project (public) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only; bypasses RLS |
+| `JUDGE0_URL`, `JUDGE0_AUTH_TOKEN` | Judge0 code execution (currently RapidAPI shared host) |
+| `API_KEY_ENCRYPTION_SECRET` | Encrypts user Gemini keys and GitHub tokens (`openssl rand -base64 32`) |
+| `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` | Optional GitHub sync |
+| `NEXT_PUBLIC_STATSIG_CLIENT_KEY`, `STATSIG_SERVER_SECRET_KEY` | Statsig analytics and feature gates (server key required at runtime) |
+
+No server-side LLM key is needed: the tutor uses each user's own Gemini key, and lesson content is pre-generated under `scripts/regenerated/v2/`.
+
+### External services
+
+Supabase (Postgres + auth), Judge0 via RapidAPI, Google Gemini (user-supplied keys), Statsig, GitHub OAuth (optional), Vercel (hosting).
+
+### Tests and checks
+
+```bash
+npm test               # vitest run
+npm run lint
+npm run format:check
+```
+
+## Status
+
+- **Implemented:** lessons served from Postgres, in-browser editor with Judge0 grading, BYOK Gemini tutor with tiered hints, spaced-repetition review, optional GitHub sync.
+- **Unfinished:** self-hosted gVisor Judge0 in `infra/judge0/` is staged but not hardened (gVisor runtime commented out, privileged workers); GitHub sync is inert until an operator registers an OAuth app.
 
 ## License
 
